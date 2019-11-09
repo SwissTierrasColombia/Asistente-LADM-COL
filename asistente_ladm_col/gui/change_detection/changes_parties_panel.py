@@ -22,13 +22,10 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem,
 from qgis.core import NULL
 from qgis.gui import QgsPanelWidget
 
-from ...config.general_config import (COLLECTED_DB_SOURCE,
-                                      OFFICIAL_DB_SOURCE)
-from ...config.table_mapping_config import (COL_PARTY_DOCUMENT_ID_FIELD,
-                                            COL_PARTY_DOC_TYPE_FIELD,
-                                            DOCUMENT_ID_FIELD,
-                                            COL_PARTY_NAME_FIELD)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      OFFICIAL_DB_SOURCE)
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_parties_panel_widget.ui')
 
@@ -37,11 +34,12 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent, utils, data):
         QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
+        self.names = Names()
         self.parent = parent
         self.utils = utils
 
         # dict with 2 k:v pairs, one for collected data and one for official data
-        # Values are dicts themselves, with the party info we compare (see PARTY_FIELDS_TO_COMPARE + right type)
+        # Values are dicts themselves, with the party info we compare (see get_party_fields_to_compare + right type)
         self.data = data
 
         self.setDockMode(True)
@@ -62,14 +60,14 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         sorted_official_parties = list()
         sorted_collected_parties = list()
         if self.data[OFFICIAL_DB_SOURCE] != NULL:
-            sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+            sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[self.names.OP_PARTY_T_DOCUMENT_ID_F])
         if self.data[COLLECTED_DB_SOURCE] != NULL:
-            sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+            sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[self.names.OP_PARTY_T_DOCUMENT_ID_F])
 
         for row, official_party in enumerate(sorted_official_parties):
             collected_party_pair = {}
             for collected_party in sorted_collected_parties:
-                if official_party[COL_PARTY_DOCUMENT_ID_FIELD] == official_party[COL_PARTY_DOCUMENT_ID_FIELD]:
+                if official_party[self.names.OP_PARTY_T_DOCUMENT_ID_F] == official_party[self.names.OP_PARTY_T_DOCUMENT_ID_F]:
                     collected_party_pair = official_party
                     sorted_collected_parties.remove(collected_party_pair)
                     break
@@ -93,8 +91,8 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         if party_info:
             html = list()
-            html.append("<b>{}</b>".format(party_info[COL_PARTY_NAME_FIELD]))
-            html.append("<i>{}</i>: <b>{}</b>".format(party_info[COL_PARTY_DOC_TYPE_FIELD], party_info[DOCUMENT_ID_FIELD]))
+            html.append("<b>{}</b>".format(party_info[self.names.COL_PARTY_T_NAME_F]))
+            html.append("<i>{}</i>: <b>{}</b>".format(party_info[self.names.OP_PARTY_T_DOCUMENT_TYPE_F], party_info[self.names.OP_PARTY_T_DOCUMENT_ID_F]))
             html.append("<i>Derecho</i>: <b>{}</b>".format(party_info['derecho']))
             widget.setHtml("<br>".join(html))
 

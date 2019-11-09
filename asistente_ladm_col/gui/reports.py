@@ -45,18 +45,16 @@ from qgis.core import (QgsWkbTypes,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
-from ..config.general_config import (ANNEX_17_REPORT,
-                                     TEST_SERVER,
-                                     PLUGIN_NAME,
-                                     REPORTS_REQUIRED_VERSION,
-                                     URL_REPORTS_LIBRARIES)
-from ..config.table_mapping_config import (ID_FIELD,
-                                           PLOT_TABLE,
-                                           PARCEL_NUMBER_FIELD)
-from ..gui.dialogs.dlg_get_java_path import GetJavaPathDialog
-from ..utils.qt_utils import (remove_readonly,
-                              normalize_local_url)
-from ..utils.utils import Utils
+from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
+                                                      TEST_SERVER,
+                                                      PLUGIN_NAME,
+                                                      REPORTS_REQUIRED_VERSION,
+                                                      URL_REPORTS_LIBRARIES)
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.utils.qt_utils import (remove_readonly,
+                                               normalize_local_url)
+from asistente_ladm_col.utils.utils import Utils
 
 
 class ReportGenerator(QObject):
@@ -65,6 +63,7 @@ class ReportGenerator(QObject):
     def __init__(self, qgis_utils, ladm_data):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.names = Names()
         self.ladm_data = ladm_data
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -205,7 +204,7 @@ class ReportGenerator(QObject):
                 self.msg.exec_()
                 return
 
-        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        plot_layer = self.qgis_utils.get_layer(db, self.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
         if not plot_layer:
             return
 
@@ -272,20 +271,20 @@ class ReportGenerator(QObject):
         multi_polygons = []
 
         for selected_plot in selected_plots:
-            plot_id = selected_plot[ID_FIELD]
+            plot_id = selected_plot[self.names.T_ID_F]
 
             geometry = selected_plot.geometry()
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
                 self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(ID_FIELD, plot_id),
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
                     PLUGIN_NAME, Qgis.Warning)
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
                 self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(ID_FIELD, plot_id),
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
                     PLUGIN_NAME, Qgis.Warning)
                 continue
 
@@ -300,7 +299,7 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], PARCEL_NUMBER_FIELD) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
             current_report_path = os.path.join(save_into_folder, file_name)

@@ -23,9 +23,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt, 
                               pyqtSignal, 
                               QUrl, 
-                              QEventLoop, 
-                              QTextStream, 
-                              QIODevice)
+                              QEventLoop)
 from qgis.PyQt.QtGui import (QColor, 
                              QIcon, 
                              QCursor, 
@@ -38,7 +36,6 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QLabel)
 from qgis.core import (QgsWkbTypes,
                        Qgis,
-                       QgsMessageLog,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -48,13 +45,10 @@ from qgis.gui import (QgsDockWidget,
                       QgsMapToolIdentifyFeature)
 
 from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
-from asistente_ladm_col.config.table_mapping_config import (DICT_TABLE_PACKAGE,
-                                                            Names,
-                                                            SPATIAL_UNIT_PACKAGE,
-                                                            FMI_FIELD)
+from asistente_ladm_col.config.table_mapping_config import Names
 
-from ..utils import get_ui_class
-from ..utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 from ..data.tree_models import TreeModel
 
@@ -188,7 +182,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Parcel Number"), self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Previous Parcel Number"), self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), self.names.OP_PARCEL_T_FMI_F)
 
     def initialize_tools(self, new_tool, old_tool):
         if self.maptool_identify == old_tool:
@@ -330,7 +324,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.value()
         if query:
-            if option == FMI_FIELD:
+            if option == self.names.OP_PARCEL_T_FMI_F:
                 self.search_data_by_component(parcel_fmi=query, zoom_and_select=True)
             elif option == self.names.OP_PARCEL_T_PARCEL_NUMBER_F:
                 self.search_data_by_component(parcel_number=query, zoom_and_select=True)
@@ -366,9 +360,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
             table_name = index_data["type"]
+            table_package = self.names.get_dict_table_package()
             t_id = index_data["id"]
             geometry_type = None
-            if table_name in DICT_TABLE_PACKAGE and DICT_TABLE_PACKAGE[table_name] == SPATIAL_UNIT_PACKAGE:
+            if table_name in table_package and table_package[table_name] == self.names.SPATIAL_UNIT_PACKAGE:
                 # Layers in Spatial Unit package have double geometry, we need the polygon one
                 geometry_type=QgsWkbTypes.PolygonGeometry
 

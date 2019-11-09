@@ -55,8 +55,7 @@ from qgis.core import (Qgis,
                        QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
-                       QgsVectorLayer,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayer)
 
 import processing
 from .decorators import _activate_processing_plugin
@@ -77,33 +76,24 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      RELATION_NAME,
                                      REFERENCED_LAYER,
                                      REFERENCED_FIELD,
-                                     DOMAIN_CLASS_RELATION,
+                                     ERROR_LAYER_GROUP,
                                      SUFFIX_LAYER_MODIFIERS,
                                      PREFIX_LAYER_MODIFIERS,
                                      VISIBLE_LAYER_MODIFIERS,
                                      PLUGIN_NAME,
                                      HELP_DIR_NAME,
-                                     translated_strings,
+                                     TranslatableConfigStrings,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.refactor_fields_mappings import get_refactor_fields_mapping
-from asistente_ladm_col.config.table_mapping_config import (CUSTOM_WIDGET_CONFIGURATION,
-                                                            Names,
-                                                            CUSTOM_READ_ONLY_FIELDS,
-                                                            DICT_AUTOMATIC_VALUES,
-                                                            DICT_DISPLAY_EXPRESSIONS,
-                                                            FORM_GROUPS,
-                                                            LAYER_CONSTRAINTS,
-                                                            LAYER_VARIABLES,
-                                                            LOCAL_ID_FIELD,
-                                                            NAMESPACE_FIELD,
-                                                            NAMESPACE_PREFIX)
+from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            FORM_GROUPS)
 from asistente_ladm_col.config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
-from ..lib.db.db_connector import DBConnector
-from ..lib.source_handler import SourceHandler
+from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
@@ -138,6 +128,8 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
         self.names = Names()
+        self.translatable_config_strings = TranslatableConfigStrings()
+        self.refactor_fields = RefactorFieldsMappings()
 
         self._source_handler = None
         self._layers = list()
@@ -427,6 +419,7 @@ class QGISUtils(QObject):
             self.set_automatic_fields_namespace_local_id(db, layer)
 
     def post_load_configurations(self, db, layer, layer_modifiers=dict()):
+        # TODO: Just call this method once after get_layers (IMPORTANT!)
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(db, layer)
@@ -570,36 +563,39 @@ class QGISUtils(QObject):
     def set_display_expressions(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in DICT_DISPLAY_EXPRESSIONS:
-            layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer_name])
+        dict_display_expressions = self.names.get_dict_display_expressions()
+        if layer_name in dict_display_expressions:
+            layer.setDisplayExpression(dict_display_expressions[layer_name])
 
     def set_layer_variables(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in LAYER_VARIABLES:
-            for variable, value in LAYER_VARIABLES[layer_name].items():
+        layer_variables = self.names.get_layer_variables()
+        if layer_name in layer_variables:
+            for variable, value in layer_variables[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def set_custom_widgets(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in CUSTOM_WIDGET_CONFIGURATION:
-            editor_widget_setup = QgsEditorWidgetSetup(
-                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
-                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
+        custom_widget_configuration = self.names.get_custom_widget_configuration()
+        if layer_name in custom_widget_configuration:
+            editor_widget_setup = QgsEditorWidgetSetup(custom_widget_configuration[layer_name]['type'],
+                                                       custom_widget_configuration[layer_name]['config'])
             if layer_name == self.names.EXT_ARCHIVE_S:
                 index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
             elif layer_name == self.names.OP_BUILDING_UNIT_T:
-                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F)
+                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
-    @staticmethod
-    def set_custom_read_only_fiels(db, layer):
+    def set_custom_read_only_fiels(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
-        if layer_name in CUSTOM_READ_ONLY_FIELDS:
-            for field in CUSTOM_READ_ONLY_FIELDS[layer_name]:
-                QGISUtils.set_read_only_field(layer, field)
+
+        custom_read_only_fields = self.names.get_custom_read_only_fields()
+        if layer_name in custom_read_only_fields:
+            for field in custom_read_only_fields[layer_name]:
+                self.set_read_only_field(layer, field)
 
     @staticmethod
     def set_read_only_field(layer, field, read_only=True):
@@ -620,8 +616,9 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in LAYER_CONSTRAINTS:
-            for field_name, value in LAYER_CONSTRAINTS[layer_name].items():
+        layer_constraints = self.names.get_layer_constraints()
+        if layer_name in layer_constraints:
+            for field_name, value in layer_constraints[layer_name].items():
                 idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
                     idx,
@@ -729,8 +726,9 @@ class QGISUtils(QObject):
         if layer.fields().indexFromName(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
             self.configure_automatic_fields(db, layer, [{self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
 
-        if layer_name in DICT_AUTOMATIC_VALUES:
-            self.configure_automatic_fields(db, layer, DICT_AUTOMATIC_VALUES[layer_name])
+        dict_automatic_values = self.names.get_dict_automatic_values()
+        if layer_name in dict_automatic_values:
+            self.configure_automatic_fields(db, layer, dict_automatic_values[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
@@ -750,9 +748,7 @@ class QGISUtils(QObject):
 
     def get_namespace_field_and_value(self, layer_name):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-
-        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
-        namespace_field = field_prefix + NAMESPACE_FIELD if field_prefix else None
+        namespace_field = self.names.OID_T_NAMESPACE_F
 
         if namespace_field is not None:
             namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
@@ -764,11 +760,11 @@ class QGISUtils(QObject):
 
     def get_local_id_field_and_value(self, layer_name):
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-
-        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
-        local_id_field = field_prefix + LOCAL_ID_FIELD if field_prefix else None
+        local_id_field = self.names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
+            # TODO: Update expression to update local_id incrementally
+            #local_id_value = "to_string(layer_property(@layer_name, 'feature_count') + @row_number)"
             local_id_value = "$id"
         else:
             local_id_value = None
@@ -827,8 +823,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    @_activate_processing_plugin
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -838,13 +833,13 @@ class QGISUtils(QObject):
 
         # Create QGIS vector layer
         uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
-              csv_path,
-              decimal_point,
-              delimiter if delimiter != '\t' else '%5Ct',
-              longitude,
-              latitude,
-              epsg
-           )
+            csv_path,
+            decimal_point,
+            delimiter if delimiter != '\t' else '%5Ct',
+            longitude,
+            latitude,
+            epsg
+        )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
         if elevation:
@@ -871,6 +866,18 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
+        csv_layer.setName("temporal_{}_csv".format(target_layer_name))
+
+        return csv_layer
+
+    @_activate_processing_plugin
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
+        csv_layer = self.csv_to_layer(csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation, decimal_point)
+        QgsProject.instance().addMapLayer(csv_layer)
+
+        if not csv_layer or not csv_layer.isValid():
+            return
+
         # Skip checking point overlaps if layer is Survey points
         if target_layer_name != self.names.OP_SURVEY_POINT_T:
             overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
@@ -881,41 +888,29 @@ class QGISUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "There are overlapping points, we cannot import them into the DB! See selected points."),
                     Qgis.Warning)
-                QgsProject.instance().addMapLayer(csv_layer)
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
                 return False
 
         target_point_layer = self.get_layer(db, target_layer_name, load=True)
+        initial_feature_count = target_point_layer.featureCount()
+
         if not target_point_layer:
             return False
 
-        # Define a mapping between CSV and target layer
-        mapping = dict()
-        for target_idx in target_point_layer.fields().allAttributesList():
-            target_field = target_point_layer.fields().field(target_idx)
-            csv_idx = csv_layer.fields().indexOf(target_field.name())
-            if csv_idx != -1 and target_field.name() != self.names.T_ID_F:
-                mapping[target_idx] = csv_idx
+        self.run_etl_model_in_backgroud_mode(db, csv_layer, target_layer_name)
+        QgsProject.instance().removeMapLayer(csv_layer)
 
-        # Copy and Paste
-        new_features = []
-        for in_feature in csv_layer.getFeatures():
-            attrs = {target_idx: in_feature[csv_idx] for target_idx, csv_idx in mapping.items()}
-            new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
-            new_features.append(new_feature)
+        features_added = target_point_layer.featureCount() > initial_feature_count
+        new_features = target_point_layer.featureCount() - initial_feature_count
 
-        # Improve message for import from csv
-        initial_feature_count = target_point_layer.featureCount()
-        target_point_layer.dataProvider().addFeatures(new_features)
-        QgsProject.instance().addMapLayer(target_point_layer)
-
-        if target_point_layer.featureCount() > initial_feature_count:
+        if features_added:
             self.zoom_full_requested.emit()
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "{} points were added succesfully to '{}'.").format(len(new_features),
-                                                                                               target_layer_name),
+                                           "{} points were added succesfully to '{}'.").format(
+                    new_features,
+                    target_layer_name),
                 Qgis.Info)
         else:
             self.message_emitted.emit(
@@ -932,9 +927,10 @@ class QGISUtils(QObject):
         position rather than the top, it moves the group to the top.
         """
         root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(translated_strings.ERROR_LAYER_GROUP)
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        group = root.findGroup(translated_strings[ERROR_LAYER_GROUP])
         if group is None:
-            group = root.insertGroup(0, translated_strings.ERROR_LAYER_GROUP)
+            group = root.insertGroup(0, translated_strings[ERROR_LAYER_GROUP])
         elif not self.layer_tree_view.layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
             group_clone = group.clone()
             root.insertChildNode(0, group_clone)
@@ -945,7 +941,42 @@ class QGISUtils(QObject):
 
     def error_group_exists(self):
         root = QgsProject.instance().layerTreeRoot()
-        return root.findGroup(translated_strings.ERROR_LAYER_GROUP) is not None
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        return root.findGroup(translated_strings[ERROR_LAYER_GROUP]) is not None
+
+    @_activate_processing_plugin
+    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
+        output_layer = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+        start_feature_count = output_layer.featureCount()
+
+        if not output_layer:
+            return False
+
+        if output_layer.isEditable():
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
+                Qgis.Warning)
+            return False
+
+        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+        if model:
+            automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
+            field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(ladm_col_layer_name, self)
+            self.activate_layer_requested.emit(input_layer)
+
+            res = processing.run("model:ETL-model", {'INPUT': input_layer, 'mapping': field_mapping, 'output': output_layer})
+
+            self.check_if_and_enable_automatic_fields(db, automatic_fields_definition, ladm_col_layer_name)
+            finish_feature_count = output_layer.featureCount()
+
+            return finish_feature_count > start_feature_count
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Model ETL-model was not found and cannot be opened!"),
+                Qgis.Info)
+            return False
 
     @_activate_processing_plugin
     def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
@@ -974,7 +1005,7 @@ class QGISUtils(QObject):
                                                            PLUGIN_NAME, Qgis.Warning)
 
             if mapping is None:
-                mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+                mapping = self.refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, self)
 
             self.activate_layer_requested.emit(input_layer)
             params = {

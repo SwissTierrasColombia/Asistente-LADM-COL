@@ -39,37 +39,50 @@ import processing
 
 from .logic_checks import LogicChecks
 from .qgis_model_baker_utils import QgisModelBakerUtils
-from ..config.general_config import (LAYER,
-                                     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                     DEFAULT_USE_ROADS_VALUE,
-                                     LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
-                                     LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
-                                     translated_strings,
-                                     LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                     LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
-                                     LOG_QUALITY_LIST_ITEM_OPEN,
-                                     LOG_QUALITY_LIST_ITEM_CLOSE)
-from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                           BOUNDARY_TABLE,
-                                           BUILDING_TABLE,
-                                           BUILDING_UNIT_TABLE,
-                                           CONTROL_POINT_TABLE,
-                                           ID_FIELD,
-                                           LOGIC_CONSISTENCY_TABLES,
-                                           PARCEL_TABLE,
-                                           POINT_BFS_TABLE_BOUNDARY_FIELD,
-                                           MOREBFS_TABLE_PLOT_FIELD,
-                                           POINT_BOUNDARY_FACE_STRING_TABLE,
-                                           LESS_TABLE_BOUNDARY_FIELD,
-                                           LESS_TABLE_PLOT_FIELD,
-                                           POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
-                                           BFS_TABLE_BOUNDARY_POINT_FIELD,
-                                           MOREBFS_TABLE_BOUNDARY_FIELD,
-                                           MORE_BOUNDARY_FACE_STRING_TABLE,
-                                           LESS_TABLE,
-                                           PLOT_TABLE,
-                                           RIGHT_OF_WAY_TABLE,
-                                           SURVEY_POINT_TABLE)
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                                      DEFAULT_USE_ROADS_VALUE,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_CLOSE,
+                                                      CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
+                                                      CHECK_OVERLAPS_IN_CONTROL_POINTS,
+                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                                      CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                                                      CHECK_OVERLAPS_IN_BOUNDARIES,
+                                                      CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                      CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                      CHECK_DANGLES_IN_BOUNDARIES,
+                                                      CHECK_OVERLAPS_IN_PLOTS,
+                                                      CHECK_OVERLAPS_IN_BUILDINGS,
+                                                      CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
+                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                      CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                                      CHECK_GAPS_IN_PLOTS,
+                                                      CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                                      CHECK_BUILDING_WITHIN_PLOTS,
+                                                      CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                                      ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                                                      ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                                                      ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                      ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                      ERROR_NO_LESS_TABLE,
+                                                      ERROR_DUPLICATE_LESS_TABLE,
+                                                      ERROR_NO_FOUND_POINT_BFS,
+                                                      ERROR_DUPLICATE_POINT_BFS,
+                                                      ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
+                                                      ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
+                                                      ERROR_BUILDING_IS_NOT_OVER_A_PLOT,
+                                                      ERROR_BUILDING_CROSSES_A_PLOT_LIMIT,
+                                                      ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT,
+                                                      ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT)
+from asistente_ladm_col.config.table_mapping_config import Names
 from .utils import Utils
 from .decorators import _log_quality_checks
 
@@ -83,6 +96,7 @@ class QualityUtils(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.names = Names()
         self.logic = LogicChecks()
         self.utils = Utils()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
@@ -103,7 +117,6 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text = ""
         self.total_time = 0
 
-
     def log_message(self, msg, type=Qgis.Critical):
         if type == Qgis.Critical:
             prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
@@ -118,24 +131,24 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text_content += "{}{}{}".format(prefix, msg, suffix)
 
     @_log_quality_checks
-    def check_boundary_points_covered_by_boundary_nodes(self, db, rule_name):
+    def check_boundary_points_covered_by_boundary_nodes(self, db, rule_name, translated_strings):
 
         layers = {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+            self.names.POINT_BFS_T: {'name': self.names.POINT_BFS_T, 'geometry': None, LAYER: None},
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        elif layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
+        elif layers[self.names.OP_BOUNDARY_POINT_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[BOUNDARY_POINT_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BOUNDARY_POINT_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES],
                                          "memory")
 
             data_provider = error_layer.dataProvider()
@@ -144,7 +157,7 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_boundary_points_features_not_covered_by_boundary_nodes(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER], layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER], error_layer)
+            features = self.get_boundary_points_features_not_covered_by_boundary_nodes(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_BOUNDARY_T][LAYER], layers[self.names.POINT_BFS_T][LAYER], error_layer, translated_strings, self.names.T_ID_F)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -158,7 +171,7 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "All boundary points are covered by boundary nodes!"), Qgis.Success)
 
-    def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
+    def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, id_field):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
@@ -186,7 +199,7 @@ class QualityUtils(QObject):
                        {'INPUT': boundary_point_layer,
                         'JOIN': boundary_nodes_layer,
                         'PREDICATE': [0], # Intersects
-                        'JOIN_FIELDS': [ID_FIELD],
+                        'JOIN_FIELDS': [self.names.T_ID_F],
                         'METHOD': 0,
                         'DISCARD_NONMATCHING': False,
                         'PREFIX': '',
@@ -197,8 +210,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_point = {feature[id_field]: feature for feature in boundary_point_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
-        list_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_BOUNDARY_F]}
                      for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],
@@ -232,7 +245,7 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: None,
-                                                                   2: translated_strings.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE})
+                                                                   2: translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE]})
                 features.append(new_feature)
 
 
@@ -245,7 +258,7 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: boundary_id,
-                                                                   2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
+                                                                   2: translated_strings[ERROR_NO_FOUND_POINT_BFS]})
                 features.append(new_feature)
 
         # Duplicate in point_bfs
@@ -257,29 +270,29 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: boundary_id,
-                                                                   2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
+                                                                   2: translated_strings[ERROR_DUPLICATE_POINT_BFS]})
                 features.append(new_feature)
 
         return features
 
     @_log_quality_checks
-    def check_boundary_nodes_covered_by_boundary_points(self, db, rule_name):
+    def check_boundary_nodes_covered_by_boundary_points(self, db, rule_name, translated_strings):
         layers = {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.POINT_BFS_T: {'name': self.names.POINT_BFS_T, 'geometry': None, LAYER: None},
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        elif layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
+        elif layers[self.names.OP_BOUNDARY_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[BOUNDARY_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BOUNDARY_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS],
                                          "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -288,7 +301,7 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER], layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER], error_layer)
+            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_BOUNDARY_T][LAYER], layers[self.names.POINT_BFS_T][LAYER], error_layer, translated_strings, self.names.T_ID_F)
             data_provider.addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -301,7 +314,7 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "There are no missing boundary points in boundaries."), Qgis.Success)
 
-    def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
+    def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, id_field):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
@@ -338,7 +351,7 @@ class QualityUtils(QObject):
                                             {'INPUT': boundary_nodes_layer,
                                              'JOIN': boundary_point_layer,
                                              'PREDICATE': [0],  # Intersects
-                                             'JOIN_FIELDS': [ID_FIELD],
+                                             'JOIN_FIELDS': [self.names.T_ID_F],
                                              'METHOD': 0,
                                              'DISCARD_NONMATCHING': False,
                                              'PREFIX': '',
@@ -349,8 +362,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
-        list_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_BOUNDARY_F]}
                           for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         list_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
@@ -387,7 +400,7 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: None,  1: boundary_id, 2: translated_strings.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT})
+                                                                  {0: None,  1: boundary_id, 2: translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT]})
                 features.append(new_feature)
 
         # Duplicate in point_bfs
@@ -398,7 +411,7 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings[ERROR_DUPLICATE_POINT_BFS]})
                 features.append(new_feature)
 
         # No registered in point_bfs
@@ -409,27 +422,27 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings[ERROR_NO_FOUND_POINT_BFS]})
                 features.append(new_feature)
 
         return features
 
     @_log_quality_checks
-    def check_plot_nodes_covered_by_boundary_points(self, db, rule_name):
+    def check_plot_nodes_covered_by_boundary_points(self, db, rule_name, translated_strings):
         layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[PLOT_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_PLOT_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[PLOT_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_PLOT_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS],
                                          "memory")
 
             data_provider = error_layer.dataProvider()
@@ -437,7 +450,7 @@ class QualityUtils(QObject):
             error_layer.updateFields()
 
             topology_rule = 'plot_nodes_covered_by_boundary_points'
-            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[BOUNDARY_POINT_TABLE][LAYER], layers[PLOT_TABLE][LAYER], error_layer, topology_rule)
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_PLOT_T][LAYER], error_layer, topology_rule, self.names.T_ID_F)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -452,23 +465,23 @@ class QualityUtils(QObject):
                                  "All plot nodes are covered by boundary points!"), Qgis.Success)
 
     @_log_quality_checks
-    def check_boundary_points_covered_by_plot_nodes(self, db, rule_name):
+    def check_boundary_points_covered_by_plot_nodes(self, db, rule_name, translated_strings):
         layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BOUNDARY_POINT_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[BOUNDARY_POINT_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BOUNDARY_POINT_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES],
                                          "memory")
 
             data_provider = error_layer.dataProvider()
@@ -476,7 +489,7 @@ class QualityUtils(QObject):
             error_layer.updateFields()
 
             topology_rule = 'boundary_points_covered_by_plot_nodes'
-            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[BOUNDARY_POINT_TABLE][LAYER], layers[PLOT_TABLE][LAYER], error_layer, topology_rule)
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_PLOT_T][LAYER], error_layer, topology_rule, self.names.T_ID_F)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -489,8 +502,7 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "All boundary points are covered by plot nodes!"), Qgis.Success)
 
-    @staticmethod
-    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
+    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self, boundary_point_layer, plot_layer, error_layer, topology_rule, id_field):
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
@@ -527,7 +539,7 @@ class QualityUtils(QObject):
                                                    {'INPUT': input_layer,
                                                     'JOIN': join_layer,
                                                     'PREDICATE': [0], # Intersects
-                                                    'JOIN_FIELDS': [ID_FIELD],
+                                                    'JOIN_FIELDS': [self.names.T_ID_F],
                                                     'METHOD': 0,
                                                     'DISCARD_NONMATCHING': False,
                                                     'PREFIX': '',
@@ -535,7 +547,7 @@ class QualityUtils(QObject):
         features = list()
 
         for feature in spatial_join_layer.getFeatures():
-            feature_id = feature[ID_FIELD]
+            feature_id = feature[self.names.T_ID_F]
             feature_geom = feature.geometry()
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature_geom, {0: feature_id})
             features.append(new_feature)
@@ -543,7 +555,7 @@ class QualityUtils(QObject):
         return features
 
     @_log_quality_checks
-    def check_overlapping_points(self, db, point_layer_name, rule_name):
+    def check_overlapping_points(self, db, point_layer_name, rule_name, translated_strings):
         """
         Shows which points are overlapping
         :param db: db connection instance
@@ -561,10 +573,10 @@ class QualityUtils(QObject):
 
         else:
             error_layer_name = ''
-            if point_layer_name == BOUNDARY_POINT_TABLE:
-                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
-            elif point_layer_name == CONTROL_POINT_TABLE:
-                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
+            if point_layer_name == self.names.OP_BOUNDARY_POINT_T:
+                error_layer_name = translated_strings[CHECK_OVERLAPS_IN_BOUNDARY_POINTS]
+            elif point_layer_name == self.names.OP_CONTROL_POINT_T:
+                error_layer_name = translated_strings[CHECK_OVERLAPS_IN_CONTROL_POINTS]
 
             error_layer = QgsVectorLayer("Point?crs={}".format(point_layer.sourceCrs().authid()),
                                          error_layer_name, "memory")
@@ -575,7 +587,7 @@ class QualityUtils(QObject):
             overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
             flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
 
-            t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
+            t_ids = {f.id(): f[self.names.T_ID_F] for f in point_layer.getFeatures(flat_overlapping)}
 
             for items in overlapping:
                 # We need a feature geometry, pick the first id to get it
@@ -599,24 +611,24 @@ class QualityUtils(QObject):
                                  "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Success)
 
     @_log_quality_checks
-    def check_plots_covered_by_boundaries(self, db, rule_name):
+    def check_plots_covered_by_boundaries(self, db, rule_name, translated_strings):
         # read data
         layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
-            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None, LAYER: None},
-            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+            self.names.LESS_BFS_T: {'name': self.names.LESS_BFS_T, 'geometry': None, LAYER: None},
+            self.names.MORE_BFS_T: {'name': self.names.MORE_BFS_T, 'geometry': None, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[PLOT_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_PLOT_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[PLOT_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[self.names.OP_PLOT_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES],
                                          "memory")
 
             data_provider = error_layer.dataProvider()
@@ -625,11 +637,13 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_plot_features_not_covered_by_boundaries(layers[PLOT_TABLE][LAYER],
-                                                                        layers[BOUNDARY_TABLE][LAYER],
-                                                                        layers[MORE_BOUNDARY_FACE_STRING_TABLE][LAYER],
-                                                                        layers[LESS_TABLE][LAYER],
-                                                                        error_layer)
+            features = self.get_plot_features_not_covered_by_boundaries(layers[self.names.OP_PLOT_T][LAYER],
+                                                                        layers[self.names.OP_BOUNDARY_T][LAYER],
+                                                                        layers[self.names.MORE_BFS_T][LAYER],
+                                                                        layers[self.names.LESS_BFS_T][LAYER],
+                                                                        error_layer,
+                                                                        translated_strings,
+                                                                        self.names.T_ID_F)
             if features:
                 error_layer.dataProvider().addFeatures(features)
                 added_layer = self.add_error_layer(error_layer)
@@ -641,16 +655,16 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "All plots are covered by boundaries!"), Qgis.Success)
 
-    def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
+    def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, id_field):
         """
         Returns all plot features that have errors when checking if they are covered by boundaries.
         That is both geometric and alphanumeric (topology table) errors.
         """
-        type_tplg_error = {0: translated_strings.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                           1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           2: translated_strings.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           3: translated_strings.ERROR_NO_LESS_TABLE,
-                           4: translated_strings.ERROR_DUPLICATE_LESS_TABLE}
+        type_tplg_error = {0: translated_strings[ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY],
+                           1: translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE],
+                           2: translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE],
+                           3: translated_strings[ERROR_NO_LESS_TABLE],
+                           4: translated_strings[ERROR_DUPLICATE_LESS_TABLE]}
 
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -663,15 +677,15 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(MOREBFS_TABLE_BOUNDARY_FIELD, MOREBFS_TABLE_PLOT_FIELD)
-        list_more_bfs = [{'plot_id': feature[MOREBFS_TABLE_PLOT_FIELD], 'boundary_id': feature[MOREBFS_TABLE_BOUNDARY_FIELD]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(LESS_TABLE_BOUNDARY_FIELD, LESS_TABLE_PLOT_FIELD)
-        list_less = [{'plot_id': feature[LESS_TABLE_PLOT_FIELD], 'boundary_id': feature[LESS_TABLE_BOUNDARY_FIELD]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -729,7 +743,7 @@ class QualityUtils(QObject):
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
         # and inner_rings and boundary. No need to check further topological rules for plots
 
-        errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer)
+        errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer, self.names.T_ID_F)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
             # All plots with geometric errors are eliminated. It is not necessary check more
@@ -892,13 +906,13 @@ class QualityUtils(QObject):
         return features
 
     @_log_quality_checks
-    def check_boundaries_covered_by_plots(self, db, rule_name):
+    def check_boundaries_covered_by_plots(self, db, rule_name, translated_strings):
         # read data
         layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
-            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None, LAYER: None},
-            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+            self.names.LESS_BFS_T: {'name': self.names.LESS_BFS_T, 'geometry': None, LAYER: None},
+            self.names.MORE_BFS_T: {'name': self.names.MORE_BFS_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -906,12 +920,12 @@ class QualityUtils(QObject):
             return None
 
         # validate data
-        if layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BOUNDARY_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[BOUNDARY_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[self.names.OP_BOUNDARY_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS],
                                          "memory")
 
             data_provider = error_layer.dataProvider()
@@ -920,11 +934,13 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_boundary_features_not_covered_by_plots(layers[PLOT_TABLE][LAYER],
-                                                                       layers[BOUNDARY_TABLE][LAYER],
-                                                                       layers[MORE_BOUNDARY_FACE_STRING_TABLE][LAYER],
-                                                                       layers[LESS_TABLE][LAYER],
-                                                                       error_layer)
+            features = self.get_boundary_features_not_covered_by_plots(layers[self.names.OP_PLOT_T][LAYER],
+                                                                       layers[self.names.OP_BOUNDARY_T][LAYER],
+                                                                       layers[self.names.MORE_BFS_T][LAYER],
+                                                                       layers[self.names.LESS_BFS_T][LAYER],
+                                                                       error_layer,
+                                                                       translated_strings,
+                                                                       self.names.T_ID_F)
 
             if features:
                 error_layer.dataProvider().addFeatures(features)
@@ -937,16 +953,16 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "All boundaries are covered by plots!"), Qgis.Success)
 
-    def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
+    def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, id_field):
         """
         Return all boundary features that have errors when checking if they are covered by plots.
         This takes into account both geometric and alphanumeric (topology table) errors.
         """
-        type_tplg_error = {0: translated_strings.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                           1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           2: translated_strings.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           3: translated_strings.ERROR_NO_LESS_TABLE,
-                           4: translated_strings.ERROR_DUPLICATE_LESS_TABLE}
+        type_tplg_error = {0: translated_strings[ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT],
+                           1: translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE],
+                           2: translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE],
+                           3: translated_strings[ERROR_NO_LESS_TABLE],
+                           4: translated_strings[ERROR_DUPLICATE_LESS_TABLE]}
 
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -959,15 +975,15 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(MOREBFS_TABLE_BOUNDARY_FIELD, MOREBFS_TABLE_PLOT_FIELD)
-        list_more_bfs = [{'plot_id': feature[MOREBFS_TABLE_PLOT_FIELD], 'boundary_id': feature[MOREBFS_TABLE_BOUNDARY_FIELD]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(LESS_TABLE_BOUNDARY_FIELD, LESS_TABLE_PLOT_FIELD)
-        list_less = [{'plot_id': feature[LESS_TABLE_PLOT_FIELD], 'boundary_id': feature[LESS_TABLE_BOUNDARY_FIELD]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -1030,7 +1046,7 @@ class QualityUtils(QObject):
         # and inner_rings and boundary. If the geometry fails, there is no need to check further topological rules for
         # plots
 
-        errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_as_lines_layer)
+        errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_as_lines_layer, self.names.T_ID_F)
         for error_diff in errors_boundary_plot_diffs:
             boundary_id = error_diff['id']
             # All boundaries with geometric errors are eliminated. It is not necessary check more
@@ -1207,19 +1223,19 @@ class QualityUtils(QObject):
         return features
 
     @_log_quality_checks
-    def check_overlapping_polygons(self, db, polygon_layer_name, rule_name):
+    def check_overlapping_polygons(self, db, polygon_layer_name, rule_name, translated_strings):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
         if not polygon_layer:
             return
 
         if polygon_layer:
             error_layer_name = ''
-            if polygon_layer_name == PLOT_TABLE:
-                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_PLOTS
-            elif polygon_layer_name == BUILDING_TABLE:
-                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BUILDINGS
-            elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
+            if polygon_layer_name == self.names.OP_PLOT_T:
+                error_layer_name = translated_strings[CHECK_OVERLAPS_IN_PLOTS]
+            elif polygon_layer_name == self.names.OP_BUILDING_T:
+                error_layer_name = translated_strings[CHECK_OVERLAPS_IN_BUILDINGS]
+            elif polygon_layer_name == self.names.OP_RIGHT_OF_WAY_T:
+                error_layer_name = translated_strings[CHECK_OVERLAPS_IN_RIGHTS_OF_WAY]
 
             error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()),
                                          error_layer_name, "memory")
@@ -1240,7 +1256,7 @@ class QualityUtils(QObject):
             flat_overlapping = list(set(flat_overlapping))  # unique values
 
             if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-                t_ids = {f.id(): f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+                t_ids = {f.id(): f[self.names.T_ID_F] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
 
             features = []
 
@@ -1273,8 +1289,8 @@ class QualityUtils(QObject):
                                  "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name), Qgis.Success)
 
     @_log_quality_checks
-    def check_overlaps_in_boundaries(self, db, rule_name):
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+    def check_overlaps_in_boundaries(self, db, rule_name, translated_strings):
+        boundary_layer = self.qgis_utils.get_layer(db, self.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
 
@@ -1289,11 +1305,11 @@ class QualityUtils(QObject):
                 error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
                 if type(error_point_layer) is QgsVectorLayer:
                     error_point_layer.setName("{} (point intersections)".format(
-                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                        translated_strings[CHECK_OVERLAPS_IN_BOUNDARIES]
                     ))
                 if type(error_line_layer) is QgsVectorLayer:
                     error_line_layer.setName("{} (line intersections)".format(
-                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                        translated_strings[CHECK_OVERLAPS_IN_BOUNDARIES]
                     ))
 
                 if (type(error_point_layer) is not QgsVectorLayer and \
@@ -1327,14 +1343,14 @@ class QualityUtils(QObject):
                     self.log_message(msg)
 
     @_log_quality_checks
-    def check_boundaries_are_not_split(self, db, rule_name):
+    def check_boundaries_are_not_split(self, db, rule_name, translated_strings):
         """
         An split boundary is an incomplete boundary because it is connected to
         a single boundary and therefore, they don't represent a change in
         boundary (colindancia).
         """
         features = []
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+        boundary_layer = self.qgis_utils.get_layer(db, self.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
 
@@ -1350,7 +1366,7 @@ class QualityUtils(QObject):
                                  "There are no wrong boundaries!"), Qgis.Success)
             else:
                 error_layer = QgsVectorLayer("LineString?crs={}".format(boundary_layer.sourceCrs().authid()),
-                                translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                translated_strings[CHECK_BOUNDARIES_ARE_NOT_SPLIT],
                                 "memory")
                 pr = error_layer.dataProvider()
                 pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
@@ -1358,7 +1374,7 @@ class QualityUtils(QObject):
 
                 for feature in wrong_boundaries:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
-                                                                      {0: feature[ID_FIELD]})
+                                                                      {0: feature[self.names.T_ID_F]})
                     features.append(new_feature)
 
                 error_layer.dataProvider().addFeatures(features)
@@ -1371,10 +1387,10 @@ class QualityUtils(QObject):
                                      "There are no wrong boundaries."), Qgis.Success)
 
     @_log_quality_checks
-    def check_too_long_segments(self, db, rule_name):
+    def check_too_long_segments(self, db, rule_name, translated_strings):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+        boundary_layer = self.qgis_utils.get_layer(db, self.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
 
@@ -1384,7 +1400,7 @@ class QualityUtils(QObject):
 
         else:
             error_layer = QgsVectorLayer("LineString?crs={}".format(boundary_layer.sourceCrs().authid()),
-                            translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                            translated_strings[CHECK_TOO_LONG_BOUNDARY_SEGMENTS],
                             "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField("boundary_id", QVariant.Int),
@@ -1418,29 +1434,29 @@ class QualityUtils(QObject):
                                  "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance), Qgis.Success)
 
     @_log_quality_checks
-    def check_missing_boundary_points_in_boundaries(self, db):
+    def check_missing_boundary_points_in_boundaries(self, db, translated_strings):
         """
         Not used anymore but kept for reference
         """
         layers = {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.POINT_BFS_T: {'name': self.names.POINT_BFS_T, 'geometry': None, LAYER: None},
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BOUNDARY_T][LAYER].featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no boundaries to check 'missing boundary points in boundaries'."),
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(layers[BOUNDARY_TABLE][LAYER].sourceCrs().authid()),
-                                     translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+        error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BOUNDARY_T][LAYER].sourceCrs().authid()),
+                                     translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS],
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -1450,7 +1466,7 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         # check missing points
-        missing_points = self.get_missing_boundary_points_in_boundaries(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER])
+        missing_points = self.get_missing_boundary_points_in_boundaries(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_BOUNDARY_T][LAYER])
 
         new_features = list()
         for key, point_list in missing_points.items():
@@ -1465,19 +1481,19 @@ class QualityUtils(QObject):
                 new_features.append(new_feature)
 
         dic_points_ccl = dict()
-        for feature_point_ccl in layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER].getFeatures():
-            key = "{}-{}".format(feature_point_ccl[POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD], feature_point_ccl[POINT_BFS_TABLE_BOUNDARY_FIELD])
+        for feature_point_ccl in layers[self.names.POINT_BFS_T][LAYER].getFeatures():
+            key = "{}-{}".format(feature_point_ccl[self.names.COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F], feature_point_ccl[self.names.POINT_BFS_T_BOUNDARY_F])
             if key in dic_points_ccl:
                 dic_points_ccl[key] += 1
             else:
                 dic_points_ccl.update({key:1})
 
         # verify that the relation between boundary point and boundary is registered in the topology table
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER])
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(layers[self.names.OP_BOUNDARY_POINT_T][LAYER], layers[self.names.OP_BOUNDARY_T][LAYER], self.names.T_ID_F)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[ID_FIELD]
-            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            boundary_point_id = point_selected[self.names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1509,28 +1525,28 @@ class QualityUtils(QObject):
         Not used anymore but kept for reference.
         """
         layers = {
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no buildings to check 'missing survey points in buildings'."),
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(layers[BUILDING_TABLE][LAYER].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BUILDING_T][LAYER].sourceCrs().authid()),
                                      QCoreApplication.translate("QGISUtils", "Missing survey points in buildings"),
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
 
-        missing_points = self.get_missing_boundary_points_in_boundaries(layers[SURVEY_POINT_TABLE][LAYER], layers[BUILDING_TABLE][LAYER])
+        missing_points = self.get_missing_boundary_points_in_boundaries(layers[self.names.OP_SURVEY_POINT_T][LAYER], layers[self.names.OP_BUILDING_T][LAYER])
 
         new_features = list()
         for key, point_list in missing_points.items():
@@ -1552,8 +1568,8 @@ class QualityUtils(QObject):
                                            "There are no missing survey points in buildings."), Qgis.Info)
 
     @_log_quality_checks
-    def check_dangles_in_boundaries(self, db, rule_name):
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+    def check_dangles_in_boundaries(self, db, rule_name, translated_strings):
+        boundary_layer = self.qgis_utils.get_layer(db, self.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
 
@@ -1563,7 +1579,7 @@ class QualityUtils(QObject):
 
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()),
-                                translated_strings.CHECK_DANGLES_IN_BOUNDARIES,
+                                translated_strings[CHECK_DANGLES_IN_BOUNDARIES],
                                 "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
@@ -1573,7 +1589,7 @@ class QualityUtils(QObject):
 
             new_features = []
             for dangle in end_points.getFeatures(dangle_ids):
-                new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[ID_FIELD]})
+                new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[self.names.T_ID_F]})
                 new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)
@@ -1615,10 +1631,10 @@ class QualityUtils(QObject):
         if boundary_point_layer.featureCount() == 0:
             # Return all extracted and cleaned vertices
             for feature in extracted_vertices_layer.getFeatures(no_duplicate_ids):
-                if feature[ID_FIELD] in res:
-                    res[feature[ID_FIELD]].append(feature.geometry())
+                if feature[self.names.T_ID_F] in res:
+                    res[feature[self.names.T_ID_F]].append(feature.geometry())
                 else:
-                    res[feature[ID_FIELD]] = [feature.geometry()]
+                    res[feature[self.names.T_ID_F]] = [feature.geometry()]
 
             return res
 
@@ -1638,42 +1654,42 @@ class QualityUtils(QObject):
                 intersects = index.intersects(bbox)
 
                 if not intersects:
-                    if feature[ID_FIELD] in res:
-                        res[feature[ID_FIELD]].append(diff_geom)
+                    if feature[self.names.T_ID_F] in res:
+                        res[feature[self.names.T_ID_F]].append(diff_geom)
                     else:
-                        res[feature[ID_FIELD]] = [diff_geom]
+                        res[feature[self.names.T_ID_F]] = [diff_geom]
         return res
 
     @_log_quality_checks
-    def check_right_of_way_overlaps_buildings(self, db, rule_name):
+    def check_right_of_way_overlaps_buildings(self, db, rule_name, translated_strings):
 
         layers = {
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[RIGHT_OF_WAY_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
-        elif layers[BUILDING_TABLE][LAYER].featureCount() == 0:
+        elif layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[BUILDING_TABLE][LAYER].sourceCrs().authid()),
-                                         translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[self.names.OP_BUILDING_T][LAYER].sourceCrs().authid()),
+                                         translated_strings[CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS],
                                          "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
             data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
             error_layer.updateFields()
 
-            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(layers[RIGHT_OF_WAY_TABLE][LAYER], layers[BUILDING_TABLE][LAYER])
+            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(layers[self.names.OP_RIGHT_OF_WAY_T][LAYER], layers[self.names.OP_BUILDING_T][LAYER])
 
             if overlapping_polygons is not None:
                 new_features = list()
@@ -1694,9 +1710,9 @@ class QualityUtils(QObject):
                                  "There are no Right of Way-Building overlaps."), Qgis.Success)
 
     @_log_quality_checks
-    def check_gaps_in_plots(self, db, rule_name):
+    def check_gaps_in_plots(self, db, rule_name, translated_strings):
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
+        plot_layer = self.qgis_utils.get_layer(db, self.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, True)
         if not plot_layer:
             return
 
@@ -1706,7 +1722,7 @@ class QualityUtils(QObject):
 
         else:
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(plot_layer.sourceCrs().authid()),
-                                         translated_strings.CHECK_GAPS_IN_PLOTS,
+                                         translated_strings[CHECK_GAPS_IN_PLOTS],
                                          "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField("id", QVariant.Int)])
@@ -1733,8 +1749,8 @@ class QualityUtils(QObject):
                                  "There are no gaps in layer Plot."), Qgis.Success)
 
     @_log_quality_checks
-    def check_multiparts_in_right_of_way(self, db, rule_name):
-        right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
+    def check_multiparts_in_right_of_way(self, db, rule_name, translated_strings):
+        right_of_way_layer = self.qgis_utils.get_layer(db, self.names.OP_RIGHT_OF_WAY_T, QgsWkbTypes.PolygonGeometry, True)
         if not right_of_way_layer:
             return
 
@@ -1744,7 +1760,7 @@ class QualityUtils(QObject):
 
         else:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(right_of_way_layer.sourceCrs().authid()),
-                                         translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                         translated_strings[CHECK_MULTIPART_IN_RIGHT_OF_WAY],
                                          "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField("original_id", QVariant.Int)])
@@ -1772,8 +1788,8 @@ class QualityUtils(QObject):
                                  "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
 
     @_log_quality_checks
-    def check_parcel_right_relationship(self, db, rule_name):
-        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
+    def check_parcel_right_relationship(self, db, rule_name, translated_strings):
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{}'").format(self.names.OP_PARCEL_T)
         error_layer = None
         error_layer_exist = False
 
@@ -1788,7 +1804,7 @@ class QualityUtils(QObject):
                 error_layer_exist = True
                 break
 
-        errors_count, error_layer = self.logic.get_parcel_right_relationship_errors(db, error_layer, table_name)
+        errors_count, error_layer = self.logic.get_parcel_right_relationship_errors(db, error_layer, table_name, translated_strings)
 
         if errors_count > 0:
             if error_layer_exist is False:
@@ -1859,11 +1875,12 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def find_duplicate_records_in_a_table(self, db, rule_name):
-        for table in LOGIC_CONSISTENCY_TABLES:
-            fields = LOGIC_CONSISTENCY_TABLES[table]
+        logic_consistency_tables = self.names.get_logic_consistency_tables()
+        for table in logic_consistency_tables:
+            fields = logic_consistency_tables[table]
 
             error_layer = None
-            error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer)
+            error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
 
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
@@ -1877,10 +1894,11 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def basic_logic_validations(self, db, rule, rule_name):
-        query = db.logic_validation_queries[rule]['query']
-        table_name = db.logic_validation_queries[rule]['table_name']
-        table = db.logic_validation_queries[rule]['table']
-        desc_error = db.logic_validation_queries[rule]['desc_error']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
+        desc_error = logic_validation_queries[rule]['desc_error']
 
         error_layer = None
         error_layer_exist = False
@@ -1907,7 +1925,7 @@ class QualityUtils(QObject):
 
         new_features = []
         for record in records:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer,QgsGeometry(), {0: record[ID_FIELD], 1:desc_error})
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer,QgsGeometry(), {0: record[self.names.T_ID_F], 1:desc_error})
             new_features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(new_features)
@@ -1923,12 +1941,13 @@ class QualityUtils(QObject):
 
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def advanced_logic_validations(self, db, rule, rule_name):
-        table_name = db.logic_validation_queries[rule]['table_name']
-        table = db.logic_validation_queries[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         error_layer = None
         error_layer_exist = False
@@ -1963,25 +1982,25 @@ class QualityUtils(QObject):
                     error_count=errors_count, table=table))
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
-    def check_building_within_plots(self, db, rule_name):
+    def check_building_within_plots(self, db, rule_name, translated_strings):
         layers = {
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[BUILDING_TABLE][LAYER].sourceCrs().authid()),
-                                        translated_strings.CHECK_BUILDING_WITHIN_PLOTS,
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[self.names.OP_BUILDING_T][LAYER].sourceCrs().authid()),
+                                        translated_strings[CHECK_BUILDING_WITHIN_PLOTS],
                                         "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField('building_id', QVariant.Int),
@@ -1989,23 +2008,23 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[BUILDING_TABLE][LAYER], layers[PLOT_TABLE][LAYER])
+            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[self.names.OP_BUILDING_T][LAYER], layers[self.names.OP_PLOT_T][LAYER], self.names.T_ID_F)
 
             new_features = list()
             for building_with_no_plot in buildings_with_no_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_with_no_plot.geometry(),
-                                {0: building_with_no_plot[ID_FIELD],
-                                1: translated_strings.ERROR_BUILDING_IS_NOT_OVER_A_PLOT})
+                                {0: building_with_no_plot[self.names.T_ID_F],
+                                1: translated_strings[ERROR_BUILDING_IS_NOT_OVER_A_PLOT]})
                 new_features.append(new_feature)
 
             for building_not_within_plot in buildings_not_within_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_not_within_plot.geometry(),
-                                {0: building_not_within_plot[ID_FIELD],
-                                1: translated_strings.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT})
+                                {0: building_not_within_plot[self.names.T_ID_F],
+                                1: translated_strings[ERROR_BUILDING_CROSSES_A_PLOT_LIMIT]})
                 new_features.append(new_feature)
 
             data_provider.addFeatures(new_features)
@@ -2021,23 +2040,23 @@ class QualityUtils(QObject):
                                  "All buildings are within a plot."), Qgis.Success)
 
     @_log_quality_checks
-    def check_building_unit_within_plots(self, db, rule_name):
+    def check_building_unit_within_plots(self, db, rule_name, translated_strings):
         layers = {
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_BUILDING_UNIT_T: {'name': self.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
 
-        if layers[BUILDING_UNIT_TABLE][LAYER].featureCount() == 0:
+        if layers[self.names.OP_BUILDING_UNIT_T][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[BUILDING_UNIT_TABLE][LAYER].sourceCrs().authid()),
-                                        translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[self.names.OP_BUILDING_UNIT_T][LAYER].sourceCrs().authid()),
+                                        translated_strings[CHECK_BUILDING_UNIT_WITHIN_PLOTS],
                                         "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField('building_unit_id', QVariant.Int),
@@ -2045,23 +2064,23 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[BUILDING_UNIT_TABLE][LAYER], layers[PLOT_TABLE][LAYER])
+            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[self.names.OP_BUILDING_UNIT_T][LAYER], layers[self.names.OP_PLOT_T][LAYER], self.names.T_ID_F)
 
             new_features = list()
             for building_unit_with_no_plot in building_units_with_no_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_unit_with_no_plot.geometry(),
-                                {0: building_unit_with_no_plot[ID_FIELD],
-                                1: translated_strings.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT})
+                                {0: building_unit_with_no_plot[self.names.T_ID_F],
+                                1: translated_strings[ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT]})
                 new_features.append(new_feature)
 
             for building_unit_not_within_plot in building_units_not_within_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_unit_not_within_plot.geometry(),
-                                {0: building_unit_not_within_plot[ID_FIELD],
-                                1: translated_strings.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT})
+                                {0: building_unit_not_within_plot[self.names.T_ID_F],
+                                1: translated_strings[ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT]})
                 new_features.append(new_feature)
 
             data_provider.addFeatures(new_features)

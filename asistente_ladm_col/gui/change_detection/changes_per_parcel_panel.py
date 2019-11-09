@@ -36,7 +36,7 @@ from qgis.core import (QgsWkbTypes,
 
 from qgis.gui import (QgsPanelWidget,
                       QgsMapToolIdentifyFeature)
-from ...config.symbology import OFFICIAL_STYLE_GROUP
+from asistente_ladm_col.config.symbology import Symbology
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       OFFICIAL_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
@@ -46,15 +46,7 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       COLLECTED_DB_SOURCE,
                                       LAYER,
                                       PLOT_GEOMETRY_KEY)
-from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
-                                            PARCEL_NUMBER_BEFORE_FIELD,
-                                            FMI_FIELD,
-                                            ID_FIELD,
-                                            PARCEL_TABLE,
-                                            PLOT_TABLE,
-                                            UEBAUNIT_TABLE,
-                                            COL_PARTY_TABLE,
-                                            DICT_PLURAL)
+from asistente_ladm_col.config.table_mapping_config import Names
 from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils.decorators import _with_override_cursor
 from ...utils import get_ui_class
@@ -68,6 +60,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setupUi(self)
         self.parent = parent
         self.utils = utils
+        self.names = Names()
+        self.symbology = Symbology()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
@@ -79,8 +73,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_combos()
 
         # Remove selection in plot layers
-        self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
-        self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
+        self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
 
         # Map tool before activate map swipe tool
         self.init_map_tool = self.utils.canvas.mapTool()
@@ -132,10 +126,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.utils.canvas.mapToolSet.connect(self.initialize_maptool)
 
-        if self.utils._official_layers[PLOT_TABLE][LAYER] is None:
+        if self.utils._official_layers[self.names.OP_PLOT_T][LAYER] is None:
             self.utils.add_layers()
 
-        self.maptool_identify.setLayer(self.utils._official_layers[PLOT_TABLE][LAYER])
+        self.maptool_identify.setLayer(self.utils._official_layers[self.names.OP_PLOT_T][LAYER])
         cursor = QCursor()
         cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
@@ -148,9 +142,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.maptool_identify.featureIdentified.connect(self.get_info_by_plot)
 
     def get_info_by_plot(self, plot_feature):
-        plot_t_id = plot_feature[ID_FIELD]
+        plot_t_id = plot_feature[self.names.T_ID_F]
 
-        self.utils.canvas.flashFeatureIds(self.utils._official_layers[PLOT_TABLE][LAYER],
+        self.utils.canvas.flashFeatureIds(self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
                                     [plot_feature.id()],
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),
@@ -161,17 +155,17 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.show()
 
         self.spatial_query(plot_t_id)
-        self.utils._official_layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
+        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].selectByIds([plot_feature.id()])
 
     def spatial_query(self, plot_id):
         if plot_id:
-            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], PARCEL_NUMBER_FIELD)
+            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
             if parcel_number:  # Delegate handling of duplicates to search_data() method
                 self.search_data(parcel_number=parcel_number[0])
 
     def call_party_panel(self, item):
         row = item.row()
-        if self.tbl_changes_per_parcel.item(row, 0).text() == DICT_PLURAL[COL_PARTY_TABLE]:
+        if self.tbl_changes_per_parcel.item(row, 0).text() == self.names.get_dict_plural()[self.names.OP_PARTY_T]:
             data = {OFFICIAL_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
                     COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
             self.parent.show_party_panel(data)
@@ -180,16 +174,16 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self.utils._official_layers[PARCEL_TABLE][LAYER])
-        idx = self.utils._official_layers[PARCEL_TABLE][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self.utils._official_layers[self.names.OP_PARCEL_T][LAYER])
+        idx = self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
 
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), self.names.OP_PARCEL_T_FMI_F)
 
     @_with_override_cursor
     def search_data(self, **kwargs):
@@ -216,10 +210,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Get OFFICIAL parcel's t_id and get related plot(s)
         expression = QgsExpression("{}='{}'".format(search_field, search_value))
         request = QgsFeatureRequest(expression)
-        field_idx = self.utils._official_layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
+        field_idx = self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].fields().indexFromName(self.names.T_ID_F)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-        official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE][LAYER].getFeatures(request)]
+        official_parcels = [feature for feature in self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)]
 
         if len(official_parcels) > 1:
             # We do not expect duplicates in the official source!
@@ -230,14 +224,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         official_plot_t_ids = []
         if official_parcels:
             official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
-                                              [official_parcels[0][ID_FIELD]],
-                                              field_name = ID_FIELD,
-                                              plot_layer = self.utils._official_layers[PLOT_TABLE][LAYER],
-                                              uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE][LAYER])
+                                              [official_parcels[0][self.names.T_ID_F]],
+                                              self.names.T_ID_F,
+                                              plot_layer=self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
+                                              uebaunit_table=self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER])
 
             if official_plot_t_ids:
-                self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-                self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE][LAYER], list(), official_plot_t_ids)
+                self._current_official_substring = "\"{}\" IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in official_plot_t_ids]))
+                self.parent.request_zoom_to_features(self.utils._official_layers[self.names.OP_PLOT_T][LAYER], list(), official_plot_t_ids)
                 already_zoomed_in = True
 
 
@@ -246,7 +240,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if 'collected_parcel_t_id' in kwargs:
             # This is the case when this panel is called and we already know the parcel number is duplicated
             collected_parcel_t_id = kwargs['collected_parcel_t_id']
-            search_criterion_collected = {ID_FIELD: collected_parcel_t_id}  # As there are duplicates, we need to use t_ids
+            search_criterion_collected = {self.names.T_ID_F: collected_parcel_t_id}  # As there are duplicates, we need to use t_ids
         else:
             # This is the case when:
             #   + Either this panel was called and we know the parcel number is not duplicated, or
@@ -256,10 +250,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             request = QgsFeatureRequest(expression)
             request.setFlags(QgsFeatureRequest.NoGeometry)
-            request.setSubsetOfAttributes([ID_FIELD],
-                                          self.utils._layers[PARCEL_TABLE][LAYER].fields())  # Note this adds a new flag
-            collected_parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
-            collected_parcels_t_ids = [feature[ID_FIELD] for feature in collected_parcels]
+            request.setSubsetOfAttributes([self.names.T_ID_F],
+                                          self.utils._layers[self.names.OP_PARCEL_T][LAYER].fields())  # Note this adds a new flag
+            collected_parcels = self.utils._layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)
+            collected_parcels_t_ids = [feature[self.names.T_ID_F] for feature in collected_parcels]
 
             if collected_parcels_t_ids:
                 collected_parcel_t_id = collected_parcels_t_ids[0]
@@ -271,7 +265,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
                     if dlg_select_parcel.parcel_t_id:  # User selected one of the duplicated parcels
                         collected_parcel_t_id = dlg_select_parcel.parcel_t_id
-                        search_criterion_collected = {ID_FIELD: collected_parcel_t_id}
+                        search_criterion_collected = {self.names.T_ID_F: collected_parcel_t_id}
                     else:
                         return  # User just cancelled the dialog, there is nothing more to do
 
@@ -282,22 +276,22 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if collected_parcel_t_id is not None:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                            [collected_parcel_t_id],
-                                                                           field_name=ID_FIELD,
-                                                                           plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
-                                                                           uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
+                                                                           self.names.T_ID_F,
+                                                                           plot_layer=self.utils._layers[self.names.OP_PLOT_T][LAYER],
+                                                                           uebaunit_table=self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER])
             if plot_t_ids:
-                self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
+                self._current_substring = "{} IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in plot_t_ids]))
                 if not already_zoomed_in:
-                    self.parent.request_zoom_to_features(self.utils._layers[PLOT_TABLE][LAYER], list(), plot_t_ids)
+                    self.parent.request_zoom_to_features(self.utils._layers[self.names.OP_PLOT_T][LAYER], list(), plot_t_ids)
 
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 
                 # Activate Swipe Tool
-                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[PLOT_TABLE][LAYER])
+                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[self.names.OP_PLOT_T][LAYER])
                 if official_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
                     self.parent.activate_map_swipe_tool()
 
-                    plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[PLOT_TABLE][LAYER], plot_t_ids, True)
+                    plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.names.OP_PLOT_T][LAYER], plot_t_ids, True)
                     plots_extent = QgsRectangle()
                     for plot in plots:
                         plots_extent.combineExtentWith(plot.geometry().boundingBox())
@@ -325,13 +319,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         :param search_criterion_collected: key-value pair to build an expression to search data in the collected source
         :return:
         """
+        plural = self.names.get_dict_plural()
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion_collected)
 
         # Custom layer modifiers
         layer_modifiers = {
             PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
         }
         dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion_official, layer_modifiers=layer_modifiers)
 
@@ -340,13 +335,13 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if dict_collected_parcels:
             collected_parcel_number = list(dict_collected_parcels.keys())[0]
             collected_attrs = dict_collected_parcels[collected_parcel_number][0]
-            del collected_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
+            del collected_attrs[self.names.T_ID_F]  # Remove this line if self.names.T_ID_F is somehow needed
 
         official_attrs = dict()
         if dict_official_parcels:
             official_parcel_number = list(dict_official_parcels.keys())[0]
             official_attrs = dict_official_parcels[official_parcel_number][0]
-            del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
+            del official_attrs[self.names.T_ID_F]  # Remove this line if self.names.T_ID_F is somehow needed
 
         number_of_rows = len(collected_attrs) or len(official_attrs)
         self.tbl_changes_per_parcel.setRowCount(number_of_rows)  # t_id shouldn't be counted
@@ -360,7 +355,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_value = official_attrs[field_name] if field_name in official_attrs else NULL
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            self.fill_row(field_name, official_value, collected_value, row)
+            self.fill_row(field_name, official_value, collected_value, row, plural)
 
         if number_of_rows:  # At least one row in the table?
             self.fill_geometry_row(PLOT_GEOMETRY_KEY,
@@ -370,12 +365,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
-    def fill_row(self, field_name, official_value, collected_value, row):
+    def fill_row(self, field_name, official_value, collected_value, row, plural):
         item = QTableWidgetItem(field_name)
-        # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+        # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
 
-        if field_name == DICT_PLURAL[COL_PARTY_TABLE]:  # Parties
+        if field_name == plural[self.names.OP_PARTY_T]:  # Parties
             item = self.fill_party_item(official_value)
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
@@ -386,11 +381,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
         else:
             item = QTableWidgetItem(str(official_value) if official_value != NULL else '')
-            #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+            #item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
             item = QTableWidgetItem(str(collected_value) if collected_value != NULL else '')
-            # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+            # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
@@ -438,9 +433,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.value()
         if query:
-            if option == FMI_FIELD:
+            if option == self.names.OP_PARCEL_T_FMI_F:
                 self.search_data(parcel_fmi=query)
-            elif option == PARCEL_NUMBER_FIELD:
+            elif option == self.names.OP_PARCEL_T_PARCEL_NUMBER_F:
                 self.search_data(parcel_number=query)
             else: # previous_parcel_number
                 self.search_data(previous_parcel_number=query)
@@ -450,8 +445,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self.utils._official_layers[PLOT_TABLE][LAYER].setSubsetString(self._current_official_substring if not state else "")
-        self.utils._layers[PLOT_TABLE][LAYER].setSubsetString(self._current_substring if not state else "")
+        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_official_substring if not state else "")
+        self.utils._layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):
         self.parent.deactivate_map_swipe_tool()

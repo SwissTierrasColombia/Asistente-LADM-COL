@@ -35,7 +35,7 @@ from ...gui.change_detection.changes_parties_panel import ChangesPartyPanelWidge
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
 
-from ...config.symbology import OFFICIAL_STYLE_GROUP
+from ...config.symbology import Symbology
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       OFFICIAL_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
@@ -211,6 +211,7 @@ class ChangeDetectionUtils(QObject):
         self._official_db = official_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
+        self.symbology = Symbology()
 
         self._layers = dict()
         self._official_layers = dict()
@@ -250,7 +251,7 @@ class ChangeDetectionUtils(QObject):
             layer_modifiers = {
                 PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
                 SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-                STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
             }
             self.qgis_utils.get_layers(self._official_db,
                                        self._official_layers,
@@ -364,10 +365,10 @@ class ChangeDetectionUtils(QObject):
         """
         Compare all alphanumeric attibutes for two custom feature dicts
 
-        :param collected: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
-        :param official: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param collected: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param official: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
         :return: True means equal, False unequal
         """
         if len(collected) != len(official):

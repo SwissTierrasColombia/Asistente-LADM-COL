@@ -1,4 +1,14 @@
-t_id;acuerdo;definicion_punto;descripcion_punto;exactitud_vertical;exactitud_horizontal;confiabilidad;nombre_punto;posicion_interpolacion;monumentacion;puntotipo;p_espacio_de_nombres;p_local_id;ue_la_unidadespacial;ue_la_espaciojuridicoredservicios;ue_servidumbrepaso;ue_la_espaciojuridicounidadedificacion;ue_terreno;ue_unidadconstruccion;ue_construccion;comienzo_vida_util_version;fin_vida_util_version;x;y;z
-1;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;2017-04-22 14:16:41.221663';;963424.849;1077377.269;1410.624
-2;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221664';;963449.62;1077352.06;1410.994
-3;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221665';;963495.658;1077274.459;1408.47
+fid;id_punto_lindero;acuerdo;fotoidentificacion;ubicacion_punto;exactitud_horizontal;exactitud_vertical;posicion_interpolacion;monumentacion;puntotipo;metodoproduccion;comienzo_vida_util_version;fin_vida_util_version;local_id;espacio_de_nombres;x;y;z
+2;;Acuerdo;;;2;6;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:54;;1;OP_PUNTOLINDERO;963107;1077372;3076
+14;;Acuerdo;;;2;6;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:55;;2;OP_PUNTOLINDERO;963614;1077128;702
+126;;Acuerdo;;;4;4;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:55;;3;OP_PUNTOLINDERO;963728;1077270;4104
+153;;Acuerdo;;;5;6;Aislado;Otros;Construccion;;2019-02-20T09:33:56;;4;OP_PUNTOLINDERO;963579;1077480;4746
+157;;Desacuerdo;;;5;7;Aislado;Otros;Construccion;;2019-02-20T09:33:56;;5;OP_PUNTOLINDERO;963561;1077497;3240
+166;;Acuerdo;;;1;9;Aislado;Otros;Construccion;;2019-02-20T09:33:57;;6;OP_PUNTOLINDERO;963401;1077638;980
+201;;Acuerdo;;;9;3;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:56;;7;OP_PUNTOLINDERO;964019;1077138;318
+238;;Desacuerdo;;;9;2;Aislado;Otros;Construccion;;2019-02-20T09:33:56;;8;OP_PUNTOLINDERO;963619;1077447;1980
+247;;Acuerdo;;;4;1;Aislado;Otros;Construccion;;2019-02-20T09:33:56;;9;OP_PUNTOLINDERO;963448;1077594;1361
+281;;Acuerdo;;;9;2;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:54;;10;OP_PUNTOLINDERO;963290;1077565;1673
+324;;Acuerdo;;;3;2;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:54;;11;OP_PUNTOLINDERO;963253;1077464;138
+375;;Acuerdo;;;5;8;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:54;;12;OP_PUNTOLINDERO;963473;1077132;3461
+384;;Desacuerdo;;;4;4;Intermedio_Linea;Otros;Construccion;;2019-02-20T09:33:54;;13;OP_PUNTOLINDERO;963237;1077236;4006

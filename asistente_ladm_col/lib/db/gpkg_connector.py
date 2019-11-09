@@ -76,6 +76,9 @@ class GPKGConnector(DBConnector):
                           FROM t_ili2db_model""")
         return cursor
 
+    def get_logic_validation_queries(self):
+        raise NotImplementedError
+
     def is_ladm_layer(self, layer):
         result = False
         if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
