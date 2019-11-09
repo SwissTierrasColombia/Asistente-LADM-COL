@@ -1,4 +1,5 @@
-t_id,nombre_punto,exactitud_vertical,exactitud_horizontal,tipo_punto_control,confiabilidad,posicion_interpolacion,monumentacion,puntotipo,p_espacio_de_nombres,p_local_id,ue_la_unidadespacial,ue_la_espaciojuridicoredservicios,ue_terreno,ue_servidumbrepaso,ue_la_espaciojuridicounidadedificacion,ue_construccion,ue_unidadconstruccion,comienzo_vida_util_version,fin_vida_util_version,x,y,z
-1855,P03,1,1,Apoyo,false,Aislado,Mojon,Control,PUNTOCONTROL,1855,,,,,,,,2018-05-29T10:21:50,,963361.9612,1077239.469,2000
-1852,P01,1,1,Control,false,Aislado,Mojon,Control,PUNTOCONTROL,1852,,,,,,,,2018-05-29T10:15:49,,963465.8252,1077689.546,2000
-1854,P02,1,1,Control,false,Aislado,,Control,PUNTOCONTROL,1854,,,,,,,,2018-05-29T10:19:06,,963761.1249,1077396.283,2000
+fid;id_punto_control;tipo_punto_control;exactitud_horizontal;exactitud_vertical;posicion_interpolacion;monumentacion;puntotipo;metodoproduccion;comienzo_vida_util_version;fin_vida_util_version;local_id;espacio_de_nombres;x;y;z
+1;1;Apoyo;4;2;Aislado;Mojon;Elemento_Natural;Metodo_Directo;2019-11-21T00:00:00;;1;OP_PUNTOCONTROL;963365.079911539;1077756.26542362;2387.79483474223
+2;2;Control;5;4;Intermedio_Arco;No_Materializado;Mojon;Metodo_Indirecto;2019-11-22T00:00:00;;2;OP_PUNTOCONTROL;963421.020674459;1077726.43035006;2720.92151815115
+3;3;Apoyo;3;5;Intermedio_Arco;Otros;Pilastra;Metodo_Directo;2019-11-06T13:07:19;;3;OP_PUNTOCONTROL;963417.291290264;1077784.85736911;4990.87444506161
+4;3;Apoyo;4;2;Intermedio_Arco;Incrustacion;Poste;Metodo_Indirecto;2019-11-21T00:00:00;;4;OP_PUNTOCONTROL;963467.016412861;1077752.53603942;3747.15141195206

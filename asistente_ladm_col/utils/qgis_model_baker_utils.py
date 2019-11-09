@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import os
+
 import qgis
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
@@ -25,16 +26,10 @@ from qgis.core import (QgsProject,
                        Qgis,
                        QgsApplication)
 
-from ..config.general_config import (PLUGIN_NAME,
-                                     KIND_SETTINGS,
-                                     TABLE_NAME,
-                                     RELATION_NAME,
-                                     REFERENCED_LAYER,
-                                     REFERENCED_FIELD,
-                                     REFERENCING_LAYER,
-                                     REFERENCING_FIELD,
-                                     CLASS_CLASS_RELATION,
-                                     translated_strings)
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
+                                                      TranslatableConfigStrings,
+                                                      ERROR_LAYER_GROUP,
+                                                      REFERENCING_FIELD)
 
 
 class QgisModelBakerUtils(QObject):
@@ -44,6 +39,7 @@ class QgisModelBakerUtils(QObject):
         self.log = QgsApplication.messageLog()
         from ..config.config_db_supported import ConfigDbSupported
         self._conf_db = ConfigDbSupported()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_generator(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
@@ -79,6 +75,8 @@ class QgisModelBakerUtils(QObject):
         enums that we get only once per session and configure in
         the Asistente LADM_COL.
         """
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
 
@@ -88,7 +86,7 @@ class QgisModelBakerUtils(QObject):
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
-            legend = generator.legend(layers, ignore_node_names=[translated_strings.ERROR_LAYER_GROUP])
+            legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
             QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
             self.log.logMessage(

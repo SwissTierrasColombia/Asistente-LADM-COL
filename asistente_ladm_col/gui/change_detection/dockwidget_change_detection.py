@@ -35,7 +35,7 @@ from ...gui.change_detection.changes_parties_panel import ChangesPartyPanelWidge
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
 
-from ...config.symbology import OFFICIAL_STYLE_GROUP
+from ...config.symbology import Symbology
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       OFFICIAL_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
@@ -53,11 +53,7 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       PARCEL_STATUS_DISPLAY,
                                       PLOT_GEOMETRY_KEY)
 
-from ...config.table_mapping_config import (PLOT_TABLE,
-                                            PARCEL_TABLE,
-                                            UEBAUNIT_TABLE,
-                                            PARCEL_NUMBER_FIELD,
-                                            ID_FIELD)
+from asistente_ladm_col.config.table_mapping_config import Names
 
 DOCKWIDGET_UI = get_ui_class('change_detection/dockwidget_change_detection.ui')
 
@@ -69,6 +65,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
     def __init__(self, iface, db, official_db, qgis_utils, ladm_data, all_parcels_mode=True):
         super(DockWidgetChangeDetection, self).__init__(None)
         self.setupUi(self)
+        self.names = Names()
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.utils = ChangeDetectionUtils(iface, db, official_db, qgis_utils, ladm_data)
@@ -198,8 +195,8 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[PLOT_TABLE][LAYER], True)
-        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[PLOT_TABLE][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[self.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.names.OP_PLOT_T][LAYER], True)
 
 
 class ChangeDetectionUtils(QObject):
@@ -214,6 +211,7 @@ class ChangeDetectionUtils(QObject):
         self._official_db = official_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
+        self.symbology = Symbology()
 
         self._layers = dict()
         self._official_layers = dict()
@@ -224,15 +222,15 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
 
         self._official_layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
 
     def initialize_data(self):
@@ -241,7 +239,7 @@ class ChangeDetectionUtils(QObject):
 
     def add_layers(self):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[PLOT_TABLE][LAYER] is None:
+        if self._layers[self.names.OP_PLOT_T][LAYER] is None:
             self.qgis_utils.map_freeze_requested.emit(True)
 
             self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
@@ -253,7 +251,7 @@ class ChangeDetectionUtils(QObject):
             layer_modifiers = {
                 PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
                 SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-                STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
             }
             self.qgis_utils.get_layers(self._official_db,
                                        self._official_layers,
@@ -264,7 +262,7 @@ class ChangeDetectionUtils(QObject):
                 return None
             else:
                 # In some occasions the official and collected plots might not overlap and have different extents
-                self.iface.setActiveLayer(self._official_layers[PLOT_TABLE][LAYER])
+                self.iface.setActiveLayer(self._official_layers[self.names.OP_PLOT_T][LAYER])
                 self.iface.zoomToActiveLayer()
 
             self.qgis_utils.map_freeze_requested.emit(False)
@@ -304,7 +302,7 @@ class ChangeDetectionUtils(QObject):
                  Inverse True is useful to find missing parcels (from the official authority's perspective)
 
         :return: dict() --> {PARCEL_NUMBER: X,
-                             PARCEL_ATTRIBUTES: {PARCEL_ID: [ID_FIELD], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
+                             PARCEL_ATTRIBUTES: {PARCEL_ID: [self.names.T_ID_F], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
         """
         base_db = self._official_db if inverse else self._db
         compare_db = self._db if inverse else self._official_db
@@ -317,14 +315,14 @@ class ChangeDetectionUtils(QObject):
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = NULL
-                dict_attrs_comparison[ID_FIELD] = [feature[ID_FIELD] for feature in collected_features]
+                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = NULL
+                dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
             else:
                 # A parcel number has at least one dict of attributes (i.e., one feature)
-                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = collected_parcel_number
-                dict_attrs_comparison[ID_FIELD] = [feature[ID_FIELD] for feature in collected_features]
+                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
+                dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
 
                 if len(collected_features) > 1:
                     dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_SEVERAL_PARCELS
@@ -336,8 +334,8 @@ class ChangeDetectionUtils(QObject):
                     else:
                         official_features = dict_official_parcels[collected_parcel_number]
 
-                        del collected_features[0][ID_FIELD]  # We won't compare ID_FIELDS
-                        del official_features[0][ID_FIELD]  # We won't compare ID_FIELDS
+                        del collected_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
+                        del official_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
 
                         # Compare all attributes except geometry: a change in feature attrs is enough to mark it as
                         #   changed in the summary panel
@@ -367,10 +365,10 @@ class ChangeDetectionUtils(QObject):
         """
         Compare all alphanumeric attibutes for two custom feature dicts
 
-        :param collected: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
-        :param official: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param collected: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param official: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
         :return: True means equal, False unequal
         """
         if len(collected) != len(official):

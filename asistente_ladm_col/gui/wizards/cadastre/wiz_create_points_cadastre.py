@@ -28,6 +28,8 @@ from qgis.PyQt.QtWidgets import (QWizard,
                                  QSizePolicy,
                                  QGridLayout)
 from qgis.core import (Qgis,
+                       QgsProject,
+                       QgsVectorLayer,
                        QgsMapLayerProxyModel,
                        QgsApplication,
                        QgsCoordinateReferenceSystem,
@@ -41,6 +43,7 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
+                                               OverrideCursor,
                                                enable_next_wizard,
                                                disable_next_wizard,
                                                normalize_local_url)
@@ -259,13 +262,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.close_wizard()
 
         elif self.rad_csv.isChecked():
-            automatic_fields_definition = self.qgis_utils.check_if_and_disable_automatic_fields(self._db, self.current_point_name())
-
             self.prepare_copy_csv_points_to_db()
-
-            self.qgis_utils.check_if_and_enable_automatic_fields(self._db,
-                                                        automatic_fields_definition,
-                                                        self.current_point_name())
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
@@ -294,15 +291,16 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
         target_layer = self.current_point_name()
 
-        res = self.qgis_utils.copy_csv_to_db(csv_path,
-                                             self.txt_delimiter.text(),
-                                             self.cbo_longitude.currentText(),
-                                             self.cbo_latitude.currentText(),
-                                             self._db,
-                                             self.epsg,
-                                             target_layer,
-                                             self.cbo_elevation.currentText() or None,
-                                             self.detect_decimal_point(csv_path))
+        with OverrideCursor(Qt.WaitCursor):
+            self.qgis_utils.copy_csv_to_db(csv_path,
+                                           self.txt_delimiter.text(),
+                                           self.cbo_longitude.currentText(),
+                                           self.cbo_latitude.currentText(),
+                                           self._db,
+                                           self.epsg,
+                                           target_layer,
+                                           self.cbo_elevation.currentText() or None,
+                                           self.detect_decimal_point(csv_path))
 
     def required_layers_are_available(self):
         layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)

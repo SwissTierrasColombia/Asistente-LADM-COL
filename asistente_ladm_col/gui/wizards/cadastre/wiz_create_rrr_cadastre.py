@@ -63,7 +63,7 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
                 for administrative_source_id in administrative_source_ids:
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_RRR_SOURCE_T][LAYER])
 
-                    new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_FIELD, administrative_source_id)
+                    new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_F, administrative_source_id)
                     if self.EDITING_LAYER_NAME == self.names.OP_RIGHT_T:
                         new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RIGHT_F, feature_rrr_id)
                     elif self.EDITING_LAYER_NAME == self.names.OP_RESTRICTION_T:

@@ -41,7 +41,7 @@ from qgis.core import (Qgis,
 
 import processing
 from ..config.general_config import PLUGIN_NAME
-from ..config.table_mapping_config import ID_FIELD
+from asistente_ladm_col.config.table_mapping_config import Names
 
 
 class GeometryUtils(QObject):
@@ -49,8 +49,9 @@ class GeometryUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.names = Names()
 
-    def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
+    def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
@@ -166,7 +167,7 @@ class GeometryUtils(QObject):
         gc.collect()
         return (intersect_more_pairs, intersect_less_pairs)
 
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field=ID_FIELD, use_selection=True):
+    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field, use_selection=True):
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         lines = boundary_layer.getSelectedFeatures(request) if use_selection else boundary_layer.getFeatures(request)
@@ -436,7 +437,7 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, id_field=ID_FIELD):
+    def add_topological_vertices(self, layer1, layer2, id_field):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
 
@@ -483,7 +484,7 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field=ID_FIELD):
+    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
@@ -492,7 +493,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer)
+        self.add_topological_vertices(approx_diff_layer, boundary_layer, self.names.T_ID_F)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer,
@@ -503,7 +504,7 @@ class GeometryUtils(QObject):
 
         return difference_features
 
-    def difference_boundary_plot(self, boundary_layer, plot_as_lines_layer, id_field=ID_FIELD):
+    def difference_boundary_plot(self, boundary_layer, plot_as_lines_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
@@ -512,7 +513,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
+        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer, self.names.T_ID_F)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
@@ -580,7 +581,7 @@ class GeometryUtils(QObject):
         just one boundary line.
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
-        id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
+        id_field_idx = boundary_layer.fields().indexFromName(self.names.T_ID_F)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
@@ -612,7 +613,7 @@ class GeometryUtils(QObject):
 
         return selected_features
 
-    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field=ID_FIELD):
+    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field):
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
                                             {
                                                 'INPUT': boundary_point_layer,
@@ -628,14 +629,14 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
 
-    def get_inner_rings_layer(self, plot_layer, id_field=ID_FIELD, use_selection=False):
+    def get_inner_rings_layer(self, plot_layer, id_field, use_selection=False):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
 
         layer = QgsVectorLayer("LineString?crs={}".format(plot_layer.sourceCrs().authid()), "rings", "memory")
         data_provider = layer.dataProvider()
-        data_provider.addAttributes([QgsField(ID_FIELD, QVariant.Int)])
+        data_provider.addAttributes([QgsField(self.names.T_ID_F, QVariant.Int)])
         layer.updateFields()
 
         features = []
@@ -828,7 +829,7 @@ class GeometryUtils(QObject):
             geoms = geoms.combine(feature.geometry())
         return geoms
 
-    def fix_selected_boundaries(self, boundary_layer, selected_ids=list(), id_field=ID_FIELD):
+    def fix_selected_boundaries(self, boundary_layer, id_field, selected_ids=list()):
 
         selected_features = list()
         if len(selected_ids) == 0:
@@ -850,7 +851,7 @@ class GeometryUtils(QObject):
         # create relation between feature and yours segments
         boundary_segments = dict()
         for feature in boundary_layer.getFeatures():
-            exp = '"{id_field}" = {id_field_value}'.format(id_field=ID_FIELD, id_field_value=feature[ID_FIELD])
+            exp = '"{id_field}" = {id_field_value}'.format(id_field=self.names.T_ID_F, id_field_value=feature[self.names.T_ID_F])
             segment_ids = [f.id() for f in segments_layer.getFeatures(exp)]
             segment_ids.sort()
             if segment_ids:
@@ -901,7 +902,7 @@ class GeometryUtils(QObject):
 
         return new_geometries, boundaries_to_del_unique_ids
 
-    def fix_boundaries(self, layer, id_field=ID_FIELD):
+    def fix_boundaries(self, layer, id_field):
         tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
         # remove duplicate segments (algorithm don't with duplicate geometries)
         segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
@@ -934,7 +935,7 @@ class GeometryUtils(QObject):
 
         return merge_geometries, boundaries_to_del
 
-    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field=ID_FIELD):
+    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field):
         building_within_plots = processing.run("qgis:joinattributesbylocation", {
             'INPUT': building_layer,
             'JOIN': plot_layer,
