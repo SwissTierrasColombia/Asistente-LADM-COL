@@ -248,6 +248,8 @@ class QualityDialog(QDialog, DIALOG_UI):
                 id = item.data(0, Qt.UserRole)
                 rule_name = item.text(0)
 
+                # NOTE: Do not remove the named parameters, this is needed for making a decorator that thinks they are
+                # optional happy!
                 if id == 'check_overlaps_in_boundary_points':
                     self.quality.check_overlapping_points(self._db, point_layer_name=self.names.OP_BOUNDARY_POINT_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_control_points':

@@ -20,7 +20,17 @@ class GUI_Config(QObject):
                     WIDGET_TYPE: MENU,
                     WIDGET_NAME: "Empty menu",
                     OBJECT_NAME: 'empty_menu',
-                    ACTIONS: []
+                    ACTIONS: []  # This menu is removed because of the empty actions
+                }, {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"),
+                    OBJECT_NAME: "ladm_col_data_management_menu",
+                    ICON: DATA_MANAGEMENT_ICON,
+                    ACTIONS: [
+                        ACTION_SCHEMA_IMPORT,
+                        ACTION_IMPORT_DATA,
+                        ACTION_EXPORT_DATA
+                    ]
                 },
                 SEPARATOR,
                 ACTION_SETTINGS,

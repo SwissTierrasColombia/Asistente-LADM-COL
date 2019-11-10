@@ -159,7 +159,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
 
         dlg.set_action_type(EnumDbActionType.EXPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
