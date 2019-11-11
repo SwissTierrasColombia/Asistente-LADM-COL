@@ -40,8 +40,16 @@ from ..queries.annex_17_report import (annex17_plot_data_query,
                                        annex17_building_data_query,
                                        annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME, OPERATION_MODEL_PREFIX, CADASTRAL_FORM_MODEL_PREFIX,
-                                      VALUATION_MODEL_PREFIX, LADM_MODEL_PREFIX)
+                                      PLUGIN_NAME,
+                                      OPERATION_MODEL_PREFIX,
+                                      CADASTRAL_FORM_MODEL_PREFIX,
+                                      VALUATION_MODEL_PREFIX,
+                                      LADM_MODEL_PREFIX,
+                                      ANT_MODEL_PREFIX,
+                                      REFERENCE_CARTOGRAPHY_PREFIX,
+                                      SNR_DATA_MODEL_PREFIX,
+                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                      SUPPLIES_MODEL_PREFIX)
 from ...utils.model_parser import ModelParser
 from ...utils.utils import normalize_iliname
 from asistente_ladm_col.config.table_mapping_config import (T_ID,
@@ -216,22 +224,33 @@ class PGConnector(DBConnector):
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
-            res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
-            if not res_parser:
-                return (False, msg_parser)
-
             # Validate table and field names
             if not self.names_read:
                 self._get_table_and_field_names()
 
             models = list()
+            if self.ladm_model_exists:
+                models.append(LADM_MODEL_PREFIX)
             if self.operation_model_exists():
                 models.append(OPERATION_MODEL_PREFIX)
-                models.append(LADM_MODEL_PREFIX)
             if self.cadastral_form_model_exists():
                 models.append(CADASTRAL_FORM_MODEL_PREFIX)
             if self.valuation_model_exists():
                 models.append(VALUATION_MODEL_PREFIX)
+            if self.ant_model_exists:
+                models.append(ANT_MODEL_PREFIX)
+            if self.reference_cartography_model_exists:
+                models.append(REFERENCE_CARTOGRAPHY_PREFIX)
+            if self.snr_data_model_exists:
+                models.append(SNR_DATA_MODEL_PREFIX)
+            if self.supplies_integration_model_exists:
+                models.append(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+            if self.supplies_model_exists:
+                models.append(SUPPLIES_MODEL_PREFIX)
+
+            if not models:
+                return (False, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
+
             res, msg = self.names.test_names(models)
             if not res:
                 return (False, QCoreApplication.translate("PGConnector",

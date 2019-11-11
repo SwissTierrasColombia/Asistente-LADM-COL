@@ -136,6 +136,42 @@ class DBConnector(QObject):
 
         return False
 
+    def ant_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.ant_model_exists()
+
+        return False
+
+    def ladm_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.ladm_model_exists()
+
+        return False
+
+    def reference_cartography_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.reference_cartography_model_exists()
+
+        return False
+
+    def snr_data_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.snr_data_model_exists()
+
+        return False
+
+    def supplies_integration_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.supplies_integration_model_exists()
+
+        return False
+
+    def supplies_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.supplies_model_exists()
+
+        return False
+
     def read_model_parser(self):
         if self.model_parser is None:
             try:

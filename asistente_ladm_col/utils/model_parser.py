@@ -22,7 +22,13 @@ from qgis.PyQt.QtCore import (QObject,
 from ..config.general_config import (OPERATION_MODEL_PREFIX,
                                      LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                     VALUATION_MODEL_PREFIX)
+                                     VALUATION_MODEL_PREFIX,
+                                     LADM_MODEL_PREFIX,
+                                     ANT_MODEL_PREFIX,
+                                     REFERENCE_CARTOGRAPHY_PREFIX,
+                                     SNR_DATA_MODEL_PREFIX,
+                                     SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                     SUPPLIES_MODEL_PREFIX)
 from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
 from ..utils.utils import is_version_valid, parse_models_from_db_meta_attrs_list
 
@@ -35,6 +41,12 @@ class ModelParser(QObject):
         self.current_version_operation_model = None
         self.current_version_cadastral_form_model = None
         self.current_version_valuation_model = None
+        self.current_version_ladm_model = None
+        self.current_version_ant_model = None
+        self.current_version_reference_cartography_model = None
+        self.current_version_snr_data_model = None
+        self.current_version_supplies_integration_model = None
+        self.current_version_supplies_model = None
 
         self._db = db
         qgis_model_baker_utils = QgisModelBakerUtils()
@@ -59,6 +71,30 @@ class ModelParser(QObject):
                     parts = current_model_name.split(VALUATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_valuation_model = self.parse_version(parts[1])
+                if current_model_name.startswith(LADM_MODEL_PREFIX):
+                    parts = current_model_name.split(LADM_MODEL_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_ladm_model = self.parse_version(parts[1])
+                if current_model_name.startswith(ANT_MODEL_PREFIX):
+                    parts = current_model_name.split(ANT_MODEL_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_ant_model = self.parse_version(parts[1])
+                if current_model_name.startswith(REFERENCE_CARTOGRAPHY_PREFIX):
+                    parts = current_model_name.split(REFERENCE_CARTOGRAPHY_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_reference_cartography_model = self.parse_version(parts[1])
+                if current_model_name.startswith(SNR_DATA_MODEL_PREFIX):
+                    parts = current_model_name.split(SNR_DATA_MODEL_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_snr_data_model = self.parse_version(parts[1])
+                if current_model_name.startswith(SUPPLIES_INTEGRATION_MODEL_PREFIX):
+                    parts = current_model_name.split(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_supplies_integration_model = self.parse_version(parts[1])
+                if current_model_name.startswith(SUPPLIES_MODEL_PREFIX):
+                    parts = current_model_name.split(SUPPLIES_MODEL_PREFIX)
+                    if len(parts) > 1:
+                        self.current_version_supplies_model = self.parse_version(parts[1])
 
     def parse_version(self, str_version):
         """ E.g., V2_9_6 -> 2.9.6 """
@@ -99,6 +135,24 @@ class ModelParser(QObject):
 
     def valuation_model_exists(self):
         return self.current_version_valuation_model is not None
+
+    def ant_model_exists(self):
+        return self.current_version_ant_model is not None
+
+    def ladm_model_exists(self):
+        return self.current_version_ladm_model is not None
+
+    def reference_cartography_model_exists(self):
+        return self.current_version_reference_cartography_model is not None
+
+    def snr_data_model_exists(self):
+        return self.current_version_snr_data_model is not None
+
+    def supplies_integration_model_exists(self):
+        return self.current_version_supplies_integration_model is not None
+
+    def supplies_model_exists(self):
+        return self.current_version_supplies_model is not None
 
     def _get_models(self):
         return self._pro_gen_db_connector.get_models()
