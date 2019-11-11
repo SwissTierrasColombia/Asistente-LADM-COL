@@ -166,6 +166,8 @@ class PGConnector(DBConnector):
             res, msg = self.open_connection()
             if not res:
                 return (res, msg)
+        if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
+            self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
 
         try:
             # Server side check
@@ -412,11 +414,24 @@ class PGConnector(DBConnector):
                                                   "Layer '{}' was not found in the database (schema: {}).").format(
             layer_name, self.schema))
 
-    def get_tables_info(self):
+    def check_and_fix_connection(self):
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
+
+        if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
+            self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
+            if self.conn.get_transaction_status() != psycopg2.extensions.TRANSACTION_STATUS_IDLE:
+                return (False, "Error: PG transaction had an error and couldn't be recovered...")
+
+        return (True, '')
+
+    def get_tables_info(self):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
+
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""
                     SELECT
@@ -472,10 +487,9 @@ class PGConnector(DBConnector):
                                                  valuation_model=self.valuation_model_exists(),
                                                  cadastral_form_model=self.cadastral_form_model_exists())
 
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -507,10 +521,9 @@ class PGConnector(DBConnector):
                                                  parcel_number=params['parcel_number'],
                                                  previous_parcel_number=params['previous_parcel_number'])
 
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -544,10 +557,9 @@ class PGConnector(DBConnector):
                                                                                    'previous_parcel_number'],
                                                                                cadastral_form_model=self.cadastral_form_model_exists())
 
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -582,10 +594,9 @@ class PGConnector(DBConnector):
                                                        previous_parcel_number=params['previous_parcel_number'],
                                                        valuation_model=self.valuation_model_exists())
 
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -621,10 +632,9 @@ class PGConnector(DBConnector):
                                                        valuation_model=self.valuation_model_exists(),
                                                        cadastral_form_model=self.cadastral_form_model_exists())
 
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -635,10 +645,9 @@ class PGConnector(DBConnector):
         return res
 
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
 
         where_id = ""
         if mode != 'all':
@@ -655,10 +664,9 @@ class PGConnector(DBConnector):
             return cur.fetchall()[0][0]
 
     def get_annex17_building_data(self):
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = annex17_building_data_query.get_annex17_building_data_query(self.schema)
@@ -667,10 +675,9 @@ class PGConnector(DBConnector):
         return cur.fetchall()[0][0]
 
     def get_annex17_point_data(self, plot_id):
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = annex17_point_data_query.get_annex17_point_data_query(self.schema, plot_id)
@@ -679,10 +686,9 @@ class PGConnector(DBConnector):
         return cur.fetchone()[0]
 
     def get_ant_map_plot_data(self, plot_id, mode='only_id'):
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
 
         where_id = ""
         if mode != 'all':
@@ -699,10 +705,9 @@ class PGConnector(DBConnector):
             return cur.fetchall()[0][0]
 
     def get_ant_map_neighbouring_change_data(self, plot_id, mode='only_id'):
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
 
         where_id = ""
         if mode != 'all':
@@ -724,10 +729,10 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of RealDictRow
         """
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
+
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         try:
@@ -742,10 +747,10 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of DictRow
         """
-        if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
-            if not res:
-                return (res, msg)
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
+
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(query)
         return cur.fetchall()
@@ -770,7 +775,7 @@ class PGConnector(DBConnector):
             schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         lst_models = list()
-        if not isinstance(result, tuple):
+        if result is not None and not isinstance(result, tuple):
             lst_models = [db_model['modelname'] for db_model in result]
 
         return lst_models

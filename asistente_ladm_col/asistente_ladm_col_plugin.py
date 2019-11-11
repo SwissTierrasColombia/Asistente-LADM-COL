@@ -825,7 +825,6 @@ class AsistenteLADMCOLPlugin(QObject):
             selected_models_import_schema = args[0]  # Argument sent by signal
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema)
-        dlg.models_have_changed.connect(self.refresh_gui)
         dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
         dlg.exec_()
 

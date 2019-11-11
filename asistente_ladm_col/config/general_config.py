@@ -84,6 +84,7 @@ FIELD_NAME = 'fieldname'
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
+SETTINGS_MODELS_TAB_INDEX = 1
 
 
 # Version to be installed when creating reports (annex 17 - ANT Map)

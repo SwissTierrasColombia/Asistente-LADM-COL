@@ -206,7 +206,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Update db connect with new db conn
                 self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
-                # Emmit signal when change db source
+                # Emmit signal when db source changes
                 self.db_connection_changed.emit(self._db, ladm_col_schema)
 
                 self.save_settings()
@@ -220,6 +220,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # If active role changed, refresh theg GUI
         selected_role = self.get_selected_role()
+        print(selected_role, self.roles.get_active_role())  # TODO: al logger
         if self.roles.get_active_role() != selected_role:
             self.roles.set_active_role(selected_role)
             self.active_role_changed.emit()
