@@ -37,6 +37,8 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm,
                        QgsExpression)
 
+import processing
+
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              WizardTypeEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
@@ -161,6 +163,7 @@ class AsistenteLADMCOLPlugin(QObject):
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
     def create_actions(self):
+        self.create_supplies_actions()
         self.create_operation_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
@@ -256,6 +259,17 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_FILL_MORE_BFS_AND_LESS: self._fill_more_BFS_less_action,
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
+
+    def create_supplies_actions(self):
+        self._etl_cobol_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
+            self.main_window)
+
+        # Connections
+        self._etl_cobol_supplies_action.triggered.connect(self.run_etl_cobol)
+
+        self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
 
     def create_operation_actions(self):
         self._point_surveying_and_representation_operation_action = QAction(
@@ -705,6 +719,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_log_excel_dialog(self):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
+
+    def run_etl_cobol(self):
+        processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
