@@ -25,9 +25,11 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
+from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 class GUI_Builder(QObject):
@@ -40,6 +42,7 @@ class GUI_Builder(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
+        self.logger = Logger()
         self._registered_actions = dict()
 
         self.menus = list()
@@ -62,8 +65,8 @@ class GUI_Builder(QObject):
         :param test_conn_result: Can be True or False if test_connection was called, or None if we should call it now.
         :return:
         """
-        self.status_bar_message_emitted.emit(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                             "Refreshing GUI for the LADM_COL Assistant..."), 0)
+        self.logger.info(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant..."),
+                         LogHandlerEnum.STATUS_BAR)
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
@@ -103,7 +106,7 @@ class GUI_Builder(QObject):
         """
         role_key = Role_Registry().get_active_role()
         gui_config = self._get_gui_config(db, test_conn_result, role_key)
-        # print("gui config dict:", gui_config) TODO: Al logger
+        # self.logger.debug(__name__, "Filtered gui_config: {}".format(gui_config))
         role_actions = self._get_role_actions(role_key)
         model_actions = self._get_model_actions(db)
 
@@ -115,7 +118,7 @@ class GUI_Builder(QObject):
         # F  V    F
         # F  F    F
         allowed_actions = role_actions  # It's safe to make use of this list, no need to copy it, as it is a sum of lists
-        # print("Allowed actions for role {}".format(role_key), allowed_actions) TODO: Al logger
+        self.logger.debug(__name__, "Allowed actions for role '{}': {}".format(role_key, allowed_actions))
 
         filtered_gui_config = dict()
         for k,v in gui_config.items():
@@ -194,12 +197,14 @@ class GUI_Builder(QObject):
         if test_conn_result:
             gui_config = Role_Registry().get_role_gui_config(role_key)
             if gui_config:
-                # print("GUI CONFIG ROLE") TODO: Al logger
-                return gui_config  # We'll use the dict specified for the role
+                self.logger.info(__name__, "Using gui_config from the role.")
+                return gui_config
             else:
-                gui_type = TEMPLATE_GUI  # If the role has not a gui_dict, we use a template.
+                self.logger.info(__name__, "Using gui_config from the template.")
+                gui_type = TEMPLATE_GUI
 
-        # print("GUI CONFIG: {}".format(gui_type)) TODO: Al logger
+        if gui_type == DEFAULT_GUI:
+            self.logger.info(__name__, "Using gui_config from the default GUI (minimal).")
 
         return GUI_Config().get_gui_dict(gui_type)
 
@@ -237,6 +242,7 @@ class GUI_Builder(QObject):
         :param final_unload: True if the plugin is closing. False if we just destroy the GUI to rebuild it once more.
         """
         if final_unload:
+            self.logger.info(__name__, "Unloading completely the GUI (final_unload)")
             for action in self._registered_actions.values():
                 del action
             self._registered_actions = dict()
@@ -256,9 +262,10 @@ class GUI_Builder(QObject):
         self.toolbar_menus = list()
         self.toolbars = list()
 
+        self.logger.info(__name__, "GUI unloaded (not a final_unload)")
+
     def _build_menu(self, menu_def):
         menu = self.iface.mainWindow().findChild(QMenu, menu_def[OBJECT_NAME])
-        # print("build_menu:",menu is None, menu_def[WIDGET_NAME]) TODO: Al logger
         if menu is None:
             menu = QMenu(menu_def[WIDGET_NAME], self.iface.mainWindow().menuBar())
             if ICON in menu_def:

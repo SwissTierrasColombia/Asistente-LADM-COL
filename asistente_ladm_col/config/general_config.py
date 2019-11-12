@@ -7,7 +7,11 @@ from qgis.PyQt.QtCore import (QSettings,
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
+
+DEFAULT_LOG_MODE = LogModeEnum.USER
+DEFAULT_LOG_FILE = ''
 
 OFFICIAL_DB_PREFIX = None
 OFFICIAL_DB_SUFFIX = "_oficial"
@@ -94,7 +98,6 @@ URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Repor
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
-    'controlled_measurement': 'cadastre/Preprocessing.html#controlled-measurement',
     'create_admin_source': 'cadastre/Source.html#administrative-source',
     'create_parcel': 'cadastre/Basic_Administrative_Unit.html#parcel',
     'create_points': 'cadastre/Surveying_and_Representation.html#create-point',

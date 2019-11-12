@@ -38,7 +38,7 @@ from qgis.core import (Qgis,
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (DEFAULT_EPSG,
+from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
                                       DEFAULT_MODEL_NAMES_CHECKED,
                                       SETTINGS_CONNECTION_TAB_INDEX,
@@ -47,17 +47,18 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS,
                                       SETTINGS_MODELS_TAB_INDEX)
-from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
-from ...gui.dialogs.dlg_settings import SettingsDialog
-from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
-from ...utils import get_ui_class
-from ...utils.qt_utils import (Validators,
-                               OverrideCursor)
+from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import (Validators,
+                                               OverrideCursor)
 
-from ...resources_rc import * # Necessary to show icons
-from ...config.config_db_supported import ConfigDbSupported
-from ...config.enums import EnumDbActionType
-from ...lib.db.db_connector import DBConnector
+from ...resources_rc import *  # Necessary to show icons
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.enums import EnumDbActionType
+
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
@@ -72,6 +73,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
+        self.logger = Logger()
         self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
@@ -121,8 +123,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 self.open_dlg_import_data.emit()
 
     def close_dialog(self):
-        if self._db_was_changed:  # TODO send to logger
+        if self._db_was_changed:
             self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0])
+        self.logger.info(__name__, "Dialog closed.")
         self.close()
 
     def update_connection_info(self):

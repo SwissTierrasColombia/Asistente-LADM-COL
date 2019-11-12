@@ -37,10 +37,12 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm,
                        QgsExpression)
 
-from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.enums import WizardTypeEnum
+from asistente_ladm_col.config.enums import (EnumDbActionType,
+                                             WizardTypeEnum,
+                                             LogModeEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
+                                                      DEFAULT_LOG_MODE,
                                                       OFFICIAL_DB_SOURCE,
                                                       PLUGIN_NAME,
                                                       PLUGIN_VERSION,
@@ -97,6 +99,7 @@ from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.wizards.cadastre.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_points_cadastre import CreatePointsCadastreWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_wizard_is_open,
@@ -127,6 +130,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
         self.wizard_config = WizardConfig()
+        self.logger = Logger()
+        self.logger.set_mode(DEFAULT_LOG_MODE)
         self.gui_builder = GUI_Builder(self.iface)
 
     def initGui(self):
@@ -166,6 +171,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_generic_actions()
 
     def set_connections(self):
+        self.logger.message_emitted.connect(self.show_message)
+        self.logger.message_with_duration_emitted.connect(self.show_message)
+        self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
+
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
@@ -177,8 +186,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        self.qgis_utils.message_emitted.connect(self.show_message)
-        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
+        # self.qgis_utils.message_emitted.connect(self.show_message)
+        # self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
@@ -826,6 +835,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema)
         dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
+        self.logger.info(__name__, "Import Schema dialog opened.")
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -834,6 +844,7 @@ class AsistenteLADMCOLPlugin(QObject):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
         dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager)
         dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
+        self.logger.info(__name__, "Import data dialog opened.")
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -841,6 +852,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_export_data(self, *args):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager)
+        self.logger.info(__name__, "Export data dialog opened.")
         dlg.exec_()
 
     @_validate_if_wizard_is_open

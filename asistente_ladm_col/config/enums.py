@@ -1,5 +1,5 @@
-from enum import Enum
-from enum import IntFlag
+from enum import (Enum,
+                  IntFlag)
 
 
 class EnumDbActionType(Enum):
@@ -30,3 +30,13 @@ class WizardTypeEnum(IntFlag):
 
     SPATIAL_WIZARD = SINGLE_PAGE_SPATIAL_WIZARD_TYPE | MULTI_PAGE_SPATIAL_WIZARD_TYPE
     NON_SPATIAL_WIZARD = SINGLE_PAGE_WIZARD_TYPE | MULTI_PAGE_WIZARD_TYPE
+
+
+class LogHandlerEnum(Enum):
+    MESSAGE_BAR = 1
+    STATUS_BAR = 2
+    QGIS_LOG = 3
+
+class LogModeEnum(Enum):
+    USER = 1
+    DEV = 2

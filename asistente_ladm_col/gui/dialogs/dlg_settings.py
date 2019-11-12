@@ -25,22 +25,20 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QVBoxLayout,
                                  QRadioButton)
-from qgis.core import (Qgis,
-                       QgsApplication)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.enums import EnumDbActionType
+from asistente_ladm_col.config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                                      COLLECTED_DB_SOURCE,
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE)
+from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
-from ...config.config_db_supported import ConfigDbSupported
-from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                      PLUGIN_NAME,
-                                      COLLECTED_DB_SOURCE,
-                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                      NATIONAL_LAND_AGENCY)
-from ...gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
-from ...lib.db.db_connector import (DBConnector,
-                                    EnumTestLevel)
-from ...config.enums import EnumDbActionType
-from ...utils import get_ui_class
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    EnumTestLevel)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
@@ -52,7 +50,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
@@ -155,9 +153,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Returning existing db connection...")
         else:
-            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Getting new db connection...")
             self._db = self._get_db_connector_from_gui()
             self._db.open_connection()
 
@@ -220,8 +218,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # If active role changed, refresh theg GUI
         selected_role = self.get_selected_role()
-        print(selected_role, self.roles.get_active_role())  # TODO: al logger
         if self.roles.get_active_role() != selected_role:
+            self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
+                self.roles.get_active_role(), selected_role))
             self.roles.set_active_role(selected_role)
             self.active_role_changed.emit()
 
@@ -374,7 +373,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
@@ -385,7 +383,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def test_service(self):
         self.setEnabled(False)

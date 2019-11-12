@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.lib.logger import Logger
 
 class Role_Registry(metaclass=Singleton):
     """
@@ -39,6 +40,7 @@ class Role_Registry(metaclass=Singleton):
     ]
 
     def __init__(self):
+        self.logger = Logger()
         self._registered_roles = dict()
         self._default_role = BASIC_ROLE
 
@@ -284,7 +286,7 @@ class Role_Registry(metaclass=Singleton):
             self._registered_roles[role_key] = deepcopy(role_dict)
             valid = True
         else:
-            print("Role '{}' is not defined correctly and could not be registered! Check the role_dict.".format(role_key))  # TODO: Al logger
+            self.logger.error(__name__, "Role '{}' is not defined correctly and could not be registered! Check the role_dict parameter.".format(role_key))
 
         return valid
 
@@ -296,17 +298,17 @@ class Role_Registry(metaclass=Singleton):
         if role_key in self._registered_roles:
             res = True
         else:
-            print("Role '{}' was not found, returning default role's decription.".format(role_key))  # TODO: Al logger
+            self.logger.warning(__name__, "Role '{}' was not found, the default role is now active.".format(role_key))
             role_key = self._default_role
 
         QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", role_key)
-        print("Role '{}' is now active!".format(role_key))  # TODO: Al logger
+        self.logger.info(__name__, "Role '{}' is now active!".format(role_key))
 
         return res
 
     def set_active_default_role(self):
         QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", self._default_role)
-        print("Default role '{}' is now active!".format(self._default_role))  # TODO: Al logger
+        self.logger.info(__name__, "Default role '{}' is now active!".format(self._default_role))
         return True
 
     def get_roles_info(self):
@@ -314,21 +316,21 @@ class Role_Registry(metaclass=Singleton):
 
     def get_role_description(self, role_key):
         if role_key not in self._registered_roles:
-            print("Role '{}' was not found, returning default role's decription".format(role_key))  # TODO: Al logger
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's decription".format(role_key))
             role_key = self._default_role
 
         return self._registered_roles[role_key][ROLE_DESCRIPTION]
 
     def get_role_actions(self, role_key):
         if role_key not in self._registered_roles:
-            print("Role '{}' was not found, returning default role's actions.".format(role_key))  # TODO: Al logger
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's actions.".format(role_key))
             role_key = self._default_role
 
         return list(set(self._registered_roles[role_key][ROLE_ACTIONS] + self.COMMON_ACTIONS))
 
     def get_role_gui_config(self, role_key):
         if role_key not in self._registered_roles:
-            print("Role '{}' was not found, returning default role's GUI configuration.".format(role_key))  # TODO: Al logger
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's GUI configuration.".format(role_key))
             role_key = self._default_role
 
         return self._registered_roles[role_key][ROLE_GUI_CONFIG]
