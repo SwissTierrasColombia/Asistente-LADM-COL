@@ -17,8 +17,8 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_dbconn,
                                             restore_schema)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.utils.quality import QualityUtils
-from asistente_ladm_col.utils.logic_checks import LogicChecks
+from asistente_ladm_col.logic.quality.quality import QualityUtils
+from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 
 import_qgis_model_baker()
 import_processing()

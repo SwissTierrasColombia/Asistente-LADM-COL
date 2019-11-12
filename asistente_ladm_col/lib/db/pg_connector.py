@@ -28,17 +28,17 @@ from qgis.core import (QgsWkbTypes,
 
 from .db_connector import (DBConnector,
                            EnumTestLevel)
-from asistente_ladm_col.lib.queries.postgresql import (basic_query,
-                                                       economic_query,
-                                                       physical_query,
-                                                       legal_query,
-                                                       property_record_card_query,
-                                                       logic_validation_queries)
-from ..queries.ant_report import (ant_map_plot_query,
-                                  ant_map_neighbouring_change_query)
-from ..queries.annex_17_report import (annex17_plot_data_query,
-                                       annex17_building_data_query,
-                                       annex17_point_data_query)
+from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_query,
+                                                                        economic_query,
+                                                                        physical_query,
+                                                                        legal_query,
+                                                                        property_record_card_query)
+from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import logic_validation_queries
+from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report import ant_map_neighbouring_change_query, \
+    ant_map_plot_query
+from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report import (annex17_plot_data_query,
+                                                                               annex17_building_data_query,
+                                                                               annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
                                       OPERATION_MODEL_PREFIX,

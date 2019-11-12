@@ -71,7 +71,7 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 # PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
-STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
 # Settings for create schema according to LADM-COL
@@ -98,22 +98,22 @@ URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Repor
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
-    'create_admin_source': 'cadastre/Source.html#administrative-source',
-    'create_parcel': 'cadastre/Basic_Administrative_Unit.html#parcel',
-    'create_points': 'cadastre/Surveying_and_Representation.html#create-point',
-    'create_boundaries': 'cadastre/Surveying_and_Representation.html#create-boundary',
-    'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
-    'create_building': 'cadastre/Spatial_Unit.html#create-building',
-    'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
-    'create_right_of_way':'cadastre/Spatial_Unit.html#create-right-of-way',
-    'associate_ext_address': 'cadastre/Spatial_Unit.html#associate-extaddress',
-    'create_right': 'cadastre/RRR.html#right',
-    'create_restriction': 'cadastre/RRR.html#restriction',
-    'create_spatial_source': 'cadastre/Source.html#spatial-source',
+    'create_admin_source': 'operation/Source.html#administrative-source',
+    'create_parcel': 'operation/Basic_Administrative_Unit.html#parcel',
+    'create_points': 'operation/Surveying_and_Representation.html#create-point',
+    'create_boundaries': 'operation/Surveying_and_Representation.html#create-boundary',
+    'create_plot': 'operation/Spatial_Unit.html#create-plot',
+    'create_building': 'operation/Spatial_Unit.html#create-building',
+    'create_building_unit': 'operation/Spatial_Unit.html#create-building-unit',
+    'create_right_of_way':'operation/Spatial_Unit.html#create-right-of-way',
+    'associate_ext_address': 'operation/Spatial_Unit.html#associate-extaddress',
+    'create_right': 'operation/RRR.html#right',
+    'create_restriction': 'operation/RRR.html#restriction',
+    'create_spatial_source': 'operation/Source.html#spatial-source',
     'load_layers': 'load_layers.html#load-layers',
-    'col_party': 'cadastre/Party.html#col-party',
-    'group_party': 'cadastre/Party.html#group-party',
-    'quality_rules': 'cadastre/Quality.html',
+    'col_party': 'operation/Party.html#col-party',
+    'group_party': 'operation/Party.html#group-party',
+    'quality_rules': 'operation/Quality.html',
     'settings': 'settings.html',
     'create_building_unit_valuation': 'valuation/Create_building_unit.html',
     'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',
@@ -212,7 +212,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # UI OBJECTNAMES
-CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
+OPERATION_MENU_OBJECTNAME = "ladm_col_operation"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
 QUERIES_ACTION_OBJECTNAME = "ladm_col_queries"
@@ -251,17 +251,17 @@ WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
 
 # Cadastral model
 WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"
-WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE = "wizard_create_administrative_source_cadastre"
-WIZARD_CREATE_BOUNDARY_CADASTRE = "wizard_create_boundary_cadastre"
-WIZARD_CREATE_BUILDING_CADASTRE = "wizard_create_building_cadastre"
-WIZARD_CREATE_BUILDING_UNIT_CADASTRE = "wizard_create_building_unit_cadastre"
-WIZARD_CREATE_RIGHT_CADASTRE = "wizard_create_right_cadastre"
-WIZARD_CREATE_RESTRICTION_CADASTRE = "wizard_create_restriction_cadastre"
-WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
-WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
-WIZARD_CREATE_PLOT_CADASTRE = "wizard_create_plot_cadastre"
-WIZARD_CREATE_EXT_ADDRESS_CADASTRE = "wizard_create_ext_address_cadastre"
-WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE = "wizard_create_right_of_way_cadastre"
+WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION = "wizard_create_administrative_source_operation"
+WIZARD_CREATE_BOUNDARY_OPERATION = "wizard_create_boundary_operation"
+WIZARD_CREATE_BUILDING_OPERATION = "wizard_create_building_operation"
+WIZARD_CREATE_BUILDING_UNIT_OPERATION = "wizard_create_building_unit_operation"
+WIZARD_CREATE_RIGHT_OPERATION = "wizard_create_right_operation"
+WIZARD_CREATE_RESTRICTION_OPERATION = "wizard_create_restriction_operation"
+WIZARD_CREATE_SPATIAL_SOURCE_OPERATION = "wizard_create_spatial_source_operation"
+WIZARD_CREATE_PARCEL_OPERATION = "wizard_create_parcel_operation"
+WIZARD_CREATE_PLOT_OPERATION = "wizard_create_plot_operation"
+WIZARD_CREATE_EXT_ADDRESS_OPERATION = "wizard_create_ext_address_operation"
+WIZARD_CREATE_RIGHT_OF_WAY_OPERATION = "wizard_create_right_of_way_operation"
 
 # Valuation model
 WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION = "wizard_create_geoeconomic_zone_valuation"

@@ -100,10 +100,7 @@ class ModelParser(QObject):
         """ E.g., V2_9_6 -> 2.9.6 """
         return ".".join(str_version.replace("_V", "").split("_"))
 
-    def validate_cadastre_model_version(self):
-        if self.debug:
-            print("Cadastre model:", self.cadastre_model)
-
+    def validate_operation_model_version(self):
         if self.current_version_operation_model is None:
             return (False, QCoreApplication.translate("ModelParser",
                                                       "INVALID STRUCTURE: We couldn't determine the version of the 'Operation' model. Are you sure the database (or schema) has the 'Operation' model structure?"))

@@ -27,8 +27,7 @@ from qgis.core import (Qgis,
 
 from ..config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import Names
-from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
-from ..utils.geometry import GeometryUtils
+from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
 class ToolBar(QObject):
@@ -100,36 +99,6 @@ class ToolBar(QObject):
             self.iface.mapCanvas().refresh()
         else:
             self.qgis_utils.message_emitted.emit(QCoreApplication.translate("ToolBar", "There are no boundaries to build."), Qgis.Info)
-
-    def enable_topological_editing(self, db):
-        # Enable Topological Editing
-        QgsProject.instance().setTopologicalEditing(True)
-
-        dlg = LayersForTopologicalEditionDialog()
-        if dlg.exec_() == QDialog.Accepted:
-            # Load layers selected in the dialog
-
-            layers = dlg.selected_layers_info
-            self.qgis_utils.get_layers(db, layers, load=True)
-            if not layers:
-                return None
-
-            list_layers = list()
-            # Open edit session in all layers
-            for layer_name, layer_info in layers.items():
-                layer = layers[layer_name][LAYER]
-                layer.startEditing()
-                list_layers.append(layer)
-
-            # Activate "Vertex Tool (All Layers)"
-            self.qgis_utils.activate_layer_requested.emit(list_layers[0])
-            self.qgis_utils.action_vertex_tool_requested.emit()
-
-            self.qgis_utils.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer.name() for layer in layers[:-1]), layers[-1].name()),
-                Qgis.Info, 30)
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         layers = {

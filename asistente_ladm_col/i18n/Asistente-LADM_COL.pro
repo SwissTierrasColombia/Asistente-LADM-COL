@@ -2,22 +2,22 @@ FORMS = ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
         ../ui/dockwidget_queries.ui \
-        ../ui/wiz_associate_extaddress_cadastre.ui \
-        ../ui/wiz_create_points_cadastre.ui \
-        ../ui/wiz_create_administrative_source_cadastre.ui \
-        ../ui/wiz_create_building_unit_qualification_valuation.ui \
-        ../ui/wiz_create_building_unit_valuation.ui \
-        ../ui/wiz_create_geoeconomic_zone_valuation.ui \
-        ../ui/wiz_create_plot_cadastre.ui \
-        ../ui/wiz_create_boundaries_cadastre.ui \
-        ../ui/wiz_create_parcel_cadastre.ui \
-        ../ui/wiz_create_physical_zone_valuation.ui \
-        ../ui/wiz_create_building_cadastre.ui \
-        ../ui/wiz_create_right_of_way_cadastre.ui \
-        ../ui/wiz_create_col_party_cadastre.ui \
-        ../ui/wiz_create_restriction_cadastre.ui \
-        ../ui/wiz_create_right_cadastre.ui \
-        ../ui/wiz_create_spatial_source_cadastre.ui \
+        ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
+        ../ui/wizards/operation/wiz_create_points_operation.ui \
+        ../ui/wizards/operation/wiz_create_administrative_source_operation.ui \
+        ../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui \
+        ../ui/wizards/valuation/wiz_create_building_unit_valuation.ui \
+        ../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui \
+        ../ui/wizards/operation/wiz_create_plot_operation.ui \
+        ../ui/wizards/operation/wiz_create_boundaries_operation.ui \
+        ../ui/wizards/operation/wiz_create_parcel_operation.ui \
+        ../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui \
+        ../ui/wizards/operation/wiz_create_building_operation.ui \
+        ../ui/wizards/operation/wiz_create_right_of_way_operation.ui \
+        ../ui/wizards/operation/wiz_create_col_party_operation.ui \
+        ../ui/wizards/operation/wiz_create_restriction_operation.ui \
+        ../ui/wizards/operation/wiz_create_right_operation.ui \
+        ../ui/wizards/operation/wiz_create_spatial_source_operation.ui \
         ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/change_detection/changes_parties_panel_widget.ui \
         ../ui/change_detection/changes_per_parcel_panel_widget.ui \
@@ -44,23 +44,23 @@ SOURCES = ../__init__.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
           ../utils/decorators.py \
-          ../gui/associate_extaddress_cadastre_wizard.py \
-          ../gui/create_administrative_source_cadastre_wizard.py \
+          ../gui/wizards/operation/wiz_ext_address_operation.py \
+          ../gui/create_administrative_source_operation_wizard.py \
           ../gui/create_building_unit_qualification_valuation_wizard.py \
           ../gui/create_building_unit_valuation_wizard.py \
-          ../gui/create_col_party_cadastre_wizard.py \
+          ../gui/create_col_party_operation_wizard.py \
           ../gui/create_geoeconomic_zone_valuation_wizard.py \
-          ../gui/create_group_party_cadastre.py \
-          ../gui/create_restriction_cadastre_wizard.py \
-          ../gui/create_right_cadastre_wizard.py \
-          ../gui/create_spatial_source_cadastre_wizard.py \
-          ../gui/create_plot_cadastre_wizard.py \
-          ../gui/create_boundaries_cadastre_wizard.py \
-          ../gui/create_points_cadastre_wizard.py \
-          ../gui/create_parcel_cadastre_wizard.py \
-          ../gui/create_building_cadastre_wizard.py \
-          ../gui/create_building_unit_cadastre_wizard.py \
-          ../gui/create_right_of_way_cadastre_wizard.py \
+          ../gui/create_group_party_operation.py \
+          ../gui/create_restriction_operation_wizard.py \
+          ../gui/create_right_operation_wizard.py \
+          ../gui/create_spatial_source_operation_wizard.py \
+          ../gui/create_plot_operation_wizard.py \
+          ../gui/create_boundaries_operation_wizard.py \
+          ../gui/create_points_operation_wizard.py \
+          ../gui/create_parcel_operation_wizard.py \
+          ../gui/create_building_operation_wizard.py \
+          ../gui/create_building_unit_operation_wizard.py \
+          ../gui/create_right_of_way_operation_wizard.py \
           ../gui/create_physical_zone_valuation_wizard.py \
           ../gui/dockwidget_queries.py \
           ../gui/toolbar.py \

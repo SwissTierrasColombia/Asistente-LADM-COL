@@ -33,7 +33,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QTextStream,
                               QIODevice,
                               QUrl)
-from qgis.PyQt.QtWidgets import QProgressBar
+from qgis.PyQt.QtWidgets import (QProgressBar,
+                                 QDialog)
 from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QNetworkRequest)
 from qgis.core import (Qgis,
@@ -58,8 +59,10 @@ from qgis.core import (Qgis,
                        QgsVectorLayer)
 
 import processing
+
+from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from .decorators import _activate_processing_plugin
-from .geometry import GeometryUtils
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
@@ -1259,3 +1262,33 @@ class QGISUtils(QObject):
                                                                                           QgsSnappingConfig.Vertex, tolerance,
                                                                                           QgsTolerance.Pixels))
         QgsProject.instance().setSnappingConfig(snapping)
+
+    def enable_topological_editing(self, db):
+        # Enable Topological Editing
+        QgsProject.instance().setTopologicalEditing(True)
+
+        dlg = LayersForTopologicalEditionDialog()
+        if dlg.exec_() == QDialog.Accepted:
+            # Load layers selected in the dialog
+
+            layers = dlg.selected_layers_info
+            self.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            list_layers = list()
+            # Open edit session in all layers
+            for layer_name, layer_info in layers.items():
+                layer = layers[layer_name][LAYER]
+                layer.startEditing()
+                list_layers.append(layer)
+
+            # Activate "Vertex Tool (All Layers)"
+            self.activate_layer_requested.emit(list_layers[0])
+            self.action_vertex_tool_requested.emit()
+
+            self.message_with_duration_emitted.emit(
+                QCoreApplication.translate("ToolBar",
+                                           "You can start moving nodes in layers {} and {}, simultaneously!").format(
+                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]),
+                Qgis.Info, 30)

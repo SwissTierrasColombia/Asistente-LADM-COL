@@ -30,6 +30,17 @@ class Logger(QObject, metaclass=SingletonQObject):
     Point of access to send messages from the plugin to either the GUI or a log.
     Note that messages within a dialog are better handled by the dialog itself.
 
+    The mode specifies whether we aim to show logs to users or devs. For the
+    former, we hide debug messages, which can be too much. For the latter, we
+    show everything into the QGIS log, including those messages that should be
+    shown in the Message Bar or Status Bar.
+
+    Log Handlers say where to show the log (see LogHandlerEnum).
+
+    If log should be put into a file, enable_file_log(file_path) should be called.
+    When a file log is enabled, we send all log messages to it, even those that
+    should be shown in the Message Bar or Status Bar.
+
     Only devs can debug, but users can get a whole log by writing it to a file.
     """
     message_emitted = pyqtSignal(str, int)  # Message, level
