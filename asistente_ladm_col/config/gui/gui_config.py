@@ -27,9 +27,7 @@ class GUI_Config(QObject):
                     OBJECT_NAME: "ladm_col_data_management_menu",
                     ICON: DATA_MANAGEMENT_ICON,
                     ACTIONS: [
-                        ACTION_SCHEMA_IMPORT,
-                        ACTION_IMPORT_DATA,
-                        ACTION_EXPORT_DATA
+                        ACTION_SCHEMA_IMPORT
                     ]
                 },
                 SEPARATOR,
@@ -79,7 +77,7 @@ class GUI_Config(QObject):
                     ]
                 }, {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operation"),
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastral data capture"),
                     OBJECT_NAME: "ladm_col_operation_menu",
                     ICON: OPERATION_ICON,
                     ACTIONS: [
@@ -104,6 +102,8 @@ class GUI_Config(QObject):
                                 ACTION_CREATE_BUILDING_UNIT,
                                 SEPARATOR,
                                 ACTION_CREATE_RIGHT_OF_WAY,
+                                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                                SEPARATOR,
                                 ACTION_CREATE_EXT_ADDRESS
                             ]
                         }, {
@@ -195,7 +195,6 @@ class GUI_Config(QObject):
                 ACTION_MOVE_NODES,
                 ACTION_FILL_BFS,
                 ACTION_FILL_MORE_BFS_AND_LESS,
-                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
                 {
                     WIDGET_TYPE: MENU,
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM objects"),
@@ -207,7 +206,10 @@ class GUI_Config(QObject):
                         ACTION_CREATE_PLOT,
                         ACTION_CREATE_BUILDING,
                         ACTION_CREATE_BUILDING_UNIT,
+                        SEPARATOR,
                         ACTION_CREATE_RIGHT_OF_WAY,
+                        ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                        SEPARATOR,
                         ACTION_CREATE_EXT_ADDRESS,
                         SEPARATOR,
                         ACTION_CREATE_PARCEL,

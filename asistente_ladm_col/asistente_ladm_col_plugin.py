@@ -102,11 +102,13 @@ from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
+                                                 _cadastral_manager_model_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
                                                  _official_db_connection_required,
+                                                 _operation_model_required,
                                                  _different_db_connections_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
@@ -720,35 +722,43 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
+    @_cadastral_manager_model_required
+    @_db_connection_required
+    @_activate_processing_plugin
     def run_etl_cobol(self):
         processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_topological_editing(self, *args):
         self.qgis_utils.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_fill_topology_table_pointbfs(self, *args):
         self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self, *args):
         self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def call_fill_right_of_way_relations(self, *args):
@@ -756,18 +766,21 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_annex_17_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
@@ -811,6 +824,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def show_queries(self, *args):
         if self._dock_widget_queries is not None:
@@ -919,6 +933,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def show_dlg_group_party(self, *args):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
@@ -961,6 +976,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
@@ -990,6 +1006,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
+    @_operation_model_required
     @_db_connection_required
     @_official_db_connection_required
     @_different_db_connections_required
@@ -1000,6 +1017,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
+    @_operation_model_required
     @_db_connection_required
     @_official_db_connection_required
     @_different_db_connections_required
@@ -1070,8 +1088,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = self.wizard_config.get_wizard_config(wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
-                                                      wiz_settings[WIZARD_LAYERS],
-                                                      wiz_settings[WIZARD_TOOL_NAME]):
+                                                         wiz_settings[WIZARD_LAYERS],
+                                                         wiz_settings[WIZARD_TOOL_NAME]):
 
             if wiz_settings[WIZARD_LAYERS] is not None:
                 self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,

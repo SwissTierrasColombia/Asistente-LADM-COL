@@ -35,8 +35,8 @@ class ConnectionManager(QObject):
     Access point to get and set DB Connectors used by the plugin.
 
     The plugin uses a DB Connector for Cadastral data collection (barrido) and one for the Official cadastral data.
-    Other connections might be needed (e.g., while retrieving databases for the server in the setting sdialog, but they
-     are not handled by this class).
+    Other connections might be needed (e.g., while retrieving databases for the server in the settings dialog, but they
+    are not handled by this class).
     """
     db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     official_db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db

@@ -168,6 +168,56 @@ def _official_db_connection_required(func_to_decorate):
 
     return decorated_function
 
+def _operation_model_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        db = inst.get_db_connection()
+        if db.operation_model_exists():
+            func_to_decorate(*args, **kwargs)
+        else:
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                                                           QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                      "Check your database connection. The 'Operation' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings."))
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
+            button.pressed.connect(inst.show_settings)
+            widget.layout().addWidget(button)
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+            inst.log.logMessage(  # TODO al logger
+                QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
+                PLUGIN_NAME,
+                Qgis.Warning
+            )
+
+    return decorated_function
+
+def _cadastral_manager_model_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        db = inst.get_db_connection()
+        if db.supplies_model_exists():
+            func_to_decorate(*args, **kwargs)
+        else:
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                                                           QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                      "Check your database connection. The 'Datos Gestor Catastral' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings."))
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
+            button.pressed.connect(inst.show_settings)
+            widget.layout().addWidget(button)
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+            inst.log.logMessage(  # TODO al logger
+                QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
+                PLUGIN_NAME,
+                Qgis.Warning
+            )
+
+    return decorated_function
+
 def _different_db_connections_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
