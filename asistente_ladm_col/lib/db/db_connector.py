@@ -189,3 +189,6 @@ class DBConnector(QObject):
 
     def get_ladm_layer_name(self, layer, validate_is_ladm=False):
         raise NotImplementedError
+
+    def get_interlis_version(self):
+        raise NotImplementedError

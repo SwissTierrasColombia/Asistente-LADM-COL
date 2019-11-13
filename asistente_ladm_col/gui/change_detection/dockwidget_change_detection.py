@@ -211,6 +211,7 @@ class ChangeDetectionUtils(QObject):
         self._official_db = official_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
+        self.names = Names()
         self.symbology = Symbology()
 
         self._layers = dict()

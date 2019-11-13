@@ -44,10 +44,10 @@ def _db_connection_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
+                                                                                      "The DB connection is not valid. Details: {}".format(msg)))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-            button.pressed.connect(inst.show_settings)
+            button.pressed.connect(inst.show_settings_clear_message_bar)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
             inst.log.logMessage(
@@ -152,12 +152,10 @@ def _official_db_connection_required(func_to_decorate):
         if res:
             func_to_decorate(inst)
         else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                         "Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", "The official DB is not valid. Details: {}".format(msg))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Official Data Settings"))
-            button.pressed.connect(inst.show_official_data_settings)
+            button.pressed.connect(inst.show_official_data_settings_clear_message_bar)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
             inst.log.logMessage(

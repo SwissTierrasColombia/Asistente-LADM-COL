@@ -221,6 +221,11 @@ class PGConnector(DBConnector):
                                                           "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
                     self.schema))
 
+            if self.get_ili2db_version() != 4:
+                return (False, QCoreApplication.translate("PGConnector",
+                                                          "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
+                    self.schema))
+
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
@@ -966,3 +971,21 @@ class PGConnector(DBConnector):
             uri += ["dbname={}".format(self._PROVIDER_NAME)]
 
         return ' '.join(uri)
+
+    def get_ili2db_version(self):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
+
+        # Borrowed from Model Baker
+        cur = self.conn.cursor()
+        cur.execute("""SELECT *
+                       FROM information_schema.columns
+                       WHERE table_schema = '{schema}'
+                       AND(table_name='t_ili2db_attrname' OR table_name = 't_ili2db_model' )
+                       AND(column_name='owner' OR column_name = 'file' )
+                    """.format(schema=self.schema))
+        if cur.rowcount > 1:
+            return 3
+        else:
+            return 4
