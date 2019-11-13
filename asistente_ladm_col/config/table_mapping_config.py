@@ -1,6 +1,7 @@
 from qgis.core import NULL
 
 from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.lib.logger import Logger
 
 TABLE_NAME = 'table_name'
 VARIABLE_NAME = 'variable'
@@ -10,6 +11,15 @@ DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
 
+ANT_MODEL_PREFIX = "ANT"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+LADM_MODEL_PREFIX = "LADM_COL"
+OPERATION_MODEL_PREFIX = "Operacion"
+REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+VALUATION_MODEL_PREFIX = "Avaluos"
 
 class Names(metaclass=Singleton):
     """
@@ -17,7 +27,6 @@ class Names(metaclass=Singleton):
     Note: Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
           one could shorten table and field names via ili2db.
     """
-
     ############################################ TABLE VARIABLES ###########################################################
     T_ID_F = None
     ILICODE_F = None
@@ -1103,6 +1112,9 @@ class Names(metaclass=Singleton):
         }},
     }
 
+    def __init__(self):
+        self.logger = Logger()
+
     def initialize_table_and_field_names(self, dict_names):
         """
         Update class variables (table and field names) according to a dictionary of names coming from a DB connection.
@@ -1113,27 +1125,23 @@ class Names(metaclass=Singleton):
                            info, and value as sqlname (produced by ili2db).
         :return: True if anything is updated, False otherwise.
         """
+        self.reset_table_and_field_names()  # We will start mapping from scratch, so reset any previous mapping.
+
         any_update = False
-        debug = False
+        table_names_count = 0
         if dict_names:
             if T_ID not in dict_names or DISPLAY_NAME not in dict_names or ILICODE not in dict_names or DESCRIPTION not in dict_names:
-                # TODO: Logger "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE, DESCRIPTION."
+                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
                 return False
 
             for table_key, attrs in self.TABLE_DICT.items():
-                # debug = table_key == 'Operacion.Operacion.OP_UnidadConstruccion'
-
                 if table_key in dict_names:
                     setattr(self, attrs[VARIABLE_NAME], dict_names[table_key][TABLE_NAME])
+                    table_names_count += 1
                     any_update = True
-                    if debug:
-                        print("Field Names: ", attrs[FIELDS_DICT])
                     for field_key, field_variable in attrs[FIELDS_DICT].items():
                         if field_key in dict_names[table_key]:
-                            if debug:
-                                print(field_variable, dict_names[table_key][field_key])
                             setattr(self, field_variable, dict_names[table_key][field_key])
-
 
             # Required fields mapped in a custom way
             self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
@@ -1141,10 +1149,28 @@ class Names(metaclass=Singleton):
             self.DESCRIPTION_F = dict_names[DESCRIPTION] if DESCRIPTION in dict_names else None
             self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME] if DISPLAY_NAME in dict_names else None
 
-        # set init custom variables
+        # Set domain values and other values that are independent of the DB engine
         self.set_custom_variables()
 
+        self.logger.info(__name__, "Table and field names have been set!")
+        self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
         return any_update
+
+    def reset_table_and_field_names(self):
+        """
+        Make all table and field variables None again to prepare the next mapping.
+        """
+        for table_key, attrs in self.TABLE_DICT.items():
+            setattr(self, attrs[VARIABLE_NAME], None)
+            for field_key, field_variable in attrs[FIELDS_DICT].items():
+                setattr(self, field_variable, None)
+
+        self.T_ID_F = None
+        self.ILICODE_F = None
+        self.DESCRIPTION_F = None
+        self.DISPLAY_NAME_F = None
+
+        self.logger.info(__name__, "Names (DB mapping) have been reset to prepare the next mapping.")
 
     def set_custom_variables(self):
         """
@@ -1197,7 +1223,10 @@ class Names(metaclass=Singleton):
                           "DISPLAY_NAME_F"]
 
         for k, v in self.TABLE_DICT.items():
-            if k.split(".")[0] in models:
+            model = k.split(".")[0]
+            if model in models and model != LADM_MODEL_PREFIX:
+                # LADM classes may be added independently, for instance, Supplies adds only ExtArchivo. So, no need to
+                # add the whole LADM model to this test.
                 required_names.append(v[VARIABLE_NAME])
                 for k1, v1 in v[FIELDS_DICT].items():
                     if k1.split(".")[0] in models:

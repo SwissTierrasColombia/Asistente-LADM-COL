@@ -20,10 +20,11 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 from qgis.core import (QgsApplication,
                        Qgis)
 
-from asistente_ladm_col import PLUGIN_NAME
 from asistente_ladm_col.config.enums import (LogHandlerEnum,
                                              LogModeEnum)
 from asistente_ladm_col.utils.singleton import SingletonQObject
+
+TAB_NAME_FOR_LOGS = "Asistente LADM_COL"
 
 class Logger(QObject, metaclass=SingletonQObject):
     """
@@ -96,7 +97,7 @@ class Logger(QObject, metaclass=SingletonQObject):
             if self.mode == LogModeEnum.DEV:
                 self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
         elif handler == LogHandlerEnum.QGIS_LOG:
-            self.log.logMessage(f"[{module_name}] {msg}", PLUGIN_NAME, level, False)
+            self.log.logMessage(f"[{module_name}] {msg}", TAB_NAME_FOR_LOGS, level, False)
 
         if self._file_log:
             # Logic to write message to file
