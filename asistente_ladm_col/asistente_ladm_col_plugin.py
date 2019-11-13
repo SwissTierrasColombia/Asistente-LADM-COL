@@ -87,6 +87,7 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
+from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import EtlCobolDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -267,7 +268,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(self.run_etl_cobol)
+        self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
 
         self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
 
@@ -720,8 +721,9 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    def run_etl_cobol(self):
-        processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
+    def show_etl_cobol_dialog(self):
+        dlg = EtlCobolDialog(self.qgis_utils, self.get_db_connection())
+        dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
