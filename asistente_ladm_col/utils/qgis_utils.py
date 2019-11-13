@@ -387,14 +387,17 @@ class QGISUtils(QObject):
         return ladm_layers
 
     def required_layers_are_available(self, db, layers, tool_name):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "'{}' tool has been closed because there was a problem loading the requeries layers.").format(tool_name)
+
+        if None in layers:
+            self.message_emitted.emit(msg, Qgis.Warning)
+            return False
+
         # Load layers
         self.get_layers(db, layers, load=True)
-        if not layers:
-            self.message_emitted.emit(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    tool_name),
-                Qgis.Warning)
+        if not layers or layers is None:
+            self.message_emitted.emit(msg, Qgis.Warning)
             return False
 
         # Check if any layer is in editing mode

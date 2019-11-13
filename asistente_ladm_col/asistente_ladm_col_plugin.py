@@ -189,8 +189,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        # self.qgis_utils.message_emitted.connect(self.show_message)
-        # self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
+        self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
@@ -1090,21 +1090,19 @@ class AsistenteLADMCOLPlugin(QObject):
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
                                                          wiz_settings[WIZARD_LAYERS],
                                                          wiz_settings[WIZARD_TOOL_NAME]):
+            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
+                                                  wiz_settings)
+            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+                # Required signal for wizard geometry creating
+                self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+                self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
 
-            if wiz_settings[WIZARD_LAYERS] is not None:
-                self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
-                                                      wiz_settings)
-                if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
-                    # Required signal for wizard geometry creating
-                    self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
-                    self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+            # Required signal that allow to know if there is a wizard opened
+            self.is_wizard_open = True
+            self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
 
-                # Required signal that allow to know if there is a wizard opened
-                self.is_wizard_open = True
-                self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
-
-                if self.wiz:
-                    self.wiz.exec_()
+            if self.wiz:
+                self.wiz.exec_()
 
     def close_wizard_if_opened(self):
         if self.wiz:
