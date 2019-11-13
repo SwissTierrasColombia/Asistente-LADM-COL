@@ -229,7 +229,7 @@ class PGConnector(DBConnector):
                 self._get_table_and_field_names()
 
             models = list()
-            if self.ladm_model_exists:
+            if self.ladm_model_exists():
                 models.append(LADM_MODEL_PREFIX)
             if self.operation_model_exists():
                 models.append(OPERATION_MODEL_PREFIX)
@@ -237,15 +237,15 @@ class PGConnector(DBConnector):
                 models.append(CADASTRAL_FORM_MODEL_PREFIX)
             if self.valuation_model_exists():
                 models.append(VALUATION_MODEL_PREFIX)
-            if self.ant_model_exists:
+            if self.ant_model_exists():
                 models.append(ANT_MODEL_PREFIX)
-            if self.reference_cartography_model_exists:
+            if self.reference_cartography_model_exists():
                 models.append(REFERENCE_CARTOGRAPHY_PREFIX)
-            if self.snr_data_model_exists:
+            if self.snr_data_model_exists():
                 models.append(SNR_DATA_MODEL_PREFIX)
-            if self.supplies_integration_model_exists:
+            if self.supplies_integration_model_exists():
                 models.append(SUPPLIES_INTEGRATION_MODEL_PREFIX)
-            if self.supplies_model_exists:
+            if self.supplies_model_exists():
                 models.append(SUPPLIES_MODEL_PREFIX)
 
             if not models:
@@ -790,13 +790,13 @@ class PGConnector(DBConnector):
         return result if not isinstance(result, tuple) else None
 
     def get_models(self, schema=None):
-        query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(
+        query = "SELECT distinct split_part(iliname,'.',1) as modelname FROM {schema}.t_ili2db_trafo".format(
             schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         lst_models = list()
         if result is not None and not isinstance(result, tuple):
-            lst_models = [db_model['modelname'] for db_model in result]
-
+            lst_models = [db_model['modelname'] for db_model in result] 
+        self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models
 
     def create_database(self, uri, db_name):

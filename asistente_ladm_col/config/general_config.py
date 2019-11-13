@@ -41,7 +41,7 @@ OPERATION_MODEL_PREFIX = "Operacion"
 REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
 SNR_DATA_MODEL_PREFIX = "Datos_SNR"
 SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
-SUPPLIES_MODEL_PREFIX = "Insumos"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
 VALUATION_MODEL_PREFIX = "Avaluos"
 
 # From this version on the plugin will work, a message will block prior versions

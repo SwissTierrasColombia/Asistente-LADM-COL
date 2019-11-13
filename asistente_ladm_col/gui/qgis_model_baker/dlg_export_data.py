@@ -42,7 +42,6 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.utils.utils import parse_models_from_db_meta_attrs_list
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
                                       SETTINGS_CONNECTION_TAB_INDEX,
                                       SETTINGS_MODELS_TAB_INDEX)
@@ -135,7 +134,7 @@ class DialogExportData(QDialog, DIALOG_UI):
     def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
 
-        model_names = parse_models_from_db_meta_attrs_list(self.db.get_models())
+        model_names = self.db.get_models()
 
         if model_names:
             for model_name in model_names:

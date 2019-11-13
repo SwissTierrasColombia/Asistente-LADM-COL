@@ -22,6 +22,7 @@ from qgis.PyQt.QtCore import QObject
 from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 
 class DBConnector(QObject):
     """
@@ -32,6 +33,7 @@ class DBConnector(QObject):
 
     def __init__(self, uri, conn_dict=dict()):
         QObject.__init__(self)
+        self.logger = Logger()
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
         self._uri = None

@@ -42,7 +42,6 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.utils.utils import parse_models_from_db_meta_attrs_list
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
                                       DEFAULT_HIDDEN_MODELS,
@@ -260,7 +259,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # Get list of models present in the XTF file and in the DB
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
-        db_models = set(parse_models_from_db_meta_attrs_list(self.db.get_models()))
+        db_models = set(self.db.get_models())
 
         if not ili_models.issubset(db_models):
             message_error = "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \

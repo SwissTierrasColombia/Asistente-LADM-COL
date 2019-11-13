@@ -30,7 +30,7 @@ from ..config.general_config import (OPERATION_MODEL_PREFIX,
                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
                                      SUPPLIES_MODEL_PREFIX)
 from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
-from ..utils.utils import is_version_valid, parse_models_from_db_meta_attrs_list
+from ..utils.utils import is_version_valid
 
 
 class ModelParser(QObject):
@@ -53,12 +53,7 @@ class ModelParser(QObject):
         self._pro_gen_db_connector = qgis_model_baker_utils.get_model_baker_db_connection(self._db)
 
         if self._pro_gen_db_connector:
-            model_names = parse_models_from_db_meta_attrs_list([record['modelname'] for record in self._get_models()])
-
-            if self.debug:
-                print("Models:", model_names)
-
-            for current_model_name in model_names:
+            for current_model_name in self._get_models():
                 if current_model_name.startswith(OPERATION_MODEL_PREFIX):
                     parts = current_model_name.split(OPERATION_MODEL_PREFIX)
                     if len(parts) > 1:
@@ -152,4 +147,4 @@ class ModelParser(QObject):
         return self.current_version_supplies_model is not None
 
     def _get_models(self):
-        return self._pro_gen_db_connector.get_models()
+        return self._db.get_models()
