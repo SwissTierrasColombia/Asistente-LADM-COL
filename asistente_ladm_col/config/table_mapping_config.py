@@ -160,7 +160,7 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.col_ueUeGrupo"
     # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente"
     OP_AGREEMENT_TYPE_D = None  # "Operacion_V2_9_5.OP_AcuerdoTipo"
-    OP_PARCEL_TYPE_T = None  # "Operacion_V2_9_5.OP_CondicionPredioTipo"
+    OP_PARCEL_TYPE_D = None  # "Operacion_V2_9_5.OP_CondicionPredioTipo"
     OP_RIGHT_TYPE_D = None  # "Operacion_V2_9_5.OP_DerechoTipo"
     OP_GROUP_PARTY_T = None  # "Operacion_V2_9_6.Operacion.OP_Agrupacion_Interesados"
     OP_BUILDING_T = None  # "Operacion_V2_9_5.Operacion.OP_Construccion"
@@ -872,7 +872,7 @@ class Names(metaclass=Singleton):
         "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UnidadConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_TYPE_D", FIELDS_DICT: {}},
-        "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_T", FIELDS_DICT: {}},
+        "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DerechoTipo": {VARIABLE_NAME: "OP_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.Operacion.OP_Agrupacion_Interesados": {VARIABLE_NAME: "OP_GROUP_PARTY_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.COL_Agrupacion_Interesados.Tipo": "COL_GROUP_PARTY_T_TYPE_F",
@@ -1465,7 +1465,7 @@ class Names(metaclass=Singleton):
                                self.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
                                self.OP_PARCEL_T_VALUATION_F,
                                self.COL_BAUNIT_T_NAME_F,
-                               self.OP_PARCEL_T_TYPE_F],
+                               self.OP_PARCEL_T_PARCEL_TYPE_F],
             self.OP_RIGHT_T: [self.OP_RIGHT_T_TYPE_F,
                               self.COL_RRR_T_DESCRIPTION_F,
                               self.COL_RRR_T_SHARE_CHECK_F,
@@ -1569,29 +1569,29 @@ class Names(metaclass=Singleton):
     def get_layer_constraints(self):
         return  {
             self.OP_PARCEL_T: {
-                self.OP_PARCEL_T_TYPE_F: {
+                self.OP_PARCEL_T_PARCEL_TYPE_F: {
                     'expression': """
                                     CASE
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" =  get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" =  get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_PUBLIC_USE}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False),
+                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_ROAD}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False),
+                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
                                             num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') != 0 AND num_selected('{OP_BUILDING_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False),
-                                                                         get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN (get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False),
+                                                                         get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 1
                                         ELSE
                                             TRUE
-                                    END""".format(OP_PARCEL_T_TYPE_F=self.OP_PARCEL_T_TYPE_F,
-                                                  OP_PARCEL_TYPE_T=self.OP_PARCEL_TYPE_T,
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_PARCEL_TYPE_D=self.OP_PARCEL_TYPE_D,
                                                   OP_PLOT_T=self.OP_PLOT_T,
                                                   OP_BUILDING_T=self.OP_BUILDING_T,
                                                   OP_BUILDING_UNIT_T=self.OP_BUILDING_UNIT_T,
@@ -1615,35 +1615,35 @@ class Names(metaclass=Singleton):
                                             CASE
                                                 WHEN length("{OP_PARCEL_T_PARCEL_NUMBER_F}") != 30 OR regexp_match(to_string("{OP_PARCEL_T_PARCEL_NUMBER_F}"), '^[0-9]*$') = 0  THEN
                                                     FALSE
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 0
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_ROAD}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 4
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_PUBLIC_USE}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 3
                                                 ELSE
                                                     TRUE
                                             END
                                         ELSE
                                             TRUE
-                                    END""".format(OP_PARCEL_T_TYPE_F=self.OP_PARCEL_T_TYPE_F,
-                                                  OP_PARCEL_TYPE_T=self.OP_PARCEL_TYPE_T,
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_PARCEL_TYPE_D=self.OP_PARCEL_TYPE_D,
                                                   PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
                                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
                                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,

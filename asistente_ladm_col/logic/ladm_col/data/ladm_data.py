@@ -228,11 +228,11 @@ class LADM_DATA():
                 if item[self.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
-                        for PLOT_FIELD in plot_fields_to_compare:
-                            if plot_feature[PLOT_FIELD] != NULL:
-                                item[PLOT_FIELD] = plot_feature[PLOT_FIELD]
+                        for plot_field in plot_fields_to_compare:
+                            if plot_feature[plot_field] != NULL:
+                                item[plot_field] = plot_feature[plot_field]
                             else:
-                                item[PLOT_FIELD] = NULL
+                                item[plot_field] = NULL
 
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
@@ -420,7 +420,7 @@ class LADM_DATA():
                 self.names.OP_PARCEL_T_FMI_F,
                 self.names.COL_BAUNIT_T_NAME_F,
                 self.names.OP_PARCEL_T_DEPARTMENT_F,
-                self.names.OP_PARCEL_T_TYPE_F]
+                self.names.OP_PARCEL_T_PARCEL_TYPE_F]
 
     def get_party_fields_to_compare(self):
         return [self.names.OP_PARTY_T_DOCUMENT_TYPE_F,  # Right type will also be added to parties
@@ -428,4 +428,4 @@ class LADM_DATA():
                 self.names.COL_PARTY_T_NAME_F]
 
     def get_plot_fields_to_compare(self):
-        return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differenlty
+        return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differently
