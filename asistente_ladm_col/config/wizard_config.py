@@ -319,7 +319,7 @@ class WizardConfig:
                     self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
                     self.names.OP_BUILDING_UNIT_T: {'name': self.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
                     self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
-                    self.names.OP_PARCEL_TYPE_D: {'name': self.names.OP_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
+                    self.names.OP_CONDITION_PARCEL_TYPE_D: {'name': self.names.OP_CONDITION_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
                 },
                 WIZARD_EDITING_LAYER_NAME: self.names.OP_PARCEL_T,
                 WIZARD_READ_ONLY_FIELDS: [self.names.OP_PARCEL_T_PARCEL_TYPE_F],

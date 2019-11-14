@@ -20,10 +20,12 @@ from qgis.core import (QgsApplication,
                        NULL,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsFeature)
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 
 # TODO: Update with correct field
 # PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
@@ -38,7 +40,7 @@ class LADM_DATA():
     """
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.names = Names()
 
     def get_plots_related_to_parcels(self, db, t_ids, field_name, plot_layer=None, uebaunit_table=None):
@@ -201,7 +203,11 @@ class LADM_DATA():
             dict_attrs = dict()
             for field in layers[self.names.OP_PARCEL_T][LAYER].fields():
                 if field.name() in parcel_fields_to_compare:
-                    value = feature.attribute(field.name())
+                    if field.name() == self.names.OP_PARCEL_T_PARCEL_TYPE_F:
+                        # Go for domain value, instead of t_id
+                        value = self.get_domain_value_from_code(db, self.names.OP_CONDITION_PARCEL_TYPE_D, feature.attribute(field.name()))
+                    else:
+                        value = feature.attribute(field.name())
                     dict_attrs[field.name()] = value
 
             dict_attrs[self.names.T_ID_F] = feature[self.names.T_ID_F]
@@ -259,10 +265,14 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in party_fields_to_compare:
-                dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
+            for party_field in party_fields_to_compare:
+                if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
+                    dict_party[party_field] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                else:
+                    dict_party[party_field] = party_feature[party_field]
             # Add extra attribute from right table
-            dict_party['derecho'] = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
+            right_type_id = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
+            dict_party['derecho'] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -319,8 +329,11 @@ class LADM_DATA():
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in party_fields_to_compare:
-                dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
+            for party_field in party_fields_to_compare:
+                if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
+                    dict_party[party_field] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                else:
+                    dict_party[party_field] = party_feature[party_field]
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         # Reuse the dict to replace id_group_party for party info:
@@ -330,7 +343,8 @@ class LADM_DATA():
             for id_party in dict_group_party_parties[id_group_party]:
                 if id_party in dict_parties:
                     # Add extra attribute from right table
-                    dict_parties[id_party]['derecho'] = dict_group_party_right[id_group_party][self.names.OP_RIGHT_T_TYPE_F]
+                    right_type_id = dict_group_party_right[id_group_party][self.names.OP_RIGHT_T_TYPE_F]
+                    dict_parties[id_party]['derecho'] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -429,3 +443,90 @@ class LADM_DATA():
 
     def get_plot_fields_to_compare(self):
         return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differently
+
+    def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):
+        """
+        Get the t_id corresponding to a domain value. First look at the response in a cache.
+
+        :param db: DB Connector object.
+        :param domain_table: Table name or QgsVectorLayer
+        :param value: Value to search in the domain.
+        :param value_is_ilicode: Whether is an iliCode or a display name.
+        :return: The t_id corresponding to the given value or None.
+        """
+        res = None
+        domain_table_name = ''
+
+        if type(domain_table) is str:
+            domain_table_name = domain_table
+        else:  # QgsVectorLayer
+            domain_table_name = domain_table.name()
+
+        # Try to get it from cache
+        cached_res = self.names.get_domain_code(domain_table_name, value)
+        if cached_res is not None:
+            self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_res))
+            return cached_res
+
+        if type(domain_table_name) is str:
+            domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
+
+        if domain_table is not None:
+            domain_table_name = domain_table.name()
+
+            expression = "\"{}\" = '{}'".format(db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value)
+            request = QgsFeatureRequest(QgsExpression(expression))
+            request.setSubsetOfAttributes([db.names.T_ID_F], domain_table.fields())
+
+            features = domain_table.getFeatures(request)
+            feature = QgsFeature()
+            if features.nextFeature(feature):
+                res = feature[db.names.T_ID_F]
+                if res is not None:
+                    self.names.cache_domain_value(domain_table_name, res, value)
+
+        self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
+            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
+
+        return res
+
+    def get_domain_value_from_code(self, db, domain_table, code, value_is_ilicode=True):
+        """
+        Get the domain value corresponding to a t_id. First look at the response in a cache.
+
+        :param db: DB Connector object.
+        :param domain_table: Table name or QgsVectorLayer
+        :param value: t_id to search in the domain.
+        :param value_is_ilicode: Whether the result should be iliCode or display name.
+        :return: The value corresponding to the given t_id or None.
+        """
+        res = None
+        domain_table_name = ''
+
+        if type(domain_table) is str:
+            domain_table_name = domain_table
+        else:  # QgsVectorLayer
+            domain_table_name = domain_table.name()
+
+        # Try to get it from cache
+        cached_res = self.names.get_domain_value(domain_table_name, code)
+        if cached_res is not None:
+            self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_res))
+            return cached_res
+
+        if type(domain_table) is str:
+            domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
+
+        if domain_table is not None:
+            features = self.get_features_from_t_ids(domain_table, [code], no_attributes=False, no_geometry=True)
+            if features:
+                res = features[0][db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F]
+                if res is not None:
+                    self.names.cache_domain_value(domain_table_name, code, res)
+
+        self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
+            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
+
+        return res
