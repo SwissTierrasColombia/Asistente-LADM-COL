@@ -79,7 +79,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WizardConfig
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # » DON'T REMOVE « Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
@@ -104,11 +104,13 @@ from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
+                                                 _cadastral_manager_model_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
                                                  _official_db_connection_required,
+                                                 _operation_model_required,
                                                  _different_db_connections_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
@@ -189,8 +191,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        # self.qgis_utils.message_emitted.connect(self.show_message)
-        # self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
+        self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
@@ -723,35 +725,41 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     def show_etl_cobol_dialog(self):
+        # TODO: Should use @_activate_processing_plugin
         dlg = EtlCobolDialog(self.qgis_utils, self.get_db_connection(), conn_manager=self.conn_manager)
         dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_topological_editing(self, *args):
         self.qgis_utils.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_fill_topology_table_pointbfs(self, *args):
         self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self, *args):
         self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def call_fill_right_of_way_relations(self, *args):
@@ -759,18 +767,21 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def call_annex_17_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
@@ -814,6 +825,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def show_queries(self, *args):
         if self._dock_widget_queries is not None:
@@ -922,6 +934,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def show_dlg_group_party(self, *args):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
@@ -964,6 +977,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
@@ -993,6 +1007,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
+    @_operation_model_required
     @_db_connection_required
     @_official_db_connection_required
     @_different_db_connections_required
@@ -1003,6 +1018,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
+    @_operation_model_required
     @_db_connection_required
     @_official_db_connection_required
     @_different_db_connections_required
@@ -1073,23 +1089,21 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = self.wizard_config.get_wizard_config(wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
-                                                      wiz_settings[WIZARD_LAYERS],
-                                                      wiz_settings[WIZARD_TOOL_NAME]):
+                                                         wiz_settings[WIZARD_LAYERS],
+                                                         wiz_settings[WIZARD_TOOL_NAME]):
+            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
+                                                  wiz_settings)
+            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+                # Required signal for wizard geometry creating
+                self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+                self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
 
-            if wiz_settings[WIZARD_LAYERS] is not None:
-                self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
-                                                      wiz_settings)
-                if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
-                    # Required signal for wizard geometry creating
-                    self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
-                    self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+            # Required signal that allow to know if there is a wizard opened
+            self.is_wizard_open = True
+            self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
 
-                # Required signal that allow to know if there is a wizard opened
-                self.is_wizard_open = True
-                self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
-
-                if self.wiz:
-                    self.wiz.exec_()
+            if self.wiz:
+                self.wiz.exec_()
 
     def close_wizard_if_opened(self):
         if self.wiz:

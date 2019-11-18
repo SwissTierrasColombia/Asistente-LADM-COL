@@ -19,16 +19,16 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from ..config.general_config import (OPERATION_MODEL_PREFIX,
-                                     LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
-                                     CADASTRAL_FORM_MODEL_PREFIX,
-                                     VALUATION_MODEL_PREFIX,
-                                     LADM_MODEL_PREFIX,
-                                     ANT_MODEL_PREFIX,
-                                     REFERENCE_CARTOGRAPHY_PREFIX,
-                                     SNR_DATA_MODEL_PREFIX,
-                                     SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                     SUPPLIES_MODEL_PREFIX)
+from ..config.general_config import LATEST_OPERATION_MODEL_VERSION_SUPPORTED
+from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
+                                                            CADASTRAL_FORM_MODEL_PREFIX,
+                                                            VALUATION_MODEL_PREFIX,
+                                                            LADM_MODEL_PREFIX,
+                                                            ANT_MODEL_PREFIX,
+                                                            REFERENCE_CARTOGRAPHY_PREFIX,
+                                                            SNR_DATA_MODEL_PREFIX,
+                                                            SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                                            SUPPLIES_MODEL_PREFIX)
 from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
 from ..utils.utils import is_version_valid
 

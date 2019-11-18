@@ -34,22 +34,22 @@ from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_qu
                                                                         legal_query,
                                                                         property_record_card_query)
 from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import logic_validation_queries
-from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report import ant_map_neighbouring_change_query, \
-    ant_map_plot_query
+from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report import (ant_map_neighbouring_change_query,
+                                                                          ant_map_plot_query)
 from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report import (annex17_plot_data_query,
                                                                                annex17_building_data_query,
                                                                                annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME,
-                                      OPERATION_MODEL_PREFIX,
-                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                      VALUATION_MODEL_PREFIX,
-                                      LADM_MODEL_PREFIX,
-                                      ANT_MODEL_PREFIX,
-                                      REFERENCE_CARTOGRAPHY_PREFIX,
-                                      SNR_DATA_MODEL_PREFIX,
-                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                      SUPPLIES_MODEL_PREFIX)
+                                      PLUGIN_NAME)
+from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
+                                                            CADASTRAL_FORM_MODEL_PREFIX,
+                                                            VALUATION_MODEL_PREFIX,
+                                                            LADM_MODEL_PREFIX,
+                                                            ANT_MODEL_PREFIX,
+                                                            REFERENCE_CARTOGRAPHY_PREFIX,
+                                                            SNR_DATA_MODEL_PREFIX,
+                                                            SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                                            SUPPLIES_MODEL_PREFIX)
 from ...utils.model_parser import ModelParser
 from ...utils.utils import normalize_iliname
 from asistente_ladm_col.config.table_mapping_config import (T_ID,
@@ -219,6 +219,11 @@ class PGConnector(DBConnector):
             if not self._metadata_exists():
                 return (False, QCoreApplication.translate("PGConnector",
                                                           "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
+                    self.schema))
+
+            if self.get_ili2db_version() != 4:
+                return (False, QCoreApplication.translate("PGConnector",
+                                                          "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                     self.schema))
 
             if self.model_parser is None:
@@ -966,3 +971,21 @@ class PGConnector(DBConnector):
             uri += ["dbname={}".format(self._PROVIDER_NAME)]
 
         return ' '.join(uri)
+
+    def get_ili2db_version(self):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return (res, msg)
+
+        # Borrowed from Model Baker
+        cur = self.conn.cursor()
+        cur.execute("""SELECT *
+                       FROM information_schema.columns
+                       WHERE table_schema = '{schema}'
+                       AND(table_name='t_ili2db_attrname' OR table_name = 't_ili2db_model' )
+                       AND(column_name='owner' OR column_name = 'file' )
+                    """.format(schema=self.schema))
+        if cur.rowcount > 1:
+            return 3
+        else:
+            return 4

@@ -1,6 +1,7 @@
 from qgis.core import NULL
 
 from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.lib.logger import Logger
 
 TABLE_NAME = 'table_name'
 VARIABLE_NAME = 'variable'
@@ -10,6 +11,15 @@ DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
 
+ANT_MODEL_PREFIX = "ANT"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+LADM_MODEL_PREFIX = "LADM_COL"
+OPERATION_MODEL_PREFIX = "Operacion"
+REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+VALUATION_MODEL_PREFIX = "Avaluos"
 
 class Names(metaclass=Singleton):
     """
@@ -17,7 +27,6 @@ class Names(metaclass=Singleton):
     Note: Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
           one could shorten table and field names via ili2db.
     """
-
     ############################################ TABLE VARIABLES ###########################################################
     T_ID_F = None
     ILICODE_F = None
@@ -151,7 +160,7 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.col_ueUeGrupo"
     # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente"
     OP_AGREEMENT_TYPE_D = None  # "Operacion_V2_9_5.OP_AcuerdoTipo"
-    OP_PARCEL_TYPE_T = None  # "Operacion_V2_9_5.OP_CondicionPredioTipo"
+    OP_CONDITION_PARCEL_TYPE_D = None  # "Operacion_V2_9_5.OP_CondicionPredioTipo"
     OP_RIGHT_TYPE_D = None  # "Operacion_V2_9_5.OP_DerechoTipo"
     OP_GROUP_PARTY_T = None  # "Operacion_V2_9_6.Operacion.OP_Agrupacion_Interesados"
     OP_BUILDING_T = None  # "Operacion_V2_9_5.Operacion.OP_Construccion"
@@ -866,7 +875,7 @@ class Names(metaclass=Singleton):
         "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UnidadConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_TYPE_D", FIELDS_DICT: {}},
-        "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_T", FIELDS_DICT: {}},
+        "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_CONDITION_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DerechoTipo": {VARIABLE_NAME: "OP_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.Operacion.OP_Agrupacion_Interesados": {VARIABLE_NAME: "OP_GROUP_PARTY_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.COL_Agrupacion_Interesados.Tipo": "COL_GROUP_PARTY_T_TYPE_F",
@@ -1106,6 +1115,10 @@ class Names(metaclass=Singleton):
         }},
     }
 
+    def __init__(self):
+        self.logger = Logger()
+        self._cached_domain_values = dict()
+
     def initialize_table_and_field_names(self, dict_names):
         """
         Update class variables (table and field names) according to a dictionary of names coming from a DB connection.
@@ -1116,27 +1129,23 @@ class Names(metaclass=Singleton):
                            info, and value as sqlname (produced by ili2db).
         :return: True if anything is updated, False otherwise.
         """
+        self.reset_table_and_field_names()  # We will start mapping from scratch, so reset any previous mapping.
+
         any_update = False
-        debug = False
+        table_names_count = 0
         if dict_names:
             if T_ID not in dict_names or DISPLAY_NAME not in dict_names or ILICODE not in dict_names or DESCRIPTION not in dict_names:
-                # TODO: Logger "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE, DESCRIPTION."
+                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
                 return False
 
             for table_key, attrs in self.TABLE_DICT.items():
-                # debug = table_key == 'Operacion.Operacion.OP_UnidadConstruccion'
-
                 if table_key in dict_names:
                     setattr(self, attrs[VARIABLE_NAME], dict_names[table_key][TABLE_NAME])
+                    table_names_count += 1
                     any_update = True
-                    if debug:
-                        print("Field Names: ", attrs[FIELDS_DICT])
                     for field_key, field_variable in attrs[FIELDS_DICT].items():
                         if field_key in dict_names[table_key]:
-                            if debug:
-                                print(field_variable, dict_names[table_key][field_key])
                             setattr(self, field_variable, dict_names[table_key][field_key])
-
 
             # Required fields mapped in a custom way
             self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
@@ -1144,10 +1153,63 @@ class Names(metaclass=Singleton):
             self.DESCRIPTION_F = dict_names[DESCRIPTION] if DESCRIPTION in dict_names else None
             self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME] if DISPLAY_NAME in dict_names else None
 
-        # set init custom variables
+        # Set domain values and other values that are independent of the DB engine
         self.set_custom_variables()
 
+        self.logger.info(__name__, "Table and field names have been set!")
+        self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
         return any_update
+
+    def reset_table_and_field_names(self):
+        """
+        Make all table and field variables None again to prepare the next mapping.
+        """
+        for table_key, attrs in self.TABLE_DICT.items():
+            setattr(self, attrs[VARIABLE_NAME], None)
+            for field_key, field_variable in attrs[FIELDS_DICT].items():
+                setattr(self, field_variable, None)
+
+        self.T_ID_F = None
+        self.ILICODE_F = None
+        self.DESCRIPTION_F = None
+        self.DISPLAY_NAME_F = None
+
+        # Clear cache
+        self._cached_domain_values = dict()
+
+        self.logger.info(__name__, "Names (DB mapping) have been reset to prepare the next mapping.")
+
+    def cache_domain_value(self, domain_table, t_id, value):
+        if domain_table in self._cached_domain_values:
+            self._cached_domain_values[domain_table][t_id] = value
+        else:
+            self._cached_domain_values[domain_table] = {t_id: value}
+
+    def get_domain_value(self, domain_table, t_id):
+        """
+        Get a domain value from the cache.
+
+        :param domain_table: Domain table name.
+        :param t_id: t_id to be searched.
+        :return: iliCode of the corresponding t_id.
+        """
+        if domain_table in self._cached_domain_values:
+            return self._cached_domain_values[domain_table][t_id] if t_id in self._cached_domain_values[domain_table] else None
+
+    def get_domain_code(self, domain_table, ilicode):
+        """
+        Get a domain value from the cache.
+
+        :param domain_table: Domain table name.
+        :param ilicode: iliCode to be searched.
+        :return: t_id of the corresponding ilicode.
+        """
+        if domain_table in self._cached_domain_values:
+            for k,v in self._cached_domain_values[domain_table].items():
+                if v == ilicode:
+                    return k
+
+        return None
 
     def set_custom_variables(self):
         """
@@ -1200,7 +1262,10 @@ class Names(metaclass=Singleton):
                           "DISPLAY_NAME_F"]
 
         for k, v in self.TABLE_DICT.items():
-            if k.split(".")[0] in models:
+            model = k.split(".")[0]
+            if model in models and model != LADM_MODEL_PREFIX:
+                # LADM classes may be added independently, for instance, Supplies adds only ExtArchivo. So, no need to
+                # add the whole LADM model to this test.
                 required_names.append(v[VARIABLE_NAME])
                 for k1, v1 in v[FIELDS_DICT].items():
                     if k1.split(".")[0] in models:
@@ -1439,7 +1504,7 @@ class Names(metaclass=Singleton):
                                self.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
                                self.OP_PARCEL_T_VALUATION_F,
                                self.COL_BAUNIT_T_NAME_F,
-                               self.OP_PARCEL_T_TYPE_F],
+                               self.OP_PARCEL_T_PARCEL_TYPE_F],
             self.OP_RIGHT_T: [self.OP_RIGHT_T_TYPE_F,
                               self.COL_RRR_T_DESCRIPTION_F,
                               self.COL_RRR_T_SHARE_CHECK_F,
@@ -1543,29 +1608,29 @@ class Names(metaclass=Singleton):
     def get_layer_constraints(self):
         return  {
             self.OP_PARCEL_T: {
-                self.OP_PARCEL_T_TYPE_F: {
+                self.OP_PARCEL_T_PARCEL_TYPE_F: {
                     'expression': """
                                     CASE
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" =  get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" =  get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_PUBLIC_USE}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN  (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_ROAD}', True, False),
-                                                                          get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
                                             num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') != 0 AND num_selected('{OP_BUILDING_T}') = 0
-                                        WHEN  "{OP_PARCEL_T_TYPE_F}" IN (get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False),
-                                                                         get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False)) THEN
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False),
+                                                                         get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False)) THEN
                                             num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 1
                                         ELSE
                                             TRUE
-                                    END""".format(OP_PARCEL_T_TYPE_F=self.OP_PARCEL_T_TYPE_F,
-                                                  OP_PARCEL_TYPE_T=self.OP_PARCEL_TYPE_T,
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_CONDITION_PARCEL_TYPE_D=self.OP_CONDITION_PARCEL_TYPE_D,
                                                   OP_PLOT_T=self.OP_PLOT_T,
                                                   OP_BUILDING_T=self.OP_BUILDING_T,
                                                   OP_BUILDING_UNIT_T=self.OP_BUILDING_UNIT_T,
@@ -1589,35 +1654,35 @@ class Names(metaclass=Singleton):
                                             CASE
                                                 WHEN length("{OP_PARCEL_T_PARCEL_NUMBER_F}") != 30 OR regexp_match(to_string("{OP_PARCEL_T_PARCEL_NUMBER_F}"), '^[0-9]*$') = 0  THEN
                                                     FALSE
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 0
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_ROAD}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 4
-                                                WHEN "{OP_PARCEL_T_TYPE_F}" = get_domain_code_from_value('{OP_PARCEL_TYPE_T}', '{PARCEL_TYPE_PUBLIC_USE}', True, False) THEN
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False) THEN
                                                     substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 3
                                                 ELSE
                                                     TRUE
                                             END
                                         ELSE
                                             TRUE
-                                    END""".format(OP_PARCEL_T_TYPE_F=self.OP_PARCEL_T_TYPE_F,
-                                                  OP_PARCEL_TYPE_T=self.OP_PARCEL_TYPE_T,
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_CONDITION_PARCEL_TYPE_D=self.OP_CONDITION_PARCEL_TYPE_D,
                                                   PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
                                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
                                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,

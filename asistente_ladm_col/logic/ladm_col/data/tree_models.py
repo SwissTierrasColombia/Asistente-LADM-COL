@@ -58,7 +58,6 @@ class TreeItem(object):
         self.parentItem = parent
         self.itemData = [{Qt.DisplayRole: ""}]
         self.childItems = []
-        self.names = Names()
 
     def child(self, row):
         return self.childItems[row]

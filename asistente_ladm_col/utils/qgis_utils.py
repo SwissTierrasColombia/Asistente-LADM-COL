@@ -220,7 +220,7 @@ class QGISUtils(QObject):
         :param load: Load layer in the map canvas
         :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
         one could be interested in handling the map_freeze from the outside
-        :param layer_modifiers: is a dict that it have properties that modifie the layer properties
+        :param layer_modifiers: is a dict that it have properties that modify the layer properties
         like prefix_layer_name, suffix_layer_name, symbology_group
         :return: is a dict like this: {layer_id: layer_object} layer_object might be None
         """
@@ -387,14 +387,17 @@ class QGISUtils(QObject):
         return ladm_layers
 
     def required_layers_are_available(self, db, layers, tool_name):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "'{}' tool has been closed because there was a problem loading the requeries layers.").format(tool_name)
+
+        if None in layers:
+            self.message_emitted.emit(msg, Qgis.Warning)
+            return False
+
         # Load layers
         self.get_layers(db, layers, load=True)
-        if not layers:
-            self.message_emitted.emit(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    tool_name),
-                Qgis.Warning)
+        if not layers or layers is None:
+            self.message_emitted.emit(msg, Qgis.Warning)
             return False
 
         # Check if any layer is in editing mode
@@ -446,12 +449,11 @@ class QGISUtils(QObject):
             self.set_layer_visibility(layer, visible)
 
     def set_custom_layer_name(self, db, layer, layer_modifiers=dict()):
-
         if db is None:
             return
 
         full_layer_name = ''
-        layer_name = db.get_ladm_layer_name(layer)
+        layer_name = layer.name()
 
         if PREFIX_LAYER_MODIFIERS in layer_modifiers:
             if layer_modifiers[PREFIX_LAYER_MODIFIERS]:

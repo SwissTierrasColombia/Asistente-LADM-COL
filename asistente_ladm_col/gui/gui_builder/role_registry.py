@@ -171,6 +171,8 @@ class Role_Registry(metaclass=Singleton):
                                                 ACTION_CREATE_BUILDING_UNIT,
                                                 SEPARATOR,
                                                 ACTION_CREATE_RIGHT_OF_WAY,
+                                                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                                                SEPARATOR,
                                                 ACTION_CREATE_EXT_ADDRESS
                                             ]
                                         }, {
@@ -262,7 +264,6 @@ class Role_Registry(metaclass=Singleton):
                             ACTION_MOVE_NODES,
                             ACTION_FILL_BFS,
                             ACTION_FILL_MORE_BFS_AND_LESS,
-                            ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
                             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
                         ]
                     }]
