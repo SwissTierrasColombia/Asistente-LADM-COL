@@ -18,6 +18,7 @@
 """
 import os
 import glob
+import processing
 
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QMessageBox
@@ -37,6 +38,7 @@ from qgis.core import (Qgis,
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
                                       SETTINGS_CONNECTION_TAB_INDEX,
                                       SETTINGS_MODELS_TAB_INDEX)
+
 from ...config.enums import EnumDbActionType
 from ...utils.qt_utils import OverrideCursor
 from ...utils import get_ui_class
@@ -126,6 +128,7 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                     self.load_lis_files()
                     self.load_gdb_files()
                     self.load_model_files(self._layers)
+                    self.run_model_etl_cobol()
         else:
             with OverrideCursor(Qt.WaitCursor):
                 self.create_model_into_database()
@@ -229,3 +232,39 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                     "Input load dialog"),
                 Qgis.Warning)
             return False
+
+    def run_model_etl_cobol(self):
+        processing.run("model:ETL-model-supplies", 
+            {'barrio': self.gdb_paths['U_BARRIO'],
+            'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
+            'gccomisionconstruccion': self._layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
+            'gccomisionterreno': self._layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
+            'gcconstruccion': self._layers[self.names.GC_BUILDING_T][LAYER],
+            'gcdireccion': self._layers[self.names.GC_ADDRESS_T][LAYER],
+            'gcmanzana': self._layers[self.names.GC_BLOCK_T][LAYER],
+            'gcperimetro': self._layers[self.names.GC_PERIMETER_T][LAYER],
+            'gcpropietario': self._layers[self.names.GC_OWNER_T][LAYER],
+            'gcsector': self._layers[self.names.GC_RURAL_SECTOR_T][LAYER],
+            'gcsectorurbano': self._layers[self.names.GC_URBAN_SECTOR_T][LAYER],
+            'gcterreno': self._layers[self.names.GC_PLOT_T][LAYER],
+            'gcunidad': self._layers[self.names.GC_BUILDING_UNIT_T][LAYER],
+            'gcunidadconstruccioncomision': self._layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
+            'gcvereda': self._layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+            'inputblo': self.lis_paths['blo'],
+            'inputconstruccion': self.gdb_paths['R_CONSTRUCCION'],
+            'inputmanzana': self.gdb_paths['U_MANZANA'],
+            'inputperimetro': self.gdb_paths['U_PERIMETRO'],
+            'inputpro': self.lis_paths['pro'],
+            'inputrunidad': self.gdb_paths['R_UNIDAD'],
+            'inputsector': self.gdb_paths['R_SECTOR'],
+            'inputter': self.lis_paths['ter'],
+            'inputterreno': self.gdb_paths['R_TERRENO'],
+            'inputuconstruccion': self.gdb_paths['U_CONSTRUCCION'],
+            'inputuni': self.lis_paths['uni'],
+            'inputusector': self.gdb_paths['U_SECTOR'],
+            'inpututerreno': self.gdb_paths['U_TERRENO'],
+            'inputuunidad': self.gdb_paths['U_UNIDAD'],
+            'inputvereda': self.gdb_paths['R_VEREDA'],
+            'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
+            'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
+            'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']})
