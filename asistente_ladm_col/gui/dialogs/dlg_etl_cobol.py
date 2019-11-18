@@ -21,31 +21,43 @@ import glob
 
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QMessageBox
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
+
+from qgis.PyQt.QtGui import (QStandardItemModel,
+                             QStandardItem)
 
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerJoinInfo)
 
+from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
+                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                      SETTINGS_MODELS_TAB_INDEX)
+from ...config.enums import EnumDbActionType
 from ...utils.qt_utils import OverrideCursor
 from ...utils import get_ui_class
-
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                make_folder_selector)
+
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
 
 class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
-    def __init__(self, qgis_utils, db, parent=None):
+    def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self._db = db
+        self.conn_manager = conn_manager
         self.buttonBox.accepted.connect(self.accepted)
+
+        self.btn_browse_connection.clicked.connect(self.show_settings)
+        self.update_connection_info()
+
         self.progress.setVisible(False)
         self.restore_settings()
 
@@ -92,6 +104,37 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 if self._db.test_connection()[0]:
                     self.remove_group('GDB')
                     self.manage_process_load_data()
+
+    def show_settings(self):
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
+        # We only need those tabs related to Model Baker/ili2db operations
+        for i in reversed(range(dlg.tabWidget.count())):
+            if i not in [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]:
+                dlg.tabWidget.removeTab(i)
+
+        dlg.set_action_type(EnumDbActionType.EXPORT)
+
+        if dlg.exec_():
+            self._db = dlg.get_db_connection()
+            self.update_connection_info()
+
+    def db_connection_changed(self, db, ladm_col_db):
+        self._db_was_changed = True
+
+    def update_connection_info(self):
+        db_description = self._db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self._db.get_display_conn_string())
+        else:
+            self.db_connect_label.setText(
+                QCoreApplication.translate("DialogExportData", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
 
     def save_settings(self):
         settings = QSettings()

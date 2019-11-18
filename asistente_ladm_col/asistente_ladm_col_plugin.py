@@ -722,7 +722,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     def show_etl_cobol_dialog(self):
-        dlg = EtlCobolDialog(self.qgis_utils, self.get_db_connection())
+        dlg = EtlCobolDialog(self.qgis_utils, self.get_db_connection(), conn_manager=self.conn_manager)
         dlg.exec_()
 
     @_validate_if_wizard_is_open
