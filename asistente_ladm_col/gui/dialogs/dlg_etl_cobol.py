@@ -28,7 +28,9 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import (QStandardItemModel,
                              QStandardItem)
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
+                       QgsWkbTypes,
                        QgsVectorLayer,
                        QgsVectorLayerJoinInfo)
 
@@ -39,9 +41,11 @@ from ...config.enums import EnumDbActionType
 from ...utils.qt_utils import OverrideCursor
 from ...utils import get_ui_class
 from ...gui.dialogs.dlg_settings import SettingsDialog
+
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                make_folder_selector)
-
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.general_config import LAYER
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
@@ -53,37 +57,60 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
+        self.names = Names()
         self.buttonBox.accepted.connect(self.accepted)
 
         self.btn_browse_connection.clicked.connect(self.show_settings)
         self.update_connection_info()
 
+        self._layers = dict()
+        self.initialize_layers()
+
         self.progress.setVisible(False)
         self.restore_settings()
 
         self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("InputLoadFieldDataCaptureDialog",
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("DialogExportData",
                         "Select the .lis file with Cobol data "), 
-                        QCoreApplication.translate("InputLoadFieldDataCaptureDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("InputLoadFieldDataCaptureDialog",
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("DialogExportData",
                         "Select the .lis file with Cobol data "), 
-                        QCoreApplication.translate("InputLoadFieldDataCaptureDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("InputLoadFieldDataCaptureDialog",
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("DialogExportData",
                         "Select the .lis file with Cobol data "), 
-                        QCoreApplication.translate("InputLoadFieldDataCaptureDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("InputLoadFieldDataCaptureDialog",
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("DialogExportData",
                         "Select the .lis file with Cobol data "), 
-                        QCoreApplication.translate("InputLoadFieldDataCaptureDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_gdb.clicked.connect(
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
                 'SettingsDialog', 'Open Folder with GDB'), parent=None))
+
+    def initialize_layers(self):
+        self._layers = {
+            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
+            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
+            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+        }
 
     def accepted(self):
         self.save_settings()
@@ -98,6 +125,7 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 with OverrideCursor(Qt.WaitCursor):
                     self.load_lis_files()
                     self.load_gdb_files()
+                    self.load_model_files(self._layers)
         else:
             with OverrideCursor(Qt.WaitCursor):
                 self.create_model_into_database()
@@ -191,3 +219,13 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 self.gdb_paths[data.split('!!::!!')[1]] = layer
                 QgsProject.instance().addMapLayer(layer, False)
                 gdb_group.addLayer(layer)
+
+    def load_model_files(self, layers):
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("DialogExportData",
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    "Input load dialog"),
+                Qgis.Warning)
+            return False
