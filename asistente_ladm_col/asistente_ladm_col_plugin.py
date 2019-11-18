@@ -88,7 +88,7 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import EtlCobolDialog
+from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -494,7 +494,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Add ladm_col models
         basepath = os.path.dirname(os.path.abspath(__file__))
-        plugin_models_dir = os.path.join(basepath, "processing", "models")
+        plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
@@ -726,7 +726,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        dlg = EtlCobolDialog(self.qgis_utils, self.get_db_connection(), conn_manager=self.conn_manager)
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), conn_manager=self.conn_manager)
         dlg.exec_()
 
     @_validate_if_wizard_is_open

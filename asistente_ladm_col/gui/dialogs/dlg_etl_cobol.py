@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2019-02-06
+        begin                : 2019-11-13
         git sha              : :%H$
         copyright            : (C) 2019 by Jhon Galindo (Incige SAS)
         email                : jhonsigpjc@gmail.com
@@ -16,28 +16,24 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-import glob
-import processing
-
-from qgis.PyQt.QtWidgets import QDialog
-from qgis.PyQt.QtWidgets import (QMessageBox,
-                                QDialogButtonBox)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QMessageBox,
+                                 QDialogButtonBox,
+                                 QSizePolicy)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
-
-from qgis.PyQt.QtGui import (QStandardItemModel,
-                             QStandardItem)
-
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsWkbTypes,
                        QgsVectorLayer,
                        QgsProcessingFeedback,
                        QgsVectorLayerJoinInfo)
+from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
+import processing
+
+from ...config.general_config import (BLO_LIS_FILE_PATH,
                                       SETTINGS_CONNECTION_TAB_INDEX,
                                       SETTINGS_MODELS_TAB_INDEX)
 
@@ -54,21 +50,27 @@ from asistente_ladm_col.config.general_config import LAYER
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
 
-class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
+class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
+
         self.names = Names()
+        self._db_was_changed = True
+        self._running_etl = False
         self.feedback = QgsProcessingFeedback()
         self.feedback.progressChanged.connect(self.progress_changed)
+        self.progress.setVisible(False)
+
         self.buttonBox.accepted.disconnect()
         self.buttonBox.rejected.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("DialogExportData", "Import"))
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ETLCobolDialog", "Import"))
         self.buttonBox.rejected.connect(self.close_dialog)
+        self.finished.connect(self.finished_slot)
 
         self.btn_browse_connection.clicked.connect(self.show_settings)
         self.update_connection_info()
@@ -76,32 +78,37 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._layers = dict()
         self.initialize_layers()
 
-        self.progress.setVisible(False)
         self.restore_settings()
 
         self.btn_browse_file_blo.clicked.connect(
             make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("DialogExportData",
-                        "Select the .lis file with Cobol data "), 
+                        "Select the BLO .lis file with Cobol data "),
                         QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
             make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("DialogExportData",
-                        "Select the .lis file with Cobol data "), 
+                        "Select the UNI .lis file with Cobol data "),
                         QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
             make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("DialogExportData",
-                        "Select the .lis file with Cobol data "), 
+                        "Select the TER .lis file with Cobol data "),
                         QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
             make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("DialogExportData",
-                        "Select the .lis file with Cobol data "), 
+                        "Select the PRO .lis file with Cobol data "),
                         QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
 
         self.btn_browse_file_gdb.clicked.connect(
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                'SettingsDialog', 'Open Folder with GDB'), parent=None))
+                'SettingsDialog', 'Open GDB folder'), parent=None))
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
+        # TODO; Set validators
 
     def progress_changed(self):
         self.progress.setValue(self.feedback.progress())
@@ -130,45 +137,63 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
-                QCoreApplication.translate("EtlCobolDialog", "Warning"),
-                QCoreApplication.translate("EtlCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
+                QCoreApplication.translate("ETLCobolDialog", "Warning"),
+                QCoreApplication.translate("ETLCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
                 QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 with OverrideCursor(Qt.WaitCursor):
-                    self.load_lis_files()
-                    self.load_gdb_files()
-                    self.load_model_files(self._layers)
-                    self.run_model_etl_cobol()
+                    res_lis, msg_lis = self.load_lis_files()
+                    if res_lis:
+                        res_gdb, msg_gdb = self.load_gdb_files()
+                        if res_gdb:
+                            res_model, msg_model = self.load_model_layers()
+                            if res_model:
+                                self._running_etl = True
+                                self.run_model_etl_cobol()
+                                self.progress.setValue(100)
+                                self._running_etl = False
+                            else:
+                                self.show_message(msg_model, Qgis.Warning)
+                        else:
+                            self.show_message(msg_gdb, Qgis.Warning)
+                    else:
+                        self.show_message(msg_lis, Qgis.Warning)
         else:
             with OverrideCursor(Qt.WaitCursor):
-                self.create_model_into_database()
-                if self._db.test_connection()[0]:
-                    self.remove_group('GDB')
-                    self.manage_process_load_data()
+                # TODO: if an empty schema was selected, do the magic under the hood
+                # self.create_model_into_database()
+                # Now execute "accepted()"
+                pass
 
     def close_dialog(self):
-        reply = QMessageBox.question(self,
-                QCoreApplication.translate("EtlCobolDialog", "Warning"),
-                QCoreApplication.translate("EtlCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
-                QMessageBox.Yes, QMessageBox.No)
-        if reply == QMessageBox.No:
-            self.feedback.cancel()
-            #self.close()
+        if self._running_etl:
+            reply = QMessageBox.question(self,
+                    QCoreApplication.translate("ETLCobolDialog", "Warning"),
+                    QCoreApplication.translate("ETLCobolDialog","The ETL Cobol is still running. Do you want to cancel it? If you cancel, the data might be incomplete."),
+                    QMessageBox.Yes, QMessageBox.No)
+        
+            if reply == QMessageBox.Yes:
+                self.feedback.cancel()
+                self._running_etl = False
+        else:
+            self.close()
+
+    def finished_slot(self, result):
+        self.bar.clearWidgets()
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
-        # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):
-            if i not in [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]:
+            if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
                 dlg.tabWidget.removeTab(i)
 
-        dlg.set_action_type(EnumDbActionType.EXPORT)
+        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
 
         if dlg.exec_():
             self._db = dlg.get_db_connection()
@@ -205,14 +230,14 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def load_lis_files(self):
         self.lis_paths = {
-            'blo':self.txt_file_path_blo.text(), 
-            'uni':self.txt_file_path_uni.text(), 
-            'ter':self.txt_file_path_ter.text(), 
-            'pro':self.txt_file_path_pro.text()
-            } 
+            'blo': self.txt_file_path_blo.text().strip(),
+            'uni': self.txt_file_path_uni.text().strip(),
+            'ter': self.txt_file_path_ter.text().strip(),
+            'pro': self.txt_file_path_pro.text().strip()
+        }
 
         root = QgsProject.instance().layerTreeRoot()
-        lis_group = root.addGroup("Lis_Supplies")
+        lis_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "LIS Supplies"))
 
         for name in self.lis_paths:
             uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.lis_paths[name])
@@ -221,6 +246,18 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 self.lis_paths[name] = layer
                 QgsProject.instance().addMapLayer(layer, False)
                 lis_group.addLayer(layer)
+            else:
+                if name == 'blo':
+                    # BLO is kind of optional, if it is not given, we pass a default one
+                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(BLO_LIS_FILE_PATH)
+                    layer = QgsVectorLayer(uri, name, 'delimitedtext')
+                    self.lis_paths[name] = layer
+                    QgsProject.instance().addMapLayer(layer, False)
+                    lis_group.addLayer(layer)
+                else:
+                    return False, QCoreApplication.translate("ETLCobolDialog", "There were troubles loading the LIS file called '{}'.".format(name))
+
+        return True, ''
 
     def load_gdb_files(self):
         self.gdb_paths = {}
@@ -234,24 +271,29 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         sublayers = layer.dataProvider().subLayers()
 
         root = QgsProject.instance().layerTreeRoot()
-        gdb_group = root.addGroup("GDB_Supplies")
+        gdb_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "GDB Supplies"))
 
         for data in sublayers:
-            if data.split('!!::!!')[1] in required_layers:    
-                layer = QgsVectorLayer(gdb_path + '|layername=' + data.split('!!::!!')[1], data.split('!!::!!')[1], 'ogr')
-                self.gdb_paths[data.split('!!::!!')[1]] = layer
+            sublayer = data.split('!!::!!')[1]
+            if sublayer in required_layers:
+                layer = QgsVectorLayer(gdb_path + '|layername=' + sublayer, sublayer, 'ogr')
+                self.gdb_paths[sublayer] = layer
                 QgsProject.instance().addMapLayer(layer, False)
                 gdb_group.addLayer(layer)
 
-    def load_model_files(self, layers):
+        if len(self.gdb_paths) != len(required_layers):
+            msg = QCoreApplication.translate("ETLCobolDialog", "The GDB does not have the required layers!")
+            return False, msg
+
+        return True, ''
+
+    def load_model_layers(self):
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("DialogExportData",
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    "Input load dialog"),
-                Qgis.Warning)
-            return False
+            msg = QCoreApplication.translate("ETLCobolDialog", "There was a problem loading layers from the 'Supplies' model!")
+            return False, msg
+
+        return True, ''
 
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)
@@ -290,3 +332,7 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
             'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
             feedback=self.feedback)
+
+    def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.bar.pushMessage(message, level, 15)
