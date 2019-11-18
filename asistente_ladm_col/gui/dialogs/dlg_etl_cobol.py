@@ -21,7 +21,8 @@ import glob
 import processing
 
 from qgis.PyQt.QtWidgets import QDialog
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import (QMessageBox,
+                                QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
@@ -33,6 +34,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsWkbTypes,
                        QgsVectorLayer,
+                       QgsProcessingFeedback,
                        QgsVectorLayerJoinInfo)
 
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
@@ -60,7 +62,13 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._db = db
         self.conn_manager = conn_manager
         self.names = Names()
+        self.feedback = QgsProcessingFeedback()
+        self.feedback.progressChanged.connect(self.progress_changed)
+        self.buttonBox.accepted.disconnect()
+        self.buttonBox.rejected.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("DialogExportData", "Import"))
+        self.buttonBox.rejected.connect(self.close_dialog)
 
         self.btn_browse_connection.clicked.connect(self.show_settings)
         self.update_connection_info()
@@ -94,6 +102,9 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.btn_browse_file_gdb.clicked.connect(
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
                 'SettingsDialog', 'Open Folder with GDB'), parent=None))
+
+    def progress_changed(self):
+        self.progress.setValue(self.feedback.progress())
 
     def initialize_layers(self):
         self._layers = {
@@ -135,6 +146,15 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 if self._db.test_connection()[0]:
                     self.remove_group('GDB')
                     self.manage_process_load_data()
+
+    def close_dialog(self):
+        reply = QMessageBox.question(self,
+                QCoreApplication.translate("EtlCobolDialog", "Warning"),
+                QCoreApplication.translate("EtlCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
+                QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.No:
+            self.feedback.cancel()
+            #self.close()
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
@@ -234,6 +254,7 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             return False
 
     def run_model_etl_cobol(self):
+        self.progress.setVisible(True)
         processing.run("model:ETL-model-supplies", 
             {'barrio': self.gdb_paths['U_BARRIO'],
             'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
@@ -267,4 +288,5 @@ class EtlCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             'inputvereda': self.gdb_paths['R_VEREDA'],
             'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
-            'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']})
+            'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
+            feedback=self.feedback)
