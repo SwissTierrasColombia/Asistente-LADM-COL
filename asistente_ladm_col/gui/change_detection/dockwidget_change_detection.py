@@ -308,8 +308,13 @@ class ChangeDetectionUtils(QObject):
         base_db = self._official_db if inverse else self._db
         compare_db = self._db if inverse else self._official_db
 
+        layer_modifiers = {
+            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
+        }
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
-        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None)
+        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)
 
         dict_compared_parcel_data = dict()
         for collected_parcel_number, collected_features in dict_collected_parcels.items():

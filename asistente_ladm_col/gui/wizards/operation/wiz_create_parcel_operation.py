@@ -229,11 +229,11 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
             self.close_wizard(show_message=False)
 
         self.dict_parcel_type = dict()
-        for feature in self._layers[self.names.OP_PARCEL_TYPE_T][LAYER].getFeatures():
+        for feature in self._layers[self.names.OP_CONDITION_PARCEL_TYPE_D][LAYER].getFeatures():
             self.dict_parcel_type[feature[self.names.DISPLAY_NAME_F]] = feature[self.names.ILICODE_F]
 
         if self.cb_parcel_type.count() == 0:
-            for feature in self._layers[self.names.OP_PARCEL_TYPE_T][LAYER].getFeatures():
+            for feature in self._layers[self.names.OP_CONDITION_PARCEL_TYPE_D][LAYER].getFeatures():
                 if feature[self.names.ILICODE_F] in constraint_types_of_parcels:
                     self.cb_parcel_type.addItem(feature[self.names.DISPLAY_NAME_F], feature[self.names.T_ID_F])
 

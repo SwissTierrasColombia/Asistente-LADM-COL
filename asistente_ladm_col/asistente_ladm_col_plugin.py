@@ -79,7 +79,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WizardConfig
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # » DON'T REMOVE « Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
@@ -727,8 +727,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_cadastral_manager_model_required
     @_db_connection_required
-    @_activate_processing_plugin
     def run_etl_cobol(self):
+        # TODO: Should use @_activate_processing_plugin
         processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
 
     @_validate_if_wizard_is_open

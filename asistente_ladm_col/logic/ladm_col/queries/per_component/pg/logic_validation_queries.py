@@ -106,13 +106,13 @@ def get_logic_validation_queries(schema, names):
                             FROM {schema}.{input_table} p left join {schema}.{join_table} ue on p.{id} = ue.{join_field}
                         ) AS p_ue GROUP BY {id}, {parcel_type}
                     ) AS report WHERE
-                               ({parcel_type}= (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} = '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}') AND (sum_t !=1 OR sum_uc != 0)) OR 
-                               ({parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', '{PARCEL_TYPE_CEMETERY_PARENT}', '{PARCEL_TYPE_PUBLIC_USE}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}')) AND (sum_t!=1 OR sum_uc > 0)) OR 
-                               ({parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_ROAD}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}')) AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
-                               ({parcel_type}= (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} = '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}') AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
-                               ({parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}')) AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
+                               ({parcel_type}= (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}') AND (sum_t !=1 OR sum_uc != 0)) OR 
+                               ({parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', '{PARCEL_TYPE_CEMETERY_PARENT}', '{PARCEL_TYPE_PUBLIC_USE}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}')) AND (sum_t!=1 OR sum_uc > 0)) OR 
+                               ({parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_ROAD}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}')) AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
+                               ({parcel_type}= (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}') AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
+                               ({parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}')) AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
                 """.format(schema=schema, input_table=names.OP_PARCEL_T, join_table=names.COL_UE_BAUNIT_T,
-                           OP_PARCEL_TYPE_T=names.OP_PARCEL_TYPE_T, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                           OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
                            PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
                            PARCEL_TYPE_CONDOMINIUM_PARENT=names.PARCEL_TYPE_CONDOMINIUM_PARENT,
                            PARCEL_TYPE_CEMETERY_PARENT=names.PARCEL_TYPE_CEMETERY_PARENT,
@@ -121,7 +121,7 @@ def get_logic_validation_queries(schema, names):
                            PARCEL_TYPE_CEMETERY_PARCEL_UNIT=names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT, PARCEL_TYPE_ROAD=names.PARCEL_TYPE_ROAD,
                            PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
                            PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
-                           join_field=names.COL_UE_BAUNIT_T_PARCEL_F, id=names.T_ID_F, parcel_type=names.OP_PARCEL_T_TYPE_F,
+                           join_field=names.COL_UE_BAUNIT_T_PARCEL_F, id=names.T_ID_F, parcel_type=names.OP_PARCEL_T_PARCEL_TYPE_F,
                            ueb_plot=names.COL_UE_BAUNIT_T_OP_PLOT_F, ueb_building=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
                            ueb_building_unit=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F),
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
@@ -132,21 +132,21 @@ def get_logic_validation_queries(schema, names):
                 'query': """
                         SELECT p.{id}, p.{parcel_type} FROM {schema}.{table} p
                         WHERE (p.{parcel_number} IS NOT NULL AND 
-                               (substring(p.{parcel_number},22,1) != '0' AND p.{parcel_type}=(select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} = '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}')) OR
-                               (substring(p.{parcel_number},22,1) != '9' AND p.{parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}'))) OR
-                               (substring(p.{parcel_number},22,1) != '8' AND p.{parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_CONDOMINIUM_PARENT}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}'))) OR
-                               (substring(p.{parcel_number},22,1) != '7' AND p.{parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_CEMETERY_PARENT}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}'))) OR
-                               (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type} in (select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}'))) OR
-                               (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}=(select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} = '{PARCEL_TYPE_ROAD}')) OR
-                               (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}=(select {id} from {schema}.{OP_PARCEL_TYPE_T} where {ILICODE_F} = '{PARCEL_TYPE_PUBLIC_USE}'))
+                               (substring(p.{parcel_number},22,1) != '0' AND p.{parcel_type}=(select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}')) OR
+                               (substring(p.{parcel_number},22,1) != '9' AND p.{parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}'))) OR
+                               (substring(p.{parcel_number},22,1) != '8' AND p.{parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_CONDOMINIUM_PARENT}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}'))) OR
+                               (substring(p.{parcel_number},22,1) != '7' AND p.{parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_CEMETERY_PARENT}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}'))) OR
+                               (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}'))) OR
+                               (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}=(select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_ROAD}')) OR
+                               (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}=(select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_PUBLIC_USE}'))
                             )""".format(schema=schema, table=names.OP_PARCEL_T, id=names.T_ID_F,
-                                    OP_PARCEL_TYPE_T=names.OP_PARCEL_TYPE_T, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                    OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
                                     PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
                                     PARCEL_TYPE_CONDOMINIUM_PARENT=names.PARCEL_TYPE_CONDOMINIUM_PARENT, PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=names.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
                                     PARCEL_TYPE_CEMETERY_PARENT=names.PARCEL_TYPE_CEMETERY_PARENT, PARCEL_TYPE_CEMETERY_PARCEL_UNIT=names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
                                     PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
                                     PARCEL_TYPE_ROAD=names.PARCEL_TYPE_ROAD, PARCEL_TYPE_PUBLIC_USE=names.PARCEL_TYPE_PUBLIC_USE,
-                                    parcel_number=names.OP_PARCEL_T_PARCEL_NUMBER_F, parcel_type=names.OP_PARCEL_T_TYPE_F),
+                                    parcel_number=names.OP_PARCEL_T_PARCEL_NUMBER_F, parcel_type=names.OP_PARCEL_T_PARCEL_TYPE_F),
                 'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
                                                          "Logic Consistency Errors in table '{table}'").format(
