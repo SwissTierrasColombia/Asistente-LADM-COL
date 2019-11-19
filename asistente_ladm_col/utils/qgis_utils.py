@@ -827,7 +827,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -870,13 +870,15 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        csv_layer.setName("temporal_{}_csv".format(target_layer_name))
+        # Necessary export to be enable edit dataprovider
+        csv_layer.selectAll()
+        csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        csv_layer.removeSelection()
 
-        return csv_layer
+        return csv_layer_export
 
     @_activate_processing_plugin
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
-        csv_layer = self.csv_to_layer(csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation, decimal_point)
+    def copy_csv_to_db(self, csv_layer, db, target_layer_name):
         QgsProject.instance().addMapLayer(csv_layer)
 
         if not csv_layer or not csv_layer.isValid():
