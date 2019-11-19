@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
                                  QDialogButtonBox,
@@ -38,7 +40,8 @@ from ...config.general_config import (BLO_LIS_FILE_PATH,
                                       SETTINGS_MODELS_TAB_INDEX)
 
 from ...config.enums import EnumDbActionType
-from ...utils.qt_utils import OverrideCursor
+from ...utils.qt_utils import (OverrideCursor,
+                               FileValidator)
 from ...utils import get_ui_class
 from ...gui.dialogs.dlg_settings import SettingsDialog
 
@@ -61,6 +64,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.names = Names()
         self._db_was_changed = True
         self._running_etl = False
+        self._validate_files = False
         self.feedback = QgsProcessingFeedback()
         self.feedback.progressChanged.connect(self.progress_changed)
         self.progress.setVisible(False)
@@ -104,6 +108,24 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
                 'SettingsDialog', 'Open GDB folder'), parent=None))
 
+        fileValidator_lis = FileValidator(pattern=['*.lis'], allow_non_existing=False)
+        fileValidator_gdb = FileValidator(pattern=['*.gdb'], allow_non_existing=False)
+
+        self.txt_file_path_uni.setValidator(fileValidator_lis)
+        self.txt_file_path_ter.setValidator(fileValidator_lis)
+        self.txt_file_path_pro.setValidator(fileValidator_lis)
+        self.txt_file_path_gdb.setValidator(fileValidator_gdb)
+
+        self.txt_file_path_uni.textChanged.connect(self.validate_lis)
+        self.txt_file_path_ter.textChanged.connect(self.validate_lis)
+        self.txt_file_path_pro.textChanged.connect(self.validate_lis)
+        self.txt_file_path_gdb.textChanged.connect(self.validate_gdb)
+
+        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
+        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
+        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
+        
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
@@ -112,6 +134,45 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def progress_changed(self):
         self.progress.setValue(self.feedback.progress())
+
+    def validate_lis(self):
+        extension = '.lis'
+        status = 0
+        labels = [self.txt_file_path_uni,
+                 self.txt_file_path_ter,
+                 self.txt_file_path_pro]
+
+        for label in labels:
+            if not os.path.isfile(label.text().strip()):
+                label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#ffd356'))
+                status = status + 1
+            elif os.path.splitext(label.text().strip())[1] != extension:
+                label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#ffd356'))
+                status = status + 1
+            else:
+                label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#fff'))
+
+        if status > 0:
+            self.buttonBox.button(QDialogButtonBox.Ok).setDisabled(True)
+            self._validate_files = False
+        else:
+            self.buttonBox.button(QDialogButtonBox.Ok).setDisabled(False)
+            self._validate_files = True
+
+    def validate_gdb(self):
+        extension = '.gdb'
+        label = self.txt_file_path_gdb
+
+        if not os.path.isdir(label.text().strip()):
+            label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#ffd356'))
+            self.buttonBox.button(QDialogButtonBox.Ok).setDisabled(True)
+        elif os.path.splitext(label.text().strip())[1] != extension:
+            label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#ffd356'))
+            self.buttonBox.button(QDialogButtonBox.Ok).setDisabled(True)
+        else:
+            label.setStyleSheet('QLineEdit {{ background-color: {} }}'.format('#fff'))
+            if self._validate_files:
+                self.buttonBox.button(QDialogButtonBox.Ok).setDisabled(False)
 
     def initialize_layers(self):
         self._layers = {
@@ -151,7 +212,11 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                             if res_model:
                                 self._running_etl = True
                                 self.run_model_etl_cobol()
-                                self.progress.setValue(100)
+                                if not self.feedback.isCanceled():
+                                    self.progress.setValue(100)
+                                    self.buttonBox.clear()
+                                    self.buttonBox.setEnabled(True)
+                                    self.buttonBox.addButton(QDialogButtonBox.Close)                
                                 self._running_etl = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)
@@ -176,6 +241,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             if reply == QMessageBox.Yes:
                 self.feedback.cancel()
                 self._running_etl = False
+                self.close()
         else:
             self.close()
 
