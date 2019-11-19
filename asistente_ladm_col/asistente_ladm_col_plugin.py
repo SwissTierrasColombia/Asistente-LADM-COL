@@ -79,6 +79,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WizardConfig
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # » DON'T REMOVE « Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
@@ -494,7 +495,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Add ladm_col models
         basepath = os.path.dirname(os.path.abspath(__file__))
-        plugin_models_dir = os.path.join(basepath, "processing", "models")
+        plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()

@@ -29,7 +29,6 @@ class TestGeomsLoad(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
-        self.qgis_utils = QGISUtils()
 
         # resore schemas
         restore_schema(SCHEMA_DISTINCT_GEOMS)
@@ -37,21 +36,10 @@ class TestGeomsLoad(unittest.TestCase):
         self.gpkg_path = get_test_copy_path(GPKG_PATH_DISTINCT_GEOMS)
 
         self.db_distinct_geoms = get_dbconn(SCHEMA_DISTINCT_GEOMS)
-        result = self.db_distinct_geoms.test_connection()
-        print('Test_connection for: '.format(SCHEMA_DISTINCT_GEOMS), result)
-        if not result[1]:
-            print('The test connection with  {} db is not working'.format(SCHEMA_DISTINCT_GEOMS))
-            return
-
         self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
-        result = self.db_connection.test_connection()
-        print('Test_connection for: '.format(SCHEMA_LADM_COL_EMPTY), result)
-        if not result[1]:
-            print('The test connection with  {} db is not working'.format(SCHEMA_LADM_COL_EMPTY))
-            return
 
+        self.qgis_utils = QGISUtils()
         self.names = Names()
-        clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
@@ -112,6 +100,12 @@ class TestGeomsLoad(unittest.TestCase):
 
     def test_valid_import_geom_3d_to_db_postgres(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ (Postgres) geometries...')
+
+        result = self.db_connection.test_connection()
+        result_distinct = self.db_distinct_geoms.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working for empty db')
+        self.assertTrue(result_distinct[0], 'The test connection is not working for distinct db')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
 
