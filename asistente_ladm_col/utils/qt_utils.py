@@ -164,7 +164,7 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '#ffd356'  # Light orange
+                color = '##f6989d'  # Red
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
     def validate_line_edits_lower_case(self, *args, **kwargs):
@@ -219,6 +219,39 @@ class FileValidator(QValidator):
         else:
             return QValidator.Acceptable, text, pos
 
+class DirValidator(QValidator):
+    def __init__(self, pattern='*', parent=None, allow_empty=False, allow_non_existing=False, allow_empty_dir=False):
+        QValidator.__init__(self, parent)
+        self.pattern = pattern
+        self.allow_empty = allow_empty
+        self.allow_non_existing = allow_non_existing
+        self.allow_empty_dir = allow_empty_dir
+
+    """
+    Validator for file line edits
+    """
+
+    def validate(self, text, pos):
+        if self.allow_empty and not text.strip():
+            return QValidator.Acceptable, text, pos
+
+        pattern_matches = False
+        if type(self.pattern) is str:
+            pattern_matches = fnmatch.fnmatch(text, self.pattern)
+        elif type(self.pattern) is list:
+            pattern_matches = True in (fnmatch.fnmatch(text, pattern) for pattern in self.pattern)
+        else:
+            raise TypeError('pattern must be str or list, not {}'.format(type(self.pattern)))
+
+        if not text \
+                or (not self.allow_non_existing and not os.path.isdir(text)) \
+                or not pattern_matches:
+            return QValidator.Intermediate, text, pos
+        else:
+            if not self.allow_empty_dir and not os.listdir(text):
+                return QValidator.Intermediate, text, pos
+            else:
+                return QValidator.Acceptable, text, pos
 
 class NonEmptyStringValidator(QValidator):
     def __init__(self, parent=None):
