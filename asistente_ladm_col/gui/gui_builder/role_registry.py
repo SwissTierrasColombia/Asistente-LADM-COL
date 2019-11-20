@@ -97,7 +97,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
-                ACTION_INTEGRATE_SUPPLIES
+                ACTION_INTEGRATE_SUPPLIES,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT
             ],
             ROLE_GUI_CONFIG: {}
         }

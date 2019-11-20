@@ -40,7 +40,7 @@ from qgis.core import (Qgis,
 import processing
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum)
+                                             WizardTypeEnum, LogHandlerEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
@@ -81,7 +81,9 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
 from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
+from asistente_ladm_col.lib.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -136,6 +138,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger = Logger()
         self.logger.set_mode(DEFAULT_LOG_MODE)
         self.gui_builder = GUI_Builder(self.iface)
+        self.session = STSession()
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
@@ -172,6 +175,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_valuation_actions()
         self.create_change_detection_actions()
         self.create_toolbar_actions()
+        self.create_transition_system_actions()
         self.create_generic_actions()
 
     def set_connections(self):
@@ -262,6 +266,23 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_FILL_MORE_BFS_AND_LESS: self._fill_more_BFS_less_action,
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
+
+    def create_transition_system_actions(self):
+        self._st_login_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
+            self.main_window)
+        self._st_logout_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Logout"),
+            self.main_window)
+
+        self._st_login_action.triggered.connect(self.show_st_login_dialog)
+        self._st_logout_action.triggered.connect(self.session_logout)
+
+        self.gui_builder.register_actions({
+            ACTION_ST_LOGIN: self._st_login_action,
+            ACTION_ST_LOGOUT: self._st_logout_action})
 
     def create_supplies_actions(self):
         self._etl_cobol_supplies_action = QAction(
@@ -790,6 +811,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
+        self.session_logout()
         self.uninstall_custom_expression_functions()
 
         self.gui_builder.unload_gui()
@@ -1108,3 +1130,17 @@ class AsistenteLADMCOLPlugin(QObject):
     def close_wizard_if_opened(self):
         if self.wiz:
             self.wiz.close_wizard()  # This updates the is_wizard_open flag
+
+    def show_st_login_dialog(self):
+        dlg = LoginSTDialog(self.main_window)
+        dlg.exec_()
+
+    def session_logout(self):
+        if self.session.logout():
+            self.logger.info(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                     "User was logged out successfully!"),
+                                LogHandlerEnum.MESSAGE_BAR)
+        else:
+            self.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                     "There was not user logged in!"),
+                                LogHandlerEnum.MESSAGE_BAR)
