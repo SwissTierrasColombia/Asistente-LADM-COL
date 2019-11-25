@@ -80,9 +80,9 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QLineEdit" name="txt_login_password">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
+             <widget class="QgsPasswordLineEdit" name="txt_login_password">
+              <property name="showLockIcon">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -168,6 +168,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <resources>
  </resources>
  <connections>

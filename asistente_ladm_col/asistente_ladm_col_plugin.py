@@ -216,6 +216,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.gui_builder.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.gui_builder.status_bar_message_emitted.connect(self.show_status_bar_message)
 
+        self.session.login_status_changed.connect(self.set_login_controls_enabled)
+
     def uninstall_custom_expression_functions(self):
         res = QgsExpression.unregisterFunction('get_domain_code_from_value')
 
@@ -269,16 +271,17 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_transition_system_actions(self):
         self._st_login_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/login.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
             self.main_window)
         self._st_logout_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/logout.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Logout"),
             self.main_window)
 
         self._st_login_action.triggered.connect(self.show_st_login_dialog)
         self._st_logout_action.triggered.connect(partial(self.session_logout, True))
+        self._st_logout_action.setEnabled(False)
 
         self.gui_builder.register_actions({
             ACTION_ST_LOGIN: self._st_login_action,
@@ -1139,3 +1142,12 @@ class AsistenteLADMCOLPlugin(QObject):
         logged_out, msg = self.session.logout()
         if show_message:
             self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
+
+    def set_login_controls_enabled(self, login_activated):
+        """
+        React upon changes in ST login. If a user is logged in or logged out, we want to activate only certain controls.
+
+        :param login_activated: Boolean, True if a user is logged in
+        """
+        self._st_login_action.setEnabled(not login_activated)
+        self._st_logout_action.setEnabled(login_activated)

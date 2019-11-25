@@ -14,9 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="1">
-    <widget class="QComboBox" name="selected_schema_combobox"/>
-   </item>
    <item row="6" column="2">
     <widget class="QPushButton" name="create_schema_button">
      <property name="toolTip">
@@ -30,6 +27,9 @@
        <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
      </property>
     </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QComboBox" name="selected_schema_combobox"/>
    </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="txt_host">
@@ -55,23 +55,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lbl_password">
-     <property name="text">
-      <string>Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_host">
-     <property name="text">
-      <string>Host</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="selected_db_combobox"/>
-   </item>
    <item row="5" column="2">
     <widget class="QPushButton" name="create_db_button">
      <property name="toolTip">
@@ -86,20 +69,20 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_host">
+     <property name="text">
+      <string>Host</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="selected_db_combobox"/>
+   </item>
    <item row="6" column="0">
     <widget class="QLabel" name="lbl_schema">
      <property name="text">
       <string>Schema</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="txt_password">
-     <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
-     </property>
-     <property name="placeholderText">
-      <string>[Leave empty to use system password]</string>
      </property>
     </widget>
    </item>
@@ -131,13 +114,33 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="1">
+    <widget class="QgsPasswordLineEdit" name="txt_password">
+     <property name="placeholderText">
+      <string>[Leave empty to use system password]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_password">
+     <property name="text">
+      <string>Password</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>txt_host</tabstop>
   <tabstop>txt_port</tabstop>
   <tabstop>txt_user</tabstop>
-  <tabstop>txt_password</tabstop>
   <tabstop>refresh_db_button</tabstop>
   <tabstop>selected_db_combobox</tabstop>
   <tabstop>create_db_button</tabstop>

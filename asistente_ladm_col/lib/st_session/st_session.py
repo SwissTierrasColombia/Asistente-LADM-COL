@@ -20,7 +20,8 @@ import requests
 import json
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 
 from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
                                                       ST_LOGIN_SERVICE_PAYLOAD)
@@ -29,6 +30,8 @@ from asistente_ladm_col.utils.singleton import SingletonQObject
 
 class STSession(QObject, metaclass=SingletonQObject):
     TOKEN_KEY = "Asistente-LADM_COL/transition_system/token"
+
+    login_status_changed = pyqtSignal(bool)  # Status of the login: True if a user is logged in, False otherwise
 
     def __init__(self):
         QObject.__init__(self)
@@ -60,6 +63,7 @@ class STSession(QObject, metaclass=SingletonQObject):
             logged_data = json.loads(response.text)
             self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'], logged_data['last_name']), logged_data['email'], logged_data['roles'][0]['name'])
             QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])
+            self.login_status_changed.emit(True)
             self.logger.info(__name__, msg)
         else:
             if response.status_code == 400:
@@ -78,6 +82,7 @@ class STSession(QObject, metaclass=SingletonQObject):
             self.__logged_user = None
             QSettings().setValue(self.TOKEN_KEY, '')
             logged_out = True
+            self.login_status_changed.emit(False)
             msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
         else:
             msg = QCoreApplication.translate("STSession", "There was not logged in user! Therefore, no logout.")
