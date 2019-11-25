@@ -294,6 +294,14 @@ class Role_Registry(metaclass=Singleton):
     def get_active_role(self):
         return QSettings().value("Asistente-LADM_COL/roles/current_role_key", self._default_role)
 
+    def active_role_already_set(self):
+        """
+        Whether we have set an active role already or not.
+
+        :return: True if the current_role_key variable is stored in QSettings. False otherwise.
+        """
+        return QSettings().value("Asistente-LADM_COL/roles/current_role_key", False) is not False
+
     def set_active_role(self, role_key):
         res = False
         if role_key in self._registered_roles:

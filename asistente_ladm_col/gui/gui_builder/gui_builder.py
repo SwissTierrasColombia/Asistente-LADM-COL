@@ -325,3 +325,5 @@ class GUI_Builder(QObject):
                 if item in self._registered_actions:
                     toolbar.addAction(self._registered_actions[item])
 
+    def show_welcome_screen(self):
+        return not Role_Registry().active_role_already_set()

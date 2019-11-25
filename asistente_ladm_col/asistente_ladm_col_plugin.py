@@ -148,9 +148,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_actions()
         self.set_connections()
 
-        # Ask for role name before building the GUI
-        dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
-        dlg_welcome.exec_()
+        # Ask for role name before building the GUI, only the first time the plugin is run
+        if self.gui_builder.show_welcome_screen():
+            dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+            dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
