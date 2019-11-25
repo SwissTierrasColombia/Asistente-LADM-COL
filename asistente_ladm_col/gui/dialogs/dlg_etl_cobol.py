@@ -63,21 +63,18 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
+        self.parent = parent
 
         self.names = Names()
         self._db_was_changed = True
         self._running_etl = False
         self._validate_files = False
         self.validators = Validators()
-        self.feedback = QgsProcessingFeedback()
-        self.feedback.progressChanged.connect(self.progress_changed)
-        self.progress.setVisible(False)
+        self.init_feedback()
 
         self.buttonBox.accepted.disconnect()
-        self.buttonBox.rejected.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ETLCobolDialog", "Import"))
-        self.buttonBox.rejected.connect(self.close_dialog)
         self.finished.connect(self.finished_slot)
 
         self.btn_browse_connection.clicked.connect(self.show_settings)
@@ -126,10 +123,17 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_pro.setValidator(fileValidator_lis)
         self.txt_file_path_gdb.setValidator(dirValidator_gdb)
 
+        self.txt_file_path_blo.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_ter.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_pro.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
+
+        self.txt_file_path_blo.textChanged.connect(self.set_import_button_unabled)
+        self.txt_file_path_uni.textChanged.connect(self.set_import_button_unabled)
+        self.txt_file_path_ter.textChanged.connect(self.set_import_button_unabled)
+        self.txt_file_path_pro.textChanged.connect(self.set_import_button_unabled)
+        self.txt_file_path_gdb.textChanged.connect(self.set_import_button_unabled)
 
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
@@ -137,6 +141,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def progress_changed(self):
+        QCoreApplication.processEvents()
         self.progress.setValue(self.feedback.progress())
 
     def initialize_layers(self):
@@ -161,36 +166,6 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def accepted(self):
         self.save_settings()
 
-        if not self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid .lis file or do not set file before importing data.")
-            self.show_message(message_error, Qgis.Warning)
-            self.txt_file_path_blo.setFocus()
-            return
-
-        if not self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid .lis file before importing data.")
-            self.show_message(message_error, Qgis.Warning)
-            self.txt_file_path_uni.setFocus()
-            return
-
-        if not self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid .lis file before importing data.")
-            self.show_message(message_error, Qgis.Warning)
-            self.txt_file_path_ter.setFocus()
-            return
-
-        if not self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid .lis file before importing data.")
-            self.show_message(message_error, Qgis.Warning)
-            self.txt_file_path_pro.setFocus()
-            return
-
-        if not self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid .gdb folder before importing data.")
-            self.show_message(message_error, Qgis.Warning)
-            self.txt_file_path_gdb.setFocus()
-            return
-
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("ETLCobolDialog", "Warning"),
@@ -211,7 +186,9 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                                     self.progress.setValue(100)
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
-                                    self.buttonBox.addButton(QDialogButtonBox.Close)                
+                                    self.buttonBox.addButton(QDialogButtonBox.Close)
+                                else:
+                                    self.init_feedback()   
                                 self._running_etl = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)
@@ -226,7 +203,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 # Now execute "accepted()"
                 pass
 
-    def close_dialog(self):
+    def reject(self):
         if self._running_etl:
             reply = QMessageBox.question(self,
                     QCoreApplication.translate("ETLCobolDialog", "Warning"),
@@ -236,12 +213,35 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             if reply == QMessageBox.Yes:
                 self.feedback.cancel()
                 self._running_etl = False
-                self.close()
         else:
-            self.close()
+            self.done(1)
 
     def finished_slot(self, result):
         self.bar.clearWidgets()
+
+    def set_import_button_unabled(self):
+        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
+        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
+        state_ter  = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
+        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
+        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
+
+        if state_blo == QValidator.Acceptable:
+            if state_uni == QValidator.Acceptable:
+                if state_ter == QValidator.Acceptable:
+                    if state_pro == QValidator.Acceptable:
+                        if state_gdb == QValidator.Acceptable:
+                            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+                        else:
+                            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+                    else:
+                        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+                else:
+                    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            else:
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        else:
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
@@ -259,6 +259,12 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         if dlg.exec_():
             self._db = dlg.get_db_connection()
             self.update_connection_info()
+
+    def init_feedback(self):
+        self.progress.setValue(0)
+        self.progress.setVisible(False)
+        self.feedback = QgsProcessingFeedback()         
+        self.feedback.progressChanged.connect(self.progress_changed) 
 
     def db_connection_changed(self, db, ladm_col_db):
         self._db_was_changed = True
@@ -329,6 +335,11 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         gdb_path = self.txt_file_path_gdb.text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
+
+        if not layer.isValid():
+            msg = QCoreApplication.translate("ETLCobolDialog", "There were troubles loading the GDB.")
+            return False, msg
+
         sublayers = layer.dataProvider().subLayers()
 
         root = QgsProject.instance().layerTreeRoot()

@@ -726,7 +726,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), conn_manager=self.conn_manager)
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
         dlg.exec_()
 
     @_validate_if_wizard_is_open

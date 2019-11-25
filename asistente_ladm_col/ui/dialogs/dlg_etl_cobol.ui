@@ -129,6 +129,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Parcels blocked</string>
+            </property>
             <property name="text">
              <string>BLO</string>
             </property>
@@ -209,6 +212,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Owners</string>
+            </property>
             <property name="text">
              <string>PRO</string>
             </property>
@@ -237,6 +243,9 @@
               <width>65</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Parcels</string>
             </property>
             <property name="text">
              <string>UNI</string>
@@ -273,6 +282,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>GeoDatabase</string>
+            </property>
             <property name="text">
              <string>GDB</string>
             </property>
@@ -288,6 +300,9 @@
               <width>65</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Building units</string>
             </property>
             <property name="text">
              <string>TER</string>

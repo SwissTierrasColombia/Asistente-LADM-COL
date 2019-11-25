@@ -164,7 +164,7 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '##f6989d'  # Red
+                color = '#ffd356'  # Red
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
     def validate_line_edits_lower_case(self, *args, **kwargs):
@@ -230,7 +230,6 @@ class DirValidator(QValidator):
     """
     Validator for file line edits
     """
-
     def validate(self, text, pos):
         if self.allow_empty and not text.strip():
             return QValidator.Acceptable, text, pos
