@@ -15,14 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
-                                 QRadioButton)
+                                 QRadioButton,
+                                 QSizePolicy)
+from qgis.core import Qgis
+from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.lib.logger import Logger
-from ...config.help_strings import HelpStrings
+from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.st_session.st_session import STSession
 
 from ...utils import get_ui_class
@@ -42,15 +46,25 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)
         #self.txt_help_page.anchorClicked.connect(self.save_template)
 
+        self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.login)
         self.buttonBox.helpRequested.connect(self.show_help)
 
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
     def login(self):
-        res = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
+        res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
         if res:
-            self.logger.info(__name__, QCoreApplication.translate("LoginSTDialog", "User logged in successfully!"), LogHandlerEnum.MESSAGE_BAR)
+            self.logger.info(__name__, msg, LogHandlerEnum.MESSAGE_BAR)
+            self.close()
         else:
-            self.logger.warning(__name__, QCoreApplication.translate("LoginSTDialog", "User could not access the Transition System. Try again!"), LogHandlerEnum.MESSAGE_BAR)
+            self.show_message(msg, Qgis.Warning)
+
+    def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.bar.pushMessage(message, level, 15)
 
     def show_help(self):
         self.qgis_utils.show_help("import_from_excel")

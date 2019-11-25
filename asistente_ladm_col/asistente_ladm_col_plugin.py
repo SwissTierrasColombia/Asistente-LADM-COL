@@ -278,7 +278,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         self._st_login_action.triggered.connect(self.show_st_login_dialog)
-        self._st_logout_action.triggered.connect(self.session_logout)
+        self._st_logout_action.triggered.connect(partial(self.session_logout, True))
 
         self.gui_builder.register_actions({
             ACTION_ST_LOGIN: self._st_login_action,
@@ -811,7 +811,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
-        self.session_logout()
+        self.session_logout(False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
         self.gui_builder.unload_gui()
@@ -1135,12 +1135,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LoginSTDialog(self.main_window)
         dlg.exec_()
 
-    def session_logout(self):
-        if self.session.logout():
-            self.logger.info(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                     "User was logged out successfully!"),
-                                LogHandlerEnum.MESSAGE_BAR)
-        else:
-            self.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                     "There was not user logged in!"),
-                                LogHandlerEnum.MESSAGE_BAR)
+    def session_logout(self, show_message=True):
+        logged_out, msg = self.session.logout()
+        if show_message:
+            self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)

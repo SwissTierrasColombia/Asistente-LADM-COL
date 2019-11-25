@@ -22,6 +22,9 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QSettings)
 
+from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
+                                                      ST_LOGIN_SERVICE_PAYLOAD)
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 class STSession(QObject, metaclass=SingletonQObject):
@@ -29,38 +32,58 @@ class STSession(QObject, metaclass=SingletonQObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
         self.__logged_user = None
 
     def login(self, user, password):
-        url = "http://192.168.98.61:8090/api/security/oauth/token"
-
-        payload = "username={}&password={}&grant_type=password".format(user, password)
+        msg = ""
+        payload = ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
         headers = {
             'Content-Type': "application/x-www-form-urlencoded",
-            'Authorization': "Basic c3Qtd2ViLWRldmVsb3AtaUxmdm9uU2g6MTIzNDU=",  # TODO
+            'Authorization': "Basic c3Qtd2ViLWRldmVsb3AtaUxmdm9uU2g6MTIzNDU=",  # TODO build it from the plugin
             'Accept': "*/*",
             'Cache-Control': "no-cache",
             'Accept-Encoding': "gzip, deflate",
             'Connection': "keep-alive",
             'cache-control': "no-cache"
         }
-        response = requests.request("POST", url, data=payload, headers=headers)
+        try:
+            response = requests.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
+        except requests.ConnectionError as e:
+            msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}".format(e))
+            self.logger.warning(__name__, msg)
+            return False, msg
 
         status_OK = response.status_code == 200
         if status_OK:
+            msg = QCoreApplication.translate("STSession", "User logged in successfully!")
             logged_data = json.loads(response.text)
             self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'], logged_data['last_name']), logged_data['email'], logged_data['roles'][0]['name'])
             QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])
+            self.logger.info(__name__, msg)
+        else:
+            if response.status_code == 400:
+                msg = QCoreApplication.translate("STSession",
+                                                 "Wrong user name or password, change credentials and try again.")
+            elif response.status_code == 500:
+                msg = QCoreApplication.translate("STSession", "There is an error in the login server!")
+            self.logger.warning(__name__, msg)
 
-        return status_OK
+        return status_OK, msg
 
     def logout(self):
+        msg = ""
+        logged_out = False
         if self.is_user_logged():
             self.__logged_user = None
             QSettings().setValue(self.TOKEN_KEY, '')
-            return True
+            logged_out = True
+            msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
+        else:
+            msg = QCoreApplication.translate("STSession", "There was not logged in user! Therefore, no logout.")
 
-        return False
+        self.logger.info(__name__, msg)
+        return logged_out, msg
 
     def get_logged_st_user(self):
         return self.__logged_user

@@ -88,16 +88,20 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         module_name = module_name.split(".")[-1]
+        call_message_log = False
         if handler == LogHandlerEnum.MESSAGE_BAR:
             self.message_with_duration_emitted.emit(msg, level, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.STATUS_BAR:
+                call_message_log = True
+        if handler == LogHandlerEnum.STATUS_BAR:
             self.status_bar_message_emitted.emit(msg, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.QGIS_LOG:
+                call_message_log = True
+        if handler == LogHandlerEnum.QGIS_LOG:
             self.log.logMessage(f"[{module_name}] {msg}", TAB_NAME_FOR_LOGS, level, False)
+
+        if call_message_log:
+            self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
 
         if self._file_log:
             # Logic to write message to file
