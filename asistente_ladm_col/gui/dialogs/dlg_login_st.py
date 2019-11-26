@@ -28,6 +28,7 @@ from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 from ...utils import get_ui_class
 
@@ -55,16 +56,19 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def login(self):
-        res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
+        msg = self.logger.status(QCoreApplication.translate("LoginSTDialog", "Connecting to login service..."))
+        with ProcessWithStatus(msg):
+            res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
+
         if res:
-            self.logger.info(__name__, msg, LogHandlerEnum.MESSAGE_BAR)
+            self.logger.info(__name__, msg, LogHandlerEnum.MESSAGE_BAR, 15)
             self.close()
         else:
-            self.show_message(msg, Qgis.Warning)
+            self.show_message(msg, Qgis.Warning, 0)
 
-    def show_message(self, message, level):
+    def show_message(self, message, level, duration=15):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage(message, level, 15)
+        self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
         self.qgis_utils.show_help("import_from_excel")

@@ -325,6 +325,13 @@ class Role_Registry(metaclass=Singleton):
     def get_roles_info(self):
         return {k: v[ROLE_NAME] for k,v in self._registered_roles.items()}
 
+    def get_role_name(self, role_key):
+        if role_key not in self._registered_roles:
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's name".format(role_key))
+            role_key = self._default_role
+
+        return self._registered_roles[role_key][ROLE_NAME]
+
     def get_role_description(self, role_key):
         if role_key not in self._registered_roles:
             self.logger.error(__name__, "Role '{}' was not found, returning default role's decription".format(role_key))

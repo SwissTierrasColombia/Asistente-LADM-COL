@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 from qgis.core import (QgsApplication,
@@ -47,6 +48,7 @@ class Logger(QObject, metaclass=SingletonQObject):
     message_emitted = pyqtSignal(str, int)  # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int)  # Message, level, duration
     status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
+    clear_status_bar_emitted = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
@@ -77,6 +79,13 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Success, handler, duration)
+
+    def status(self, msg):
+        if msg is None:
+            self.clear_status_bar_emitted.emit()
+        else:
+            self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+        QCoreApplication.processEvents()
 
     def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         """

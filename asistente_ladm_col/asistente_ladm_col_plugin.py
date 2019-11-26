@@ -115,7 +115,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _operation_model_required,
                                                  _different_db_connections_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 
 
@@ -184,6 +184,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_emitted.connect(self.show_message)
         self.logger.message_with_duration_emitted.connect(self.show_message)
         self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
+        self.logger.clear_status_bar_emitted.connect(self.clear_status_bar)
 
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
@@ -215,9 +216,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        self.gui_builder.clear_status_bar_emitted.connect(self.clear_status_bar)
-        self.gui_builder.status_bar_message_emitted.connect(self.show_status_bar_message)
-
         self.session.login_status_changed.connect(self.set_login_controls_enabled)
 
     def uninstall_custom_expression_functions(self):
@@ -230,7 +228,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self.refresh_gui(self.get_db_connection(), None)
 
     def refresh_gui(self, db, res):
-        self.gui_builder.build_gui(db, res)
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
+        with ProcessWithStatus(msg):
+            self.gui_builder.build_gui(db, res)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
@@ -1038,7 +1038,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_per_parcel(self, *args):
-        with OverrideCursor(Qt.WaitCursor):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
+        with ProcessWithStatus(msg):
             self.show_change_detection_dockwidget(False)  # all_parcels_mode is False, we want the per_parcel_mode instead
 
     @_validate_if_wizard_is_open
@@ -1049,7 +1050,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_all_parcels(self, *args):
-        with OverrideCursor(Qt.WaitCursor):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
+        with ProcessWithStatus(msg):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
