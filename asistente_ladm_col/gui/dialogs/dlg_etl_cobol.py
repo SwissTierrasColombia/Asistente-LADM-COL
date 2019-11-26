@@ -36,22 +36,21 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from ...config.general_config import (BLO_LIS_FILE_PATH,
-                                      SETTINGS_CONNECTION_TAB_INDEX,
-                                      SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.config.general_config import (BLO_LIS_FILE_PATH,
+                                                      SETTINGS_CONNECTION_TAB_INDEX)
 
-from ...config.enums import EnumDbActionType
-from ...utils.qt_utils import (OverrideCursor,
-                               FileValidator,
-                               DirValidator,
-                               Validators)
-from ...utils import get_ui_class
-from ...gui.dialogs.dlg_settings import SettingsDialog
-
-from asistente_ladm_col.utils.qt_utils import (make_file_selector,
-                                               make_folder_selector)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.enums import EnumDbActionType
+from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
+                                               FileValidator,
+                                               DirValidator,
+                                               Validators,
+                                               make_file_selector,
+                                               make_folder_selector)
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
@@ -64,11 +63,11 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+        self.logger = Logger()
 
         self.names = Names()
-        self._db_was_changed = True
+        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_etl = False
-        self._validate_files = False
         self.validators = Validators()
         self.initialize_feedback()
 
@@ -86,28 +85,28 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.restore_settings()
 
         self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("DialogExportData",
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("ETLCobolDialog",
                         "Select the BLO .lis file with Cobol data "),
-                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
+                        QCoreApplication.translate("ETLCobolDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("DialogExportData",
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("ETLCobolDialog",
                         "Select the UNI .lis file with Cobol data "),
-                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
+                        QCoreApplication.translate("ETLCobolDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("DialogExportData",
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("ETLCobolDialog",
                         "Select the TER .lis file with Cobol data "),
-                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
+                        QCoreApplication.translate("ETLCobolDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("DialogExportData",
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("ETLCobolDialog",
                         "Select the PRO .lis file with Cobol data "),
-                        QCoreApplication.translate("DialogExportData", 'lis File (*.lis)')))
+                        QCoreApplication.translate("ETLCobolDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_gdb.clicked.connect(
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                'SettingsDialog', 'Open GDB folder'), parent=None))
+                'ETLCobolDialog', 'Open GDB folder'), parent=None))
 
         file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
         file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
@@ -214,7 +213,11 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             if reply == QMessageBox.Yes:
                 self.feedback.cancel()
                 self._running_etl = False
+                self.logger.info(__name__, "ETL-Cobol cancelled!")
         else:
+            if self._db_was_changed:
+                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
+            self.logger.info(__name__, "Dialog closed.")
             self.done(1)
 
     def finished_slot(self, result):
@@ -237,6 +240,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
+        # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
 
@@ -245,7 +249,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
                 dlg.tabWidget.removeTab(i)
 
-        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
+        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)  # To avoid unnecessary validations (LADM compliance)
 
         if dlg.exec_():
             self._db = dlg.get_db_connection()
@@ -258,6 +262,8 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.feedback.progressChanged.connect(self.progress_changed) 
 
     def db_connection_changed(self, db, ladm_col_db):
+        # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
+        # until we close the supplies dialog (e.g., we might run an import schema before under the hood)
         self._db_was_changed = True
 
     def update_connection_info(self):
@@ -267,7 +273,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             self.db_connect_label.setToolTip(self._db.get_display_conn_string())
         else:
             self.db_connect_label.setText(
-                QCoreApplication.translate("DialogExportData", "The database is not defined!"))
+                QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
 
     def save_settings(self):
@@ -358,6 +364,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)
+        self.logger.info(__name__, "Running ETL-Cobol model...")
         processing.run("model:ETL-model-supplies", 
             {'barrio': self.gdb_paths['U_BARRIO'],
             'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
@@ -393,6 +400,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
             'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
             feedback=self.feedback)
+        self.logger.info(__name__, "ETL-Cobol model finished.")
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
