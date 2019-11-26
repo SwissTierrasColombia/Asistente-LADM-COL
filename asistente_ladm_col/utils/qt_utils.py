@@ -164,7 +164,7 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '#ffd356'  # Red
+                color = '#ffd356'  # Light orange
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
     def validate_line_edits_lower_case(self, *args, **kwargs):
@@ -228,7 +228,7 @@ class DirValidator(QValidator):
         self.allow_empty_dir = allow_empty_dir
 
     """
-    Validator for file line edits
+    Validator for line edits that hold a dir path
     """
     def validate(self, text, pos):
         if self.allow_empty and not text.strip():
