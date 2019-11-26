@@ -64,6 +64,8 @@ HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
+BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
+
 # Settings for create schema according to LADM-COL
 CREATE_BASKET_COL = False
 CREATE_IMPORT_TID = False

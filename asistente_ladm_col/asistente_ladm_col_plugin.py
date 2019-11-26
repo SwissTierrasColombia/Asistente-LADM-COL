@@ -88,6 +88,7 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
+from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -271,7 +272,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(self.run_etl_cobol)
+        self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
 
         self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
 
@@ -494,7 +495,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Add ladm_col models
         basepath = os.path.dirname(os.path.abspath(__file__))
-        plugin_models_dir = os.path.join(basepath, "processing", "models")
+        plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
@@ -724,11 +725,10 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    @_cadastral_manager_model_required
-    @_db_connection_required
-    def run_etl_cobol(self):
+    def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
