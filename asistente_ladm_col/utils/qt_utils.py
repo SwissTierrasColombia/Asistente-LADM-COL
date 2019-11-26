@@ -23,16 +23,19 @@ import stat
 import sys
 from functools import partial
 
-from qgis.core import Qgis
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              QSettings)
+                              QSettings,
+                              Qt)
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
+from qgis.core import Qgis
+
+from asistente_ladm_col.lib.logger import Logger
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
@@ -272,3 +275,16 @@ class OverrideCursor():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
+
+
+class ProcessWithStatus():
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        Logger().status(self.msg)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+        Logger().status(None)

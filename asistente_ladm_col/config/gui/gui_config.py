@@ -177,6 +177,13 @@ class GUI_Config(QObject):
             WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools 2"),
             OBJECT_NAME: 'ladm_col_toolbar2',
             ACTIONS: [
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
+                    OBJECT_NAME: 'ladm_col_toolbar_st',
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
                 ACTION_OFFICIAL_SETTINGS,
                 SEPARATOR,
                 {  # List of toolbars

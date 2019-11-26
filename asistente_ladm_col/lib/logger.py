@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 from qgis.core import (QgsApplication,
@@ -47,6 +48,7 @@ class Logger(QObject, metaclass=SingletonQObject):
     message_emitted = pyqtSignal(str, int)  # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int)  # Message, level, duration
     status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
+    clear_status_bar_emitted = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
@@ -78,6 +80,13 @@ class Logger(QObject, metaclass=SingletonQObject):
     def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Success, handler, duration)
 
+    def status(self, msg):
+        if msg is None:
+            self.clear_status_bar_emitted.emit()
+        else:
+            self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+        QCoreApplication.processEvents()
+
     def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         """
         Here we define messages of a particular run (e.g., showing variable values or potentially long messages)
@@ -88,16 +97,20 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         module_name = module_name.split(".")[-1]
+        call_message_log = False
         if handler == LogHandlerEnum.MESSAGE_BAR:
             self.message_with_duration_emitted.emit(msg, level, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.STATUS_BAR:
+                call_message_log = True
+        if handler == LogHandlerEnum.STATUS_BAR:
             self.status_bar_message_emitted.emit(msg, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.QGIS_LOG:
+                call_message_log = True
+        if handler == LogHandlerEnum.QGIS_LOG:
             self.log.logMessage(f"[{module_name}] {msg}", TAB_NAME_FOR_LOGS, level, False)
+
+        if call_message_log:
+            self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
 
         if self._file_log:
             # Logic to write message to file

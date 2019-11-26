@@ -97,7 +97,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
-                ACTION_INTEGRATE_SUPPLIES
+                ACTION_INTEGRATE_SUPPLIES,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT
             ],
             ROLE_GUI_CONFIG: {}
         }
@@ -322,6 +324,13 @@ class Role_Registry(metaclass=Singleton):
 
     def get_roles_info(self):
         return {k: v[ROLE_NAME] for k,v in self._registered_roles.items()}
+
+    def get_role_name(self, role_key):
+        if role_key not in self._registered_roles:
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's name".format(role_key))
+            role_key = self._default_role
+
+        return self._registered_roles[role_key][ROLE_NAME]
 
     def get_role_description(self, role_key):
         if role_key not in self._registered_roles:

@@ -47,6 +47,9 @@ ACTION_RUN_ETL_COBOL = 'action_run_etl_cobol'
 ACTION_RUN_ETL_SNC = 'action_run_etl_snc'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
+ACTION_ST_LOGIN = 'action_st_login'
+ACTION_ST_LOGOUT = 'action_st_logout'
+
 ACTION_CHECK_QUALITY_RULES = 'action_check_quality_rules'
 ACTION_PARCEL_QUERY = 'action_parcel_query'
 ACTION_CREATE_BOUNDARY = 'action_create_boundary'
