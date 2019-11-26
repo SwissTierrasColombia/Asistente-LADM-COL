@@ -110,14 +110,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.gbx_active_role_layout = QVBoxLayout()
         dict_roles = self.roles.get_roles_info()
         checked = False
+        active_role = self.roles.get_active_role()
 
         # Initialize radio buttons
         for k, v in dict_roles.items():
             radio = QRadioButton(v)
             radio.setToolTip(self.roles.get_role_description(k))
 
-            if not checked:  # Only for the first item
-                if k == self.roles.get_active_role():
+            if not checked:
+                if k == active_role:
                     radio.setChecked(True)
                     checked = True
 

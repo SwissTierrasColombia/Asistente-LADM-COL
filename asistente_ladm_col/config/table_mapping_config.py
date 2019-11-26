@@ -56,9 +56,9 @@ class Names(metaclass=Singleton):
     GC_ADDRESS_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion"
     # "Datos_Gestor_Catastral_V2_9_5.GC_SistemaProcedenciaDatosTipo"
     GC_BUILDING_UNIT_TYPE_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_UnidadConstruccionTipo"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion"
+    GC_COMMISSION_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion"
+    GC_COMMISSION_PLOT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno"
+    GC_COMMISSION_BUILDING_UNIT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion"
 
     INI_PARCEL_SUPPLIES_T = None  # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.INI_Predio_Insumos"
     # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_gc"
@@ -745,6 +745,9 @@ class Names(metaclass=Singleton):
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {VARIABLE_NAME: "GC_PLOT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Unidad_Construccion": {VARIABLE_NAME: "GC_BUILDING_UNIT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Vereda": {VARIABLE_NAME: "GC_RURAL_DIVISION_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Terreno": {VARIABLE_NAME: "GC_COMMISSION_PLOT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_UNIT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_CondicionPredioTipo": {VARIABLE_NAME: "GC_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_Direccion": {VARIABLE_NAME: "GC_ADDRESS_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_UnidadConstruccionTipo": {VARIABLE_NAME: "GC_BUILDING_UNIT_TYPE_T", FIELDS_DICT: {}},

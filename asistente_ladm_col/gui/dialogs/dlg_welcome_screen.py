@@ -49,14 +49,16 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
         self.roles = Role_Registry()
         self.dict_roles = self.roles.get_roles_info()
         checked = False
+        active_role = self.roles.get_active_role()
 
         # Initialize radio buttons
         for k,v in self.dict_roles.items():
             radio = QRadioButton(v)
-            if not checked:  # Only for the first item
-                radio.setChecked(True)
-                checked = True
-                self.show_description(self.roles.get_role_description(k), checked)  # Initialize help page
+            if not checked:
+                if k == active_role:
+                    radio.setChecked(True)
+                    checked = True
+                    self.show_description(self.roles.get_role_description(k), checked)  # Initialize help page
 
             radio.toggled.connect(partial(self.show_description, self.roles.get_role_description(k)))
             self.gbx_layout.addWidget(radio)
