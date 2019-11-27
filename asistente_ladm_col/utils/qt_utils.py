@@ -125,7 +125,7 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
-def save_pdf_format(qgis_utils, settings_path, title, text):
+def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
                                                        QCoreApplication.translate('Asistente-LADM_COL', 'Export to PDF'),
@@ -149,7 +149,7 @@ def save_pdf_format(qgis_utils, settings_path, title, text):
             "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
             normalized_path=normalize_local_url(new_filename),
             path=new_filename)
-        qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+        Logger().success_msg(__name__, msg)
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):

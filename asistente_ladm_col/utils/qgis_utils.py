@@ -64,7 +64,8 @@ from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopo
 from .decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
-from .qt_utils import OverrideCursor
+from .qt_utils import (OverrideCursor,
+                       ProcessWithStatus)
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      LAYER,
@@ -88,13 +89,11 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      TranslatableConfigStrings,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
+from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings, Logger
 from asistente_ladm_col.config.table_mapping_config import (Names,
                                                             FORM_GROUPS)
-from asistente_ladm_col.config.translator import (
-    QGIS_LANG,
-    PLUGIN_DIR
-)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  PLUGIN_DIR)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
@@ -103,14 +102,11 @@ class QGISUtils(QObject):
     action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
-    clear_status_bar_emitted = pyqtSignal()
-    clear_message_bar_emitted = pyqtSignal()
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     message_emitted = pyqtSignal(str, int) # Message, level
-    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     message_with_open_table_attributes_button_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button text, layers_dict, level
@@ -125,11 +121,12 @@ class QGISUtils(QObject):
 
     def __init__(self, layer_tree_view=None):
         QObject.__init__(self)
+        self.layer_tree_view = layer_tree_view
+        self.logger = Logger()
+        self.names = Names()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
-        self.layer_tree_view = layer_tree_view
-        self.names = Names()
         self.translatable_config_strings = TranslatableConfigStrings()
         self.refactor_fields = RefactorFieldsMappings()
 
@@ -145,14 +142,10 @@ class QGISUtils(QObject):
 
     def cache_layers_and_relations(self, db, ladm_col_db):
         if ladm_col_db:
-            self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-                "Extracting relations and domains from the database... This is done only once per session!"), 0)
-            QCoreApplication.processEvents()
-
-            with OverrideCursor(Qt.WaitCursor):
+            msg = QCoreApplication.translate("QGISUtils",
+                "Extracting relations and domains from the database... This is done only once per session!")
+            with ProcessWithStatus(msg):
                 self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
-
-            self.clear_status_bar_emitted.emit()
         else:
             self.clear_db_cache()
 
@@ -341,7 +334,7 @@ class QGISUtils(QObject):
                     profiler.end()
                     print("Post load",profiler.totalTime())
                     profiler.clear()
-                    self.clear_status_bar_emitted.emit()
+                    self.logger.status(None)
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)
@@ -614,7 +607,6 @@ class QGISUtils(QObject):
 
         if layer_name == self.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
-            self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
             self._source_handler.handle_source_upload(db, layer, self.names.EXT_ARCHIVE_S_DATA_F)
 
     def set_layer_constraints(self, db, layer):
@@ -1097,9 +1089,7 @@ class QGISUtils(QObject):
             url = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         if url:
-            with OverrideCursor(Qt.WaitCursor):
-                self.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
-                QCoreApplication.processEvents()
+            with ProcessWithStatus("Checking source service availability (this might take a while)..."):
                 if self.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -1137,8 +1127,6 @@ class QGISUtils(QObject):
                     res = False
                     msg['text'] = QCoreApplication.translate("SettingsDialog",
                         "There was a problem connecting to Internet.")
-
-                self.clear_status_bar_emitted.emit()
         else:
             res = False
             msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
@@ -1202,17 +1190,11 @@ class QGISUtils(QObject):
                 url = os.path.join("file://", help_path)
             else:
                 if is_connected:
-                    self.message_with_duration_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                                                   "The local help could not be found in '{}' and cannot be open.").format(help_path),
-                        Qgis.Warning,
-                        20)
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                        "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
                 else:
-                    self.message_with_duration_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                                                   "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url),
-                        Qgis.Warning,
-                        20)
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                        "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
                 return
         else:
             url = web_url
@@ -1289,8 +1271,6 @@ class QGISUtils(QObject):
             self.activate_layer_requested.emit(list_layers[0])
             self.action_vertex_tool_requested.emit()
 
-            self.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]),
-                Qgis.Info, 30)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You can start moving nodes in layers {} and {}, simultaneously!").format(
+                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)

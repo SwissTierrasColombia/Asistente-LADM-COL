@@ -45,10 +45,10 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     Only devs can debug, but users can get a whole log by writing it to a file.
     """
-    message_emitted = pyqtSignal(str, int)  # Message, level
+    clear_message_bar_emitted = pyqtSignal()
+    clear_status_bar_emitted = pyqtSignal()
     message_with_duration_emitted = pyqtSignal(str, int, int)  # Message, level, duration
     status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
-    clear_status_bar_emitted = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
@@ -68,17 +68,35 @@ class Logger(QObject, metaclass=SingletonQObject):
     def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Info, handler, duration)
 
+    def info_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Info, LogHandlerEnum.MESSAGE_BAR, duration)
+
     def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Warning, handler, duration)
+
+    def warning_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
 
     def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Warning, handler, duration)
 
+    def error_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
+
     def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Critical, handler, duration)
 
+    def critical_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Critical, LogHandlerEnum.MESSAGE_BAR, duration)
+
     def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
         self.log_message(module_name, msg, Qgis.Success, handler, duration)
+
+    def success_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Success, LogHandlerEnum.MESSAGE_BAR, duration)
+
+    def clear_message_bar(self):
+        self.clear_message_bar_emitted.emit()
 
     def status(self, msg):
         if msg is None:

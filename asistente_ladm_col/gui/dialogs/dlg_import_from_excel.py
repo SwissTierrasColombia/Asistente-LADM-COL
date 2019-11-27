@@ -39,6 +39,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QFileDialog)
 
+from asistente_ladm_col.lib.logger import Logger
 from ...utils.qt_utils import make_file_selector, normalize_local_url
 from ...config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
@@ -96,6 +97,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
         self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
@@ -583,12 +585,8 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.qgis_utils.message_with_duration_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
-                excel_path),
-            Qgis.Success,
-            0)
+        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
+            "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)

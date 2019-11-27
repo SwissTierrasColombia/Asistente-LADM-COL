@@ -41,6 +41,7 @@ from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.ui import load_ui
 
@@ -52,13 +53,14 @@ class AbsWizardFactory(QWizard):
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         super(AbsWizardFactory, self).__init__()
         self.iface = iface
-        self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
         self.wizard_config = wizard_settings
+        self.logger = Logger()
+        self.names = Names()
+        self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        self.names = Names()
 
         load_ui(self.wizard_config[WIZARD_UI], self)
 
@@ -131,9 +133,8 @@ class AbsWizardFactory(QWizard):
 
             if not saved:
                 layer.rollBack()
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME), Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                    "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:

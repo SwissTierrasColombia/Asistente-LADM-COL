@@ -181,24 +181,20 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_generic_actions()
 
     def set_connections(self):
-        self.logger.message_emitted.connect(self.show_message)
         self.logger.message_with_duration_emitted.connect(self.show_message)
         self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.logger.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.logger.clear_message_bar_emitted.connect(self.clear_message_bar)
 
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
-        self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
-        self.qgis_utils.clear_message_bar_emitted.connect(self.clear_message_bar)
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        self.qgis_utils.message_emitted.connect(self.show_message)
-        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
@@ -207,7 +203,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_to_download_report_dependency)
         self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(
             self.show_message_to_remove_report_dependency)
-        self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
@@ -731,7 +726,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
     
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.conn_manager.get_db_connector_from_source())
+        dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
         dlg.exec_()
 
     def show_log_excel_button(self, text):

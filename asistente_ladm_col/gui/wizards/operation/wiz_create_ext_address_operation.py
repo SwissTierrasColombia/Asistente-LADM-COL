@@ -265,11 +265,10 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             self.qgis_utils.active_snapping_all_layers()
             self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
         else:
-            self.qgis_utils.message_emitted.emit(
+            self.logger.warning_msg(__name__,
                 QCoreApplication.translate(self.WIZARD_NAME,
                                            "First select a {}.").format(self._db.get_ladm_layer_name(self._current_layer)), Qgis.Warning)
 

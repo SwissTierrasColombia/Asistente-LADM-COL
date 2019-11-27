@@ -52,6 +52,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       URL_REPORTS_LIBRARIES)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (remove_readonly,
                                                normalize_local_url)
 from asistente_ladm_col.utils.utils import Utils
@@ -63,8 +64,9 @@ class ReportGenerator(QObject):
     def __init__(self, qgis_utils, ladm_data):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
-        self.names = Names()
         self.ladm_data = ladm_data
+        self.names = Names()
+        self.logger = Logger()
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
@@ -210,10 +212,8 @@ class ReportGenerator(QObject):
 
         selected_plots = plot_layer.selectedFeatures()
         if not selected_plots:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                                           "To generate reports, first select at least a plot!"),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                    "To generate reports, first select at least a plot!"))
             return
 
         # Where to store the reports?
@@ -223,10 +223,8 @@ class ReportGenerator(QObject):
                         QCoreApplication.translate("ReportGenerator", "Select a folder to save the reports to be generated"),
                         previous_folder)
         if not save_into_folder:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                    "You need to select a folder where to save the reports before continuing."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                    "You need to select a folder where to save the reports before continuing."))
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
@@ -328,7 +326,7 @@ class ReportGenerator(QObject):
         os.remove(yaml_config_path)
 
         self.enable_action_requested.emit(report_type, True)
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
 
         if total == count:
             if total == 1:
@@ -336,7 +334,7 @@ class ReportGenerator(QObject):
             else:
                 msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(save_into_folder))
 
-            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+            self.logger.success_msg(__name__, msg)
         else:
             details_msg = ''
             if polygons_with_holes:
@@ -356,8 +354,7 @@ class ReportGenerator(QObject):
                 else:
                     msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder), log_tab=self.LOG_TAB)
 
-            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
-
+            self.logger.warning_msg(__name__, msg)
 
     def save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
@@ -376,20 +373,13 @@ class ReportGenerator(QObject):
                 with zipfile.ZipFile(tmp_file, "r") as zip_ref:
                     zip_ref.extractall(dependency_base_path)
             except zipfile.BadZipFile as e:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "There was an error with the download. The downloaded file is invalid."),
-                    Qgis.Warning,
-                    0)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "There was an error with the download. The downloaded file is invalid."))
             except PermissionError as e:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')),
-                    Qgis.Warning,
-                    0)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')))
             else:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."),
-                    Qgis.Info,
-                    0)
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
 
             try:
                 os.remove(tmp_file)
@@ -399,7 +389,7 @@ class ReportGenerator(QObject):
         self._downloading = False
 
     def download_report_dependency(self):
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
         if not self._downloading: # Already downloading report dependency?
             if self.qgis_utils.is_connected(TEST_SERVER):
                 self._downloading = True
@@ -407,9 +397,8 @@ class ReportGenerator(QObject):
                 fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
                 QgsApplication.taskManager().addTask(fetcher_task)
             else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "There was a problem connecting to Internet."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                        "There was a problem connecting to Internet."))
                 self._downloading = False
 
     def remove_report_dependency(self):
@@ -422,10 +411,8 @@ class ReportGenerator(QObject):
         # Since folders might contain read only files, we need to delete them
         # using a callback (see https://docs.python.org/3/library/shutil.html#rmtree-example)
         shutil.rmtree(base_path, onerror=remove_readonly)
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
 
         if os.path.exists(base_path):
-            self.qgis_utils.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)),
-                Qgis.Warning,
-                0)
+            self.logger.warning_msg(__name__,  QCoreApplication.translate("ReportGenerator",
+                "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))

@@ -37,6 +37,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME, LAYER)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('wizards/operation/dlg_group_party.ui')
@@ -50,11 +51,12 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
-        self.help_strings = HelpStrings()
+        self.logger = Logger()
         self.names = Names()
+        self.log = QgsApplication.messageLog()
+        self.help_strings = HelpStrings()
 
         self.data = {} # {t_id: [display_text, denominator, numerator]}
         self.current_selected_parties = [] #  [t_ids]
@@ -436,7 +438,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+            self.logger.info_msg(__name__, message)
         self.disconnect_signals()
         self.close()
 

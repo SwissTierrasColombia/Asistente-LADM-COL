@@ -133,7 +133,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self.qgis_utils.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"), Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"))
 
     #############################################################################
     # Custom methods

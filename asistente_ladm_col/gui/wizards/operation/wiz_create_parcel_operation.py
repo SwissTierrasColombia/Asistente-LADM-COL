@@ -290,9 +290,8 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
 
             if not saved:
                 layer.rollBack()
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME), Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                    "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:
