@@ -106,7 +106,6 @@ class QGISUtils(QObject):
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    message_emitted = pyqtSignal(str, int) # Message, level
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     message_with_open_table_attributes_button_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button text, layers_dict, level
@@ -345,10 +344,10 @@ class QGISUtils(QObject):
         # Verifies that the layers have been successfully loaded
         for layer_name in layers:
             if response_layers[layer_name] is None:
-                self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "{layer_name} layer couldn't be found... {description}").format(
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
-                        description=db.get_display_conn_string()),
-                    Qgis.Warning)
+                        description=db.get_display_conn_string()))
 
                 # If it is not possible to obtain the requested layers we make null the variable "layers"
                 layers = None
@@ -384,13 +383,13 @@ class QGISUtils(QObject):
                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format(tool_name)
 
         if None in layers:
-            self.message_emitted.emit(msg, Qgis.Warning)
+            self.logger.warning_msg(__name__, msg)
             return False
 
         # Load layers
         self.get_layers(db, layers, load=True)
         if not layers or layers is None:
-            self.message_emitted.emit(msg, Qgis.Warning)
+            self.logger.warning_msg(__name__, msg)
             return False
 
         # Check if any layer is in editing mode
@@ -401,12 +400,10 @@ class QGISUtils(QObject):
                     layers_name.append(layers[layer][LAYER].name())
 
         if layers_name:
-            self.message_emitted.emit(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
                     tool_name,
-                    '; '.join(layers_name)),
-                Qgis.Warning)
+                    '; '.join(layers_name)))
             return False
 
         return True
@@ -821,10 +818,8 @@ class QGISUtils(QObject):
 
     def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No CSV file given or file doesn't exist."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                                                                         "No CSV file given or file doesn't exist."))
             return False
 
         # Create QGIS vector layer
@@ -856,10 +851,8 @@ class QGISUtils(QObject):
             csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "CSV layer not valid!"),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                                                                         "CSV layer not valid!"))
             return False
 
         csv_layer.setName("temporal_{}_csv".format(target_layer_name))
@@ -880,10 +873,8 @@ class QGISUtils(QObject):
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
             if overlapping:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "There are overlapping points, we cannot import them into the DB! See selected points."))
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
                 return False
@@ -902,17 +893,11 @@ class QGISUtils(QObject):
 
         if features_added:
             self.zoom_full_requested.emit()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "{} points were added succesfully to '{}'.").format(
-                    new_features,
-                    target_layer_name),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No point was added to '{}'.").format(target_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "No point was added to '{}'.").format(target_layer_name))
             return False
 
         return True
@@ -949,10 +934,8 @@ class QGISUtils(QObject):
             return False
 
         if output_layer.isEditable():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name))
             return False
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
@@ -968,10 +951,8 @@ class QGISUtils(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Model ETL-model was not found and cannot be opened!"),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "Model ETL-model was not found and cannot be opened!"))
             return False
 
     @_activate_processing_plugin
@@ -981,10 +962,8 @@ class QGISUtils(QObject):
             return False
 
         if output.isEditable():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name))
             return False
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
@@ -1022,10 +1001,8 @@ class QGISUtils(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Model ETL-model was not found and cannot be opened!"),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "Model ETL-model was not found and cannot be opened!"))
             return False
 
     def load_field_mapping(self, field_mapping):
