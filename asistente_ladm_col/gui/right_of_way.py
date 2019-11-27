@@ -73,11 +73,11 @@ class RightOfWay(QObject):
 
         if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount() == 0:
             if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
-                self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                self.logger.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                                "First load the layer {} into QGIS and select at least one plot!").format(self.names.OP_PLOT_T),
                     QCoreApplication.translate("RightOfWay", "Load layer {} now").format(self.names.OP_PLOT_T),
-                    [self.names.OP_PLOT_T, None],
+                    self.names.OP_PLOT_T,
                     Qgis.Warning)
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("RightOfWay",

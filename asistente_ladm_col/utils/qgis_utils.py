@@ -94,7 +94,6 @@ from asistente_ladm_col.config.table_mapping_config import (Names,
                                                             FORM_GROUPS)
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   PLUGIN_DIR)
-from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
@@ -105,16 +104,9 @@ class QGISUtils(QObject):
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
-    message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
-    message_with_open_table_attributes_button_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button text, layers_dict, level
-    message_with_button_download_report_dependency_emitted = pyqtSignal(str) # Message
-    message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
-    status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
@@ -256,8 +248,8 @@ class QGISUtils(QObject):
                     profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
-                    self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
+                    self.logger.status(QCoreApplication.translate("QGISUtils",
+                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
                     QCoreApplication.processEvents()
                     profiler.start("load_layers")
                     self.qgis_model_baker_utils.load_layers(all_layers_to_load, db)

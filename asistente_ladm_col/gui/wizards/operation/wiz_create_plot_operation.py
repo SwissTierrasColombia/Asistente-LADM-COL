@@ -165,7 +165,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
             filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
-            self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer, filter)
+            self.logger.message_with_button_open_table_attributes_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:
             message = QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!")

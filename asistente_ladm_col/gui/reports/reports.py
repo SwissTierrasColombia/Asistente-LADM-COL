@@ -167,7 +167,7 @@ class ReportGenerator(QObject):
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
         bin_path = os.path.join(base_path, 'bin')
         if not os.path.exists(bin_path):
-            self.qgis_utils.message_with_button_download_report_dependency_emitted.emit(
+            self.logger.message_with_button_download_report_dependency_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
                    "The dependency library to generate reports is not installed. Click on the button to download and install it."))
             return
@@ -185,7 +185,7 @@ class ReportGenerator(QObject):
                 required_version_found = False
 
         if not required_version_found:
-            self.qgis_utils.message_with_button_remove_report_dependency_emitted.emit(
+            self.logger.message_with_button_remove_report_dependency_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
                     "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
             return

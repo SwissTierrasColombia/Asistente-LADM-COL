@@ -181,12 +181,19 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_generic_actions()
 
     def set_connections(self):
+        self.conn_manager.db_connection_changed.connect(self.refresh_gui)
+
         self.logger.message_with_duration_emitted.connect(self.show_message)
         self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.logger.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.logger.clear_message_bar_emitted.connect(self.clear_message_bar)
-
-        self.report_generator.enable_action_requested.connect(self.enable_action)
+        self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
+        self.logger.message_with_button_open_table_attributes_emitted.connect(
+            self.show_message_with_open_table_attributes_button)
+        self.logger.message_with_button_download_report_dependency_emitted.connect(
+            self.show_message_to_download_report_dependency)
+        self.logger.message_with_button_remove_report_dependency_emitted.connect(
+            self.show_message_to_remove_report_dependency)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
@@ -194,22 +201,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
-        self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
-        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
-            self.show_message_with_open_table_attributes_button)
-        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(
-            self.show_message_to_download_report_dependency)
-        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(
-            self.show_message_to_remove_report_dependency)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+
+        self.report_generator.enable_action_requested.connect(self.enable_action)
 
         self.session.login_status_changed.connect(self.set_login_controls_enabled)
 
@@ -594,15 +595,6 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
 
-    def show_message_to_load_layers(self, msg, button_text, layers, level):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(button_text)
-        button.pressed.connect(partial(self.load_layers, layers))
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, level, 15)
-
     def show_message_to_open_about_dialog(self, msg):
         self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -638,8 +630,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-            "Remove dependency"))
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
         button.pressed.connect(self.remove_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
@@ -666,7 +657,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.statusBarIface().showMessage(msg, duration)
 
     def load_layer(self, layer):
-        self.qgis_utils.get_layer(self.get_db_connection(), layer[0], layer[1], load=True)
+        self.clear_message_bar()
+        self.qgis_utils.get_layer(self.get_db_connection(), layer, None, load=True)
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
@@ -1078,9 +1070,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.showAttributeTable(layer, filter)
 
     def download_report_dependency(self):
+        self.clear_message_bar()  # Remove messages
         self.report_generator.download_report_dependency()
 
     def remove_report_dependency(self):
+        self.clear_message_bar()  # Remove messages
         self.report_generator.remove_report_dependency()
 
     def show_help(self):

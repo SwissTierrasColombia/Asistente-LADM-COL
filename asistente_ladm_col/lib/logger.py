@@ -19,7 +19,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 from qgis.core import (QgsApplication,
-                       Qgis)
+                       Qgis,
+                       QgsVectorLayer)
 
 from asistente_ladm_col.config.enums import (LogHandlerEnum,
                                              LogModeEnum)
@@ -50,11 +51,21 @@ class Logger(QObject, metaclass=SingletonQObject):
     message_with_duration_emitted = pyqtSignal(str, int, int)  # Message, level, duration
     status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
 
+    message_with_button_load_layer_emitted = pyqtSignal(str, str, str, int)  # Message, button_text, layer_name, level
+    message_with_button_open_table_attributes_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button_text, level, layer, filter
+    message_with_button_download_report_dependency_emitted = pyqtSignal(str)  # Message
+    message_with_button_remove_report_dependency_emitted = pyqtSignal(str)  # Message
+
     def __init__(self):
         QObject.__init__(self)
         self.mode = LogModeEnum.USER  # Default value
         self.log = QgsApplication.messageLog()
         self._file_log = ''
+
+        self.message_with_button_load_layer_emitted.connect(self._log_load_layer_emitted)
+        self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
+        self.message_with_button_download_report_dependency_emitted.connect(self._log_download_report_dependency_emitted)
+        self.message_with_button_remove_report_dependency_emitted.connect(self._log_remove_report_emitted)
 
     def set_mode(self, mode):
         self.mode = mode
@@ -134,5 +145,14 @@ class Logger(QObject, metaclass=SingletonQObject):
             # Logic to write message to file
             pass
 
-    #def message_with_button... and other methods...
-    #    self.log_message(module_name, msg, handler)
+    def _log_load_layer_emitted(self, message, button_text, layer_name, level):
+        self.debug("", "A message with button load_layer ({}) was shown!".format(layer_name))
+
+    def _log_open_table_attributes_emitted(self, message, button_text, level, layer, filter):
+        self.debug("", "A message with button open_table_attributes ({}) was shown!".format(layer.name()))
+
+    def _log_download_report_dependency_emitted(self, message):
+        self.debug("", "A message with button download_report_dependency was shown!")
+
+    def _log_remove_report_emitted(self, message):
+        self.debug("", "A message with button remove_report was shown!")

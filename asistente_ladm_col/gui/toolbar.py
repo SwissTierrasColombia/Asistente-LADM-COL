@@ -48,9 +48,9 @@ class ToolBar(QObject):
         use_selection = True
 
         if layer is None:
-            self.qgis_utils.message_with_button_load_layer_emitted.emit(
+            self.logger.message_with_button_load_layer_emitted.emit(
                 QCoreApplication.translate("ToolBar", "First load the layer {} into QGIS!").format(self.names.OP_BOUNDARY_T),
-                QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T), [self.names.OP_BOUNDARY_T, None], Qgis.Warning)
+                QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T), self.names.OP_BOUNDARY_T, Qgis.Warning)
             return
         else:
             if layer.selectedFeatureCount() == 0:
@@ -113,12 +113,12 @@ class ToolBar(QObject):
         if use_selection:
             if layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
                 if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_BOUNDARY_T) is None:
-                    self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                    self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
                             self.names.OP_BOUNDARY_T),
                         QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T),
-                        [self.names.OP_BOUNDARY_T, None],
+                        self.names.OP_BOUNDARY_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
@@ -197,12 +197,12 @@ class ToolBar(QObject):
             if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
                 if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T,
                                                              geometry_type=QgsWkbTypes.PolygonGeometry) is None:
-                    self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                    self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(
                             self.names.OP_PLOT_T),
                         QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_PLOT_T),
-                        [self.names.OP_PLOT_T, None],
+                        self.names.OP_PLOT_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
