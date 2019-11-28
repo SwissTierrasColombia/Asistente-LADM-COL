@@ -89,6 +89,7 @@ from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcel
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
+from asistente_ladm_col.gui.dialogs.dlg_missing_cobol_supplies_cobol import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -271,10 +272,17 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
             self.main_window)
 
+        self._missing_cobol_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing cobol supplies"),
+            self.main_window)
+
         # Connections
         self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
+        self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
         self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
+        self.gui_builder.register_action(ACTION_FIND_MISSING_COBOL_SUPPLIES, self._missing_cobol_supplies_action)
 
     def create_operation_actions(self):
         self._point_surveying_and_representation_operation_action = QAction(
@@ -729,6 +737,11 @@ class AsistenteLADMCOLPlugin(QObject):
         # TODO: Should use @_activate_processing_plugin
         dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
         dlg.exec_()
+
+    def show_missing_cobol_supplies_dialog(self):
+        dlg = MissingCobolSupplies(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg.exec_()
+
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

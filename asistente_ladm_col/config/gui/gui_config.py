@@ -73,7 +73,8 @@ class GUI_Config(QObject):
                     ACTIONS: [
                         ACTION_RUN_ETL_COBOL,
                         ACTION_RUN_ETL_SNC,
-                        ACTION_INTEGRATE_SUPPLIES
+                        ACTION_INTEGRATE_SUPPLIES,
+                        ACTION_FIND_MISSING_COBOL_SUPPLIES
                     ]
                 }, {
                     WIDGET_TYPE: MENU,

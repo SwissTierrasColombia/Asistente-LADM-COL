@@ -97,6 +97,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
+                ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_INTEGRATE_SUPPLIES
             ],
             ROLE_GUI_CONFIG: {}
@@ -142,7 +143,8 @@ class Role_Registry(metaclass=Singleton):
                                     ACTIONS: [
                                         ACTION_RUN_ETL_COBOL,
                                         ACTION_RUN_ETL_SNC,
-                                        ACTION_INTEGRATE_SUPPLIES
+                                        ACTION_INTEGRATE_SUPPLIES,
+                                        ACTION_FIND_MISSING_COBOL_SUPPLIES
                                     ]
                                 }, {
                                     WIDGET_TYPE: MENU,

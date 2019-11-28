@@ -55,7 +55,7 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
 from qgis.PyQt.uic import loadUiType, loadUi
 
-class ETLCobolDialog(CobolBaseDialog):
+class MissingCobolSupplies(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
         self.qgis_utils = qgis_utils
@@ -63,11 +63,14 @@ class ETLCobolDialog(CobolBaseDialog):
         self.conn_manager = conn_manager
         self.parent = parent
 
-        loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_cobol_supplies.ui', self.target_data)
+        loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
 
-        self.target_data.btn_browse_connection.clicked.connect(self.show_settings)
-        self.update_connection_info()
+        self.disable_widgets()
+
+        self.target_data.btn_browse_file_folder_supplies.clicked.connect(
+                make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
+                'ETLCobolDialog', 'Select folder to save data'), parent=None))
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
@@ -139,3 +142,16 @@ class ETLCobolDialog(CobolBaseDialog):
             self.target_data.db_connect_label.setText(
                 QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
+
+    def disable_widgets(self):
+        self.label_blo.setVisible(False)
+        self.label_ter.setVisible(False)
+        self.label_pro.setVisible(False)
+
+        self.txt_file_path_blo.setVisible(False)
+        self.txt_file_path_ter.setVisible(False)
+        self.txt_file_path_pro.setVisible(False)
+
+        self.btn_browse_file_blo.setVisible(False)
+        self.btn_browse_file_ter.setVisible(False)
+        self.btn_browse_file_pro.setVisible(False)

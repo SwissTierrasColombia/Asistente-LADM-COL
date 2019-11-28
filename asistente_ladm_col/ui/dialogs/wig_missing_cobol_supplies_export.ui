@@ -23,9 +23,9 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Data settings</string>
+      <string>Export data</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_13">
         <property name="minimumSize">
@@ -35,7 +35,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Database:</string>
+         <string>Folder</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -45,29 +45,13 @@
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="db_connect_label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="txt_file_path_folder_supplies"/>
         </item>
         <item>
-         <widget class="QPushButton" name="btn_browse_connection">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="QPushButton" name="btn_browse_file_folder_supplies">
           <property name="maximumSize">
            <size>
-            <width>16777215</width>
+            <width>40</width>
             <height>16777215</height>
            </size>
           </property>
@@ -75,7 +59,7 @@
            <string/>
           </property>
           <property name="text">
-           <string>Connection settings</string>
+           <string>...</string>
           </property>
          </widget>
         </item>

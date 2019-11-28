@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2019-11-13
+        begin                : 2019-11-26
         git sha              : :%H$
         copyright            : (C) 2019 by Jhon Galindo (Incige SAS)
         email                : jhonsigpjc@gmail.com
@@ -54,7 +54,7 @@ from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
-class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
+class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -75,9 +75,6 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ETLCobolDialog", "Import"))
         self.finished.connect(self.finished_slot)
 
-        #self.btn_browse_connection.clicked.connect(self.show_settings)
-        #self.update_connection_info()
-        
         self._layers = dict()
         self.initialize_layers()
 
@@ -162,46 +159,6 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
             self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
         }
 
-    def accepted(self):
-        self.save_settings()
-
-        if self._db.test_connection()[0]:
-            reply = QMessageBox.question(self,
-                QCoreApplication.translate("ETLCobolDialog", "Warning"),
-                QCoreApplication.translate("ETLCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
-                QMessageBox.Yes, QMessageBox.No)
-
-            if reply == QMessageBox.Yes:
-                with OverrideCursor(Qt.WaitCursor):
-                    res_lis, msg_lis = self.load_lis_files()
-                    if res_lis:
-                        res_gdb, msg_gdb = self.load_gdb_files()
-                        if res_gdb:
-                            res_model, msg_model = self.load_model_layers()
-                            if res_model:
-                                self._running_etl = True
-                                self.run_model_etl_cobol()
-                                if not self.feedback.isCanceled():
-                                    self.progress.setValue(100)
-                                    self.buttonBox.clear()
-                                    self.buttonBox.setEnabled(True)
-                                    self.buttonBox.addButton(QDialogButtonBox.Close)
-                                else:
-                                    self.initialize_feedback()  # Get ready for an eventual new execution
-                                self._running_etl = False
-                            else:
-                                self.show_message(msg_model, Qgis.Warning)
-                        else:
-                            self.show_message(msg_gdb, Qgis.Warning)
-                    else:
-                        self.show_message(msg_lis, Qgis.Warning)
-        else:
-            with OverrideCursor(Qt.WaitCursor):
-                # TODO: if an empty schema was selected, do the magic under the hood
-                # self.create_model_into_database()
-                # Now execute "accepted()"
-                pass
-
     def reject(self):
         if self._running_etl:
             reply = QMessageBox.question(self,
@@ -223,11 +180,30 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
         self.bar.clearWidgets()
 
     def set_import_button_enabled(self):
-        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
-        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
-        state_ter  = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
-        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
-        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
+        if self.txt_file_path_blo.isVisible():
+            state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
+        else:
+            state_blo = QValidator.Acceptable
+
+        if self.txt_file_path_uni.isVisible():    
+            state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
+        else:
+            state_uni = QValidator.Acceptable
+
+        if self.txt_file_path_ter.isVisible():    
+            state_ter  = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
+        else:
+            state_ter = QValidator.Acceptable
+
+        if self.txt_file_path_pro.isVisible():    
+            state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
+        else:
+            state_pro = QValidator.Acceptable
+
+        if self.txt_file_path_gdb.isVisible():    
+            state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
+        else:
+            state_gdb = QValidator.Acceptable
 
         if state_blo == QValidator.Acceptable and state_uni == QValidator.Acceptable and \
             state_ter == QValidator.Acceptable and state_pro == QValidator.Acceptable and \
@@ -260,7 +236,7 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_blo.setText(settings.value('Asistente-LADM_COL/etl_cobol/blo_path', ''))
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM_COL/etl_cobol/uni_path', ''))
         self.txt_file_path_ter.setText(settings.value('Asistente-LADM_COL/etl_cobol/ter_path', ''))
-        self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
+        #self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/etl_cobol/gdb_path', ''))
 
     def load_lis_files(self):
