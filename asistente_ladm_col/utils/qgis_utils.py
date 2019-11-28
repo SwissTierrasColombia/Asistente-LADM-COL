@@ -695,10 +695,8 @@ class QGISUtils(QObject):
                 index = layer.fields().indexFromName(field)
                 default_value = QgsDefaultValue(expression, True) # Calculate on update
                 layer.setDefaultValueDefinition(index, default_value)
-                QgsApplication.messageLog().logMessage(
-                    "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
-                        layer_name, field, expression),
-                    PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
+                    layer_name, field, expression))
 
     def reset_automatic_field(self, db, layer, field):
         self.configure_automatic_fields(db, layer, [{field: ""}])
@@ -968,8 +966,7 @@ class QGISUtils(QObject):
                 mapping = self.load_field_mapping(field_mapping)
 
                 if mapping is None: # If the mapping couldn't be parsed for any reason
-                    QgsApplication.messageLog().logMessage("Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping),
-                                                           PLUGIN_NAME, Qgis.Warning)
+                    self.logger.warning(__name__, "Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping))
 
             if mapping is None:
                 mapping = self.refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, self)
@@ -1025,8 +1022,7 @@ class QGISUtils(QObject):
                                                "txt")
 
         txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, name_field_mapping)
-
-        QgsApplication.messageLog().logMessage("Field mapping saved: {}".format(name_field_mapping), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Field mapping saved: {}".format(name_field_mapping))
 
         with open(txt_field_mapping_path, "w+") as file:
             file.write(str(params['mapping']))

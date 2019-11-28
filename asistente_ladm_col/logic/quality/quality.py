@@ -22,7 +22,6 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               pyqtSignal)
 from qgis.core import (Qgis,
-                       QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsPointXY,
@@ -102,7 +101,6 @@ class QualityUtils(QObject):
         self.logic = LogicChecks()
         self.utils = Utils()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
-        self.log = QgsApplication.messageLog()
         self.log_dialog_quality_text_content = ""
         self.total_time = 0
 

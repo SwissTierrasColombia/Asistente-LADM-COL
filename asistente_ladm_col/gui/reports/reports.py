@@ -59,6 +59,8 @@ from asistente_ladm_col.utils.utils import Utils
 
 
 class ReportGenerator(QObject):
+    LOG_TAB = 'LADM-COL Reports'
+
     enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, qgis_utils, ladm_data):
@@ -72,17 +74,15 @@ class ReportGenerator(QObject):
         if not self.encoding:
             self.encoding = 'UTF8'
 
-        self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'LADM-COL Reports'
         self._downloading = False
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
-        self.log.logMessage(text, self.LOG_TAB, Qgis.Critical)
+        self.logger.critical(__name__, text, tab=self.LOG_TAB)
 
     def stdout_ready(self, proc):
         text = bytes(proc.readAllStandardOutput()).decode(self.encoding)
-        self.log.logMessage(text, self.LOG_TAB, Qgis.Info)
+        self.logger.info(__name__, text, tab=self.LOG_TAB)
 
     def update_yaml_config(self, db, config_path):
         text = ''
@@ -275,15 +275,13 @@ class ReportGenerator(QObject):
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
-                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
-                    PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
-                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
-                    PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
                 continue
 
             # Generate data file

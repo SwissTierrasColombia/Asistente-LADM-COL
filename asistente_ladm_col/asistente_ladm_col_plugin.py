@@ -126,7 +126,6 @@ class AsistenteLADMCOLPlugin(QObject):
         QObject.__init__(self)
         self.iface = iface
         self.main_window = self.iface.mainWindow()
-        self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
@@ -520,7 +519,7 @@ class AsistenteLADMCOLPlugin(QObject):
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
-                self.log.logMessage("Couldn't load model from {}".format(filename), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
                 return
 
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))

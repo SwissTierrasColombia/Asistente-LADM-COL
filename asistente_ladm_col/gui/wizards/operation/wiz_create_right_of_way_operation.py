@@ -197,7 +197,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
         if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a {}. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME, self.WIZARD_FEATURE_NAME)
-            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME))
         else:
             feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
@@ -239,7 +239,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
                 self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
-                    self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
+                    self.logger.warning(__name__, "Commit error: {}".format(e))
         else:
             layer.rollBack()
         self.iface.mapCanvas().refresh()

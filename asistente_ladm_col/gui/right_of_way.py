@@ -20,7 +20,6 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 from qgis.core import (Qgis,
-                       QgsApplication,
                        QgsProcessingFeatureSourceDefinition,
                        QgsWkbTypes,
                        QgsVectorLayerUtils)
@@ -38,7 +37,6 @@ class RightOfWay(QObject):
         self.iface = iface
         self.qgis_utils = qgis_utils
         self.logger = Logger()
-        self.log = QgsApplication.messageLog()
         self.names = Names()
 
         self._layers = {
@@ -114,7 +112,7 @@ class RightOfWay(QObject):
                         new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.COL_UE_BAUNIT_T][LAYER])
                         new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, id_pair[0])
                         new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F, id_pair[1])
-                        self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]))
                         new_features.append(new_feature)
 
                 layers[self.names.COL_UE_BAUNIT_T][LAYER].dataProvider().addFeatures(new_features)
@@ -160,7 +158,7 @@ class RightOfWay(QObject):
                         new_feature.setAttribute(self.names.COL_BAUNIT_RRR_T_UNIT_F, id_pair[0])
                         new_feature.setAttribute(self.names.COL_RRR_T_DESCRIPTION_F, id_pair[1])
                         new_feature.setAttribute(self.names.OP_RESTRICTION_T_TYPE_F, restriction_right_of_way_t_id)
-                        self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]))
                         new_restriction_features.append(new_feature)
 
                 layers[self.names.OP_RESTRICTION_T][LAYER].dataProvider().addFeatures(new_restriction_features)
@@ -194,7 +192,7 @@ class RightOfWay(QObject):
                         new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.COL_RRR_SOURCE_T][LAYER])
                         new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_F, id_pair[0])
                         new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F, id_pair[1])
-                        self.log.logMessage("Saving Restriction-Source: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving Restriction-Source: {}-{}".format(id_pair[1], id_pair[0]))
                         new_rrr_source_relation_features.append(new_feature)
 
                 layers[self.names.COL_RRR_SOURCE_T][LAYER].dataProvider().addFeatures(new_rrr_source_relation_features)

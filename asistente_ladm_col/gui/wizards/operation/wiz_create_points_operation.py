@@ -31,7 +31,6 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayer,
                        QgsMapLayerProxyModel,
-                       QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
@@ -64,7 +63,6 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.logger = Logger()
         self.names = Names()
-        self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
 
         self._layers = {
@@ -451,13 +449,13 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...")
                 msg = QCoreApplication.translate(self.WIZARD_NAME, "CSV file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'Removing existing file {}...'.format(new_filename))
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -466,7 +464,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                 msg = QCoreApplication.translate(self.WIZARD_NAME, """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.warning(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate(self.WIZARD_NAME, "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 

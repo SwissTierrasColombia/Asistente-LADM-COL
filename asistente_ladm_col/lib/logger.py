@@ -76,32 +76,32 @@ class Logger(QObject, metaclass=SingletonQObject):
     def disable_file_log(self):
         self._file_log = ''
 
-    def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Info, handler, duration)
+    def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
     def info_msg(self, module_name, msg, duration=0):
         self.log_message(module_name, msg, Qgis.Info, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, handler, duration)
+    def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
     def warning_msg(self, module_name, msg, duration=0):
         self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, handler, duration)
+    def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
     def error_msg(self, module_name, msg, duration=0):
         self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Critical, handler, duration)
+    def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Critical, handler, duration, tab)
 
     def critical_msg(self, module_name, msg, duration=0):
         self.log_message(module_name, msg, Qgis.Critical, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Success, handler, duration)
+    def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Success, handler, duration, tab)
 
     def success_msg(self, module_name, msg, duration=0):
         self.log_message(module_name, msg, Qgis.Success, LogHandlerEnum.MESSAGE_BAR, duration)
@@ -116,15 +116,15 @@ class Logger(QObject, metaclass=SingletonQObject):
             self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
         QCoreApplication.processEvents()
 
-    def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
+    def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         """
         Here we define messages of a particular run (e.g., showing variable values or potentially long messages)
         """
         if self.mode == LogModeEnum.DEV or self._file_log:
             # Debug messages go for devs and/or for files
-            self.log_message(module_name, msg, Qgis.Info, handler, duration)
+            self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
-    def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0):
+    def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         module_name = module_name.split(".")[-1]
         call_message_log = False
         if handler == LogHandlerEnum.MESSAGE_BAR:
@@ -136,7 +136,7 @@ class Logger(QObject, metaclass=SingletonQObject):
             if self.mode == LogModeEnum.DEV:
                 call_message_log = True
         if handler == LogHandlerEnum.QGIS_LOG:
-            self.log.logMessage(f"[{module_name}] {msg}", TAB_NAME_FOR_LOGS, level, False)
+            self.log.logMessage(f"[{module_name}] {msg}", tab, level, False)
 
         if call_message_log:
             self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)

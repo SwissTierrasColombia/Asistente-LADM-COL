@@ -26,6 +26,7 @@ from qgis.core import (QgsProject,
                        Qgis,
                        QgsApplication)
 
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       TranslatableConfigStrings,
                                                       ERROR_LAYER_GROUP,
@@ -36,8 +37,8 @@ class QgisModelBakerUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.log = QgsApplication.messageLog()
-        from ..config.config_db_supported import ConfigDbSupported
+        self.logger = Logger()
+        from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
         self._conf_db = ConfigDbSupported()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -50,11 +51,8 @@ class QgisModelBakerUtils(QObject):
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             return generator
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
             return None
 
     def get_model_baker_db_connection(self, db):
@@ -89,11 +87,8 @@ class QgisModelBakerUtils(QObject):
             legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
             QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
 
     def get_layers_and_relations_info(self, db):
         """
@@ -111,11 +106,8 @@ class QgisModelBakerUtils(QObject):
             # print("DESPUÉS", len(relations))  # TODO: Al logger
             return (layers, relations, {})
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
             return (None, None)
 
     def filter_relations(self, relations):
@@ -138,11 +130,8 @@ class QgisModelBakerUtils(QObject):
             generator = self.get_generator(db)
             return generator.get_tables_info_without_ignored_tables()
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'QgisModelBaker' in qgis.utils.plugins:

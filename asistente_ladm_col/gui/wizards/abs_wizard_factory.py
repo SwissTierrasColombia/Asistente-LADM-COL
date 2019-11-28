@@ -28,8 +28,7 @@ from qgis.PyQt.QtCore import (QSettings,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (QgsApplication,
-                       Qgis)
+from qgis.core import Qgis
 
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       TranslatableConfigStrings,
@@ -58,7 +57,6 @@ class AbsWizardFactory(QWizard):
         self.wizard_config = wizard_settings
         self.logger = Logger()
         self.names = Names()
-        self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -112,7 +110,7 @@ class AbsWizardFactory(QWizard):
         message = self.post_save(features)
 
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
-        self.log.logMessage("{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME))
         self.close_wizard(message)
 
     def post_save(self, features):
@@ -136,7 +134,7 @@ class AbsWizardFactory(QWizard):
                 self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
-                    self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
+                    self.logger.warning(__name__, "Commit error: {}".format(e))
         else:
             layer.rollBack()
         self.iface.mapCanvas().refresh()

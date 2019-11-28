@@ -62,12 +62,12 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
-            self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
             else:
                 parcel_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
 
@@ -102,21 +102,21 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot_id)
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
-                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id))
                     new_features.append(new_feature)
 
                 for building_id in building_ids:
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, building_id)
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
-                    self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_id, parcel_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving Building-Parcel: {}-{}".format(building_id, parcel_id))
                     new_features.append(new_feature)
 
                 for building_unit_id in building_unit_ids:
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F, building_unit_id)
                     new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
-                    self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id))
                     new_features.append(new_feature)
 
                 self._layers[self.names.COL_UE_BAUNIT_T][LAYER].dataProvider().addFeatures(new_features)
@@ -293,7 +293,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
                 self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
-                    self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
+                    self.logger.warning(__name__, "Commit error: {}".format(e))
         else:
             layer.rollBack()
         self.iface.mapCanvas().refresh()

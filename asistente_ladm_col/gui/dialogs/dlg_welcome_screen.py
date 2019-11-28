@@ -17,8 +17,6 @@
 """
 from functools import partial
 
-from qgis.core import QgsApplication
-
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QRadioButton)
@@ -36,7 +34,6 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
 
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)

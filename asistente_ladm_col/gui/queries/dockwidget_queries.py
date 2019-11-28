@@ -39,11 +39,11 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsVectorLayer,
-                       QgsApplication)
+                       QgsVectorLayer)
 from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
 from asistente_ladm_col.config.table_mapping_config import Names
 
@@ -65,11 +65,11 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
-        self.log = QgsApplication.messageLog()
-        self.canvas = iface.mapCanvas()
         self._db = db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
+        self.logger = Logger()
+        self.canvas = iface.mapCanvas()
         self.active_map_tool_before_custom = None
         self.names = Names()
 
@@ -451,7 +451,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         img = None
         msg = {'text': '', 'level': Qgis.Warning}
         if url:
-            self.log.logMessage("Downloading file from {}".format(url), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Downloading file from {}".format(url))
             msg = "Downloading image from document repository (this might take a while)..."
             with ProcessWithStatus(msg):
                 if self.qgis_utils.is_connected(TEST_SERVER):
@@ -482,5 +482,5 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid URL")
 
         if not res:
-            self.log.logMessage(msg['text'], PLUGIN_NAME, msg['level'])
+            self.logger.log_message(__name__, msg['text'], msg['level'])
         return (res, img)

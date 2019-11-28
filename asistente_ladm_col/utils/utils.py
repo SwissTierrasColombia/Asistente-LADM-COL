@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import (QgsApplication,
                        Qgis)
 
+from asistente_ladm_col.lib.logger import Logger
 from ..config.general_config import (JAVA_REQUIRED_VERSION,
                                      PLUGIN_NAME)
 from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
@@ -188,12 +189,11 @@ def is_version_valid(current_version, min_required_version, exact_required_versi
         min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
         min_required_version_splitted = min_required_version_splitted[:4]
 
-    QgsApplication.messageLog().logMessage("[{}] {}equired version: {}, current_version: {}".format(
+    Logger().info(__name__, "[{}] {}equired version: {}, current_version: {}".format(
             module_tested,
             'R' if exact_required_version else 'Min r',
             min_required_version_splitted,
-            current_version_splitted),
-        PLUGIN_NAME, Qgis.Info)
+            current_version_splitted))
 
     if exact_required_version:
         return min_required_version_splitted == current_version_splitted

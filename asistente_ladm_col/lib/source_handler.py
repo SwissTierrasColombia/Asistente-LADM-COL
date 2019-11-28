@@ -37,7 +37,6 @@ from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QHttpPart)
 from qgis.core import (QgsProject,
                        Qgis,
-                       QgsApplication,
                        NULL)
 
 from asistente_ladm_col.lib.logger import Logger
@@ -57,7 +56,6 @@ class SourceHandler(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
         self.logger = Logger()
 
     def upload_files(self, layer, field_index, features):
@@ -132,31 +130,30 @@ class SourceHandler(QObject):
             content = data.readAll()
 
             if content is None:
-                self.log.logMessage("There was an error uploading file '{}'".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "There was an error uploading file '{}'".format(data_url))
                 upload_errors += 1
                 continue
 
             try:
                 response = json.loads(content)
             except json.decoder.JSONDecodeError:
-                self.log.logMessage("Couldn't parse JSON response from server for file '{}'!!!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Couldn't parse JSON response from server for file '{}'!!!".format(data_url))
                 upload_errors += 1
                 continue
 
             if 'error' in response:
-                self.log.logMessage("STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
+                self.logger.critical(__name__, "STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
                         response['status'],
                         response['error'],
                         response['message'],
-                        data_url),
-                    PLUGIN_NAME, Qgis.Critical)
+                        data_url))
                 upload_errors += 1
                 continue
 
             reply.deleteLater()
 
             if 'url' not in response:
-                self.log.logMessage("'url' attribute not found in JSON response for file '{}'!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "'url' attribute not found in JSON response for file '{}'!".format(data_url))
                 upload_errors += 1
                 continue
 
@@ -192,7 +189,7 @@ class SourceHandler(QObject):
         return new_values
 
     def error_returned(self, error_code):
-        self.log.logMessage("Qt network error code: {}".format(error_code), PLUGIN_NAME, Qgis.Critical)
+        self.logger.critical(__name__, "Qt network error code: {}".format(error_code))
 
     def handle_source_upload(self, db, layer, field_name):
 

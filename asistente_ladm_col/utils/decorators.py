@@ -11,6 +11,7 @@ from qgis.utils import (isPluginLoaded,
                         loadPlugin,
                         startPlugin)
 
+from asistente_ladm_col.lib.logger import Logger
 from .qt_utils import OverrideCursor
 from .utils import is_plugin_version_valid
 from ..config.general_config import (PLUGIN_NAME,
@@ -50,12 +51,8 @@ def _db_connection_required(func_to_decorate):
             button.pressed.connect(inst.show_settings_clear_message_bar)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
 
     return decorated_function
 
@@ -90,12 +87,9 @@ def _qgis_model_baker_required(func_to_decorate):
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
-            inst.log.logMessage(
+            inst.logger.warning(__name__,
                 QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+                                           "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."))
 
     return decorated_function
 
@@ -107,7 +101,7 @@ def _activate_processing_plugin(func_to_decorate):
             loadPlugin('processing')
             startPlugin('processing')
             msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The processing plugin has been activated!")
-            QgsApplication.messageLog().logMessage(msg, PLUGIN_NAME, Qgis.Info)
+            Logger().info(__name__, msg)
 
             # Check in the plugin manager that the processing plugin was activated
             QSettings().setValue("PythonPlugins/processing", True)
@@ -158,11 +152,8 @@ def _official_db_connection_required(func_to_decorate):
             button.pressed.connect(inst.show_official_data_settings_clear_message_bar)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to official DB was not valid."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, connection to official DB was not valid."))
 
     return decorated_function
 
@@ -182,12 +173,8 @@ def _operation_model_required(func_to_decorate):
             button.pressed.connect(inst.show_settings)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.log.logMessage(  # TODO al logger
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
 
     return decorated_function
 
@@ -207,12 +194,8 @@ def _cadastral_manager_model_required(func_to_decorate):
             button.pressed.connect(inst.show_settings)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.log.logMessage(  # TODO al logger
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
 
     return decorated_function
 
@@ -242,11 +225,8 @@ def _different_db_connections_required(func_to_decorate):
             widget.layout().addWidget(button2)
 
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
-            inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"))
 
     return decorated_function
 
@@ -276,11 +256,8 @@ def _map_swipe_tool_required(func_to_decorate):
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
-            inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
+            inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."))
 
     return decorated_function
 
