@@ -84,6 +84,7 @@ from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -1128,6 +1129,15 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_st_login_dialog(self):
         dlg = LoginSTDialog(self.main_window)
         dlg.exec_()
+
+        if self.session.is_user_logged():
+            task_manager = STTaskManager()
+            tasks = task_manager.get_tasks(self.session.get_logged_st_user())
+            print(len(tasks))
+            for k,v in tasks.items():
+                print([k], v.get_name())
+
+
 
     def session_logout(self, show_message=True):
         logged_out, msg = self.session.logout()

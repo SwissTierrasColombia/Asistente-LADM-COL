@@ -10,7 +10,7 @@ from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEFAULT_LOG_MODE = LogModeEnum.USER
+DEFAULT_LOG_MODE = LogModeEnum.DEV
 DEFAULT_LOG_FILE = ''
 
 OFFICIAL_DB_PREFIX = None
@@ -66,8 +66,10 @@ TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.
 
 
 # SISTEMA DE TRANSICIÓN
-ST_LOGIN_SERVICE_URL = "http://192.168.98.61:8090/api/security/oauth/token"
+ST_DOMAIN = "http://192.168.98.61:8090"
+ST_LOGIN_SERVICE_URL = "{}/api/security/oauth/token".format(ST_DOMAIN)
 ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
+ST_GET_TASKS_SERVICE_URL = "{}/api/workspaces/v1/tasks/pending".format(ST_DOMAIN)
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 

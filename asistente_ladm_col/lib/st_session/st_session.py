@@ -61,8 +61,12 @@ class STSession(QObject, metaclass=SingletonQObject):
         if status_OK:
             msg = QCoreApplication.translate("STSession", "User logged in successfully!")
             logged_data = json.loads(response.text)
-            self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'], logged_data['last_name']), logged_data['email'], logged_data['roles'][0]['name'])
-            QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])
+            self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'],
+                                                             logged_data['last_name']),
+                                              logged_data['email'],
+                                              logged_data['roles'][0]['name'],
+                                              logged_data['access_token'])
+            QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])  # Register (login) the user
             self.login_status_changed.emit(True)
             self.logger.info(__name__, msg)
         else:
@@ -79,8 +83,8 @@ class STSession(QObject, metaclass=SingletonQObject):
         msg = ""
         logged_out = False
         if self.is_user_logged():
+            QSettings().setValue(self.TOKEN_KEY, "")  # Unregister (logout) the user
             self.__logged_user = None
-            QSettings().setValue(self.TOKEN_KEY, '')
             logged_out = True
             self.login_status_changed.emit(False)
             msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
@@ -97,14 +101,15 @@ class STSession(QObject, metaclass=SingletonQObject):
         return self.__logged_user.get_role() if self.__logged_user is not None else None
 
     def is_user_logged(self):
-        return bool(QSettings().value(self.TOKEN_KEY, ''))
+        return self.__logged_user is not None
 
 
 class STLoggedUser:
-    def __init__(self, name, e_mail, role):
+    def __init__(self, name, e_mail, role, token):
         self.__user_name = name
         self.__user_e_mail = e_mail
         self.__user_role = role
+        self.__token = token
 
     def get_name(self):
         return self.__user_name
@@ -114,3 +119,8 @@ class STLoggedUser:
 
     def get_role(self):
         return self.__user_role
+
+    def get_token(self):
+        # Should we make sure the TOKEN_KEY is stored? Apparently not. As we create and destroy the user as long as the
+        # session is alive.
+        return self.__token
