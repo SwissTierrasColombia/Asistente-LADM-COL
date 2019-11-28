@@ -236,24 +236,6 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
         else:
              self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
-    def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
-
-        # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-
-        # We only need those tabs related to Model Baker/ili2db operations
-        for i in reversed(range(dlg.tabWidget.count())):
-            if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
-                dlg.tabWidget.removeTab(i)
-
-        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)  # To avoid unnecessary validations (LADM compliance)
-
-        if dlg.exec_():
-            self._db = dlg.get_db_connection()
-            self.update_connection_info()
-
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
@@ -264,16 +246,6 @@ class Cobol_structure(QDialog, DIALOG_LOG_EXCEL_UI):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the supplies dialog (e.g., we might run an import schema before under the hood)
         self._db_was_changed = True
-
-    def update_connection_info(self):
-        db_description = self._db.get_description_conn_string()
-        if db_description:
-            self.db_connect_label.setText(db_description)
-            self.db_connect_label.setToolTip(self._db.get_display_conn_string())
-        else:
-            self.db_connect_label.setText(
-                QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
-            self.db_connect_label.setToolTip('')
 
     def save_settings(self):
         settings = QSettings()

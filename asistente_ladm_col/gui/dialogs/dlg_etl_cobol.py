@@ -62,13 +62,37 @@ class ETLCobolDialog(Cobol_structure):
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
-        self.logger = Logger()
-
-        self.names = Names()
-        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
-        self._running_etl = False
-        self.validators = Validators()
-        self.initialize_feedback()
 
         loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_cobol_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
+
+        self.target_data.btn_browse_connection.clicked.connect(self.show_settings)
+        self.update_connection_info()
+
+    def show_settings(self):
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
+        # We only need those tabs related to Model Baker/ili2db operations
+        for i in reversed(range(dlg.tabWidget.count())):
+            if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
+                dlg.tabWidget.removeTab(i)
+
+        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)  # To avoid unnecessary validations (LADM compliance)
+
+        if dlg.exec_():
+            self._db = dlg.get_db_connection()
+            self.update_connection_info()
+
+    def update_connection_info(self):
+        db_description = self._db.get_description_conn_string()
+        if db_description:
+            self.target_data.db_connect_label.setText(db_description)
+            self.target_data.db_connect_label.setToolTip(self._db.get_display_conn_string())
+        else:
+            self.target_data.db_connect_label.setText(
+                QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
+            self.target_data.db_connect_label.setToolTip('')
