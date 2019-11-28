@@ -19,7 +19,7 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from ..config.general_config import LATEST_OPERATION_MODEL_VERSION_SUPPORTED
+from asistente_ladm_col.config.general_config import LATEST_OPERATION_MODEL_VERSION_SUPPORTED
 from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
                                                             CADASTRAL_FORM_MODEL_PREFIX,
                                                             VALUATION_MODEL_PREFIX,
@@ -29,14 +29,15 @@ from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREF
                                                             SNR_DATA_MODEL_PREFIX,
                                                             SUPPLIES_INTEGRATION_MODEL_PREFIX,
                                                             SUPPLIES_MODEL_PREFIX)
-from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
-from ..utils.utils import is_version_valid
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
+from asistente_ladm_col.utils.utils import is_version_valid
 
 
 class ModelParser(QObject):
     def __init__(self, db):
         QObject.__init__(self)
-        self.debug = False
+        self.logger = Logger()
 
         self.current_version_operation_model = None
         self.current_version_cadastral_form_model = None
@@ -104,8 +105,7 @@ class ModelParser(QObject):
             return (False, QCoreApplication.translate("ModelParser",
                                                       "MISSING DEPENDENCY: The plugin 'QGIS Model Baker' is a prerequisite, but could not be found. Install it before continuing."))
 
-        if self.debug:
-            print("Current Operation model's latest version:", self.current_version_cadastral_form_model)
+        self.logger.debug(__name__, "Current Operation model's latest version: {}".format(self.current_version_cadastral_form_model))
 
         res = is_version_valid(
                 self.current_version_operation_model,

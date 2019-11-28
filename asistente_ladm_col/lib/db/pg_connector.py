@@ -587,7 +587,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PROPERTY RECORD CARD QUERY:", query)
+        # self.logger.debug(__name__, "PROPERTY RECORD CARD QUERY: {}".format(query))
 
         return res
 
@@ -624,7 +624,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PHYSICAL QUERY:", query)
+        # self.logger.debug(__name__, "PHYSICAL QUERY: {}".format(query))
 
         return res
 
@@ -662,7 +662,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("ECONOMIC QUERY:", query)
+        # self.logger.debug(__name__, "ECONOMIC QUERY:".format(query))
 
         return res
 

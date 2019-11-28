@@ -134,7 +134,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 self.open_dlg_import_schema.emit(self.get_ili_models())  # Emit signal to open import schema dialog
 
     def close_dialog(self):
-        if self._db_was_changed:  # TODO send to logger
+        if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True)
         self.close()

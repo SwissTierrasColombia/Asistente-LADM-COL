@@ -101,9 +101,9 @@ class QgisModelBakerUtils(QObject):
 
             layers = generator.get_tables_info_without_ignored_tables()
             relations = [relation for relation in generator.get_relations_info()]
-            # print("ANTES", len(relations))  # TODO: Al logger
+            self.logger.debug(__name__, "Relationships before filter: {}".format(len(relations)))
             self.filter_relations(relations)
-            # print("DESPUÉS", len(relations))  # TODO: Al logger
+            self.logger.debug(__name__, "Relationships after filter: {}".format(len(relations)))
             return (layers, relations, {})
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",

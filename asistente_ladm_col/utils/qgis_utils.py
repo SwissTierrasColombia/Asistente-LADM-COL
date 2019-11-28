@@ -231,7 +231,7 @@ class QGISUtils(QObject):
 
                 response_layers[layer_id] = layer_obj
             profiler.end()
-            print("Existing layers",profiler.totalTime())
+            self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
             profiler.clear()
 
             if load:
@@ -244,17 +244,16 @@ class QGISUtils(QObject):
                     profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
                     profiler.end()
-                    print("Related layers",profiler.totalTime())
+                    self.logger.debug(__name__, "Related layers... {}".format(profiler.totalTime()))
                     profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
                     self.logger.status(QCoreApplication.translate("QGISUtils",
                         "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
-                    QCoreApplication.processEvents()
                     profiler.start("load_layers")
                     self.qgis_model_baker_utils.load_layers(all_layers_to_load, db)
                     profiler.end()
-                    print("Load layers", profiler.totalTime())
+                    self.logger.debug(__name__, "Load layers... {}".format(profiler.totalTime()))
                     profiler.clear()
 
                     # Now that all layers are loaded, update response dict
@@ -323,7 +322,7 @@ class QGISUtils(QObject):
                             self.post_load_configurations(db, layer, layer_modifiers=layer_modifiers)
 
                     profiler.end()
-                    print("Post load",profiler.totalTime())
+                    self.logger.debug(__name__, "Post load... {}".format(profiler.totalTime()))
                     profiler.clear()
                     self.logger.status(None)
 

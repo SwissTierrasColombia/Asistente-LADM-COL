@@ -240,14 +240,14 @@ class ReportGenerator(QObject):
 
         script_path = os.path.join(bin_path, script_name)
         if not os.path.isfile(script_path):
-            print("### SCRIPT FILE WASN'T FOUND")
+            self.logger.warning(__name__, "Script file for reports wasn't found! {}".format(script_path))
             return
 
         self.enable_action_requested.emit(report_type, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
-        print("CONFIG FILE:", yaml_config_path)
+        self.logger.debug(__name__, "Config file for reports: {}".format(yaml_config_path))
 
         total = len(selected_plots)
         step = 0
@@ -286,7 +286,7 @@ class ReportGenerator(QObject):
 
             # Generate data file
             json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
-            print("JSON FILE:", json_file)
+            self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
             # Run sh/bat passing config and data files
             proc = QProcess()
@@ -308,13 +308,13 @@ class ReportGenerator(QObject):
 
             if not proc.waitForStarted():
                 proc = None
-                print("### COULDN'T EXECUTE SCRIPT TO GENERATE REPORT...")
+                self.logger.warning(__name__, "Couldn't execute script to generate report...")
             else:
                 loop = QEventLoop()
                 proc.finished.connect(loop.exit)
                 loop.exec()
 
-                print(plot_id, ':', proc.exitCode())
+                self.logger.debug(__name__, "{}:{}".format(plot_id, proc.exitCode()))
                 if proc.exitCode() == 0:
                     count += 1
 
