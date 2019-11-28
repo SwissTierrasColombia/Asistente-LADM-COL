@@ -7,40 +7,192 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
-class TestQueries(unittest.TestCase):
 
+
+class TestModelsLADM(unittest.TestCase):
     @classmethod
     def setUpClass(self):
+       pass
 
-        self.schemas_db = {'test_ladm_operation_model': None,
-                           'test_ladm_valuation_model': None,
-                           'test_ladm_cadastral_form_model': None}
+    def test_snr_data_model(self):
+        print("\nINFO: Validate if the schema for snr data model...")
 
-        for name_schema, value in self.schemas_db.items():
-            restore_schema(name_schema)
+        db_name = 'test_ladm_snr_data'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
 
-            self.schemas_db[name_schema] = get_dbconn(name_schema)
-            result = self.schemas_db[name_schema].test_connection()
-            print('test_connection', result)
+        self.assertFalse(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertFalse(self.db_connection.supplies_integration_model_exists())
+        self.assertFalse(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
 
-            if not result[1]:
-                print('The test connection is not working')
-                return
+        self.db_connection.conn.close()
+
+    def test_cadastral_manager_data_model(self):
+        print("\nINFO: Validate if the schema cadastral manager data model...")
+
+        db_name = 'test_ladm_cadastral_manager_data'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertFalse(self.db_connection.snr_data_model_exists())
+        self.assertFalse(self.db_connection.supplies_integration_model_exists())
+        self.assertFalse(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
+
+    def test_integration_models(self):
+        print("\nINFO: Validate if the schema all models...")
+
+        db_name = 'test_ladm_integration'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertFalse(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
 
     def test_operation_model(self):
         print("\nINFO: Validate if the schema has the operating model...")
-        self.assertFalse(self.schemas_db['test_ladm_operation_model'].valuation_model_exists())
-        self.assertFalse(self.schemas_db['test_ladm_operation_model'].cadastral_form_model_exists())
+
+        db_name = 'test_ladm_operation_model'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
 
     def test_valuation_model(self):
         print("\nINFO: Validate if the schema has the valuation model...")
-        self.assertTrue(self.schemas_db['test_ladm_valuation_model'].valuation_model_exists())
-        self.assertFalse(self.schemas_db['test_ladm_valuation_model'].cadastral_form_model_exists())
+
+        db_name = 'test_ladm_valuation_model'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertTrue(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
 
     def test_cadastral_form_model(self):
         print("\nINFO: Validate if the schema has the cadastral form model...")
-        self.assertFalse(self.schemas_db['test_ladm_cadastral_form_model'].valuation_model_exists())
-        self.assertTrue(self.schemas_db['test_ladm_cadastral_form_model'].cadastral_form_model_exists())
+
+        db_name = 'test_ladm_cadastral_form_model'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertTrue(self.db_connection.valuation_model_exists())
+        self.assertTrue(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
+
+    def test_reference_cartography_model(self):
+        print("\nINFO: Validate if the schema all models...")
+
+        db_name = 'test_ladm_reference_cartography'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertFalse(self.db_connection.ant_model_exists())
+        self.assertTrue(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
+
+    def test_ant_model(self):
+        print("\nINFO: Validate if the schema all models...")
+
+        db_name = 'test_ladm_ant'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertFalse(self.db_connection.valuation_model_exists())
+        self.assertFalse(self.db_connection.cadastral_form_model_exists())
+        self.assertTrue(self.db_connection.ant_model_exists())
+        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
+
+    def test_all_models(self):
+        print("\nINFO: Validate if the schema all models...")
+
+        db_name = 'test_ladm_all_models'
+        restore_schema(db_name)
+        self.db_connection = get_dbconn(db_name)
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertTrue(self.db_connection.supplies_model_exists())
+        self.assertTrue(self.db_connection.snr_data_model_exists())
+        self.assertTrue(self.db_connection.supplies_integration_model_exists())
+        self.assertTrue(self.db_connection.operation_model_exists())
+        self.assertTrue(self.db_connection.valuation_model_exists())
+        self.assertTrue(self.db_connection.cadastral_form_model_exists())
+        self.assertTrue(self.db_connection.ant_model_exists())
+        self.assertTrue(self.db_connection.reference_cartography_model_exists())
+
+        self.db_connection.conn.close()
 
     def tearDownClass():
         print('tearDown test_models_ladm')
