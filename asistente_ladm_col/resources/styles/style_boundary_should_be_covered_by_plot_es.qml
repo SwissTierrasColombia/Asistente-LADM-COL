@@ -4,9 +4,9 @@
     <categories>
       <category render="true" label="El lindero no está cubierto por terreno" value="El lindero no está cubierto por terreno" symbol="0"/>
       <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" value="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" symbol="1"/>
-      <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla menos" value="La relación topológica entre lindero y terreno está duplicada en la tabla menos" symbol="2"/>
+      <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" value="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" symbol="2"/>
       <category render="true" label="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" value="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" symbol="3"/>
-      <category render="true" label="La relación topológica entre lindero y terreno no está registrada en la tabla menos" value="La relación topológica entre lindero y terreno no está registrada en la tabla menos" symbol="4"/>
+      <category render="true" label="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" value="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" symbol="4"/>
     </categories>
     <symbols>
       <symbol name="0" type="line" alpha="1" clip_to_extent="1">
