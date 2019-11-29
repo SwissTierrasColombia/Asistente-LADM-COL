@@ -39,6 +39,8 @@
     <file>resources/images/login.svg</file>
     <file>resources/images/logout.svg</file>
     <file>resources/images/user.svg</file>
+    <file>resources/images/home.svg</file>
+    <file>resources/images/tasks.png</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

@@ -83,6 +83,7 @@ from asistente_ladm_col.config.expression_functions import get_domain_code_from_
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
+from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
 from asistente_ladm_col.lib.st_session.st_session import STSession
 from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
@@ -130,6 +131,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
+        self._dock_widget_transition_system = None
         self.toolbar = None
         self.wiz_address = None
         self.conn_manager = ConnectionManager()
@@ -1131,13 +1133,23 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
+            # Get tasks
+            user = self.session.get_logged_st_user()
             task_manager = STTaskManager()
-            tasks = task_manager.get_tasks(self.session.get_logged_st_user())
+            tasks = task_manager.get_tasks(user)
             print(len(tasks))
             for k,v in tasks.items():
                 print([k], v.get_name())
 
+            # Show Transition System dock widget
+            if self._dock_widget_transition_system is not None:
+                self._dock_widget_transition_system.close()
+                self._dock_widget_transition_system = None
 
+            self._dock_widget_transition_system = DockWidgetTransitionSystem(user)
+            self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
+            self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
 
     def session_logout(self, show_message=True):
         logged_out, msg = self.session.logout()

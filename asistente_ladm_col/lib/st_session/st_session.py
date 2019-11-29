@@ -32,6 +32,7 @@ class STSession(QObject, metaclass=SingletonQObject):
     TOKEN_KEY = "Asistente-LADM_COL/transition_system/token"
 
     login_status_changed = pyqtSignal(bool)  # Status of the login: True if a user is logged in, False otherwise
+    logout_finished = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
@@ -87,6 +88,7 @@ class STSession(QObject, metaclass=SingletonQObject):
             self.__logged_user = None
             logged_out = True
             self.login_status_changed.emit(False)
+            self.logout_finished.emit()
             msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
         else:
             msg = QCoreApplication.translate("STSession", "There was not logged in user! Therefore, no logout.")
