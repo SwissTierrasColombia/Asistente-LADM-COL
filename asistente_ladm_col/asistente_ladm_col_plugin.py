@@ -122,9 +122,10 @@ from asistente_ladm_col.logic.quality.quality import QualityUtils
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
 
-    def __init__(self, iface):
+    def __init__(self, iface, unit_tests=False):
         QObject.__init__(self)
         self.iface = iface
+        self.unit_tests = unit_tests
         self.main_window = self.iface.mainWindow()
         self._about_dialog = None
         self._dock_widget_queries = None
@@ -151,10 +152,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_actions()
         self.set_connections()
 
-        # Ask for role name before building the GUI, only the first time the plugin is run
-        if self.gui_builder.show_welcome_screen():
-            dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
-            dlg_welcome.exec_()
+        if not self.unit_tests:
+            # Ask for role name before building the GUI, only the first time the plugin is run
+            if self.gui_builder.show_welcome_screen():
+                dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+                dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
