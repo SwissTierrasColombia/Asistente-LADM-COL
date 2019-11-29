@@ -844,7 +844,7 @@ class QGISUtils(QObject):
                                                                          "CSV layer not valid!"))
             return False
 
-        # Necessary export to be enable edit dataprovider
+        # Necessary export to have edit capabilities in the dataprovider
         csv_layer.selectAll()
         csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         csv_layer.removeSelection()
