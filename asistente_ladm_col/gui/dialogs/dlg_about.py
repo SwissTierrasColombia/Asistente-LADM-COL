@@ -35,6 +35,7 @@ from qgis.core import (QgsNetworkContentFetcherTask,
                        QgsApplication,
                        Qgis)
 
+from asistente_ladm_col.lib.logger import Logger
 from ...config.general_config import (HELP_DIR_NAME,
                                       HELP_DOWNLOAD,
                                       PLUGIN_VERSION,
@@ -53,6 +54,7 @@ class AboutDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
         self.check_local_help()
 
         self.tb_changelog.setOpenExternalLinks(True)
@@ -108,9 +110,8 @@ class AboutDialog(QDialog, DIALOG_UI):
                         shutil.move(language, os.path.join(PLUGIN_DIR, HELP_DIR_NAME, language[-2:]))
 
             except zipfile.BadZipFile as e:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("AboutDialog", "There was an error with the download. The downloaded file is invalid."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AboutDialog",
+                    "There was an error with the download. The downloaded file is invalid."))
             else:
                 self.message_with_button_open_about_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "Help files were successfully downloaded and can be accessed offline from the About dialog!"))
@@ -132,9 +133,8 @@ class AboutDialog(QDialog, DIALOG_UI):
             fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))
             QgsApplication.taskManager().addTask(fetcher_task)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AboutDialog",
+                                                                         "There was a problem connecting to Internet."))
 
     def enable_download_button(self):
         self.btn_download_help.setEnabled(True)

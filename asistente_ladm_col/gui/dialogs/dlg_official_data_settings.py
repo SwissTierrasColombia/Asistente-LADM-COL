@@ -21,16 +21,16 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy)
-from qgis.core import (Qgis,
-                       QgsApplication)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (PLUGIN_NAME,
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                    OFFICIAL_DB_SOURCE)
-from ...lib.db.db_connector import (DBConnector, EnumTestLevel)
-from ...utils import get_ui_class
-from ...config.config_db_supported import ConfigDbSupported
-from ...resources_rc import * # Necessary to show icons
+from asistente_ladm_col.lib.db.db_connector import (DBConnector, EnumTestLevel)
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.resources_rc import * # Necessary to show icons
 
 DIALOG_UI = get_ui_class('dialogs/dlg_official_data_settings.ui')
 
@@ -41,10 +41,10 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
     def __init__(self, qgis_utils=None, conn_manager=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.log = QgsApplication.messageLog()
-        self.conn_manager = conn_manager
-        self._db = None
         self.qgis_utils = qgis_utils
+        self.conn_manager = conn_manager
+        self.logger = Logger()
+        self._db = None
         self.db_source = OFFICIAL_DB_SOURCE
         self.conf_db = ConfigDbSupported()
 
@@ -96,9 +96,9 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Returning existing db connection...")
         else:
-            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Getting new db connection...")
             self._db = self._get_db_connector_from_gui()
             self._db.open_connection()
 
@@ -207,7 +207,7 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Test connection!")
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
@@ -217,7 +217,7 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Test LADM structure!")
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

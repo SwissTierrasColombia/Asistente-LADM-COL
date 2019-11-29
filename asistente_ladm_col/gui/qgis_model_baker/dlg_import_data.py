@@ -48,7 +48,8 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       SETTINGS_CONNECTION_TAB_INDEX,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
-                                      STROKE_ARCS)
+                                      STROKE_ARCS,
+                                      SETTINGS_MODELS_TAB_INDEX)
 from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
@@ -86,8 +87,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self._conf_db = ConfigDbSupported()
-        self._params = None
-        self._current_db = None
+
+        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
 
         self.xtf_file_browse_button.clicked.connect(
             make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData",'Open Transfer or Catalog File'),
@@ -119,6 +120,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
+        self.rejected.connect(self.close_dialog)
 
         self.update_connection_info()
         self.restore_configuration()
@@ -130,6 +132,12 @@ class DialogImportData(QDialog, DIALOG_UI):
             elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
                 self.open_dlg_import_schema.emit(self.get_ili_models())  # Emit signal to open import schema dialog
+
+    def close_dialog(self):
+        if self._db_was_changed:
+            # If the db was changed, it implies it complies with ladm_col, hence the second parameter
+            self.conn_manager.db_connection_changed.emit(self.db, True)
+        self.close()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -206,17 +214,26 @@ class DialogImportData(QDialog, DIALOG_UI):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
         # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
+        # We only need those tabs related to Model Baker/ili2db operations
+        for i in reversed(range(dlg.tabWidget.count())):
+            if i not in [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]:
+                dlg.tabWidget.removeTab(i)
 
         dlg.set_action_type(EnumDbActionType.IMPORT)
-        dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
+
         if dlg.exec_():
             self.db = dlg.get_db_connection()
             self.update_connection_info()
 
+    def db_connection_changed(self, db, ladm_col_db):
+        self._db_was_changed = True
+
     def accepted(self):
+        self.bar.clearWidgets()
+
         configuration = self.update_configuration()
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
@@ -240,18 +257,12 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-        # Get list models in db and xtf
+        # Get list of models present in the XTF file and in the DB
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
-
-        db_models = list()
-        for db_model in self.db.get_models():
-            model_name_with_dependencies = db_model['modelname']
-            model_name = model_name_with_dependencies.split('{')[0]
-            db_models.append(model_name)
-        db_models = set(db_models)
+        db_models = set(self.db.get_models())
 
         if not ili_models.issubset(db_models):
-            message_error = "The XTF file to import does not have the same models as the target database schema. " \
+            message_error = "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
                             "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
             self.txtStdout.clear()
             self.txtStdout.setTextColor(QColor('#000000'))

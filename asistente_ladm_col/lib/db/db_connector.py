@@ -21,6 +21,8 @@ import psycopg2
 from qgis.PyQt.QtCore import QObject
 from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 
 class DBConnector(QObject):
     """
@@ -31,12 +33,15 @@ class DBConnector(QObject):
 
     def __init__(self, uri, conn_dict=dict()):
         QObject.__init__(self)
+        self.logger = Logger()
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
         self._uri = None
         self.schema = None
         self.conn = None
         self._dict_conn_params = None
+        self.names = Names()
+        self.names_read = False  # Table/field names should be read only once per connector
         
         if uri is not None:
             self.uri = uri
@@ -73,6 +78,9 @@ class DBConnector(QObject):
     def validate_db(self):
         raise NotImplementedError
 
+    def _get_table_and_field_names(self):
+        raise NotImplementedError
+
     def close_connection(self):
         raise NotImplementedError
 
@@ -88,13 +96,14 @@ class DBConnector(QObject):
     def get_models(self, schema=None):
         raise NotImplementedError
 
+    def get_logic_validation_queries(self):
+        raise NotImplementedError
+
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
         tmp_dict_conn_params = self._dict_conn_params.copy()
         if 'password' in tmp_dict_conn_params:
             del tmp_dict_conn_params['password']
-        if 'schema' in tmp_dict_conn_params:
-            del tmp_dict_conn_params['schema']
 
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
 
@@ -111,33 +120,75 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
+    def operation_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.operation_model_exists()
+
+        return False
+
     def valuation_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.valuation_model_exists()
+
+        return False
+
+    def cadastral_form_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.cadastral_form_model_exists()
+
+        return False
+
+    def ant_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.ant_model_exists()
+
+        return False
+
+    def ladm_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.ladm_model_exists()
+
+        return False
+
+    def reference_cartography_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.reference_cartography_model_exists()
+
+        return False
+
+    def snr_data_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.snr_data_model_exists()
+
+        return False
+
+    def supplies_integration_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.supplies_integration_model_exists()
+
+        return False
+
+    def supplies_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.supplies_model_exists()
+
+        return False
+
+    def read_model_parser(self):
         if self.model_parser is None:
-            res = self._parse_models()
-            if not res:
-                return False
-
-        return self.model_parser.valuation_model_exists()
-
-    def property_record_card_model_exists(self):
-        if self.model_parser is None:
-            res = self._parse_models()
-            if not res:
-                return False
-
-        return self.model_parser.property_record_card_model_exists()
-
-    def _parse_models(self):
-        try:
-            if self.model_parser is None:
+            try:
                 self.model_parser = ModelParser(self)
-                return True
-        except psycopg2.ProgrammingError as e:
-            # if it is not possible to access the schema due to lack of privileges
-            return False
+            except psycopg2.ProgrammingError as e:
+                # if it is not possible to access the schema due to lack of privileges
+                return False
+
+        return True
 
     def is_ladm_layer(self, layer):
         raise NotImplementedError
 
     def get_ladm_layer_name(self, layer, validate_is_ladm=False):
+        raise NotImplementedError
+
+    def get_interlis_version(self):
         raise NotImplementedError

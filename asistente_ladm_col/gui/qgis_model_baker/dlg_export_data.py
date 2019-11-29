@@ -43,7 +43,8 @@ from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
-                                      SETTINGS_CONNECTION_TAB_INDEX)
+                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                      SETTINGS_MODELS_TAB_INDEX)
 from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
@@ -77,8 +78,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
         
         self._conf_db = ConfigDbSupported()
-        self._params = None
-        self._current_db = None
+        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
 
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
@@ -113,6 +113,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
+        self.rejected.connect(self.close_dialog)
 
         self.update_connection_info()
         self.update_model_names()
@@ -133,20 +134,23 @@ class DialogExportData(QDialog, DIALOG_UI):
     def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
 
-        db_models = None
-        db_models = self.db.get_models()
+        model_names = self.db.get_models()
 
-        if db_models:
-            for db_model in db_models:
-                regex = re.compile(r'(?:\{[^\}]*\}|\s)')
-                for modelname in regex.split(db_model['modelname']):
-                    if modelname and modelname not in DEFAULT_HIDDEN_MODELS:
-                        item = QStandardItem(modelname.strip())
-                        item.setCheckable(False)
-                        item.setEditable(False)
-                        self.export_models_qmodel.appendRow(item)
+        if model_names:
+            for model_name in model_names:
+                if model_name not in DEFAULT_HIDDEN_MODELS:
+                    item = QStandardItem(model_name)
+                    item.setCheckable(False)
+                    item.setEditable(False)
+                    self.export_models_qmodel.appendRow(item)
 
         self.export_models_list_view.setModel(self.export_models_qmodel)
+
+    def close_dialog(self):
+        if self._db_was_changed:
+            # If the db was changed, it implies it complies with ladm_col, hence the second parameter
+            self.conn_manager.db_connection_changed.emit(self.db, True)
+        self.close()
 
     def get_ili_models(self):
         ili_models = list()
@@ -159,18 +163,27 @@ class DialogExportData(QDialog, DIALOG_UI):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
         # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
+        # We only need those tabs related to Model Baker/ili2db operations
+        for i in reversed(range(dlg.tabWidget.count())):
+            if i not in [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]:
+                dlg.tabWidget.removeTab(i)
 
         dlg.set_action_type(EnumDbActionType.EXPORT)
-        dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
+
         if dlg.exec_():
             self.db = dlg.get_db_connection()
             self.update_model_names()
             self.update_connection_info()
 
+    def db_connection_changed(self, db, ladm_col_db):
+        self._db_was_changed = True
+
     def accepted(self):
+        self.bar.clearWidgets()
+
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:

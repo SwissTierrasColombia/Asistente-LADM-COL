@@ -20,14 +20,12 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication,
                               QObject,
                               QSettings)
-from qgis.core import (QgsApplication,
-                       Qgis)
 
-from ...config.config_db_supported import ConfigDbSupported
-from ...config.general_config import (COLLECTED_DB_SOURCE,
-                                      PLUGIN_NAME,
-                                      OFFICIAL_DB_SOURCE)
-from ...lib.db.db_connector import DBConnector
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      OFFICIAL_DB_SOURCE)
+from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.logger import Logger
 
 
 class ConnectionManager(QObject):
@@ -35,16 +33,16 @@ class ConnectionManager(QObject):
     Access point to get and set DB Connectors used by the plugin.
 
     The plugin uses a DB Connector for Cadastral data collection (barrido) and one for the Official cadastral data.
-    Other connections might be needed (e.g., while retrieving databases for the server in the setting sdialog, but they
-     are not handled by this class).
+    Other connections might be needed (e.g., while retrieving databases for the server in the settings dialog, but they
+    are not handled by this class).
     """
     db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     official_db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
 
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
         self.conf_db = ConfigDbSupported()
-        self.log = QgsApplication.messageLog()
 
         self._db_sources = {  # Values are DB Connectors
             COLLECTED_DB_SOURCE: None,
@@ -80,9 +78,7 @@ class ConnectionManager(QObject):
                 self._db_sources[db_source].close_connection()
             self._db_sources[db_source] = db_connector
         except:
-            self.log.logMessage(QCoreApplication.translate("ConnectionManager", "An error occurred while trying to close the connection."),
-                                PLUGIN_NAME,
-                                Qgis.Info)
+            self.logger.info(__name__, QCoreApplication.translate("ConnectionManager", "An error occurred while trying to close the connection."))
 
     def close_db_connections(self):
         for _db_source in self._db_sources:

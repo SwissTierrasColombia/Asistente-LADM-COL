@@ -24,13 +24,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox)
 from qgis.core import QgsWkbTypes
 
-from ...config.general_config import LAYER
-from ...config.table_mapping_config import (BOUNDARY_TABLE,
-                                            BOUNDARY_POINT_TABLE,
-                                            BUILDING_TABLE,
-                                            BUILDING_UNIT_TABLE,
-                                            PLOT_TABLE,
-                                            SURVEY_POINT_TABLE)
+from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.table_mapping_config import Names
 from ...utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_topological_edition.ui')
@@ -40,30 +35,31 @@ class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.names = Names()
         self.selected_layers_info = dict()
 
         self.lst_plots.clear()
         self.lst_buildings.clear()
 
         self.plots = {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         self.buildings = {
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_BUILDING_UNIT_T: {'name': self.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         icons = {
-            BOUNDARY_POINT_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
-            BOUNDARY_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/lines.png"),
-            PLOT_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
-            SURVEY_POINT_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
-            BUILDING_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
-            BUILDING_UNIT_TABLE: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png")
+            self.names.OP_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            self.names.OP_BOUNDARY_T: QIcon(":/Asistente-LADM_COL/resources/images/lines.png"),
+            self.names.OP_PLOT_T: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            self.names.OP_SURVEY_POINT_T: QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            self.names.OP_BUILDING_T: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            self.names.OP_BUILDING_UNIT_T: QIcon(":/Asistente-LADM_COL/resources/images/polygons.png")
         }
 
         for k, v in self.plots.items():

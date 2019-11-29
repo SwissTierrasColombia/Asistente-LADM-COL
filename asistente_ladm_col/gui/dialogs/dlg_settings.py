@@ -22,40 +22,39 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QSizePolicy)
-from qgis.core import (Qgis,
-                       QgsApplication)
+                                 QSizePolicy,
+                                 QVBoxLayout,
+                                 QRadioButton)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ...config.config_db_supported import ConfigDbSupported
-from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                      PLUGIN_NAME,
-                                      COLLECTED_DB_SOURCE,
-                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                      NATIONAL_LAND_AGENCY)
-from ...gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
-from ...lib.db.db_connector import (DBConnector,
-                                    EnumTestLevel)
-from ...config.enums import EnumDbActionType
-from ...utils import get_ui_class
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.enums import EnumDbActionType
+from asistente_ladm_col.config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                                      COLLECTED_DB_SOURCE,
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE)
+from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
+from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    EnumTestLevel)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    organization_tools_changed = pyqtSignal(str)
+    db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
+    active_role_changed = pyqtSignal()
 
     def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE
-
-        self.ant_tools_initial_chk_value = None
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -98,8 +97,34 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Trigger some default behaviours
         self.restore_settings()
 
+        self.roles = Role_Registry()
+        self.load_roles()
+
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
         self.rejected.connect(self.close_dialog)
+
+    def load_roles(self):
+        """
+        Initialize group box for selecting the active role
+        """
+        self.gbx_active_role_layout = QVBoxLayout()
+        dict_roles = self.roles.get_roles_info()
+        checked = False
+        active_role = self.roles.get_active_role()
+
+        # Initialize radio buttons
+        for k, v in dict_roles.items():
+            radio = QRadioButton(v)
+            radio.setToolTip(self.roles.get_role_description(k))
+
+            if not checked:
+                if k == active_role:
+                    radio.setChecked(True)
+                    checked = True
+
+            self.gbx_active_role_layout.addWidget(radio)
+
+        self.gbx_active_role.setLayout(self.gbx_active_role_layout)
 
     def close_dialog(self):
         self.close()
@@ -129,9 +154,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Returning existing db connection...")
         else:
-            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Getting new db connection...")
             self._db = self._get_db_connector_from_gui()
             self._db.open_connection()
 
@@ -159,7 +184,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    # Don't check if it's a LADM schema, we expect it to be after we run the schema import
+                    # Only check LADM-schema if we are not in an SCHEMA IMPORT.
+                    # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
                     ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
 
                 if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
@@ -179,7 +205,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Update db connect with new db conn
                 self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
-                # Emmit signal when change db source
+                # Emmit signal when db source changes
                 self.db_connection_changed.emit(self._db, ladm_col_schema)
 
                 self.save_settings()
@@ -191,10 +217,31 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.save_settings()
             QDialog.accept(self)
 
-        if self.chk_ant_tools.isChecked() != self.ant_tools_initial_chk_value:
-            self.organization_tools_changed.emit(NATIONAL_LAND_AGENCY)
+        # If active role changed, refresh theg GUI
+        selected_role = self.get_selected_role()
+        if self.roles.get_active_role() != selected_role:
+            self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
+                self.roles.get_active_role(), selected_role))
+            self.roles.set_active_role(selected_role)
+            self.active_role_changed.emit()
 
         self.close()
+
+    def get_selected_role(self):
+        selected_role = None
+        radio_checked = None
+        for i in range(self.gbx_active_role_layout.count()):
+            radio = self.gbx_active_role_layout.itemAt(i).widget()
+            if radio.isChecked():
+                radio_checked = radio.text()
+                break
+
+        for k, v in self.roles.get_roles_info().items():
+            if v == radio_checked:
+                selected_role = k
+                break
+
+        return selected_role  # Role key
 
     def reject(self):
         self.done(0)
@@ -233,7 +280,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/advanced_settings/ant_tools', self.chk_ant_tools.isChecked())
         settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
@@ -298,9 +344,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool)
-        self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
-
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
@@ -331,7 +374,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
@@ -342,7 +384,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def test_service(self):
         self.setEnabled(False)

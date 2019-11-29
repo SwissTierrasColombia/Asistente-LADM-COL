@@ -28,12 +28,16 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import (QgsApplication,
                        Qgis)
 
+from asistente_ladm_col.lib.logger import Logger
 from ..config.general_config import (JAVA_REQUIRED_VERSION,
                                      PLUGIN_NAME)
 from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ..utils.qt_utils import get_plugin_metadata
 
 class Utils(QObject):
+    """
+    Utility methods are here to be able to use internationalization on some messages
+    """
     def __init__(self):
         QObject.__init__(self)
  
@@ -153,40 +157,63 @@ class Utils(QObject):
 
         return False
 
-    @staticmethod
-    def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
-        plugin_found = plugin_name in qgis.utils.plugins
-        if not plugin_found:
-            return False
-        current_version = get_plugin_metadata(plugin_name, 'version')
-        if current_version is None:
-            return False
 
-        current_version_splitted = current_version.split(".")
-        if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
-            current_version_splitted = current_version_splitted + ['0','0','0','0']
-            current_version_splitted = current_version_splitted[:4]
+def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
+    plugin_found = plugin_name in qgis.utils.plugins
+    if not plugin_found:
+        return False
+    current_version = get_plugin_metadata(plugin_name, 'version')
+    return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
 
-        min_required_version_splitted = min_required_version.split(".")
-        if len(min_required_version_splitted) < 4:
-            min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
-            min_required_version_splitted = min_required_version_splitted[:4]
+def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
+    """
+    Gerneric one, it helps us to validate whether a current version is greater or equal (if exact_required_version)
+    to a min_required_version
 
-        QgsApplication.messageLog().logMessage("[{}] {}equired version: {}, current_version: {}".format(
-                plugin_name,
-                'R' if exact_required_version else 'Min r',
-                min_required_version_splitted,
-                current_version_splitted),
-            PLUGIN_NAME, Qgis.Info)
+    :param current_version: String, in the form 2.9.5
+    :param min_required_version: String, in the form 2.9.5
+    :param exact_required_version: Boolean, if true, only the exact version is valid
+    :param module_tested: String, only for displaying a log with context
+    :return: Whether the current version is valid or not
+    """
+    if current_version is None:
+        return False
 
-        if exact_required_version:
-            return min_required_version_splitted == current_version_splitted
+    current_version_splitted = current_version.split(".")
+    if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
+        current_version_splitted = current_version_splitted + ['0','0','0','0']
+        current_version_splitted = current_version_splitted[:4]
 
-        else: # Min version and subsequent versions should work
-            for i in range(len(current_version_splitted)):
-                if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
-                    return False
-                elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
-                    return True
+    min_required_version_splitted = min_required_version.split(".")
+    if len(min_required_version_splitted) < 4:
+        min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
+        min_required_version_splitted = min_required_version_splitted[:4]
 
-        return True
+    Logger().info(__name__, "[{}] {}equired version: {}, current_version: {}".format(
+            module_tested,
+            'R' if exact_required_version else 'Min r',
+            min_required_version_splitted,
+            current_version_splitted))
+
+    if exact_required_version:
+        return min_required_version_splitted == current_version_splitted
+
+    else: # Min version and subsequent versions should work
+        for i in range(len(current_version_splitted)):
+            if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
+                return False
+            elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
+                return True
+
+    return True
+
+def normalize_iliname(name):
+    """
+    Removes version from an iliname
+
+    :param name: iliname
+    :return: iliname with no version information
+    """
+    parts = name.split(".")
+    parts[0] = parts[0].split("_V")[0]
+    return ".".join(parts)

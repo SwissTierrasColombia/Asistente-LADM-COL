@@ -1,168 +1,158 @@
 basic_query_test_results = {
     'query_by_plot_id': [
         {
-            "id": 764,
             "attributes": {
-                "Área de terreno [m2]": 4934.3,
                 "extdireccion": [
                     {
-                        "id": 2075,
                         "attributes": {
-                            "País": "pais",
-                            "Departamento": "departamento",
-                            "Ciudad": "ciudad",
-                            "Código postal": None,
-                            "Apartado correo": "apartado correo",
-                            "Nombre calle": "nombre calle"
-                        }
+                            "Dirección": "Avenida carrera 94 C Norte 65 G 62 Norte Bogota D.C ",
+                            "Tipo dirección": "Estructurada",
+                            "Código postal": None
+                        },
+                        "id": 1417
                     },
                     {
-                        "id": 2076,
                         "attributes": {
-                            "País": "2 pais",
-                            "Departamento": "2 departamento",
-                            "Ciudad": "2 ciudad",
-                            "Código postal": None,
-                            "Apartado correo": "2 apartado correo",
-                            "Nombre calle": "2 nombre calle"
-                        }
+                            "Dirección": "Diagonal 58 I 39 17 Bogota D.C ",
+                            "Tipo dirección": "Estructurada",
+                            "Código postal": None
+                        },
+                        "id": 1418
                     }
                 ],
-                "predio": [
+                "op_predio": [
                     {
-                        "id": 311,
                         "attributes": {
-                            "Nombre": "El Pomarroso",
-                            "Departamento": "25",
-                            "Municipio": "394",
-                            "Zona": "00",
-                            "NUPRE": "0033",
-                            "FMI": "SIN INFO",
-                            "Número predial": "253940000000000230073000000000",
+                            "Tipo": "Privado",
+                            "Destinación económica": None,
                             "Número predial anterior": "25394000000230073000",
-                            "Tipo": "NPH",
-                            "Destinación económica": "Comercial",
-                            "construccion": [
+                            "Departamento": "25",
+                            "op_construccion": [
                                 {
-                                    "id": 152,
                                     "attributes": {
-                                        "Área construcción": 0.9,
                                         "extdireccion": [
                                             {
-                                                "id": 2077,
                                                 "attributes": {
-                                                    "País": "311_pais",
-                                                    "Departamento": "311_departamento",
-                                                    "Ciudad": "311_ciudad",
-                                                    "Código postal": None,
-                                                    "Apartado correo": "311_apartado_correo",
-                                                    "Nombre calle": "311_nombre_calle"
-                                                }
+                                                    "Dirección": "Carrera 18 G Este 23 J 99 Bogota D.C ",
+                                                    "Tipo dirección": "Estructurada",
+                                                    "Código postal": None
+                                                },
+                                                "id": 638
                                             },
                                             {
-                                                "id": 2078,
                                                 "attributes": {
-                                                    "País": "311_2_pais",
-                                                    "Departamento": "311_2_departamento",
-                                                    "Ciudad": "311_2_ciudad",
-                                                    "Código postal": None,
-                                                    "Apartado correo": "311_2_apartado_correo",
-                                                    "Nombre calle": "311_2_nombre_calle"
-                                                }
+                                                    "Dirección": "Calle 72 E Norte 89 S 82 Oeste Bogota D.C ",
+                                                    "Tipo dirección": "Estructurada",
+                                                    "Código postal": None
+                                                },
+                                                "id": 639
                                             }
                                         ],
-                                        "unidadconstruccion": [
+                                        "op_unidadconstruccion": [
                                             {
-                                                "id": 873,
                                                 "attributes": {
+                                                    "Ubicación en el piso": 4,
+                                                    "Tipo planta": "Subterráneo",
+                                                    "Tipo construcción": "Convencional",
+                                                    "Uso": "Oficinas o consultorios colonial",
+                                                    "Tipo unidad de construcción": "Comercial",
+                                                    "Número de baños": 1,
+                                                    "Número de locales": 4,
                                                     "Número de pisos": 2,
-                                                    "Área construida [m2]": 25.8,
-                                                    "Número de habitaciones": 3,
-                                                    "Número de baños": 7,
-                                                    "Número de locales": 3,
-                                                    "Uso": "Apartamentos_Mas_4_Pisos",
-                                                    "Puntuación": 17,
                                                     "extdireccion": [
                                                         {
-                                                            "id": 2083,
                                                             "attributes": {
-                                                                "País": "873_pais",
-                                                                "Departamento": "873_departamento",
-                                                                "Ciudad": "873_ciudad",
-                                                                "Código postal": None,
-                                                                "Apartado correo": "873_apartado_correo",
-                                                                "Nombre calle": "873_nombre_calle"
-                                                            }
+                                                                "Dirección": "Diagonal 99 M Oeste 51 H 94 Bogota D.C ",
+                                                                "Tipo dirección": "Estructurada",
+                                                                "Código postal": None
+                                                            },
+                                                            "id": 1525
                                                         },
                                                         {
-                                                            "id": 2084,
                                                             "attributes": {
-                                                                "País": "873_2_pais",
-                                                                "Departamento": "873_2_departamento",
-                                                                "Ciudad": "873_2_ciudad",
-                                                                "Código postal": None,
-                                                                "Apartado correo": "873_2_apartado_correo",
-                                                                "Nombre calle": "873_2_nombre_calle"
-                                                            }
+                                                                "Dirección": "Diagonal 68 N Sur 85 D 3 Norte Bogota D.C ",
+                                                                "Tipo dirección": "Estructurada",
+                                                                "Código postal": None
+                                                            },
+                                                            "id": 1526
                                                         }
-                                                    ]
-                                                }
+                                                    ],
+                                                    "Número de habitaciones": 1,
+                                                    "Área construida [m2]": 25.8,
+                                                    "Tipo dominio": "Privado"
+                                                },
+                                                "id": 1524
                                             }
-                                        ]
-                                    }
+                                        ],
+                                        "Área construcción": 25.8
+                                    },
+                                    "id": 637
                                 },
                                 {
-                                    "id": 2091,
                                     "attributes": {
-                                        "Área construcción": 0.3,
                                         "extdireccion": [],
-                                        "unidadconstruccion": [
+                                        "op_unidadconstruccion": [
                                             {
-                                                "id": 2248,
                                                 "attributes": {
-                                                    "Número de pisos": 7,
-                                                    "Área construida [m2]": 343.4,
-                                                    "Número de habitaciones": 6,
-                                                    "Número de baños": 5,
-                                                    "Número de locales": 5,
-                                                    "Uso": "Apartamentos_Mas_4_Pisos_PH",
-                                                    "Puntuación": 4,
-                                                    "extdireccion": []
-                                                }
-                                            },
-                                            {
-                                                "id": 2249,
-                                                "attributes": {
+                                                    "Ubicación en el piso": 0,
+                                                    "Tipo planta": "Semisótano",
+                                                    "Tipo construcción": "Convencional",
+                                                    "Uso": "Comercio",
+                                                    "Tipo unidad de construcción": "Comercial",
+                                                    "Número de baños": 4,
+                                                    "Número de locales": 2,
                                                     "Número de pisos": 12,
-                                                    "Área construida [m2]": 1.1,
-                                                    "Número de habitaciones": None,
-                                                    "Número de baños": None,
-                                                    "Número de locales": None,
-                                                    "Uso": None,
-                                                    "Puntuación": None,
                                                     "extdireccion": [
                                                         {
-                                                            "id": 2252,
                                                             "attributes": {
-                                                                "País": "2249_pais",
-                                                                "Departamento": "2249_departamento",
-                                                                "Ciudad": "2249_ciudad",
-                                                                "Código postal": None,
-                                                                "Apartado correo": "2249_apartado_correo",
-                                                                "Nombre calle": "2249_nombre_calle"
-                                                            }
+                                                                "Dirección": "Diagonal 29 O Oeste 1 K 67 Bogota D.C ",
+                                                                "Tipo dirección": "Estructurada",
+                                                                "Código postal": None
+                                                            },
+                                                            "id": 1535
                                                         }
-                                                    ]
-                                                }
+                                                    ],
+                                                    "Número de habitaciones": 4,
+                                                    "Área construida [m2]": 19,
+                                                    "Tipo dominio": "Común"
+                                                },
+                                                "id": 1534
+                                            },
+                                            {
+                                                "attributes": {
+                                                    "Ubicación en el piso": 5,
+                                                    "Tipo planta": "Mezanine",
+                                                    "Tipo construcción": "No convencional",
+                                                    "Uso": "Casa de elbas",
+                                                    "Tipo unidad de construcción": "Anexo",
+                                                    "Número de baños": 4,
+                                                    "Número de locales": 3,
+                                                    "Número de pisos": 7,
+                                                    "extdireccion": [],
+                                                    "Número de habitaciones": 2,
+                                                    "Área construida [m2]": 108,
+                                                    "Tipo dominio": "Privado"
+                                                },
+                                                "id": 1545
                                             }
-                                        ]
-                                    }
+                                        ],
+                                        "Área construcción": 108
+                                    },
+                                    "id": 640
                                 }
-                            ]
-                        }
+                            ],
+                            "FMI": None,
+                            "Nombre": "El Pomarroso",
+                            "Número predial": "253940000000000230073000000000",
+                            "Municipio": "394",
+                            "NUPRE": "0033"
+                        },
+                        "id": 998
                     }
-                ]
-            }
+                ],
+                "Área de terreno [m2]": 4934.3
+            },
+            "id": 1416
         }
     ]
 }

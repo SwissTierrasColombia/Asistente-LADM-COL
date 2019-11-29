@@ -33,9 +33,6 @@ The current version ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-
    - Property record card information.
    - Physical information.
    - Economic information.
- - Preprocess points: Controlled Measurement.
-   - Group points by nearness.
-   - Average point position from points of the same group.
  - Add points to the `Boundary Point`, `Survey Point` and `Control Point` layers:
    - From CSV files.
      - Validate and avoid insertion of overlapping points.

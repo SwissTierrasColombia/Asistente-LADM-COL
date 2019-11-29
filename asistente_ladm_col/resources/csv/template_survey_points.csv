@@ -1,1 +1,1 @@
-nombre_punto,definicion_punto,monumentacion,puntotipo,p_espacio_de_nombres,p_local_id,x,y,z
+fid;id_punto_levantamiento;tipo_punto_levantamiento;fotoidentificacion;exactitud_horizontal;exactitud_vertical;posicion_interpolacion;monumentacion;puntotipo;metodoproduccion;comienzo_vida_util_version;fin_vida_util_version;local_id;espacio_de_nombres;x;y;z

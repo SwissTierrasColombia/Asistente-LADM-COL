@@ -34,10 +34,8 @@ from ...config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
                                       SOURCE_DB,
                                       COLLECTED_DB_SOURCE,
                                       OFFICIAL_DB_SOURCE)
-from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
-                                            ID_FIELD,
-                                            PLOT_TABLE)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/parcels_changes_summary_panel_widget.ui')
 
@@ -49,6 +47,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent, utils):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
+        self.names = Names()
         self.parent = parent
         self.utils = utils
 
@@ -60,30 +59,30 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         inverse_compared_parcels_data = self.utils.get_compared_parcels_data(inverse=True)
 
         # Summarize and show in its proper control
-        summary = {CHANGE_DETECTION_NEW_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_MISSING_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_CHANGED: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_REMAINS: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_SEVERAL_PARCELS: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_NULL_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
+        summary = {CHANGE_DETECTION_NEW_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_MISSING_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_CHANGED: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_REMAINS: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_SEVERAL_PARCELS: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_NULL_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
 
         total_count = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
-            count = len(parcel_attrs[ID_FIELD])
+            count = len(parcel_attrs[self.names.T_ID_F])
             total_count += count
             summary[parcel_attrs[PARCEL_STATUS]][COUNT_KEY] += count
-            summary[parcel_attrs[PARCEL_STATUS]][PARCEL_NUMBER_FIELD].append(parcel_number)
-            summary[parcel_attrs[PARCEL_STATUS]][ID_FIELD].extend(parcel_attrs[ID_FIELD])
+            summary[parcel_attrs[PARCEL_STATUS]][self.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+            summary[parcel_attrs[PARCEL_STATUS]][self.names.T_ID_F].extend(parcel_attrs[self.names.T_ID_F])
 
         # Fill missing parcel data
         for parcel_number, parcel_attrs in inverse_compared_parcels_data.items():
             if parcel_attrs[PARCEL_STATUS] == CHANGE_DETECTION_NEW_PARCEL:
-                count = len(parcel_attrs[ID_FIELD])
+                count = len(parcel_attrs[self.names.T_ID_F])
                 total_count += count
                 summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY] += count
-                summary[CHANGE_DETECTION_MISSING_PARCEL][PARCEL_NUMBER_FIELD].append(parcel_number)
-                summary[CHANGE_DETECTION_MISSING_PARCEL][ID_FIELD].extend(parcel_attrs[ID_FIELD])
+                summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+                summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.T_ID_F].extend(parcel_attrs[self.names.T_ID_F])
                 summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = OFFICIAL_DB_SOURCE
 
         self.lbl_new_parcels_count.setText(str(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY]))
@@ -132,7 +131,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
             partial(self.parent.show_all_parcels_panel, dict()))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
-        self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
-        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE][LAYER])
+        self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.names.OP_PLOT_T][LAYER])
         self.utils.iface.zoomToActiveLayer()

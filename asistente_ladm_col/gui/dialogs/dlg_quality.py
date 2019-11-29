@@ -26,13 +26,40 @@ from qgis.PyQt.QtGui import (QBrush,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
-from ...config.general_config import translated_strings
-from ...config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                            CONTROL_POINT_TABLE,
-                                            PLOT_TABLE,
-                                            BUILDING_TABLE,
-                                            RIGHT_OF_WAY_TABLE)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
+                                                      CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
+                                                      CHECK_OVERLAPS_IN_CONTROL_POINTS,
+                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                                      CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                                                      CHECK_OVERLAPS_IN_BOUNDARIES,
+                                                      CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                      CHECK_DANGLES_IN_BOUNDARIES,
+                                                      CHECK_OVERLAPS_IN_PLOTS,
+                                                      CHECK_OVERLAPS_IN_BUILDINGS,
+                                                      CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
+                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                      CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                                      CHECK_GAPS_IN_PLOTS,
+                                                      CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                                      CHECK_BUILDING_WITHIN_PLOTS,
+                                                      CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                                      CHECK_PARCEL_RIGHT_RELATIONSHIP,
+                                                      CHECK_FRACTION_SUM_FOR_PARTY_GROUPS,
+                                                      FIND_DUPLICATE_RECORDS_IN_A_TABLE,
+                                                      CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS,
+                                                      CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS,
+                                                      CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS,
+                                                      CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS,
+                                                      CHECK_COL_PARTY_NATURAL_TYPE,
+                                                      CHECK_COL_PARTY_LEGAL_TYPE,
+                                                      CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER,
+                                                      CHECK_UEBAUNIT_PARCEL,
+                                                      CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
@@ -44,6 +71,8 @@ class QualityDialog(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
+        self.names = Names()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
         self.trw_quality_rules.setItemsExpandable(False)
 
@@ -54,80 +83,82 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.btn_select_all.clicked.connect(self.select_all)
         self.btn_clear_selection.clicked.connect(self.clear_selection)
 
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         self.items_dict = collections.OrderedDict()
         self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Points")] = {
                 'icon': 'points',
                 'rules': [{
                     'id' : 'check_overlaps_in_boundary_points',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
+                    'text': translated_strings[CHECK_OVERLAPS_IN_BOUNDARY_POINTS]
                 },{
                     'id' : 'check_overlaps_in_control_points',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
+                    'text': translated_strings[CHECK_OVERLAPS_IN_CONTROL_POINTS]
                 },{
                     'id' : 'check_boundary_points_covered_by_boundary_nodes',
-                    'text': translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES
+                    'text': translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES]
                 },{
                     'id' : 'check_boundary_points_covered_by_plot_nodes',
-                    'text': translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES
+                    'text': translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES]
                 }]
             }
         self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Lines")] = {
                 'icon' : 'lines',
                 'rules': [{
                     'id': 'check_too_long_boundary_segments',
-                    'text': translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS
+                    'text': translated_strings[CHECK_TOO_LONG_BOUNDARY_SEGMENTS]
                 }, {
                     'id': 'check_overlaps_in_boundaries',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                    'text': translated_strings[CHECK_OVERLAPS_IN_BOUNDARIES]
                 }, {
                     'id': 'check_boundaries_are_not_split',
-                    'text': translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT
+                    'text': translated_strings[CHECK_BOUNDARIES_ARE_NOT_SPLIT]
                 }, {
                     'id': 'check_boundaries_covered_by_plots',
-                    'text': translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS
+                    'text': translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS]
                 }, {
                     'id': 'check_boundary_nodes_covered_by_boundary_points',
-                    'text': translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS
+                    'text': translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]
                 }, {
                     'id': 'check_dangles_in_boundaries',
-                    'text': translated_strings.CHECK_DANGLES_IN_BOUNDARIES
+                    'text': translated_strings[CHECK_DANGLES_IN_BOUNDARIES]
                 }]
             }
         self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Polygons")] = {
                 'icon': 'polygons',
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_PLOTS
+                    'text': translated_strings[CHECK_OVERLAPS_IN_PLOTS]
                 },{
                     'id': 'check_overlaps_in_buildings',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_BUILDINGS
+                    'text': translated_strings[CHECK_OVERLAPS_IN_BUILDINGS]
                 },{
                     'id': 'check_overlaps_in_rights_of_way',
-                    'text': translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
+                    'text': translated_strings[CHECK_OVERLAPS_IN_RIGHTS_OF_WAY]
                 },{
                     'id': 'check_plots_covered_by_boundaries',
-                    'text': translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES
+                    'text': translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES]
                 #}, {
                 #    'id': 'check_missing_survey_points_in_buildings',
                 #    'text': QCoreApplication.translate("QualityDialog", "Buildings nodes should be covered by Survey Points")
                 }, {
                     'id': 'check_right_of_way_overlaps_buildings',
-                    'text': translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS
+                    'text': translated_strings[CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS]
                 }, {
                     'id': 'check_gaps_in_plots',
-                    'text': translated_strings.CHECK_GAPS_IN_PLOTS
+                    'text': translated_strings[CHECK_GAPS_IN_PLOTS]
                 }, {
                     'id': 'check_multipart_in_right_of_way',
-                    'text': translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY
+                    'text': translated_strings[CHECK_MULTIPART_IN_RIGHT_OF_WAY]
                 }, {
                     'id': 'check_plot_nodes_covered_by_boundary_points',
-                    'text': translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS
+                    'text': translated_strings[CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS]
                 },{
                     'id': 'check_buildings_should_be_within_plots',
-                    'text': translated_strings.CHECK_BUILDING_WITHIN_PLOTS
+                    'text': translated_strings[CHECK_BUILDING_WITHIN_PLOTS]
                 },{
                     'id': 'check_building_units_should_be_within_plots',
-                    'text': translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS
+                    'text': translated_strings[CHECK_BUILDING_UNIT_WITHIN_PLOTS]
                 }]
             }
 
@@ -135,40 +166,37 @@ class QualityDialog(QDialog, DIALOG_UI):
                 'icon': 'tables',
                 'rules': [{
                     'id': 'check_parcel_right_relationship',
-                    'text': translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP
+                    'text': translated_strings[CHECK_PARCEL_RIGHT_RELATIONSHIP]
                 }, {
                     'id': 'find_duplicate_records_in_a_table',
-                    'text': translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE
+                    'text': translated_strings[FIND_DUPLICATE_RECORDS_IN_A_TABLE]
                 }, {
                     'id': 'check_fraction_sum_for_party_groups',
-                    'text': translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS
+                    'text': translated_strings[CHECK_FRACTION_SUM_FOR_PARTY_GROUPS]
                 }, {
                     'id': 'check_department_code_has_two_numerical_characters',
-                    'text': translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS
+                    'text': translated_strings[CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS]
                 }, {
                     'id': 'check_municipality_code_has_three_numerical_characters',
-                    'text': translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS
-                }, {
-                    'id': 'check_zone_code_has_two_numerical_characters',
-                    'text': translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS
+                    'text': translated_strings[CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS]
                 }, {
                     'id': 'check_parcel_number_has_30_numerical_characters',
-                    'text': translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS
+                    'text': translated_strings[CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS]
                 }, {
                     'id': 'check_parcel_number_before_has_20_numerical_characters',
-                    'text': translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS
+                    'text': translated_strings[CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS]
                 }, {
                     'id': 'check_col_party_natural_type',
-                    'text': translated_strings.CHECK_COL_PARTY_NATURAL_TYPE
+                    'text': translated_strings[CHECK_COL_PARTY_NATURAL_TYPE]
                 }, {
                     'id': 'check_col_party_legal_type',
-                    'text': translated_strings.CHECK_COL_PARTY_LEGAL_TYPE
+                    'text': translated_strings[CHECK_COL_PARTY_LEGAL_TYPE]
                 }, {
                     'id': 'check_parcel_type_and_22_position_of_parcel_number',
-                    'text': translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER
+                    'text': translated_strings[CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER]
                 }, {
                     'id': 'check_uebaunit_parcel',
-                    'text': translated_strings.CHECK_UEBAUNIT_PARCEL
+                    'text': translated_strings[CHECK_UEBAUNIT_PARCEL]
                 }]
             }
 
@@ -210,6 +238,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.qgis_utils.remove_error_group_requested.emit()
         self.quality.initialize_log_dialog_quality()
         self.quality.set_count_topology_rules(len(self.trw_quality_rules.selectedItems()))
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
@@ -219,50 +248,52 @@ class QualityDialog(QDialog, DIALOG_UI):
                 id = item.data(0, Qt.UserRole)
                 rule_name = item.text(0)
 
+                # NOTE: Do not remove the named parameters, this is needed for making a decorator that thinks they are
+                # optional happy!
                 if id == 'check_overlaps_in_boundary_points':
-                    self.quality.check_overlapping_points(self._db, point_layer_name=BOUNDARY_POINT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_points(self._db, point_layer_name=self.names.OP_BOUNDARY_POINT_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_control_points':
-                    self.quality.check_overlapping_points(self._db, point_layer_name=CONTROL_POINT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_points(self._db, point_layer_name=self.names.OP_CONTROL_POINT_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
-                    self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, rule_name=rule_name)
+                    self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
-                    self.quality.check_boundary_points_covered_by_plot_nodes(self._db, rule_name=rule_name)
+                    self.quality.check_boundary_points_covered_by_plot_nodes(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_too_long_boundary_segments':
-                    self.quality.check_too_long_segments(self._db, rule_name=rule_name)
+                    self.quality.check_too_long_segments(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_boundaries':
-                    self.quality.check_overlaps_in_boundaries(self._db, rule_name=rule_name)
+                    self.quality.check_overlaps_in_boundaries(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundaries_are_not_split':
-                    self.quality.check_boundaries_are_not_split(self._db, rule_name=rule_name)
+                    self.quality.check_boundaries_are_not_split(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundaries_covered_by_plots':
-                    self.quality.check_boundaries_covered_by_plots(self._db, rule_name=rule_name)
+                    self.quality.check_boundaries_covered_by_plots(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundary_nodes_covered_by_boundary_points':
-                    self.quality.check_boundary_nodes_covered_by_boundary_points(self._db, rule_name=rule_name)
+                    self.quality.check_boundary_nodes_covered_by_boundary_points(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_dangles_in_boundaries':
-                    self.quality.check_dangles_in_boundaries(self._db, rule_name=rule_name)
+                    self.quality.check_dangles_in_boundaries(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_plots':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=PLOT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_PLOT_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_buildings':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=BUILDING_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_BUILDING_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_rights_of_way':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=RIGHT_OF_WAY_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_RIGHT_OF_WAY_T, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_plots_covered_by_boundaries':
-                    self.quality.check_plots_covered_by_boundaries(self._db, rule_name=rule_name)
+                    self.quality.check_plots_covered_by_boundaries(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 #elif id == 'check_missing_survey_points_in_buildings':
                 #    self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
-                    self.quality.check_right_of_way_overlaps_buildings(self._db, rule_name=rule_name)
+                    self.quality.check_right_of_way_overlaps_buildings(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_gaps_in_plots':
-                    self.quality.check_gaps_in_plots(self._db, rule_name=rule_name)
+                    self.quality.check_gaps_in_plots(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_multipart_in_right_of_way':
-                    self.quality.check_multiparts_in_right_of_way(self._db, rule_name=rule_name)
+                    self.quality.check_multiparts_in_right_of_way(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_plot_nodes_covered_by_boundary_points':
-                    self.quality.check_plot_nodes_covered_by_boundary_points(self._db, rule_name=rule_name)
+                    self.quality.check_plot_nodes_covered_by_boundary_points(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_buildings_should_be_within_plots':
-                    self.quality.check_building_within_plots(self._db, rule_name=rule_name)
+                    self.quality.check_building_within_plots(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_building_units_should_be_within_plots':
-                    self.quality.check_building_unit_within_plots(self._db, rule_name=rule_name)
+                    self.quality.check_building_unit_within_plots(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_parcel_right_relationship':
-                    self.quality.check_parcel_right_relationship(self._db, rule_name=rule_name)
+                    self.quality.check_parcel_right_relationship(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'find_duplicate_records_in_a_table':
                     self.quality.find_duplicate_records_in_a_table(self._db, rule_name=rule_name)
                 elif id == 'check_fraction_sum_for_party_groups':
@@ -271,8 +302,6 @@ class QualityDialog(QDialog, DIALOG_UI):
                     self.quality.basic_logic_validations(self._db, rule='DEPARTMENT_CODE_VALIDATION', rule_name=rule_name)
                 elif id == 'check_municipality_code_has_three_numerical_characters':
                     self.quality.basic_logic_validations(self._db, rule='MUNICIPALITY_CODE_VALIDATION', rule_name=rule_name)
-                elif id == 'check_zone_code_has_two_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, rule='ZONE_CODE_VALIDATION', rule_name=rule_name)
                 elif id == 'check_parcel_number_has_30_numerical_characters':
                     self.quality.basic_logic_validations(self._db, rule='PARCEL_NUMBER_VALIDATION', rule_name=rule_name)
                 elif id == 'check_parcel_number_before_has_20_numerical_characters':

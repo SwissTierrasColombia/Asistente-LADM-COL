@@ -23,8 +23,7 @@ from osgeo import ogr
 from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsFeatureRequest, 
-                       QgsApplication)
+                       QgsFeatureRequest)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, 
@@ -39,16 +38,10 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QFileDialog)
 
+from asistente_ladm_col.lib.logger import Logger
 from ...utils.qt_utils import make_file_selector, normalize_local_url
 from ...config.help_strings import HelpStrings
-from ...config.table_mapping_config import (COL_PARTY_TABLE,
-                                         PARCEL_TABLE,
-                                         RIGHT_TABLE,
-                                         RRR_SOURCE_RELATION_TABLE,
-                                         EXTFILE_TABLE,
-                                         LA_GROUP_PARTY_TABLE,
-                                         ADMINISTRATIVE_SOURCE_TABLE,
-                                         MEMBERS_TABLE)
+from asistente_ladm_col.config.table_mapping_config import Names
 from ...config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
                                       EXCEL_SHEET_TITLE_MUNICIPALITY,
                                       EXCEL_SHEET_TITLE_ZONE,
@@ -103,10 +96,11 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
+        self.names = Names()
 
         self.fields = {EXCEL_SHEET_NAME_PLOT: [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
                             EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
@@ -210,14 +204,14 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         # GET LADM LAYERS
         layers = {
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
-            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None},
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, LAYER: None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.OP_RIGHT_T: {'name': self.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
+            self.names.EXT_ARCHIVE_S: {'name': self.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
+            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
+            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
+            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(self._db, layers, load=True)
@@ -225,13 +219,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             return None
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
-        ladm_tables = [layers[PARCEL_TABLE][LAYER],
-                       layers[COL_PARTY_TABLE][LAYER],
-                       layers[RIGHT_TABLE][LAYER],
-                       layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
-                       layers[RRR_SOURCE_RELATION_TABLE][LAYER],
-                       layers[LA_GROUP_PARTY_TABLE][LAYER],
-                       layers[MEMBERS_TABLE][LAYER]]
+        ladm_tables = [layers[self.names.OP_PARCEL_T][LAYER],
+                       layers[self.names.OP_PARTY_T][LAYER],
+                       layers[self.names.OP_RIGHT_T][LAYER],
+                       layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
+                       layers[self.names.COL_RRR_SOURCE_T][LAYER],
+                       layers[self.names.OP_GROUP_PARTY_T][LAYER],
+                       layers[self.names.MEMBERS_T][LAYER]]
         ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
 
 
@@ -277,7 +271,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version',
                                 'precision': -1, 'type': 16}],
-                           'output': layers[COL_PARTY_TABLE][LAYER]
+                           'output': layers[self.names.OP_PARTY_T][LAYER]
                        })
 
         # 2
@@ -309,7 +303,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': '"id agrupación"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[LA_GROUP_PARTY_TABLE][LAYER]
+                           'output': layers[self.names.OP_GROUP_PARTY_T][LAYER]
                        })
 
         # 4
@@ -323,7 +317,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                   'FIELDS_TO_COPY': 't_id',
                                                   'FIELD_2': 'p_local_id',
                                                   'INPUT': layer_group_party,
-                                                  'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
+                                                  'INPUT_2': layers[self.names.OP_GROUP_PARTY_T][LAYER],
                                                   'METHOD': 1,
                                                   'OUTPUT': 'memory:',
                                                   'PREFIX': 'agrupacion_' })['OUTPUT']
@@ -339,7 +333,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                           'FIELDS_TO_COPY': 't_id',
                                                           'FIELD_2': 'documento_identidad',
                                                           'INPUT': group_party_tid_layer,
-                                                          'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
+                                                          'INPUT_2': layers[self.names.OP_PARTY_T][LAYER],
                                                           'METHOD': 1,
                                                           'OUTPUT': 'memory:',
                                                           'PREFIX': 'interesado_' })['OUTPUT']
@@ -355,7 +349,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                            'mapping': [
                                {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesados_col_interesado', 'precision': 0, 'type': 4},
                                {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'agrupacion', 'precision': 0, 'type': 4}],
-                           'output': layers[MEMBERS_TABLE][LAYER]
+                           'output': layers[self.names.MEMBERS_T][LAYER]
                        })
 
         # 7
@@ -381,7 +375,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': "'ANT_PREDIO'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10},
                                {'expression': '$id', 'length': 255, 'name': 'u_local_id', 'precision': -1, 'type': 10},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[PARCEL_TABLE][LAYER]
+                           'output': layers[self.names.OP_PARCEL_T][LAYER]
                        })
 
         # 8
@@ -422,7 +416,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': "'ANT_COLFUENTEADMINISTRATIVA'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
                                {'expression': '"concat_"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
                                {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1}],
-                           'output': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]
+                           'output': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER]
                        })
 
         # 10
@@ -437,7 +431,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                'FIELDS_TO_COPY': 't_id',
                                                'FIELD_2': 's_local_id',
                                                'INPUT': concat_right_source_layer,
-                                               'INPUT_2': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
+                                               'INPUT_2': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
                                                'METHOD': 1,
                                                'OUTPUT': 'memory:',
                                                'PREFIX': 'fuente_' })['OUTPUT']
@@ -461,7 +455,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': '$id', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
                                {'expression': '"fuente_t_id"', 'length': -1, 'name': 'col_fuenteadminstrtiva_ext_archivo_id', 'precision': 0, 'type': 4},
                                {'expression': '"col_fuenteespacial_ext_archivo_id"', 'length': -1, 'name': 'col_fuenteespacial_ext_archivo_id', 'precision': 0, 'type': 4}],
-                           'output': EXTFILE_TABLE
+                           'output': self.names.EXT_ARCHIVE_S
                        })
 
         # 12
@@ -476,7 +470,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                      'FIELDS_TO_COPY': 't_id',
                                                      'FIELD_2': 'documento_identidad',
                                                      'INPUT': source_tid_layer,
-                                                     'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
+                                                     'INPUT_2': layers[self.names.OP_PARTY_T][LAYER],
                                                      'METHOD': 1,
                                                      'OUTPUT': 'memory:',
                                                      'PREFIX': 'interesado_'})['OUTPUT']
@@ -493,7 +487,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                            'FIELDS_TO_COPY': 't_id',
                                                            'FIELD_2': 'p_local_id',
                                                            'INPUT': source_party_tid_layer,
-                                                           'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
+                                                           'INPUT_2': layers[self.names.OP_GROUP_PARTY_T][LAYER],
                                                            'METHOD': 1,
                                                            'OUTPUT': 'memory:',
                                                            'PREFIX': 'agrupacion_' })['OUTPUT']
@@ -510,7 +504,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                                   'FIELDS_TO_COPY': 't_id',
                                                                   'FIELD_2': 'numero_predial',
                                                                   'INPUT': source_party_group_tid_layer,
-                                                                  'INPUT_2': layers[PARCEL_TABLE][LAYER],
+                                                                  'INPUT_2': layers[self.names.OP_PARCEL_T][LAYER],
                                                                   'METHOD': 1,
                                                                   'OUTPUT': 'memory:',
                                                                   'PREFIX': 'predio_' })['OUTPUT']
@@ -538,7 +532,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[RIGHT_TABLE][LAYER]
+                           'output': layers[self.names.OP_RIGHT_T][LAYER]
                        })
 
         # 16
@@ -553,7 +547,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                                         'FIELDS_TO_COPY': 't_id',
                                                                         'FIELD_2': 'r_local_id',
                                                                         'INPUT': source_party_group_parcel_tid_layer,
-                                                                        'INPUT_2': layers[RIGHT_TABLE][LAYER],
+                                                                        'INPUT_2': layers[self.names.OP_RIGHT_T][LAYER],
                                                                         'METHOD': 1,
                                                                         'OUTPUT': 'memory:',
                                                                         'PREFIX': 'derecho_' })['OUTPUT']
@@ -573,7 +567,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                {'expression': '"derecho_t_id"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4},
                                {'expression': '"rrr_col_restriccion"', 'length': -1, 'name': 'rrr_col_restriccion', 'precision': 0, 'type': 4},
                                {'expression': '"rrr_col_hipoteca"', 'length': -1, 'name': 'rrr_col_hipoteca', 'precision': 0, 'type': 4}],
-                           'output': layers[RRR_SOURCE_RELATION_TABLE][LAYER]
+                           'output': layers[self.names.COL_RRR_SOURCE_T][LAYER]
                        })
 
 
@@ -589,12 +583,8 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.qgis_utils.message_with_duration_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
-                excel_path),
-            Qgis.Success,
-            0)
+        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
+            "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
@@ -786,7 +776,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path,
                                                                       sheetname=sheetname, filename=filename)
 
-        self.log.logMessage("Loading layer from excel with uri='{}'".format(uri), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Loading layer from excel with uri='{}'".format(uri))
         layer = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
         layer.setProviderEncoding('UTF-8')
         return layer
@@ -841,13 +831,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/excel/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...")
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "Excel file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'Removing existing file {}...'.format(new_filename))
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -856,7 +846,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                 msg = QCoreApplication.translate("ImportFromExcelDialog", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 

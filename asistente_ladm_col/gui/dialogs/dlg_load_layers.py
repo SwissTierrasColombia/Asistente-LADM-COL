@@ -37,11 +37,9 @@ from ...config.general_config import (TABLE_NAME,
                                       KIND_SETTINGS,
                                       TABLE_ALIAS,
                                       MODEL)
-from ...config.layer_sets import LAYER_SETS
-from ...config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
-                                            TABLE_PROP_DOMAIN,
-                                            TABLE_PROP_STRUCTURE)
+from asistente_ladm_col.config.table_mapping_config import Names
 from ...utils import get_ui_class
+
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
 
@@ -53,6 +51,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
+        self.names = Names()
         self.models_tree = dict()
         self.selected_items_dict = dict()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
@@ -64,7 +63,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
-        for name, layer_list in LAYER_SETS.items():
+        for name, layer_list in self.names.get_layer_sets().items():
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
@@ -141,9 +140,9 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
             for table in sorted_tables:
                 current_table_info = self.models_tree[model][table]
-                if current_table_info[KIND_SETTINGS] == TABLE_PROP_DOMAIN and not show_domains \
-                   or current_table_info[KIND_SETTINGS] == TABLE_PROP_STRUCTURE and not show_structures \
-                   or current_table_info[KIND_SETTINGS] == TABLE_PROP_ASSOCIATION and not show_associations:
+                if current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_DOMAIN and not show_domains \
+                   or current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE and not show_structures \
+                   or current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
@@ -163,11 +162,11 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                         font.setBold(True)
                         table_item.setData(0, Qt.FontRole, font)
 
-                if current_table_info[KIND_SETTINGS] == TABLE_PROP_DOMAIN:
+                if current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
-                elif current_table_info[KIND_SETTINGS] == TABLE_PROP_STRUCTURE:
+                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE:
                     icon_name = self.icon_names[5]
-                elif current_table_info[KIND_SETTINGS] == TABLE_PROP_ASSOCIATION:
+                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)

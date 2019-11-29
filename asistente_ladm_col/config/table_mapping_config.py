@@ -1,589 +1,1920 @@
 from qgis.core import NULL
 
-"""
-CADASTRE MAPPING
-"""
-ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
-ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
-AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
-POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
-BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
-BOUNDARY_POINT_TABLE = "puntolindero"
-BOUNDARY_TABLE = "lindero"
-BUILDING_TABLE = "construccion"
-BUILDING_AREA_FIELD = "area_construccion"
-BUILDING_VALUATION_FIELD = "avaluo_construccion"
-BUILDING_UNIT_AREA_FIELD = "area_construida"
-BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
-BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
-BUILDING_UNIT_TABLE = "unidadconstruccion"
-BUSINESS_NAME_FIELD = "razon_social"
-CCLSOURCE_TABLE = "cclfuente"
-CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
-CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
-COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
-COL_PARTY_TABLE = "col_interesado"
-COL_PARTY_TYPE_FIELD = "tipo"
-COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
-COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
-COL_PARTY_SURNAME_FIELD = "primer_apellido"
-COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
-COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
-COL_PARTY_NAME_FIELD = "nombre"
-COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE = "Servidumbre"
-CONTROL_POINT_TABLE = "puntocontrol"
-DEPARTMENT_FIELD = "departamento"
-DOCUMENT_ID_FIELD = "documento_identidad"
-DOMAIN_KEY_FIELD = {
-    "pg": "ilicode",
-    "gpkg": "iliCode"
-}
-EXTADDRESS_TABLE = "extdireccion"
-EXTADDRESS_PLOT_FIELD = "terreno_ext_direccion_id"
-EXTADDRESS_BUILDING_FIELD = "construccion_ext_direccion_id"
-EXTADDRESS_BUILDING_UNIT_FIELD = "unidadconstruccion_ext_direccion_id"
-EXTFILE_TABLE = "extarchivo"
-EXTFILE_DATA_FIELD = "datos"
-FIRST_NAME_FIELD = "primer_nombre"
-FIRST_SURNAME_FIELD = "primer_apellido"
-FMI_FIELD = "fmi"
-FRACTION_TABLE = "fraccion"
-FRACTION_DENOMINATOR_FIELD = "denominador"
-FRACTION_MEMBER_FIELD = "miembros_participacion"
-FRACTION_NUMERATOR_FIELD = "numerador"
-GENDER_TYPE_TABLE = "col_generotipo"
-ID_FIELD = "t_id"
-LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
-LA_GROUP_PARTY_NAME_FIELD = "nombre"
-LA_GROUP_PARTY_GPTYPE_FIELD = "ai_tipo"
-LA_GROUP_PARTY_TYPE_FIELD = "tipo"
-LA_GROUP_PARTY_TYPE_TABLE = "col_grupointeresadotipo"
-LA_GROUP_PARTY_TYPE_VALUE = "Otro"
-LA_BAUNIT_NAME_FIELD = "nombre"
-LA_BAUNIT_TABLE = "la_baunit"
-LA_BAUNIT_TYPE_TABLE = "la_baunittipo"
-LA_DIMENSION_TYPE_TABLE = "la_dimensiontipo"
-LA_BUILDING_UNIT_TYPE_TABLE = "la_unidadedificaciontipo"
-LA_INTERPOLATION_TYPE_TABLE = "la_interpolaciontipo"
-LA_MONUMENTATION_TYPE_TABLE = "la_monumentaciontipo"
-LA_POINT_TABLE = "la_punto"
-LA_POINT_TYPE_TABLE = "la_puntotipo"
-LA_SURFACE_RELATION_TYPE_TABLE = "la_relacionsuperficietipo"
-LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
-LESS_TABLE = "menos"
-LESS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
-LESS_TABLE_PLOT_FIELD = "eu_terreno"
-LOCAL_ID_FIELD = "_local_id"
-MEMBERS_GROUP_PARTY_FIELD = "agrupacion"
-MEMBERS_PARTY_FIELD = "interesados_col_interesado"
-MEMBERS_TABLE = "miembros"
-MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
-MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
-MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
-MORTGAGE_TABLE = "col_hipoteca"
-MUNICIPALITY_FIELD = "municipio"
-NAMESPACE_FIELD = "_espacio_de_nombres"
-NIT_NUMBER_FIELD = "numero_nit"
-NUMBER_OF_FLOORS = "numero_pisos"
-NUPRE_FIELD = "nupre"
-OID_EXTADDRESS_ID_FIELD = "extdireccion_direccion_id"
-OID_TABLE = "oid"
-PARCEL_NAME_FIELD = "nombre"
-PARCEL_NUMBER_FIELD = "numero_predial"
-PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
-PARCEL_TABLE = "predio"
-PARCEL_TYPE_FIELD = "tipo"
-PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
-PARCEL_VALUATION_FIELD = "avaluo_predio"
-PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
-PARTY_TYPE_TABLE = "la_interesadotipo"
-PLOT_TABLE = "terreno"
-PLOT_CALCULATED_AREA_FIELD = "area_calculada"
-PLOT_REGISTRY_AREA_FIELD = "area_registral"
-PLOT_VALUATION_FIELD = "avaluo_terreno"
-POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
-POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
-POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
-POINT_DEFINITION_TYPE_TABLE = "col_defpuntotipo"
-POINT_INTERPOLATION_TYPE_TABLE = "col_interpolaciontipo"
-POINT_MONUMENTATION_TYPE_TABLE = "col_monumentaciontipo"
-POINTSOURCE_TABLE = "puntofuente"
-POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_puntolindero"
-POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_puntolevantamiento"
-POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_puntocontrol"
-POINTSOURCE_TABLE_SOURCE_FIELD = "pfuente"
-RESPONSIBILITY_TABLE = "col_responsabilidad"
-RESPONSIBILITY_TYPE_TABLE = "col_responsabilidadtipo"
-RESTRICTION_TABLE_DESCRIPTION_FIELD = "descripcion"
-RESTRICTION_TABLE = "col_restriccion"
-RESTRICTION_TABLE_PARCEL_FIELD = "unidad_predio"
-RESTRICTION_TYPE_TABLE = "col_restricciontipo"
-RRR_SOURCE_RELATION_TABLE = "rrrfuente"
-RRR_SOURCE_RESPONSIBILITY_FIELD = "rrr_col_responsabilidad"
-RRR_SOURCE_RESTRICTION_FIELD = "rrr_col_restriccion"
-RRR_SOURCE_RIGHT_FIELD = "rrr_col_derecho"
-RRR_SOURCE_SOURCE_FIELD = "rfuente"
-RIGHT_TABLE = "col_derecho"
-RIGHT_TABLE_PARCEL_FIELD = "unidad_predio"
-RIGHT_TABLE_PARTY_FIELD = "interesado_col_interesado"
-RIGHT_TABLE_GROUP_PARTY_FIELD = "interesado_la_agrupacion_interesados"
-RIGHT_TABLE_TYPE_FIELD = "tipo"
-RIGHT_TYPE_TABLE = "col_derechotipo"
-RIGHT_OF_WAY_TABLE="servidumbrepaso"
-RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
-REFERENCE_POINT_FIELD = "punto_referencia"
-SECOND_NAME_FIELD = "segundo_nombre"
-SECOND_SURNAME_FIELD = "segundo_apellido"
-SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
-SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
-SURVEY_POINT_TABLE = "puntolevantamiento"
-SURVEY_POINT_TYPE_TABLE = "col_puntolevtipo"
-TABLE_PROP_ASSOCIATION = "ASSOCIATION"
-TABLE_PROP_DOMAIN = "ENUM"
-TABLE_PROP_STRUCTURE = "STRUCTURE"
-TYPE_BUILDING_TYPE_TABLE = "col_tipoconstrucciontipo"
-TYPE_FIELD = "tipo"
-UEBAUNIT_TABLE = "uebaunit"
-UEBAUNIT_TABLE_BUILDING_FIELD = "ue_construccion"
-UEBAUNIT_TABLE_BUILDING_UNIT_FIELD = "ue_unidadconstruccion"
-UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
-UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
-UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_servidumbrepaso"
-UESOURCE_TABLE = "uefuente"
-UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
-UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
-VIDA_UTIL_FIELD = "comienzo_vida_util_version"
-ZONE_FIELD = "zona"
+from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.lib.logger import Logger
+
+TABLE_NAME = 'table_name'
+VARIABLE_NAME = 'variable'
+FIELDS_DICT = 'fields_dict'
+T_ID = 't_id'
+DESCRIPTION = 'description'
+ILICODE = 'ilicode'
+DISPLAY_NAME = 'display_name'
+
+ANT_MODEL_PREFIX = "ANT"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+LADM_MODEL_PREFIX = "LADM_COL"
+OPERATION_MODEL_PREFIX = "Operacion"
+REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+VALUATION_MODEL_PREFIX = "Avaluos"
+
+class Names(metaclass=Singleton):
+    """
+    Singleton to handle table and field names in a single point of access.
+    Note: Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
+          one could shorten table and field names via ili2db.
+    """
+    ############################################ TABLE VARIABLES ###########################################################
+    T_ID_F = None
+    ILICODE_F = None
+    DESCRIPTION_F = None
+    DISPLAY_NAME_F = None
+
+    OID_T = None  # "LADM_COL.LADM_Nucleo.Oid"
+
+    GC_NEIGHBOURHOOD_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio"
+    GC_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_unidad"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad"
+    GC_HP_CONDOMINIUM_DATA_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio"
+    GC_BLOCK_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana"
+    GC_PERIMETER_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro"
+    GC_PARCEL_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro"
+    GC_OWNER_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietaio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_propietario_predio"
+    GC_RURAL_SECTOR_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Rural"
+    GC_URBAN_SECTOR_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Urbano"
+    GC_PLOT_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_terreno_predio"
+    GC_BUILDING_UNIT_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion"
+    GC_RURAL_DIVISION_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda"
+    GC_PARCEL_TYPE_D = None  # "Datos_Gestor_Catastral_V2_9_5.GC_CondicionPredioTipo"
+    GC_ADDRESS_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion"
+    # "Datos_Gestor_Catastral_V2_9_5.GC_SistemaProcedenciaDatosTipo"
+    GC_BUILDING_UNIT_TYPE_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_UnidadConstruccionTipo"
+    GC_COMMISSION_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion"
+    GC_COMMISSION_PLOT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno"
+    GC_COMMISSION_BUILDING_UNIT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion"
+
+    INI_PARCEL_SUPPLIES_T = None  # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.INI_Predio_Insumos"
+    # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_gc"
+    # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_snr"
+
+    SNR_RIGHT_T = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Derecho"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_derecho_predio"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_fuente_cabidalinderos"
+    SNR_SOURCE_BOUNDARIES_T = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_fuente_derecho"
+    SNR_SOURCE_RIGHT_T = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho"
+    SNR_PARCEL_REGISTRY_T = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro"
+    SNR_TITLE_HOLDER_T = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho"
+    SNR_RIGHT_TYPE_D = None  # "Datos_SNR_V2_9_5.SNR_CalidadDerechoTipo"
+    SNR_TITLE_HOLDER_DOCUMENT_T = None  # "Datos_SNR_V2_9_5.SNR_DocumentoTitularTipo"
+    SNR_SOURCE_TYPE_D = None  # "Datos_SNR_V2_9_5.SNR_FuenteTipo"
+    SNR_TITLE_HOLDER_TYPE_D = None  # "Datos_SNR_V2_9_5.SNR_PersonaTitularTipo"
+
+    # "LADM_COL_V1_2.LADM_Nucleo.col_baunitComoInteresado"
+    COL_BAUNIT_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitFuente"
+    COL_CCL_SOURCE_T = None # "LADM_COL_V1_2.LADM_Nucleo.col_cclFuente"
+    # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion"
+    #
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_CodigoTarea"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Forma_Presentacion_Codigo"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable"
+    #
+    # "LADM_COL_V1_2.LADM_Nucleo.col_clFuente"
+
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_AgrupacionUnidadesEspaciales"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaValor"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_CarasLindero"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_ContenidoNivelTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_EspacioJuridicoRedServicios"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_EspacioJuridicoUnidadEdificacion"
+    COL_AVAILABILITY_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_EstadoDisponibilidadTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_EstructuraTipo"
+    COL_ADMINISTRATIVE_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa"
+    COL_ADMINISTRATIVE_SOURCE_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativaTipo"
+    COL_SPATIAL_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial"
+    COL_SPATIAL_SOURCE_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacialTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo_"
+    COL_INTERPOLATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_InterpolacionTipo"
+    COL_PRODUCTION_METHOD_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MetodoProduccionTipo"
+    COL_MONUMENTATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MonumentacionTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Nivel"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_RedServiciosTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEdificacionTipo"
+
+    # "LADM_COL_V1_2.LADM_Nucleo.DQ_Element"
+    # "LADM_COL_V1_2.LADM_Nucleo.DQ_Metodo_Evaluacion_Codigo_Tipo"
+
+    EXT_ARCHIVE_S = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo"
+    EXT_ADDRESS_S = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtDireccion"
+    EXT_PARTY_S = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtRedServiciosFisica"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtUnidadEdificacionFisica"
+    FRACTION_S = None  # "LADM_COL_V1_2.LADM_Nucleo.Fraccion"
+    # "LADM_COL_V1_2.LADM_Nucleo.Imagen"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_ISO19125_Tipo"
+
+    COL_GROUP_PARTY_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_GrupoInteresadoTipo"
+    COL_BAUNIT_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_BAUnitTipo"
+
+    COL_DIMENSION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_DimensionTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_EstadoRedServiciosTipo"
+    COL_POINT_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_PuntoTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_RegistroTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionNecesariaBAUnits"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionNecesariaUnidadesEspaciales"
+    COL_SURFACE_RELATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionSuperficieTipo"
+    OP_RESTRICTION_TYPE_D = None  # "Operacion_V2_9_6.OP_RestriccionTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Transformacion"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenTipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenValor"
+    MORE_BFS_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_masCcl"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_masCl"
+    LESS_BFS_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_menosCl"
+    MEMBERS_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros"
+    OM_OBSERVATION_T = None  # "LADM_COL_V1_2.LADM_Nucleo.OM_Observacion"
+    POINT_BFS_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCl"
+    COL_POINT_SOURCE_T = None # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoReferencia"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuente"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuenteUespacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_responsableFuente"
+    COL_RRR_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_rrrFuente"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_topografoFuente"
+    COL_UE_BAUNIT_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit"
+    COL_UE_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueFuente"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueJerarquiaGrupo"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueNivel"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueUeGrupo"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente"
+    OP_AGREEMENT_TYPE_D = None  # "Operacion_V2_9_5.OP_AcuerdoTipo"
+    OP_CONDITION_PARCEL_TYPE_D = None  # "Operacion_V2_9_5.OP_CondicionPredioTipo"
+    OP_RIGHT_TYPE_D = None  # "Operacion_V2_9_5.OP_DerechoTipo"
+    OP_GROUP_PARTY_T = None  # "Operacion_V2_9_6.Operacion.OP_Agrupacion_Interesados"
+    OP_BUILDING_T = None  # "Operacion_V2_9_5.Operacion.OP_Construccion"
+    # "Operacion_V2_9_5.Operacion.op_construccion_unidadconstruccion"
+    OP_RIGHT_T = None  # "Operacion_V2_9_5.Operacion.OP_Derecho"
+    OP_ADMINISTRATIVE_SOURCE_T = None  # "Operacion_V2_9_5.Operacion.OP_FuenteAdministrativa"
+    OP_SPATIAL_SOURCE_T = None  # "Operacion_V2_9_5.Operacion.OP_FuenteEspacial"
+    OP_PARTY_T = None  # "Operacion_V2_9_5.Operacion.OP_Interesado"
+    # "Operacion_V2_9_5.Operacion.op_interesado_contacto"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto"
+    OP_BOUNDARY_T = None  # "Operacion_V2_9_5.Operacion.OP_Lindero"
+    OP_PARCEL_T = None  # "Operacion_V2_9_5.Operacion.OP_Predio"
+    OP_COPROPERTY_T = None  # "Operacion_V2_9_5.Operacion.op_predio_copropiedad"
+    OP_OPERATION_SUPPLIES_T = None  # "Operacion_V2_9_5.Operacion.op_predio_insumos_operacion"
+    OP_CONTROL_POINT_T = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl"
+    OP_SURVEY_POINT_T = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento"
+    OP_BOUNDARY_POINT_T = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero"
+    OP_RESTRICTION_T = None  # "Operacion_V2_9_5.Operacion.OP_Restriccion"
+    OP_RIGHT_OF_WAY_T = None  # "Operacion_V2_9_5.Operacion.OP_ServidumbrePaso"
+    OP_PLOT_T = None  # "Operacion_V2_9_5.Operacion.OP_Terreno"
+    OP_BUILDING_UNIT_T = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion"
+    OP_PHOTO_IDENTIFICATION_TYPE_D = None  # "Operacion_V2_9_5.OP_FotoidentificacionTipo"
+    OP_ADMINISTRATIVE_SOURCE_TYPE_D = None  # "Operacion_V2_9_5.OP_FuenteAdministrativaTipo"
+    OP_ETHNIC_GROUP_TYPE = None  # "Operacion_V2_9_5.OP_GrupoEtnicoTipo"
+    # "Operacion_V2_9_5.OP_InstitucionTipo"
+    OP_PARTY_DOCUMENT_TYPE_D = None  # "Operacion_V2_9_5.OP_InteresadoDocumentoTipo"
+    OP_PARTY_TYPE_D = None  # "Operacion_V2_9_5.OP_InteresadoTipo"
+    OP_PARCEL_TYPE_D = None  # "Operacion_V2_9_5.OP_PredioTipo"
+    OP_CONTROL_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoControlTipo"
+    OP_SURVEY_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoLevTipo"
+    OP_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoTipo"
+    OP_GENRE_D = None  # "Operacion_V2_9_5.OP_SexoTipo"
+    OP_LOCATION_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
+    # "Operacion_V2_9_5.OP_UsoUConsTipo"
+    # "Operacion_V2_9_5.OP_ViaTipo"
+
+    OP_BUILDING_FLOOR_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionPlantaTipo"
+    OP_BUILDING_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionTipo"
+    OP_DOMAIN_BUILDING_TYPE_D = None  # "Operacion_V2_9_6.OP_DominioConstruccionTipo"
+    OP_BUILDING_UNIT_TYPE_D = None  # "Operacion_V2_9_6.OP_UnidadConstruccionTipo"
+
+    ############################################ FIELD VARIABLES ###########################################################
+
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio.Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio.Nombre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio.Sector_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Area_Construida"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Codigo_Edificacion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Codigo_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Etiqueta"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Identificador"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Numero_Mezanines"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Numero_Pisos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Numero_Semisotanos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Numero_Sotanos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_predio.gc_predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Tipo_Construccion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion.Tipo_Dominio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_unidad.gc_construccion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad.Coeficiente_Copropiedad"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad.gc_matriz"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad.gc_unidad"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Construida"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Construida_Comun"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Construida_Privada"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Terreno_Comun"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Area_Total_Terreno_Privada"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Torre_No"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Total_Pisos_Torre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Total_Sotanos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Total_Unidades_Privadas"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio.Total_Unidades_Sotano"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana.Barrio_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana.Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana.Codigo_Anterior"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Codigo_Nombre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Departamento_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Municipio_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Nombre_Geografico"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Tipo_Avaluo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_ph_predio.gc_predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Direcciones"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Numero_Documento"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_propietario_predio.gc_predio_catastro"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Apellido"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Nombre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Razon_Social"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Apellido"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Nombre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Tipo_Documento"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Rural.Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Rural.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Urbano.Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Urbano.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Anio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Area_Construida"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Area_Privada"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Codigo_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Etiqueta"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Identificador"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Planta"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Puntaje"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Tipo_Construccion"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Tipo_Dominio"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Total_Banios"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Total_Habitaciones"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Total_Locales"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Total_Pisos"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Uso"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda.Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda.Codigo_Anterior"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda.Nombre"
+    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Vereda.Sector_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion.Geometria_Referencia"
+    # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion.Principal"
+    # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion.Valor"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Area_Construida"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Codigo_Edificacion"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Codigo_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Etiqueta"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Identificador"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Numero_Mezanines"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Numero_Pisos"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Numero_Semisotanos"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Tipo_Construccion"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion.Tipo_Dominio"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno.Area_Terreno_Alfanumerica"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno.Area_Terreno_Digital"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno.Manzana_Vereda_Codigo"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno.Numero_Subterraneos"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Anio"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Area_Construida"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Area_Privada"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Codigo_Terreno"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Etiqueta"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Geometria"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Identificador"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Planta"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Puntaje"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Tipo_Construccion"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Tipo_Dominio"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Total_Banios"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Total_Habitaciones"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Total_Locales"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Total_Pisos"
+    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion.Uso"
+    #
+    #
+    #
+    # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro"
+    # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico"
+    #
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Derecho.Calidad_Derecho_Registro"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Derecho.Codigo_Naturaleza_Juridica"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_derecho_predio.snr_predio_registro"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Archivo"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Ciudad_Emisora"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Ente_Emisor"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Fecha_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Numero_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_fuente_cabidalinderos.snr_fuente_cabidalinderos"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_CabidaLinderos.Tipo_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho.Ciudad_Emisora"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho.Ente_Emisor"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho.Fecha_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho.Numero_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_fuente_derecho.snr_fuente_derecho"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Fuente_Derecho.Tipo_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Cabida_Linderos"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Codigo_ORIP"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Fecha_Datos"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria_Matriz"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Anterior_en_FMI"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.NUPRE_en_FMI"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.snr_derecho"
+    # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.snr_titular"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Nombres"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Numero_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Primer_Apellido"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Razon_Social"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Segundo_Apellido"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Tipo_Documento"
+    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Titular.Tipo_Persona"
+    #
+    # "LADM_COL_V1_2.LADM_Nucleo.col_baunitComoInteresado.interesado"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_baunitComoInteresado.unidad"
+    BAUNIT_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitFuente.bfuente"
+    BAUNIT_SOURCE_T_UNIT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitFuente.unidad"
+    COL_BAUNIT_RRR_T_UNIT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitRrr.unidad"
+    COL_CCL_SOURCE_T_BOUNDARY_F = None # "LADM_COL_V1_2.LADM_Nucleo.col_cclFuente.ccl"
+                                       # "LADM_COL.LADM_Nucleo.col_cclFuente.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    COL_CCL_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_cclFuente.fuente_espacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Ddimensiones_Objetivo"
+    # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Dimensiones_Origen"
+    # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Formula"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto.Direccion"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto.Fuente_En_Linea"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto.Horario_De_Atencion"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto.Instrucciones_Contacto"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto.Telefono"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable.Funcion"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable.Informacion_Contacto"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable.Nombre_Individual"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable.Nombre_Organizacion"
+    # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable.Posicion"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_clFuente.fuente_espacial"
+    COL_GROUP_PARTY_T_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Agrupacion_Interesados.Tipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaValor.areaSize"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaValor.type"
+    COL_BAUNIT_T_NAME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_BAUnit.Nombre"
+    COL_BFS_T_GEOMETRY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_CadenaCarasLimite.Geometria"
+    COL_BFS_T_TEXTUAL_LOCATION_F = None  # "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual"
+    COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"
+    COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"
+    COL_SPATIAL_SOURCE_T_MEASUREMENTS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Mediciones"
+    COL_SPATIAL_SOURCE_T_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Tipo"
+    # COL_SOURCE_T_QUALITY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Calidad"
+    COL_SOURCE_T_AVAILABILITY_STATUS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"
+    COL_SOURCE_T_EXT_ARCHIVE_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID"
+    COL_SOURCE_T_DATE_DOCUMENT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente"
+    COL_SOURCE_T_OFFICIAL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Oficialidad"
+    # COL_SOURCE_T_PROVENANCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Procedencia"
+    COL_SOURCE_T_MAIN_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Tipo_Principal"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo_.value"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.ext_PID"
+    COL_PARTY_T_NAME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Nombre"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Tarea"
+    COL_POINT_T_ORIGINAL_LOCATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Geometria"
+    COL_POINT_T_PRODUCTION_METHOD_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.MetodoProduccion"
+    COL_POINT_T_MONUMENTATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Monumentacion"
+    COL_POINT_T_INTERPOLATION_POSITION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Posicion_Interpolacion"
+    # COL_POINT_T_TRANSFORMATION_AND_RESULT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado"
+    COL_RRR_T_SHARE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Compartido"
+    COL_RRR_T_SHARE_CHECK_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Comprobacion_Comparte"
+    COL_RRR_T_DESCRIPTION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Descripcion"
+    COL_RRR_T_EFFECTIVE_USAGE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Uso_Efectivo"
+
+    # COL_SPATIAL_UNIT_T_AREA_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Area"
+    COL_SPATIAL_UNIT_T_DIMENSION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Dimension"
+    COL_SPATIAL_UNIT_T_LABEL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Etiqueta"
+    # COL_SPATIAL_UNIT_T_EXT_ADDRESS_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+    COL_SPATIAL_UNIT_T_GEOMETRY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Geometria"
+    COL_SPATIAL_UNIT_T_SURFACE_RELATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie"
+    # COL_SPATIAL_UNIT_T_VOLUME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Volumen"
+
+    EXT_ARCHIVE_S_DATA_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Datos"
+    EXT_ARCHIVE_S_EXTRACTION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Extraccion"
+    EXT_ARCHIVE_S_ACCEPTANCE_DATE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Fecha_Aceptacion"
+    EXT_ARCHIVE_S_DELIVERY_DATE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Fecha_Entrega"
+    EXT_ARCHIVE_S_STORAGE_DATE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Fecha_Grabacion"
+    EXT_ARCHIVE_S_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres"
+    EXT_ARCHIVE_S_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Local_Id"
+    EXT_ADDRESS_S_VALUE_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal"
+    EXT_ADDRESS_S_PARCEL_NUMBER_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio"
+    EXT_ADDRESS_S_LOCALIZATION_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion"
+    EXT_ADDRESS_S_MAIN_ROAD_CLASS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal"
+    EXT_ADDRESS_S_PARCEL_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio"
+    EXT_ADDRESS_S_PARCEL_NAME_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio"
+    EXT_ADDRESS_S_IS_MAIN_ADDRESS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal"
+    EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora"
+    EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora"
+    EXT_ADDRESS_S_LETTER_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal"
+    EXT_ADDRESS_S_ADDRESS_TYPE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion"
+    EXT_ADDRESS_S_CITY_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad"
+    EXT_ADDRESS_S_POSTAL_CODE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal"
+    EXT_ADDRESS_S_COMPLEMENT_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Firma"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Fotografia"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Huella_Dactilar"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Interesado_ID"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Nombre"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtRedServiciosFisica.Ext_Interesado_Administrador_ID"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtRedServiciosFisica.Orientada"
+    # "LADM_COL_V1_2.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID"
+    FRACTION_S_DENOMINATOR_F = None  # "LADM_COL_V1_2.LADM_Nucleo.Fraccion.Denominador"
+    FRACTION_S_NUMERATOR_F = None  # "LADM_COL_V1_2.LADM_Nucleo.Fraccion.Numerador"
+    # "LADM_COL_V1_2.LADM_Nucleo.Imagen.uri"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Transformacion.Localizacion_Transformada"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_Transformacion.Transformacion"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenValor.Tipo"
+    # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenValor.Volumen_Medicion"
+    MORE_BFS_T_BOUNDARY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_masCcl.ccl_mas"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_masCcl.ue_mas"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_masCl.ue_mas"
+    LESS_BFS_T_OP_BOUNDARY_F = None # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ccl_menos"
+                                    # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Operacion.Operacion.OP_Lindero" --> ccl_menos_op_lindero
+    # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ue_menos"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_menosCl.ue_menos"
+    MEMBERS_T_GROUP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.agrupacion"
+    MEMBERS_T_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.interesado"
+    FRACTION_S_MEMBER_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.participacion"
+    FRACTION_S_COPROPERTY_COEFFICIENT_F = None  # "Operacion.Operacion.op_predio_copropiedad.coeficiente"
+    # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Calidad"
+    VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version"
+    VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version"
+    # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Procedencia"
+    # "LADM_COL_V1_2.LADM_Nucleo.OM_Observacion.Resultado_Calidad"
+    POINT_BFS_T_BOUNDARY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl.ccl"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl.punto"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCl.punto"
+    COL_POINT_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente.fuente_espacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente.punto"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_puntoReferencia.ue"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuente.fuente_administrativa"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuenteUespacial.fuente_espacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_responsableFuente.fuente_administrativa"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_responsableFuente.interesado"
+    COL_RRR_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_rrrFuente.fuente_administrativa"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_rrrFuente.rrr"
+    COL_RRR_PARTY_T_OP_PARTY_F = None  # "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado"
+    COL_RRR_PARTY_T_OP_GROUP_PARTY_F = None  # "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_topografoFuente.fuente_espacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_topografoFuente.topografo"
+    COL_UE_BAUNIT_T_PARCEL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit.baunit"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit.ue"
+    COL_UE_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueFuente.fuente_espacial"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueFuente.ue"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_ueUeGrupo.parte"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente.fuente_administrativa"
+    # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente.unidad"
+    #
+    #
+    OP_BUILDING_T_BUILDING_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Codigo_Edificacion"
+    OP_BUILDING_T_IDENTIFIER_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Identificador"
+    OP_BUILDING_T_NUMBER_OF_MEZZANINE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Mezanines"
+    OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Semisotanos"
+    OP_BUILDING_T_NUMBER_OF_BASEMENT_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Sotanos"
+    OP_BUILDING_T_BUILDING_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Tipo_Construccion"
+    OP_BUILDING_T_DOMAIN_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Tipo_Dominio"
+    OP_BUILDING_T_BUILDING_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Area_Construccion"
+    OP_BUILDING_T_BUILDING_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Avaluo_Construccion"
+    OP_BUILDING_T_NUMBER_OF_FLOORS_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Numero_Pisos"
+    OP_BUILDING_UNIT_T_BUILDING_F = None  # "Operacion_V2_9_5.Operacion.op_construccion_unidadconstruccion.op_construccion"
+    OP_RIGHT_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Derecho.Tipo"
+    OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F = None  # "Operacion_V2_9_5.Operacion.OP_FuenteAdministrativa.Ente_Emisor"
+    OP_ADMINISTRATIVE_SOURCE_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_FuenteAdministrativa.Tipo"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Autoriza_Notificacion_Correo"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Correo_Electronico"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Domicilio_Notificacion"
+    # "Operacion_V2_9_5.Operacion.op_interesado_contacto.op_interesado"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Origen_Datos"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono1"
+    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono2"
+
+    OP_PARTY_T_DOCUMENT_ID_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Documento_Identidad"
+    OP_PARTY_T_ETHNIC_GROUP_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Grupo_Etnico"
+    OP_PARTY_T_SURNAME_1_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Primer_Apellido"
+    OP_PARTY_T_FIRST_NAME_1_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Primer_Nombre"
+    OP_PARTY_T_BUSINESS_NAME_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Razon_Social"
+    OP_PARTY_T_SURNAME_2_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Segundo_Apellido"
+    OP_PARTY_T_FIRST_NAME_2_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Segundo_Nombre"
+    OP_PARTY_T_GENRE_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Sexo"
+    OP_PARTY_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Tipo"
+    OP_PARTY_T_DOCUMENT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Tipo_Documento"
+    OP_BOUNDARY_T_LENGTH_F = None  # "Operacion_V2_9_5.Operacion.OP_Lindero.Longitud"
+    OP_PARCEL_T_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Avaluo_Predio"
+    OP_PARCEL_T_ORIP_CODE_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Codigo_ORIP"
+    OP_PARCEL_T_PARCEL_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Condicion_Predio"
+    OP_COPROPERTY_T_COPROPERTY_F = None  # "Operacion_V2_9_5.Operacion.op_predio_copropiedad.copropiedad"
+    OP_COPROPERTY_T_PARCEL_F = None  # "Operacion_V2_9_5.Operacion.op_predio_copropiedad.predio"
+    OP_PARCEL_T_DEPARTMENT_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Departamento"
+    OP_PARCEL_T_ADDRESS_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Direccion"
+    # "Operacion_V2_9_5.Operacion.op_predio_insumos_operacion.ini_predio_insumos"
+    # "Operacion_V2_9_5.Operacion.op_predio_insumos_operacion.op_predio"
+    OP_PARCEL_T_FMI_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Matricula_Inmobiliaria"
+    OP_PARCEL_T_MUNICIPALITY_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Municipio"
+    OP_PARCEL_T_PARCEL_NUMBER_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Numero_Predial"
+    OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Numero_Predial_Anterior"
+    OP_PARCEL_T_NUPRE_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.NUPRE"
+    OP_PARCEL_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Predio.Tipo"
+    OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl.Exactitud_Horizontal"
+    OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl.Exactitud_Vertical"
+    OP_CONTROL_POINT_T_ID_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl.ID_Punto_Control"
+    OP_CONTROL_POINT_T_POINT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl.PuntoTipo"
+    OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoControl.Tipo_Punto_Control"
+    OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.Exactitud_Horizontal"
+    OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.Exactitud_Vertical"
+    OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.Fotoidentificacion"
+    OP_SURVEY_POINT_T_ID_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.ID_Punto_Levantamiento"
+    OP_SURVEY_POINT_T_POINT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.PuntoTipo"
+    OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLevantamiento.Tipo_Punto_Levantamiento"
+    OP_BOUNDARY_POINT_T_AGREEMENT_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.Acuerdo"
+    OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.Exactitud_Horizontal"
+    OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.Exactitud_Vertical"
+    OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.Fotoidentificacion"
+    OP_BOUNDARY_POINT_T_ID_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.ID_Punto_Lindero"
+    OP_BOUNDARY_POINT_T_POINT_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.PuntoTipo"
+    OP_BOUNDARY_POINT_T_POINT_LOCATION_F = None  # "Operacion_V2_9_5.Operacion.OP_PuntoLindero.Ubicacion_Punto"
+    OP_RESTRICTION_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Restriccion.Tipo"
+    OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_ServidumbrePaso.Area_Servidumbre"
+    OP_PLOT_T_PLOT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Area_Terreno"
+    OP_PLOT_T_PLOT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Avaluo_Terreno"
+    OP_PLOT_T_GEOMETRY_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Geometria"
+    OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Manzana_Vereda_Codigo"
+    OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Numero_Subterraneos"
+    OP_BUILDING_UNIT_T_BUILT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Construida"
+    OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Privada_Construida"
+    OP_BUILDING_UNIT_T_BUILDING_VALUATION_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Avaluo_Construccion"
+    OP_BUILDING_UNIT_T_IDENTIFICATION_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Identificador"
+    OP_BUILDING_UNIT_T_FLOOR_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Planta_Ubicacion"
+    OP_BUILDING_UNIT_T_TOTAL_FLOORS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Pisos"
+    OP_BUILDING_UNIT_T_USE_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Uso"
+    OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Anio_Construccion"
+    OP_BUILDING_UNIT_T_OBSERVATIONS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Observaciones"
+    OP_BUILDING_UNIT_T_BUILDING_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Construccion"
+    OP_BUILDING_UNIT_T_DOMAIN_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Dominio"
+    OP_BUILDING_UNIT_T_FLOOR_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Planta"
+    OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Unidad_Construccion"
+    OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Banios"
+    OP_BUILDING_UNIT_T_TOTAL_ROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Habitaciones"
+    OP_BUILDING_UNIT_T_TOTAL_LOCALS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Locales"
+
+    # Composed keys (when ilinames are duplicated because their target table is different, we
+    # concatenate in the form "{key}_{target}")
+
+    # "LADM_COL.LADM_Nucleo.col_baunitComoInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados" --> interesado_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.col_baunitComoInteresado.interesado_Operacion.Operacion.OP_Interesado" --> interesado_op_interesado
+    # "LADM_COL.LADM_Nucleo.col_cclFuente.ccl_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Calidad_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_calidad
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Calidad_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_calidad
+    EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F = None  # "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_ext_archivo_id
+    EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F = None  # "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_ext_archivo_id
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_procedencia
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_procedencia
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.ext_PID_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_ext_pid
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.ext_PID_Operacion.Operacion.OP_Interesado" --> op_interesado_ext_pid
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.Tarea_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_tarea
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.Tarea_Operacion.Operacion.OP_Interesado" --> op_interesado_tarea
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_transformacion_y_resultado
+    FRACTION_S_OP_RIGHT_F = None  # "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Derecho" --> op_derecho_compartido
+    FRACTION_S_OP_RESTRICTION_F = None  # "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Restriccion" --> op_restriccion_compartido
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_Construccion" --> op_construccion_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_Terreno" --> op_terreno_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_area
+    EXT_ADDRESS_S_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion" --> op_construccion_ext_direccion_id
+    EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_ext_direccion_id
+    EXT_ADDRESS_S_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno" --> op_terreno_ext_direccion_id
+    EXT_ADDRESS_S_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_ext_direccion_id
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Construccion" --> op_construccion_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Terreno" --> op_terreno_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_volumen
+    # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_mas_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Operacion.Operacion.OP_Lindero" --> ccl_mas_op_lindero
+    MORE_BFS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Construccion" --> ue_mas_op_construccion
+    MORE_BFS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
+    MORE_BFS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
+    MORE_BFS_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion" --> ue_mas_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_Construccion" --> ue_mas_op_construccion
+    # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
+    # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion" --> ue_mas_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_menos_crf_estructuralineal
+    LESS_BFS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Construccion" --> ue_menos_op_construccion
+    LESS_BFS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso" --> ue_menos_op_servidumbrepaso
+    LESS_BFS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Terreno" --> ue_menos_op_terreno
+    LESS_BFS_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion" --> ue_menos_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.col_menosCl.ue_menos_Operacion.Operacion.OP_Construccion" --> ue_menos_op_construccion
+    # "LADM_COL.LADM_Nucleo.col_menosCl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso" --> ue_menos_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.col_menosCl.ue_menos_Operacion.Operacion.OP_Terreno" --> ue_menos_op_terreno
+    # "LADM_COL.LADM_Nucleo.col_menosCl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion" --> ue_menos_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.col_miembros.interesados_Operacion.Operacion.OP_Agrupacion_Interesados" --> interesados_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.col_miembros.interesados_Operacion.Operacion.OP_Interesado" --> interesados_op_interesado
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> crf_estructuralineal_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Construccion" --> op_construccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Derecho" --> op_derecho_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Interesado" --> op_interesado_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Lindero" --> op_lindero_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Predio" --> op_predio_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Restriccion" --> op_restriccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Terreno" --> op_terreno_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> crf_estructuralineal_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Construccion" --> op_construccion_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Derecho" --> op_derecho_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Interesado" --> op_interesado_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Lindero" --> op_lindero_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Predio" --> op_predio_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Restriccion" --> op_restriccion_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Terreno" --> op_terreno_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_procedencia
+    # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    POINT_BFS_T_OP_CONTROL_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    POINT_BFS_T_OP_SURVEY_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    POINT_BFS_T_OP_BOUNDARY_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.col_puntoCl.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.col_puntoCl.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    # "LADM_COL.LADM_Nucleo.col_puntoCl.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    # "LADM_COL.LADM_Nucleo.col_puntoCl.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    # "LADM_COL.LADM_Nucleo.col_puntoCl.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    COL_POINT_SOURCE_T_OP_CONTROL_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    COL_POINT_SOURCE_T_OP_SURVEY_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.col_responsableFuente.notario_Operacion.Operacion.OP_Agrupacion_Interesados" --> notario_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.col_responsableFuente.notario_Operacion.Operacion.OP_Interesado" --> notario_op_interesado
+    COL_RRR_SOURCE_T_OP_RIGHT_F = None  # "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Derecho" --> rrr_op_derecho
+    COL_RRR_SOURCE_T_OP_RESTRICTION_F = None  # "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Restriccion" --> rrr_op_restriccion
+    # "LADM_COL.LADM_Nucleo.col_topografoFuente.topografo_Operacion.Operacion.OP_Agrupacion_Interesados" --> topografo_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.col_topografoFuente.topografo_Operacion.Operacion.OP_Interesado" --> topografo_op_interesado
+
+    COL_UE_BAUNIT_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Terreno" --> ue_op_terreno
+    COL_UE_BAUNIT_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Construccion" --> ue_op_construccion
+    COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_UnidadConstruccion" --> ue_op_unidadconstruccion
+    COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_ServidumbrePaso" --> ue_op_servidumbrepaso
+
+    COL_UE_SOURCE_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Construccion" --> ue_op_construccion
+    COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_ServidumbrePaso" --> ue_op_servidumbrepaso
+    COL_UE_SOURCE_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Terreno" --> ue_op_terreno
+    COL_UE_SOURCE_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_UnidadConstruccion" --> ue_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_Construccion" --> parte_op_construccion
+    # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_ServidumbrePaso" --> parte_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_Terreno" --> parte_op_terreno
+    # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_UnidadConstruccion" --> parte_op_unidadconstruccion
+
+    OID_T_NAMESPACE_F = None  # "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres"
+    OID_T_LOCAL_ID_F = None  # "LADM_COL.LADM_Nucleo.Oid.Local_Id"
+
+    TABLE_DICT = {
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Barrio": {VARIABLE_NAME: "GC_NEIGHBOURHOOD_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Construccion": {VARIABLE_NAME: "GC_BUILDING_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio": {VARIABLE_NAME: "GC_HP_CONDOMINIUM_DATA_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Manzana": {VARIABLE_NAME: "GC_BLOCK_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Perimetro": {VARIABLE_NAME: "GC_PERIMETER_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": {VARIABLE_NAME: "GC_PARCEL_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario": {VARIABLE_NAME: "GC_OWNER_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Rural": {VARIABLE_NAME: "GC_RURAL_SECTOR_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Urbano": {VARIABLE_NAME: "GC_URBAN_SECTOR_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {VARIABLE_NAME: "GC_PLOT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Unidad_Construccion": {VARIABLE_NAME: "GC_BUILDING_UNIT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Vereda": {VARIABLE_NAME: "GC_RURAL_DIVISION_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Terreno": {VARIABLE_NAME: "GC_COMMISSION_PLOT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_UNIT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.GC_CondicionPredioTipo": {VARIABLE_NAME: "GC_PARCEL_TYPE_D", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.GC_Direccion": {VARIABLE_NAME: "GC_ADDRESS_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.GC_UnidadConstruccionTipo": {VARIABLE_NAME: "GC_BUILDING_UNIT_TYPE_T", FIELDS_DICT: {}},
+        "Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_Predio_Insumos": {VARIABLE_NAME: "INI_PARCEL_SUPPLIES_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Derecho": {VARIABLE_NAME: "SNR_RIGHT_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Fuente_CabidaLinderos": {VARIABLE_NAME: "SNR_SOURCE_BOUNDARIES_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Fuente_Derecho": {VARIABLE_NAME: "SNR_SOURCE_RIGHT_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Predio_Registro": {VARIABLE_NAME: "SNR_PARCEL_REGISTRY_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Titular": {VARIABLE_NAME: "SNR_TITLE_HOLDER_T", FIELDS_DICT: {}},
+        "Datos_SNR.SNR_CalidadDerechoTipo": {VARIABLE_NAME: "SNR_RIGHT_TYPE_D", FIELDS_DICT: {}},
+        "Datos_SNR.SNR_DocumentoTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_DOCUMENT_T", FIELDS_DICT: {}},
+        "Datos_SNR.SNR_FuenteTipo": {VARIABLE_NAME: "SNR_SOURCE_TYPE_D", FIELDS_DICT: {}},
+        "Datos_SNR.SNR_PersonaTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_EstadoDisponibilidadTipo": {VARIABLE_NAME: "COL_AVAILABILITY_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativaTipo": {VARIABLE_NAME: "COL_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_InterpolacionTipo": {VARIABLE_NAME: "COL_INTERPOLATION_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {VARIABLE_NAME: "COL_PRODUCTION_METHOD_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_RelacionSuperficieTipo": {VARIABLE_NAME: "COL_SURFACE_RELATION_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_MonumentacionTipo": {VARIABLE_NAME: "COL_MONUMENTATION_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.ExtArchivo": {VARIABLE_NAME: "EXT_ARCHIVE_S", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Datos": "EXT_ARCHIVE_S_DATA_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Extraccion": "EXT_ARCHIVE_S_EXTRACTION_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Aceptacion": "EXT_ARCHIVE_S_ACCEPTANCE_DATE_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Entrega": "EXT_ARCHIVE_S_DELIVERY_DATE_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Grabacion": "EXT_ARCHIVE_S_STORAGE_DATE_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres": "EXT_ARCHIVE_S_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ExtArchivo.Local_Id": "EXT_ARCHIVE_S_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteAdministrativa": "EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteEspacial": "EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F"
+        }},
+        "LADM_COL.LADM_Nucleo.ExtDireccion": {VARIABLE_NAME: "EXT_ADDRESS_S", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal": "EXT_ADDRESS_S_VALUE_MAIN_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio": "EXT_ADDRESS_S_PARCEL_NUMBER_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion": "EXT_ADDRESS_S_LOCALIZATION_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal": "EXT_ADDRESS_S_MAIN_ROAD_CLASS_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio": "EXT_ADDRESS_S_PARCEL_SECTOR_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio": "EXT_ADDRESS_S_PARCEL_NAME_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal": "EXT_ADDRESS_S_IS_MAIN_ADDRESS_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora": "EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora": "EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal": "EXT_ADDRESS_S_LETTER_MAIN_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": "EXT_ADDRESS_S_ADDRESS_TYPE_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_S_CITY_SECTOR_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_S_POSTAL_CODE_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_S_COMPLEMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_S_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
+        }},
+        "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
+            "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F",
+            "LADM_COL.LADM_Nucleo.col_miembros.participacion": "FRACTION_S_MEMBER_F",
+            "Operacion.Operacion.op_predio_copropiedad.coeficiente": "FRACTION_S_COPROPERTY_COEFFICIENT_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Derecho": "FRACTION_S_OP_RIGHT_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Restriccion": "FRACTION_S_OP_RESTRICTION_F"
+        }},
+        "LADM_COL.LADM_Nucleo.COL_BAUnitTipo": {VARIABLE_NAME: "COL_BAUNIT_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_DimensionTipo": {VARIABLE_NAME: "COL_DIMENSION_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_PuntoTipo": {VARIABLE_NAME: "COL_POINT_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.col_masCcl": {VARIABLE_NAME: "MORE_BFS_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas": "MORE_BFS_T_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Construccion": "MORE_BFS_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso": "MORE_BFS_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Terreno": "MORE_BFS_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion": "MORE_BFS_T_OP_BUILDING_UNIT_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_menosCcl": {VARIABLE_NAME: "LESS_BFS_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos": "LESS_BFS_T_OP_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Construccion": "LESS_BFS_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso": "LESS_BFS_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Terreno": "LESS_BFS_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion": "LESS_BFS_T_OP_BUILDING_UNIT_F",
+        }},
+        "LADM_COL.LADM_Nucleo.col_miembros": {VARIABLE_NAME: "MEMBERS_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_miembros.agrupacion": "MEMBERS_T_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_miembros.interesado": "MEMBERS_T_PARTY_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_puntoCcl": {VARIABLE_NAME: "POINT_BFS_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl": "POINT_BFS_T_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoControl": "POINT_BFS_T_OP_CONTROL_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLevantamiento": "POINT_BFS_T_OP_SURVEY_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLindero": "POINT_BFS_T_OP_BOUNDARY_POINT_F",
+        }},
+        "LADM_COL.LADM_Nucleo.col_puntoFuente": {VARIABLE_NAME: "COL_POINT_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial": "COL_POINT_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoControl": "COL_POINT_SOURCE_T_OP_CONTROL_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLevantamiento": "COL_POINT_SOURCE_T_OP_SURVEY_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLindero": "COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_rrrFuente": {VARIABLE_NAME: "COL_RRR_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa": "COL_RRR_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Derecho": "COL_RRR_SOURCE_T_OP_RIGHT_F",
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Restriccion": "COL_RRR_SOURCE_T_OP_RESTRICTION_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_ueBaunit": {VARIABLE_NAME: "COL_UE_BAUNIT_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.baunit": "COL_UE_BAUNIT_T_PARCEL_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Terreno": "COL_UE_BAUNIT_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Construccion": "COL_UE_BAUNIT_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_ueFuente": {VARIABLE_NAME: "COL_UE_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_ueFuente.fuente_espacial": "COL_UE_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Construccion": "COL_UE_SOURCE_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Terreno": "COL_UE_SOURCE_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_SOURCE_T_OP_BUILDING_UNIT_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_baunitFuente": {VARIABLE_NAME: "COL_BAUNIT_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial": "BAUNIT_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_baunitFuente.unidad": "BAUNIT_SOURCE_T_UNIT_F"
+        }},
+        "LADM_COL.LADM_Nucleo.col_cclFuente": {VARIABLE_NAME: "COL_CCL_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial": "COL_CCL_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_cclFuente.ccl": "COL_CCL_SOURCE_T_BOUNDARY_F"
+        }},
+        "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_ConstruccionPlantaTipo": {VARIABLE_NAME: "OP_BUILDING_FLOOR_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UnidadConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_CONDITION_PARCEL_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_DerechoTipo": {VARIABLE_NAME: "OP_RIGHT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.Operacion.OP_Agrupacion_Interesados": {VARIABLE_NAME: "OP_GROUP_PARTY_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.COL_Agrupacion_Interesados.Tipo": "COL_GROUP_PARTY_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_Interesado.Nombre": "COL_PARTY_T_NAME_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_UnidadConstruccion": {VARIABLE_NAME: "OP_BUILDING_UNIT_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_UnidadConstruccion.Area_Construida": "OP_BUILDING_UNIT_T_BUILT_AREA_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Area_Privada_Construida": "OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Avaluo_Construccion": "OP_BUILDING_UNIT_T_BUILDING_VALUATION_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Identificador": "OP_BUILDING_UNIT_T_IDENTIFICATION_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Planta_Ubicacion": "OP_BUILDING_UNIT_T_FLOOR_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Uso": "OP_BUILDING_UNIT_T_USE_F",
+            "Operacion.Operacion.op_construccion_unidadconstruccion.op_construccion": "OP_BUILDING_UNIT_T_BUILDING_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Anio_Construccion": "OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Observaciones": "OP_BUILDING_UNIT_T_OBSERVATIONS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Construccion": "OP_BUILDING_UNIT_T_BUILDING_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Dominio": "OP_BUILDING_UNIT_T_DOMAIN_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Planta": "OP_BUILDING_UNIT_T_FLOOR_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Unidad_Construccion": "OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Banios": "OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Habitaciones": "OP_BUILDING_UNIT_T_TOTAL_ROOMS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Locales": "OP_BUILDING_UNIT_T_TOTAL_LOCALS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Pisos": "OP_BUILDING_UNIT_T_TOTAL_FLOORS_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Construccion": {VARIABLE_NAME: "OP_BUILDING_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_Construccion.Area_Construccion": "OP_BUILDING_T_BUILDING_AREA_F",
+            "Operacion.Operacion.OP_Construccion.Avaluo_Construccion": "OP_BUILDING_T_BUILDING_VALUATION_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Pisos": "OP_BUILDING_T_NUMBER_OF_FLOORS_F",
+            "Operacion.Operacion.OP_Construccion.Codigo_Edificacion": "OP_BUILDING_T_BUILDING_CODE_F",
+            "Operacion.Operacion.OP_Construccion.Identificador": "OP_BUILDING_T_IDENTIFIER_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Mezanines": "OP_BUILDING_T_NUMBER_OF_MEZZANINE_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Semisotanos": "OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Sotanos": "OP_BUILDING_T_NUMBER_OF_BASEMENT_F",
+            "Operacion.Operacion.OP_Construccion.Tipo_Construccion": "OP_BUILDING_T_BUILDING_TYPE_F",
+            "Operacion.Operacion.OP_Construccion.Tipo_Dominio": "OP_BUILDING_T_DOMAIN_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Derecho": {VARIABLE_NAME: "OP_RIGHT_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad": "COL_BAUNIT_RRR_T_UNIT_F",
+            "Operacion.Operacion.OP_Derecho.Tipo": "OP_RIGHT_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_FuenteAdministrativa": {VARIABLE_NAME: "OP_ADMINISTRATIVE_SOURCE_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_FuenteAdministrativa.Ente_Emisor": "OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F",
+            "Operacion.Operacion.OP_FuenteAdministrativa.Tipo": "OP_ADMINISTRATIVE_SOURCE_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente": "COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativa.Observacion": "COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad": "COL_SOURCE_T_AVAILABILITY_STATUS_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente": "COL_SOURCE_T_DATE_DOCUMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Oficialidad": "COL_SOURCE_T_OFFICIAL_F",
+            # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia": "COL_SOURCE_T_PROVENANCE_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Tipo_Principal": "COL_SOURCE_T_MAIN_TYPE_F"
+        }},
+        "Operacion.Operacion.OP_FuenteEspacial": {VARIABLE_NAME: "OP_SPATIAL_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Tipo": "COL_SPATIAL_SOURCE_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad": "COL_SOURCE_T_AVAILABILITY_STATUS_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente": "COL_SOURCE_T_DATE_DOCUMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Oficialidad": "COL_SOURCE_T_OFFICIAL_F",
+            # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia": "COL_SOURCE_T_PROVENANCE_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Tipo_Principal": "COL_SOURCE_T_MAIN_TYPE_F"
+        }},
+        "Operacion.Operacion.OP_Interesado": {VARIABLE_NAME: "OP_PARTY_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_Interesado.Documento_Identidad": "OP_PARTY_T_DOCUMENT_ID_F",
+            "Operacion.Operacion.OP_Interesado.Grupo_Etnico": "OP_PARTY_T_ETHNIC_GROUP_F",
+            "Operacion.Operacion.OP_Interesado.Primer_Apellido": "OP_PARTY_T_SURNAME_1_F",
+            "Operacion.Operacion.OP_Interesado.Primer_Nombre": "OP_PARTY_T_FIRST_NAME_1_F",
+            "Operacion.Operacion.OP_Interesado.Razon_Social": "OP_PARTY_T_BUSINESS_NAME_F",
+            "Operacion.Operacion.OP_Interesado.Segundo_Apellido": "OP_PARTY_T_SURNAME_2_F",
+            "Operacion.Operacion.OP_Interesado.Segundo_Nombre": "OP_PARTY_T_FIRST_NAME_2_F",
+            "Operacion.Operacion.OP_Interesado.Sexo": "OP_PARTY_T_GENRE_F",
+            "Operacion.Operacion.OP_Interesado.Tipo": "OP_PARTY_T_TYPE_F",
+            "Operacion.Operacion.OP_Interesado.Tipo_Documento": "OP_PARTY_T_DOCUMENT_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_Interesado.Nombre": "COL_PARTY_T_NAME_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Lindero": {VARIABLE_NAME: "OP_BOUNDARY_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_Lindero.Longitud": "OP_BOUNDARY_T_LENGTH_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Geometria": "COL_BFS_T_GEOMETRY_F",
+            "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual": "COL_BFS_T_TEXTUAL_LOCATION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Predio": {VARIABLE_NAME: "OP_PARCEL_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_Predio.Avaluo_Predio": "OP_PARCEL_T_VALUATION_F",
+            "Operacion.Operacion.OP_Predio.Codigo_ORIP": "OP_PARCEL_T_ORIP_CODE_F",
+            "Operacion.Operacion.OP_Predio.Condicion_Predio": "OP_PARCEL_T_PARCEL_TYPE_F",
+            "Operacion.Operacion.OP_Predio.Departamento": "OP_PARCEL_T_DEPARTMENT_F",
+            "Operacion.Operacion.OP_Predio.Direccion": "OP_PARCEL_T_ADDRESS_F",
+            "Operacion.Operacion.OP_Predio.Matricula_Inmobiliaria": "OP_PARCEL_T_FMI_F",
+            "Operacion.Operacion.OP_Predio.Municipio": "OP_PARCEL_T_MUNICIPALITY_F",
+            "Operacion.Operacion.OP_Predio.Numero_Predial": "OP_PARCEL_T_PARCEL_NUMBER_F",
+            "Operacion.Operacion.OP_Predio.Numero_Predial_Anterior": "OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F",
+            "Operacion.Operacion.OP_Predio.NUPRE": "OP_PARCEL_T_NUPRE_F",
+            "Operacion.Operacion.OP_Predio.Tipo": "OP_PARCEL_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_BAUnit.Nombre": "COL_BAUNIT_T_NAME_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.op_predio_copropiedad": {VARIABLE_NAME: "OP_COPROPERTY_T", FIELDS_DICT: {}},
+        "Operacion.Operacion.op_predio_insumos_operacion": {VARIABLE_NAME: "OP_OPERATION_SUPPLIES_T", FIELDS_DICT: {}},
+        "Operacion.Operacion.OP_PuntoControl": {VARIABLE_NAME: "OP_CONTROL_POINT_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_PuntoControl.Exactitud_Horizontal": "OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoControl.Exactitud_Vertical": "OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoControl.ID_Punto_Control": "OP_CONTROL_POINT_T_ID_F",
+            "Operacion.Operacion.OP_PuntoControl.PuntoTipo": "OP_CONTROL_POINT_T_POINT_TYPE_F",
+            "Operacion.Operacion.OP_PuntoControl.Tipo_Punto_Control": "OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_T_INTERPOLATION_POSITION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_PuntoLevantamiento": {VARIABLE_NAME: "OP_SURVEY_POINT_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_PuntoLevantamiento.Exactitud_Horizontal": "OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoLevantamiento.Exactitud_Vertical": "OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoLevantamiento.Fotoidentificacion": "OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F",
+            "Operacion.Operacion.OP_PuntoLevantamiento.ID_Punto_Levantamiento": "OP_SURVEY_POINT_T_ID_F",
+            "Operacion.Operacion.OP_PuntoLevantamiento.PuntoTipo": "OP_SURVEY_POINT_T_POINT_TYPE_F",
+            "Operacion.Operacion.OP_PuntoLevantamiento.Tipo_Punto_Levantamiento": "OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_T_INTERPOLATION_POSITION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_PuntoLindero": {VARIABLE_NAME: "OP_BOUNDARY_POINT_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_PuntoLindero.Acuerdo": "OP_BOUNDARY_POINT_T_AGREEMENT_F",
+            "Operacion.Operacion.OP_PuntoLindero.Exactitud_Horizontal": "OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoLindero.Exactitud_Vertical": "OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F",
+            "Operacion.Operacion.OP_PuntoLindero.Fotoidentificacion": "OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F",
+            "Operacion.Operacion.OP_PuntoLindero.ID_Punto_Lindero": "OP_BOUNDARY_POINT_T_ID_F",
+            "Operacion.Operacion.OP_PuntoLindero.PuntoTipo": "OP_BOUNDARY_POINT_T_POINT_TYPE_F",
+            "Operacion.Operacion.OP_PuntoLindero.Ubicacion_Punto": "OP_BOUNDARY_POINT_T_POINT_LOCATION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_T_INTERPOLATION_POSITION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Restriccion": {VARIABLE_NAME: "OP_RESTRICTION_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad": "COL_BAUNIT_RRR_T_UNIT_F",
+            "Operacion.Operacion.OP_Restriccion.Tipo": "OP_RESTRICTION_T_TYPE_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_ServidumbrePaso": {VARIABLE_NAME: "OP_RIGHT_OF_WAY_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_ServidumbrePaso.Area_Servidumbre": "OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.Operacion.OP_Terreno": {VARIABLE_NAME: "OP_PLOT_T", FIELDS_DICT: {
+            "Operacion.Operacion.OP_Terreno.Area_Terreno": "OP_PLOT_T_PLOT_AREA_F",
+            "Operacion.Operacion.OP_Terreno.Avaluo_Terreno": "OP_PLOT_T_PLOT_VALUATION_F",
+            "Operacion.Operacion.OP_Terreno.Geometria": "OP_PLOT_T_GEOMETRY_F",
+            "Operacion.Operacion.OP_Terreno.Manzana_Vereda_Codigo": "OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F",
+            "Operacion.Operacion.OP_Terreno.Numero_Subterraneos": "OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
+            "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
+        }},
+        "Operacion.OP_FuenteAdministrativaTipo": {VARIABLE_NAME: "OP_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_FotoidentificacionTipo": {VARIABLE_NAME: "OP_PHOTO_IDENTIFICATION_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_GrupoEtnicoTipo": {VARIABLE_NAME: "OP_ETHNIC_GROUP_TYPE", FIELDS_DICT: {}},
+        "Operacion.OP_InteresadoDocumentoTipo": {VARIABLE_NAME: "OP_PARTY_DOCUMENT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_InteresadoTipo": {VARIABLE_NAME: "OP_PARTY_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_PredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_PuntoControlTipo": {VARIABLE_NAME: "OP_CONTROL_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_PuntoLevTipo": {VARIABLE_NAME: "OP_SURVEY_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_PuntoTipo": {VARIABLE_NAME: "OP_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_RestriccionTipo": {VARIABLE_NAME: "OP_RESTRICTION_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_SexoTipo": {VARIABLE_NAME: "OP_GENRE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.OM_Observacion": {VARIABLE_NAME: "OM_OBSERVATION_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Mediciones": "COL_SPATIAL_SOURCE_T_MEASUREMENTS_F"
+        }},
+    }
+
+    def __init__(self):
+        self.logger = Logger()
+        self._cached_domain_values = dict()
+
+    def initialize_table_and_field_names(self, dict_names):
+        """
+        Update class variables (table and field names) according to a dictionary of names coming from a DB connection.
+        This function should be called when a new DB connection is established for making all classes in the plugin able
+        to access current DB connection names.
+
+        :param dict_names: Expected dict with key as iliname (fully qualified object name in the model) with no version
+                           info, and value as sqlname (produced by ili2db).
+        :return: True if anything is updated, False otherwise.
+        """
+        self.reset_table_and_field_names()  # We will start mapping from scratch, so reset any previous mapping.
+
+        any_update = False
+        table_names_count = 0
+        if dict_names:
+            if T_ID not in dict_names or DISPLAY_NAME not in dict_names or ILICODE not in dict_names or DESCRIPTION not in dict_names:
+                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
+                return False
+
+            for table_key, attrs in self.TABLE_DICT.items():
+                if table_key in dict_names:
+                    setattr(self, attrs[VARIABLE_NAME], dict_names[table_key][TABLE_NAME])
+                    table_names_count += 1
+                    any_update = True
+                    for field_key, field_variable in attrs[FIELDS_DICT].items():
+                        if field_key in dict_names[table_key]:
+                            setattr(self, field_variable, dict_names[table_key][field_key])
+
+            # Required fields mapped in a custom way
+            self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
+            self.ILICODE_F = dict_names[ILICODE] if ILICODE in dict_names else None
+            self.DESCRIPTION_F = dict_names[DESCRIPTION] if DESCRIPTION in dict_names else None
+            self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME] if DISPLAY_NAME in dict_names else None
+
+        # Set domain values and other values that are independent of the DB engine
+        self.set_custom_variables()
+
+        self.logger.info(__name__, "Table and field names have been set!")
+        self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
+        return any_update
+
+    def reset_table_and_field_names(self):
+        """
+        Make all table and field variables None again to prepare the next mapping.
+        """
+        for table_key, attrs in self.TABLE_DICT.items():
+            setattr(self, attrs[VARIABLE_NAME], None)
+            for field_key, field_variable in attrs[FIELDS_DICT].items():
+                setattr(self, field_variable, None)
+
+        self.T_ID_F = None
+        self.ILICODE_F = None
+        self.DESCRIPTION_F = None
+        self.DISPLAY_NAME_F = None
+
+        # Clear cache
+        self._cached_domain_values = dict()
+
+        self.logger.info(__name__, "Names (DB mapping) have been reset to prepare the next mapping.")
+
+    def cache_domain_value(self, domain_table, t_id, value):
+        if domain_table in self._cached_domain_values:
+            self._cached_domain_values[domain_table][t_id] = value
+        else:
+            self._cached_domain_values[domain_table] = {t_id: value}
+
+    def get_domain_value(self, domain_table, t_id):
+        """
+        Get a domain value from the cache.
+
+        :param domain_table: Domain table name.
+        :param t_id: t_id to be searched.
+        :return: iliCode of the corresponding t_id.
+        """
+        if domain_table in self._cached_domain_values:
+            return self._cached_domain_values[domain_table][t_id] if t_id in self._cached_domain_values[domain_table] else None
+
+    def get_domain_code(self, domain_table, ilicode):
+        """
+        Get a domain value from the cache.
+
+        :param domain_table: Domain table name.
+        :param ilicode: iliCode to be searched.
+        :return: t_id of the corresponding ilicode.
+        """
+        if domain_table in self._cached_domain_values:
+            for k,v in self._cached_domain_values[domain_table].items():
+                if v == ilicode:
+                    return k
+
+        return None
+
+    def set_custom_variables(self):
+        """
+        Independent of the DB engine
+        """
+        self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V = "Persona_Natural"
+        self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V = "Persona_Juridica"
+        self.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V = "NIT"
+        self.TABLE_PROP_ASSOCIATION = "ASSOCIATION"
+        self.TABLE_PROP_DOMAIN = "ENUM"
+        self.TABLE_PROP_STRUCTURE = "STRUCTURE"
+        self.OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
+
+        """
+        PARCEL TYPE
+        """
+        self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY = "NPH"
+        self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "PH.Matriz"
+        self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "PH.Unidad_Predial"
+        self.PARCEL_TYPE_CONDOMINIUM_PARENT = "Condominio.Matriz"
+        self.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "Condominio.Unidad_Predial"
+        self.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA = "Mejora.PH"
+        self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA = "Mejora.NPH"
+        self.PARCEL_TYPE_CEMETERY_PARENT = "Parque_Cementerio.Matriz"
+        self.PARCEL_TYPE_CEMETERY_PARCEL_UNIT = "Parque_Cementerio.Unidad_Predial"
+        self.PARCEL_TYPE_ROAD = "Via"
+        self.PARCEL_TYPE_PUBLIC_USE = "Bien_Uso_Publico"
+
+        """
+        LADM PACKAGES
+        """
+        self.SURVEYING_AND_REPRESENTATION_PACKAGE = "Topografía y Representación"
+        self.SPATIAL_UNIT_PACKAGE = "Unidad Espacial"
+        self.BA_UNIT_PACKAGE = "Unidad Administrativa"
+        self.RRR_PACKAGE = "Derechos, Restricciones y Responsabilidades"
+        self.PARTY_PACKAGE = "Interesados"
+        self.SOURCE_PACKAGE = "Fuentes"
+
+    def test_names(self, models):
+        """
+        Test whether required table/field names are present.
+
+        :param models: List of model prefixes present in the db
+        :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
+        """
+        required_names = ["T_ID_F",
+                          "ILICODE_F",
+                          "DESCRIPTION_F",
+                          "DISPLAY_NAME_F"]
+
+        for k, v in self.TABLE_DICT.items():
+            model = k.split(".")[0]
+            if model in models and model != LADM_MODEL_PREFIX:
+                # LADM classes may be added independently, for instance, Supplies adds only ExtArchivo. So, no need to
+                # add the whole LADM model to this test.
+                required_names.append(v[VARIABLE_NAME])
+                for k1, v1 in v[FIELDS_DICT].items():
+                    if k1.split(".")[0] in models:
+                        required_names.append(v1)
+
+        self.logger.debug(__name__, "Number of required Names: {}".format(required_names))
+        names_not_found = list()
+        for required_name in required_names:
+            if getattr(self, required_name) is None:
+                names_not_found.append(required_name)
+
+        self.logger.debug(__name__, "Names not found: {}".format(set(names_not_found)))
+        if names_not_found:
+            return (False, "Name '{}' was not found!".format(names_not_found[0]))
+
+        return (True, "")
+
+    def get_layer_sets(self):
+        """
+        Configure layer sets to appear in the load layers dialog
+        Each layer set is a key-value pair where key is the name of the layer set
+        and the value is a list of layers to load
+        """
+        return {
+            'Datos de Interesados': [
+                self.OP_PARTY_T,
+                self.OP_GENRE_D,
+                self.OP_PARTY_DOCUMENT_TYPE_D,
+                self.OP_PARTY_TYPE_D
+            ],
+            'Derechos': [
+                self.OP_PARTY_T,
+                self.OP_PARCEL_T,
+                self.OP_ADMINISTRATIVE_SOURCE_T,
+                self.EXT_ARCHIVE_S,
+                self.OP_GROUP_PARTY_T,
+                self.OP_RIGHT_T
+            ],
+            'Punto Lindero, Lindero y Terreno': [
+                self.OP_BOUNDARY_POINT_T,
+                self.OP_BOUNDARY_T,
+                self.OP_PLOT_T,
+                self.MORE_BFS_T,
+                self.LESS_BFS_T,
+                self.POINT_BFS_T
+            ]
+        }
+
+    @staticmethod
+    def get_restriction_type_d_right_of_way_ilicode_value():
+        return "Servidumbre"
+
+    def get_constraint_types_of_parcels(self):
+        # Operations:
+        # 1 = One and only one feature must be selected
+        # + = One or more features must be selected
+        # * = Optional, i.e., zero or more features could be selected
+        # None = Won't be stored as a related feature (selected features will be ignored)
+        return {
+            self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: '*'
+            },
+            self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
+                self.OP_PLOT_T: None,
+                self.OP_BUILDING_T: None,
+                self.OP_BUILDING_UNIT_T: '+'
+            },
+            self.PARCEL_TYPE_CONDOMINIUM_PARENT: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA: {
+                self.OP_PLOT_T: None,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: '+'
+            },
+            self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA: {
+                self.OP_PLOT_T: None,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: '+'
+            },
+            self.PARCEL_TYPE_CEMETERY_PARENT: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_CEMETERY_PARCEL_UNIT: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: None,
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_ROAD: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: None,
+                self.OP_BUILDING_UNIT_T: None
+            },
+            self.PARCEL_TYPE_PUBLIC_USE: {
+                self.OP_PLOT_T: 1,
+                self.OP_BUILDING_T: '*',
+                self.OP_BUILDING_UNIT_T: None
+            }
+        }
+
+    def get_dict_plural(self):
+        """
+        PLURAL WORDS, FOR DISPLAY PURPOSES
+        """
+        return {
+            self.OP_PLOT_T: "Terrenos",
+            self.OP_PARCEL_T: "Predios",
+            self.OP_BUILDING_T: "Construcciones",
+            self.OP_BUILDING_UNIT_T: "Unidades de Construcción",
+            self.EXT_ADDRESS_S: "Direcciones",
+            self.OP_PARTY_T: "Interesados",
+            self.OP_GROUP_PARTY_T: "Agrupación de interesados",
+            self.OP_RIGHT_T: "Derechos",
+            self.OP_RESTRICTION_T: "Restricciones",
+            self.OP_ADMINISTRATIVE_SOURCE_T: "Fuentes Administrativas",
+            self.OP_SPATIAL_SOURCE_T: "Fuentes Espaciales",
+            self.OP_BOUNDARY_T: "Linderos",
+            self.OP_BOUNDARY_POINT_T: "Puntos de Lindero",
+            self.OP_SURVEY_POINT_T: "Puntos de Levantamiento"
+        }
+
+    def get_dict_package_icon(self):
+        """
+        LADM PACKAGE ICONS
+        """
+        return {
+            # Resources don't seem to be initialized at this point, so return path and build icon when needed
+            self.SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
+            self.SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
+            self.BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
+            self.RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
+            self.PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
+            self.SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
+        }
+
+    def get_dict_table_package(self):
+        return {
+            self.OP_PARCEL_T: self.BA_UNIT_PACKAGE,
+            self.OP_PLOT_T: self.SPATIAL_UNIT_PACKAGE,
+            self.OP_BUILDING_T: self.SPATIAL_UNIT_PACKAGE,
+            self.OP_BUILDING_UNIT_T: self.SPATIAL_UNIT_PACKAGE,
+            self.OP_RIGHT_OF_WAY_T: self.SPATIAL_UNIT_PACKAGE,
+            self.OP_PARTY_T: self.PARTY_PACKAGE,
+            self.OP_GROUP_PARTY_T: self.PARTY_PACKAGE,
+            self.OP_RIGHT_T: self.RRR_PACKAGE,
+            self.OP_RESTRICTION_T: self.RRR_PACKAGE,
+            self.OP_ADMINISTRATIVE_SOURCE_T: self.SOURCE_PACKAGE,
+            self.OP_SPATIAL_SOURCE_T: self.SOURCE_PACKAGE,
+            self.OP_BOUNDARY_POINT_T: self.SURVEYING_AND_REPRESENTATION_PACKAGE,
+            self.OP_SURVEY_POINT_T: self.SURVEYING_AND_REPRESENTATION_PACKAGE,
+            self.OP_BOUNDARY_T: self.SURVEYING_AND_REPRESENTATION_PACKAGE
+        }
+
+    def get_logic_consistency_tables(self):
+        """
+        we define the minimum structure of a table to validate that there are no repeated records
+        """
+        return {
+            # Geometric tables
+            self.OP_BOUNDARY_POINT_T: [self.OP_BOUNDARY_POINT_T_AGREEMENT_F,
+                                       self.OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F,
+                                       self.OP_BOUNDARY_POINT_T_POINT_LOCATION_F,
+                                       self.OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F,
+                                       self.OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F,
+                                       self.COL_POINT_T_INTERPOLATION_POSITION_F,
+                                       self.COL_POINT_T_MONUMENTATION_F,
+                                       self.COL_POINT_T_PRODUCTION_METHOD_F,
+                                       self.OP_BOUNDARY_POINT_T_POINT_TYPE_F,
+                                       self.COL_POINT_T_ORIGINAL_LOCATION_F],
+            self.OP_SURVEY_POINT_T: [self.OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
+                                     self.OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F,
+                                     self.OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F,
+                                     self.OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F,
+                                     self.COL_POINT_T_INTERPOLATION_POSITION_F,
+                                     self.COL_POINT_T_PRODUCTION_METHOD_F,
+                                     self.COL_POINT_T_MONUMENTATION_F,
+                                     self.OP_SURVEY_POINT_T_POINT_TYPE_F,
+                                     self.COL_POINT_T_ORIGINAL_LOCATION_F],
+            self.OP_CONTROL_POINT_T: [self.OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F,
+                                      self.OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F,
+                                      self.OP_CONTROL_POINT_T_ID_F,
+                                      self.COL_POINT_T_INTERPOLATION_POSITION_F,
+                                      self.COL_POINT_T_MONUMENTATION_F,
+                                      self.OP_CONTROL_POINT_T_POINT_TYPE_F,
+                                      self.COL_POINT_T_ORIGINAL_LOCATION_F],
+            self.OP_BOUNDARY_T: [self.OP_BOUNDARY_T_LENGTH_F,
+                                 self.COL_BFS_T_TEXTUAL_LOCATION_F,
+                                 self.COL_BFS_T_GEOMETRY_F],
+            self.OP_PLOT_T: [self.OP_PLOT_T_PLOT_AREA_F,
+                             self.OP_PLOT_T_PLOT_VALUATION_F,
+                             self.COL_SPATIAL_UNIT_T_DIMENSION_F,
+                             self.COL_SPATIAL_UNIT_T_LABEL_F,
+                             self.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
+                             self.OP_PLOT_T_GEOMETRY_F],
+            self.OP_BUILDING_T: [self.OP_BUILDING_T_BUILDING_VALUATION_F,
+                                 self.OP_BUILDING_T_BUILDING_AREA_F,
+                                 self.COL_SPATIAL_UNIT_T_DIMENSION_F,
+                                 self.COL_SPATIAL_UNIT_T_LABEL_F,
+                                 self.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
+                                 self.COL_SPATIAL_UNIT_T_GEOMETRY_F],
+            self.OP_BUILDING_UNIT_T: [self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F,
+                                      self.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F,
+                                      self.OP_BUILDING_UNIT_T_BUILT_AREA_F,
+                                      self.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F,
+                                      self.OP_BUILDING_UNIT_T_BUILDING_F,
+                                      self.COL_SPATIAL_UNIT_T_DIMENSION_F,
+                                      self.COL_SPATIAL_UNIT_T_LABEL_F,
+                                      self.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
+                                      self.COL_SPATIAL_UNIT_T_GEOMETRY_F],
+            # Alphanumeric tables
+            self.OP_PARTY_T: [self.OP_PARTY_T_DOCUMENT_ID_F,
+                              self.OP_PARTY_T_DOCUMENT_TYPE_F],
+            self.OP_PARCEL_T: [self.OP_PARCEL_T_DEPARTMENT_F,
+                               self.OP_PARCEL_T_MUNICIPALITY_F,
+                               self.OP_PARCEL_T_NUPRE_F,
+                               self.OP_PARCEL_T_FMI_F,
+                               self.OP_PARCEL_T_PARCEL_NUMBER_F,
+                               self.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
+                               self.OP_PARCEL_T_VALUATION_F,
+                               self.COL_BAUNIT_T_NAME_F,
+                               self.OP_PARCEL_T_PARCEL_TYPE_F],
+            self.OP_RIGHT_T: [self.OP_RIGHT_T_TYPE_F,
+                              self.COL_RRR_T_DESCRIPTION_F,
+                              self.COL_RRR_T_SHARE_CHECK_F,
+                              self.COL_RRR_T_EFFECTIVE_USAGE_F,
+                              self.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                              self.COL_RRR_PARTY_T_OP_PARTY_F,
+                              self.COL_BAUNIT_RRR_T_UNIT_F],
+            self.OP_RESTRICTION_T: [self.OP_RESTRICTION_T_TYPE_F,
+                                    self.COL_RRR_T_DESCRIPTION_F,
+                                    self.COL_RRR_T_SHARE_CHECK_F,
+                                    self.COL_RRR_T_EFFECTIVE_USAGE_F,
+                                    self.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                                    self.COL_RRR_PARTY_T_OP_PARTY_F,
+                                    self.COL_BAUNIT_RRR_T_UNIT_F],
+            self.OP_ADMINISTRATIVE_SOURCE_T: [self.OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F,
+                                              self.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F,
+                                              self.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F,
+                                              self.OP_ADMINISTRATIVE_SOURCE_T_TYPE_F,
+                                              self.COL_SOURCE_T_DATE_DOCUMENT_F,
+                                              self.COL_SOURCE_T_AVAILABILITY_STATUS_F,
+                                              self.COL_SOURCE_T_MAIN_TYPE_F,
+                                              self.COL_SOURCE_T_OFFICIAL_F]
+        }
+
+    def get_custom_widget_configuration(self):
+        return {
+            self.EXT_ARCHIVE_S: {
+                'type': 'ExternalResource',
+                'config': {
+                    'PropertyCollection': {
+                        'properties': {},
+                        'name': NULL,
+                        'type': 'collection'
+                    },
+                    'UseLink': True,
+                    'FullUrl': True,
+                    'FileWidget': True,
+                    'DocumentViewer': 0,
+                    'RelativeStorage': 0,
+                    'StorageMode': 0,
+                    'FileWidgetButton': True,
+                    'DocumentViewerHeight': 0,
+                    'DocumentViewerWidth': 0,
+                    'FileWidgetFilter': ''
+                }
+            }
+        }
+
+    def get_custom_read_only_fields(self):
+        # Read only fields might be declared in two scenarios:
+        #   1. As soon as the layer is loaded (e.g., OP_PARCEL_T_DEPARTMENT_F)
+        #   2. Only for a wizard (e.g., PARCEL_TYPE)
+        # WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
+        return {
+            self.OP_PARCEL_T: [self.OP_PARCEL_T_DEPARTMENT_F,
+                               self.OP_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
+        }
+
+    def get_layer_variables(self):
+        return {
+            self.OP_BUILDING_T: {
+                "qgis_25d_angle": 90,
+                "qgis_25d_height": 1
+            },
+            self.OP_BUILDING_UNIT_T: {
+                "qgis_25d_angle": 90,
+                "qgis_25d_height": '"{}" * 2.5'.format(self.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
+            }
+        }
+
+    def get_dict_automatic_values(self):
+        return {
+            self.OP_BOUNDARY_T: [{self.OP_BOUNDARY_T_LENGTH_F: "$length"}],
+            self.OP_PARTY_T: [{
+                self.COL_PARTY_T_NAME_F: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+                    self.OP_PARTY_T_DOCUMENT_ID_F,
+                    self.OP_PARTY_T_SURNAME_1_F,
+                    self.OP_PARTY_T_SURNAME_2_F,
+                    self.OP_PARTY_T_FIRST_NAME_1_F,
+                    self.OP_PARTY_T_FIRST_NAME_2_F,
+                    self.OP_PARTY_T_BUSINESS_NAME_F)}],
+            self.OP_PARCEL_T: [
+                {self.OP_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(self.OP_PARCEL_T_PARCEL_NUMBER_F)},
+                {self.OP_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(self.OP_PARCEL_T_PARCEL_NUMBER_F)}]
+        }
+
+    def get_dict_display_expressions(self):
+        return {
+            self.COL_PARTY_T_NAME_F: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+                self.OP_PARTY_T_DOCUMENT_ID_F,
+                self.OP_PARTY_T_SURNAME_1_F,
+                self.OP_PARTY_T_SURNAME_2_F,
+                self.OP_PARTY_T_FIRST_NAME_1_F,
+                self.OP_PARTY_T_FIRST_NAME_2_F,
+                self.OP_PARTY_T_BUSINESS_NAME_F),
+            self.OP_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(self.T_ID_F, self.OP_PARCEL_T_PARCEL_NUMBER_F, self.OP_PARCEL_T_FMI_F),
+            self.OP_GROUP_PARTY_T: "concat({}, ' - ', {})".format(self.T_ID_F, self.COL_PARTY_T_NAME_F),
+            self.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(self.OID_T_NAMESPACE_F, self.T_ID_F)
+        }
+
+    def get_layer_constraints(self):
+        return  {
+            self.OP_PARCEL_T: {
+                self.OP_PARCEL_T_PARCEL_TYPE_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" =  get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                            num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False)) THEN
+                                            num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN  (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False),
+                                                                          get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False)) THEN
+                                            num_selected('{OP_PLOT_T}') = 1 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 0
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                            num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') != 0 AND num_selected('{OP_BUILDING_T}') = 0
+                                        WHEN  "{OP_PARCEL_T_PARCEL_TYPE_F}" IN (get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False),
+                                                                         get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False)) THEN
+                                            num_selected('{OP_PLOT_T}') = 0 AND num_selected('{OP_BUILDING_UNIT_T}') = 0 AND num_selected('{OP_BUILDING_T}') = 1
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_CONDITION_PARCEL_TYPE_D=self.OP_CONDITION_PARCEL_TYPE_D,
+                                                  OP_PLOT_T=self.OP_PLOT_T,
+                                                  OP_BUILDING_T=self.OP_BUILDING_T,
+                                                  OP_BUILDING_UNIT_T=self.OP_BUILDING_UNIT_T,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=self.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=self.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_CEMETERY_PARENT=self.PARCEL_TYPE_CEMETERY_PARENT,
+                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=self.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_ROAD=self.PARCEL_TYPE_ROAD,
+                                                  PARCEL_TYPE_PUBLIC_USE=self.PARCEL_TYPE_PUBLIC_USE),
+                    'description': 'La parcela debe tener una o varias unidades espaciales asociadas. Verifique las reglas '
+                    # ''Parcel must have one or more spatial units associated with it. Check the rules.'
+                },
+                self.OP_PARCEL_T_PARCEL_NUMBER_F: {
+                    'expression': """CASE
+                                        WHEN  "{OP_PARCEL_T_PARCEL_NUMBER_F}" IS NOT NULL THEN
+                                            CASE
+                                                WHEN length("{OP_PARCEL_T_PARCEL_NUMBER_F}") != 30 OR regexp_match(to_string("{OP_PARCEL_T_PARCEL_NUMBER_F}"), '^[0-9]*$') = 0  THEN
+                                                    FALSE
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 0
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 9
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARENT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 8
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARENT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_CEMETERY_PARCEL_UNIT}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 7
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 5
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_ROAD}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 4
+                                                WHEN "{OP_PARCEL_T_PARCEL_TYPE_F}" = get_domain_code_from_value('{OP_CONDITION_PARCEL_TYPE_D}', '{PARCEL_TYPE_PUBLIC_USE}', True, False) THEN
+                                                    substr("{OP_PARCEL_T_PARCEL_NUMBER_F}", 22,1) = 3
+                                                ELSE
+                                                    TRUE
+                                            END
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARCEL_T_PARCEL_TYPE_F=self.OP_PARCEL_T_PARCEL_TYPE_F,
+                                                  OP_CONDITION_PARCEL_TYPE_D=self.OP_CONDITION_PARCEL_TYPE_D,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=self.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=self.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=self.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=self.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_CEMETERY_PARENT=self.PARCEL_TYPE_CEMETERY_PARENT,
+                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=self.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_ROAD=self.PARCEL_TYPE_ROAD,
+                                                  PARCEL_TYPE_PUBLIC_USE=self.PARCEL_TYPE_PUBLIC_USE,
+                                                  OP_PARCEL_T_PARCEL_NUMBER_F=self.OP_PARCEL_T_PARCEL_NUMBER_F),
+                    'description': 'El campo debe tener 30 caracteres numéricos y la posición 22 debe coincidir con el tipo de predio.'
+                },
+                self.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F: {
+                    'expression': """CASE
+                                        WHEN  "{OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F}" IS NULL THEN
+                                            TRUE
+                                        WHEN length("{OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F}") != 20 OR regexp_match(to_string("{OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F}"), '^[0-9]*$') = 0 THEN
+                                            FALSE
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F=self.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F),
+                    'description': 'El campo debe tener 20 caracteres numéricos.'
+                },
+                self.OP_PARCEL_T_VALUATION_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PARCEL_T_VALUATION_F}" IS NULL THEN
+                                            TRUE
+                                        WHEN  "{OP_PARCEL_T_VALUATION_F}" = 0 THEN
+                                            FALSE
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARCEL_T_VALUATION_F=self.OP_PARCEL_T_VALUATION_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                }
+            },
+            self.OP_PARTY_T: {
+                self.OP_PARTY_T_DOCUMENT_TYPE_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False) THEN
+                                             "{OP_PARTY_T_DOCUMENT_TYPE_F}" !=  get_domain_code_from_value('{OP_PARTY_DOCUMENT_TYPE_D}', '{OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}', True, False)
+                                        WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
+                                             "{OP_PARTY_T_DOCUMENT_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_DOCUMENT_TYPE_D}', '{OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}', True, False)
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARTY_T_TYPE_F=self.OP_PARTY_T_TYPE_F,
+                                                  OP_PARTY_TYPE_D=self.OP_PARTY_TYPE_D,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                                  OP_PARTY_DOCUMENT_TYPE_D=self.OP_PARTY_DOCUMENT_TYPE_D,
+                                                  OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=self.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                                                  OP_PARTY_T_DOCUMENT_TYPE_F=self.OP_PARTY_T_DOCUMENT_TYPE_F),
+                    'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial IGAC\' o \'Secuencial SNR\'. '
+                },
+                self.OP_PARTY_T_FIRST_NAME_1_F: {
+                    'expression': """
+                                CASE
+                                    WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
+                                         "{OP_PARTY_T_FIRST_NAME_1_F}" IS NOT NULL AND length(trim("{OP_PARTY_T_FIRST_NAME_1_F}")) != 0
+                                    WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False)  THEN
+                                         "{OP_PARTY_T_FIRST_NAME_1_F}" IS NULL
+                                    ELSE
+                                        TRUE
+                                END""".format(OP_PARTY_T_TYPE_F=self.OP_PARTY_T_TYPE_F,
+                                              OP_PARTY_TYPE_D=self.OP_PARTY_TYPE_D,
+                                              OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                              OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                              OP_PARTY_T_FIRST_NAME_1_F=self.OP_PARTY_T_FIRST_NAME_1_F),
+                    'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
+                },
+                self.OP_PARTY_T_SURNAME_1_F: {
+                    'expression': """
+                        CASE
+                            WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False) THEN
+                                 "{OP_PARTY_T_SURNAME_1_F}" IS NOT NULL AND length(trim("{OP_PARTY_T_SURNAME_1_F}")) != 0
+                            WHEN  "{OP_PARTY_T_TYPE_F}" = get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
+                                 "{OP_PARTY_T_SURNAME_1_F}" IS NULL
+                            ELSE
+                                TRUE
+                        END""".format(OP_PARTY_T_TYPE_F=self.OP_PARTY_T_TYPE_F,
+                                      OP_PARTY_TYPE_D=self.OP_PARTY_TYPE_D,
+                                      OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                      OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                      OP_PARTY_T_SURNAME_1_F=self.OP_PARTY_T_SURNAME_1_F),
+                    'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
+                },
+                self.OP_PARTY_T_BUSINESS_NAME_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PARTY_T_TYPE_F}" =  get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
+                                             "{OP_PARTY_T_BUSINESS_NAME_F}" IS NOT NULL AND  length(trim( "{OP_PARTY_T_BUSINESS_NAME_F}")) != 0
+                                        WHEN  "{OP_PARTY_T_TYPE_F}" =  get_domain_code_from_value('{OP_PARTY_TYPE_D}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False) THEN
+                                             "{OP_PARTY_T_BUSINESS_NAME_F}" IS NULL
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARTY_T_TYPE_F=self.OP_PARTY_T_TYPE_F,
+                                                  OP_PARTY_TYPE_D=self.OP_PARTY_TYPE_D,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                                  OP_PARTY_T_BUSINESS_NAME_F=self.OP_PARTY_T_BUSINESS_NAME_F),
+                    'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
+
+                },
+                self.OP_PARTY_T_DOCUMENT_ID_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PARTY_T_DOCUMENT_ID_F}"  IS NULL THEN
+                                            FALSE
+                                        WHEN length(trim("{OP_PARTY_T_DOCUMENT_ID_F}")) = 0 THEN
+                                            FALSE
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PARTY_T_DOCUMENT_ID_F=self.OP_PARTY_T_DOCUMENT_ID_F),
+                    'description': 'El campo es obligatorio.'
+
+                }
+            },
+            self.OP_PLOT_T: {
+                self.OP_PLOT_T_PLOT_AREA_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PLOT_T_PLOT_AREA_F}" IS NULL THEN
+                                            FALSE
+                                        WHEN  "{OP_PLOT_T_PLOT_AREA_F}" = 0 THEN
+                                            FALSE
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PLOT_T_PLOT_AREA_F=self.OP_PLOT_T_PLOT_AREA_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                },
+                self.OP_PLOT_T_PLOT_VALUATION_F: {
+                    'expression': """
+                                    CASE
+                                        WHEN  "{OP_PLOT_T_PLOT_VALUATION_F}" IS NULL THEN
+                                            FALSE
+                                        WHEN  "{OP_PLOT_T_PLOT_VALUATION_F}" = 0 THEN
+                                            FALSE
+                                        ELSE
+                                            TRUE
+                                    END""".format(OP_PLOT_T_PLOT_VALUATION_F=self.OP_PLOT_T_PLOT_VALUATION_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                }
+            },
+            self.OP_BUILDING_T: {
+                self.OP_BUILDING_T_BUILDING_AREA_F: {
+                    'expression': """
+                            CASE
+                                WHEN  "{OP_BUILDING_T_BUILDING_AREA_F}" IS NULL THEN
+                                    TRUE
+                                WHEN  "{OP_BUILDING_T_BUILDING_AREA_F}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(OP_BUILDING_T_BUILDING_AREA_F=self.OP_BUILDING_T_BUILDING_AREA_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                },
+                self.OP_BUILDING_T_BUILDING_VALUATION_F: {
+                    'expression': """
+                            CASE
+                                WHEN  "{OP_BUILDING_T_BUILDING_VALUATION_F}" IS NULL THEN
+                                    FALSE
+                                WHEN  "{OP_BUILDING_T_BUILDING_VALUATION_F}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(OP_BUILDING_T_BUILDING_VALUATION_F=self.OP_BUILDING_T_BUILDING_VALUATION_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                }
+            },
+            self.OP_BUILDING_UNIT_T: {
+                self.OP_BUILDING_UNIT_T_BUILT_AREA_F: {
+                    'expression': """
+                            CASE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILT_AREA_F}" IS NULL THEN
+                                    TRUE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILT_AREA_F}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(OP_BUILDING_UNIT_T_BUILT_AREA_F=self.OP_BUILDING_UNIT_T_BUILT_AREA_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                },
+                self.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F: {
+                    'expression': """
+                            CASE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}" IS NULL THEN
+                                    TRUE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F=self.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                },
+                self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F: {
+                    'expression': """
+                            CASE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_VALUATION_F}" IS NULL THEN
+                                    TRUE
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_VALUATION_F}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(OP_BUILDING_UNIT_T_BUILDING_VALUATION_F=self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F),
+                    'description': 'El valor debe ser mayor a cero (0).'
+                }
+            }
+        }
 
 """
-PROPERTY RECORD CARD MAPPING
+UNIQUE CADASTRAL FORM
 """
-PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
-PROPERTY_RECORD_CARD_PARCEL_ID_FIELD = "crpredio"
-PROPERTY_RECORD_CARD_SECTOR_FIELD = "sector"
-PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD = "manzana_vereda"
-PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD = "destinacion_economica"
-PROPERTY_RECORD_CARD_LOCALITY_FIELD = "localidad_comuna"
-PRC_PUBLIC_PARCEL_TYPE_FIELD = "tipo_predio_publico"
-PRC_PARCEL_TYPE_FIELD = "predio_tipo"
-MARKET_RESEARCH_TABLE = "investigacionmercado"
-NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
-NATURAL_PARTY_TABLE = "interesado_natural"
-LEGAL_PARTY_TABLE = "interesado_juridico"
+UNIQUE_CADASTRAL_FORM_TABLE = "fcm_formulario_unico_cm"
+UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE = "fcm_contacto_visita"
 
 """
 VALUATION MAPPING
 """
-AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
-AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
-AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
-VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
-VALUATION_HORIZONTAL_PROPERTY_TABLE = "predio_matriz_ph"
-VALUATION_COMMON_EQUIPMENT_TABLE = "equipamiento_comunal"
-VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
-VALUATION_BUILDING_UNIT_TABLE = "unidad_construccion"
-VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "calificacion_no_convencional"
-VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convencional"
+VALUATION_BUILDING_UNIT_TABLE = "av_unidad_construccion"
+VALUATION_COMPONENT_BUILDING = "av_componente_construccion"
+VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "av_calificacion_no_convencional"
+VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "av_calificacion_convencional"
+VALUATION_GROUP_QUALIFICATION = "av_grupo_calificacion"
+VALUATION_BUILDING_OBJECT = "av_objeto_construccion"
 VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
-"""
-PLURAL WORDS, FOR DISPLAY PURPOSES
-"""
-DICT_PLURAL = {
-    PLOT_TABLE: "Terrenos",
-    PARCEL_TABLE: "Predios",
-    BUILDING_TABLE: "Construcciones",
-    BUILDING_UNIT_TABLE: "Unidades de Construcción",
-    EXTADDRESS_TABLE: "Direcciones",
-    COL_PARTY_TABLE: "Interesados",
-    LA_GROUP_PARTY_TABLE: "Agrupación de interesados",
-    RIGHT_TABLE: "Derechos",
-    RESTRICTION_TABLE: "Restricciones",
-    RESPONSIBILITY_TABLE: "Responsabilidades",
-    MORTGAGE_TABLE: "Hipotecas",
-    ADMINISTRATIVE_SOURCE_TABLE: "Fuentes Administrativas",
-    SPATIAL_SOURCE_TABLE: "Fuentes Espaciales",
-    NUCLEAR_FAMILY_TABLE: "Núcleo Familiar",
-    MARKET_RESEARCH_TABLE: "Investigaciones de Mercado",
-    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial",
-    BOUNDARY_TABLE: "Linderos",
-    BOUNDARY_POINT_TABLE: "Puntos de Lindero",
-    SURVEY_POINT_TABLE: "Puntos de Levantamiento"
-}
+AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
 
-
-"""
-LADM PACKAGES
-"""
-SURVEYING_AND_REPRESENTATION_PACKAGE = "Topografía y Representación"
-SPATIAL_UNIT_PACKAGE = "Unidad Espacial"
-BA_UNIT_PACKAGE = "Unidad Administrativa"
-RRR_PACKAGE = "Derechos, Restricciones y Responsabilidades"
-PARTY_PACKAGE = "Interesados"
-SOURCE_PACKAGE = "Fuentes"
-
-"""
-LADM PACKAGE ICONS
-"""
-DICT_PACKAGE_ICON = { # Resources don't seem to be initialized at this point, so return path and build icon when needed
-    SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
-    SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
-    BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
-    RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
-    PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
-    SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
-}
-
-DICT_TABLE_PACKAGE = {
-    PARCEL_TABLE: BA_UNIT_PACKAGE,
-    PLOT_TABLE: SPATIAL_UNIT_PACKAGE,
-    BUILDING_TABLE: SPATIAL_UNIT_PACKAGE,
-    BUILDING_UNIT_TABLE: SPATIAL_UNIT_PACKAGE,
-    RIGHT_OF_WAY_TABLE: SPATIAL_UNIT_PACKAGE,
-    COL_PARTY_TABLE: PARTY_PACKAGE,
-    LA_GROUP_PARTY_TABLE: PARTY_PACKAGE,
-    RIGHT_TABLE: RRR_PACKAGE,
-    RESTRICTION_TABLE: RRR_PACKAGE,
-    RESPONSIBILITY_TABLE: RRR_PACKAGE,
-    MORTGAGE_TABLE: RRR_PACKAGE,
-    ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
-    SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE,
-    BOUNDARY_POINT_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE,
-    SURVEY_POINT_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE,
-    BOUNDARY_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE
-}
-
-
-NAMESPACE_PREFIX = {
-    ADMINISTRATIVE_SOURCE_TABLE: 's',
-    BOUNDARY_POINT_TABLE: 'p',
-    BOUNDARY_TABLE: 'ccl',
-    BUILDING_TABLE: 'su',
-    BUILDING_UNIT_TABLE: 'su',
-    COL_PARTY_TABLE: 'p',
-    CONTROL_POINT_TABLE: 'p',
-    EXTFILE_TABLE: 's',
-    LA_GROUP_PARTY_TABLE: 'p',
-    PARCEL_TABLE: 'u',
-    PLOT_TABLE: 'su',
-    RESPONSIBILITY_TABLE: 'r',
-    RESTRICTION_TABLE: 'r',
-    RIGHT_OF_WAY_TABLE: 'su',
-    RIGHT_TABLE: 'r',
-    SPATIAL_SOURCE_TABLE: 's',
-    SURVEY_POINT_TABLE: 'p'
-}
-
-DICT_AUTOMATIC_VALUES = {
-    BOUNDARY_TABLE: [{LENGTH_FIELD_BOUNDARY_TABLE: "$length"}],
-    COL_PARTY_TABLE: [{COL_PARTY_NAME_FIELD: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
-        DOCUMENT_ID_FIELD,
-        FIRST_SURNAME_FIELD,
-        SECOND_SURNAME_FIELD,
-        FIRST_NAME_FIELD,
-        SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD)}],
-    PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
-                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
-                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}],
-    OID_TABLE: [{"localid": "$id"},
-                {"espaciodenombres": "\'OID\'"}]
-}
-
-DICT_DISPLAY_EXPRESSIONS = {
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
-        DOCUMENT_ID_FIELD,
-        FIRST_SURNAME_FIELD,
-        SECOND_SURNAME_FIELD,
-        FIRST_NAME_FIELD,
-        SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD),
-    PARCEL_TABLE: "concat({}, ' - ', {}, ' - ', {})".format(ID_FIELD, PARCEL_NUMBER_FIELD, FMI_FIELD),
-    LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
-    LA_GROUP_PARTY_TABLE: "concat({}, ' - ', {})".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
-    BUILDING_TABLE: '"{}{}"  || \' \' ||  "{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
-                                                                    NAMESPACE_FIELD,
-                                                                    ID_FIELD)
-}
-
-LAYER_VARIABLES = {
-    BUILDING_TABLE: {
-        "qgis_25d_angle": 90,
-        "qgis_25d_height": 1
-    },
-    BUILDING_UNIT_TABLE: {
-        "qgis_25d_angle": 90,
-        "qgis_25d_height": '"{}" * 2.5'.format(NUMBER_OF_FLOORS)
-    }
-}
-
-# Read only fields might be declared in two scenarios:
-#   1. As soon as the layer is loaded (e.g., DEPARTMENT_FIELD)
-#   2. Only for a wizard (e.g., PARCEL_TYPE)
-# WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
-CUSTOM_READ_ONLY_FIELDS = {
-    PARCEL_TABLE: [DEPARTMENT_FIELD, MUNICIPALITY_FIELD, ZONE_FIELD]  # list of fields of the layer to block its edition
-}
-
-CUSTOM_WIDGET_CONFIGURATION = {
-    EXTFILE_TABLE: {
-        'type': 'ExternalResource',
-        'config': {
-            'PropertyCollection': {
-                'properties': {},
-                'name': NULL,
-                'type': 'collection'
-            },
-            'UseLink': True,
-            'FullUrl': True,
-            'FileWidget': True,
-            'DocumentViewer': 0,
-            'RelativeStorage': 0,
-            'StorageMode': 0,
-            'FileWidgetButton': True,
-            'DocumentViewerHeight': 0,
-            'DocumentViewerWidth': 0,
-            'FileWidgetFilter': ''
-        }
-    }
-}
-
-LAYER_CONSTRAINTS = {
-    PROPERTY_RECORD_CARD_TABLE: {
-        PRC_PUBLIC_PARCEL_TYPE_FIELD: {
-            'expression': 'CASE WHEN "{prc_ptf}" IS NOT NULL THEN\n(strpos("{prc_ptf}", \'Privado.\') != 0 AND "{prc_pptf}" IS NULL) OR (strpos("{prc_ptf}", \'Publico.\') != 0 AND "{prc_pptf}" IS NOT NULL)\nELSE True\nEND'.format(prc_ptf=PRC_PARCEL_TYPE_FIELD, prc_pptf=PRC_PUBLIC_PARCEL_TYPE_FIELD),
-            'description': 'Si el tipo de predio es Público, debes elegir un valor de este listado; pero si el tipo de predio es Privado, no debes seleccionar ningún valor de este listado.'
-        }
-    },
-    PARCEL_TABLE: {
-        PARCEL_TYPE_FIELD: {
-            'expression': """
-                            CASE
-                                WHEN  "{parcel_type}" =  'NPH' THEN
-                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
-                                WHEN  "{parcel_type}" IN  ('PropiedadHorizontal.Matriz', 'Condominio.Matriz', 'ParqueCementerio.Matriz', 'BienUsoPublico', 'Condominio.UnidadPredial') THEN
-                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
-                                WHEN  "{parcel_type}" IN  ('Via', 'ParqueCementerio.UnidadPrivada') THEN
-                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0 AND num_selected('{building_layer}') = 0
-                                WHEN  "{parcel_type}" =   'PropiedadHorizontal.UnidadPredial' THEN
-                                    num_selected('{plot_layer}') = 0 AND num_selected('{building_unit_layer}') != 0 AND num_selected('{building_layer}') = 0
-                                WHEN  "{parcel_type}" =  'Mejora' THEN
-                                    num_selected('{plot_layer}') = 0 AND num_selected('{building_unit_layer}') = 0 AND num_selected('{building_layer}') = 1
-                                ELSE
-                                    TRUE
-                            END""".format(parcel_type=PARCEL_TYPE_FIELD, plot_layer=PLOT_TABLE, building_layer=BUILDING_TABLE, building_unit_layer=BUILDING_UNIT_TABLE),
-            'description': 'La parcela debe tener una o varias unidades espaciales asociadas. Verifique las reglas ' #''Parcel must have one or more spatial units associated with it. Check the rules.'
-        },
-        PARCEL_NUMBER_FIELD: {
-            'expression': """CASE
-                                WHEN  "{parcel_number}" IS NOT NULL THEN
-                                    CASE
-                                        WHEN length("{parcel_number}") != 30 OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
-                                            FALSE
-                                        WHEN "{parcel_type}" = 'NPH' THEN
-                                            substr("{parcel_number}", 22,1) = 0
-                                        WHEN strpos( "{parcel_type}", 'PropiedadHorizontal.') != 0 THEN
-                                            substr("{parcel_number}", 22,1) = 9
-                                        WHEN strpos( "{parcel_type}", 'Condominio.') != 0 THEN
-                                            substr("{parcel_number}", 22,1) = 8
-                                        WHEN strpos("{parcel_type}", 'ParqueCementerio.') != 0 THEN
-                                            substr("{parcel_number}", 22,1) = 7
-                                        WHEN "{parcel_type}" = 'Mejora' THEN
-                                            substr("{parcel_number}", 22,1) = 5
-                                        WHEN "{parcel_type}" = 'Via' THEN
-                                            substr("{parcel_number}", 22,1) = 4
-                                        WHEN "{parcel_type}" = 'BienUsoPublico' THEN
-                                            substr("{parcel_number}", 22,1) = 3
-                                        ELSE
-                                            TRUE
-                                    END
-                                ELSE
-                                    TRUE
-                            END""".format(parcel_type=PARCEL_TYPE_FIELD, parcel_number=PARCEL_NUMBER_FIELD),
-            'description': 'El campo debe tener 30 caracteres numéricos y la posición 22 debe coincidir con el tipo de predio.'
-        }, PARCEL_NUMBER_BEFORE_FIELD: {
-            'expression': """CASE
-                                WHEN  "{parcel_number_before}" IS NULL THEN
-                                    TRUE
-                                WHEN length("{parcel_number_before}") != 20 OR regexp_match(to_string("{parcel_number_before}"), '^[0-9]*$') = 0 THEN
-                                    FALSE
-                                ELSE
-                                    TRUE
-                            END""".format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD),
-            'description': 'El campo debe tener 20 caracteres numéricos.'
-        }, PARCEL_VALUATION_FIELD:{
-            'expression': """
-                            CASE
-                                WHEN  "{parcel_valuation}" IS NULL THEN
-                                    TRUE
-                                WHEN  "{parcel_valuation}" = 0 THEN
-                                    FALSE
-                                ELSE
-                                    TRUE
-                            END""".format(parcel_valuation=PARCEL_VALUATION_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }
-    },
-    COL_PARTY_TABLE: {
-        COL_PARTY_DOC_TYPE_FIELD: {
-            'expression': """
-                            CASE
-                                WHEN  "{col_party_type}" = 'Persona_Natural' THEN
-                                     "{col_party_doc_type}" !=  'NIT'
-                                WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
-                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR'
-                                ELSE
-                                    TRUE
-                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
-            'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial IGAC\' o \'Secuencial SNR\'. '
-        }, COL_PARTY_FIRST_NAME_FIELD:{
-            'expression': """
-                        CASE
-                            WHEN  "{col_party_type}" = 'Persona_Natural'  THEN
-                                 "{col_party_first_name}" IS NOT NULL AND length(trim("{col_party_first_name}")) != 0
-                            WHEN  "{col_party_type}" = 'Persona_No_Natural'  THEN
-                                 "{col_party_first_name}" IS NULL
-                            ELSE
-                                TRUE
-                        END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_first_name=COL_PARTY_FIRST_NAME_FIELD),
-            'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
-        }, COL_PARTY_SURNAME_FIELD: {
-            'expression': """
-                CASE
-                    WHEN  "{col_party_type}" = 'Persona_Natural' THEN
-                         "{col_party_surname}" IS NOT NULL AND length(trim("{col_party_surname}")) != 0
-                    WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
-                         "{col_party_surname}" IS NULL
-                    ELSE
-                        TRUE
-                END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD),
-            'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
-        }, COL_PARTY_BUSINESS_NAME_FIELD:{
-            'expression': """
-                            CASE
-                                WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
-                                     "{col_party_business_name}" IS NOT NULL AND  length(trim( "{col_party_business_name}")) != 0
-                                WHEN  "{col_party_type}" =  'Persona_Natural' THEN
-                                     "{col_party_business_name}" IS NULL
-                                ELSE
-                                    TRUE
-                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_business_name=COL_PARTY_BUSINESS_NAME_FIELD),
-            'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
-
-        }, COL_PARTY_LEGAL_PARTY_FIELD:{
-            'expression': """
-                            CASE
-                                WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
-                                     "{col_party_legal_party}" IS NOT NULL
-                                WHEN  "{col_party_type}" =  'Persona_Natural' THEN
-                                     "{col_party_legal_party}" IS NULL
-                                ELSE
-                                    TRUE
-                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD),
-            'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
-
-        }, COL_PARTY_DOCUMENT_ID_FIELD:{
-            'expression': """
-                            CASE
-                                WHEN  "{col_party_document_id}"  IS NULL THEN
-                                    FALSE
-                                WHEN length(trim("{col_party_document_id}")) = 0 THEN
-                                    FALSE
-                                ELSE
-                                    TRUE
-                            END""".format(col_party_document_id=COL_PARTY_DOCUMENT_ID_FIELD),
-            'description': 'El campo es obligatorio.'
-
-        }
-    },
-    PLOT_TABLE: {
-        PLOT_CALCULATED_AREA_FIELD: {
-            'expression': """
-                            CASE
-                                WHEN  "{plot_calculated_area}" IS NULL THEN
-                                    FALSE
-                                WHEN  "{plot_calculated_area}" = 0 THEN
-                                    FALSE
-                                ELSE
-                                    TRUE
-                            END""".format(plot_calculated_area = PLOT_CALCULATED_AREA_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }, PLOT_VALUATION_FIELD: {
-            'expression': """
-                            CASE
-                                WHEN  "{plot_valuation_field}" IS NULL THEN
-                                    FALSE
-                                WHEN  "{plot_valuation_field}" = 0 THEN
-                                    FALSE
-                                ELSE
-                                    TRUE
-                            END""".format(plot_valuation_field = PLOT_VALUATION_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }
-    },
-    BUILDING_TABLE: {
-        BUILDING_AREA_FIELD: {
-            'expression': """
-                    CASE
-                        WHEN  "{building_area}" IS NULL THEN
-                            TRUE
-                        WHEN  "{building_area}" = 0 THEN
-                            FALSE
-                        ELSE
-                            TRUE
-                    END""".format(building_area=BUILDING_AREA_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }, BUILDING_VALUATION_FIELD: {
-            'expression': """
-                    CASE
-                        WHEN  "{building_valuation_field}" IS NULL THEN
-                            FALSE
-                        WHEN  "{building_valuation_field}" = 0 THEN
-                            FALSE
-                        ELSE
-                            TRUE
-                    END""".format(building_valuation_field=BUILDING_VALUATION_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }
-    },
-    BUILDING_UNIT_TABLE: {
-        BUILDING_UNIT_AREA_FIELD: {
-            'expression': """
-                    CASE
-                        WHEN  "{building_unit_area}" IS NULL THEN
-                            TRUE
-                        WHEN  "{building_unit_area}" = 0 THEN
-                            FALSE
-                        ELSE
-                            TRUE
-                    END""".format(building_unit_area=BUILDING_UNIT_AREA_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }, BUILDING_UNIT_PRIVATE_AREA_FIELD: {
-            'expression': """
-                    CASE
-                        WHEN  "{building_unit_private_area}" IS NULL THEN
-                            TRUE
-                        WHEN  "{building_unit_private_area}" = 0 THEN
-                            FALSE
-                        ELSE
-                            TRUE
-                    END""".format(building_unit_private_area=BUILDING_UNIT_PRIVATE_AREA_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }, BUILDING_UNIT_VALUATION_FIELD: {
-            'expression': """
-                    CASE
-                        WHEN  "{building_unit_valuation_field}" IS NULL THEN
-                            TRUE
-                        WHEN  "{building_unit_valuation_field}" = 0 THEN
-                            FALSE
-                        ELSE
-                            TRUE
-                    END""".format(building_unit_valuation_field=BUILDING_UNIT_VALUATION_FIELD),
-            'description': 'El valor debe ser mayor a cero (0).'
-        }
-    }
-}
 
 """
 Do not use the same before attribute for 2 differente groups. The same applies
@@ -592,63 +1923,6 @@ to after attribute.
 Leave before_attr/after_attr empty to add the group at the end of the form.
 """
 FORM_GROUPS = {
-    PROPERTY_RECORD_CARD_TABLE: {
-        'Código Predial Nacional': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['sector', 'barrio', 'localidad_comuna', 'manzana_vereda', 'terreno', 'condicion_propiedad', 'edificio', 'piso', 'unidad'],
-            'visibility_expression': None,
-            'before_attr': 'estado_nupre',
-            'after_attr': None
-        },
-        'Tipo predio público': {
-            'show_label': False,
-            'column_count':  1,
-            'attr_list':  ['tipo_predio_publico'],
-            'visibility_expression': '"predio_tipo" IS NOT NULL AND strpos("predio_tipo", \'Publico.\') != 0',
-            'before_attr': None,
-            'after_attr': 'predio_tipo'
-        }
-    },
-    VALUATION_PARCEL_TABLE: {
-        ' ': {
-            'show_label': True,
-            'column_count':  1,
-            'attr_list':  ['num_balcones', 'num_terrazas', 'num_mezanines'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        },
-        '  ': {
-            'show_label': True,
-            'column_count':  1,
-            'attr_list':  ['frente', 'fondo'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': 'comun_uso_exclusivo'
-        }
-        },
-    VALUATION_HORIZONTAL_PROPERTY_TABLE: {
-        '': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['tipologia_constructiva_copropiedad', 'anio_construccion_etapa',
-                          'estado_conservacion_copropiedad', 'materiales_construccion_areas_comunes',
-                          'disenio_funcionalidad_copropiedad'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        },
-        ' ': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['num_etapas', 'num_interiores', 'num_torres', 'num_pisos_por_torre', 'num_unidades_privadas',
-                          'num_sotanos'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        }
-    },
     VALUATION_BUILDING_UNIT_TABLE: {
         '': {
             'show_label': True,
@@ -702,223 +1976,5 @@ FORM_GROUPS = {
             'before_attr': '  ',
             'after_attr': None
         }
-    }
-}
-
-
-"""
-we define the minimum structure of a table to validate that there are no repeated records
-"""
-LOGIC_CONSISTENCY_TABLES = {
-    # Geometric tables
-    BOUNDARY_POINT_TABLE: ['acuerdo',
-                           'definicion_punto',
-                           'descripcion_punto',
-                           'exactitud_vertical',
-                           'exactitud_horizontal',
-                           'confiabilidad',
-                           'nombre_punto',
-                           'posicion_interpolacion',
-                           'monumentacion',
-                           'puntotipo',
-                           'localizacion_original'],
-    SURVEY_POINT_TABLE: ['tipo_punto_levantamiento',
-                         'definicion_punto',
-                         'exactitud_vertical',
-                         'exactitud_horizontal',
-                         'nombre_punto',
-                         'posicion_interpolacion',
-                         'monumentacion',
-                         'puntotipo',
-                         'localizacion_original'],
-    CONTROL_POINT_TABLE: ['nombre_punto',
-                          'exactitud_vertical',
-                          'exactitud_horizontal',
-                          'tipo_punto_control',
-                          'confiabilidad',
-                          'posicion_interpolacion',
-                          'monumentacion',
-                          'puntotipo',
-                          'localizacion_original'],
-    BOUNDARY_TABLE: [LENGTH_FIELD_BOUNDARY_TABLE,
-                     'localizacion_textual',
-                     'geometria'],
-    PLOT_TABLE: ['area_registral',
-                 'area_calculada',
-                 'avaluo_terreno',
-                 'dimension',
-                 'etiqueta',
-                 'relacion_superficie',
-                 'nivel',
-                 'punto_referencia',
-                 'poligono_creado'],
-    BUILDING_TABLE: ['avaluo_construccion',
-                     'area_construccion',
-                     'tipo',
-                     'dimension',
-                     'etiqueta',
-                     'relacion_superficie',
-                     'nivel',
-                     'punto_referencia',
-                     'poligono_creado'],
-    BUILDING_UNIT_TABLE: ['avaluo_unidad_construccion',
-                          'numero_pisos',
-                          'area_construida',
-                          'area_privada_construida',
-                          'construccion',
-                          'tipo',
-                          'dimension',
-                          'etiqueta',
-                          'relacion_superficie',
-                          'nivel',
-                          'punto_referencia',
-                          'poligono_creado'],
-    # Alphanumeric tables
-    COL_PARTY_TABLE: ['documento_identidad',
-                      'tipo_documento'],
-    PARCEL_TABLE: ['departamento',
-                   'municipio',
-                   'zona',
-                   'nupre',
-                   'fmi',
-                   'numero_predial',
-                   'numero_predial_anterior',
-                   'avaluo_predio',
-                   'copropiedad',
-                   'nombre',
-                   'tipo'],
-    RIGHT_TABLE: ['tipo',
-                  'codigo_registral_derecho',
-                  'descripcion',
-                  'comprobacion_comparte',
-                  'uso_efectivo',
-                  'r_espacio_de_nombres',
-                  'interesado_la_agrupacion_interesados',
-                  'interesado_col_interesado',
-                  'unidad_la_baunit',
-                  'unidad_predio'],
-    RESTRICTION_TABLE: ['interesado_requerido',
-                        'tipo',
-                        'codigo_registral_restriccion',
-                        'descripcion',
-                        'comprobacion_comparte',
-                        'uso_efectivo',
-                        'interesado_la_agrupacion_interesados',
-                        'interesado_col_interesado',
-                        'unidad_la_baunit',
-                        'unidad_predio'],
-    RESPONSIBILITY_TABLE: ['tipo',
-                           'codigo_registral_responsabilidad',
-                           'descripcion',
-                           'comprobacion_comparte',
-                           'uso_efectivo',
-                           'interesado_la_agrupacion_interesados',
-                           'interesado_col_interesado',
-                           'unidad_la_baunit',
-                           'unidad_predio'],
-    ADMINISTRATIVE_SOURCE_TABLE: ['texto',
-                                  'tipo',
-                                  'codigo_registral_transaccion',
-                                  'nombre',
-                                  'fecha_aceptacion',
-                                  'estado_disponibilidad',
-                                  'sello_inicio_validez',
-                                  'tipo_principal',
-                                  'fecha_grabacion',
-                                  'fecha_entrega',
-                                  'oficialidad']
-}
-
-
-
-"""
-Constrains for wizard create parcel
-"""
-
-# Types of parcels
-PARCEL_TYPE_NO_HORIZONTAL_PROPERTY = "NPH"
-PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "PropiedadHorizontal.Matriz"
-PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "PropiedadHorizontal.UnidadPredial"
-PARCEL_TYPE_CONDOMINIUM_PARENT = "Condominio.Matriz"
-PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "Condominio.UnidadPredial"
-PARCEL_TYPE_MEJORA = "Mejora"
-PARCEL_TYPE_CEMETERY_PARENT = "ParqueCementerio.Matriz"
-PARCEL_TYPE_CEMETERY_PRIVATE_UNIT = "ParqueCementerio.UnidadPrivada"
-PARCEL_TYPE_ROAD = "Via"
-PARCEL_TYPE_PUBLIC_USE = "BienUsoPublico"
-PARCEL_TYPE_STORE = "Deposito"
-PARCEL_TYPE_PARKING = "Parqueadero"
-PARCEL_TYPE_WAREHOUSE = "Bodega"
-
-# Operations:
-# 1 = One and only one feature must be selected
-# + = One or more features must be selected
-# * = Optional, i.e., zero or more features could be selected
-# None = Won't be stored as a related feature (selected features will be ignored)
-CONSTRAINT_TYPES_OF_PARCEL = {
-    PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: '*'
-    },
-    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
-        PLOT_TABLE: None,
-        BUILDING_TABLE: None,
-        BUILDING_UNIT_TABLE: '+'
-    },
-    PARCEL_TYPE_CONDOMINIUM_PARENT: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_MEJORA: {
-        PLOT_TABLE: None,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: '+'
-    },
-    PARCEL_TYPE_CEMETERY_PARENT: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: None,
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_ROAD: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: None,
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_PUBLIC_USE: {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_STORE: {
-        PLOT_TABLE: '*',
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: '*'
-    },
-    PARCEL_TYPE_PARKING: {
-        PLOT_TABLE: '*',
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: '*'
-    },
-    PARCEL_TYPE_WAREHOUSE: {
-        PLOT_TABLE: '*',
-        BUILDING_TABLE: '*',
-        BUILDING_UNIT_TABLE: '*'
     }
 }

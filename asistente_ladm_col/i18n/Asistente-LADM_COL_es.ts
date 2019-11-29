@@ -811,7 +811,7 @@
     </message>
 </context>
 <context>
-    <name>CreateAdministrativeSourceCadastreWizard</name>
+    <name>CreateAdministrativeSourceOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -830,7 +830,7 @@
     </message>
 </context>
 <context>
-    <name>CreateBoundariesCadastreWizard</name>
+    <name>CreateBoundariesOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -857,7 +857,7 @@
     </message>
 </context>
 <context>
-    <name>CreateBuildingCadastreWizard</name>
+    <name>CreateBuildingOperationWizard</name>
     <message>
         <source>Start</source>
         <translation type="vanished">Comenzar</translation>
@@ -880,7 +880,7 @@
     </message>
 </context>
 <context>
-    <name>CreateBuildingUnitCadastreWizard</name>
+    <name>CreateBuildingUnitOperationWizard</name>
     <message>
         <source>Start</source>
         <translation type="vanished">Comenzar</translation>
@@ -972,7 +972,7 @@
     </message>
 </context>
 <context>
-    <name>CreateColPartyCadastreWizard</name>
+    <name>CreateColPartyOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1056,7 +1056,7 @@
     </message>
 </context>
 <context>
-    <name>CreateGroupPartyCadastre</name>
+    <name>CreateGroupPartyOperation</name>
     <message>
         <source>Group party table couldn&apos;t be found... {}</source>
         <translation type="vanished">No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
@@ -1085,7 +1085,7 @@
     </message>
 </context>
 <context>
-    <name>CreateGroupPartyCadastreWizard</name>
+    <name>CreateGroupPartyOperationWizard</name>
     <message>
         <source>Group Party Type Table couldn&apos;t be found... {}</source>
         <translation type="vanished">No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
@@ -1115,7 +1115,7 @@
     </message>
 </context>
 <context>
-    <name>CreateLegalPartyCadastreWizard</name>
+    <name>CreateLegalPartyOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1172,7 +1172,7 @@
     </message>
 </context>
 <context>
-    <name>CreateNaturalPartyCadastreWizard</name>
+    <name>CreateNaturalPartyOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1229,7 +1229,7 @@
     </message>
 </context>
 <context>
-    <name>CreateParcelCadastreWizard</name>
+    <name>CreateParcelOperationWizard</name>
     <message>
         <source>Stop parcel creation?</source>
         <translation type="vanished">¿Detener la creación de predios?</translation>
@@ -1422,7 +1422,7 @@
     </message>
 </context>
 <context>
-    <name>CreatePlotCadastreWizard</name>
+    <name>CreatePlotOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1437,7 +1437,7 @@
     </message>
 </context>
 <context>
-    <name>CreatePointsCadastreWizard</name>
+    <name>CreatePointsOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1519,7 +1519,7 @@
     </message>
 </context>
 <context>
-    <name>CreateResponsibilityCadastreWizard</name>
+    <name>CreateResponsibilityOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1562,7 +1562,7 @@
     </message>
 </context>
 <context>
-    <name>CreateRestrictionCadastreWizard</name>
+    <name>CreateRestrictionOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1605,7 +1605,7 @@
     </message>
 </context>
 <context>
-    <name>CreateRightCadastreWizard</name>
+    <name>CreateRightOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1656,7 +1656,7 @@
     </message>
 </context>
 <context>
-    <name>CreateRightOfWayCadastreWizard</name>
+    <name>CreateRightOfWayOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -1701,7 +1701,7 @@
     </message>
 </context>
 <context>
-    <name>CreateSpatialSourceCadastreWizard</name>
+    <name>CreateSpatialSourceOperationWizard</name>
     <message>
         <source>Points</source>
         <translation type="vanished">Puntos</translation>
@@ -1832,7 +1832,7 @@
     </message>
 </context>
 <context>
-    <name>DefineBoundariesCadastreWizard</name>
+    <name>DefineBoundariesOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -4459,7 +4459,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
 </context>
 <context>
-    <name>PointsSpatialUnitCadastreWizard</name>
+    <name>PointsSpatialUnitOperationWizard</name>
     <message>
         <source>Import</source>
         <translation type="vanished">Importar</translation>
@@ -6292,7 +6292,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_associate_extaddress_cadastre</name>
+    <name>wiz_associate_extaddress_operation</name>
     <message>
         <source>Associate ExtAddress</source>
         <translation type="vanished">Relacionar Dirección</translation>
@@ -6438,7 +6438,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_administrative_source_cadastre</name>
+    <name>wiz_create_administrative_source_operation</name>
     <message>
         <source>Create Administrative Source</source>
         <translation type="vanished">Crear Fuente Administrativa</translation>
@@ -6465,7 +6465,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_building_cadastre</name>
+    <name>wiz_create_building_operation</name>
     <message>
         <source>Create Building</source>
         <translation type="vanished">Crear Construcción</translation>
@@ -6611,7 +6611,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_col_party_cadastre</name>
+    <name>wiz_create_col_party_operation</name>
     <message>
         <source>Create Natural Party</source>
         <translation type="obsolete">Crear Interesado Natural</translation>
@@ -6723,7 +6723,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_legal_party_cadastre</name>
+    <name>wiz_create_legal_party_operation</name>
     <message>
         <source>Create Legal Party</source>
         <translation type="vanished">Crear Interesado Jurídico</translation>
@@ -6800,7 +6800,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_natural_party_cadastre</name>
+    <name>wiz_create_natural_party_operation</name>
     <message>
         <source>Create Natural Party</source>
         <translation type="vanished">Crear Interesado Natural</translation>
@@ -6877,7 +6877,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>wiz_create_parcel_cadastre</name>
+    <name>wiz_create_parcel_operation</name>
     <message>
         <source>Create Parcel</source>
         <translation type="vanished">Crear Predio</translation>
@@ -7024,7 +7024,7 @@ Unidades de Construcción)</translation>
     </message>
 </context>
 <context>
-    <name>wiz_create_plot_cadastre</name>
+    <name>wiz_create_plot_operation</name>
     <message>
         <source>Create plots</source>
         <translation type="vanished">Crear terrenos</translation>
@@ -7078,7 +7078,7 @@ Unidades de Construcción)</translation>
     </message>
 </context>
 <context>
-    <name>wiz_create_responsibility_cadastre</name>
+    <name>wiz_create_responsibility_operation</name>
     <message>
         <source>Create Responsibility</source>
         <translation type="vanished">Crear Responsabilidad</translation>
@@ -7127,7 +7127,7 @@ Unidades de Construcción)</translation>
     </message>
 </context>
 <context>
-    <name>wiz_create_restriction_cadastre</name>
+    <name>wiz_create_restriction_operation</name>
     <message>
         <source>Create Restriction</source>
         <translation type="vanished">Crear Restricción</translation>
@@ -7176,7 +7176,7 @@ Unidades de Construcción)</translation>
     </message>
 </context>
 <context>
-    <name>wiz_create_right_cadastre</name>
+    <name>wiz_create_right_operation</name>
     <message>
         <source>Create Right</source>
         <translation type="vanished">Crear Derecho</translation>
@@ -7225,7 +7225,7 @@ Unidades de Construcción)</translation>
     </message>
 </context>
 <context>
-    <name>wiz_create_spatial_source_cadastre</name>
+    <name>wiz_create_spatial_source_operation</name>
     <message>
         <source>Create Spatial Source</source>
         <translation type="vanished">Crear Fuente Espacial</translation>

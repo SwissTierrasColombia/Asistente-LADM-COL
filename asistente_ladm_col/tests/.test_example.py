@@ -8,7 +8,7 @@ from qgis.testing import start_app, unittest
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-#from asistente_ladm_col.gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
+#from asistente_ladm_col.gui.point_spa_uni_operation_wizard import PointsSpatialUnitOperationWizard
 #from asistente_ladm_col.tests.utils import import_qgis_model_baker, get_test_path
 #from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
