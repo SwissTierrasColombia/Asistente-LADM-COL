@@ -40,7 +40,7 @@ from qgis.core import (Qgis,
 import processing
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum)
+                                             WizardTypeEnum, LogHandlerEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
@@ -81,13 +81,16 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
 from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
+from asistente_ladm_col.lib.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
+from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -112,7 +115,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _operation_model_required,
                                                  _different_db_connections_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 
 
@@ -121,10 +124,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def __init__(self, iface, unit_tests=False):
         QObject.__init__(self)
-        self.unit_tests = unit_tests
         self.iface = iface
+        self.unit_tests = unit_tests
         self.main_window = self.iface.mainWindow()
-        self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
@@ -137,6 +139,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger = Logger()
         self.logger.set_mode(DEFAULT_LOG_MODE)
         self.gui_builder = GUI_Builder(self.iface)
+        self.session = STSession()
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
@@ -150,9 +153,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.set_connections()
 
         if not self.unit_tests:
-            # Ask for role name before building the GUI
-            dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
-            dlg_welcome.exec_()
+            # Ask for role name before building the GUI, only the first time the plugin is run
+            if self.gui_builder.show_welcome_screen():
+                dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+                dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
@@ -174,45 +178,42 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_valuation_actions()
         self.create_change_detection_actions()
         self.create_toolbar_actions()
+        self.create_transition_system_actions()
         self.create_generic_actions()
 
     def set_connections(self):
-        self.logger.message_emitted.connect(self.show_message)
+        self.conn_manager.db_connection_changed.connect(self.refresh_gui)
+
         self.logger.message_with_duration_emitted.connect(self.show_message)
         self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
-
-        self.report_generator.enable_action_requested.connect(self.enable_action)
+        self.logger.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.logger.clear_message_bar_emitted.connect(self.clear_message_bar)
+        self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
+        self.logger.message_with_button_open_table_attributes_emitted.connect(
+            self.show_message_with_open_table_attributes_button)
+        self.logger.message_with_button_download_report_dependency_emitted.connect(
+            self.show_message_to_download_report_dependency)
+        self.logger.message_with_button_remove_report_dependency_emitted.connect(
+            self.show_message_to_remove_report_dependency)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
-        self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
-        self.qgis_utils.clear_message_bar_emitted.connect(self.clear_message_bar)
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.conn_manager.db_connection_changed.connect(self.refresh_gui)
-        self.qgis_utils.message_emitted.connect(self.show_message)
-        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
-        self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
-        self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
-        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
-            self.show_message_with_open_table_attributes_button)
-        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(
-            self.show_message_to_download_report_dependency)
-        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(
-            self.show_message_to_remove_report_dependency)
-        self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        self.gui_builder.clear_status_bar_emitted.connect(self.clear_status_bar)
-        self.gui_builder.status_bar_message_emitted.connect(self.show_status_bar_message)
+        self.report_generator.enable_action_requested.connect(self.enable_action)
+
+        self.session.login_status_changed.connect(self.set_login_controls_enabled)
 
     def uninstall_custom_expression_functions(self):
         res = QgsExpression.unregisterFunction('get_domain_code_from_value')
@@ -224,7 +225,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self.refresh_gui(self.get_db_connection(), None)
 
     def refresh_gui(self, db, res):
-        self.gui_builder.build_gui(db, res)
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
+        with ProcessWithStatus(msg):
+            self.gui_builder.build_gui(db, res)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
@@ -265,6 +268,24 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
 
+    def create_transition_system_actions(self):
+        self._st_login_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/login.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
+            self.main_window)
+        self._st_logout_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/logout.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Logout"),
+            self.main_window)
+
+        self._st_login_action.triggered.connect(self.show_st_login_dialog)
+        self._st_logout_action.triggered.connect(partial(self.session_logout, True))
+        self._st_logout_action.setEnabled(False)
+
+        self.gui_builder.register_actions({
+            ACTION_ST_LOGIN: self._st_login_action,
+            ACTION_ST_LOGOUT: self._st_logout_action})
+
     def create_supplies_actions(self):
         self._etl_cobol_supplies_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
@@ -272,7 +293,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(self.run_etl_cobol)
+        self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
 
         self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
 
@@ -500,7 +521,7 @@ class AsistenteLADMCOLPlugin(QObject):
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
-                self.log.logMessage("Couldn't load model from {}".format(filename), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
                 return
 
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
@@ -575,15 +596,6 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
 
-    def show_message_to_load_layers(self, msg, button_text, layers, level):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(button_text)
-        button.pressed.connect(partial(self.load_layers, layers))
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, level, 15)
-
     def show_message_to_open_about_dialog(self, msg):
         self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -619,8 +631,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-            "Remove dependency"))
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
         button.pressed.connect(self.remove_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
@@ -647,7 +658,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.statusBarIface().showMessage(msg, duration)
 
     def load_layer(self, layer):
-        self.qgis_utils.get_layer(self.get_db_connection(), layer[0], layer[1], load=True)
+        self.clear_message_bar()
+        self.qgis_utils.get_layer(self.get_db_connection(), layer, None, load=True)
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
@@ -707,7 +719,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
     
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.conn_manager.get_db_connector_from_source())
+        dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
         dlg.exec_()
 
     def show_log_excel_button(self, text):
@@ -725,11 +737,10 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    @_cadastral_manager_model_required
-    @_db_connection_required
-    def run_etl_cobol(self):
+    def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        processing.execAlgorithmDialog("model:ETL-model-supplies", dict())
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -792,6 +803,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
+        self.session_logout(False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
         self.gui_builder.unload_gui()
@@ -1014,7 +1026,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_per_parcel(self, *args):
-        with OverrideCursor(Qt.WaitCursor):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
+        with ProcessWithStatus(msg):
             self.show_change_detection_dockwidget(False)  # all_parcels_mode is False, we want the per_parcel_mode instead
 
     @_validate_if_wizard_is_open
@@ -1025,7 +1038,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_all_parcels(self, *args):
-        with OverrideCursor(Qt.WaitCursor):
+        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
+        with ProcessWithStatus(msg):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
@@ -1057,9 +1071,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.showAttributeTable(layer, filter)
 
     def download_report_dependency(self):
+        self.clear_message_bar()  # Remove messages
         self.report_generator.download_report_dependency()
 
     def remove_report_dependency(self):
+        self.clear_message_bar()  # Remove messages
         self.report_generator.remove_report_dependency()
 
     def show_help(self):
@@ -1110,3 +1126,21 @@ class AsistenteLADMCOLPlugin(QObject):
     def close_wizard_if_opened(self):
         if self.wiz:
             self.wiz.close_wizard()  # This updates the is_wizard_open flag
+
+    def show_st_login_dialog(self):
+        dlg = LoginSTDialog(self.main_window)
+        dlg.exec_()
+
+    def session_logout(self, show_message=True):
+        logged_out, msg = self.session.logout()
+        if show_message:
+            self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
+
+    def set_login_controls_enabled(self, login_activated):
+        """
+        React upon changes in ST login. If a user is logged in or logged out, we want to activate only certain controls.
+
+        :param login_activated: Boolean, True if a user is logged in
+        """
+        self._st_login_action.setEnabled(not login_activated)
+        self._st_logout_action.setEnabled(login_activated)

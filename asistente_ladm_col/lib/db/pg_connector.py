@@ -23,8 +23,7 @@ from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        Qgis,
-                       QgsDataSourceUri,
-                       QgsApplication)
+                       QgsDataSourceUri)
 
 from .db_connector import (DBConnector,
                            EnumTestLevel)
@@ -74,7 +73,6 @@ class PGConnector(DBConnector):
         self.mode = 'pg'
         self.conn = None
         self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
-        self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
         self._logic_validation_queries = None
@@ -286,16 +284,16 @@ class PGConnector(DBConnector):
                 return (
                 False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
 
-            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection was open! {}".format(self.conn))
         else:
-            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
 
         return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
-            self.log.logMessage("Connection was closed ({}) !".format(self.conn.closed), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
     def validate_db(self):
@@ -589,7 +587,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PROPERTY RECORD CARD QUERY:", query)
+        # self.logger.debug(__name__, "PROPERTY RECORD CARD QUERY: {}".format(query))
 
         return res
 
@@ -626,7 +624,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PHYSICAL QUERY:", query)
+        # self.logger.debug(__name__, "PHYSICAL QUERY: {}".format(query))
 
         return res
 
@@ -664,7 +662,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("ECONOMIC QUERY:", query)
+        # self.logger.debug(__name__, "ECONOMIC QUERY:".format(query))
 
         return res
 

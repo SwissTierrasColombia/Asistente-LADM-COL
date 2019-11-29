@@ -24,7 +24,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
-            self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             feature = features[0]
             feature_ids_dict = dict()
@@ -50,7 +50,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                     feature_ids_dict[self.names.OP_CONTROL_POINT_T] = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_CONTROL_POINT_T][LAYER].selectedFeatures()]
 
             if not feature.isValid():
-                self.log.logMessage("Feature not found in layer Spatial Source...", PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in layer Spatial Source...")
             else:
                 spatial_source_id = feature[self.names.T_ID_F]
                 all_new_features = list()
@@ -63,7 +63,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                         new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_SOURCE_T][LAYER])
                         new_feature.setAttribute(self.names.COL_UE_SOURCE_T_OP_PLOT_F, plot_id)
                         new_feature.setAttribute(self.names.COL_UE_SOURCE_T_SOURCE_F, spatial_source_id)
-                        self.log.logMessage("Saving Plot-SpatialSource: {}-{}".format(plot_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving Plot-SpatialSource: {}-{}".format(plot_id, spatial_source_id))
                         new_features.append(new_feature)
 
                     self._layers[self.names.COL_UE_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
@@ -79,7 +79,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                         # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
                         new_feature.setAttribute(self.names.COL_CCL_SOURCE_T_BOUNDARY_F, boundary_id)
                         new_feature.setAttribute(self.names.COL_CCL_SOURCE_T_SOURCE_F, spatial_source_id)
-                        self.log.logMessage("Saving Boundary-SpatialSource: {}-{}".format(boundary_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving Boundary-SpatialSource: {}-{}".format(boundary_id, spatial_source_id))
                         new_features.append(new_feature)
 
                     self._layers[self.names.COL_CCL_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
@@ -91,7 +91,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                         new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_POINT_SOURCE_T][LAYER])
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F, boundary_point_id)
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_SOURCE_F, spatial_source_id)
-                        self.log.logMessage("Saving BoundaryPoint-SpatialSource: {}-{}".format(boundary_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving BoundaryPoint-SpatialSource: {}-{}".format(boundary_point_id, spatial_source_id))
                         new_features.append(new_feature)
 
                     self._layers[self.names.COL_POINT_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
@@ -103,7 +103,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                         new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_POINT_SOURCE_T][LAYER])
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_OP_SURVEY_POINT_F, survey_point_id)
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_SOURCE_F, spatial_source_id)
-                        self.log.logMessage("Saving SurveyPoint-SpatialSource: {}-{}".format(survey_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving SurveyPoint-SpatialSource: {}-{}".format(survey_point_id, spatial_source_id))
                         new_features.append(new_feature)
 
                     self._layers[self.names.COL_POINT_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
@@ -115,7 +115,7 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                         new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_POINT_SOURCE_T][LAYER])
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_OP_CONTROL_POINT_F, control_point_id)
                         new_feature.setAttribute(self.names.COL_POINT_SOURCE_T_SOURCE_F, spatial_source_id)
-                        self.log.logMessage("Saving ControlPoint-SpatialSource: {}-{}".format(control_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
+                        self.logger.info(__name__, "Saving ControlPoint-SpatialSource: {}-{}".format(control_point_id, spatial_source_id))
                         new_features.append(new_feature)
 
                     self._layers[self.names.COL_POINT_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)

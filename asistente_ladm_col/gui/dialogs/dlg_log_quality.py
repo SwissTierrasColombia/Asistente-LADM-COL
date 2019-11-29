@@ -28,10 +28,9 @@ DIALOG_LOG_QUALITY_UI = get_ui_class('dialogs/dlg_log_quality.ui')
 
 
 class LogQualityDialog(QDialog, DIALOG_LOG_QUALITY_UI):
-    def __init__(self, qgis_utils, quality, db, parent=None):
+    def __init__(self, quality, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self.quality = quality
         self.db = db
 
@@ -50,5 +49,5 @@ class LogQualityDialog(QDialog, DIALOG_LOG_QUALITY_UI):
                 time.strftime("%d/%m/%y %H:%M:%S"), self.db.get_description_conn_string(),
                 self.quality.utils.set_time_format(total_time))
 
-        save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_quality_dialog/save_path', title, text )
+        save_pdf_format('Asistente-LADM_COL/log_quality_dialog/save_path', title, text)
 

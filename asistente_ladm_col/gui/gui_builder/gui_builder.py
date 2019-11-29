@@ -17,7 +17,6 @@
 """
 
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              pyqtSignal,
                               Qt,
                               QObject)
 from qgis.PyQt.QtGui import QIcon
@@ -36,9 +35,6 @@ class GUI_Builder(QObject):
     """
     Build plugin GUI according to roles and LADM_COL models present in the current db connection
     """
-    status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
-    clear_status_bar_emitted = pyqtSignal()
-
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
@@ -65,35 +61,28 @@ class GUI_Builder(QObject):
         :param test_conn_result: Can be True or False if test_connection was called, or None if we should call it now.
         :return:
         """
-        self.logger.info(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant..."),
-                         LogHandlerEnum.STATUS_BAR)
-        QCoreApplication.processEvents()
+        self.unload_gui(final_unload=False)  # First clear everything
 
-        with OverrideCursor(Qt.WaitCursor):
-            self.unload_gui(final_unload=False)  # First clear everything
+        # Filter menus and actions and get a gui_config with the proper structure ready to build the GUI (e.g., with no
+        # empty Menus)
+        gui_config = self._get_filtered_gui_config(db, test_conn_result)
 
-            # Filter menus and actions and get a gui_config with the proper structure ready to build the GUI (e.g., with no
-            # empty Menus)
-            gui_config = self._get_filtered_gui_config(db, test_conn_result)
+        for component, values in gui_config.items():
+            if component == MAIN_MENU:
+                for menu_def in values:
+                    menu = self._build_menu(menu_def)
+                    existent_actions = self.iface.mainWindow().menuBar().actions()
+                    if len(existent_actions) > 0:
+                        last_action = existent_actions[-1]
+                        self.iface.mainWindow().menuBar().insertMenu(last_action, menu)
+                    else:
+                        self.iface.mainWindow().menuBar().addMenu(menu)
+                    self.menus.append(menu)
+            elif component == TOOLBAR:
+                for toolbar_def in values:  # We expect a list of dicts here...
+                    toolbar = self._build_toolbar(toolbar_def)
 
-            for component, values in gui_config.items():
-                if component == MAIN_MENU:
-                    for menu_def in values:
-                        menu = self._build_menu(menu_def)
-                        existent_actions = self.iface.mainWindow().menuBar().actions()
-                        if len(existent_actions) > 0:
-                            last_action = existent_actions[-1]
-                            self.iface.mainWindow().menuBar().insertMenu(last_action, menu)
-                        else:
-                            self.iface.mainWindow().menuBar().addMenu(menu)
-                        self.menus.append(menu)
-                elif component == TOOLBAR:
-                    for toolbar_def in values:  # We expect a list of dicts here...
-                        toolbar = self._build_toolbar(toolbar_def)
-
-                        self.toolbars.append(toolbar)
-
-        self.clear_status_bar_emitted.emit()
+                    self.toolbars.append(toolbar)
 
     def _get_filtered_gui_config(self, db, test_conn_result):
         """
@@ -105,6 +94,7 @@ class GUI_Builder(QObject):
         :return: Dictionary in the form of a gui_config dict, but with only allowed actions for the role_key passed.
         """
         role_key = Role_Registry().get_active_role()
+        self.logger.info(__name__, "Active role: {}".format(Role_Registry().get_role_name(role_key)))
         gui_config = self._get_gui_config(db, test_conn_result, role_key)
         # self.logger.debug(__name__, "Filtered gui_config: {}".format(gui_config))
         role_actions = self._get_role_actions(role_key)
@@ -325,3 +315,5 @@ class GUI_Builder(QObject):
                 if item in self._registered_actions:
                     toolbar.addAction(self._registered_actions[item])
 
+    def show_welcome_screen(self):
+        return not Role_Registry().active_role_already_set()

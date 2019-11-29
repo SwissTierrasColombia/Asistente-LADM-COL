@@ -56,9 +56,9 @@ class Names(metaclass=Singleton):
     GC_ADDRESS_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_Direccion"
     # "Datos_Gestor_Catastral_V2_9_5.GC_SistemaProcedenciaDatosTipo"
     GC_BUILDING_UNIT_TYPE_T = None  # "Datos_Gestor_Catastral_V2_9_5.GC_UnidadConstruccionTipo"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno"
-    # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion"
+    GC_COMMISSION_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Construccion"
+    GC_COMMISSION_PLOT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Terreno"
+    GC_COMMISSION_BUILDING_UNIT_T = None  # "Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion"
 
     INI_PARCEL_SUPPLIES_T = None  # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.INI_Predio_Insumos"
     # "Datos_Integracion_Insumos_V2_9_5.Datos_Integracion_Insumos.ini_predio_integracion_gc"
@@ -745,6 +745,9 @@ class Names(metaclass=Singleton):
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {VARIABLE_NAME: "GC_PLOT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Unidad_Construccion": {VARIABLE_NAME: "GC_BUILDING_UNIT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Vereda": {VARIABLE_NAME: "GC_RURAL_DIVISION_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Terreno": {VARIABLE_NAME: "GC_COMMISSION_PLOT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Unidad_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_UNIT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_CondicionPredioTipo": {VARIABLE_NAME: "GC_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_Direccion": {VARIABLE_NAME: "GC_ADDRESS_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.GC_UnidadConstruccionTipo": {VARIABLE_NAME: "GC_BUILDING_UNIT_TYPE_T", FIELDS_DICT: {}},
@@ -1253,7 +1256,6 @@ class Names(metaclass=Singleton):
         :param models: List of model prefixes present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
-        debug = False
         required_names = ["T_ID_F",
                           "ILICODE_F",
                           "DESCRIPTION_F",
@@ -1269,15 +1271,13 @@ class Names(metaclass=Singleton):
                     if k1.split(".")[0] in models:
                         required_names.append(v1)
 
-        if debug:
-            print(required_names)
+        self.logger.debug(__name__, "Number of required Names: {}".format(required_names))
         names_not_found = list()
         for required_name in required_names:
             if getattr(self, required_name) is None:
                 names_not_found.append(required_name)
 
-        if debug:
-            print("Names not found:", set(names_not_found))
+        self.logger.debug(__name__, "Names not found: {}".format(set(names_not_found)))
         if names_not_found:
             return (False, "Name '{}' was not found!".format(names_not_found[0]))
 

@@ -97,7 +97,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
-                ACTION_INTEGRATE_SUPPLIES
+                ACTION_INTEGRATE_SUPPLIES,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT
             ],
             ROLE_GUI_CONFIG: {}
         }
@@ -294,6 +296,14 @@ class Role_Registry(metaclass=Singleton):
     def get_active_role(self):
         return QSettings().value("Asistente-LADM_COL/roles/current_role_key", self._default_role)
 
+    def active_role_already_set(self):
+        """
+        Whether we have set an active role already or not.
+
+        :return: True if the current_role_key variable is stored in QSettings. False otherwise.
+        """
+        return QSettings().value("Asistente-LADM_COL/roles/current_role_key", False) is not False
+
     def set_active_role(self, role_key):
         res = False
         if role_key in self._registered_roles:
@@ -314,6 +324,13 @@ class Role_Registry(metaclass=Singleton):
 
     def get_roles_info(self):
         return {k: v[ROLE_NAME] for k,v in self._registered_roles.items()}
+
+    def get_role_name(self, role_key):
+        if role_key not in self._registered_roles:
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's name".format(role_key))
+            role_key = self._default_role
+
+        return self._registered_roles[role_key][ROLE_NAME]
 
     def get_role_description(self, role_key):
         if role_key not in self._registered_roles:

@@ -31,7 +31,6 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayer,
                        QgsMapLayerProxyModel,
-                       QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
@@ -41,6 +40,7 @@ from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       DEFAULT_EPSG)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                OverrideCursor,
@@ -59,11 +59,11 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
-        self.help_strings = HelpStrings()
+        self.logger = Logger()
         self.names = Names()
+        self.help_strings = HelpStrings()
 
         self._layers = {
             self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
@@ -253,11 +253,8 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(output_layer_name)
 
             else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(
-                        output_layer_name),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                    "Select a source layer to set the field mapping to '{}'.").format(output_layer_name))
 
             self.close_wizard()
 
@@ -268,7 +265,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+            self.logger.info_msg(__name__, message)
         self.close()
 
     def current_point_name(self):
@@ -283,10 +280,8 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         csv_path = self.txt_file_path.text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "No CSV file given or file doesn't exist."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                                                                         "No CSV file given or file doesn't exist."))
             return
 
         target_layer_name = self.current_point_name()
@@ -407,10 +402,8 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             return line.split(self.txt_delimiter.text())
 
         if error_reading:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "It was not possible to read field names from the CSV. Check the file and try again."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                "It was not possible to read field names from the CSV. Check the file and try again."))
         return []
 
     def separator_changed(self, text):
@@ -456,13 +449,13 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...")
                 msg = QCoreApplication.translate(self.WIZARD_NAME, "CSV file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'Removing existing file {}...'.format(new_filename))
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -471,7 +464,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                 msg = QCoreApplication.translate(self.WIZARD_NAME, """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.warning(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate(self.WIZARD_NAME, "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 

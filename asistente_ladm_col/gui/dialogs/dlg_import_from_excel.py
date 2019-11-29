@@ -23,8 +23,7 @@ from osgeo import ogr
 from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsFeatureRequest, 
-                       QgsApplication)
+                       QgsFeatureRequest)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, 
@@ -39,6 +38,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QFileDialog)
 
+from asistente_ladm_col.lib.logger import Logger
 from ...utils.qt_utils import make_file_selector, normalize_local_url
 from ...config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
@@ -96,7 +96,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
@@ -583,12 +583,8 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.qgis_utils.message_with_duration_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
-                excel_path),
-            Qgis.Success,
-            0)
+        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
+            "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
@@ -780,7 +776,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path,
                                                                       sheetname=sheetname, filename=filename)
 
-        self.log.logMessage("Loading layer from excel with uri='{}'".format(uri), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Loading layer from excel with uri='{}'".format(uri))
         layer = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
         layer.setProviderEncoding('UTF-8')
         return layer
@@ -835,13 +831,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/excel/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...")
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "Excel file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'Removing existing file {}...'.format(new_filename))
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -850,7 +846,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                 msg = QCoreApplication.translate("ImportFromExcelDialog", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 

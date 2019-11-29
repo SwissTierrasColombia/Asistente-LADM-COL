@@ -64,7 +64,8 @@ from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopo
 from .decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
-from .qt_utils import OverrideCursor
+from .qt_utils import (OverrideCursor,
+                       ProcessWithStatus)
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      LAYER,
@@ -88,14 +89,11 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      TranslatableConfigStrings,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
+from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings, Logger
 from asistente_ladm_col.config.table_mapping_config import (Names,
                                                             FORM_GROUPS)
-from asistente_ladm_col.config.translator import (
-    QGIS_LANG,
-    PLUGIN_DIR
-)
-from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  PLUGIN_DIR)
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
@@ -103,33 +101,23 @@ class QGISUtils(QObject):
     action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
-    clear_status_bar_emitted = pyqtSignal()
-    clear_message_bar_emitted = pyqtSignal()
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    message_emitted = pyqtSignal(str, int) # Message, level
-    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
-    message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
-    message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
-    message_with_open_table_attributes_button_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button text, layers_dict, level
-    message_with_button_download_report_dependency_emitted = pyqtSignal(str) # Message
-    message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
-    status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
     def __init__(self, layer_tree_view=None):
         QObject.__init__(self)
+        self.layer_tree_view = layer_tree_view
+        self.logger = Logger()
+        self.names = Names()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
-        self.layer_tree_view = layer_tree_view
-        self.names = Names()
         self.translatable_config_strings = TranslatableConfigStrings()
         self.refactor_fields = RefactorFieldsMappings()
 
@@ -145,14 +133,10 @@ class QGISUtils(QObject):
 
     def cache_layers_and_relations(self, db, ladm_col_db):
         if ladm_col_db:
-            self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-                "Extracting relations and domains from the database... This is done only once per session!"), 0)
-            QCoreApplication.processEvents()
-
-            with OverrideCursor(Qt.WaitCursor):
+            msg = QCoreApplication.translate("QGISUtils",
+                "Extracting relations and domains from the database... This is done only once per session!")
+            with ProcessWithStatus(msg):
                 self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
-
-            self.clear_status_bar_emitted.emit()
         else:
             self.clear_db_cache()
 
@@ -247,7 +231,7 @@ class QGISUtils(QObject):
 
                 response_layers[layer_id] = layer_obj
             profiler.end()
-            print("Existing layers",profiler.totalTime())
+            self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
             profiler.clear()
 
             if load:
@@ -260,17 +244,16 @@ class QGISUtils(QObject):
                     profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
                     profiler.end()
-                    print("Related layers",profiler.totalTime())
+                    self.logger.debug(__name__, "Related layers... {}".format(profiler.totalTime()))
                     profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
-                    self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
-                    QCoreApplication.processEvents()
+                    self.logger.status(QCoreApplication.translate("QGISUtils",
+                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
                     profiler.start("load_layers")
                     self.qgis_model_baker_utils.load_layers(all_layers_to_load, db)
                     profiler.end()
-                    print("Load layers", profiler.totalTime())
+                    self.logger.debug(__name__, "Load layers... {}".format(profiler.totalTime()))
                     profiler.clear()
 
                     # Now that all layers are loaded, update response dict
@@ -339,9 +322,9 @@ class QGISUtils(QObject):
                             self.post_load_configurations(db, layer, layer_modifiers=layer_modifiers)
 
                     profiler.end()
-                    print("Post load",profiler.totalTime())
+                    self.logger.debug(__name__, "Post load... {}".format(profiler.totalTime()))
                     profiler.clear()
-                    self.clear_status_bar_emitted.emit()
+                    self.logger.status(None)
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)
@@ -352,10 +335,10 @@ class QGISUtils(QObject):
         # Verifies that the layers have been successfully loaded
         for layer_name in layers:
             if response_layers[layer_name] is None:
-                self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "{layer_name} layer couldn't be found... {description}").format(
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
-                        description=db.get_display_conn_string()),
-                    Qgis.Warning)
+                        description=db.get_display_conn_string()))
 
                 # If it is not possible to obtain the requested layers we make null the variable "layers"
                 layers = None
@@ -391,13 +374,13 @@ class QGISUtils(QObject):
                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format(tool_name)
 
         if None in layers:
-            self.message_emitted.emit(msg, Qgis.Warning)
+            self.logger.warning_msg(__name__, msg)
             return False
 
         # Load layers
         self.get_layers(db, layers, load=True)
         if not layers or layers is None:
-            self.message_emitted.emit(msg, Qgis.Warning)
+            self.logger.warning_msg(__name__, msg)
             return False
 
         # Check if any layer is in editing mode
@@ -408,12 +391,10 @@ class QGISUtils(QObject):
                     layers_name.append(layers[layer][LAYER].name())
 
         if layers_name:
-            self.message_emitted.emit(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
                     tool_name,
-                    '; '.join(layers_name)),
-                Qgis.Warning)
+                    '; '.join(layers_name)))
             return False
 
         return True
@@ -614,7 +595,6 @@ class QGISUtils(QObject):
 
         if layer_name == self.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
-            self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
             self._source_handler.handle_source_upload(db, layer, self.names.EXT_ARCHIVE_S_DATA_F)
 
     def set_layer_constraints(self, db, layer):
@@ -714,10 +694,8 @@ class QGISUtils(QObject):
                 index = layer.fields().indexFromName(field)
                 default_value = QgsDefaultValue(expression, True) # Calculate on update
                 layer.setDefaultValueDefinition(index, default_value)
-                QgsApplication.messageLog().logMessage(
-                    "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
-                        layer_name, field, expression),
-                    PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
+                    layer_name, field, expression))
 
     def reset_automatic_field(self, db, layer, field):
         self.configure_automatic_fields(db, layer, [{field: ""}])
@@ -829,10 +807,8 @@ class QGISUtils(QObject):
 
     def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No CSV file given or file doesn't exist."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                                                                         "No CSV file given or file doesn't exist."))
             return False
 
         # Create QGIS vector layer
@@ -864,10 +840,8 @@ class QGISUtils(QObject):
             csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "CSV layer not valid!"),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                                                                         "CSV layer not valid!"))
             return False
 
         # Necessary export to be enable edit dataprovider
@@ -890,10 +864,8 @@ class QGISUtils(QObject):
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
             if overlapping:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "There are overlapping points, we cannot import them into the DB! See selected points."))
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
                 return False
@@ -912,17 +884,11 @@ class QGISUtils(QObject):
 
         if features_added:
             self.zoom_full_requested.emit()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "{} points were added succesfully to '{}'.").format(
-                    new_features,
-                    target_layer_name),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No point was added to '{}'.").format(target_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "No point was added to '{}'.").format(target_layer_name))
             return False
 
         return True
@@ -959,10 +925,8 @@ class QGISUtils(QObject):
             return False
 
         if output_layer.isEditable():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name))
             return False
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
@@ -978,10 +942,8 @@ class QGISUtils(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Model ETL-model was not found and cannot be opened!"),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "Model ETL-model was not found and cannot be opened!"))
             return False
 
     @_activate_processing_plugin
@@ -991,10 +953,8 @@ class QGISUtils(QObject):
             return False
 
         if output.isEditable():
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name))
             return False
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
@@ -1007,8 +967,7 @@ class QGISUtils(QObject):
                 mapping = self.load_field_mapping(field_mapping)
 
                 if mapping is None: # If the mapping couldn't be parsed for any reason
-                    QgsApplication.messageLog().logMessage("Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping),
-                                                           PLUGIN_NAME, Qgis.Warning)
+                    self.logger.warning(__name__, "Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping))
 
             if mapping is None:
                 mapping = self.refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, self)
@@ -1032,10 +991,8 @@ class QGISUtils(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Model ETL-model was not found and cannot be opened!"),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "Model ETL-model was not found and cannot be opened!"))
             return False
 
     def load_field_mapping(self, field_mapping):
@@ -1066,8 +1023,7 @@ class QGISUtils(QObject):
                                                "txt")
 
         txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, name_field_mapping)
-
-        QgsApplication.messageLog().logMessage("Field mapping saved: {}".format(name_field_mapping), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Field mapping saved: {}".format(name_field_mapping))
 
         with open(txt_field_mapping_path, "w+") as file:
             file.write(str(params['mapping']))
@@ -1099,9 +1055,7 @@ class QGISUtils(QObject):
             url = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         if url:
-            with OverrideCursor(Qt.WaitCursor):
-                self.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
-                QCoreApplication.processEvents()
+            with ProcessWithStatus("Checking source service availability (this might take a while)..."):
                 if self.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -1139,8 +1093,6 @@ class QGISUtils(QObject):
                     res = False
                     msg['text'] = QCoreApplication.translate("SettingsDialog",
                         "There was a problem connecting to Internet.")
-
-                self.clear_status_bar_emitted.emit()
         else:
             res = False
             msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
@@ -1204,17 +1156,11 @@ class QGISUtils(QObject):
                 url = os.path.join("file://", help_path)
             else:
                 if is_connected:
-                    self.message_with_duration_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                                                   "The local help could not be found in '{}' and cannot be open.").format(help_path),
-                        Qgis.Warning,
-                        20)
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                        "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
                 else:
-                    self.message_with_duration_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                                                   "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url),
-                        Qgis.Warning,
-                        20)
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                        "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
                 return
         else:
             url = web_url
@@ -1291,8 +1237,6 @@ class QGISUtils(QObject):
             self.activate_layer_requested.emit(list_layers[0])
             self.action_vertex_tool_requested.emit()
 
-            self.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]),
-                Qgis.Info, 30)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "You can start moving nodes in layers {} and {}, simultaneously!").format(
+                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)

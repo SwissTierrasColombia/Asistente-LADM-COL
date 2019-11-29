@@ -70,11 +70,8 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
                     self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(
-                        self.EDITING_LAYER_NAME),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                    "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
 
             self.close_wizard()
 
@@ -106,7 +103,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+            self.logger.info_msg(__name__, message)
 
         if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
@@ -130,9 +127,8 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
         self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-        self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate(self.WIZARD_NAME,
-                                       "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
+        self.logger.info_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+           "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
 
     def post_save(self, features):
         raise NotImplementedError

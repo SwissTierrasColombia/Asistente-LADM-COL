@@ -147,7 +147,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
     def close_dialog(self):
-        if self._db_was_changed:  # TODO send to logger
+        if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True)
         self.close()
