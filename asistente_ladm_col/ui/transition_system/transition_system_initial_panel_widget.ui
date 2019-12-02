@@ -14,31 +14,6 @@
    <string>Initial Panel Widget Transition System</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../../resources.qrc">:/Asistente-LADM_COL/resources/images/icon.png</pixmap>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lbl_user_info">
-       <property name="text">
-        <string>User:
-Role:</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -76,23 +51,33 @@ Role:</string>
      </item>
     </layout>
    </item>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../../resources.qrc">:/Asistente-LADM_COL/resources/images/icon.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_user_info">
+       <property name="text">
+        <string>User:
+Role:</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QWidget" name="widget" native="true"/>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QGridLayout" name="content_layout"/>
    </item>
   </layout>
  </widget>

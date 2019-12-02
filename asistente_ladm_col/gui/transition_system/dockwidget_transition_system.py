@@ -57,8 +57,8 @@ DOCKWIDGET_UI = get_ui_class('transition_system/dockwidget_transition_system.ui'
 
 class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
 
-    def __init__(self, user):
-        super(DockWidgetTransitionSystem, self).__init__(None)
+    def __init__(self, user, parent):
+        super(DockWidgetTransitionSystem, self).__init__(parent)
         self.setupUi(self)
         self._user = user
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)

@@ -1146,7 +1146,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 self._dock_widget_transition_system.close()
                 self._dock_widget_transition_system = None
 
-            self._dock_widget_transition_system = DockWidgetTransitionSystem(user)
+            self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
             self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
             self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
