@@ -78,8 +78,6 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._layers = dict()
         self.initialize_layers()
 
-        self.restore_settings()
-
         self.btn_browse_file_blo.clicked.connect(
             make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("ETLCobolDialog",
                         "Select the BLO .lis file with Cobol data "),
@@ -205,9 +203,18 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         else:
             state_gdb = QValidator.Acceptable
 
+        if self.target_data.objectName() == 'Form_missing_supplies_cobol':
+            if self.target_data.txt_file_path_folder_supplies.isVisible():    
+                state_folder = self.target_data.txt_file_path_folder_supplies.validator().validate(
+                    self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
+            else:
+                state_folder = QValidator.Acceptable
+        else:
+            state_folder = QValidator.Acceptable
+
         if state_blo == QValidator.Acceptable and state_uni == QValidator.Acceptable and \
             state_ter == QValidator.Acceptable and state_pro == QValidator.Acceptable and \
-            state_gdb == QValidator.Acceptable:
+            state_gdb == QValidator.Acceptable and state_folder == QValidator.Acceptable:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         else:
              self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
@@ -230,22 +237,22 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
         settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
         settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
+        if self.target_data.objectName() == 'Form_missing_supplies_cobol':
+            settings.setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
     def restore_settings(self):
         settings = QSettings()
         self.txt_file_path_blo.setText(settings.value('Asistente-LADM_COL/etl_cobol/blo_path', ''))
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM_COL/etl_cobol/uni_path', ''))
         self.txt_file_path_ter.setText(settings.value('Asistente-LADM_COL/etl_cobol/ter_path', ''))
-        #self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
+        self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/etl_cobol/gdb_path', ''))
 
-    def load_lis_files(self):
-        self.lis_paths = {
-            'blo': self.txt_file_path_blo.text().strip(),
-            'uni': self.txt_file_path_uni.text().strip(),
-            'ter': self.txt_file_path_ter.text().strip(),
-            'pro': self.txt_file_path_pro.text().strip()
-        }
+        if self.target_data.objectName() == 'Form_missing_supplies_cobol':
+            self.target_data.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM_COL/etl_cobol/folder_path', ' '))
+
+    def load_lis_files(self, lis_paths):
+        self.lis_paths = lis_paths
 
         root = QgsProject.instance().layerTreeRoot()
         lis_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "LIS Supplies"))
@@ -270,12 +277,8 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         return True, ''
 
-    def load_gdb_files(self):
+    def load_gdb_files(self, required_layers):
         self.gdb_paths = {}
-
-        required_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO'
-                            ,'R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA',
-                            'R_NOMENCLATURA_DOMICILIARIA', 'U_PERIMETRO']
 
         gdb_path = self.txt_file_path_gdb.text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
@@ -308,46 +311,6 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                                                      "There was a problem loading layers from the 'Supplies' model!")
 
         return True, ''
-
-    def run_model_etl_cobol(self):
-        self.progress.setVisible(True)
-        self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies", 
-            {'barrio': self.gdb_paths['U_BARRIO'],
-            'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
-            'gccomisionconstruccion': self._layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
-            'gccomisionterreno': self._layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
-            'gcconstruccion': self._layers[self.names.GC_BUILDING_T][LAYER],
-            'gcdireccion': self._layers[self.names.GC_ADDRESS_T][LAYER],
-            'gcmanzana': self._layers[self.names.GC_BLOCK_T][LAYER],
-            'gcperimetro': self._layers[self.names.GC_PERIMETER_T][LAYER],
-            'gcpropietario': self._layers[self.names.GC_OWNER_T][LAYER],
-            'gcsector': self._layers[self.names.GC_RURAL_SECTOR_T][LAYER],
-            'gcsectorurbano': self._layers[self.names.GC_URBAN_SECTOR_T][LAYER],
-            'gcterreno': self._layers[self.names.GC_PLOT_T][LAYER],
-            'gcunidad': self._layers[self.names.GC_BUILDING_UNIT_T][LAYER],
-            'gcunidadconstruccioncomision': self._layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
-            'gcvereda': self._layers[self.names.GC_RURAL_DIVISION_T][LAYER],
-            'inputblo': self.lis_paths['blo'],
-            'inputconstruccion': self.gdb_paths['R_CONSTRUCCION'],
-            'inputmanzana': self.gdb_paths['U_MANZANA'],
-            'inputperimetro': self.gdb_paths['U_PERIMETRO'],
-            'inputpro': self.lis_paths['pro'],
-            'inputrunidad': self.gdb_paths['R_UNIDAD'],
-            'inputsector': self.gdb_paths['R_SECTOR'],
-            'inputter': self.lis_paths['ter'],
-            'inputterreno': self.gdb_paths['R_TERRENO'],
-            'inputuconstruccion': self.gdb_paths['U_CONSTRUCCION'],
-            'inputuni': self.lis_paths['uni'],
-            'inputusector': self.gdb_paths['U_SECTOR'],
-            'inpututerreno': self.gdb_paths['U_TERRENO'],
-            'inputuunidad': self.gdb_paths['U_UNIDAD'],
-            'inputvereda': self.gdb_paths['R_VEREDA'],
-            'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
-            'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
-            'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
-            feedback=self.feedback)
-        self.logger.info(__name__, "ETL-Cobol model finished.")
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

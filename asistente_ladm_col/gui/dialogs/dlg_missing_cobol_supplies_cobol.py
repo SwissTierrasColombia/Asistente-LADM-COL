@@ -75,45 +75,111 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
 
+        dir_validator_folder = DirValidator(allow_empty_dir=True)
+        self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
+        self.target_data.txt_file_path_folder_supplies.textEdited.connect(self.validators.validate_line_edits)
+        self.target_data.txt_file_path_folder_supplies.textEdited.connect(self.set_import_button_enabled)
+        self.target_data.txt_file_path_folder_supplies.textEdited.emit(self.target_data.txt_file_path_folder_supplies.text())
+
+        self.restore_settings()
+
     def accepted(self):
         self.save_settings()
 
-        if self._db.test_connection()[0]:
-            reply = QMessageBox.question(self,
-                QCoreApplication.translate("ETLCobolDialog", "Warning"),
-                QCoreApplication.translate("ETLCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
-                QMessageBox.Yes, QMessageBox.No)
+        lis_paths = {
+                'uni': self.txt_file_path_uni.text().strip()
+            }
 
-            if reply == QMessageBox.Yes:
-                with OverrideCursor(Qt.WaitCursor):
-                    res_lis, msg_lis = self.load_lis_files()
-                    if res_lis:
-                        res_gdb, msg_gdb = self.load_gdb_files()
-                        if res_gdb:
-                            res_model, msg_model = self.load_model_layers()
-                            if res_model:
-                                self._running_etl = True
-                                self.run_model_etl_cobol()
-                                if not self.feedback.isCanceled():
-                                    self.progress.setValue(100)
-                                    self.buttonBox.clear()
-                                    self.buttonBox.setEnabled(True)
-                                    self.buttonBox.addButton(QDialogButtonBox.Close)
-                                else:
-                                    self.initialize_feedback()  # Get ready for an eventual new execution
-                                self._running_etl = False
+        required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
+                            ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
+
+        with OverrideCursor(Qt.WaitCursor):
+            res_lis, msg_lis = self.load_lis_files(lis_paths)
+            if res_lis:
+                res_gdb, msg_gdb = self.load_gdb_files(required_layers)
+                if res_gdb:
+                        self._running_etl = True
+                        output = self.run_model_missing_cobol_supplies()
+                        res_gpkg, msg_gpkg = self.package_results(output)
+                        if res_gpkg:
+                            
+                            if not self.feedback.isCanceled():
+                                self.progress.setValue(100)
+                                self.buttonBox.clear()
+                                self.buttonBox.setEnabled(True)
+                                self.buttonBox.addButton(QDialogButtonBox.Close)
                             else:
-                                self.show_message(msg_model, Qgis.Warning)
+                                self.initialize_feedback()  # Get ready for an eventual new execution
+                            self._running_etl = False
                         else:
-                            self.show_message(msg_gdb, Qgis.Warning)
-                    else:
-                        self.show_message(msg_lis, Qgis.Warning)
-        else:
-            with OverrideCursor(Qt.WaitCursor):
-                # TODO: if an empty schema was selected, do the magic under the hood
-                # self.create_model_into_database()
-                # Now execute "accepted()"
-                pass
+                            self.show_message(msg_gpkg, Qgis.Warning)
+                else:
+                    self.show_message(msg_gdb, Qgis.Warning)
+            else:
+                self.show_message(msg_lis, Qgis.Warning)
+
+    def run_model_missing_cobol_supplies(self):
+        self.progress.setVisible(True)
+        self.logger.info(__name__, "Running ETL-Missing Cobol model...")
+        output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol", 
+            {'rconstruccion': self.gdb_paths['R_CONSTRUCCION'],
+            'rterreno': self.gdb_paths['R_TERRENO'],
+            'runidad': self.gdb_paths['R_UNIDAD'],
+            'rvereda': self.gdb_paths['R_VEREDA'],
+            'uconstruccion': self.gdb_paths['U_CONSTRUCCION'],
+            'umanzana': self.gdb_paths['U_MANZANA'],
+            'uni':self.lis_paths['uni'],
+            'uterreno': self.gdb_paths['U_TERRENO'],
+            'uunidad': self.gdb_paths['U_UNIDAD'],
+            'qgis:refactorfields_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_4:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_5:COMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_6:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_7:COMISIONES_MZ':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT'},
+            feedback=self.feedback)
+
+        self.logger.info(__name__, "ETL-Missing Cobol model finished.")
+        return output_etl_missing_cobol
+
+    def package_results(self, output):
+        folder_path = 'self.target_data.txt_file_path_folder_supplies.text()'
+        gpkg_path = os.path.join(folder_path, 'missing_supplies_cobol.gpkg')
+
+        for name in output:
+            output[name].setName(name.split(':')[2])
+
+            output_geopackage = processing.run("native:package", {'LAYERS':[
+            output['qgis:refactorfields_1:COMISIONES_TERRENO'],
+            output['qgis:refactorfields_2:OMISIONES_TERRENO'],
+            output['qgis:refactorfields_3:COMISIONES_MEJORAS'],
+            output['qgis:refactorfields_4:OMISIONES_MEJORAS'],
+            output['qgis:refactorfields_5:COMISIONES_UNID_PH'],
+            output['qgis:refactorfields_6:OMISIONES_UNID_PH'],
+            output['qgis:refactorfields_7:COMISIONES_MZ'],
+            output['qgis:refactorfields_8:OMISIONES_MZ'],
+            output['qgis:refactorfields_9:COMISIONES_VR'],
+            output['qgis:refactorfields_10:OMISIONES_VR']],
+            'OUTPUT':gpkg_path,'OVERWRITE':True,'SAVE_STYLES':True},
+            feedback=self.feedback)
+        
+        root = QgsProject.instance().layerTreeRoot()
+        results_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "Results missing supplies"))
+
+        for layer_path in output_geopackage['OUTPUT_LAYERS']:
+            layer = QgsVectorLayer(layer_path, layer_path.split('layername=')[1], 'ogr')
+            if not layer.isValid():
+                return False, QCoreApplication.translate("ETLCobolDialog", "There were troubles loading {} layer.".format(layer_path.split('layername=')[1]))
+            QgsProject.instance().addMapLayer(layer, False)
+            results_group.addLayer(layer)
+            LayerNode = root.findLayer(layer.id())
+            LayerNode.setCustomProperty("showFeatureCount", True)
+
+        return True, ''
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)

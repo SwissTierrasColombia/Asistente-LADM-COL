@@ -72,6 +72,8 @@ class ETLCobolDialog(CobolBaseDialog):
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
 
+        self.restore_settings()
+
     def accepted(self):
         self.save_settings()
 
@@ -81,11 +83,22 @@ class ETLCobolDialog(CobolBaseDialog):
                 QCoreApplication.translate("ETLCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
                 QMessageBox.Yes, QMessageBox.No)
 
+            lis_paths = {
+                        'blo': self.txt_file_path_blo.text().strip(),
+                        'uni': self.txt_file_path_uni.text().strip(),
+                        'ter': self.txt_file_path_ter.text().strip(),
+                        'pro': self.txt_file_path_pro.text().strip()
+                    }
+
+            required_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO'
+                                        ,'R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA',
+                                        'R_NOMENCLATURA_DOMICILIARIA', 'U_PERIMETRO']
+
             if reply == QMessageBox.Yes:
                 with OverrideCursor(Qt.WaitCursor):
-                    res_lis, msg_lis = self.load_lis_files()
+                    res_lis, msg_lis = self.load_lis_files(lis_paths)
                     if res_lis:
-                        res_gdb, msg_gdb = self.load_gdb_files()
+                        res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                         if res_gdb:
                             res_model, msg_model = self.load_model_layers()
                             if res_model:
@@ -111,6 +124,47 @@ class ETLCobolDialog(CobolBaseDialog):
                 # self.create_model_into_database()
                 # Now execute "accepted()"
                 pass
+
+    def run_model_etl_cobol(self):
+        self.progress.setVisible(True)
+        self.logger.info(__name__, "Running ETL-Cobol model...")
+        processing.run("model:ETL-model-supplies", 
+            {'barrio': self.gdb_paths['U_BARRIO'],
+            'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
+            'gccomisionconstruccion': self._layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
+            'gccomisionterreno': self._layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
+            'gcconstruccion': self._layers[self.names.GC_BUILDING_T][LAYER],
+            'gcdireccion': self._layers[self.names.GC_ADDRESS_T][LAYER],
+            'gcmanzana': self._layers[self.names.GC_BLOCK_T][LAYER],
+            'gcperimetro': self._layers[self.names.GC_PERIMETER_T][LAYER],
+            'gcpropietario': self._layers[self.names.GC_OWNER_T][LAYER],
+            'gcsector': self._layers[self.names.GC_RURAL_SECTOR_T][LAYER],
+            'gcsectorurbano': self._layers[self.names.GC_URBAN_SECTOR_T][LAYER],
+            'gcterreno': self._layers[self.names.GC_PLOT_T][LAYER],
+            'gcunidad': self._layers[self.names.GC_BUILDING_UNIT_T][LAYER],
+            'gcunidadconstruccioncomision': self._layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
+            'gcvereda': self._layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+            'inputblo': self.lis_paths['blo'],
+            'inputconstruccion': self.gdb_paths['R_CONSTRUCCION'],
+            'inputmanzana': self.gdb_paths['U_MANZANA'],
+            'inputperimetro': self.gdb_paths['U_PERIMETRO'],
+            'inputpro': self.lis_paths['pro'],
+            'inputrunidad': self.gdb_paths['R_UNIDAD'],
+            'inputsector': self.gdb_paths['R_SECTOR'],
+            'inputter': self.lis_paths['ter'],
+            'inputterreno': self.gdb_paths['R_TERRENO'],
+            'inputuconstruccion': self.gdb_paths['U_CONSTRUCCION'],
+            'inputuni': self.lis_paths['uni'],
+            'inputusector': self.gdb_paths['U_SECTOR'],
+            'inpututerreno': self.gdb_paths['U_TERRENO'],
+            'inputuunidad': self.gdb_paths['U_UNIDAD'],
+            'inputvereda': self.gdb_paths['R_VEREDA'],
+            'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
+            'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
+            'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
+            feedback=self.feedback)
+        self.logger.info(__name__, "ETL-Cobol model finished.")
+
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
