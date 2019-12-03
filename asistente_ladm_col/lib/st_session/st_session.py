@@ -17,7 +17,9 @@
  ***************************************************************************/
 """
 import requests
+from requests.adapters import HTTPAdapter
 import json
+
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QSettings,
@@ -53,8 +55,11 @@ class STSession(QObject, metaclass=SingletonQObject):
             'Connection': "keep-alive",
             'cache-control': "no-cache"
         }
+        s = requests.Session()
+        s.mount(ST_LOGIN_SERVICE_URL, HTTPAdapter(max_retries=0))
+
         try:
-            response = requests.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
+            response = s.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}".format(e))
             self.logger.warning(__name__, msg)
