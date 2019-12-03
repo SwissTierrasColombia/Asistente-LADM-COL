@@ -37,7 +37,7 @@ WIDGET_UI = get_ui_class('transition_system/transition_system_initial_panel_widg
 class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     HOME_WIDGET = "home_widget"
     TASKS_WIDGET = "tasks_widget"
-    all_parcels_panel_requested = pyqtSignal(str)
+    logout_requested = pyqtSignal()
 
     def __init__(self, user, parent=None):
         QgsPanelWidget.__init__(self, parent)
@@ -58,7 +58,7 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.btn_home.clicked.connect(self.show_home_widget)
         self.btn_view_tasks.clicked.connect(self.show_tasks_widget)
-        self.btn_logout.clicked.connect(self.logout)
+        self.btn_logout.clicked.connect(self.logout_requested)
 
         # Now update controls to show an initial state to users
         self._update_user_info()
@@ -97,7 +97,3 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def show_task_panel(self, task_id):
         self.parent.show_task_panel(task_id)
-
-    def logout(self):
-        logged_out, msg = self.session.logout()
-        self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)

@@ -31,7 +31,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
-                                 QProgressBar)
+                                 QProgressBar,
+                                 QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingModelAlgorithm,
@@ -279,7 +280,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         self._st_login_action.triggered.connect(self.show_st_login_dialog)
-        self._st_logout_action.triggered.connect(partial(self.session_logout, True))
+        self._st_logout_action.triggered.connect(self.session_logout_from_action)
         self._st_logout_action.setEnabled(False)
 
         self.gui_builder.register_actions({
@@ -803,7 +804,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
-        self.session_logout(False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
+        self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
         self.gui_builder.unload_gui()
@@ -1140,13 +1141,35 @@ class AsistenteLADMCOLPlugin(QObject):
             user = self.session.get_logged_st_user()
             self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
             self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
+            self._dock_widget_transition_system.logout_requested.connect(self.session_logout)
             self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
 
-    def session_logout(self, show_message=True):
-        logged_out, msg = self.session.logout()
-        if show_message:
-            self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
+    def session_logout_from_action(self):
+        """ Overwritte action.triggered SIGNAL parameters and call session_logout properly """
+        self.session_logout(True, True)
+
+    def session_logout(self, show_confirmation_dialog=True, show_message=True):
+        """
+        Handles logout from GUI. All logout calls should be redirected to this method.
+
+        :param show_confirmation_dialog: Whether to show a question to the user to confirm logout or not.
+        :param show_message: Whether a response msg should be shown or not (e.g., when leaving QGIS we don't need the msg)
+        """
+        logout = True
+        if show_confirmation_dialog:
+            reply = QMessageBox.question(None,
+                                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Continue?"),
+                                 QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                            "Are you sure you want to log out from the Transition System?"),
+                                 QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.No:
+                logout = False
+
+        if logout:
+            logged_out, msg = self.session.logout()
+            if show_message:
+                self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
 
     def set_login_controls_enabled(self, login_activated):
         """
