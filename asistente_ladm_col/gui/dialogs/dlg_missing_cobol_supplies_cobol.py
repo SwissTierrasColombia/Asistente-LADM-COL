@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import os
+from osgeo import gdal
 
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
@@ -62,6 +63,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+        self.names_gpkg = ''
 
         loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
@@ -70,12 +72,12 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         self.target_data.btn_browse_file_folder_supplies.clicked.connect(
                 make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
-                'ETLCobolDialog', 'Select folder to save data'), parent=None))
+                'MissingCobolSupplies', 'Select folder to save data'), parent=None))
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
 
-        dir_validator_folder = DirValidator(allow_empty_dir=True)
+        dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
         self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.set_import_button_enabled)
@@ -86,9 +88,7 @@ class MissingCobolSupplies(CobolBaseDialog):
     def accepted(self):
         self.save_settings()
 
-        lis_paths = {
-                'uni': self.txt_file_path_uni.text().strip()
-            }
+        lis_paths = {'uni': self.txt_file_path_uni.text().strip()}
 
         required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
                             ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
@@ -99,17 +99,20 @@ class MissingCobolSupplies(CobolBaseDialog):
                 res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                 if res_gdb:
                     self._running_etl = True
-                    output = self.run_model_missing_cobol_supplies()
-                    self.package_results(output)
-                    #self.export_excel()
-                    if not self.feedback.isCanceled():
-                        self.progress.setValue(100)
-                        self.buttonBox.clear()
-                        self.buttonBox.setEnabled(True)
-                        self.buttonBox.addButton(QDialogButtonBox.Close)
+                    self.run_model_missing_cobol_supplies()
+                    res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
+                    if res_gpkg:
+                        self.export_excel()
+                        if not self.feedback.isCanceled():
+                            self.progress.setValue(100)
+                            self.buttonBox.clear()
+                            self.buttonBox.setEnabled(True)
+                            self.buttonBox.addButton(QDialogButtonBox.Close)
+                        else:
+                            self.initialize_feedback()  # Get ready for an eventual new execution
+                        self._running_etl = False
                     else:
-                        self.initialize_feedback()  # Get ready for an eventual new execution
-                    self._running_etl = False
+                        self.show_message(msg_gpkg, Qgis.Warning)    
                 else:
                     self.show_message(msg_gdb, Qgis.Warning)
             else:
@@ -118,7 +121,7 @@ class MissingCobolSupplies(CobolBaseDialog):
     def run_model_missing_cobol_supplies(self):
         self.progress.setVisible(True)
         self.logger.info(__name__, "Running ETL-Missing Cobol model...")
-        output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol", 
+        self.output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol", 
             {'rconstruccion': self.gdb_paths['R_CONSTRUCCION'],
             'rterreno': self.gdb_paths['R_TERRENO'],
             'runidad': self.gdb_paths['R_UNIDAD'],
@@ -129,7 +132,6 @@ class MissingCobolSupplies(CobolBaseDialog):
             'uterreno': self.gdb_paths['U_TERRENO'],
             'uunidad': self.gdb_paths['U_UNIDAD'],
             'qgis:refactorfields_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
-            'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT',
             'qgis:refactorfields_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
             'qgis:refactorfields_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
             'qgis:refactorfields_4:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
@@ -137,17 +139,18 @@ class MissingCobolSupplies(CobolBaseDialog):
             'qgis:refactorfields_6:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
             'qgis:refactorfields_7:COMISIONES_MZ':'TEMPORARY_OUTPUT',
             'qgis:refactorfields_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
-            'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT'},
+            'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT',
+            'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT'},
             feedback=self.feedback)
 
         self.logger.info(__name__, "ETL-Missing Cobol model finished.")
-        return output_etl_missing_cobol
 
     def package_results(self, output):
-        folder_path = self.target_data.txt_file_path_folder_supplies.text()
-        gpkg_path = os.path.join(folder_path, 'missing_supplies_cobol.gpkg')
+        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
+        self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
+                'MissingCobolSupplies', 'missing_supplies_cobol.gpkg'))
 
-        for name in output:
+        for name in output.keys():
             output[name].setName(name.split(':')[2])
 
         output_geopackage = processing.run("native:package", {'LAYERS':[
@@ -161,16 +164,17 @@ class MissingCobolSupplies(CobolBaseDialog):
         output['qgis:refactorfields_8:OMISIONES_MZ'],
         output['qgis:refactorfields_9:COMISIONES_VR'],
         output['qgis:refactorfields_10:OMISIONES_VR']],
-        'OUTPUT':gpkg_path,'OVERWRITE':True,'SAVE_STYLES':True},
+        'OUTPUT':self.gpkg_path,'OVERWRITE':True,'SAVE_STYLES':True},
         feedback=self.feedback)
         
         root = QgsProject.instance().layerTreeRoot()
-        results_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "Results missing supplies"))
+        results_group = root.addGroup(QCoreApplication.translate("MissingCobolSupplies", "Results missing supplies"))
 
         for layer_path in output_geopackage['OUTPUT_LAYERS']:
             layer = QgsVectorLayer(layer_path, layer_path.split('layername=')[1], 'ogr')
+            self.names_gpkg += '{} '.format(layer_path.split('layername=')[1])
             if not layer.isValid():
-                return False, QCoreApplication.translate("ETLCobolDialog", "There were troubles loading {} layer.".format(layer_path.split('layername=')[1]))
+                return False, QCoreApplication.translate("MissingCobolSupplies", "There were troubles loading {} layer.".format(layer_path.split('layername=')[1]))
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
             LayerNode = root.findLayer(layer.id())
@@ -178,10 +182,14 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         return True, ''
 
+    def export_excel(self):
+        gdal.VectorTranslate(os.path.join(self.folder_path, QCoreApplication.translate(
+                'MissingCobolSupplies', 'missing_supplies_cobol.xlsx')), self.gpkg_path, 
+        options='-f XLSX {}'.format(self.names_gpkg.strip()))
+    
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
-        # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
 
@@ -203,8 +211,17 @@ class MissingCobolSupplies(CobolBaseDialog):
             self.target_data.db_connect_label.setToolTip(self._db.get_display_conn_string())
         else:
             self.target_data.db_connect_label.setText(
-                QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
+                QCoreApplication.translate("MissingCobolSupplies", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
+
+    def state_folder_missing_cobol(self):
+        if self.target_data.isVisible():
+            state_folder = self.target_data.txt_file_path_folder_supplies.validator().validate(
+                    self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
+        else:
+            state_folder = QValidator.Acceptable
+
+        return state_folder
 
     def disable_widgets(self):
         self.label_blo.setVisible(False)
