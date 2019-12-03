@@ -31,7 +31,7 @@ from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
+from asistente_ladm_col.lib.st_session.st_session import STSession
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
 
@@ -42,8 +42,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, task_id, parent):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
-        self._task_manager = STTaskManager()
-        self._task = self._task_manager.get_task(task_id)
+        self.session = STSession()
+        self._task = self.session.task_manager.get_task(task_id)
         self.parent = parent
         self.logger = Logger()
         self.names = Names()

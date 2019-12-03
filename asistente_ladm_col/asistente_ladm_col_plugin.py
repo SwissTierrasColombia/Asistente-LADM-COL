@@ -85,7 +85,6 @@ from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
 from asistente_ladm_col.lib.st_session.st_session import STSession
-from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -1142,7 +1141,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
             self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
             self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
-            self.session.logout_finished.connect(STTaskManager().unregister_tasks)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
 
     def session_logout(self, show_message=True):

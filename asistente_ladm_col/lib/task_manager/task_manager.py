@@ -34,10 +34,9 @@ from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.task_manager.task import STTask
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from asistente_ladm_col.utils.singleton import Singleton
 
 
-class STTaskManager(metaclass=Singleton):
+class STTaskManager(QObject):
     """
     Retrieve tasks for a user from the Transition System's Task Service and store them during the session.
     """

@@ -26,7 +26,6 @@ from qgis.PyQt.QtWidgets import (QWidget,
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.st_session.st_session import STSession
-from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.lib.task_manager.tasks_model import TasksModel
 from asistente_ladm_col.utils.ui import get_ui_class, get_ui_file_path
 
@@ -40,8 +39,7 @@ class TasksWidget(QWidget, WIDGET_UI):
         QWidget.__init__(self)
         self.setupUi(self)
         self.logger = Logger()
-        self._session = STSession()
-        self._task_manager = STTaskManager()
+        self.session = STSession()
         self._user = user
 
         self.lvw_tasks.itemSelectionChanged.connect(self.selection_changed)
@@ -61,7 +59,7 @@ class TasksWidget(QWidget, WIDGET_UI):
             self.add_task_widget_item_to_view(task)
 
     def _get_user_tasks(self):
-        tasks = self._task_manager.get_tasks(self._user)
+        tasks = self.session.task_manager.get_tasks(self._user)
         print(len(tasks))
         for k, v in tasks.items():
             print([k], v.get_name())

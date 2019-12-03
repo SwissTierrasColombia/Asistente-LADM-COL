@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import (QObject,
 from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
                                                       ST_LOGIN_SERVICE_PAYLOAD)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 class STSession(QObject, metaclass=SingletonQObject):
@@ -37,6 +38,7 @@ class STSession(QObject, metaclass=SingletonQObject):
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
+        self.task_manager = STTaskManager()
         self.__logged_user = None
 
     def login(self, user, password):
@@ -89,6 +91,7 @@ class STSession(QObject, metaclass=SingletonQObject):
             logged_out = True
             self.login_status_changed.emit(False)
             self.logout_finished.emit()
+            self.task_manager.unregister_tasks()
             msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
         else:
             msg = QCoreApplication.translate("STSession", "There was not logged in user! Therefore, no logout.")
