@@ -35,7 +35,6 @@ WIDGET_UI = get_ui_class('transition_system/transition_system_initial_panel_widg
 
 
 class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
-
     HOME_WIDGET = "home_widget"
     TASKS_WIDGET = "tasks_widget"
     all_parcels_panel_requested = pyqtSignal(str)
@@ -44,13 +43,15 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
         self._user = user
+        self.parent = parent
         self.logger = Logger()
         self.names = Names()
         self.session = STSession()
         self._current_widget = None
 
         self.home_widget = loadUi(get_ui_file_path('transition_system/home_widget.ui'), QWidget())
-        self.tasks_widget = TasksWidget(None)  # No need to use parent, as the layout will call setParent automatically
+        self.tasks_widget = TasksWidget(user)  # No need to use parent, as the layout will call setParent automatically
+        self.tasks_widget.task_panel_requested.connect(self.show_task_panel)
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("TransitionSystemInitialPanelWidget", "Transition System"))
@@ -93,6 +94,9 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
             if child.widget():
                 child.widget().setVisible(False)
             #    child.widget().deleteLater()
+
+    def show_task_panel(self, task_id):
+        self.parent.show_task_panel(task_id)
 
     def logout(self):
         logged_out, msg = self.session.logout()

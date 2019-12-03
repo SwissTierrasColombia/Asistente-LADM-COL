@@ -28,6 +28,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsGeometry)
 from qgis.gui import QgsDockWidget
 
+from asistente_ladm_col.gui.transition_system.task_panel import TaskPanelWidget
 from asistente_ladm_col.gui.transition_system.transition_system_initial_panel import TransitionSystemInitialPanelWidget
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
@@ -66,8 +67,7 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         # Configure panels
-        self.all_parcels_panel = None
-        self.lst_all_parcels_panels = list()
+        self.task_panel = None
 
         self.main_panel = TransitionSystemInitialPanelWidget(user, self)
         self.widget.setMainPanel(self.main_panel)
@@ -94,3 +94,16 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
         #     pass
 
         self.close()  # The user needs to use the menus again, which will start everything from scratch
+
+    def show_task_panel(self, task_id):
+        with OverrideCursor(Qt.WaitCursor):
+            if self.task_panel is not None:
+                try:
+                    self.widget.closePanel(self.task_panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
+
+                self.task_panel = None
+
+            self.task_panel = TaskPanelWidget(task_id, self)
+            self.widget.showPanel(self.task_panel)

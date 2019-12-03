@@ -19,7 +19,8 @@
 from PyQt5.uic import loadUi
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSize)
+                              QSize,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QListWidgetItem)
 
@@ -33,13 +34,15 @@ WIDGET_UI = get_ui_class('transition_system/tasks_widget.ui')
 
 
 class TasksWidget(QWidget, WIDGET_UI):
+    task_panel_requested = pyqtSignal(int)  # Selected task_id
+
     def __init__(self, user):
         QWidget.__init__(self)
         self.setupUi(self)
         self.logger = Logger()
         self._session = STSession()
         self._task_manager = STTaskManager()
-        self._user = self._session.get_logged_st_user()
+        self._user = user
 
         self.lvw_tasks.itemSelectionChanged.connect(self.selection_changed)
         self.btn_start_task.clicked.connect(self.start_task)
@@ -54,14 +57,16 @@ class TasksWidget(QWidget, WIDGET_UI):
         # tasks_list = [task.get_name() for k, task in tasks.items()]
         #tasks_list = [task["name"] for task in tasks]
         #self.lvw_tasks.setModel(model)
-        for task in tasks:
+        for k, task in tasks.items():
             self.add_task_widget_item_to_view(task)
 
-    def _get_user_tasks2(self):
+    def _get_user_tasks(self):
         tasks = self._task_manager.get_tasks(self._user)
         print(len(tasks))
         for k, v in tasks.items():
             print([k], v.get_name())
+
+        return tasks
 
     def selection_changed(self):
         enable = len(self.lvw_tasks.selectedItems()) == 1
@@ -75,7 +80,9 @@ class TasksWidget(QWidget, WIDGET_UI):
     def start_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
-            print("TASK id:{} STARTED!".format(items[0].data(Qt.UserRole)))
+            task_id = items[0].data(Qt.UserRole)
+            print("TASK id:{} STARTED!".format(task_id))
+            self.task_panel_requested.emit(task_id)
 
     def close_task(self):
         items = self.lvw_tasks.selectedItems()
@@ -84,16 +91,18 @@ class TasksWidget(QWidget, WIDGET_UI):
 
     def add_task_widget_item_to_view(self, task):
         widget_item = loadUi(get_ui_file_path('transition_system/task_widget_item.ui'), QWidget())
-        widget_item.lbl_name.setText(task['name'])
-        widget_item.lbl_description.setText(task['description'])
-        widget_item.lbl_status.setText(task['taskState']['name'])
+        widget_item.lbl_name.setText(task.get_name())
+        widget_item.lbl_description.setText(task.get_description())
+        widget_item.lbl_status.setText(task.get_status())
+        widget_item.lbl_created_at.setText("Created at: {}".format(task.get_creation_date()))
+        widget_item.lbl_deadline.setText("Deadline: {}".format(task.get_deadline()))
         item = QListWidgetItem(self.lvw_tasks)
         self.lvw_tasks.setItemWidget(item, widget_item)
         item.setSizeHint(QSize(widget_item.width(), widget_item.height()))
-        item.setData(Qt.UserRole, task["id"])
+        item.setData(Qt.UserRole, task.id())
         self.lvw_tasks.addItem(item)
 
-    def _get_user_tasks(self):
+    def _get_user_tasks2(self):
         import json
         return json.loads("""[
             {

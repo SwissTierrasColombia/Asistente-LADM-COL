@@ -122,6 +122,9 @@ class STTask(QObject):
     def get_creation_date(self):
         return self.__created_at
 
+    def get_started_date(self):
+        return self.__created_at
+
     def get_status(self):
         return self.__task_status['name'] if self.__task_status is not None else None
 

@@ -34,13 +34,14 @@ from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.task_manager.task import STTask
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.singleton import Singleton
 
-class STTaskManager(QObject):
+
+class STTaskManager(metaclass=Singleton):
     """
     Retrieve tasks for a user from the Transition System's Task Service and store them during the session.
     """
     def __init__(self):
-        QObject.__init__(self)
         self.logger = Logger()
         self.__registered_tasks = dict()
 
@@ -58,6 +59,7 @@ class STTaskManager(QObject):
         }
 
         try:
+            self.logger.debug(__name__, "Retrieving tasks from server...")
             response = requests.request("GET", ST_GET_TASKS_SERVICE_URL, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
@@ -65,21 +67,17 @@ class STTaskManager(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
+        response_data = json.loads(response.text)
         if status_OK:
             # Parse, create and register tasks
-            response_data = json.loads(response.text)
             for task_data in response_data:
                 task = STTask(task_data)
                 if task.is_valid():
                     self.__register_task(task)
         else:
-        #     if response.status_code == 400:
-        #         msg = QCoreApplication.translate("STSession",
-        #                                          "Wrong user name or password, change credentials and try again.")
-        #     elif response.status_code == 500:
-        #         msg = QCoreApplication.translate("STSession", "There is an error in the login server!")
-        #     self.logger.warning(__name__, msg)
-            pass
+             if response.status_code == 500:
+                msg = QCoreApplication.translate("STSession", "There is an error in the task server! Message from server: '{}'".format(response_data["message"]))
+                self.logger.warning(__name__, msg)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
         if not self.__registered_tasks:
@@ -88,13 +86,19 @@ class STTaskManager(QObject):
         return self.__registered_tasks
 
     def get_task(self, task_id):
-        pass
+        task = self.__registered_tasks[task_id] if task_id in self.__registered_tasks else None
+        if task is None:
+            self.logger.warning(__name__, "Task {} not found!!!".format(task_id))
+        else:
+            self.logger.info(__name__, "Task {} found!!!".format(task_id))
+        return task
 
     def __register_task(self, task):
+        self.logger.debug(__name__, "Task {} registered!".format(task.id()))
         self.__registered_tasks[task.id()] = task
 
     def unregister_tasks(self):
-        for k,v in self.__registered_tasks:
+        for k,v in self.__registered_tasks.items():
             self.__registered_tasks[k] = None
 
         self.__registered_tasks = dict()
