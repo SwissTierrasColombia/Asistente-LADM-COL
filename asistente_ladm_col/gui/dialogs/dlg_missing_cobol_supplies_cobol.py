@@ -77,9 +77,9 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         dir_validator_folder = DirValidator(allow_empty_dir=True)
         self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
-        self.target_data.txt_file_path_folder_supplies.textEdited.connect(self.validators.validate_line_edits)
-        self.target_data.txt_file_path_folder_supplies.textEdited.connect(self.set_import_button_enabled)
-        self.target_data.txt_file_path_folder_supplies.textEdited.emit(self.target_data.txt_file_path_folder_supplies.text())
+        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
+        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.set_import_button_enabled)
+        self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
 
         self.restore_settings()
 
@@ -98,21 +98,18 @@ class MissingCobolSupplies(CobolBaseDialog):
             if res_lis:
                 res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                 if res_gdb:
-                        self._running_etl = True
-                        output = self.run_model_missing_cobol_supplies()
-                        res_gpkg, msg_gpkg = self.package_results(output)
-                        if res_gpkg:
-                            
-                            if not self.feedback.isCanceled():
-                                self.progress.setValue(100)
-                                self.buttonBox.clear()
-                                self.buttonBox.setEnabled(True)
-                                self.buttonBox.addButton(QDialogButtonBox.Close)
-                            else:
-                                self.initialize_feedback()  # Get ready for an eventual new execution
-                            self._running_etl = False
-                        else:
-                            self.show_message(msg_gpkg, Qgis.Warning)
+                    self._running_etl = True
+                    output = self.run_model_missing_cobol_supplies()
+                    self.package_results(output)
+                    #self.export_excel()
+                    if not self.feedback.isCanceled():
+                        self.progress.setValue(100)
+                        self.buttonBox.clear()
+                        self.buttonBox.setEnabled(True)
+                        self.buttonBox.addButton(QDialogButtonBox.Close)
+                    else:
+                        self.initialize_feedback()  # Get ready for an eventual new execution
+                    self._running_etl = False
                 else:
                     self.show_message(msg_gdb, Qgis.Warning)
             else:
@@ -147,25 +144,25 @@ class MissingCobolSupplies(CobolBaseDialog):
         return output_etl_missing_cobol
 
     def package_results(self, output):
-        folder_path = 'self.target_data.txt_file_path_folder_supplies.text()'
+        folder_path = self.target_data.txt_file_path_folder_supplies.text()
         gpkg_path = os.path.join(folder_path, 'missing_supplies_cobol.gpkg')
 
         for name in output:
             output[name].setName(name.split(':')[2])
 
-            output_geopackage = processing.run("native:package", {'LAYERS':[
-            output['qgis:refactorfields_1:COMISIONES_TERRENO'],
-            output['qgis:refactorfields_2:OMISIONES_TERRENO'],
-            output['qgis:refactorfields_3:COMISIONES_MEJORAS'],
-            output['qgis:refactorfields_4:OMISIONES_MEJORAS'],
-            output['qgis:refactorfields_5:COMISIONES_UNID_PH'],
-            output['qgis:refactorfields_6:OMISIONES_UNID_PH'],
-            output['qgis:refactorfields_7:COMISIONES_MZ'],
-            output['qgis:refactorfields_8:OMISIONES_MZ'],
-            output['qgis:refactorfields_9:COMISIONES_VR'],
-            output['qgis:refactorfields_10:OMISIONES_VR']],
-            'OUTPUT':gpkg_path,'OVERWRITE':True,'SAVE_STYLES':True},
-            feedback=self.feedback)
+        output_geopackage = processing.run("native:package", {'LAYERS':[
+        output['qgis:refactorfields_1:COMISIONES_TERRENO'],
+        output['qgis:refactorfields_2:OMISIONES_TERRENO'],
+        output['qgis:refactorfields_3:COMISIONES_MEJORAS'],
+        output['qgis:refactorfields_4:OMISIONES_MEJORAS'],
+        output['qgis:refactorfields_5:COMISIONES_UNID_PH'],
+        output['qgis:refactorfields_6:OMISIONES_UNID_PH'],
+        output['qgis:refactorfields_7:COMISIONES_MZ'],
+        output['qgis:refactorfields_8:OMISIONES_MZ'],
+        output['qgis:refactorfields_9:COMISIONES_VR'],
+        output['qgis:refactorfields_10:OMISIONES_VR']],
+        'OUTPUT':gpkg_path,'OVERWRITE':True,'SAVE_STYLES':True},
+        feedback=self.feedback)
         
         root = QgsProject.instance().layerTreeRoot()
         results_group = root.addGroup(QCoreApplication.translate("ETLCobolDialog", "Results missing supplies"))
