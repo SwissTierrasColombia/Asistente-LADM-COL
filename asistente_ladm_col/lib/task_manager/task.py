@@ -32,7 +32,7 @@ from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 class STTask(QObject):
     """
-    Build plugin GUI according to roles and LADM_COL models present in the current db connection
+    Read and store task info
     """
     ID_KEY = 'id'
     NAME_KEY = 'name'
@@ -59,6 +59,8 @@ class STTask(QObject):
         self.__members = None
         self.__categories = None
         self.__metadata = None
+
+        self.__task_data = task_data
 
         self._initialize_task(task_data)
 
@@ -137,3 +139,6 @@ class STTask(QObject):
 
     def save_task_status(self):
         pass
+
+    def get_as_dict(self):
+        return self.__task_data

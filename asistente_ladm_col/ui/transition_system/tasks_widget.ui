@@ -63,9 +63,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QListView" name="lvw_tasks"/>
-   </item>
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="wdg_tasks_hor_layout_2">
      <item>
@@ -96,6 +93,9 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QListWidget" name="lvw_tasks"/>
    </item>
   </layout>
  </widget>

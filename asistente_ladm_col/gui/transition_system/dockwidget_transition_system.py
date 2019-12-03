@@ -56,7 +56,9 @@ DOCKWIDGET_UI = get_ui_class('transition_system/dockwidget_transition_system.ui'
 
 
 class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
-
+    """
+    Main UI for the Transition System in the LADM_COL Assistant. It holds other panels.
+    """
     def __init__(self, user, parent):
         super(DockWidgetTransitionSystem, self).__init__(parent)
         self.setupUi(self)

@@ -1133,19 +1133,12 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
-            # Get tasks
-            user = self.session.get_logged_st_user()
-            task_manager = STTaskManager()
-            tasks = task_manager.get_tasks(user)
-            print(len(tasks))
-            for k,v in tasks.items():
-                print([k], v.get_name())
-
             # Show Transition System dock widget
             if self._dock_widget_transition_system is not None:
                 self._dock_widget_transition_system.close()
                 self._dock_widget_transition_system = None
 
+            user = self.session.get_logged_st_user()
             self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
             self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
             self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
