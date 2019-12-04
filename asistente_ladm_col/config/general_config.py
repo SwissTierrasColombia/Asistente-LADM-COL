@@ -90,7 +90,7 @@ SETTINGS_MODELS_TAB_INDEX = 1
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.5'
+REPORTS_REQUIRED_VERSION = '0.6dev'
 URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
