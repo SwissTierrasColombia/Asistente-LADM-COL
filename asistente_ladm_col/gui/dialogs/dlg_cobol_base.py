@@ -212,14 +212,14 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         else:
              self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
+    def additional_validations(self):
+        return QValidator.Acceptable
+
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
         self.feedback = QgsProcessingFeedback()         
-        self.feedback.progressChanged.connect(self.progress_changed) 
-
-    def additional_validations(self):
-        return QValidator.Acceptable
+        self.feedback.progressChanged.connect(self.progress_changed)
 
     def db_connection_changed(self, db, ladm_col_db):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment

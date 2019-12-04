@@ -50,10 +50,8 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                Validators,
                                                make_file_selector,
                                                make_folder_selector)
-from asistente_ladm_col.utils import get_ui_class
-
+from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
-from qgis.PyQt.uic import loadUiType, loadUi
 
 class ETLCobolDialog(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -63,7 +61,7 @@ class ETLCobolDialog(CobolBaseDialog):
         self.conn_manager = conn_manager
         self.parent = parent
 
-        loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_cobol_supplies.ui', self.target_data)
+        load_ui('dialogs/wig_cobol_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
 
         self.target_data.btn_browse_connection.clicked.connect(self.show_settings)

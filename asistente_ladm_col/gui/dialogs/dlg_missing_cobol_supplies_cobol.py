@@ -51,10 +51,9 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                Validators,
                                                make_file_selector,
                                                make_folder_selector)
-from asistente_ladm_col.utils import get_ui_class
 
+from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
-from qgis.PyQt.uic import loadUiType, loadUi
 
 class MissingCobolSupplies(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -65,7 +64,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.parent = parent
         self.names_gpkg = ''
 
-        loadUi('/home/shade/dev/Asistente-LADM_COL/asistente_ladm_col/ui/dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
+        load_ui('dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
 
         self.disable_widgets()
@@ -88,35 +87,80 @@ class MissingCobolSupplies(CobolBaseDialog):
     def accepted(self):
         self.save_settings()
 
+        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
+        self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
+                'MissingCobolSupplies', 'missing_supplies_cobol.gpkg'))
+        self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
+                'MissingCobolSupplies', 'missing_supplies_cobol.xlsx'))
+
+        reply = self.validate_files_in_folder()
+
         lis_paths = {'uni': self.txt_file_path_uni.text().strip()}
 
         required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
                             ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
 
-        with OverrideCursor(Qt.WaitCursor):
-            res_lis, msg_lis = self.load_lis_files(lis_paths)
-            if res_lis:
-                res_gdb, msg_gdb = self.load_gdb_files(required_layers)
-                if res_gdb:
-                    self._running_etl = True
-                    self.run_model_missing_cobol_supplies()
-                    res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
-                    if res_gpkg:
-                        self.export_excel()
-                        if not self.feedback.isCanceled():
-                            self.progress.setValue(100)
-                            self.buttonBox.clear()
-                            self.buttonBox.setEnabled(True)
-                            self.buttonBox.addButton(QDialogButtonBox.Close)
+        if reply == QMessageBox.Yes:
+            with OverrideCursor(Qt.WaitCursor):
+                res_lis, msg_lis = self.load_lis_files(lis_paths)
+                if res_lis:
+                    res_gdb, msg_gdb = self.load_gdb_files(required_layers)
+                    if res_gdb:
+                        self._running_etl = True
+                        self.run_model_missing_cobol_supplies()
+                        res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
+                        if res_gpkg:
+                            self.export_excel()
+                            if not self.feedback.isCanceled():
+                                self.progress.setValue(100)
+                                self.buttonBox.clear()
+                                self.buttonBox.setEnabled(True)
+                                self.buttonBox.addButton(QDialogButtonBox.Close)
+                            else:
+                                self.initialize_feedback()  # Get ready for an eventual new execution
+                            self._running_etl = False
                         else:
-                            self.initialize_feedback()  # Get ready for an eventual new execution
-                        self._running_etl = False
+                            self.show_message(msg_gpkg, Qgis.Warning)    
                     else:
-                        self.show_message(msg_gpkg, Qgis.Warning)    
+                        self.show_message(msg_gdb, Qgis.Warning)
                 else:
-                    self.show_message(msg_gdb, Qgis.Warning)
-            else:
-                self.show_message(msg_lis, Qgis.Warning)
+                    self.show_message(msg_lis, Qgis.Warning)
+
+    def validate_files_in_folder(self):
+        if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
+            reply = QMessageBox.question(self,
+                QCoreApplication.translate("MissingCobolSupplies", "Warning"),
+                QCoreApplication.translate("MissingCobolSupplies","The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder" \
+                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QMessageBox.Yes, QMessageBox.No)
+
+            return reply
+        else:
+            reply = QMessageBox.Yes
+
+        if reply == QMessageBox.Yes and os.path.isfile(self.gpkg_path):
+            reply = QMessageBox.question(self,
+                QCoreApplication.translate("MissingCobolSupplies", "Warning"),
+                QCoreApplication.translate("MissingCobolSupplies","The <b>gpkg</b> already exist in the folder" \
+                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QMessageBox.Yes, QMessageBox.No)
+
+            return reply
+        else:
+            reply = QMessageBox.Yes
+
+        if reply == QMessageBox.Yes and os.path.isfile(self.xlsx_path):
+            reply = QMessageBox.question(self,
+                QCoreApplication.translate("MissingCobolSupplies", "Warning"),
+                QCoreApplication.translate("MissingCobolSupplies","The <b>xlsx</b> already exist in the folder" \
+                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QMessageBox.Yes, QMessageBox.No)
+
+            return reply
+        else:
+            reply = QMessageBox.Yes
+
+        return reply
 
     def run_model_missing_cobol_supplies(self):
         self.progress.setVisible(True)
@@ -145,11 +189,7 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         self.logger.info(__name__, "ETL-Missing Cobol model finished.")
 
-    def package_results(self, output):
-        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
-        self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSupplies', 'missing_supplies_cobol.gpkg'))
-
+    def package_results(self, output):  
         for name in output.keys():
             output[name].setName(name.split(':')[2])
 
@@ -183,8 +223,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         return True, ''
 
     def export_excel(self):
-        gdal.VectorTranslate(os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSupplies', 'missing_supplies_cobol.xlsx')), self.gpkg_path, 
+        gdal.VectorTranslate(self.xlsx_path, self.gpkg_path, 
         options='-f XLSX {}'.format(self.names_gpkg.strip()))
     
     def show_settings(self):
@@ -214,7 +253,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                 QCoreApplication.translate("MissingCobolSupplies", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
 
-    def state_folder_missing_cobol(self):
+    def additional_validations(self):
         if self.target_data.isVisible():
             state_folder = self.target_data.txt_file_path_folder_supplies.validator().validate(
                     self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
