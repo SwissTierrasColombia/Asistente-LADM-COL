@@ -44,6 +44,7 @@
     <file>resources/images/build_boundaries.svg</file>
     <file>resources/images/excel.svg</file>
     <file>resources/images/reports.svg</file>
+    <file>resources/images/st.svg</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>
