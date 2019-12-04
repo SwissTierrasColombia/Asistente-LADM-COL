@@ -54,7 +54,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.names = Names()
         self.models_tree = dict()
         self.selected_items_dict = dict()
-        self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
+        self.icon_names = ['points.png', 'lines.png', 'polygons.png', 'tables.png', 'domains.png', 'structures.png', 'relationships.svg']
 
         self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QLineEdit.LeadingPosition)
 
@@ -168,7 +168,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                     icon_name = self.icon_names[5]
                 elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
-                icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(icon_name))
+                icon = QIcon(":/Asistente-LADM_COL/resources/images/{}".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
 
                 children.append(table_item)

@@ -81,6 +81,7 @@ ALL_ACTIONS = 'all_actions'
 
 SURVEYING_ICON = ":/Asistente-LADM_COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM_COL/resources/images/create_db.png"
+DATA_CREATION_ICON = ":/Asistente-LADM_COL/resources/images/data_creation.svg"
 OPERATION_ICON = ""
 SUPPLIES_ICON = ""
 SPATIAL_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/spatial_unit.png"
@@ -88,7 +89,7 @@ BA_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/ba_unit.png"
 RRR_ICON = ":/Asistente-LADM_COL/resources/images/rrr.png"
 PARTY_ICON = ":/Asistente-LADM_COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
-REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/domains.png"
+REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
 
 MODELS_GUI_DICT = {

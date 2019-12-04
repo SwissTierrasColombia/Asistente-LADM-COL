@@ -22,6 +22,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.utils.singleton import Singleton
 from asistente_ladm_col.lib.logger import Logger
 
@@ -31,6 +32,8 @@ class Role_Registry(metaclass=Singleton):
     """
     COMMON_ACTIONS = [  # Common actions for all roles
         ACTION_LOAD_LAYERS,
+        ACTION_PARCEL_QUERY,
+        ACTION_CHECK_QUALITY_RULES,
         ACTION_SCHEMA_IMPORT,
         ACTION_IMPORT_DATA,
         ACTION_EXPORT_DATA,
@@ -49,7 +52,30 @@ class Role_Registry(metaclass=Singleton):
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The basic role helps you to explore the LADM_COL assistant main functionalities."),
-            ROLE_ACTIONS: [],
+            ROLE_ACTIONS: [
+                ACTION_CREATE_POINT,
+                ACTION_CREATE_BOUNDARY,
+                ACTION_CREATE_PLOT,
+                ACTION_CREATE_BUILDING,
+                ACTION_CREATE_BUILDING_UNIT,
+                ACTION_CREATE_RIGHT_OF_WAY,
+                ACTION_CREATE_EXT_ADDRESS,
+                ACTION_CREATE_PARCEL,
+                ACTION_CREATE_RIGHT,
+                ACTION_CREATE_RESTRICTION,
+                ACTION_CREATE_PARTY,
+                ACTION_CREATE_GROUP_PARTY,
+                ACTION_CREATE_ADMINISTRATIVE_SOURCE,
+                ACTION_CREATE_SPATIAL_SOURCE,
+                ACTION_UPLOAD_PENDING_SOURCE,
+                ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                ACTION_BUILD_BOUNDARY,
+                ACTION_MOVE_NODES,
+                ACTION_FINALIZE_GEOMETRY_CREATION,
+                ACTION_FILL_BFS,
+                ACTION_FILL_MORE_BFS_AND_LESS,
+                ACTION_FILL_RIGHT_OF_WAY_RELATIONS
+            ],
             ROLE_GUI_CONFIG: {}  # Empty to let other modules decide on a default gui_config dict
         }
         self.register_role(role, role_dict)
@@ -76,32 +102,62 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CREATE_SPATIAL_SOURCE,
                 ACTION_UPLOAD_PENDING_SOURCE,
                 ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                ACTION_BUILD_BOUNDARY,
                 ACTION_MOVE_NODES,
-                ACTION_FINALIZE_GEOMETRY_CREATION
+                ACTION_FINALIZE_GEOMETRY_CREATION,
+                ACTION_FILL_BFS,
+                ACTION_FILL_MORE_BFS_AND_LESS,
+                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                ACTION_CHANGE_DETECTION_PER_PARCEL,
+                ACTION_OFFICIAL_SETTINGS,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT
             ],
             ROLE_GUI_CONFIG: {}
         }
         self.register_role(role, role_dict)
 
         role = MANAGER_ROLE
+        template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
+        template_gui[TOOLBAR] = [{  # Overwrite list of toolbars
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools 2"),
+            OBJECT_NAME: 'ladm_col_toolbar2',
+            ACTIONS: [
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
+                    OBJECT_NAME: 'ladm_col_toolbar_st',
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
+                ACTION_OFFICIAL_SETTINGS,
+                SEPARATOR,
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools3"),
+                    OBJECT_NAME: 'ladm_col_toolbar3',
+                    ACTIONS: [ACTION_REPORT_ANNEX_17,
+                              ACTION_ABOUT]
+                }
+            ]
+        }]
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Manager"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The manager is in charge of preparing supplies for operators as well as validatinsg and managing the data provided by operators."),
             ROLE_ACTIONS: [
-                ACTION_PARCEL_QUERY,
+                ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                ACTION_CHANGE_DETECTION_PER_PARCEL,
+                ACTION_OFFICIAL_SETTINGS,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT,
                 ACTION_REPORT_ANNEX_17,
                 ACTION_REPORT_ANT,
-                ACTION_OFFICIAL_SETTINGS,
-                ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
-                ACTION_INTEGRATE_SUPPLIES,
-                ACTION_ST_LOGIN,
-                ACTION_ST_LOGOUT
+                ACTION_INTEGRATE_SUPPLIES
             ],
-            ROLE_GUI_CONFIG: {}
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 
@@ -111,165 +167,7 @@ class Role_Registry(metaclass=Singleton):
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The advanced role has access to all the functionality."),
             ROLE_ACTIONS: [ALL_ACTIONS],
-                ROLE_GUI_CONFIG: {
-                    MAIN_MENU: [{ # List of main menus
-                        WIDGET_TYPE: MENU,
-                        WIDGET_NAME: "LAD&M_COL DATA",
-                        OBJECT_NAME: 'main_menu_2',
-                        ACTIONS: [{
-                                WIDGET_TYPE: MENU,
-                                WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"),
-                                OBJECT_NAME: "ladm_col_data_management_menu2",
-                                ICON: DATA_MANAGEMENT_ICON,
-                                ACTIONS: [
-                                    ACTION_SCHEMA_IMPORT,
-                                    ACTION_IMPORT_DATA,
-                                    ACTION_EXPORT_DATA
-                                ]
-                            },
-                            ACTION_ABOUT
-                        ]
-                        },{
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: "LAD&M_COL",
-                            OBJECT_NAME: 'main_menu',
-                            ACTIONS: [
-                                ACTION_LOAD_LAYERS,
-                                SEPARATOR,
-                                {
-                                    WIDGET_TYPE: MENU,
-                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies"),
-                                    OBJECT_NAME: "ladm_col_supplies_menu",
-                                    ICON: SUPPLIES_ICON,
-                                    ACTIONS: [
-                                        ACTION_RUN_ETL_COBOL,
-                                        ACTION_RUN_ETL_SNC,
-                                        ACTION_INTEGRATE_SUPPLIES
-                                    ]
-                                }, {
-                                    WIDGET_TYPE: MENU,
-                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operation"),
-                                    OBJECT_NAME: "ladm_col_operation_menu",
-                                    ICON: OPERATION_ICON,
-                                    ACTIONS: [
-                                        {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"),
-                                            OBJECT_NAME: "surveying and representation_menu",
-                                            ICON: SURVEYING_ICON,
-                                            ACTIONS: [
-                                                ACTION_CREATE_POINT,
-                                                ACTION_CREATE_BOUNDARY
-                                            ]
-                                        },
-                                        {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"),
-                                            OBJECT_NAME: "spatial unit_menu",
-                                            ICON: SPATIAL_UNIT_ICON,
-                                            ACTIONS: [
-                                                ACTION_CREATE_PLOT,
-                                                ACTION_CREATE_BUILDING,
-                                                ACTION_CREATE_BUILDING_UNIT,
-                                                SEPARATOR,
-                                                ACTION_CREATE_RIGHT_OF_WAY,
-                                                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
-                                                SEPARATOR,
-                                                ACTION_CREATE_EXT_ADDRESS
-                                            ]
-                                        }, {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic Administrative Unit"),
-                                            OBJECT_NAME: "basic administrative unit_menu",
-                                            ICON: BA_UNIT_ICON,
-                                            ACTIONS: [ACTION_CREATE_PARCEL]
-                                        }, {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"),
-                                            OBJECT_NAME: "rrr_menu",
-                                            ICON: RRR_ICON,
-                                            ACTIONS: [
-                                                ACTION_CREATE_RIGHT,
-                                                ACTION_CREATE_RESTRICTION
-                                            ]
-                                        }, {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"),
-                                            OBJECT_NAME: "party_menu",
-                                            ICON: PARTY_ICON,
-                                            ACTIONS: [
-                                                ACTION_CREATE_PARTY,
-                                                ACTION_CREATE_GROUP_PARTY
-                                            ]
-                                        }, {
-                                            WIDGET_TYPE: MENU,
-                                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"),
-                                            OBJECT_NAME: "source_menu",
-                                            ICON: SOURCE_ICON,
-                                            ACTIONS: [
-                                                ACTION_CREATE_ADMINISTRATIVE_SOURCE,
-                                                ACTION_CREATE_SPATIAL_SOURCE,
-                                                ACTION_UPLOAD_PENDING_SOURCE
-                                            ]
-                                        }
-                                    ]
-                                },
-                                ACTION_CHECK_QUALITY_RULES,
-                                SEPARATOR,
-                                ACTION_PARCEL_QUERY,
-                                {
-                                    WIDGET_TYPE: MENU,
-                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
-                                    OBJECT_NAME: "ladm_col_reports_menu",
-                                    ICON: REPORTS_ICON,
-                                    ACTIONS: [
-                                        ACTION_REPORT_ANNEX_17,
-                                        ACTION_REPORT_ANT
-                                    ]
-                                }, {
-                                    WIDGET_TYPE: MENU,
-                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change Detection"),
-                                    OBJECT_NAME: "ladm_col_change_detection_menu",
-                                    ICON: CHANGE_DETECTION_ICON,
-                                    ACTIONS: [
-                                        ACTION_CHANGE_DETECTION_PER_PARCEL,
-                                        ACTION_CHANGE_DETECTION_ALL_PARCELS,
-                                        SEPARATOR,
-                                        ACTION_OFFICIAL_SETTINGS
-                                    ]
-                                },
-                                SEPARATOR,
-                                ACTION_SETTINGS,
-                                SEPARATOR,
-                                ACTION_HELP,
-                                ACTION_ABOUT
-                            ]
-                    }], TOOLBAR: [{  # List of toolbars
-                        WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools 2"),
-                        OBJECT_NAME: 'ladm_col_toolbar2',
-                        ACTIONS: [
-                            ACTION_OFFICIAL_SETTINGS,
-                            SEPARATOR,
-                            {  # List of toolbars
-                                WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools3"),
-                                OBJECT_NAME: 'ladm_col_toolbar3',
-                                ACTIONS: [ACTION_REPORT_ANNEX_17,
-                                          ACTION_ABOUT]
-                            }
-                        ]
-                    }, {
-                        WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
-                        OBJECT_NAME: 'ladm_col_toolbar',
-                        ACTIONS: [
-                            ACTION_FINALIZE_GEOMETRY_CREATION,
-                            ACTION_BUILD_BOUNDARY,
-                            ACTION_MOVE_NODES,
-                            ACTION_FILL_BFS,
-                            ACTION_FILL_MORE_BFS_AND_LESS,
-                            ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
-                        ]
-                    }]
-                }
+            ROLE_GUI_CONFIG: {}
         }
         self.register_role(role, role_dict)
 

@@ -239,24 +239,31 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz_geometry_creation_finished)  # SIGNAL chaining
         self._finalize_geometry_creation_action.setEnabled(False)
 
-        self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.main_window)
+        self._build_boundary_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/build_boundaries.svg"),
+                                              TOOLBAR_BUILD_BOUNDARY, self.main_window)
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
 
         self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
             TOOLBAR_MOVE_NODES, self.main_window)
         self._topological_editing_action.triggered.connect(self.call_topological_editing)
 
-        self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.main_window)
+        self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                              TOOLBAR_FILL_POINT_BFS,
+                                              self.main_window)
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
 
-        self._fill_more_BFS_less_action = QAction(TOOLBAR_FILL_MORE_BFS_LESS, self.main_window)
+        self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                                  TOOLBAR_FILL_MORE_BFS_LESS,
+                                                  self.main_window)
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
 
         self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
 
-        self._import_from_intermediate_structure_action = QAction(TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-                                                                  self.main_window)
+        self._import_from_intermediate_structure_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/excel.svg"),
+            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+            self.main_window)
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
 
         self.gui_builder.register_actions({
@@ -362,7 +369,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._quality_operation_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/validation.svg"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self.main_window)
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_point_cad)
@@ -459,7 +466,7 @@ class AsistenteLADMCOLPlugin(QObject):
         })
 
     def create_generic_actions(self):
-        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
+        self._load_layers_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/load_layers.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
                                            self.main_window)
         self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
