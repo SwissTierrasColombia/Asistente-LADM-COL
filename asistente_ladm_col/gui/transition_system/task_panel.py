@@ -16,24 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
 
-from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal,
+from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication)
-from qgis.PyQt.QtWidgets import (QTableWidgetItem,
-                                 QMenu,
-                                 QAction)
-from qgis.core import (QgsWkbTypes,
-                       NULL,
-                       QgsApplication)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from ...utils import get_ui_class
-from ...utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.ui')
 
@@ -54,10 +45,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_gui()
 
     def initialize_gui(self):
-        self.initialize_description()
-        self.update_view()
+        self.show_task_description()
+        self.show_task_steps()
 
-    def initialize_description(self):
+    def show_task_description(self):
         if self._task is not None:
             self.logger.debug(__name__, "Setting task description in Task Panel...")
             self.lbl_name.setText(self._task.get_name())
@@ -67,5 +58,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.lbl_deadline.setText("Deadline: {}".format(self._task.get_deadline()))
             self.lbl_status.setText(self._task.get_status())
 
-    def update_view(self):
-        pass
+    def show_task_steps(self):
+        steps = self._task.get_steps()
+        # Create task steps model
+        # Set model to view
+

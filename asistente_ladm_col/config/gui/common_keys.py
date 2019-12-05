@@ -49,6 +49,7 @@ ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
 ACTION_ST_LOGIN = 'action_st_login'
 ACTION_ST_LOGOUT = 'action_st_logout'
+ACTION_ST_UPLOAD_XTF = 'action_st_upload_xtf'
 
 ACTION_CHECK_QUALITY_RULES = 'action_check_quality_rules'
 ACTION_PARCEL_QUERY = 'action_parcel_query'

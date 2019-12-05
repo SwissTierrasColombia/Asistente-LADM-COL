@@ -18,17 +18,10 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               QObject)
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import (QMenu,
-                                 QPushButton,
-                                 QToolBar)
 
-from asistente_ladm_col.config.enums import LogHandlerEnum
-from asistente_ladm_col.config.gui.common_keys import *
-from asistente_ladm_col.config.gui.gui_config import GUI_Config
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.lib.transition_system.task_manager.task_steps import STTaskSteps
+
 
 class STTask(QObject):
     """
@@ -44,6 +37,7 @@ class STTask(QObject):
     MEMBERS_KEY = 'members'
     CATEGORIES_KEY = 'categories'
     METADATA_KEY = 'metadata'
+    STEPS_KEY = 'steps'
 
     def __init__(self, task_data):
         QObject.__init__(self)
@@ -59,6 +53,7 @@ class STTask(QObject):
         self.__members = None
         self.__categories = None
         self.__metadata = None
+        self.__task_steps = None
 
         self.__task_data = task_data
 
@@ -93,6 +88,8 @@ class STTask(QObject):
             self.__categories = task_data[self.CATEGORIES_KEY]
         if self.METADATA_KEY in task_data:
             self.__metadata = task_data[self.METADATA_KEY]
+        if self.STEPS_KEY in task_data:
+            self.__task_steps = STTaskSteps(task_data[self.STEPS_KEY])
 
         for k, attribute in self.__get_mandatory_attributes().items():
             if attribute is None:
@@ -130,6 +127,9 @@ class STTask(QObject):
 
     def get_connection(self):
         pass
+
+    def get_steps(self):
+        return self.__task_steps
 
     def close_task(self):
         pass

@@ -38,8 +38,6 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm,
                        QgsExpression)
 
-import processing
-
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              WizardTypeEnum, LogHandlerEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
@@ -85,7 +83,7 @@ from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
-from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -93,7 +91,7 @@ from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcel
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
-from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
+from asistente_ladm_col.gui.transition_system.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -108,7 +106,6 @@ from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
-                                                 _cadastral_manager_model_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,

@@ -27,7 +27,7 @@ from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.gui.transition_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.ui import (get_ui_class,
                                          get_ui_file_path)
 

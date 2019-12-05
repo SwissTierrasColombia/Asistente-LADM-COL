@@ -27,7 +27,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.lib.st_session.st_session import STSession
+from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 from ...utils import get_ui_class

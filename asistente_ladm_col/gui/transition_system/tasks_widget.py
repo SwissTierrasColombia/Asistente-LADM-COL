@@ -25,8 +25,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QListWidgetItem)
 
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.st_session.st_session import STSession
-from asistente_ladm_col.lib.task_manager.tasks_model import TasksModel
+from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transition_system.task_manager.tasks_model import TasksModel
 from asistente_ladm_col.utils.ui import get_ui_class, get_ui_file_path
 
 WIDGET_UI = get_ui_class('transition_system/tasks_widget.ui')
@@ -46,10 +46,10 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.btn_start_task.clicked.connect(self.start_task)
         self.btn_close_task.clicked.connect(self.close_task)
 
-        self.initialize_view()
+        self.show_tasks()
         self.selection_changed()  # Initialize controls
 
-    def initialize_view(self):
+    def show_tasks(self):
         tasks = self._get_user_tasks()
         self.update_task_count_label(len(tasks))
         # tasks_list = [task.get_name() for k, task in tasks.items()]

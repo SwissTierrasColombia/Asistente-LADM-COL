@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (QObject,
 from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
                                                       ST_LOGIN_SERVICE_PAYLOAD)
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.task_manager.task_manager import STTaskManager
+from asistente_ladm_col.lib.transition_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 class STSession(QObject, metaclass=SingletonQObject):
