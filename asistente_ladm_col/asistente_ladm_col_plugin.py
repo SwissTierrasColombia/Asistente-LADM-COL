@@ -295,7 +295,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_supplies_actions(self):
         self._etl_cobol_supplies_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/etl_cobol.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
             self.main_window)
 
@@ -477,11 +477,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
         self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-        self._import_schema_action = QAction(
+        self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
-        self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
+        self._import_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
                                            self.main_window)
-        self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
+        self._export_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),

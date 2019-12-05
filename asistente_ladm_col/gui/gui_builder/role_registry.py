@@ -32,8 +32,6 @@ class Role_Registry(metaclass=Singleton):
     """
     COMMON_ACTIONS = [  # Common actions for all roles
         ACTION_LOAD_LAYERS,
-        ACTION_PARCEL_QUERY,
-        ACTION_CHECK_QUALITY_RULES,
         ACTION_SCHEMA_IMPORT,
         ACTION_IMPORT_DATA,
         ACTION_EXPORT_DATA,
@@ -74,9 +72,47 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_FINALIZE_GEOMETRY_CREATION,
                 ACTION_FILL_BFS,
                 ACTION_FILL_MORE_BFS_AND_LESS,
-                ACTION_FILL_RIGHT_OF_WAY_RELATIONS
+                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                ACTION_PARCEL_QUERY,
+                ACTION_CHECK_QUALITY_RULES
             ],
             ROLE_GUI_CONFIG: {}  # Empty to let other modules decide on a default gui_config dict
+        }
+        self.register_role(role, role_dict)
+
+
+        role = SUPPLIES_PROVIDER_ROLE
+        template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
+        template_gui[TOOLBAR] = [{  # Overwrite list of toolbars
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+            OBJECT_NAME: 'ladm_col_toolbar',
+            ACTIONS: [
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
+                    OBJECT_NAME: 'ladm_col_toolbar_st',
+                    ICON: ST_ICON,
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
+                ACTION_SCHEMA_IMPORT,
+                ACTION_RUN_ETL_COBOL,
+                ACTION_RUN_ETL_SNC,
+                ACTION_LOAD_LAYERS,
+                ACTION_EXPORT_DATA
+            ]
+        }]
+        role_dict = {
+            ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Provider"),
+            ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "The Supplies Provider role generates a XTF file with supplies data for the Manager role."),
+            ROLE_ACTIONS: [
+                ACTION_RUN_ETL_COBOL,
+                ACTION_RUN_ETL_SNC,
+                ACTION_ST_LOGIN,
+                ACTION_ST_LOGOUT
+            ],
+            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
         }
         self.register_role(role, role_dict)
 
@@ -112,7 +148,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
                 ACTION_OFFICIAL_SETTINGS,
                 ACTION_ST_LOGIN,
-                ACTION_ST_LOGOUT
+                ACTION_ST_LOGOUT,
+                ACTION_PARCEL_QUERY,
+                ACTION_CHECK_QUALITY_RULES
             ],
             ROLE_GUI_CONFIG: {}
         }
@@ -155,7 +193,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_REPORT_ANT,
                 ACTION_RUN_ETL_SNC,
                 ACTION_RUN_ETL_COBOL,
-                ACTION_INTEGRATE_SUPPLIES
+                ACTION_INTEGRATE_SUPPLIES,
+                ACTION_PARCEL_QUERY,
+                ACTION_CHECK_QUALITY_RULES
             ],
             ROLE_GUI_CONFIG: template_gui
         }
