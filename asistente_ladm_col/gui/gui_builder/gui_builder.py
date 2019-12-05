@@ -276,7 +276,7 @@ class GUI_Builder(QObject):
             widget = QPushButton(menu_def[WIDGET_NAME])
             menu = QMenu()
             if ICON in menu_def:
-                menu.setIcon(QIcon(menu_def[ICON]))
+                widget.setIcon(QIcon(menu_def[ICON]))
             widget.setMenu(menu)
 
         self._build_actions(menu_def[ACTIONS], menu)  # Now we have a normal menu, build actions on it

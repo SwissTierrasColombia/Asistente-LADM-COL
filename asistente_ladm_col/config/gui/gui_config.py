@@ -211,6 +211,7 @@ class GUI_Config(QObject):
                     WIDGET_TYPE: MENU,
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
                     OBJECT_NAME: "ladm_col_operation_toolbar",
+                    ICON: OPERATION_ICON,
                     ACTIONS: [
                         ACTION_CREATE_POINT,
                         ACTION_CREATE_BOUNDARY,
