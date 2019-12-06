@@ -35,6 +35,20 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 class LADM_DATA():
+
+    DICT_KEY_PARCEL_T_DEPARTMENT_F = "departamento"
+    DICT_KEY_PARCEL_T_FMI_F = "matricula_inmobiliaria"
+    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F = "numero_predial"
+    DICT_KEY_PARCEL_T_CONDITION_F = "condicion_predio"
+    DICT_KEY_PARCEL_T_NAME_F = "nombre"
+
+    DICT_KEY_PARTY_T_DOCUMENT_TYPE_F = "tipo_documento"
+    DICT_KEY_PARTY_T_DOCUMENT_ID_F = "documento_identidad"
+    DICT_KEY_PARTY_T_NAME_F = "nombre"
+    DICT_KEY_PARTY_T_RIGHT = "derecho"
+
+    DICT_KEY_PLOT_T_AREA_F = "area_terreno"
+
     """
     High-level class to get related information from the LADM-COL database.
     """
@@ -42,6 +56,242 @@ class LADM_DATA():
         self.qgis_utils = qgis_utils
         self.logger = Logger()
         self.names = Names()
+
+    def get_plots_related_to_parcels_supplies(self, db, t_ids, field_name, gc_plot_layer=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids in supplies model
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param gc_plot_layer: Plot QGIS layer, in case it exists already in the caller
+        :return: list of plot ids related to the parcel from supplies model
+        """
+        if not t_ids:
+            return []
+
+        layers = {
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+
+        if gc_plot_layer is not None:
+            del layers[self.names.GC_PLOT_T]
+
+        if layers:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            if self.names.GC_PLOT_T in layers:
+                gc_plot_layer = layers[self.names.GC_PLOT_T][LAYER]
+
+        expression = QgsExpression("{} IN ('{}') ".format(self.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(t_id) for t_id in t_ids])))
+        features = self.get_features_by_expression(gc_plot_layer, expression, with_attributes=True)
+
+        plot_ids = list()
+        for feature in features:
+            if field_name is None:  # We are only interested in the QGIS internal id, no need to get other fields
+                plot_ids.append(feature.id())
+            else:
+                field_found = gc_plot_layer.fields().indexOf(field_name) != -1
+                if field_found:
+                    plot_ids.append(feature[field_name])
+
+        return plot_ids
+
+    def get_parcels_related_to_plots_supplies(self, db, t_ids, field_name, gc_parcel_table=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of plot t_ids
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param gc_parcel_table: Parcel QGIS layer, in case it exists already in the caller
+        :return: list of parcel ids related to the plot
+        """
+
+        if not t_ids:
+            return []
+
+        layers = {
+            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+
+        if gc_parcel_table is not None:
+            del layers[self.names.GC_PARCEL_T]
+
+
+        if layers:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            if self.names.GC_PARCEL_T in layers:
+                gc_parcel_table = layers[self.names.GC_PARCEL_T][LAYER]
+
+            if self.names.GC_PLOT_T in layers:
+                gc_plot_layer = layers[self.names.GC_PLOT_T][LAYER]
+
+        expression = QgsExpression("{} IN ({})".format(self.names.T_ID_F,
+                                                       ",".join([str(t_id) for t_id in t_ids])))
+        features = self.get_features_by_expression(gc_plot_layer, expression, with_attributes=True)
+
+        parcel_t_ids = list()
+        for feature in features:
+            parcel_t_ids.append(feature[self.names.GC_PLOT_T_GC_PARCEL_F])
+
+        if field_name == self.names.T_ID_F:
+            return parcel_t_ids
+
+        parcel_ids = list()
+        expression = QgsExpression("{} IN ({})".format(self.names.T_ID_F,
+                                                          ",".join([str(id) for id in parcel_t_ids])))
+
+        if field_name is None:
+            features = self.get_features_by_expression(gc_parcel_table, expression)
+        else:
+            features = self.get_features_by_expression(gc_parcel_table, expression, with_attributes=True)
+
+        for feature in features:
+            if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
+                parcel_ids.append(feature.id())
+            else:
+                field_found = gc_parcel_table.fields().indexOf(field_name) != -1
+                if field_found:
+                    parcel_ids.append(feature[field_name])
+
+        return parcel_ids
+
+    def get_parcel_data_to_compare_changes_supplies(self, db, search_criterion=None, layer_modifiers=dict()):
+        """
+        :param db: DB Connector object
+        :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
+        :return: dict with parcel info for comparisons
+        """
+        parcel_fields_to_compare = self.get_parcel_fields_to_compare_supplies()
+        party_fields_to_compare = self.get_party_fields_to_compare_supplies()
+        plot_fields_to_compare = self.get_plot_fields_to_compare_supplies()
+
+        layers = {
+            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None}
+        }
+
+        mapping_parcels_field = self.mapping_parcel_fields_for_supplies()
+        mapping_party_field = self.mapping_party_fields_for_supplies()
+        mapping_plot_field = self.mapping_plot_fields_for_supplies()
+
+        self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        if not layers:
+            return None
+
+        # ===================== Start adding parcel info ==================================================
+        parcel_fields = [f.name() for f in layers[self.names.GC_PARCEL_T][LAYER].fields()]
+        parcel_features = self.get_features_by_search_criterion(layers[self.names.GC_PARCEL_T][LAYER], search_criterion=search_criterion, with_attributes=True)
+
+        dict_features = dict()
+        for feature in parcel_features:
+            dict_attrs = dict()
+
+            for parcel_field in parcel_fields_to_compare:
+                key_value_parcel = mapping_parcels_field[parcel_field] if parcel_field in mapping_parcels_field else parcel_field
+
+                if parcel_field in parcel_fields:
+                    if parcel_field == self.names.GC_PARCEL_T_CONDITION_F:
+                        # Go for domain value, instead of t_id
+                        value = self.get_domain_value_from_code(db, self.names.GC_PARCEL_TYPE_D, feature.attribute(parcel_field))
+                    else:
+                        value = feature.attribute(parcel_field)
+                elif parcel_field == self.DICT_KEY_PARCEL_T_DEPARTMENT_F:
+                    value = feature.attribute(self.names.GC_PARCEL_T_PARCEL_NUMBER_F)[:2]
+                elif parcel_field == self.DICT_KEY_PARCEL_T_NAME_F:
+                    value = NULL
+
+                dict_attrs[key_value_parcel] = value
+            dict_attrs[self.names.T_ID_F] = feature[self.names.T_ID_F]
+
+            key_value_parcel_number = mapping_parcels_field[self.names.GC_PARCEL_T_PARCEL_NUMBER_F] if self.names.GC_PARCEL_T_PARCEL_NUMBER_F in mapping_parcels_field else self.names.GC_PARCEL_T_PARCEL_NUMBER_F
+            if dict_attrs[key_value_parcel_number] in dict_features:
+                dict_features[dict_attrs[key_value_parcel_number]].append(dict_attrs)
+            else:
+                dict_features[dict_attrs[key_value_parcel_number]] = [dict_attrs]
+
+        # =====================  Start adding plot info ==================================================
+        plot_fields = [f.name() for f in layers[self.names.GC_PLOT_T][LAYER].fields()]
+        parcel_t_ids = [parcel_feature[self.names.T_ID_F] for parcel_feature in parcel_features]
+
+        expression_plot_features = QgsExpression("{} IN ('{}')".format(self.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(parcel_t_id) for parcel_t_id in parcel_t_ids])))
+        plot_features = self.get_features_by_expression(layers[self.names.GC_PLOT_T][LAYER], expression_plot_features, with_attributes=True, with_geometry=True)
+        dict_parcel_plot = {plot_feature[self.names.GC_PLOT_T_GC_PARCEL_F]: plot_feature[self.names.T_ID_F] for plot_feature in plot_features}
+        dict_plot_features = {plot_feature[self.names.T_ID_F]: plot_feature for plot_feature in plot_features}
+
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[self.names.T_ID_F] in dict_parcel_plot:
+                    if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
+                        plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
+                        for plot_field in plot_fields_to_compare:
+                            key_value_plot = mapping_plot_field[plot_field] if plot_field in mapping_plot_field else plot_field
+
+                            if plot_field in plot_fields:
+                                if plot_feature[plot_field] != NULL:
+                                    item[key_value_plot] = plot_feature[plot_field]
+                                else:
+                                    item[key_value_plot] = NULL
+
+                        item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
+                else:
+                    item[PLOT_GEOMETRY_KEY] = None  # No associated plot
+
+        # ===================== Start adding party info ==================================================
+        party_fields = [f.name() for f in layers[self.names.GC_OWNER_T][LAYER].fields()]
+        expression_parties_features = QgsExpression("{} IN ({})".format(self.names.GC_OWNER_T_PARCEL_ID_F, ",".join([str(id) for id in parcel_t_ids])))
+        party_features = self.get_features_by_expression(layers[self.names.GC_OWNER_T][LAYER], expression_parties_features, with_attributes=True)
+
+        dict_parcel_parties = dict()
+        for party_feature in party_features:
+            if party_feature[self.names.GC_OWNER_T_PARCEL_ID_F] in dict_parcel_parties:
+                dict_parcel_parties[party_feature[self.names.GC_OWNER_T_PARCEL_ID_F]].append(party_feature[self.names.T_ID_F])
+            else:
+                dict_parcel_parties[party_feature[self.names.GC_OWNER_T_PARCEL_ID_F]] = [party_feature[self.names.T_ID_F]]
+
+        dict_parties = dict()
+        for party_feature in party_features:
+            dict_party = dict()
+            for party_field in party_fields_to_compare:
+                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
+
+                if party_field in party_fields:
+                    dict_party[key_value_party] = party_feature[party_field]
+                elif party_field == self.DICT_KEY_PARTY_T_NAME_F:
+                    dict_party[key_value_party] = "{} {} {} {}".format(party_feature[self.names.GC_OWNER_T_FIRST_NAME_1_F],
+                                                                       party_feature[self.names.GC_OWNER_T_FIRST_NAME_2_F],
+                                                                       party_feature[self.names.GC_OWNER_T_SURNAME_1_F],
+                                                                       party_feature[self.names.GC_OWNER_T_SURNAME_2_F])
+                elif party_field == self.DICT_KEY_PARTY_T_RIGHT:
+                    dict_party[key_value_party] = NULL
+            dict_parties[party_feature[self.names.T_ID_F]] = dict_party
+
+        for id_parcel in dict_parcel_parties:
+            party_info = list()
+            for id_party in dict_parcel_parties[id_parcel]:
+                if id_party in dict_parties:
+                    party_info.append(dict_parties[id_party])
+
+            dict_parcel_parties[id_parcel] = party_info
+
+        # Append party info
+        tag_party = self.names.get_dict_plural()[self.names.OP_PARTY_T]
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[self.names.T_ID_F] in dict_parcel_parties:
+                    # Make join
+                    if tag_party in item:
+                        item[tag_party].append(dict_parcel_parties[item[self.names.T_ID_F]])
+                    else:
+                        item[tag_party] = dict_parcel_parties[item[self.names.T_ID_F]]
+                else:
+                    item[tag_party] = NULL
+
+        return dict_features
 
     def get_plots_related_to_parcels(self, db, t_ids, field_name, plot_layer=None, uebaunit_table=None):
         """
@@ -52,6 +302,10 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of plot ids related to the parcel
         """
+
+        if not t_ids:
+            return []
+
         layers = {
             self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
@@ -113,6 +367,10 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of parcel ids related to the parcel
         """
+
+        if not t_ids:
+            return []
+
         layers = {
             self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
@@ -428,6 +686,44 @@ class LADM_DATA():
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
+
+    def mapping_parcel_fields_for_supplies(self):
+        return {
+            self.DICT_KEY_PARCEL_T_DEPARTMENT_F: self.DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            self.names.GC_PARCEL_T_FMI_F: self.DICT_KEY_PARCEL_T_FMI_F,
+            self.names.GC_PARCEL_T_PARCEL_NUMBER_F: self.DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            self.names.GC_PARCEL_T_CONDITION_F: self.DICT_KEY_PARCEL_T_CONDITION_F,
+            self.DICT_KEY_PARCEL_T_NAME_F: self.DICT_KEY_PARCEL_T_NAME_F
+        }
+
+    def mapping_party_fields_for_supplies(self):
+        return {
+            self.names.GC_OWNER_T_DOCUMENT_TYPE_F: self.DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            self.names.GC_OWNER_T_DOCUMENT_ID_F: self.DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            self.DICT_KEY_PARTY_T_NAME_F: self.DICT_KEY_PARTY_T_NAME_F,
+            self.DICT_KEY_PARTY_T_RIGHT: self.DICT_KEY_PARTY_T_RIGHT
+        }
+
+    def mapping_plot_fields_for_supplies(self):
+        return {
+            self.names.GC_PLOT_T_ALPHANUMERIC_AREA: self.DICT_KEY_PLOT_T_AREA_F
+        }
+
+    def get_parcel_fields_to_compare_supplies(self):
+        return [self.DICT_KEY_PARCEL_T_DEPARTMENT_F,
+                self.names.GC_PARCEL_T_FMI_F,
+                self.names.GC_PARCEL_T_PARCEL_NUMBER_F,
+                self.names.GC_PARCEL_T_CONDITION_F,
+                self.DICT_KEY_PARCEL_T_NAME_F]
+
+    def get_party_fields_to_compare_supplies(self):
+        return [self.names.GC_OWNER_T_DOCUMENT_TYPE_F,
+                self.names.GC_OWNER_T_DOCUMENT_ID_F,
+                self.DICT_KEY_PARTY_T_NAME_F,
+                self.DICT_KEY_PARTY_T_RIGHT]
+
+    def get_plot_fields_to_compare_supplies(self):
+        return [self.names.GC_PLOT_T_ALPHANUMERIC_AREA]
 
     def get_parcel_fields_to_compare(self):
         return [self.names.OP_PARCEL_T_PARCEL_NUMBER_F,
