@@ -42,36 +42,38 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
-                                      SETTINGS_CONNECTION_TAB_INDEX,
-                                      SETTINGS_MODELS_TAB_INDEX)
-from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
-from ...gui.dialogs.dlg_settings import SettingsDialog
-from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
-from ...utils import get_ui_class
-from ...utils.qt_utils import (Validators,
-                               FileValidator,
-                               make_save_file_selector,
-                               OverrideCursor)
+from asistente_ladm_col.config.general_config import (DEFAULT_HIDDEN_MODELS,
+                                                      COLLECTED_DB_SOURCE,
+                                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                                      SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import (Validators,
+                                               FileValidator,
+                                               make_save_file_selector,
+                                               OverrideCursor)
 
 from ...resources_rc import * # Necessary to show icons
-from ...config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
-from ...config.enums import EnumDbActionType
+from asistente_ladm_col.config.enums import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
     
-    def __init__(self, iface, qgis_utils, conn_manager):
+    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db = self.conn_manager.get_db_connector_from_source()
+        self.db_source = db_source
+        self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -160,7 +162,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=self.db_source)
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)

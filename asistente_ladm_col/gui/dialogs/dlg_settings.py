@@ -47,14 +47,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
-        self.db_source = COLLECTED_DB_SOURCE
+        self.db_source = db_source
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
