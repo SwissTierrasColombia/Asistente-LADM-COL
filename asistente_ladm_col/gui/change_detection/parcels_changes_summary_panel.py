@@ -33,7 +33,7 @@ from ...config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
                                       PARCEL_STATUS,
                                       SOURCE_DB,
                                       COLLECTED_DB_SOURCE,
-                                      OFFICIAL_DB_SOURCE)
+                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils import get_ui_class
 
@@ -83,7 +83,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                 summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY] += count
                 summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
                 summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.T_ID_F].extend(parcel_attrs[self.names.T_ID_F])
-                summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = OFFICIAL_DB_SOURCE
+                summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = SUPPLIES_DB_SOURCE
 
         self.lbl_new_parcels_count.setText(str(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY]))
         self.lbl_missing_parcels_count.setText(str(summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY]))
@@ -132,6 +132,6 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Zoom to plot layer, remove selections
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
         self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.names.OP_PLOT_T][LAYER])
         self.utils.iface.zoomToActiveLayer()

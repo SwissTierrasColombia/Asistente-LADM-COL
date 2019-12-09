@@ -47,7 +47,7 @@ class TestGetLayers(unittest.TestCase):
                                                  self.names.OP_PLOT_T]
                           }
 
-        self.qgis_utils.cache_layers_and_relations(self.db_connection, ladm_col_db=True) # Gather information from the database
+        self.qgis_utils.cache_layers_and_relations(self.db_connection, ladm_col_db=True, db_source=None) # Gather information from the database
         QgsProject.instance().clear()
 
         print("\nINFO: Validating get_layer() on empty project...")

@@ -138,7 +138,7 @@ class DialogImportData(QDialog, DIALOG_UI):
     def close_dialog(self):
         if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
-            self.conn_manager.db_connection_changed.emit(self.db, True)
+            self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
         self.close()
 
     def update_connection_info(self):
@@ -230,7 +230,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.db = dlg.get_db_connection()
             self.update_connection_info()
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
 
     def accepted(self):

@@ -126,7 +126,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def close_dialog(self):
         if self._db_was_changed:
-            self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0])
+            self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
         self.logger.info(__name__, "Dialog closed.")
         self.close()
 
@@ -194,7 +194,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.db = dlg.get_db_connection()
             self.update_connection_info()
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the import schema dialog
         self._db_was_changed = True
@@ -265,6 +265,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
+            self._db_was_changed = True  # Schema could become LADM compliant after a schema import
 
     def save_configuration(self, configuration):
         settings = QSettings()

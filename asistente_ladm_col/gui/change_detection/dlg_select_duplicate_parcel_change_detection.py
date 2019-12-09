@@ -47,7 +47,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
 
         # Remove selection in plot layers
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
 
         self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
         self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all listed parcels")
