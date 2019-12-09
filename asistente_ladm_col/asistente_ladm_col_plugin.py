@@ -257,7 +257,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                                   self.main_window)
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
 
-        self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
+        self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                                           TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
 
         self._import_from_intermediate_structure_action = QAction(
@@ -356,7 +357,10 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
                 self.main_window)
-        self._upload_source_files_operation_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self.main_window)
+        self._upload_source_files_operation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/upload.svg"),
+                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                        "Upload Pending Source Files"),
+                                                             self.main_window)
 
         self._right_rrr_operation_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
@@ -471,10 +475,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
         self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
-        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
+        self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
+                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)
         self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
-        self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
+        self._ant_map_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_ant.svg"),
+                                       QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
         self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
         self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
@@ -488,7 +494,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
+        self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
+                                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)

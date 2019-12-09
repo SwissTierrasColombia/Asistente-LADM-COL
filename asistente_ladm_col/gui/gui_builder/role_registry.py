@@ -46,11 +46,75 @@ class Role_Registry(metaclass=Singleton):
         self._default_role = BASIC_ROLE
 
         role = BASIC_ROLE
+        template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
+        template_gui[TOOLBAR] = [{  # Overwrite list of toolbars
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+            OBJECT_NAME: 'ladm_col_toolbar',
+            ACTIONS: [
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data management"),
+                    OBJECT_NAME: 'ladm_col_data_management_toolbar',
+                    ICON: DATA_MANAGEMENT_ICON,
+                    ACTIONS: [ACTION_SCHEMA_IMPORT,
+                              ACTION_IMPORT_DATA,
+                              ACTION_EXPORT_DATA]
+                },
+                SEPARATOR,
+                {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
+                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    ICON: OPERATION_ICON,
+                    ACTIONS: [
+                        ACTION_CREATE_POINT,
+                        ACTION_CREATE_BOUNDARY,
+                        SEPARATOR,
+                        ACTION_CREATE_PLOT,
+                        ACTION_CREATE_BUILDING,
+                        ACTION_CREATE_BUILDING_UNIT,
+                        ACTION_CREATE_RIGHT_OF_WAY,
+                        ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                        SEPARATOR,
+                        ACTION_CREATE_EXT_ADDRESS,
+                        SEPARATOR,
+                        ACTION_CREATE_PARCEL,
+                        SEPARATOR,
+                        ACTION_CREATE_PARTY,
+                        ACTION_CREATE_GROUP_PARTY,
+                        SEPARATOR,
+                        ACTION_CREATE_RIGHT,
+                        ACTION_CREATE_RESTRICTION,
+                        SEPARATOR,
+                        ACTION_CREATE_ADMINISTRATIVE_SOURCE,
+                        ACTION_CREATE_SPATIAL_SOURCE,
+                        ACTION_UPLOAD_PENDING_SOURCE
+                    ]
+                },
+                SEPARATOR,
+                ACTION_FINALIZE_GEOMETRY_CREATION,
+                {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Structuring tools"),
+                    OBJECT_NAME: "ladm_col_structuring_tools_toolbar",
+                    ICON: STRUCTURING_TOOLS_ICON,
+                    ACTIONS: [
+                        ACTION_BUILD_BOUNDARY,
+                        ACTION_MOVE_NODES,
+                        ACTION_FILL_BFS,
+                        ACTION_FILL_MORE_BFS_AND_LESS
+                    ]
+                },
+                SEPARATOR,
+                ACTION_LOAD_LAYERS,
+                ACTION_PARCEL_QUERY
+            ]
+        }]
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The basic role helps you to explore the LADM_COL assistant main functionalities."),
             ROLE_ACTIONS: [
+                ACTION_DOWNLOAD_GUIDE,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
                 ACTION_CREATE_PLOT,
@@ -76,10 +140,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
             ],
-            ROLE_GUI_CONFIG: {}  # Empty to let other modules decide on a default gui_config dict
+            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
         }
         self.register_role(role, role_dict)
-
 
         role = SUPPLIES_PROVIDER_ROLE
         template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
@@ -105,7 +168,7 @@ class Role_Registry(metaclass=Singleton):
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Provider"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "The Supplies Provider role generates a XTF file with supplies data for the Manager role."),
+                "The Supplies Provider role generates a XTF file with supplies data for the Manager role."),
             ROLE_ACTIONS: [
                 ACTION_RUN_ETL_COBOL,
                 ACTION_RUN_ETL_SNC,
@@ -159,23 +222,43 @@ class Role_Registry(metaclass=Singleton):
         role = MANAGER_ROLE
         template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
         template_gui[TOOLBAR] = [{  # Overwrite list of toolbars
-            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools 2"),
-            OBJECT_NAME: 'ladm_col_toolbar2',
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+            OBJECT_NAME: 'ladm_col_toolbar',
             ACTIONS: [
                 {  # List of toolbars
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
                     OBJECT_NAME: 'ladm_col_toolbar_st',
+                    ICON: ST_ICON,
                     ACTIONS: [ACTION_ST_LOGIN,
                               ACTION_ST_LOGOUT]
                 },
                 SEPARATOR,
-                ACTION_OFFICIAL_SETTINGS,
+                ACTION_LOAD_LAYERS,
+                ACTION_INTEGRATE_SUPPLIES,
+                SEPARATOR,
+                ACTION_CHECK_QUALITY_RULES,
+                ACTION_PARCEL_QUERY,
                 SEPARATOR,
                 {  # List of toolbars
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools3"),
-                    OBJECT_NAME: 'ladm_col_toolbar3',
-                    ACTIONS: [ACTION_REPORT_ANNEX_17,
-                              ACTION_ABOUT]
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change Detection"),
+                    OBJECT_NAME: 'ladm_col_change_detection_toolbar',
+                    ICON: CHANGE_DETECTION_ICON,
+                    ACTIONS: [
+                        ACTION_CHANGE_DETECTION_PER_PARCEL,
+                        ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                        SEPARATOR,
+                        ACTION_OFFICIAL_SETTINGS
+                    ]
+                },
+                SEPARATOR,
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
+                    OBJECT_NAME: 'ladm_col_reports_toolbar',
+                    ICON: REPORTS_ICON,
+                    ACTIONS: [
+                        ACTION_REPORT_ANNEX_17,
+                        ACTION_REPORT_ANT
+                    ]
                 }
             ]
         }]
@@ -191,8 +274,6 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_ST_LOGOUT,
                 ACTION_REPORT_ANNEX_17,
                 ACTION_REPORT_ANT,
-                ACTION_RUN_ETL_SNC,
-                ACTION_RUN_ETL_COBOL,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
@@ -202,12 +283,68 @@ class Role_Registry(metaclass=Singleton):
         self.register_role(role, role_dict)
 
         role = ADVANCED_ROLE
+        template_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
+        template_gui[TOOLBAR] = [{  # List of toolbars
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+            OBJECT_NAME: 'ladm_col_toolbar',
+            ACTIONS: [
+                {  # List of toolbars
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
+                    OBJECT_NAME: 'ladm_col_st_toolbar',
+                    ICON: ST_ICON,
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
+                {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
+                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    ICON: OPERATION_ICON,
+                    ACTIONS: [
+                        ACTION_CREATE_POINT,
+                        ACTION_CREATE_BOUNDARY,
+                        SEPARATOR,
+                        ACTION_CREATE_PLOT,
+                        ACTION_CREATE_BUILDING,
+                        ACTION_CREATE_BUILDING_UNIT,
+                        ACTION_CREATE_RIGHT_OF_WAY,
+                        ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                        SEPARATOR,
+                        ACTION_CREATE_EXT_ADDRESS,
+                        SEPARATOR,
+                        ACTION_CREATE_PARCEL,
+                        SEPARATOR,
+                        ACTION_CREATE_PARTY,
+                        ACTION_CREATE_GROUP_PARTY,
+                        SEPARATOR,
+                        ACTION_CREATE_RIGHT,
+                        ACTION_CREATE_RESTRICTION,
+                        SEPARATOR,
+                        ACTION_CREATE_ADMINISTRATIVE_SOURCE,
+                        ACTION_CREATE_SPATIAL_SOURCE,
+                        ACTION_UPLOAD_PENDING_SOURCE
+                    ]
+                },
+                SEPARATOR,
+                ACTION_LOAD_LAYERS,
+                SEPARATOR,
+                ACTION_FINALIZE_GEOMETRY_CREATION,
+                ACTION_BUILD_BOUNDARY,
+                ACTION_MOVE_NODES,
+                SEPARATOR,
+                ACTION_FILL_BFS,
+                ACTION_FILL_MORE_BFS_AND_LESS,
+                SEPARATOR,
+                ACTION_SETTINGS
+            ]
+        }]
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Advanced"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The advanced role has access to all the functionality."),
             ROLE_ACTIONS: [ALL_ACTIONS],
-            ROLE_GUI_CONFIG: {}
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 

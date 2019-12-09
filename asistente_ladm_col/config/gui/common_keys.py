@@ -36,6 +36,7 @@ ACTION_SETTINGS = 'action_settings'
 ACTION_HELP = 'action_help'
 ACTION_ABOUT = 'action_about'
 
+ACTION_DOWNLOAD_GUIDE = 'action_download_guide'
 ACTION_FINALIZE_GEOMETRY_CREATION = 'action_finalize_geometry_creation'
 ACTION_BUILD_BOUNDARY = 'action_build_boundary'
 ACTION_MOVE_NODES = 'action_move_nodes'
@@ -85,6 +86,7 @@ DATA_MANAGEMENT_ICON = ":/Asistente-LADM_COL/resources/images/create_db.png"
 DATA_CREATION_ICON = ":/Asistente-LADM_COL/resources/images/data_creation.svg"
 ST_ICON = ":/Asistente-LADM_COL/resources/images/st.svg"
 OPERATION_ICON = ":/Asistente-LADM_COL/resources/images/icon.png"
+STRUCTURING_TOOLS_ICON = ":/Asistente-LADM_COL/resources/images/structuring_tools.svg"
 SUPPLIES_ICON = ""
 SPATIAL_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/spatial_unit.png"
 BA_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/ba_unit.png"
