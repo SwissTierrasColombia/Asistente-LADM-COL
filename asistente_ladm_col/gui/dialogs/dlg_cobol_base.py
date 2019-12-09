@@ -134,9 +134,14 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
+    def progress_configuration(self, base, num_process):
+        self.progress_base = base
+        self.progress_maximun = 100 * num_process
+        self.progress.setMaximum(self.progress_maximun)
+
     def progress_changed(self):
         QCoreApplication.processEvents()  # Listen to cancel from the user
-        self.progress.setValue(self.feedback.progress())
+        self.progress.setValue(self.progress_base + self.feedback.progress())
 
     def initialize_layers(self):
         self._layers = {

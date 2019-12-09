@@ -63,6 +63,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.conn_manager = conn_manager
         self.parent = parent
         self.names_gpkg = ''
+        self.progress_configuration(0,2)
 
         load_ui('dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
@@ -108,11 +109,12 @@ class MissingCobolSupplies(CobolBaseDialog):
                     if res_gdb:
                         self._running_etl = True
                         self.run_model_missing_cobol_supplies()
+                        self.progress_base = 100
                         res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
                         if res_gpkg:
                             self.export_excel()
                             if not self.feedback.isCanceled():
-                                self.progress.setValue(100)
+                                self.progress.setValue(self.progress_maximun)
                                 self.buttonBox.clear()
                                 self.buttonBox.setEnabled(True)
                                 self.buttonBox.addButton(QDialogButtonBox.Close)

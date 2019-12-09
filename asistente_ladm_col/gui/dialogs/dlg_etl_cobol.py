@@ -60,6 +60,7 @@ class ETLCobolDialog(CobolBaseDialog):
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+        self.progress_configuration(0,1)
 
         load_ui('dialogs/wig_cobol_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
