@@ -27,11 +27,12 @@ from qgis.core import (QgsFeatureRenderer,
                        QgsAbstractVectorLayerLabeling,
                        QgsReadWriteContext)
 
-from ..config.translator import (QGIS_LANG,
-                                 DEFAULT_LANGUAGE)
-from ..config.general_config import (STYLES_DIR,
-                                     STYLE_GROUP_LAYER_MODIFIERS)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  DEFAULT_LANGUAGE)
+from asistente_ladm_col.config.general_config import (STYLES_DIR,
+                                                      STYLE_GROUP_LAYER_MODIFIERS)
 from asistente_ladm_col.config.symbology import Symbology
+from asistente_ladm_col.lib.logger import Logger
 
 
 class SymbologyUtils(QObject):
@@ -40,8 +41,8 @@ class SymbologyUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
         self.symbology = Symbology()
-
 
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):
         style_group = self.symbology.get_default_style_group()
@@ -93,7 +94,7 @@ class SymbologyUtils(QObject):
         style_path = os.path.join(STYLES_DIR, qml_name + '.qml')
         file = QFile(style_path)
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
-            print("Unable to read style file from", style_path)
+            self.logger.warning(__name__, "Unable to read style file from {}".format(style_path))
 
         doc = QDomDocument()
         doc.setContent(file)

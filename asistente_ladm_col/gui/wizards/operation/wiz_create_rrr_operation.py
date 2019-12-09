@@ -47,13 +47,13 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
 
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
-            self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
             administrative_source_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
             else:
                 # feature_rrr_id: generic name used for represent id for right, restriction
                 feature_rrr_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
@@ -69,7 +69,7 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
                     elif self.EDITING_LAYER_NAME == self.names.OP_RESTRICTION_T:
                         new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F, feature_rrr_id)
 
-                    self.log.logMessage("Saving Administrative_source-{}: {}-{}".format(self.WIZARD_FEATURE_NAME, administrative_source_id, feature_rrr_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving Administrative_source-{}: {}-{}".format(self.WIZARD_FEATURE_NAME, administrative_source_id, feature_rrr_id))
                     new_features.append(new_feature)
 
                 self._layers[self.names.COL_RRR_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)

@@ -37,9 +37,9 @@ from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QHttpPart)
 from qgis.core import (QgsProject,
                        Qgis,
-                       QgsApplication,
                        NULL)
 
+from asistente_ladm_col.lib.logger import Logger
 from ..utils.qt_utils import OverrideCursor
 from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      PLUGIN_NAME,
@@ -53,13 +53,10 @@ class SourceHandler(QObject):
     is configured in Settings Dialog. The server returns a file URL that is
     then stored in the source table.
     """
-
-    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
-
     def __init__(self, qgis_utils):
         QObject.__init__(self)
-        self.log = QgsApplication.messageLog()
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
 
     def upload_files(self, layer, field_index, features):
         """
@@ -68,18 +65,17 @@ class SourceHandler(QObject):
         to a remote location.
         """
         if not QSettings().value('Asistente-LADM_COL/sources/document_repository', False, bool):
-            self.message_with_duration_emitted.emit(QCoreApplication.translate("SourceHandler",
-                   "The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."),
-                Qgis.Info, 10)
+            self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
+                   "The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."), 10)
             return dict()
 
         # Test if we have Internet connection and a valid service
-        res, msg = self.qgis_utils.is_source_service_valid()
+        res, msg = self.qgis_utils.is_source_service_valid()  # TODO: Bring this method from qgis_utils
 
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
                 "No file could be uploaded to the document repository. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
-            self.message_with_duration_emitted.emit(msg['text'], Qgis.Info, 20)  # The data is still saved, so always show Info msg
+            self.logger.info_msg(__name__, msg['text'], 20)  # The data is still saved, so always show Info msg
             return dict()
 
         file_features = [feature for feature in features if not feature[field_index] == NULL and os.path.isfile(feature[field_index])]
@@ -134,31 +130,30 @@ class SourceHandler(QObject):
             content = data.readAll()
 
             if content is None:
-                self.log.logMessage("There was an error uploading file '{}'".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "There was an error uploading file '{}'".format(data_url))
                 upload_errors += 1
                 continue
 
             try:
                 response = json.loads(content)
             except json.decoder.JSONDecodeError:
-                self.log.logMessage("Couldn't parse JSON response from server for file '{}'!!!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Couldn't parse JSON response from server for file '{}'!!!".format(data_url))
                 upload_errors += 1
                 continue
 
             if 'error' in response:
-                self.log.logMessage("STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
+                self.logger.critical(__name__, "STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
                         response['status'],
                         response['error'],
                         response['message'],
-                        data_url),
-                    PLUGIN_NAME, Qgis.Critical)
+                        data_url))
                 upload_errors += 1
                 continue
 
             reply.deleteLater()
 
             if 'url' not in response:
-                self.log.logMessage("'url' attribute not found in JSON response for file '{}'!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "'url' attribute not found in JSON response for file '{}'!".format(data_url))
                 upload_errors += 1
                 continue
 
@@ -169,41 +164,32 @@ class SourceHandler(QObject):
             upload_dialog.update_total_progress(count)
 
         if not_found > 0:
-            self.message_with_duration_emitted.emit(
-                QCoreApplication.translate("SourceHandler",
-                    "{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn't be found in the local disk!").format(
-                        not_found,
-                        total,
-                        QCoreApplication.translate("SourceHandler", "was") if not_found == 1 else QCoreApplication.translate("SourceHandler", "were"),
-                        QCoreApplication.translate("SourceHandler", "its") if not_found == 1 else QCoreApplication.translate("SourceHandler", "their")
-                    ),
-                Qgis.Info,
-                0)
+            self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
+                "{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn't be found in the local disk!").format(
+                    not_found,
+                    total,
+                    QCoreApplication.translate("SourceHandler", "was") if not_found == 1 else QCoreApplication.translate("SourceHandler", "were"),
+                    QCoreApplication.translate("SourceHandler", "its") if not_found == 1 else QCoreApplication.translate("SourceHandler", "their")
+                ))
         if len(new_values):
-            self.message_with_duration_emitted.emit(
-                QCoreApplication.translate("SourceHandler",
-                    "{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!").format(
-                        len(new_values),
-                        total,
-                        QCoreApplication.translate("SourceHandler", "was") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "were"),
-                        QCoreApplication.translate("SourceHandler", "its") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "their")
-                    ),
-                Qgis.Info,
-                0)
+            self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
+                "{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!").format(
+                    len(new_values),
+                    total,
+                    QCoreApplication.translate("SourceHandler", "was") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "were"),
+                    QCoreApplication.translate("SourceHandler", "its") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "their")
+                ))
         if upload_errors:
-            self.message_with_duration_emitted.emit(
-                QCoreApplication.translate("SourceHandler",
-                    "{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.").format(
-                        upload_errors,
-                        total
-                    ),
-                Qgis.Info,
-                0)
+            self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
+                "{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.").format(
+                    upload_errors,
+                    total
+                ))
 
         return new_values
 
     def error_returned(self, error_code):
-        self.log.logMessage("Qt network error code: {}".format(error_code), PLUGIN_NAME, Qgis.Critical)
+        self.logger.critical(__name__, "Qt network error code: {}".format(error_code))
 
     def handle_source_upload(self, db, layer, field_name):
 

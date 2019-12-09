@@ -52,35 +52,37 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       URL_REPORTS_LIBRARIES)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (remove_readonly,
                                                normalize_local_url)
 from asistente_ladm_col.utils.utils import Utils
 
 
 class ReportGenerator(QObject):
+    LOG_TAB = 'LADM-COL Reports'
+
     enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, qgis_utils, ladm_data):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
-        self.names = Names()
         self.ladm_data = ladm_data
+        self.names = Names()
+        self.logger = Logger()
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
             self.encoding = 'UTF8'
 
-        self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'LADM-COL Reports'
         self._downloading = False
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
-        self.log.logMessage(text, self.LOG_TAB, Qgis.Critical)
+        self.logger.critical(__name__, text, tab=self.LOG_TAB)
 
     def stdout_ready(self, proc):
         text = bytes(proc.readAllStandardOutput()).decode(self.encoding)
-        self.log.logMessage(text, self.LOG_TAB, Qgis.Info)
+        self.logger.info(__name__, text, tab=self.LOG_TAB)
 
     def update_yaml_config(self, db, config_path):
         text = ''
@@ -165,7 +167,7 @@ class ReportGenerator(QObject):
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
         bin_path = os.path.join(base_path, 'bin')
         if not os.path.exists(bin_path):
-            self.qgis_utils.message_with_button_download_report_dependency_emitted.emit(
+            self.logger.message_with_button_download_report_dependency_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
                    "The dependency library to generate reports is not installed. Click on the button to download and install it."))
             return
@@ -183,7 +185,7 @@ class ReportGenerator(QObject):
                 required_version_found = False
 
         if not required_version_found:
-            self.qgis_utils.message_with_button_remove_report_dependency_emitted.emit(
+            self.logger.message_with_button_remove_report_dependency_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
                     "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
             return
@@ -210,10 +212,8 @@ class ReportGenerator(QObject):
 
         selected_plots = plot_layer.selectedFeatures()
         if not selected_plots:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                                           "To generate reports, first select at least a plot!"),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                    "To generate reports, first select at least a plot!"))
             return
 
         # Where to store the reports?
@@ -223,10 +223,8 @@ class ReportGenerator(QObject):
                         QCoreApplication.translate("ReportGenerator", "Select a folder to save the reports to be generated"),
                         previous_folder)
         if not save_into_folder:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                    "You need to select a folder where to save the reports before continuing."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                    "You need to select a folder where to save the reports before continuing."))
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
@@ -242,14 +240,14 @@ class ReportGenerator(QObject):
 
         script_path = os.path.join(bin_path, script_name)
         if not os.path.isfile(script_path):
-            print("### SCRIPT FILE WASN'T FOUND")
+            self.logger.warning(__name__, "Script file for reports wasn't found! {}".format(script_path))
             return
 
         self.enable_action_requested.emit(report_type, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
-        print("CONFIG FILE:", yaml_config_path)
+        self.logger.debug(__name__, "Config file for reports: {}".format(yaml_config_path))
 
         total = len(selected_plots)
         step = 0
@@ -277,20 +275,18 @@ class ReportGenerator(QObject):
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
-                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
-                    PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
-                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id),
-                    PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
                 continue
 
             # Generate data file
             json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
-            print("JSON FILE:", json_file)
+            self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
             # Run sh/bat passing config and data files
             proc = QProcess()
@@ -312,13 +308,13 @@ class ReportGenerator(QObject):
 
             if not proc.waitForStarted():
                 proc = None
-                print("### COULDN'T EXECUTE SCRIPT TO GENERATE REPORT...")
+                self.logger.warning(__name__, "Couldn't execute script to generate report...")
             else:
                 loop = QEventLoop()
                 proc.finished.connect(loop.exit)
                 loop.exec()
 
-                print(plot_id, ':', proc.exitCode())
+                self.logger.debug(__name__, "{}:{}".format(plot_id, proc.exitCode()))
                 if proc.exitCode() == 0:
                     count += 1
 
@@ -328,7 +324,7 @@ class ReportGenerator(QObject):
         os.remove(yaml_config_path)
 
         self.enable_action_requested.emit(report_type, True)
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
 
         if total == count:
             if total == 1:
@@ -336,7 +332,7 @@ class ReportGenerator(QObject):
             else:
                 msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(save_into_folder))
 
-            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+            self.logger.success_msg(__name__, msg)
         else:
             details_msg = ''
             if polygons_with_holes:
@@ -356,8 +352,7 @@ class ReportGenerator(QObject):
                 else:
                     msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder), log_tab=self.LOG_TAB)
 
-            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
-
+            self.logger.warning_msg(__name__, msg)
 
     def save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
@@ -376,20 +371,13 @@ class ReportGenerator(QObject):
                 with zipfile.ZipFile(tmp_file, "r") as zip_ref:
                     zip_ref.extractall(dependency_base_path)
             except zipfile.BadZipFile as e:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "There was an error with the download. The downloaded file is invalid."),
-                    Qgis.Warning,
-                    0)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "There was an error with the download. The downloaded file is invalid."))
             except PermissionError as e:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')),
-                    Qgis.Warning,
-                    0)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')))
             else:
-                self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."),
-                    Qgis.Info,
-                    0)
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
 
             try:
                 os.remove(tmp_file)
@@ -399,7 +387,7 @@ class ReportGenerator(QObject):
         self._downloading = False
 
     def download_report_dependency(self):
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
         if not self._downloading: # Already downloading report dependency?
             if self.qgis_utils.is_connected(TEST_SERVER):
                 self._downloading = True
@@ -407,9 +395,8 @@ class ReportGenerator(QObject):
                 fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
                 QgsApplication.taskManager().addTask(fetcher_task)
             else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "There was a problem connecting to Internet."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                        "There was a problem connecting to Internet."))
                 self._downloading = False
 
     def remove_report_dependency(self):
@@ -422,10 +409,8 @@ class ReportGenerator(QObject):
         # Since folders might contain read only files, we need to delete them
         # using a callback (see https://docs.python.org/3/library/shutil.html#rmtree-example)
         shutil.rmtree(base_path, onerror=remove_readonly)
-        self.qgis_utils.clear_message_bar_emitted.emit()
+        self.logger.clear_message_bar()
 
         if os.path.exists(base_path):
-            self.qgis_utils.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)),
-                Qgis.Warning,
-                0)
+            self.logger.warning_msg(__name__,  QCoreApplication.translate("ReportGenerator",
+                "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))

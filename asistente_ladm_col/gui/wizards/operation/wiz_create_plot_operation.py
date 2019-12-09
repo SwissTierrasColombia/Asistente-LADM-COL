@@ -133,7 +133,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self.qgis_utils.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"), Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"))
 
     #############################################################################
     # Custom methods
@@ -165,7 +165,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
             filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
-            self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer, filter)
+            self.logger.message_with_button_open_table_attributes_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:
             message = QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!")

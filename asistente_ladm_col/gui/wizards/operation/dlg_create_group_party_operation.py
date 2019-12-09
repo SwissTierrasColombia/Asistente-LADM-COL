@@ -30,13 +30,13 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsExpression,
                        QgsExpressionContext,
                        Qgis,
-                       edit,
-                       QgsApplication)
+                       edit)
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME, LAYER)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('wizards/operation/dlg_group_party.ui')
@@ -50,11 +50,11 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
-        self.help_strings = HelpStrings()
+        self.logger = Logger()
         self.names = Names()
+        self.help_strings = HelpStrings()
 
         self.data = {} # {t_id: [display_text, denominator, numerator]}
         self.current_selected_parties = [] #  [t_ids]
@@ -360,7 +360,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             #new_feature.setAttribute("p_local_id", '0')
             #new_feature.setAttribute("comienzo_vida_util_version", 'now()')
 
-            self.log.logMessage("Saving Group Party: {}".format(group), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Saving Group Party: {}".format(group))
             with edit(self._layers[self.names.OP_GROUP_PARTY_T][LAYER]):
                 self._layers[self.names.OP_GROUP_PARTY_T][LAYER].addFeature(new_feature)
 
@@ -375,11 +375,11 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. We should have got only one group party... We cannot do anything with {} group parties").format(self.WIZARD_TOOL_NAME, len(features))
-            self.log.logMessage("We should have got only one group party... We cannot do anything with {} group parties".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one group party... We cannot do anything with {} group parties".format(len(features)))
         else:
             fid = features[0].id()
             if not self._layers[self.names.OP_GROUP_PARTY_T][LAYER].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in table Group Party...", PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in table Group Party...")
             else:
                 group_party_id = self._layers[self.names.OP_GROUP_PARTY_T][LAYER].getFeature(fid)[self.names.T_ID_F]
 
@@ -392,7 +392,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.MEMBERS_T][LAYER])
                     new_feature.setAttribute(self.names.MEMBERS_T_GROUP_PARTY_F, group_party_id)
                     new_feature.setAttribute(self.names.MEMBERS_T_PARTY_F, party_id)
-                    self.log.logMessage("Saving group party's member ({}: {}).".format(group_party_id, party_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving group party's member ({}: {}).".format(group_party_id, party_id))
                     with edit(self._layers[self.names.MEMBERS_T][LAYER]):
                         self._layers[self.names.MEMBERS_T][LAYER].addFeature(new_feature)
                         party_ids.append(party_id)
@@ -412,11 +412,11 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             pass
 
         if len(features) != 1:
-            self.log.logMessage("We should have got only one member... We cannot do anything with {} members".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one member... We cannot do anything with {} members".format(len(features)))
         else:
             fid = features[0].id()
             if not self._layers[self.names.MEMBERS_T][LAYER].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in table Members...", PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in table Members...")
             else:
                 member_id = self._layers[self.names.MEMBERS_T][LAYER].getFeature(fid)[self.names.T_ID_F]
 
@@ -429,14 +429,14 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
                 new_feature.setAttribute(self.names.FRACTION_S_NUMERATOR_F, fraction[0])
                 new_feature.setAttribute(self.names.FRACTION_S_DENOMINATOR_F, fraction[1])
                 with edit(self._layers[self.names.FRACTION_S][LAYER]):
-                    self.log.logMessage("Saving member's fraction ({}: {}).".format(member_id, fraction), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving member's fraction ({}: {}).".format(member_id, fraction))
                     self._layers[self.names.FRACTION_S][LAYER].addFeature(new_feature)
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+            self.logger.info_msg(__name__, message)
         self.disconnect_signals()
         self.close()
 

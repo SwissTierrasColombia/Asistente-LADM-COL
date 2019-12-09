@@ -48,7 +48,7 @@ DB_NAME = "ladm_col"
 DB_USER = "usuario_ladm_col"
 DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
-asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
+asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, True)
 asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 
@@ -86,7 +86,7 @@ def restore_schema(schema):
     else:
         print("Please add the test script")
 
-    process = os.popen("{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema]))
+    process = os.popen("{} {} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema], schema))
     output = process.readlines()
     process.close()
     print("Done restoring ladm_col database.")
@@ -136,6 +136,12 @@ def get_test_copy_path(path):
     dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
     copyfile(src_path, dst_path)
     return dst_path
+
+def import_asistente_ladm_col():
+    global iface
+    plugin_found = "asistente_ladm_col" in qgis.utils.plugins
+    if not plugin_found:
+        qgis.utils.plugins["asistente_ladm_col"] = asistente_ladm_col_plugin
 
 def import_qgis_model_baker():
     global iface

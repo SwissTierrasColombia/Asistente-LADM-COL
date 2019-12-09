@@ -26,6 +26,7 @@ ROLE_NAME = 'role_name'
 ROLE_DESCRIPTION = 'role_description'
 ROLE_GUI_CONFIG = 'role_gui_config'
 BASIC_ROLE = 'basic_role'
+SUPPLIES_PROVIDER_ROLE = 'supplies_provider_role'
 OPERATOR_ROLE = 'operator_role'
 MANAGER_ROLE = 'manager_role'
 ADVANCED_ROLE = 'advanced_role'
@@ -47,6 +48,9 @@ ACTION_RUN_ETL_COBOL = 'action_run_etl_cobol'
 ACTION_RUN_ETL_SNC = 'action_run_etl_snc'
 ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
+
+ACTION_ST_LOGIN = 'action_st_login'
+ACTION_ST_LOGOUT = 'action_st_logout'
 
 ACTION_CHECK_QUALITY_RULES = 'action_check_quality_rules'
 ACTION_PARCEL_QUERY = 'action_parcel_query'
@@ -79,14 +83,16 @@ ALL_ACTIONS = 'all_actions'
 
 SURVEYING_ICON = ":/Asistente-LADM_COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM_COL/resources/images/create_db.png"
-OPERATION_ICON = ""
+DATA_CREATION_ICON = ":/Asistente-LADM_COL/resources/images/data_creation.svg"
+ST_ICON = ":/Asistente-LADM_COL/resources/images/st.svg"
+OPERATION_ICON = ":/Asistente-LADM_COL/resources/images/icon.png"
 SUPPLIES_ICON = ""
 SPATIAL_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/spatial_unit.png"
 BA_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/ba_unit.png"
 RRR_ICON = ":/Asistente-LADM_COL/resources/images/rrr.png"
 PARTY_ICON = ":/Asistente-LADM_COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
-REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/domains.png"
+REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
 
 MODELS_GUI_DICT = {

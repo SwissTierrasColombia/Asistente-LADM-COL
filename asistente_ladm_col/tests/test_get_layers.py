@@ -21,28 +21,30 @@ class TestGetLayers(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.qgis_utils = QGISUtils()
-        self.db_connection = get_dbconn('test_ladm_col')
-        result = self.db_connection.test_connection()
-        print('test_connection', result)
-        if not result[1]:
-            print('The test connection is not working')
-            return
+
         restore_schema('test_ladm_col')
+        self.db_connection = get_dbconn('test_ladm_col')
         self.names = Names()
 
     def test_get_layer(self):
         print("\nINFO: Validating get_layer() method...")
+
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
         RELATED_TABLES = {self.names.OP_BOUNDARY_POINT_T: [self.names.OP_AGREEMENT_TYPE_D,
-                                                 self.names.OP_PHOTO_IDENTIFICATION_TYPE_D,
-                                                 self.names.COL_PRODUCTION_METHOD_TYPE_D,
-                                                 self.names.COL_INTERPOLATION_TYPE_D,
-                                                 self.names.OP_LOCATION_POINT_TYPE_D,
-                                                 self.names.OP_POINT_TYPE_D,
-                                                 self.names.COL_MONUMENTATION_TYPE_D,
-                                                 self.names.OP_BOUNDARY_POINT_T],
+                                                           self.names.OP_PHOTO_IDENTIFICATION_TYPE_D,
+                                                           self.names.COL_PRODUCTION_METHOD_TYPE_D,
+                                                           self.names.COL_INTERPOLATION_TYPE_D,
+                                                           self.names.OP_LOCATION_POINT_TYPE_D,
+                                                           self.names.OP_POINT_TYPE_D,
+                                                           self.names.COL_MONUMENTATION_TYPE_D,
+                                                           self.names.OP_BOUNDARY_POINT_T],
                           self.names.OP_PLOT_T: [self.names.COL_SURFACE_RELATION_TYPE_D,
-                                       self.names.COL_DIMENSION_TYPE_D,
-                                       self.names.OP_PLOT_T]
+                                                 self.names.COL_DIMENSION_TYPE_D,
+                                                 self.names.OP_PLOT_T]
                           }
 
         self.qgis_utils.cache_layers_and_relations(self.db_connection, ladm_col_db=True) # Gather information from the database
@@ -53,8 +55,8 @@ class TestGetLayers(unittest.TestCase):
         # and finishes with a comparison between loaded layers and expected layers.
         for layer in [self.names.OP_BOUNDARY_POINT_T, self.names.OP_PLOT_T]:
             loaded_table = self.qgis_utils.get_layer(self.db_connection, layer, load=True)
-            self.assertEqual(loaded_table.name(), layer)
-            loaded_layers_tree_names = [layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)]
+            self.assertEqual(self.db_connection.get_ladm_layer_name(loaded_table), layer)
+            loaded_layers_tree_names = [self.db_connection.get_ladm_layer_name(layer) for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)]
             for layer_related in RELATED_TABLES[layer]:
                 print("Check if {} exists in loaded layers {}".format(layer_related, loaded_layers_tree_names))
                 self.assertIn(layer_related, loaded_layers_tree_names)

@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 from qgis.core import (QgsApplication,
-                       Qgis)
+                       Qgis,
+                       QgsVectorLayer)
 
 from asistente_ladm_col.config.enums import (LogHandlerEnum,
                                              LogModeEnum)
@@ -44,15 +46,26 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     Only devs can debug, but users can get a whole log by writing it to a file.
     """
-    message_emitted = pyqtSignal(str, int)  # Message, level
+    clear_message_bar_emitted = pyqtSignal()
+    clear_status_bar_emitted = pyqtSignal()
     message_with_duration_emitted = pyqtSignal(str, int, int)  # Message, level, duration
     status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
+
+    message_with_button_load_layer_emitted = pyqtSignal(str, str, str, int)  # Message, button_text, layer_name, level
+    message_with_button_open_table_attributes_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button_text, level, layer, filter
+    message_with_button_download_report_dependency_emitted = pyqtSignal(str)  # Message
+    message_with_button_remove_report_dependency_emitted = pyqtSignal(str)  # Message
 
     def __init__(self):
         QObject.__init__(self)
         self.mode = LogModeEnum.USER  # Default value
         self.log = QgsApplication.messageLog()
         self._file_log = ''
+
+        self.message_with_button_load_layer_emitted.connect(self._log_load_layer_emitted)
+        self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
+        self.message_with_button_download_report_dependency_emitted.connect(self._log_download_report_dependency_emitted)
+        self.message_with_button_remove_report_dependency_emitted.connect(self._log_remove_report_emitted)
 
     def set_mode(self, mode):
         self.mode = mode
@@ -63,45 +76,83 @@ class Logger(QObject, metaclass=SingletonQObject):
     def disable_file_log(self):
         self._file_log = ''
 
-    def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Info, handler, duration)
+    def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
-    def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, handler, duration)
+    def info_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Info, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, handler, duration)
+    def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
-    def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Critical, handler, duration)
+    def warning_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
 
-    def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
-        self.log_message(module_name, msg, Qgis.Success, handler, duration)
+    def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
-    def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0):
+    def error_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
+
+    def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Critical, handler, duration, tab)
+
+    def critical_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Critical, LogHandlerEnum.MESSAGE_BAR, duration)
+
+    def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+        self.log_message(module_name, msg, Qgis.Success, handler, duration, tab)
+
+    def success_msg(self, module_name, msg, duration=0):
+        self.log_message(module_name, msg, Qgis.Success, LogHandlerEnum.MESSAGE_BAR, duration)
+
+    def clear_message_bar(self):
+        self.clear_message_bar_emitted.emit()
+
+    def status(self, msg):
+        if msg is None:
+            self.clear_status_bar_emitted.emit()
+        else:
+            self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+        QCoreApplication.processEvents()
+
+    def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         """
         Here we define messages of a particular run (e.g., showing variable values or potentially long messages)
         """
         if self.mode == LogModeEnum.DEV or self._file_log:
             # Debug messages go for devs and/or for files
-            self.log_message(module_name, msg, Qgis.Info, handler, duration)
+            self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
-    def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0):
+    def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         module_name = module_name.split(".")[-1]
+        call_message_log = False
         if handler == LogHandlerEnum.MESSAGE_BAR:
             self.message_with_duration_emitted.emit(msg, level, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.STATUS_BAR:
+                call_message_log = True
+        if handler == LogHandlerEnum.STATUS_BAR:
             self.status_bar_message_emitted.emit(msg, duration)
             if self.mode == LogModeEnum.DEV:
-                self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
-        elif handler == LogHandlerEnum.QGIS_LOG:
-            self.log.logMessage(f"[{module_name}] {msg}", TAB_NAME_FOR_LOGS, level, False)
+                call_message_log = True
+        if handler == LogHandlerEnum.QGIS_LOG:
+            self.log.logMessage(f"[{module_name}] {msg}", tab, level, False)
+
+        if call_message_log:
+            self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
 
         if self._file_log:
             # Logic to write message to file
             pass
 
-    #def message_with_button... and other methods...
-    #    self.log_message(module_name, msg, handler)
+    def _log_load_layer_emitted(self, message, button_text, layer_name, level):
+        self.debug("", "A message with button load_layer ({}) was shown!".format(layer_name))
+
+    def _log_open_table_attributes_emitted(self, message, button_text, level, layer, filter):
+        self.debug("", "A message with button open_table_attributes ({}) was shown!".format(layer.name()))
+
+    def _log_download_report_dependency_emitted(self, message):
+        self.debug("", "A message with button download_report_dependency was shown!")
+
+    def _log_remove_report_emitted(self, message):
+        self.debug("", "A message with button remove_report was shown!")

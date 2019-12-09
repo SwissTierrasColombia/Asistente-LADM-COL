@@ -22,7 +22,6 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               pyqtSignal)
 from qgis.core import (Qgis,
-                       QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsPointXY,
@@ -37,6 +36,7 @@ from qgis.core import (Qgis,
                        QgsRectangle)
 import processing
 
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.config.general_config import (LAYER,
@@ -96,11 +96,11 @@ class QualityUtils(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
         self.names = Names()
         self.logic = LogicChecks()
         self.utils = Utils()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
-        self.log = QgsApplication.messageLog()
         self.log_dialog_quality_text_content = ""
         self.total_time = 0
 
@@ -681,8 +681,8 @@ class QualityUtils(QObject):
         list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
@@ -979,8 +979,8 @@ class QualityUtils(QObject):
         list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
@@ -1449,10 +1449,8 @@ class QualityUtils(QObject):
             return None
 
         if layers[self.names.OP_BOUNDARY_T][LAYER].featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundaries to check 'missing boundary points in boundaries'."),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
+                                           "There are no boundaries to check 'missing boundary points in boundaries'."))
             return
 
         error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BOUNDARY_T][LAYER].sourceCrs().authid()),
@@ -1512,13 +1510,11 @@ class QualityUtils(QObject):
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
+                "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no missing boundary points in boundaries."), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                                           "There are no missing boundary points in boundaries."))
 
     def check_missing_survey_points_in_buildings(self, db):
         """
@@ -1533,10 +1529,8 @@ class QualityUtils(QObject):
             return None
 
         if layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no buildings to check 'missing survey points in buildings'."),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+                "There are no buildings to check 'missing survey points in buildings'."))
             return
 
         error_layer = QgsVectorLayer("Point?crs={}".format(layers[self.names.OP_BUILDING_T][LAYER].sourceCrs().authid()),
@@ -1559,13 +1553,11 @@ class QualityUtils(QObject):
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
+                "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no missing survey points in buildings."), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
+                "There are no missing survey points in buildings."))
 
     @_log_quality_checks
     def check_dangles_in_boundaries(self, db, rule_name, translated_strings):
@@ -1574,7 +1566,7 @@ class QualityUtils(QObject):
             return
 
         if boundary_layer.featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no boundaries to check for dangles."), Qgis.Info)
 
         else:
@@ -1597,11 +1589,11 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "Boundaries have no dangles!"), Qgis.Success)
 
     def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
@@ -1673,11 +1665,11 @@ class QualityUtils(QObject):
             return None
 
         if layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
         elif layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
         else:
@@ -1702,11 +1694,11 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
                                  added_layer.featureCount()))
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "There are no Right of Way-Building overlaps."), Qgis.Success)
 
     @_log_quality_checks
@@ -1717,7 +1709,7 @@ class QualityUtils(QObject):
             return
 
         if plot_layer.featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Info)
 
         else:
@@ -1741,11 +1733,11 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "There are no gaps in layer Plot."), Qgis.Success)
 
     @_log_quality_checks
@@ -1755,7 +1747,7 @@ class QualityUtils(QObject):
             return
 
         if right_of_way_layer.featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Info)
 
         else:
@@ -1779,12 +1771,12 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
                                  added_layer.featureCount()))
 
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
 
     @_log_quality_checks
@@ -1812,11 +1804,11 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "A memory layer with {} parcel errors has been added to the map!").format(added_layer.featureCount()))
 
         else:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "Parcel-Right relationships are correct!"), Qgis.Success)
 
     @_log_quality_checks
@@ -1827,11 +1819,11 @@ class QualityUtils(QObject):
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
 
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
                              added_layer.featureCount()))
         else:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "Group Party Fractions are correct!"), Qgis.Success)
 
     def get_dangle_ids(self, boundary_layer):
@@ -1885,11 +1877,11 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table))
 
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "There are no repeated records in {table}!").format(table=table), Qgis.Success)
 
     @_log_quality_checks
@@ -1936,11 +1928,11 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table))
 
         else:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
@@ -1978,10 +1970,10 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_message(QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
+            self.log_message(QCoreApplication.translate("QualityUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
                     error_count=errors_count, table=table))
         else:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
@@ -1995,7 +1987,7 @@ class QualityUtils(QObject):
             return None
 
         if layers[self.names.OP_BUILDING_T][LAYER].featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
@@ -2032,11 +2024,11 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "All buildings are within a plot."), Qgis.Success)
 
     @_log_quality_checks
@@ -2051,7 +2043,7 @@ class QualityUtils(QObject):
             return None
 
         if layers[self.names.OP_BUILDING_UNIT_T][LAYER].featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
+            self.log_message(QCoreApplication.translate("QualityUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
@@ -2088,8 +2080,8 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()))
             else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
+                self.log_message(QCoreApplication.translate("QualityUtils",
                                  "All building units are within a plot."), Qgis.Success)

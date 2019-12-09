@@ -22,9 +22,7 @@ import psycopg2.extras
 from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
-                       Qgis,
-                       QgsDataSourceUri,
-                       QgsApplication)
+                       QgsDataSourceUri)
 
 from .db_connector import (DBConnector,
                            EnumTestLevel)
@@ -34,13 +32,12 @@ from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_qu
                                                                         legal_query,
                                                                         property_record_card_query)
 from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import logic_validation_queries
-from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report import (ant_map_neighbouring_change_query,
-                                                                          ant_map_plot_query)
-from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report import (annex17_plot_data_query,
-                                                                               annex17_building_data_query,
-                                                                               annex17_point_data_query)
-from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME)
+from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report.pg import (ant_map_neighbouring_change_query,
+                                                                             ant_map_plot_query)
+from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import (annex17_building_data_query,
+                                                                                  annex17_point_data_query,
+                                                                                  annex17_plot_data_query)
+from asistente_ladm_col.config.general_config import INTERLIS_TEST_METADATA_TABLE_PG
 from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
                                                             CADASTRAL_FORM_MODEL_PREFIX,
                                                             VALUATION_MODEL_PREFIX,
@@ -74,7 +71,6 @@ class PGConnector(DBConnector):
         self.mode = 'pg'
         self.conn = None
         self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
-        self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
         self._logic_validation_queries = None
@@ -286,16 +282,16 @@ class PGConnector(DBConnector):
                 return (
                 False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
 
-            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection was open! {}".format(self.conn))
         else:
-            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
 
         return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
-            self.log.logMessage("Connection was closed ({}) !".format(self.conn.closed), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
     def validate_db(self):
@@ -589,7 +585,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PROPERTY RECORD CARD QUERY:", query)
+        # self.logger.debug(__name__, "PROPERTY RECORD CARD QUERY: {}".format(query))
 
         return res
 
@@ -626,7 +622,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("PHYSICAL QUERY:", query)
+        # self.logger.debug(__name__, "PHYSICAL QUERY: {}".format(query))
 
         return res
 
@@ -664,7 +660,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        # print("ECONOMIC QUERY:", query)
+        # self.logger.debug(__name__, "ECONOMIC QUERY:".format(query))
 
         return res
 
@@ -716,7 +712,7 @@ class PGConnector(DBConnector):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE terreno.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
+            where_id = "WHERE op_terreno.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 

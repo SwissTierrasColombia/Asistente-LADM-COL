@@ -23,16 +23,19 @@ import stat
 import sys
 from functools import partial
 
-from qgis.core import Qgis
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              QSettings)
+                              QSettings,
+                              Qt)
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
+from qgis.core import Qgis
+
+from asistente_ladm_col.lib.logger import Logger
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
@@ -122,7 +125,7 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
-def save_pdf_format(qgis_utils, settings_path, title, text):
+def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
                                                        QCoreApplication.translate('Asistente-LADM_COL', 'Export to PDF'),
@@ -146,7 +149,7 @@ def save_pdf_format(qgis_utils, settings_path, title, text):
             "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
             normalized_path=normalize_local_url(new_filename),
             path=new_filename)
-        qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+        Logger().success_msg(__name__, msg)
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):
@@ -275,3 +278,16 @@ class OverrideCursor():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
+
+
+class ProcessWithStatus():
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        Logger().status(self.msg)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+        Logger().status(None)

@@ -4,20 +4,27 @@ import nose2
 import psycopg2
 from qgis.testing import (unittest,
                           start_app)
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import edit
+from qgis.core import (edit,
+                       QgsField)
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            run_etl_model,
+                                            import_asistente_ladm_col,
                                             import_processing,
                                             get_dbconn,
                                             get_test_path,
                                             restore_schema,
                                             clean_table)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.utils.qgis_utils import (QGISUtils,
+                                                 GeometryUtils)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
+
+from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
 import_qgis_model_baker()
 import_processing()
@@ -34,74 +41,85 @@ class TestCopy(unittest.TestCase):
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
 
-        result = self.db_connection.test_connection()
-        print('test_connection', result)
-        if not result[1]:
-            print('The test connection is not working (test_connection)')
-            return
-
         self.names = Names()
-        clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
+        import_asistente_ladm_col()
+        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.geometry = GeometryUtils()
+
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working for empty db')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
         self.qgis_utils.disable_automatic_fields(self.db_connection, self.names.OP_BOUNDARY_POINT_T)
-        self.upload_points_from_csv(SCHEMA_LADM_COL_EMPTY)
-        self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY)
 
-        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
-        self.delete_features(test_layer)
-        self.assertEqual(test_layer.featureCount(), 0)
-
-    def upload_points_from_csv(self, schema):
-        print("Copying CSV data with no elevation...")
         csv_path = get_test_path('csv/puntos_fixed_v296.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        self.qgis_utils.copy_csv_to_db(csv_path,
-                                    txt_delimiter,
-                                    cbo_longitude,
-                                    cbo_latitude,
-                                    self.db_connection,
-                                    DEFAULT_EPSG,
-                                    self.names.OP_BOUNDARY_POINT_T)
+        csv_layer = self.qgis_utils.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG)
+        self.upload_points_from_csv(csv_layer, SCHEMA_LADM_COL_EMPTY)
 
+        self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
+
+    def boundary_point_layer_resolve_domains_for_test(self, csv_layer):
+        data_provider = csv_layer.dataProvider()
+        data_provider.addAttributes([QgsField('acuerdo', QVariant.Int),
+                                     QgsField('puntotipo', QVariant.Int)])
+        csv_layer.updateFields()
+
+        idx_agreement_field = data_provider.fieldNameIndex('acuerdo')
+        idx_point_type_field = data_provider.fieldNameIndex('puntotipo')
+
+        with edit(csv_layer):
+            for feature in csv_layer.getFeatures():
+                feature.setAttribute(idx_agreement_field, self.ladm_data.get_domain_code_from_value(self.db_connection, self.names.OP_AGREEMENT_TYPE_D, feature['_acuerdo']))
+                feature.setAttribute(idx_point_type_field, self.ladm_data.get_domain_code_from_value(self.db_connection, self.names.OP_POINT_TYPE_D, feature['_puntotipo']))
+                csv_layer.updateFeature(feature)
+
+    def upload_points_from_csv(self, csv_layer, schema):
+        print("Copying CSV data with no elevation...")
+        self.boundary_point_layer_resolve_domains_for_test(csv_layer)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
     def test_upload_points_from_csv_crs_wgs84(self):
         print("\nINFO: Copying CSV data with EPSG:4326...")
         self.qgis_utils.disable_automatic_fields(self.db_connection, self.names.OP_BOUNDARY_POINT_T)
-        self.upload_points_from_csv_crs_wgs84(SCHEMA_LADM_COL_EMPTY)
+
+        csv_path = get_test_path('csv/puntos_crs_4326_wgs84_v296.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
+        epsg = '4326'
+        csv_layer = self.qgis_utils.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, epsg)
+
+
+        self.upload_points_from_csv_crs_wgs84(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db_from_wgs84(SCHEMA_LADM_COL_EMPTY)
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-    def upload_points_from_csv_crs_wgs84(self, schema):
+    def upload_points_from_csv_crs_wgs84(self, csv_layer, schema):
         print("Copying CSV data in WGS84...")
-        csv_path = get_test_path('csv/puntos_crs_4326_wgs84_v296.csv')
-        txt_delimiter = ';'
-        cbo_longitude = 'x'
-        cbo_latitude = 'y'
-        epsg = '4326'
-
-        res = self.qgis_utils.copy_csv_to_db(csv_path,
-                                    txt_delimiter,
-                                    cbo_longitude,
-                                    cbo_latitude,
-                                    self.db_connection,
-                                    epsg,
-                                    self.names.OP_BOUNDARY_POINT_T)
-
+        self.boundary_point_layer_resolve_domains_for_test(csv_layer)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.validate_number_of_boundary_points_in_db(schema, 3)
 
     def validate_points_in_db_from_wgs84(self, schema):
         print('\nINFO: Validating points in db from wgs84')
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = cur.execute("""SELECT st_x(localizacion_original), st_y(localizacion_original) FROM {}.{};""".format(schema, self.names.OP_BOUNDARY_POINT_T))
+        query = cur.execute("""SELECT st_x(geometria), st_y(geometria) FROM {}.{};""".format(schema, self.names.OP_BOUNDARY_POINT_T))
         results = cur.fetchall()
         self.assertEqual(len(results), 3)
         self.assertEqual([round(result, 3) for result in results[0]], [round(item_test, 3) for item_test in [963254.898999999, 1077285.69999999]])
@@ -112,30 +130,27 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Validating copy CSV points with Z to DB...")
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
         self.qgis_utils.disable_automatic_fields(self.db_connection, self.names.OP_BOUNDARY_POINT_T)
-        self.upload_points_from_csv_with_elevation(SCHEMA_LADM_COL_EMPTY)
+
+        csv_path = get_test_path('csv/puntos_fixed_v296.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
+        elevation = 'z'
+        csv_layer = self.qgis_utils.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG, elevation)
+
+        self.upload_points_from_csv_with_elevation(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY, with_z=True)
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-    def upload_points_from_csv_with_elevation(self, schema):
+    def upload_points_from_csv_with_elevation(self, csv_layer, schema):
         print("\nINFO: Copying CSV data with elevation...")
-        csv_path = get_test_path('csv/puntos_fixed_v296.csv')
-        txt_delimiter = ';'
-        cbo_longitude = 'x'
-        cbo_latitude = 'y'
-        elevation = 'z'
-
-        self.qgis_utils.copy_csv_to_db(csv_path,
-                                       txt_delimiter,
-                                       cbo_longitude,
-                                       cbo_latitude,
-                                       self.db_connection,
-                                       DEFAULT_EPSG,
-                                       self.names.OP_BOUNDARY_POINT_T,
-                                       elevation)
-
+        self.boundary_point_layer_resolve_domains_for_test(csv_layer)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
     def validate_points_in_db(self, schema, with_z=False):
@@ -149,8 +164,8 @@ class TestCopy(unittest.TestCase):
 
         row = results[50]
         self.assertEqual(row[colnames['id_punto_lindero']], None)
-        self.assertEqual(row[colnames['puntotipo']], 77)
-        self.assertEqual(row[colnames['acuerdo']], 346)
+        self.assertEqual(row[colnames['puntotipo']], 208)
+        self.assertEqual(row[colnames['acuerdo']], 485)
         self.assertEqual(row[colnames['fotoidentificacion']], None)
         self.assertEqual(row[colnames['ubicacion_punto']], None)
         self.assertEqual(row[colnames['exactitud_horizontal']], 1)
@@ -164,38 +179,37 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(row[colnames['ue_op_construccion']], None)
         self.assertEqual(row[colnames['ue_op_terreno']], None)
         self.assertEqual(row[colnames['ue_op_unidadconstruccion']], None)
-        self.assertEqual(row[colnames['comienzo_vida_util_version']], datetime.datetime(2019, 10, 16, 10, 25, 9))
         self.assertEqual(row[colnames['fin_vida_util_version']], None)
 
         geom = '01010000A02C0C0000B01E85ABFC642D41F2D24DE20A7030410000000000000000'
         if with_z:
             geom = '01010000A02C0C0000B01E85ABFC642D41F2D24DE20A7030418B6CE7FB29529740'
 
-        self.assertEqual(row[colnames['localizacion_original']], geom)
+        self.assertEqual(row[colnames['geometria']], geom)
 
     def test_copy_csv_overlapping_to_db(self):
         print('\nINFO: Validating copy csv overlapping to db')
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
-        self.upload_points_from_csv_overlapping(SCHEMA_LADM_COL_EMPTY)
+        csv_path = get_test_path('csv/puntos_overlapping_v269.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
+        csv_layer = self.qgis_utils.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG)
+        self.upload_points_from_csv_overlapping(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_number_of_boundary_points_in_db(SCHEMA_LADM_COL_EMPTY, 0)
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-    def upload_points_from_csv_overlapping(self, schema):
+    def upload_points_from_csv_overlapping(self, csv_layer, schema):
         print('Uploading points from csv overlapping...')
-        csv_path = get_test_path('csv/puntos_overlapping_v269.csv')
-        txt_delimiter = ';'
-        cbo_longitude = 'x'
-        cbo_latitude = 'y'
-        self.qgis_utils.copy_csv_to_db(csv_path,
-                                    txt_delimiter,
-                                    cbo_longitude,
-                                    cbo_latitude,
-                                    self.db_connection,
-                                    DEFAULT_EPSG,
-                                    self.names.OP_BOUNDARY_POINT_T)
+        overlapping = self.geometry.get_overlapping_points(csv_layer)
+
+        if not overlapping:
+            self.boundary_point_layer_resolve_domains_for_test(csv_layer)
+            test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+            run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
 
         self.validate_number_of_boundary_points_in_db(schema, 0)
 

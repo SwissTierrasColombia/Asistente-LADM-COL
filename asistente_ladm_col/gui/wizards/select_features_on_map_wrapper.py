@@ -25,9 +25,9 @@ from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QPushButton)
 from qgis.core import Qgis
 
-from ...config.general_config import (PLUGIN_NAME,
-                                      LAYER)
-from ...utils.select_map_tool import SelectMapTool
+from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
 class SelectFeaturesOnMapWrapper:
@@ -40,6 +40,7 @@ class SelectFeaturesOnMapWrapper:
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
+        self.logger = Logger()
 
     def map_tool_changed(self, new_tool, old_tool):
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
@@ -84,7 +85,7 @@ class SelectFeaturesOnMapWrapper:
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
         self.canvas.setMapTool(self.maptool)
 
-        self.log.logMessage("Select maptool SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Select maptool SIGNAL disconnected")
         self.select_maptool.features_selected_signal.disconnect(self.features_selected)
 
     def init_map_tool(self):

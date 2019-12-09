@@ -25,7 +25,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsWkbTypes)
 
-from ..config.general_config import LAYER
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
@@ -37,8 +38,9 @@ class ToolBar(QObject):
         self.iface = iface
         self.qgis_utils = qgis_utils
         self.db = db
-        self.geometry = GeometryUtils()
+        self.logger = Logger()
         self.names = Names()
+        self.geometry = GeometryUtils()
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
@@ -46,9 +48,9 @@ class ToolBar(QObject):
         use_selection = True
 
         if layer is None:
-            self.qgis_utils.message_with_button_load_layer_emitted.emit(
+            self.logger.message_with_button_load_layer_emitted.emit(
                 QCoreApplication.translate("ToolBar", "First load the layer {} into QGIS!").format(self.names.OP_BOUNDARY_T),
-                QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T), [self.names.OP_BOUNDARY_T, None], Qgis.Warning)
+                QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T), self.names.OP_BOUNDARY_T, Qgis.Warning)
             return
         else:
             if layer.selectedFeatureCount() == 0:
@@ -61,9 +63,8 @@ class ToolBar(QObject):
                 if reply == QMessageBox.Yes:
                     use_selection = False
                 else:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("ToolBar", "First select at least one boundary!"),
-                        Qgis.Warning)
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                                 "First select at least one boundary!"))
                     return
 
         if use_selection:
@@ -91,14 +92,12 @@ class ToolBar(QObject):
                 new_fix_boundary_features.append(feature)
 
             layer.addFeatures(new_fix_boundary_features)
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar",
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
                                            "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(
-                    num_boundaries, len(new_fix_boundary_features)),
-                Qgis.Info)
+                    num_boundaries, len(new_fix_boundary_features)))
             self.iface.mapCanvas().refresh()
         else:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("ToolBar", "There are no boundaries to build."), Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar", "There are no boundaries to build."))
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         layers = {
@@ -114,12 +113,12 @@ class ToolBar(QObject):
         if use_selection:
             if layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
                 if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_BOUNDARY_T) is None:
-                    self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                    self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
                             self.names.OP_BOUNDARY_T),
                         QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T),
-                        [self.names.OP_BOUNDARY_T, None],
+                        self.names.OP_BOUNDARY_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
@@ -132,9 +131,8 @@ class ToolBar(QObject):
                     if reply == QMessageBox.Yes:
                         use_selection = False
                     else:
-                        self.qgis_utils.message_emitted.emit(
-                            QCoreApplication.translate("ToolBar", "First select at least one boundary!"),
-                            Qgis.Warning)
+                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                            "First select at least one boundary!"))
                         return
             else:
                 reply = QMessageBox.question(None,
@@ -171,20 +169,17 @@ class ToolBar(QObject):
                     features.append(feature)
             layers[self.names.POINT_BFS_T][LAYER].addFeatures(features)
             layers[self.names.POINT_BFS_T][LAYER].commitChanges()
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_pairs),
                     self.names.POINT_BFS_T,
                     len(id_pairs) - len(features),
                     len(id_pairs)
-                ),
-                Qgis.Info)
+                ))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar", "No pairs id_boundary-id_boundary_point found."),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                      "No pairs id_boundary-id_boundary_point found."))
 
     def fill_topology_tables_morebfs_less(self, db, use_selection=True):
         layers = {
@@ -202,12 +197,12 @@ class ToolBar(QObject):
             if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
                 if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T,
                                                              geometry_type=QgsWkbTypes.PolygonGeometry) is None:
-                    self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                    self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(
                             self.names.OP_PLOT_T),
                         QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_PLOT_T),
-                        [self.names.OP_PLOT_T, None],
+                        self.names.OP_PLOT_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
@@ -221,9 +216,8 @@ class ToolBar(QObject):
                     if reply == QMessageBox.Yes:
                         use_selection = False
                     else:
-                        self.qgis_utils.message_emitted.emit(
-                            QCoreApplication.translate("ToolBar", "First select at least one plot!"),
-                            Qgis.Warning)
+                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                                     "First select at least one plot!"))
                         return
             else:
                 reply = QMessageBox.question(None,
@@ -269,21 +263,17 @@ class ToolBar(QObject):
                     features.append(feature)
             layers[self.names.LESS_BFS_T][LAYER].addFeatures(features)
             layers[self.names.LESS_BFS_T][LAYER].commitChanges()
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_less_pairs),
                     self.names.LESS_BFS_T,
                     len(id_less_pairs) - len(features),
                     len(id_less_pairs)
-                ),
-                Qgis.Info)
+                ))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar", "No pairs id_boundary-id_plot found for '{}' table.").format(
-                    self.names.LESS_BFS_T),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                "No pairs id_boundary-id_plot found for '{}' table.").format(self.names.LESS_BFS_T))
 
         if id_more_pairs:
             layers[self.names.MORE_BFS_T][LAYER].startEditing()
@@ -297,18 +287,14 @@ class ToolBar(QObject):
                     features.append(feature)
             layers[self.names.MORE_BFS_T][LAYER].addFeatures(features)
             layers[self.names.MORE_BFS_T][LAYER].commitChanges()
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar",
-                                           "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_more_pairs),
                     self.names.MORE_BFS_T,
                     len(id_more_pairs) - len(features),
                     len(id_more_pairs)
-                ),
-                Qgis.Info)
+                ))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ToolBar", "No pairs id_boundary-id_plot found for '{}' table.").format(
-                    self.names.MORE_BFS_T),
-                Qgis.Info)
+            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                "No pairs id_boundary-id_plot found for '{}' table.").format(self.names.MORE_BFS_T))

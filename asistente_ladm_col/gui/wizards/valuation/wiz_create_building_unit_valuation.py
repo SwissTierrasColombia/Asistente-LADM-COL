@@ -29,13 +29,13 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
-            self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
+            self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
             building_unit_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
+                self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
             else:
                 building_unit_valuation_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
 
@@ -45,7 +45,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
                     new_feature.setAttribute(AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
                     new_feature.setAttribute(AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
-                    self.log.logMessage("Saving Building unit-Building unit valuation: {}-{}".format(building_unit_id, building_unit_valuation_id), PLUGIN_NAME, Qgis.Info)
+                    self.logger.info(__name__, "Saving Building unit-Building unit valuation: {}-{}".format(building_unit_id, building_unit_valuation_id))
                     new_features.append(new_feature)
 
                 self._layers[AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)

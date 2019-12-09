@@ -23,10 +23,11 @@
     <file>resources/images/deselect.png</file>
     <file>resources/images/icon_about.png</file>
     <file>resources/images/icon.png</file>
+    <file>resources/images/load_layers.png</file>
     <file>resources/images/lines.png</file>
     <file>resources/images/points.png</file>
     <file>resources/images/polygons.png</file>
-    <file>resources/images/associations.png</file>
+    <file>resources/images/relationships.svg</file>
     <file>resources/images/structures.png</file>
     <file>resources/images/tables.png</file>
     <file>resources/images/domains.png</file>
@@ -36,6 +37,19 @@
     <file>resources/images/settings.svg</file>
     <file>resources/images/info.svg</file>
     <file>resources/images/change_detection.svg</file>
+    <file>resources/images/login.svg</file>
+    <file>resources/images/logout.svg</file>
+    <file>resources/images/user.svg</file>
+    <file>resources/images/data_creation.svg</file>
+    <file>resources/images/build_boundaries.svg</file>
+    <file>resources/images/excel.svg</file>
+    <file>resources/images/reports.svg</file>
+    <file>resources/images/st.svg</file>
+    <file>resources/images/schema_import.svg</file>
+    <file>resources/images/import_xtf.svg</file>
+    <file>resources/images/export_to_xtf.svg</file>
+    <file>resources/images/etl_cobol.png</file>
+    <file>resources/images/etl_snc.png</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

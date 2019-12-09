@@ -4,9 +4,9 @@
     <categories>
       <category value="Boundary is not covered by plot" symbol="0" render="true" label="Boundary is not covered by the plot"/>
       <category value="Topological relationship between boundary and plot is duplicated in the masccl table" symbol="1" render="true" label="Topological relationship between boundary and plot is duplicated in the masccl table"/>
-      <category value="Topological relationship between boundary and plot is duplicated in the menos table" symbol="2" render="true" label="Topological relationship between boundary and plot is duplicated in the menos table"/>
+      <category value="Topological relationship between boundary and plot is duplicated in the menosccl table" symbol="2" render="true" label="Topological relationship between boundary and plot is duplicated in the menosccl table"/>
       <category value="Topological relationship between boundary and plot is not recorded in the masccl table" symbol="3" render="true" label="Topological relationship between boundary and plot is not recorded in the masccl table"/>
-      <category value="Topological relationship between boundary and plot is not recorded in the menos table" symbol="4" render="true" label="Topological relationship between boundary and plot is not recorded in the menos table"/>
+      <category value="Topological relationship between boundary and plot is not recorded in the menosccl table" symbol="4" render="true" label="Topological relationship between boundary and plot is not recorded in the menosccl table"/>
     </categories>
     <symbols>
       <symbol alpha="1" clip_to_extent="1" name="0" type="line">

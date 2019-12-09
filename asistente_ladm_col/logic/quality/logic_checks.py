@@ -1,8 +1,7 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QVariant)
-from qgis.core import (QgsApplication,
-                       QgsGeometry,
+from qgis.core import (QgsGeometry,
                        QgsField,
                        QgsVectorLayerUtils,
                        QgsVectorLayer)
@@ -16,7 +15,6 @@ class LogicChecks(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.log = QgsApplication.messageLog()
         self.names = Names()
 
     def get_parcel_right_relationship_errors(self, db, error_layer, table_name, translated_strings):

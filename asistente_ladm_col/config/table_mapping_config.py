@@ -1101,6 +1101,7 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
         "Operacion.OP_FuenteAdministrativaTipo": {VARIABLE_NAME: "OP_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_FotoidentificacionTipo": {VARIABLE_NAME: "OP_PHOTO_IDENTIFICATION_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_GrupoEtnicoTipo": {VARIABLE_NAME: "OP_ETHNIC_GROUP_TYPE", FIELDS_DICT: {}},
         "Operacion.OP_InteresadoDocumentoTipo": {VARIABLE_NAME: "OP_PARTY_DOCUMENT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_InteresadoTipo": {VARIABLE_NAME: "OP_PARTY_TYPE_D", FIELDS_DICT: {}},
@@ -1255,7 +1256,6 @@ class Names(metaclass=Singleton):
         :param models: List of model prefixes present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
-        debug = False
         required_names = ["T_ID_F",
                           "ILICODE_F",
                           "DESCRIPTION_F",
@@ -1271,15 +1271,13 @@ class Names(metaclass=Singleton):
                     if k1.split(".")[0] in models:
                         required_names.append(v1)
 
-        if debug:
-            print(required_names)
+        self.logger.debug(__name__, "Number of required Names: {}".format(required_names))
         names_not_found = list()
         for required_name in required_names:
             if getattr(self, required_name) is None:
                 names_not_found.append(required_name)
 
-        if debug:
-            print("Names not found:", set(names_not_found))
+        self.logger.debug(__name__, "Names not found: {}".format(set(names_not_found)))
         if names_not_found:
             return (False, "Name '{}' was not found!".format(names_not_found[0]))
 

@@ -36,8 +36,9 @@ from qgis.core import (QgsWkbTypes,
 
 from qgis.gui import (QgsPanelWidget,
                       QgsMapToolIdentifyFeature)
+
 from asistente_ladm_col.config.symbology import Symbology
-from ...config.general_config import (OFFICIAL_DB_PREFIX,
+from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
                                       OFFICIAL_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
                                       SUFFIX_LAYER_MODIFIERS,
@@ -47,9 +48,10 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       LAYER,
                                       PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import Names
-from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
-from ...utils.decorators import _with_override_cursor
-from ...utils import get_ui_class
+from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.decorators import _with_override_cursor
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
@@ -60,6 +62,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setupUi(self)
         self.parent = parent
         self.utils = utils
+        self.logger = Logger()
         self.names = Names()
         self.symbology = Symbology()
 
@@ -219,7 +222,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             # We do not expect duplicates in the official source!
             pass  # We'll choose the first one anyways
         elif len(official_parcels) == 0:
-            print("No parcel found!", search_field, search_value)
+            self.logger.info(__name__, "No official parcel found! Search: {}={}".format(search_field, search_value))
 
         official_plot_t_ids = []
         if official_parcels:

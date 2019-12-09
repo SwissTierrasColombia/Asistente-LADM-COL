@@ -4,14 +4,14 @@ def get_annex17_building_data_query (schema):
                     	SELECT f AS features
                     	FROM (
                     		SELECT 'Feature' AS type
-                    			,ST_AsGeoJSON(poligono_creado)::json AS geometry
+                    			,ST_AsGeoJSON(geometria)::json AS geometry
                     			,row_to_json((
                     					SELECT l
                     					FROM (
                     						SELECT t_id AS t_id
                     						) AS l
                     					)) AS properties
-                            FROM {schema}.construccion AS c
+                            FROM {schema}.op_construccion AS c
                     		) AS f
                         ) AS ff;""".format(schema=schema)
 
