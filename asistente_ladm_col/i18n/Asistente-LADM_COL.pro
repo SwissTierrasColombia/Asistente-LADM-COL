@@ -31,7 +31,6 @@ FORMS = ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/dialogs/dlg_group_party.ui \
         ../ui/dialogs/dlg_log_excel.ui \
         ../ui/dialogs/dlg_log_quality.ui \
-        ../ui/dialogs/dlg_official_data_settings.ui \
         ../ui/dialogs/dlg_welcome_screen.ui \
 	    ../ui/dialogs/settings_gpkg.ui \
 	    ../ui/dialogs/settings_pg.ui
@@ -89,7 +88,6 @@ SOURCES = ../__init__.py \
           ../config/general_config.py \
           ../config/help_strings.py \
           ../data/ladm_data.py \
-          ../gui/official_data_settings_dialog.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
           ../gui/change_detection/changes_parties_panel.py \
           ../gui/change_detection/changes_per_parcel_panel.py \

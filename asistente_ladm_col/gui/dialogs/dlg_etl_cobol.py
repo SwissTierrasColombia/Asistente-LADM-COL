@@ -37,6 +37,7 @@ from qgis.gui import QgsMessageBar
 import processing
 
 from asistente_ladm_col.config.general_config import (BLO_LIS_FILE_PATH,
+                                                      SUPPLIES_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
 
 from asistente_ladm_col.config.table_mapping_config import Names
@@ -216,7 +217,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 self.logger.info(__name__, "ETL-Cobol cancelled!")
         else:
             if self._db_was_changed:
-                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
+                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0], SUPPLIES_DB_SOURCE)
             self.logger.info(__name__, "Dialog closed.")
             self.done(1)
 
@@ -261,7 +262,7 @@ class ETLCobolDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.feedback = QgsProcessingFeedback()         
         self.feedback.progressChanged.connect(self.progress_changed) 
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the supplies dialog (e.g., we might run an import schema before under the hood)
         self._db_was_changed = True

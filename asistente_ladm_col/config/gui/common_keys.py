@@ -77,7 +77,7 @@ ACTION_REPORT_ANNEX_17 = 'action_report_annex_17'
 ACTION_REPORT_ANT = 'action_report_ant'
 ACTION_CHANGE_DETECTION_PER_PARCEL = 'action_change_detection_per_parcel'
 ACTION_CHANGE_DETECTION_ALL_PARCELS = 'action_change_detection_all_parcels'
-ACTION_OFFICIAL_SETTINGS = 'action_official_settings'
+ACTION_SUPPLIES_SETTINGS = 'action_supplies_settings'
 
 ALL_ACTIONS = 'all_actions'
 

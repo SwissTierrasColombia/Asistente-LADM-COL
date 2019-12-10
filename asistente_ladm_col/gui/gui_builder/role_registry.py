@@ -209,7 +209,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_OFFICIAL_SETTINGS,
+                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_PARCEL_QUERY,
@@ -247,7 +247,7 @@ class Role_Registry(metaclass=Singleton):
                         ACTION_CHANGE_DETECTION_PER_PARCEL,
                         ACTION_CHANGE_DETECTION_ALL_PARCELS,
                         SEPARATOR,
-                        ACTION_OFFICIAL_SETTINGS
+                        ACTION_SUPPLIES_SETTINGS
                     ]
                 },
                 SEPARATOR,
@@ -269,7 +269,7 @@ class Role_Registry(metaclass=Singleton):
             ROLE_ACTIONS: [
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_OFFICIAL_SETTINGS,
+                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_REPORT_ANNEX_17,

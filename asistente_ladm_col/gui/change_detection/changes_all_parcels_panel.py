@@ -38,7 +38,7 @@ from ...config.general_config import (PARCEL_STATUS_DISPLAY,
                                       CHANGE_DETECTION_MISSING_PARCEL,
                                       CHANGE_DETECTION_SEVERAL_PARCELS,
                                       CHANGE_DETECTION_NEW_PARCEL,
-                                      OFFICIAL_DB_SOURCE)
+                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.table_mapping_config import Names
 from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils import get_ui_class
@@ -71,7 +71,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Remove selection in plot layers
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
 
         self.fill_table(filter_parcels)
 
@@ -79,7 +79,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if not filter_parcels or (filter_parcels and filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE):
             inverse = False
         else:
-            inverse = True  # Take the official db as base db
+            inverse = True  # Take the supplies db as base db
 
         self.compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
@@ -97,8 +97,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 status = parcel_attrs[PARCEL_STATUS]
                 status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
                 if filter_parcels:
-                    # If we are on the official DB, "new" parcels are "missing" parcels from the collected db perspective
-                    if filter_parcels[SOURCE_DB] == OFFICIAL_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
+                    # If we are on the supplies DB, "new" parcels are "missing" parcels from the collected db perspective
+                    if filter_parcels[SOURCE_DB] == SUPPLIES_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
                         status_display = CHANGE_DETECTION_MISSING_PARCEL
                         status = CHANGE_DETECTION_MISSING_PARCEL
                     
@@ -118,13 +118,13 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
                 plot_layer = self.utils._layers[self.names.OP_PLOT_T][LAYER]
             else:
-                plot_layer = self.utils._official_layers[self.names.OP_PLOT_T][LAYER]
+                plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER]
 
-            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_db,
+            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._supplies_db,
                           filter_parcels[self.names.T_ID_F],
                           None, # Get QGIS plot ids
                           plot_layer,
-                          self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                          self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER])
             self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
 
             # plot_layer.select(plot_ids)
@@ -191,33 +191,33 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def select_related_plots_listed(self, zoom_to_selected=True):
         parcels_t_ids_collected = list()
-        parcels_t_ids_official = list()
+        parcels_t_ids_supplies = list()
 
         for row in range(self.tbl_changes_all_parcels.rowCount()):
             item = self.tbl_changes_all_parcels.item(row, 0)
             if item.data(Qt.UserRole)['inverse']:
-                parcels_t_ids_official.extend(item.data(Qt.UserRole)[self.names.T_ID_F])
+                parcels_t_ids_supplies.extend(item.data(Qt.UserRole)[self.names.T_ID_F])
             else:
                 parcels_t_ids_collected.extend(item.data(Qt.UserRole)[self.names.T_ID_F])
 
         if parcels_t_ids_collected:
             self.select_related_plots(parcels_t_ids_collected, False)
 
-        if parcels_t_ids_official:
-            self.select_related_plots(parcels_t_ids_official, True)
+        if parcels_t_ids_supplies:
+            self.select_related_plots(parcels_t_ids_supplies, True)
 
         if zoom_to_selected:
             plot_layer = self.utils._layers[self.names.OP_PLOT_T][LAYER]
             if plot_layer.selectedFeatureIds():
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
             else:  # Bajas
-                plot_layer = self.utils._official_layers[self.names.OP_PLOT_T][LAYER]
+                plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER]
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
 
     def select_related_plots(self, parcels_t_ids, inverse):
-        plot_layer = self.utils._official_layers[self.names.OP_PLOT_T][LAYER] if inverse else self.utils._layers[self.names.OP_PLOT_T][LAYER]
-        uebaunit_table = self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER] if inverse else self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER]
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db if inverse else self.utils._db,
+        plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER] if inverse else self.utils._layers[self.names.OP_PLOT_T][LAYER]
+        uebaunit_table = self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER] if inverse else self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER]
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._supplies_db if inverse else self.utils._db,
                                                                      parcels_t_ids,
                                                                      None,  # Get QGIS ids
                                                                      plot_layer=plot_layer,

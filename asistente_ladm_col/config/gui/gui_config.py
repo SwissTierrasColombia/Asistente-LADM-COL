@@ -180,7 +180,7 @@ class GUI_Config(QObject):
                         ACTION_CHANGE_DETECTION_PER_PARCEL,
                         ACTION_CHANGE_DETECTION_ALL_PARCELS,
                         SEPARATOR,
-                        ACTION_OFFICIAL_SETTINGS
+                        ACTION_SUPPLIES_SETTINGS
                     ]
                 },
                 SEPARATOR,
