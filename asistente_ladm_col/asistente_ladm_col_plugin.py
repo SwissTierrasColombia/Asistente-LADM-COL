@@ -93,6 +93,7 @@ from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
+from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
@@ -446,15 +447,19 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self.main_window)
         self._settings_changes_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self.main_window)
+        self._change_detections_settings_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection settings"), self.main_window)
 
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
         self._settings_changes_action.triggered.connect(self.show_official_data_settings)
+        self._change_detections_settings_action.triggered.connect(self.show_change_detection_settings)
 
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
             ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
+            ACTION_CHANGE_DETECTION_SETTINGS: self._change_detections_settings_action,
             ACTION_OFFICIAL_SETTINGS: self._settings_changes_action
         })
 
@@ -1066,6 +1071,10 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_official_data_settings_clear_message_bar(self):
         self.clear_message_bar()
         self.show_official_data_settings()
+
+    def show_change_detection_settings(self):
+        dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg.exec_()
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)

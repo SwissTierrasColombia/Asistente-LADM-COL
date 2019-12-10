@@ -235,6 +235,7 @@ class Role_Registry(metaclass=Singleton):
                                         ACTION_CHANGE_DETECTION_PER_PARCEL,
                                         ACTION_CHANGE_DETECTION_ALL_PARCELS,
                                         SEPARATOR,
+                                        ACTION_CHANGE_DETECTION_SETTINGS,
                                         ACTION_OFFICIAL_SETTINGS
                                     ]
                                 },

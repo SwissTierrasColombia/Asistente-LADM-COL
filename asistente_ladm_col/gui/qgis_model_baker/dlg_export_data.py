@@ -160,17 +160,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        # We only need those tabs related to Model Baker/ili2db operations
+        tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list)
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-
-        # We only need those tabs related to Model Baker/ili2db operations
-        for i in reversed(range(dlg.tabWidget.count())):
-            if i not in [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]:
-                dlg.tabWidget.removeTab(i)
-
         dlg.set_action_type(EnumDbActionType.EXPORT)
 
         if dlg.exec_():

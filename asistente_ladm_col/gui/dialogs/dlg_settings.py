@@ -47,7 +47,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, tab_pages_list=list()):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
@@ -58,6 +58,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
+        self.show_tabs(tab_pages_list)
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -102,6 +103,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
         self.rejected.connect(self.close_dialog)
+
+    def show_tabs(self, tab_pages_list):
+        if tab_pages_list:
+            # We only need those tabs related to Model Baker/ili2db operations
+            for i in reversed(range(self.tabWidget.count())):
+                if i not in tab_pages_list:
+                    self.tabWidget.removeTab(i)
 
     def load_roles(self):
         """
