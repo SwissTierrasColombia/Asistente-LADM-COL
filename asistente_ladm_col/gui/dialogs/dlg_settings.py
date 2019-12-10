@@ -44,7 +44,7 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, str
+    db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
     def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE):
@@ -375,6 +375,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.logger.info(__name__, "Test connection!")
+        self.logger.debug(__name__, "Test connection ({}): {}, {}".format(test_level, res, msg))
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
@@ -385,6 +386,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.logger.info(__name__, "Test LADM structure!")
+        self.logger.debug(__name__, "Test connection ({}): {}, {}".format(EnumTestLevel.LADM, res, msg))
 
     def test_service(self):
         self.setEnabled(False)

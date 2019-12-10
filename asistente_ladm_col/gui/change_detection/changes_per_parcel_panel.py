@@ -368,22 +368,22 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
-    def fill_row(self, field_name, supply_value, collected_value, row, plural):
+    def fill_row(self, field_name, supplies_value, collected_value, row, plural):
         item = QTableWidgetItem(field_name)
         # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
 
         if field_name == plural[self.names.OP_PARTY_T]:  # Parties
-            item = self.fill_party_item(supply_value)
+            item = self.fill_party_item(supplies_value)
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
             item = self.fill_party_item(collected_value)
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
-            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supply_value == collected_value else Qt.red)
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supplies_value == collected_value else Qt.red)
         else:
-            item = QTableWidgetItem(str(supply_value) if supply_value != NULL else '')
+            item = QTableWidgetItem(str(supplies_value) if supplies_value != NULL else '')
             #item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
@@ -392,7 +392,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
-            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supply_value == collected_value else Qt.red)
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supplies_value == collected_value else Qt.red)
 
     def fill_party_item(self, value):
         # Party's info comes in a list or a list of lists if it's a group party
@@ -409,14 +409,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         item.setData(Qt.UserRole, value)
         return item
 
-    def fill_geometry_row(self, field_name, supply_geom, collected_geom, row):
+    def fill_geometry_row(self, field_name, supplies_geom, collected_geom, row):
         self.tbl_changes_per_parcel.setItem(row, 0, QTableWidgetItem(QCoreApplication.translate("DockWidgetChanges", "Geometry")))
-        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(supply_geom)))
+        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(supplies_geom)))
         self.tbl_changes_per_parcel.setItem(row, 2, QTableWidgetItem(self.get_geometry_type_name(collected_geom)))
 
         self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
         self.tbl_changes_per_parcel.item(row, 3).setBackground(
-            Qt.green if self.utils.compare_features_geometries(collected_geom, supply_geom) else Qt.red)
+            Qt.green if self.utils.compare_features_geometries(collected_geom, supplies_geom) else Qt.red)
 
     @staticmethod
     def get_geometry_type_name(geometry):

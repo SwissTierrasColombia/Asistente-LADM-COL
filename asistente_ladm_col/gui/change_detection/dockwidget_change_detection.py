@@ -338,25 +338,25 @@ class ChangeDetectionUtils(QObject):
                         dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NEW_PARCEL
                         dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_NEW_PARCEL
                     else:
-                        supply_features = dict_supplies_parcels[collected_parcel_number]
+                        supplies_features = dict_supplies_parcels[collected_parcel_number]
 
                         del collected_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
-                        del supply_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
+                        del supplies_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
 
                         # Compare all attributes except geometry: a change in feature attrs is enough to mark it as
                         #   changed in the summary panel
-                        if not self.compare_features_attrs(collected_features[0], supply_features[0]):
+                        if not self.compare_features_attrs(collected_features[0], supplies_features[0]):
                             dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_CHANGED
                             dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_CHANGED
                         else:  # Attrs are equal, what about geometries?
                             collected_geometry = QgsGeometry()
-                            supply_geometry = QgsGeometry()
+                            supplies_geometry = QgsGeometry()
                             if PLOT_GEOMETRY_KEY in collected_features[0]:
                                 collected_geometry = collected_features[0][PLOT_GEOMETRY_KEY]
-                            if PLOT_GEOMETRY_KEY in supply_features[0]:
-                                supply_geometry = supply_features[0][PLOT_GEOMETRY_KEY]
+                            if PLOT_GEOMETRY_KEY in supplies_features[0]:
+                                supplies_geometry = supplies_features[0][PLOT_GEOMETRY_KEY]
 
-                            if not self.compare_features_geometries(collected_geometry, supply_geometry):
+                            if not self.compare_features_geometries(collected_geometry, supplies_geometry):
                                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
                                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
                             else:  # Attrs and geometry are the same!
