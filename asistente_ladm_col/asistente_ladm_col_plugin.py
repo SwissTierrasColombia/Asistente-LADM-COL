@@ -91,7 +91,7 @@ from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcel
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
-from asistente_ladm_col.gui.dialogs.dlg_missing_cobol_supplies_cobol import MissingCobolSupplies
+from asistente_ladm_col.gui.dialogs.dlg_missing_cobol_supplies import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog

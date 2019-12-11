@@ -54,6 +54,7 @@ from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
 
+
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
@@ -63,10 +64,10 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.conn_manager = conn_manager
         self.parent = parent
         self.logger = Logger()
+        self._dialog_mode = None
 
         self.names = Names()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
-        self._running_etl = False
         self.validators = Validators()
         self.initialize_feedback()
 
@@ -122,22 +123,20 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_pro.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
 
-        self.txt_file_path_blo.textChanged.connect(self.set_import_button_enabled)
-        self.txt_file_path_uni.textChanged.connect(self.set_import_button_enabled)
-        self.txt_file_path_ter.textChanged.connect(self.set_import_button_enabled)
-        self.txt_file_path_pro.textChanged.connect(self.set_import_button_enabled)
-        self.txt_file_path_gdb.textChanged.connect(self.set_import_button_enabled)
-
-        # Trigger validations right now
-        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
-        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
-        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
-        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
+        self.txt_file_path_blo.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_uni.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_ter.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_pro.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_gdb.textChanged.connect(self.input_data_changed)
 
     def progress_configuration(self, base, num_process):
+        """
+        :param base: Where to start counting from
+        :param num_process: Number of steps
+        """
         self.progress_base = base
-        self.progress_maximun = 100 * num_process
-        self.progress.setMaximum(self.progress_maximun)
+        self.progress_maximum = 100 * num_process
+        self.progress.setMaximum(self.progress_maximum)
 
     def progress_changed(self):
         QCoreApplication.processEvents()  # Listen to cancel from the user
@@ -163,68 +162,38 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         }
 
     def reject(self):
-        if self._running_etl:
-            reply = QMessageBox.question(self,
-                    QCoreApplication.translate("CobolBaseDialog", "Warning"),
-                    QCoreApplication.translate("CobolBaseDialog","The ETL Cobol is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database."),
-                    QMessageBox.Yes, QMessageBox.No)
-        
-            if reply == QMessageBox.Yes:
-                self.feedback.cancel()
-                self._running_etl = False
-                self.logger.info(__name__, "ETL-Cobol cancelled!")
-        else:
-            if self._db_was_changed:
-                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
-            self.logger.info(__name__, "Dialog closed.")
-            self.done(1)
+        raise NotImplementedError
 
     def finished_slot(self, result):
         self.bar.clearWidgets()
 
-    def set_import_button_enabled(self):
-        if self.txt_file_path_blo.isVisible():
-            state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
-        else:
-            state_blo = QValidator.Acceptable
+    def input_data_changed(self):
+        self.set_import_button_enabled(self.validate_inputs())
 
-        if self.txt_file_path_uni.isVisible():    
-            state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
-        else:
-            state_uni = QValidator.Acceptable
+    def set_import_button_enabled(self, enable):
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 
-        if self.txt_file_path_ter.isVisible():    
-            state_ter  = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
-        else:
-            state_ter = QValidator.Acceptable
+    def validate_inputs(self):
+        raise NotImplementedError
 
-        if self.txt_file_path_pro.isVisible():    
-            state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
-        else:
-            state_pro = QValidator.Acceptable
-
-        if self.txt_file_path_gdb.isVisible():    
-            state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
-        else:
-            state_gdb = QValidator.Acceptable
-
-        additional_validations = self.additional_validations()
-
-        if state_blo == QValidator.Acceptable and state_uni == QValidator.Acceptable and \
-            state_ter == QValidator.Acceptable and state_pro == QValidator.Acceptable and \
-            state_gdb == QValidator.Acceptable and additional_validations == QValidator.Acceptable:
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        else:
-             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-
-    def additional_validations(self):
-        return QValidator.Acceptable
+    def validate_common_inputs(self):
+        """
+        :return: Boolean
+        """
+        return self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0] == QValidator.Acceptable and \
+               self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
 
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
         self.feedback = QgsProcessingFeedback()         
         self.feedback.progressChanged.connect(self.progress_changed)
+        self.set_gui_controls_enabled(True)
+
+    def set_gui_controls_enabled(self, enable):
+        self.gbx_data_source.setEnabled(enable)
+        self.target_data.setEnabled(enable)
+        self.set_import_button_enabled(enable)
 
     def db_connection_changed(self, db, ladm_col_db):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
@@ -238,8 +207,6 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
         settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
         settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
-        if self.target_data.objectName() == 'Form_missing_supplies_cobol':
-            settings.setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
     def restore_settings(self):
         settings = QSettings()
@@ -248,9 +215,6 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_ter.setText(settings.value('Asistente-LADM_COL/etl_cobol/ter_path', ''))
         self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/etl_cobol/gdb_path', ''))
-
-        if self.target_data.objectName() == 'Form_missing_supplies_cobol':
-            self.target_data.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM_COL/etl_cobol/folder_path', ' '))
 
     def load_lis_files(self, lis_paths):
         self.lis_paths = lis_paths

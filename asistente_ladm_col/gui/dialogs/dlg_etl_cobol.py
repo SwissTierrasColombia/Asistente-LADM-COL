@@ -36,22 +36,16 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import (BLO_LIS_FILE_PATH,
-                                                      SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.general_config import SETTINGS_CONNECTION_TAB_INDEX
 
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
-                                               FileValidator,
-                                               DirValidator,
-                                               Validators,
-                                               make_file_selector,
-                                               make_folder_selector)
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
+
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
+
 
 class ETLCobolDialog(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -60,7 +54,8 @@ class ETLCobolDialog(CobolBaseDialog):
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
-        self.progress_configuration(0,1)
+        self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
+        self._running_etl = False
 
         load_ui('dialogs/wig_cobol_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
@@ -68,10 +63,16 @@ class ETLCobolDialog(CobolBaseDialog):
         self.target_data.btn_browse_connection.clicked.connect(self.show_settings)
         self.update_connection_info()
 
-        self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
-
         self.restore_settings()
+
+        # Trigger validations right now
+        self.txt_file_path_blo.setVisible(True)
+        QCoreApplication.processEvents()
+        self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.text())
+        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
+        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
+        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def accepted(self):
         self.save_settings()
@@ -83,17 +84,18 @@ class ETLCobolDialog(CobolBaseDialog):
                 QMessageBox.Yes, QMessageBox.No)
 
             lis_paths = {
-                        'blo': self.txt_file_path_blo.text().strip(),
-                        'uni': self.txt_file_path_uni.text().strip(),
-                        'ter': self.txt_file_path_ter.text().strip(),
-                        'pro': self.txt_file_path_pro.text().strip()
-                    }
+                'blo': self.txt_file_path_blo.text().strip(),
+                'uni': self.txt_file_path_uni.text().strip(),
+                'ter': self.txt_file_path_ter.text().strip(),
+                'pro': self.txt_file_path_pro.text().strip()
+            }
 
-            required_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO'
-                                        ,'R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA',
-                                        'R_NOMENCLATURA_DOMICILIARIA', 'U_PERIMETRO']
+            required_layers = ['R_TERRENO', 'U_TERRENO', 'R_SECTOR', 'U_SECTOR', 'R_VEREDA', 'U_MANZANA', 'U_BARRIO',
+                               'R_CONSTRUCCION', 'U_CONSTRUCCION', 'U_UNIDAD', 'R_UNIDAD',
+                               'U_NOMENCLATURA_DOMICILIARIA', 'R_NOMENCLATURA_DOMICILIARIA', 'U_PERIMETRO']
 
             if reply == QMessageBox.Yes:
+                self.set_gui_controls_enabled(False)
                 with OverrideCursor(Qt.WaitCursor):
                     res_lis, msg_lis = self.load_lis_files(lis_paths)
                     if res_lis:
@@ -117,12 +119,16 @@ class ETLCobolDialog(CobolBaseDialog):
                             self.show_message(msg_gdb, Qgis.Warning)
                     else:
                         self.show_message(msg_lis, Qgis.Warning)
+
+                self.set_gui_controls_enabled(True)
         else:
             with OverrideCursor(Qt.WaitCursor):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                pass
+                msg = QCoreApplication.translate("ETLCobolDialog", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                self.show_message(msg, Qgis.Warning)
+                self.logger.warning(__name__, msg)
 
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)
@@ -192,3 +198,36 @@ class ETLCobolDialog(CobolBaseDialog):
             self.target_data.db_connect_label.setText(
                 QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
+
+    def validate_inputs(self):
+        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
+        state_ter = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
+        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
+
+        if state_blo == QValidator.Acceptable and \
+                state_ter == QValidator.Acceptable and \
+                state_pro == QValidator.Acceptable and \
+                self.validate_common_inputs():
+            return True
+        else:
+            return False
+
+    def reject(self):
+        if self._running_etl:
+            reply = QMessageBox.question(self,
+                                         QCoreApplication.translate("CobolBaseDialog", "Warning"),
+                                         QCoreApplication.translate("CobolBaseDialog",
+                                                                    "The ETL Cobol is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database."),
+                                         QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                self.feedback.cancel()
+                self._running_etl = False
+                msg = QCoreApplication.translate("CobolBaseDialog", "The ETL-Cobol was cancelled.")
+                self.logger.info(__name__, msg)
+                self.show_message(msg, Qgis.Info)
+        else:
+            if self._db_was_changed:
+                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
+            self.logger.info(__name__, "Dialog closed.")
+            self.done(1)
