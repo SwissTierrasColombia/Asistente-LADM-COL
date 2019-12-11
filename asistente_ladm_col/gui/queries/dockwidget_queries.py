@@ -161,7 +161,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
         self.btn_plot_toggled()
 
-    def update_db_connection(self, db, ladm_col_db):
+    def update_db_connection(self, db, ladm_col_db, db_source):
         self._db = db
         self.initialize_tool()
 

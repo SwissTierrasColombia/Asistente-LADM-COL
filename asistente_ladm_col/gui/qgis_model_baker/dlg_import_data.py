@@ -42,26 +42,27 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (DEFAULT_EPSG,
-                                      DEFAULT_INHERITANCE,
-                                      DEFAULT_HIDDEN_MODELS,
-                                      SETTINGS_CONNECTION_TAB_INDEX,
-                                      CREATE_BASKET_COL,
-                                      CREATE_IMPORT_TID,
-                                      STROKE_ARCS,
-                                      SETTINGS_MODELS_TAB_INDEX)
-from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
-from ...gui.dialogs.dlg_settings import SettingsDialog
-from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
-from ...utils import get_ui_class
-from ...utils.qt_utils import (Validators,
-                               FileValidator,
-                               make_file_selector,
-                               OverrideCursor)
+from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
+                                                      COLLECTED_DB_SOURCE,
+                                                      DEFAULT_INHERITANCE,
+                                                      DEFAULT_HIDDEN_MODELS,
+                                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                                      CREATE_BASKET_COL,
+                                                      CREATE_IMPORT_TID,
+                                                      STROKE_ARCS,
+                                                      SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import (Validators,
+                                               FileValidator,
+                                               make_file_selector,
+                                               OverrideCursor)
 
 from ...resources_rc import * # Necessary to show icons
-from ...config.config_db_supported import ConfigDbSupported
-from ...config.enums import EnumDbActionType
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.enums import EnumDbActionType
 
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
@@ -72,14 +73,15 @@ class DialogImportData(QDialog, DIALOG_UI):
     BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
     BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
-    def __init__(self, iface, qgis_utils, conn_manager):
+    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db = self.conn_manager.get_db_connector_from_source()
+        self.db_source = db_source
+        self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
 
@@ -136,7 +138,7 @@ class DialogImportData(QDialog, DIALOG_UI):
     def close_dialog(self):
         if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
-            self.conn_manager.db_connection_changed.emit(self.db, True)
+            self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
         self.close()
 
     def update_connection_info(self):
@@ -213,7 +215,7 @@ class DialogImportData(QDialog, DIALOG_UI):
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=self.db_source, tab_pages_list=tab_pages_list)
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
@@ -224,7 +226,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.db = dlg.get_db_connection()
             self.update_connection_info()
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
 
     def accepted(self):

@@ -44,17 +44,17 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
+    db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, tab_pages_list=list()):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE, tab_pages_list=list()):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
-        self.db_source = COLLECTED_DB_SOURCE
+        self.db_source = db_source
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -214,7 +214,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
                 # Emmit signal when db source changes
-                self.db_connection_changed.emit(self._db, ladm_col_schema)
+                self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
 
                 self.save_settings()
                 QDialog.accept(self)
@@ -382,16 +382,19 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
+        self.logger.info(__name__, "Test connection!")
+        self.logger.debug(__name__, "Test connection ({}): {}, {}".format(test_level, res, msg))
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        test_level = EnumTestLevel.LADM
-        res, msg = db.test_connection(test_level=test_level)
+        res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
 
         if db is not None:
             db.close_connection()
 
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
+        self.logger.info(__name__, "Test LADM structure!")
+        self.logger.debug(__name__, "Test connection ({}): {}, {}".format(EnumTestLevel.LADM, res, msg))
 
     def test_service(self):
         self.setEnabled(False)

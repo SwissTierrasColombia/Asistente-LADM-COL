@@ -23,7 +23,7 @@ class GUI_Config(QObject):
                     ACTIONS: []  # This menu is removed because of the empty actions
                 }, {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"),
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data management"),
                     OBJECT_NAME: "ladm_col_data_management_menu",
                     ICON: DATA_MANAGEMENT_ICON,
                     ACTIONS: [
@@ -52,10 +52,11 @@ class GUI_Config(QObject):
             WIDGET_NAME: "LAD&M_COL",
             OBJECT_NAME: 'main_menu',
             ACTIONS: [
-                ACTION_LOAD_LAYERS,
+                ACTION_DOWNLOAD_GUIDE,
+                SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"),
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data management"),
                     OBJECT_NAME: "ladm_col_data_management_menu",
                     ICON: DATA_MANAGEMENT_ICON,
                     ACTIONS: [
@@ -63,11 +64,91 @@ class GUI_Config(QObject):
                         ACTION_IMPORT_DATA,
                         ACTION_EXPORT_DATA
                     ]
+                }, {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data capture and structuring"),
+                    OBJECT_NAME: "ladm_col_data_capture_and_structuring_menu",
+                    ICON: DATA_CREATION_ICON,
+                    ACTIONS: [
+                        {
+                            WIDGET_TYPE: MENU,
+                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operation"),
+                            OBJECT_NAME: "ladm_col_operation_menu",
+                            ICON: OPERATION_ICON,
+                            ACTIONS: [
+                                {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                            "Surveying and Representation"),
+                                    OBJECT_NAME: "surveying and representation_menu",
+                                    ICON: SURVEYING_ICON,
+                                    ACTIONS: [
+                                        ACTION_CREATE_POINT,
+                                        ACTION_CREATE_BOUNDARY
+                                    ]
+                                },
+                                {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"),
+                                    OBJECT_NAME: "spatial unit_menu",
+                                    ICON: SPATIAL_UNIT_ICON,
+                                    ACTIONS: [
+                                        ACTION_CREATE_PLOT,
+                                        ACTION_CREATE_BUILDING,
+                                        ACTION_CREATE_BUILDING_UNIT,
+                                        SEPARATOR,
+                                        ACTION_CREATE_RIGHT_OF_WAY,
+                                        ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                                        SEPARATOR,
+                                        ACTION_CREATE_EXT_ADDRESS
+                                    ]
+                                }, {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                            "Basic Administrative Unit"),
+                                    OBJECT_NAME: "basic administrative unit_menu",
+                                    ICON: BA_UNIT_ICON,
+                                    ACTIONS: [ACTION_CREATE_PARCEL]
+                                }, {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"),
+                                    OBJECT_NAME: "rrr_menu",
+                                    ICON: RRR_ICON,
+                                    ACTIONS: [
+                                        ACTION_CREATE_RIGHT,
+                                        ACTION_CREATE_RESTRICTION
+                                    ]
+                                }, {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"),
+                                    OBJECT_NAME: "party_menu",
+                                    ICON: PARTY_ICON,
+                                    ACTIONS: [
+                                        ACTION_CREATE_PARTY,
+                                        ACTION_CREATE_GROUP_PARTY
+                                    ]
+                                }, {
+                                    WIDGET_TYPE: MENU,
+                                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"),
+                                    OBJECT_NAME: "source_menu",
+                                    ICON: SOURCE_ICON,
+                                    ACTIONS: [
+                                        ACTION_CREATE_ADMINISTRATIVE_SOURCE,
+                                        ACTION_CREATE_SPATIAL_SOURCE,
+                                        ACTION_UPLOAD_PENDING_SOURCE
+                                    ]
+                                }
+                            ]
+                        },
+                        SEPARATOR,
+                        ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
+                    ]
                 },
+                ACTION_LOAD_LAYERS,
                 SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies"),
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies management"),
                     OBJECT_NAME: "ladm_col_supplies_menu",
                     ICON: SUPPLIES_ICON,
                     ACTIONS: [
@@ -75,76 +156,9 @@ class GUI_Config(QObject):
                         ACTION_RUN_ETL_SNC,
                         ACTION_INTEGRATE_SUPPLIES
                     ]
-                }, {
-                    WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastral data capture"),
-                    OBJECT_NAME: "ladm_col_operation_menu",
-                    ICON: OPERATION_ICON,
-                    ACTIONS: [
-                        {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"),
-                            OBJECT_NAME: "surveying and representation_menu",
-                            ICON: SURVEYING_ICON,
-                            ACTIONS: [
-                                ACTION_CREATE_POINT,
-                                ACTION_CREATE_BOUNDARY
-                            ]
-                        },
-                        {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"),
-                            OBJECT_NAME: "spatial unit_menu",
-                            ICON: SPATIAL_UNIT_ICON,
-                            ACTIONS: [
-                                ACTION_CREATE_PLOT,
-                                ACTION_CREATE_BUILDING,
-                                ACTION_CREATE_BUILDING_UNIT,
-                                SEPARATOR,
-                                ACTION_CREATE_RIGHT_OF_WAY,
-                                ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
-                                SEPARATOR,
-                                ACTION_CREATE_EXT_ADDRESS
-                            ]
-                        }, {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic Administrative Unit"),
-                            OBJECT_NAME: "basic administrative unit_menu",
-                            ICON: BA_UNIT_ICON,
-                            ACTIONS: [ACTION_CREATE_PARCEL]
-                        }, {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"),
-                            OBJECT_NAME: "rrr_menu",
-                            ICON: RRR_ICON,
-                            ACTIONS: [
-                                ACTION_CREATE_RIGHT,
-                                ACTION_CREATE_RESTRICTION
-                            ]
-                        }, {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"),
-                            OBJECT_NAME: "party_menu",
-                            ICON: PARTY_ICON,
-                            ACTIONS: [
-                                ACTION_CREATE_PARTY,
-                                ACTION_CREATE_GROUP_PARTY
-                            ]
-                        }, {
-                            WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"),
-                            OBJECT_NAME: "source_menu",
-                            ICON: SOURCE_ICON,
-                            ACTIONS: [
-                                ACTION_CREATE_ADMINISTRATIVE_SOURCE,
-                                ACTION_CREATE_SPATIAL_SOURCE,
-                                ACTION_UPLOAD_PENDING_SOURCE
-                            ]
-                        }
-                    ]
                 },
-                ACTION_CHECK_QUALITY_RULES,
                 SEPARATOR,
+                ACTION_CHECK_QUALITY_RULES,
                 ACTION_PARCEL_QUERY,
                 {
                     WIDGET_TYPE: MENU,
@@ -155,17 +169,27 @@ class GUI_Config(QObject):
                         ACTION_REPORT_ANNEX_17,
                         ACTION_REPORT_ANT
                     ]
-                }, {
+                },
+                SEPARATOR,
+                {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change Detection"),
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection"),
                     OBJECT_NAME: "ladm_col_change_detection_menu",
                     ICON: CHANGE_DETECTION_ICON,
                     ACTIONS: [
                         ACTION_CHANGE_DETECTION_PER_PARCEL,
                         ACTION_CHANGE_DETECTION_ALL_PARCELS,
                         SEPARATOR,
-                        ACTION_OFFICIAL_SETTINGS
+                        ACTION_CHANGE_DETECTION_SETTINGS
                     ]
+                },
+                SEPARATOR,
+                {
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
+                    OBJECT_NAME: 'ladm_col_st_menu',
+                    ICON: ST_ICON,
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
                 },
                 SEPARATOR,
                 ACTION_SETTINGS,
@@ -174,38 +198,22 @@ class GUI_Config(QObject):
                 ACTION_ABOUT
             ]
         }], TOOLBAR: [{  # List of toolbars
-            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools 2"),
-            OBJECT_NAME: 'ladm_col_toolbar2',
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+            OBJECT_NAME: 'ladm_col_toolbar',
             ACTIONS: [
                 {  # List of toolbars
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transition System"),
-                    OBJECT_NAME: 'ladm_col_toolbar_st',
+                    OBJECT_NAME: 'ladm_col_st_toolbar',
+                    ICON: ST_ICON,
                     ACTIONS: [ACTION_ST_LOGIN,
                               ACTION_ST_LOGOUT]
                 },
                 SEPARATOR,
-                ACTION_OFFICIAL_SETTINGS,
-                SEPARATOR,
-                {  # List of toolbars
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools3"),
-                    OBJECT_NAME: 'ladm_col_toolbar3',
-                    ACTIONS: [ACTION_REPORT_ANNEX_17,
-                              ACTION_ABOUT]
-                }
-            ]
-        }, {
-            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
-            OBJECT_NAME: 'ladm_col_toolbar',
-            ACTIONS: [
-                ACTION_FINALIZE_GEOMETRY_CREATION,
-                ACTION_BUILD_BOUNDARY,
-                ACTION_MOVE_NODES,
-                ACTION_FILL_BFS,
-                ACTION_FILL_MORE_BFS_AND_LESS,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM objects"),
-                    OBJECT_NAME: "edit_tools",
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
+                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    ICON: OPERATION_ICON,
                     ACTIONS: [
                         ACTION_CREATE_POINT,
                         ACTION_CREATE_BOUNDARY,
@@ -213,7 +221,6 @@ class GUI_Config(QObject):
                         ACTION_CREATE_PLOT,
                         ACTION_CREATE_BUILDING,
                         ACTION_CREATE_BUILDING_UNIT,
-                        SEPARATOR,
                         ACTION_CREATE_RIGHT_OF_WAY,
                         ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
                         SEPARATOR,
@@ -221,18 +228,26 @@ class GUI_Config(QObject):
                         SEPARATOR,
                         ACTION_CREATE_PARCEL,
                         SEPARATOR,
-                        ACTION_CREATE_RIGHT,
-                        ACTION_CREATE_RESTRICTION,
-                        SEPARATOR,
                         ACTION_CREATE_PARTY,
                         ACTION_CREATE_GROUP_PARTY,
+                        SEPARATOR,
+                        ACTION_CREATE_RIGHT,
+                        ACTION_CREATE_RESTRICTION,
                         SEPARATOR,
                         ACTION_CREATE_ADMINISTRATIVE_SOURCE,
                         ACTION_CREATE_SPATIAL_SOURCE,
                         ACTION_UPLOAD_PENDING_SOURCE
                     ]
                 },
-                ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
+                SEPARATOR,
+                ACTION_LOAD_LAYERS,
+                SEPARATOR,
+                ACTION_FINALIZE_GEOMETRY_CREATION,
+                ACTION_BUILD_BOUNDARY,
+                ACTION_MOVE_NODES,
+                SEPARATOR,
+                ACTION_FILL_BFS,
+                ACTION_FILL_MORE_BFS_AND_LESS
             ]
         }]
     }

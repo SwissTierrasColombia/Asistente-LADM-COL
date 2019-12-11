@@ -39,14 +39,15 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                      DEFAULT_INHERITANCE,
-                                      DEFAULT_MODEL_NAMES_CHECKED,
-                                      SETTINGS_CONNECTION_TAB_INDEX,
-                                      TOML_FILE_DIR,
-                                      CREATE_BASKET_COL,
-                                      CREATE_IMPORT_TID,
-                                      STROKE_ARCS,
-                                      SETTINGS_MODELS_TAB_INDEX)
+                                                      COLLECTED_DB_SOURCE,
+                                                      DEFAULT_INHERITANCE,
+                                                      DEFAULT_MODEL_NAMES_CHECKED,
+                                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                                      TOML_FILE_DIR,
+                                                      CREATE_BASKET_COL,
+                                                      CREATE_IMPORT_TID,
+                                                      STROKE_ARCS,
+                                                      SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
@@ -68,13 +69,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, selected_models=list()):
+    def __init__(self, iface, qgis_utils, conn_manager, selected_models=list(), db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self)
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
         self.logger = Logger()
-        self.db = self.conn_manager.get_db_connector_from_source()
+        self.db_source = db_source
+        self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -124,7 +126,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def close_dialog(self):
         if self._db_was_changed:
-            self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0])
+            self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
         self.logger.info(__name__, "Dialog closed.")
         self.close()
 
@@ -177,7 +179,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX]
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=self.db_source, tab_pages_list=tab_pages_list)
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
@@ -188,7 +190,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.db = dlg.get_db_connection()
             self.update_connection_info()
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the import schema dialog
         self._db_was_changed = True
@@ -259,6 +261,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
+            self._db_was_changed = True  # Schema could become LADM compliant after a schema import
 
     def save_configuration(self, configuration):
         settings = QSettings()

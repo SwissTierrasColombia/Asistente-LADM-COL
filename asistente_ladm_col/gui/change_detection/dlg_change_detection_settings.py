@@ -23,7 +23,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (OFFICIAL_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
@@ -44,7 +44,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.conn_manager = conn_manager
         self.qgis_utils = qgis_utils
         self._db_collected = self.conn_manager.get_db_connector_from_source()
-        self._db_supplies = self.conn_manager.get_db_connector_from_source(OFFICIAL_DB_SOURCE)
+        self._db_supplies = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
         self._db_collected_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._db_supplies_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings

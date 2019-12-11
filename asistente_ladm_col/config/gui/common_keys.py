@@ -26,6 +26,7 @@ ROLE_NAME = 'role_name'
 ROLE_DESCRIPTION = 'role_description'
 ROLE_GUI_CONFIG = 'role_gui_config'
 BASIC_ROLE = 'basic_role'
+SUPPLIES_PROVIDER_ROLE = 'supplies_provider_role'
 OPERATOR_ROLE = 'operator_role'
 MANAGER_ROLE = 'manager_role'
 ADVANCED_ROLE = 'advanced_role'
@@ -35,6 +36,7 @@ ACTION_SETTINGS = 'action_settings'
 ACTION_HELP = 'action_help'
 ACTION_ABOUT = 'action_about'
 
+ACTION_DOWNLOAD_GUIDE = 'action_download_guide'
 ACTION_FINALIZE_GEOMETRY_CREATION = 'action_finalize_geometry_creation'
 ACTION_BUILD_BOUNDARY = 'action_build_boundary'
 ACTION_MOVE_NODES = 'action_move_nodes'
@@ -76,20 +78,22 @@ ACTION_REPORT_ANT = 'action_report_ant'
 ACTION_CHANGE_DETECTION_PER_PARCEL = 'action_change_detection_per_parcel'
 ACTION_CHANGE_DETECTION_ALL_PARCELS = 'action_change_detection_all_parcels'
 ACTION_CHANGE_DETECTION_SETTINGS = "action_change_detection_settings"
-ACTION_OFFICIAL_SETTINGS = 'action_official_settings'
 
 ALL_ACTIONS = 'all_actions'
 
 SURVEYING_ICON = ":/Asistente-LADM_COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM_COL/resources/images/create_db.png"
-OPERATION_ICON = ""
+DATA_CREATION_ICON = ":/Asistente-LADM_COL/resources/images/data_creation.svg"
+ST_ICON = ":/Asistente-LADM_COL/resources/images/st.svg"
+OPERATION_ICON = ":/Asistente-LADM_COL/resources/images/icon.png"
+STRUCTURING_TOOLS_ICON = ":/Asistente-LADM_COL/resources/images/structuring_tools.svg"
 SUPPLIES_ICON = ""
 SPATIAL_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/spatial_unit.png"
 BA_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/ba_unit.png"
 RRR_ICON = ":/Asistente-LADM_COL/resources/images/rrr.png"
 PARTY_ICON = ":/Asistente-LADM_COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
-REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/domains.png"
+REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
 
 MODELS_GUI_DICT = {

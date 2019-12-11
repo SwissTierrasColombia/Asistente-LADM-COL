@@ -123,7 +123,7 @@ The current version ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-
  - Generate reports based on selected `Plots` (Annex 17).
  - Generate reports based on selected `Plots` (ANT map).
  - Detect parcel changes:
-   - Compare a collected database versus the official database and show differences by batch or per parcel.
+   - Compare a collected database versus the supplies database and show differences by batch or per parcel.
  - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.

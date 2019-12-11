@@ -45,7 +45,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Official data settings</string>
+          <string>Supplies data settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
