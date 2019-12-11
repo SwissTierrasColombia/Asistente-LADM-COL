@@ -50,6 +50,11 @@
     <file>resources/images/export_to_xtf.svg</file>
     <file>resources/images/etl_cobol.png</file>
     <file>resources/images/etl_snc.png</file>
+    <file>resources/images/structuring_tools.svg</file>
+    <file>resources/images/upload.svg</file>
+    <file>resources/images/help.png</file>
+    <file>resources/images/report_annex_17.svg</file>
+    <file>resources/images/report_ant.svg</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

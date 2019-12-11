@@ -38,15 +38,15 @@ from qgis.gui import (QgsPanelWidget,
                       QgsMapToolIdentifyFeature)
 
 from asistente_ladm_col.config.symbology import Symbology
-from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
-                                      OFFICIAL_DB_SUFFIX,
-                                      PREFIX_LAYER_MODIFIERS,
-                                      SUFFIX_LAYER_MODIFIERS,
-                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                      OFFICIAL_DB_SOURCE,
-                                      COLLECTED_DB_SOURCE,
-                                      LAYER,
-                                      PLOT_GEOMETRY_KEY)
+from asistente_ladm_col.config.general_config import (SUPPLIES_DB_PREFIX,
+                                                      SUPPLIES_DB_SUFFIX,
+                                                      PREFIX_LAYER_MODIFIERS,
+                                                      SUFFIX_LAYER_MODIFIERS,
+                                                      STYLE_GROUP_LAYER_MODIFIERS,
+                                                      SUPPLIES_DB_SOURCE,
+                                                      COLLECTED_DB_SOURCE,
+                                                      LAYER,
+                                                      PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.lib.logger import Logger
@@ -69,7 +69,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
 
-        self._current_official_substring = ""
+        self._current_supplies_substring = ""
         self._current_substring = ""
 
         self.utils.add_layers()
@@ -77,7 +77,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Remove selection in plot layers
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
 
         # Map tool before activate map swipe tool
         self.init_map_tool = self.utils.canvas.mapTool()
@@ -129,10 +129,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.utils.canvas.mapToolSet.connect(self.initialize_maptool)
 
-        if self.utils._official_layers[self.names.OP_PLOT_T][LAYER] is None:
+        if self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER] is None:
             self.utils.add_layers()
 
-        self.maptool_identify.setLayer(self.utils._official_layers[self.names.OP_PLOT_T][LAYER])
+        self.maptool_identify.setLayer(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER])
         cursor = QCursor()
         cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
@@ -147,7 +147,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[self.names.T_ID_F]
 
-        self.utils.canvas.flashFeatureIds(self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
+        self.utils.canvas.flashFeatureIds(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER],
                                     [plot_feature.id()],
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),
@@ -158,18 +158,18 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.show()
 
         self.spatial_query(plot_t_id)
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].selectByIds([plot_feature.id()])
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].selectByIds([plot_feature.id()])
 
     def spatial_query(self, plot_id):
         if plot_id:
-            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
+            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._supplies_db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
             if parcel_number:  # Delegate handling of duplicates to search_data() method
                 self.search_data(parcel_number=parcel_number[0])
 
     def call_party_panel(self, item):
         row = item.row()
         if self.tbl_changes_per_parcel.item(row, 0).text() == self.names.get_dict_plural()[self.names.OP_PARTY_T]:
-            data = {OFFICIAL_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
+            data = {SUPPLIES_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
                     COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
             self.parent.show_party_panel(data)
 
@@ -177,8 +177,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self.utils._official_layers[self.names.OP_PARCEL_T][LAYER])
-        idx = self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER])
+        idx = self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def fill_combos(self):
@@ -191,12 +191,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     @_with_override_cursor
     def search_data(self, **kwargs):
         """
-        Get plot geometries associated with parcels, both collected and official, zoom to them, activate map swipe tool
+        Get plot geometries associated with parcels, both collected and supplies, zoom to them, activate map swipe tool
             and fill comparison table.
 
-        :param kwargs: key-value (field name-field value) to search in parcel tables, both collected and official
+        :param kwargs: key-value (field name-field value) to search in parcel tables, both collected and supplies
                        Normally, keys are parcel_number, old_parcel_number or FMI, but if duplicates are found, an
-                       additional t_id disambiguates only for the collected source. In the Official source we assume
+                       additional t_id disambiguates only for the collected source. In the supplies source we assume
                        we will not find duplicates, if there are, we will choose the first record found an will not deal
                        with letting the user choose one of the duplicates by hand (as we do for the collected source).
         """
@@ -210,31 +210,31 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
 
-        # Get OFFICIAL parcel's t_id and get related plot(s)
+        # Get supplies parcel's t_id and get related plot(s)
         expression = QgsExpression("{}='{}'".format(search_field, search_value))
         request = QgsFeatureRequest(expression)
-        field_idx = self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].fields().indexFromName(self.names.T_ID_F)
+        field_idx = self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].fields().indexFromName(self.names.T_ID_F)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-        official_parcels = [feature for feature in self.utils._official_layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)]
+        supplies_parcels = [feature for feature in self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)]
 
-        if len(official_parcels) > 1:
-            # We do not expect duplicates in the official source!
+        if len(supplies_parcels) > 1:
+            # We do not expect duplicates in the supplies source!
             pass  # We'll choose the first one anyways
-        elif len(official_parcels) == 0:
-            self.logger.info(__name__, "No official parcel found! Search: {}={}".format(search_field, search_value))
+        elif len(supplies_parcels) == 0:
+            self.logger.info(__name__, "No supplies parcel found! Search: {}={}".format(search_field, search_value))
 
-        official_plot_t_ids = []
-        if official_parcels:
-            official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
-                                              [official_parcels[0][self.names.T_ID_F]],
+        supplies_plot_t_ids = []
+        if supplies_parcels:
+            supplies_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._supplies_db,
+                                              [supplies_parcels[0][self.names.T_ID_F]],
                                               self.names.T_ID_F,
-                                              plot_layer=self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
-                                              uebaunit_table=self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                                              plot_layer=self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER],
+                                              uebaunit_table=self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER])
 
-            if official_plot_t_ids:
-                self._current_official_substring = "\"{}\" IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-                self.parent.request_zoom_to_features(self.utils._official_layers[self.names.OP_PLOT_T][LAYER], list(), official_plot_t_ids)
+            if supplies_plot_t_ids:
+                self._current_supplies_substring = "\"{}\" IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in supplies_plot_t_ids]))
+                self.parent.request_zoom_to_features(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER], list(), supplies_plot_t_ids)
                 already_zoomed_in = True
 
 
@@ -272,9 +272,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                     else:
                         return  # User just cancelled the dialog, there is nothing more to do
 
-        search_criterion_official = {search_field: search_value}
+        search_criterion_supplies = {search_field: search_value}
 
-        self.fill_table(search_criterion_official, search_criterion_collected)
+        self.fill_table(search_criterion_supplies, search_criterion_collected)
 
         if collected_parcel_t_id is not None:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
@@ -290,8 +290,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 
                 # Activate Swipe Tool
-                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[self.names.OP_PLOT_T][LAYER])
-                if official_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
+                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER])
+                if supplies_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
                     self.parent.activate_map_swipe_tool()
 
                     plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.names.OP_PLOT_T][LAYER], plot_t_ids, True)
@@ -314,11 +314,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion_official, search_criterion_collected):
+    def fill_table(self, search_criterion_supplies, search_criterion_collected):
         """
         Shouldn't handle 'inverse' mode as we won't switch table columns at runtime.
 
-        :param search_criterion_official: key-value pair to build an expression to search data in the official source
+        :param search_criterion_supplies: key-value pair to build an expression to search data in the supplies source
         :param search_criterion_collected: key-value pair to build an expression to search data in the collected source
         :return:
         """
@@ -327,11 +327,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Custom layer modifiers
         layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
+            PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
         }
-        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion_official, layer_modifiers=layer_modifiers)
+        dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
         collected_attrs = dict()
@@ -340,50 +340,50 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             collected_attrs = dict_collected_parcels[collected_parcel_number][0]
             del collected_attrs[self.names.T_ID_F]  # Remove this line if self.names.T_ID_F is somehow needed
 
-        official_attrs = dict()
-        if dict_official_parcels:
-            official_parcel_number = list(dict_official_parcels.keys())[0]
-            official_attrs = dict_official_parcels[official_parcel_number][0]
-            del official_attrs[self.names.T_ID_F]  # Remove this line if self.names.T_ID_F is somehow needed
+        supplies_attrs = dict()
+        if dict_supplies_parcels:
+            supplies_parcel_number = list(dict_supplies_parcels.keys())[0]
+            supplies_attrs = dict_supplies_parcels[supplies_parcel_number][0]
+            del supplies_attrs[self.names.T_ID_F]  # Remove this line if self.names.T_ID_F is somehow needed
 
-        number_of_rows = len(collected_attrs) or len(official_attrs)
+        number_of_rows = len(collected_attrs) or len(supplies_attrs)
         self.tbl_changes_per_parcel.setRowCount(number_of_rows)  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
-        field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
+        field_names = list(collected_attrs.keys()) if collected_attrs else list(supplies_attrs.keys())
         if PLOT_GEOMETRY_KEY in field_names:
             field_names.remove(PLOT_GEOMETRY_KEY)  # We'll handle plot geometry separately
 
         for row, field_name in enumerate(field_names):
-            official_value = official_attrs[field_name] if field_name in official_attrs else NULL
+            supplies_value = supplies_attrs[field_name] if field_name in supplies_attrs else NULL
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            self.fill_row(field_name, official_value, collected_value, row, plural)
+            self.fill_row(field_name, supplies_value, collected_value, row, plural)
 
         if number_of_rows:  # At least one row in the table?
             self.fill_geometry_row(PLOT_GEOMETRY_KEY,
-                               official_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in official_attrs else QgsGeometry(),
+                               supplies_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in supplies_attrs else QgsGeometry(),
                                collected_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in collected_attrs else QgsGeometry(),
                                number_of_rows - 1)
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
-    def fill_row(self, field_name, official_value, collected_value, row, plural):
+    def fill_row(self, field_name, supplies_value, collected_value, row, plural):
         item = QTableWidgetItem(field_name)
         # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
 
         if field_name == plural[self.names.OP_PARTY_T]:  # Parties
-            item = self.fill_party_item(official_value)
+            item = self.fill_party_item(supplies_value)
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
             item = self.fill_party_item(collected_value)
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
-            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supplies_value == collected_value else Qt.red)
         else:
-            item = QTableWidgetItem(str(official_value) if official_value != NULL else '')
+            item = QTableWidgetItem(str(supplies_value) if supplies_value != NULL else '')
             #item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
@@ -392,7 +392,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
-            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if supplies_value == collected_value else Qt.red)
 
     def fill_party_item(self, value):
         # Party's info comes in a list or a list of lists if it's a group party
@@ -409,14 +409,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         item.setData(Qt.UserRole, value)
         return item
 
-    def fill_geometry_row(self, field_name, official_geom, collected_geom, row):
+    def fill_geometry_row(self, field_name, supplies_geom, collected_geom, row):
         self.tbl_changes_per_parcel.setItem(row, 0, QTableWidgetItem(QCoreApplication.translate("DockWidgetChanges", "Geometry")))
-        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(official_geom)))
+        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(supplies_geom)))
         self.tbl_changes_per_parcel.setItem(row, 2, QTableWidgetItem(self.get_geometry_type_name(collected_geom)))
 
         self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
         self.tbl_changes_per_parcel.item(row, 3).setBackground(
-            Qt.green if self.utils.compare_features_geometries(collected_geom, official_geom) else Qt.red)
+            Qt.green if self.utils.compare_features_geometries(collected_geom, supplies_geom) else Qt.red)
 
     @staticmethod
     def get_geometry_type_name(geometry):
@@ -448,7 +448,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self.utils._official_layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_official_substring if not state else "")
+        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
         self.utils._layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):

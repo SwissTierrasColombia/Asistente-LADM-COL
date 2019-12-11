@@ -39,7 +39,7 @@ def _db_connection_required(func_to_decorate):
         res, msg = db.test_connection()
         if res:
             if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
+                inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True, db_source=None)
 
             func_to_decorate(*args, **kwargs)
         else:
@@ -136,24 +136,24 @@ def _log_quality_checks(func_to_decorate):
 
     return add_format_to_text
 
-def _official_db_connection_required(func_to_decorate):
+def _supplies_db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         inst = args[0]
         # Check if current connection is valid and disable access if not
-        db = inst.get_official_db_connection()
+        db = inst.get_supplies_db_connection()
         res, msg = db.test_connection()
         if res:
             func_to_decorate(inst)
         else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", "The official DB is not valid. Details: {}".format(msg))
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", "The supplies DB is not valid. Details: {}".format(msg))
             button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Official Data Settings"))
-            button.pressed.connect(inst.show_official_data_settings_clear_message_bar)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Supplies Data Settings"))
+            button.pressed.connect(inst.show_supplies_data_settings_clear_message_bar)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
             inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "A dialog/tool couldn't be opened/executed, connection to official DB was not valid."))
+                "A dialog/tool couldn't be opened/executed, connection to supplies DB was not valid."))
 
     return decorated_function
 
@@ -196,37 +196,6 @@ def _cadastral_manager_model_required(func_to_decorate):
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
             inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
-
-    return decorated_function
-
-def _different_db_connections_required(func_to_decorate):
-    @wraps(func_to_decorate)
-    def decorated_function(*args, **kwargs):
-        inst = args[0]
-        db = inst.get_db_connection()
-        official_db = inst.get_official_db_connection()
-        res = db.equals(official_db)
-
-        if not res:
-            func_to_decorate(*args, **kwargs)
-        else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                         "Your 'official' database is the same 'collected' database!!! Click the proper button to change connection settings."))
-
-            button1 = QPushButton(widget)
-            button1.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Change official settings"))
-            button1.pressed.connect(inst.show_official_data_settings_clear_message_bar)
-            widget.layout().addWidget(button1)
-
-            button2 = QPushButton(widget)
-            button2.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change collected settings"))
-            button2.pressed.connect(inst.show_settings_clear_message_bar)
-            widget.layout().addWidget(button2)
-
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
-            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"))
 
     return decorated_function
 

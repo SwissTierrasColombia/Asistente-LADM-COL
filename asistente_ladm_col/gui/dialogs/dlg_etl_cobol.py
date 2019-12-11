@@ -36,8 +36,8 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import SETTINGS_CONNECTION_TAB_INDEX
-
+from asistente_ladm_col.config.general_config import (SETTINGS_CONNECTION_TAB_INDEX,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog

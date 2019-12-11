@@ -13,8 +13,8 @@ from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 DEFAULT_LOG_MODE = LogModeEnum.USER
 DEFAULT_LOG_FILE = ''
 
-OFFICIAL_DB_PREFIX = None
-OFFICIAL_DB_SUFFIX = " (Oficial)"
+SUPPLIES_DB_PREFIX = None
+SUPPLIES_DB_SUFFIX = " (Insumos)"
 PREFIX_LAYER_MODIFIERS = 'prefix'
 SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
@@ -64,10 +64,11 @@ HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
-
 # SISTEMA DE TRANSICIÓN
-ST_LOGIN_SERVICE_URL = "http://192.168.98.61:8090/api/security/oauth/token"
+ST_LOGIN_SERVICE_URL = "http://apist.proadmintierra.info/api/security/oauth/token"
 ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
+encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
+ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 
@@ -164,7 +165,7 @@ STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow,
                  CHANGE_DETECTION_NULL_PARCEL: Qt.yellow}
 SOURCE_DB = '_SOURCE_'
-OFFICIAL_DB_SOURCE = '_OFFICIAL_'
+SUPPLIES_DB_SOURCE = '_SUPPLIES_'
 COLLECTED_DB_SOURCE = '_COLLECTED_'
 PLOT_GEOMETRY_KEY = 'GEOMETRY_PLOT'
 

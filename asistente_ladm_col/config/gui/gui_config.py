@@ -52,6 +52,8 @@ class GUI_Config(QObject):
             WIDGET_NAME: "LAD&M_COL",
             OBJECT_NAME: 'main_menu',
             ACTIONS: [
+                ACTION_DOWNLOAD_GUIDE,
+                SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data management"),
@@ -179,7 +181,7 @@ class GUI_Config(QObject):
                         ACTION_CHANGE_DETECTION_PER_PARCEL,
                         ACTION_CHANGE_DETECTION_ALL_PARCELS,
                         SEPARATOR,
-                        ACTION_OFFICIAL_SETTINGS
+                        ACTION_SUPPLIES_SETTINGS
                     ]
                 },
                 SEPARATOR,
