@@ -904,6 +904,12 @@ class QGISUtils(QObject):
 
         self.map_refresh_requested.emit()
 
+    def get_all_layers_on_map(self):
+        layers = list()
+        for layer in QgsProject.instance().mapLayers().values():
+            layers.append(layer)
+        return layers
+
     def get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(self, db):
         layers = list()
         for layer in QgsProject.instance().mapLayers().values():

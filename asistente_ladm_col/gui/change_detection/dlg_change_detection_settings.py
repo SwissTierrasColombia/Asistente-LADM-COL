@@ -222,16 +222,19 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
         if self._db_collected_was_changed or self._db_supplies_was_changed:
-            message = None
-            if self._db_collected_was_changed and self._db_supplies_was_changed:
-                message = "The connection of the collected and supplies database has changed,"
-            elif self._db_collected_was_changed:
-                message = "The collected database connection has changed,"
-            elif self._db_supplies_was_changed:
-                message = "The supplies database connection has changed,"
+            if self.qgis_utils.get_all_layers_on_map():
+                message = None
+                if self._db_collected_was_changed and self._db_supplies_was_changed:
+                    message = "The connection of the collected and supplies database has changed,"
+                elif self._db_collected_was_changed:
+                    message = "The collected database connection has changed,"
+                elif self._db_supplies_was_changed:
+                    message = "The supplies database connection has changed,"
 
-            message = message + " do you want to remove the layers that are loaded in the workspace?"
-            self.show_message_clean_workspace(message)
+                message = message + " do you want to remove the layers that are loaded in the workspace?"
+                self.show_message_clean_workspace(message)
+            else:
+                self.close_dialog()
         else:
             # Connections have not changed
             self.close_dialog()
