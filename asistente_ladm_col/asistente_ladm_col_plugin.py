@@ -37,8 +37,6 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm,
                        QgsExpression)
 
-import processing
-
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              WizardTypeEnum, LogHandlerEnum)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
@@ -79,7 +77,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WizardConfig
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
@@ -90,7 +88,8 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
+from asistente_ladm_col.gui.supplies.dlg_etl_cobol import ETLCobolDialog
+from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -105,7 +104,6 @@ from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
-                                                 _cadastral_manager_model_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
@@ -115,6 +113,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
+from asistente_ladm_col.resources_rc import * # Necessary to show icons
 
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -298,10 +297,17 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
             self.main_window)
 
+        self._missing_cobol_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/missing_supplies.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing Cobol supplies"),
+            self.main_window)
+
         # Connections
         self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
+        self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
-        self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
+        self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
+                                           ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
 
     def create_operation_actions(self):
         self._point_surveying_and_representation_operation_action = QAction(
@@ -753,7 +759,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg.exec_()
+
+    def show_missing_cobol_supplies_dialog(self):
+        dlg = MissingCobolSupplies(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
         dlg.exec_()
 
     @_validate_if_wizard_is_open

@@ -161,6 +161,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_SCHEMA_IMPORT,
                 ACTION_RUN_ETL_COBOL,
                 ACTION_RUN_ETL_SNC,
+                ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_LOAD_LAYERS,
                 ACTION_EXPORT_DATA
             ]
@@ -172,6 +173,7 @@ class Role_Registry(metaclass=Singleton):
             ROLE_ACTIONS: [
                 ACTION_RUN_ETL_COBOL,
                 ACTION_RUN_ETL_SNC,
+                ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT
             ],

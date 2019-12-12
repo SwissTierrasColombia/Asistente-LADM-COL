@@ -47,6 +47,7 @@ ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE = 'action_import_from_intermediate_str
 
 ACTION_RUN_ETL_COBOL = 'action_run_etl_cobol'
 ACTION_RUN_ETL_SNC = 'action_run_etl_snc'
+ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
 ACTION_ST_LOGIN = 'action_st_login'
@@ -106,6 +107,7 @@ MODELS_GUI_DICT = {
     ],
     SUPPLIES_MODEL_PREFIX: [
         ACTION_RUN_ETL_COBOL,
-        ACTION_RUN_ETL_SNC
+        ACTION_RUN_ETL_SNC,
+        ACTION_FIND_MISSING_COBOL_SUPPLIES
     ]
 }
