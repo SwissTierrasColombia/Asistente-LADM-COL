@@ -47,10 +47,10 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
     def tags(self):
-        return (QCoreApplication.translate("PolygonsToLines", 'line,polygon,convert')).split(',')
+        return (QCoreApplication.translate("PolygonsToLines", "line,polygon,convert")).split(',')
 
     def group(self):
-        return QCoreApplication.translate("PolygonsToLines", 'Vector geometry')
+        return QCoreApplication.translate("PolygonsToLines", "Vector geometry")
 
     def groupId(self):
         return 'vectorgeometry'
@@ -62,10 +62,10 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return 'polygonstolines'
 
     def displayName(self):
-        return QCoreApplication.translate("PolygonsToLines", 'Polygons to lines')
+        return QCoreApplication.translate("PolygonsToLines", "Polygons to lines")
 
     def outputName(self):
-        return QCoreApplication.translate("PolygonsToLines", 'Lines')
+        return QCoreApplication.translate("PolygonsToLines", "Lines")
 
     def outputType(self):
         return QgsProcessing.TypeVectorLine

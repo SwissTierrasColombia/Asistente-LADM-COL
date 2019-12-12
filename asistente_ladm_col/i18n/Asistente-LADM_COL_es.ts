@@ -4,63 +4,84 @@
 <context>
     <name></name>
     <message>
-        <location filename="../config/general_config.py" line="155"/>
+        <location filename="../config/general_config.py" line="153"/>
         <source>New parcel</source>
         <translation>Nuevo predio</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="156"/>
+        <location filename="../config/general_config.py" line="154"/>
         <source>Missing parcel</source>
         <translation>Predio faltante</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="157"/>
+        <location filename="../config/general_config.py" line="155"/>
         <source>Parcel changed</source>
         <translation>Predio modificado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="158"/>
+        <location filename="../config/general_config.py" line="156"/>
         <source>Only geometry changed</source>
         <translation>Solo cambio en geometría</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="157"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="158"/>
+        <source>Several</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="159"/>
+        <source>null</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>AboutDialog</name>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="20"/>
         <source>About</source>
-        <translation type="vanished">Acerca de</translation>
+        <translation>Acerca de</translation>
     </message>
     <message>
         <source>Download Help for offline access</source>
         <translation type="vanished">Descargar ayuda para acceso sin Internet</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="230"/>
         <source>Download help for offline access</source>
-        <translation type="vanished">Descargar ayuda para acceso offline</translation>
+        <translation>Descargar ayuda para acceso offline</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="61"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="180"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://abcde.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://abcde.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://abcde.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="209"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;LADM_COL Assistant&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Asistente LADM_COL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Asistente LADM_COL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_about.ui" line="118"/>
         <source>Changelog</source>
-        <translation type="vanished">Registro de cambios</translation>
+        <translation>Registro de cambios</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;http://www.interlis.ch/index_e.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -86,35 +107,30 @@
 <context>
     <name>Asistente-LADM_COL</name>
     <message>
-        <location filename="../utils/qt_utils.py" line="43"/>
         <source>Open File</source>
-        <translation>Abrir archivo</translation>
+        <translation type="vanished">Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="44"/>
         <source>Any file(*)</source>
-        <translation>Cualquier archivo (*)</translation>
+        <translation type="vanished">Cualquier archivo (*)</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="73"/>
         <source>Open Folder</source>
-        <translation>Abrir carpeta</translation>
+        <translation type="vanished">Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="145"/>
         <source>Report successfully generated in folder &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</source>
-        <translation>¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
+        <translation type="vanished">¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
 </context>
 <context>
     <name>AsistenteLADMCOLPlugin</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="312"/>
         <source>Cadastre</source>
-        <translation>Catastro</translation>
+        <translation type="vanished">Catastro</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="332"/>
+        <location filename="../config/gui/gui_config.py" line="92"/>
         <source>Spatial Unit</source>
         <translation>Unidad Espacial</translation>
     </message>
@@ -127,47 +143,88 @@
         <translation type="vanished">Definir Linderos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="362"/>
         <source>BA Unit</source>
-        <translation>Unidad Administrativa Básica</translation>
+        <translation type="vanished">Unidad Administrativa Básica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="370"/>
+        <location filename="../config/gui/gui_config.py" line="123"/>
         <source>Party</source>
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="374"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="351"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="378"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="355"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="399"/>
+        <location filename="../config/gui/gui_config.py" line="26"/>
+        <location filename="../config/gui/gui_config.py" line="59"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="55"/>
+        <source>Data management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="69"/>
+        <source>Data capture and structuring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="75"/>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="107"/>
+        <source>Basic Administrative Unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="114"/>
         <source>RRR</source>
         <translation>RRR</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="383"/>
+        <location filename="../config/gui/gui_config.py" line="132"/>
         <source>Source</source>
         <translation>Fuente</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="336"/>
+        <location filename="../config/gui/gui_config.py" line="151"/>
+        <source>Supplies management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="189"/>
+        <location filename="../config/gui/gui_config.py" line="206"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="154"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="231"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="294"/>
+        <source>Transition System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="215"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="65"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="303"/>
+        <source>Create Operation objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="325"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="315"/>
         <source>Preprocessing</source>
-        <translation>Pre-procesamiento</translation>
+        <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="169"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -176,91 +233,86 @@
         <translation type="vanished">Construir linderos...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="316"/>
         <source>Controlled Measurement</source>
-        <translation>Medición Controlada</translation>
+        <translation type="vanished">Medición Controlada</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
+        <location filename="../config/gui/gui_config.py" line="81"/>
         <source>Surveying and Representation</source>
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="323"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="317"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="327"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="321"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="340"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="537"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="329"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="344"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="541"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="333"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="436"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="366"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="525"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="346"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="432"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="474"/>
         <source>Create Natural Party</source>
-        <translation>Crear Interesado Natural</translation>
+        <translation type="vanished">Crear Interesado Natural</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="478"/>
         <source>Create Legal Party</source>
-        <translation>Crear Interesado Jurídico</translation>
+        <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="393"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="367"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="403"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="373"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="407"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="377"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="411"/>
         <source>Create Responsibility</source>
-        <translation>Crear Responsabilidad</translation>
+        <translation type="vanished">Crear Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="417"/>
         <source>Check Quality Rules</source>
-        <translation>Revisar Reglas de Calidad</translation>
+        <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="387"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="360"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="391"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="364"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="382"/>
         <source>Quality</source>
-        <translation type="vanished">Calidad</translation>
+        <translation>Calidad</translation>
     </message>
     <message>
         <source>Check too long boundary segments</source>
@@ -295,23 +347,22 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="168"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="479"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="178"/>
-        <location filename="../utils/decorators.py" line="49"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="501"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="179"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="180"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="506"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -348,244 +399,262 @@
         <translation type="vanished">Importar desde estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="245"/>
+        <location filename="../config/gui/gui_config.py" line="40"/>
+        <location filename="../config/gui/gui_config.py" line="202"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="51"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="150"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="227"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="290"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="280"/>
         <source>Data Management</source>
-        <translation>Administración de datos</translation>
+        <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="281"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="493"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="282"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="283"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="498"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="294"/>
+        <location filename="../config/gui/gui_config.py" line="166"/>
+        <location filename="../gui/gui_builder/role_registry.py" line="257"/>
         <source>Reports</source>
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="297"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="302"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="489"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="348"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="337"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="352"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="227"/>
+        <source>Refreshing GUI for the LADM_COL Assistant...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="281"/>
+        <source>Login...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="285"/>
+        <source>Logout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="299"/>
+        <source>Load Cobol data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="304"/>
+        <source>Find missing Cobol supplies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="341"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="457"/>
-        <source>Property record card</source>
-        <translation>Ficha predial</translation>
+        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
+        <source>Supplies data settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="462"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1054"/>
+        <source>Opening Query Changes per Parcel panel...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="1065"/>
+        <source>Opening Query Changes for All Parcels panel...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property record card</source>
+        <translation type="vanished">Ficha predial</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="423"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="466"/>
         <source>Create Market Research</source>
-        <translation>Crear Investigación de Mercado</translation>
+        <translation type="vanished">Crear Investigación de Mercado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="470"/>
         <source>Create Nuclear Family</source>
-        <translation>Crear Núcleo Familiar</translation>
+        <translation type="vanished">Crear Núcleo Familiar</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="520"/>
         <source>Valuation</source>
-        <translation>Avalúos</translation>
+        <translation type="vanished">Avalúos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="529"/>
         <source>Create Horizontal Property main Parcel</source>
-        <translation>Crear Predio Matriz PH</translation>
+        <translation type="vanished">Crear Predio Matriz PH</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="533"/>
         <source>Create Common Equipment</source>
-        <translation>Crear Equipamiento Comunal</translation>
+        <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="545"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="440"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="549"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="444"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="553"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="448"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="604"/>
+        <location filename="../config/gui/gui_config.py" line="177"/>
         <source>Change detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="606"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="461"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="608"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="463"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="610"/>
         <source>Official data settings</source>
-        <translation>Configuración de datos oficiales</translation>
+        <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="749"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="625"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="765"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="641"/>
         <source>Download and install dependency</source>
         <translation>Descargar e instalar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="772"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
         <source>Report dependency download is in progress...</source>
         <translation>La descarga de las dependencias para generar reportes está en progreso...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="780"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
         <source>Remove dependency</source>
         <translation>Borrar dependencias</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="46"/>
         <source>Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
-        <translation>Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
+        <translation type="vanished">Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="54"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
-        <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
+        <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="77"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
+        <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="81"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
+        <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="94"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
-        <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
+        <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="109"/>
         <source>The processing plugin has been activated!</source>
-        <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
+        <translation type="vanished">¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="156"/>
         <source>Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
-        <translation>Revisa tu conexión a la base de datos oficial. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
+        <translation type="vanished">Revisa tu conexión a la base de datos oficial. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="159"/>
         <source> Official Data Settings</source>
-        <translation> Configuración de datos oficiales</translation>
+        <translation type="vanished"> Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="164"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to official DB was not valid.</source>
-        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos oficial no es válida.</translation>
+        <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos oficial no es válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="183"/>
         <source>Your &apos;official&apos; database is the same &apos;collected&apos; database!!! Click the proper button to change connection settings.</source>
-        <translation>¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
+        <translation type="vanished">¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="187"/>
         <source> Change official settings</source>
-        <translation> Cambiar conexión oficial</translation>
+        <translation type="vanished"> Cambiar conexión oficial</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="192"/>
         <source>Change collected settings</source>
-        <translation>Cambiar conexión del barrido</translation>
+        <translation type="vanished">Cambiar conexión del barrido</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="198"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, official DB is the same collected DB!</source>
-        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
+        <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="220"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
+        <translation type="vanished">Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="222"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
+        <translation type="vanished">Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="232"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
-        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
+        <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="244"/>
         <source>There is a wizard open, you need to close it before continuing with another tool.</source>
-        <translation>Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
+        <translation type="vanished">Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="246"/>
         <source>Close the open wizard</source>
-        <translation>Cerrar el wizard abierto</translation>
+        <translation type="vanished">Cerrar el wizard abierto</translation>
     </message>
     <message>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} (or higher) is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="88"/>
-        <location filename="../utils/decorators.py" line="226"/>
         <source>Plugin Manager</source>
-        <translation>Administrador de Plugins</translation>
+        <translation type="vanished">Administrador de Plugins</translation>
     </message>
     <message>
         <source>A dialog couldn&apos;t be open, QGIS Model Baker not found.</source>
@@ -600,14 +669,72 @@
         <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="406"/>
         <source>&apos;{}&apos; tool has been closed because there was a problem loading the requeries layers.</source>
-        <translation>La herramienta &apos;{}&apos; se ha cerrado porque hubo un problema cargando las capas requeridas.</translation>
+        <translation type="vanished">La herramienta &apos;{}&apos; se ha cerrado porque hubo un problema cargando las capas requeridas.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="420"/>
         <source>&apos;{}&apos; cannot be opened until the following layers are not in edit mode &apos;{}&apos;.</source>
-        <translation>No se puede abrir &apos;{}&apos; hasta que las siguientes capas dejen de estar en edición: &apos;{}&apos;.</translation>
+        <translation type="vanished">No se puede abrir &apos;{}&apos; hasta que las siguientes capas dejen de estar en edición: &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="97"/>
+        <source>Structuring tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="113"/>
+        <source>Basic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="114"/>
+        <source>The basic role helps you to explore the LADM_COL assistant main functionalities.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="170"/>
+        <source>Supplies Provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="171"/>
+        <source>The Supplies Provider role generates a XTF file with supplies data for the Manager role.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="186"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="187"/>
+        <source>The operator is in charge of capturing current cadastral data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="245"/>
+        <source>Change Detection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="268"/>
+        <source>Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="269"/>
+        <source>The manager is in charge of preparing supplies for operators as well as validatinsg and managing the data provided by operators.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="345"/>
+        <source>Advanced</source>
+        <translation type="unfinished">Avanzado</translation>
+    </message>
+    <message>
+        <location filename="../gui/gui_builder/role_registry.py" line="346"/>
+        <source>The advanced role has access to all the functionality.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -756,17 +883,17 @@
 <context>
     <name>ChangesAllParcelsPanelWidget</name>
     <message>
-        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="64"/>
+        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="61"/>
         <source>Change detection for a set of parcels</source>
         <translation>Identificación de novedades para un conjunto de predios</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="164"/>
+        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="161"/>
         <source>Zoom to related plots</source>
         <translation>Zoom a terreno asociado</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="168"/>
+        <location filename="../gui/change_detection/changes_all_parcels_panel.py" line="165"/>
         <source>View changes for this parcel number</source>
         <translation>Ver novedades para este predio</translation>
     </message>
@@ -774,7 +901,7 @@
 <context>
     <name>ChangesPerParcelPanelWidget</name>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="73"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="70"/>
         <source>Change detection per parcel</source>
         <translation>Identificación de novedades por predio</translation>
     </message>
@@ -828,6 +955,16 @@
         <source>Administrative Source layer couldn&apos;t be found... {}</source>
         <translation type="vanished">No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="121"/>
+        <source>administrative source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="123"/>
+        <source>Create administrative source</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateBoundariesOperationWizard</name>
@@ -857,6 +994,19 @@
     </message>
 </context>
 <context>
+    <name>CreateBoundaryOperationWizard</name>
+    <message>
+        <location filename="../config/wizard_config.py" line="147"/>
+        <source>boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="148"/>
+        <source>Create boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CreateBuildingOperationWizard</name>
     <message>
         <source>Start</source>
@@ -877,6 +1027,16 @@
     <message>
         <source>You can now start capturing buildings digitizing on the map...</source>
         <translation type="vanished">Ahora puedes empezar a capturar construcciones dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="171"/>
+        <source>building</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="172"/>
+        <source>Create building</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -901,6 +1061,16 @@
         <source>You can now start capturing building units digitizing on the map...</source>
         <translation type="vanished">Ahora puedes empezar a capturar unidades de construcción dando clic sobre el mapa...</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="195"/>
+        <source>building unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="196"/>
+        <source>Create building unit</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateBuildingUnitQualificationValuationWizard</name>
@@ -915,6 +1085,16 @@
     <message>
         <source>Load data to unconventional building unit qualification...</source>
         <translation type="vanished">Cargar datos a Calificación No Convencional de Unidades de Construcción...</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="486"/>
+        <source>building unit qualification valuation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="488"/>
+        <source>Create building unit qualification valuation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -950,6 +1130,16 @@
     <message>
         <source>The new building unit valuation (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!</source>
         <translation type="vanished">¡La nueva Unidad de Construcción (modelo de Avalúos) (t_id={}) se creó exitosamente y fue asociada con su Unidad de Construcción (modelo Catastro-Registro) correspondiente (t_id={})!</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="459"/>
+        <source>building unit valuation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="461"/>
+        <source>Create building unit valuation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -989,6 +1179,16 @@
         <source>Party layer couldn&apos;t be found... {}</source>
         <translation type="vanished">No se encontró la capa Interesado... {}</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="98"/>
+        <source>party</source>
+        <translation type="unfinished">interesado</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="99"/>
+        <source>Create party</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateCommonEquipmentValuationWizard</name>
@@ -1010,6 +1210,19 @@
     </message>
 </context>
 <context>
+    <name>CreateExtAddressOperationWizard</name>
+    <message>
+        <location filename="../config/wizard_config.py" line="357"/>
+        <source>ext address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="358"/>
+        <source>Create ext address</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CreateGeoeconomicZoneValuationWizard</name>
     <message>
         <source>Start</source>
@@ -1027,32 +1240,48 @@
         <source>You can now start capturing geoeconomic zones digitizing on the map...</source>
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Geoeconómicas sobre el mapa...</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="411"/>
+        <source>geoeconomic zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="413"/>
+        <source>Create geoeconomic zone</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateGroupParty</name>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="291"/>
         <source>You need to select some parties to create a group.</source>
-        <translation type="vanished">Debes seleccioinar algunos interesados para crear un grupo.</translation>
+        <translation>Debes seleccioinar algunos interesados para crear un grupo.</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="294"/>
         <source>There is just one party, you need to add at least two parties to a group.</source>
-        <translation type="vanished">Solo hay un interesado seleccionado, debes agregar por lo menos dos para crear un grupo.</translation>
+        <translation>Solo hay un interesado seleccionado, debes agregar por lo menos dos para crear un grupo.</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="307"/>
         <source>There are denominators equal to zero. You need to change those values.</source>
-        <translation type="vanished">Hay denominadores iguales a cero. Debes cambiar esos valores.</translation>
+        <translation>Hay denominadores iguales a cero. Debes cambiar esos valores.</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="311"/>
         <source>The denominator cannot be less than the numerator.</source>
-        <translation type="vanished">El denominador no puede ser menor que el numerador.</translation>
+        <translation>El denominador no puede ser menor que el numerador.</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="317"/>
         <source>The sum of the fractions must be equal to one.</source>
-        <translation type="vanished">La suma de las fracciones debe ser igual a uno.</translation>
+        <translation>La suma de las fracciones debe ser igual a uno.</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/dlg_create_group_party_operation.py" line="320"/>
         <source>Validation passed!</source>
-        <translation type="vanished">¡Validación exitosa!</translation>
+        <translation>¡Validación exitosa!</translation>
     </message>
 </context>
 <context>
@@ -1062,12 +1291,12 @@
         <translation type="vanished">No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1184"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="984"/>
         <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1186"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="986"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -1382,6 +1611,16 @@
         <source>&apos;Change detection&apos; has been closed because you just removed a required layer.</source>
         <translation type="vanished">La herramienta &apos;Identificación de novedades&apos; ha sido cerrada porque acabas de remover una capa necesaria.</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="304"/>
+        <source>parcel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="305"/>
+        <source>Create parcel</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateParcelValuationWizard</name>
@@ -1420,6 +1659,16 @@
         <source>You can now start capturing physical zones digitizing on the map...</source>
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Físicas sobre el mapa...</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="436"/>
+        <source>physical zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="437"/>
+        <source>Create physical zone</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreatePlotOperationWizard</name>
@@ -1434,6 +1683,16 @@
     <message>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation type="vanished">Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="333"/>
+        <source>plot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="334"/>
+        <source>Create plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1603,6 +1862,69 @@
         <source>The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!</source>
         <translation type="vanished">¡La nueva restricción (t_id={}) se creó exitosamente y fue asociada con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="245"/>
+        <source>restriction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="246"/>
+        <source>Create restriction</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CreateRightOfWayOperationWizard</name>
+    <message>
+        <source>Import</source>
+        <translation type="vanished">Importar</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation type="vanished">Comenzar</translation>
+    </message>
+    <message>
+        <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
+        <translation type="vanished">Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <source>You can now start capturing right of way digitizing on the map...</source>
+        <translation type="vanished">Ahora puedes empezar a capturar servidumbres de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <source>You can now start capturing line right of way digitizing on the map...</source>
+        <translation type="vanished">Ahora puedes empezar a capturar líneas de servidumbre de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <source>You can now start capturing right of ways digitizing on the map...</source>
+        <translation type="vanished">Ahora puedes empezar a capturar servidumbres de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <source>You can now start capturing right of way lines digitizing on the map...</source>
+        <translation type="vanished">Ahora puedes empezar a capturar líneas de servidumbre de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <source>Plot layer couldn&apos;t be found... {}</source>
+        <translation type="vanished">No se encontró la capa Terreno... {}</translation>
+    </message>
+    <message>
+        <source>Right of Way layer couldn&apos;t be found... {}</source>
+        <translation type="vanished">La capa Servidumbre de paso no pudo ser encontrada... {}</translation>
+    </message>
+    <message>
+        <source>Survey Point layer couldn&apos;t be found... {}</source>
+        <translation type="vanished">No se encontró la tabla Punto Levantamiento... {}</translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="384"/>
+        <source>right of way</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="385"/>
+        <source>Create right of way</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CreateRightOperationWizard</name>
@@ -1654,50 +1976,15 @@
         <source>Close the edit session in table {} before creating rights.</source>
         <translation type="vanished">Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
     </message>
-</context>
-<context>
-    <name>CreateRightOfWayOperationWizard</name>
     <message>
-        <source>Import</source>
-        <translation type="vanished">Importar</translation>
+        <location filename="../config/wizard_config.py" line="220"/>
+        <source>right</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Start</source>
-        <translation type="vanished">Comenzar</translation>
-    </message>
-    <message>
-        <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
-        <translation type="vanished">Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
-    </message>
-    <message>
-        <source>You can now start capturing right of way digitizing on the map...</source>
-        <translation type="vanished">Ahora puedes empezar a capturar servidumbres de paso dando clic sobre el mapa...</translation>
-    </message>
-    <message>
-        <source>You can now start capturing line right of way digitizing on the map...</source>
-        <translation type="vanished">Ahora puedes empezar a capturar líneas de servidumbre de paso dando clic sobre el mapa...</translation>
-    </message>
-    <message>
-        <location filename="../gui/right_of_way.py" line="92"/>
-        <source>You can now start capturing right of ways digitizing on the map...</source>
-        <translation>Ahora puedes empezar a capturar servidumbres de paso dando clic sobre el mapa...</translation>
-    </message>
-    <message>
-        <location filename="../gui/right_of_way.py" line="122"/>
-        <source>You can now start capturing right of way lines digitizing on the map...</source>
-        <translation>Ahora puedes empezar a capturar líneas de servidumbre de paso dando clic sobre el mapa...</translation>
-    </message>
-    <message>
-        <source>Plot layer couldn&apos;t be found... {}</source>
-        <translation type="vanished">No se encontró la capa Terreno... {}</translation>
-    </message>
-    <message>
-        <source>Right of Way layer couldn&apos;t be found... {}</source>
-        <translation type="vanished">La capa Servidumbre de paso no pudo ser encontrada... {}</translation>
-    </message>
-    <message>
-        <source>Survey Point layer couldn&apos;t be found... {}</source>
-        <translation type="vanished">No se encontró la tabla Punto Levantamiento... {}</translation>
+        <location filename="../config/wizard_config.py" line="221"/>
+        <source>Create right</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1830,6 +2117,16 @@
         <source>The new spatial source (t_id={}) was successfully created and associated with the following features: {}</source>
         <translation type="vanished">La nueva fuente espacial (t_id={}) se creó exitosamente y fue asociada con los siguientes objetos espaciales: {}</translation>
     </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="270"/>
+        <source>spatial source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/wizard_config.py" line="272"/>
+        <source>Create spatial source</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DefineBoundariesOperationWizard</name>
@@ -1857,24 +2154,28 @@
 <context>
     <name>Dialog</name>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="20"/>
         <source>Settings</source>
-        <translation type="vanished">Configuración</translation>
+        <translation>Configuración</translation>
     </message>
     <message>
         <source>Official Data Settings</source>
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="40"/>
         <source>Database Connection</source>
-        <translation type="vanished">Conexión a Base de Datos</translation>
+        <translation>Conexión a Base de Datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="61"/>
         <source>Test LADM-COL Structure</source>
-        <translation type="vanished">Probar estructura LADM-COL</translation>
+        <translation>Probar estructura LADM-COL</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="91"/>
         <source>Source</source>
-        <translation type="vanished">Fuente</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <source>Schema</source>
@@ -1925,30 +2226,52 @@
         <translation type="vanished">Obtener desde QGIS Model Baker</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="74"/>
         <source>Test Connection</source>
-        <translation type="vanished">Probar Conexión</translation>
+        <translation>Probar Conexión</translation>
     </message>
     <message>
         <source>Database File</source>
         <translation type="vanished">Archivo de Base de Datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="123"/>
         <source>Models</source>
-        <translation type="vanished">Modelos</translation>
+        <translation>Modelos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_get_java_path.ui" line="35"/>
+        <source>Java Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_get_java_path.ui" line="48"/>
+        <source>If this is left empty, %PATH and %JAVA_HOME is searched</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_get_java_path.ui" line="51"/>
+        <source>[By default %PATH and %JAVA_HOME is searched]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_get_java_path.ui" line="58"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="129"/>
         <source>…</source>
-        <translation type="vanished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="136"/>
         <source>Use models from local folders</source>
-        <translation type="vanished">Usar modelos de carpetas locales</translation>
+        <translation>Usar modelos de carpetas locales</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="156"/>
         <source>Use models from Internet repository </source>
-        <translation type="vanished">Usar modelos de repositorio de Internet </translation>
+        <translation>Usar modelos de repositorio de Internet </translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="188"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Directories which contain Interlis Models (ili files). Several paths can be separated with a semicolon `;`. It is also possible to specify URL&apos;s of model repositories.&lt;/p&gt;
 &lt;dl&gt;
@@ -1958,7 +2281,7 @@
 &lt;dd&gt;is a placeholder for the directory with a transfer file.&lt;/dd&gt;
 &lt;dt&gt;%JAR_DIR&lt;/dt&gt;&lt;dd&gt;is a placeholder for the directory with the ili2db application (ili2pg.jar / ili2gpkg.jar).&lt;/dd&gt;&lt;/dl&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Directories which contain Interlis Models (ili files). Several paths can be separated with a semicolon `;`. It is also possible to specify URL&apos;s of model repositories.&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;%ILI_FROM_DB&lt;/dt&gt;&lt;dd&gt;is a placeholder for the models in the database (in the table &lt;code&gt;t_ili2db_model&lt;/code&gt;).
@@ -1969,56 +2292,79 @@
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="199"/>
         <source>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</source>
-        <translation type="vanished">%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</translation>
+        <translation>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="207"/>
         <source>Quality</source>
-        <translation type="vanished">Calidad</translation>
+        <translation>Calidad</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="244"/>
         <source>Tolerance for too long boundary segments [m.]:</source>
-        <translation type="vanished">Tolerancia para segmentos de linderos muy largos [m.]:</translation>
+        <translation>Tolerancia para segmentos de linderos muy largos [m.]:</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="264"/>
         <source>200</source>
-        <translation type="vanished">200</translation>
+        <translation>200</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="304"/>
         <source>Missing roads will not be marked as errors.</source>
-        <translation type="vanished">Las vías faltantes no serán marcadas como errores.</translation>
+        <translation>Las vías faltantes no serán marcadas como errores.</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="317"/>
         <source>Missing roads wil be marked as errors.</source>
-        <translation type="vanished">Las vías faltantes serán marcadas como errores.</translation>
+        <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="364"/>
         <source>Take roads into account when checking for gaps in plots</source>
-        <translation type="vanished">Tener en cuenta las vías al revisar huecos en terrenos</translation>
+        <translation>Tener en cuenta las vías al revisar huecos en terrenos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="388"/>
         <source>Automatic Values</source>
-        <translation type="vanished">Valores Automáticos</translation>
+        <translation>Valores Automáticos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="396"/>
         <source>For instance, when loading data from CSV or from another QGIS table/layer</source>
-        <translation type="vanished">Por ejemplo, cuando se cargan datos desde archivos CSV o desde otra tabla/capa de QGIS</translation>
+        <translation>Por ejemplo, cuando se cargan datos desde archivos CSV o desde otra tabla/capa de QGIS</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="399"/>
         <source>Calculate automatic fields when loading/importing data in batch mode</source>
-        <translation type="vanished">Calcular campos automáticos al cargar/importar datos masivamente</translation>
+        <translation>Calcular campos automáticos al cargar/importar datos masivamente</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="432"/>
         <source>Calculate Namespace automatically</source>
-        <translation type="vanished">Calcular Espacio de Nombres automáticamente</translation>
+        <translation>Calcular Espacio de Nombres automáticamente</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="489"/>
         <source>Calculate Local ID automatically</source>
-        <translation type="vanished">Calcular Local ID automáticamente</translation>
+        <translation>Calcular Local ID automáticamente</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="562"/>
+        <source>https://ide.proadmintierra.info/ws/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="588"/>
         <source>Advanced</source>
-        <translation type="vanished">Avanzado</translation>
+        <translation>Avanzado</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="607"/>
+        <source>Active role:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enable/disable tools by organization:</source>
@@ -2029,12 +2375,14 @@
         <translation type="vanished">Agencia Nacional de Tierras (ANT)</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="627"/>
         <source>Options for data management</source>
-        <translation type="vanished">Opciones de administración de datos</translation>
+        <translation>Opciones de administración de datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="633"/>
         <source>Validate data while importing from/exporting to XTF</source>
-        <translation type="vanished">Validar datos cuando se importa o exporta un archivo XTF</translation>
+        <translation>Validar datos cuando se importa o exporta un archivo XTF</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -2049,72 +2397,148 @@
         <translation type="vanished">Deshabilitar campos automáticos mientras se cargan datos por lotes</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="416"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Most of the classes in LADM_COL have two attributes that combined must be unique in the whole schema/database. They are called &lt;span style=&quot; font-weight:600;&quot;&gt;namespace&lt;/span&gt; and &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt;. To make it easier to fill those attributes, the &lt;span style=&quot; font-style:italic;&quot;&gt;LADM_COL Assistant&lt;/span&gt; can set automatic values for them. &lt;/p&gt;&lt;p&gt;Namely, &lt;span style=&quot; font-weight:600;&quot;&gt;namespace&lt;/span&gt; will correspond to an optional prefix (e.g., MY_ORGANIZATION) plus the class name (e.g., BOUNDARY): MY_ORGANIZATION_BOUNDARY.&lt;/p&gt;&lt;p&gt;On the other hand, &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt; will correspond to the id of the record in the database.&lt;/p&gt;&lt;p&gt;If you want to fill those values by yourself, uncheck the following checkboxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;La mayoría de clases en LADM_COL tienen dos atributos cuya combinación debe ser única en el esquema o base de datos. Se llaman &lt;span style=&quot; font-weight:600;&quot;&gt;espacio_de_nombres&lt;/span&gt; y &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt;. Para facilitar el llenado de dichos atributos, el &lt;span style=&quot; font-style:italic;&quot;&gt;Asistente LADM_COL&lt;/span&gt; puede definir valores automáticos. &lt;/p&gt;&lt;p&gt;Concretamente, &lt;span style=&quot; font-weight:600;&quot;&gt;espacio_de_nombres&lt;/span&gt; corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LINDERO): MI_ORGANIZACION_LINDERO.&lt;/p&gt;&lt;p&gt;Por otro lado, &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt; corresponderá al ID del registro en la base de datos.&lt;/p&gt;&lt;p&gt;Si por el contrario quieres llenar los datos manualmente, desmarca las siguientes opciones.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;La mayoría de clases en LADM_COL tienen dos atributos cuya combinación debe ser única en el esquema o base de datos. Se llaman &lt;span style=&quot; font-weight:600;&quot;&gt;espacio_de_nombres&lt;/span&gt; y &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt;. Para facilitar el llenado de dichos atributos, el &lt;span style=&quot; font-style:italic;&quot;&gt;Asistente LADM_COL&lt;/span&gt; puede definir valores automáticos. &lt;/p&gt;&lt;p&gt;Concretamente, &lt;span style=&quot; font-weight:600;&quot;&gt;espacio_de_nombres&lt;/span&gt; corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LINDERO): MI_ORGANIZACION_LINDERO.&lt;/p&gt;&lt;p&gt;Por otro lado, &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt; corresponderá al ID del registro en la base de datos.&lt;/p&gt;&lt;p&gt;Si por el contrario quieres llenar los datos manualmente, desmarca las siguientes opciones.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Namespace</source>
         <translation type="vanished">Espacio de Nombres</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="456"/>
         <source>Prefix</source>
-        <translation type="vanished">Prefijo</translation>
+        <translation>Prefijo</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="472"/>
         <source>e.g., your organization&apos;s name</source>
-        <translation type="vanished">por ejemplo, el nombre de tu organización</translation>
+        <translation>por ejemplo, el nombre de tu organización</translation>
     </message>
     <message>
         <source>Local ID</source>
         <translation type="vanished">Identificador Local (local ID)</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="502"/>
         <source>Sources</source>
-        <translation type="vanished">Fuentes</translation>
+        <translation>Fuentes</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="546"/>
         <source>You can set here the URL of the service to upload source files. </source>
-        <translation type="vanished">Aquí puedes definir la URL del servicio para subir archivos fuente. </translation>
+        <translation>Aquí puedes definir la URL del servicio para subir archivos fuente. </translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="555"/>
         <source>Service URL:</source>
-        <translation type="vanished">URL del servicio:</translation>
+        <translation>URL del servicio:</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="508"/>
         <source>Use document repository</source>
-        <translation type="vanished">Usar repositorio documental</translation>
+        <translation>Usar repositorio documental</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="532"/>
         <source>Test Service</source>
-        <translation type="vanished">Probar Servicio</translation>
+        <translation>Probar Servicio</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="14"/>
         <source>Load Layers</source>
-        <translation type="vanished">Cargar Capas</translation>
+        <translation>Cargar Capas</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="20"/>
         <source>Search table names</source>
-        <translation type="vanished">Buscar por nombre de tabla/capa</translation>
+        <translation>Buscar por nombre de tabla/capa</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="49"/>
         <source>Show domain tables</source>
-        <translation type="vanished">Mostrar dominios</translation>
+        <translation>Mostrar dominios</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="54"/>
         <source>Show structures</source>
-        <translation type="vanished">Mostrar estructuras</translation>
+        <translation>Mostrar estructuras</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="59"/>
         <source>Show associations</source>
-        <translation type="vanished">Mostrar asociaciones</translation>
+        <translation>Mostrar asociaciones</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="67"/>
         <source>Select predefined tables for</source>
-        <translation type="vanished">Seleccionar tablas predefinidas para</translation>
+        <translation>Seleccionar tablas predefinidas para</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_load_layers.ui" line="146"/>
         <source>There are no selected layers to load</source>
-        <translation type="vanished">No hay capas seleccionadas para cargar</translation>
+        <translation>No hay capas seleccionadas para cargar</translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="14"/>
+        <source>Duplicate Parcels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="22"/>
+        <source>Select one parcel to show detailed information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="57"/>
+        <source>T_Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="62"/>
+        <source>NUPRE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="67"/>
+        <source>FMI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="72"/>
+        <source>Parcel number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="14"/>
+        <source>Set custom model paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="74"/>
+        <source>Add </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="90"/>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="107"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_get_db_or_schema_name.ui" line="14"/>
+        <location filename="../ui/dialogs/dlg_get_java_path.ui" line="14"/>
+        <source>Create DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_get_db_or_schema_name.ui" line="20"/>
+        <source>object name:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2128,23 +2552,23 @@
         <translation type="vanished">GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="84"/>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="203"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="86"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="218"/>
         <source>Save in XTF Transfer File</source>
         <translation>Guardar en archivo de transferencia XTF</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="85"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="87"/>
         <source>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</source>
         <translation>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="91"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="93"/>
         <source>[Name of the XTF to be created]</source>
         <translation>[Nombre del XTF a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="99"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="101"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -2153,20 +2577,22 @@
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="72"/>
         <source>Open GeoPackage database file</source>
-        <translation type="vanished">Abrir archivo de base de datos GeoPackage</translation>
+        <translation>Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="73"/>
         <source>GeoPackage Database (*.gpkg)</source>
-        <translation type="vanished">Base de datos GeoPackage (*.gpkg)</translation>
+        <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="102"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="104"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="113"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="115"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -2175,17 +2601,17 @@
         <translation type="vanished">Debes seleccionar un esquema válido desde el cuál se obtendrán los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="177"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="192"/>
         <source>Please set a valid XTF file before exporting data.</source>
         <translation>Por favor define un archivo XTF válido antes de exportar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="184"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="199"/>
         <source>Please set a valid schema to export. This schema does not have information to export.</source>
         <translation>Por favor define un esquema válido para exportar. Este esquema no tiene información para exportar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="191"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="206"/>
         <source>Please set a model before exporting data.</source>
         <translation>Por favor define un modelo antes de exportar los datos.</translation>
     </message>
@@ -2194,34 +2620,34 @@
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="129"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="132"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="202"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="217"/>
         <source>{filename} already exists.
 Do you want to replace it?</source>
         <translation>{filename} ya existe.
 ¿Quieres reemplazarlo?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="237"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="252"/>
         <source>An error occurred when exporting the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se exportaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="247"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="262"/>
         <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="261"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="276"/>
         <source>Export of the data was successfully completed.</source>
         <translation>Se exportaron los datos exitósamente.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="333"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="348"/>
         <source>Finished ({})</source>
         <translation>Terminado ({})</translation>
     </message>
@@ -2309,6 +2735,89 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
+    <name>DialogImporFromExcel</name>
+    <message>
+        <location filename="../ui/dialogs/dlg_import_from_excel.ui" line="14"/>
+        <source>Import from intermediate structure</source>
+        <translation type="unfinished">Importar desde estructura intermedia</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_import_from_excel.ui" line="55"/>
+        <source>Choose an Excel file with an intermediate structure...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_import_from_excel.ui" line="70"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="81"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="94"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="107"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="187"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
+        <source>Etl Cobol to Supplies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="35"/>
+        <source>Configure Data Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
+        <source>Parcels blocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="53"/>
+        <source>BLO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="133"/>
+        <source>Owners</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="136"/>
+        <source>PRO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="165"/>
+        <source>Parcels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="168"/>
+        <source>UNI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="203"/>
+        <source>GeoDatabase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="206"/>
+        <source>GDB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="222"/>
+        <source>Building units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="225"/>
+        <source>TER</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogImportData</name>
     <message>
         <source>[Name of the XTF to be created]</source>
@@ -2319,42 +2828,52 @@ Do you want to replace it?</source>
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="97"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="100"/>
         <source>[Name of the XTF to be imported]</source>
         <translation>[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="109"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="112"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="71"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="73"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="72"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="74"/>
         <source>Go to Create Structure...</source>
         <translation>Ir a Crear Estructura...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="141"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="96"/>
+        <source>Open Transfer or Catalog File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="109"/>
+        <source>Connection Settings</source>
+        <translation type="unfinished">Configurar conexión</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="151"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="170"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="180"/>
         <source>No models were found in the XTF. Is it a valid file?</source>
         <translation>No se encontraron modelos en el archivo XTF. ¿Es un archivo válido?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="176"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="186"/>
         <source>Please set a valid XTF file</source>
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="237"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="256"/>
         <source>The selected XTF file does not have information according to the LADM-COL model to import.</source>
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
@@ -2363,12 +2882,12 @@ Do you want to replace it?</source>
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="305"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="318"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="316"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="329"/>
         <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
@@ -2377,17 +2896,17 @@ Do you want to replace it?</source>
         <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="330"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="343"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="420"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="433"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="68"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="70"/>
         <source>Go to Import Data...</source>
         <translation>Ir a Importar Datos...</translation>
     </message>
@@ -2614,7 +3133,7 @@ Do you want to replace it?</source>
         <translation type="vanished">[Nombre del esquema a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="91"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="94"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -2627,62 +3146,86 @@ Do you want to replace it?</source>
         <translation type="vanished">Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
-        <source>GeoPackage Database (*.gpkg)</source>
-        <translation type="vanished">Base de datos GeoPackage (*.gpkg)</translation>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="65"/>
+        <source>Create GeoPackage database file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="98"/>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="66"/>
+        <source>GeoPackage Database (*.gpkg)</source>
+        <translation>Base de datos GeoPackage (*.gpkg)</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="101"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="67"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="69"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="130"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="140"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="188"/>
         <source>Please set a valid model(s) before creating the LADM-COL structure.</source>
-        <translation>Por favor define un(os) modelo(s) válido(s) antes de crear la estructura LADM-COL.</translation>
+        <translation type="vanished">Por favor define un(os) modelo(s) válido(s) antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
         <source>Please set a valid schema name before creating the LADM-COL structure.</source>
         <translation type="vanished">Por favor define un esquema válido antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="219"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="208"/>
+        <source>You should select a valid model(s) before creating the LADM-COL structure.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="239"/>
         <source>An error occurred when creating the LADM-COL structure. For more information see the log...</source>
         <translation>Ocurrió un error cuando se creaba la estructura LADM-COL. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="228"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="248"/>
         <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="246"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="266"/>
         <source>
 Done!</source>
         <translation>
 ¡Terminado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="247"/>
-        <source>Creation of the LADM-COL structure was successfully completed</source>
-        <translation>La estructura LADM-COL se creó exitósamente</translation>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="267"/>
+        <source>LADM-COL structure was successfully created!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="333"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="296"/>
+        <source>Please select an EPSG Coordinate Reference System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="300"/>
+        <source>Coordinate Reference System</source>
+        <translation type="unfinished">Sistema de Referencia de Coordenadas</translation>
+    </message>
+    <message>
+        <source>Creation of the LADM-COL structure was successfully completed</source>
+        <translation type="vanished">La estructura LADM-COL se creó exitósamente</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="352"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="336"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="355"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -2709,16 +3252,18 @@ Done!</source>
 <context>
     <name>DialogLogExcel</name>
     <message>
+        <location filename="../ui/dialogs/dlg_log_excel.ui" line="14"/>
         <source>Errors importing from Excel into LADM-COL</source>
-        <translation type="vanished">Errores importando desde Excel a LADM-COL</translation>
+        <translation>Errores importando desde Excel a LADM-COL</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_log_excel.ui" line="55"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -2728,16 +3273,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DialogLogQuality</name>
     <message>
+        <location filename="../ui/dialogs/dlg_log_quality.ui" line="14"/>
         <source>Quality Check Results</source>
-        <translation type="vanished">Resultados de la revisión de calidad</translation>
+        <translation>Resultados de la revisión de calidad</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_log_quality.ui" line="55"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -2747,40 +3294,49 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DialogQuality</name>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="14"/>
         <source>Quality Rules</source>
-        <translation type="vanished">Reglas de Calidad</translation>
+        <translation>Reglas de Calidad</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="32"/>
         <source>Rules for Points</source>
-        <translation type="vanished">Reglas para Puntos</translation>
+        <translation>Reglas para Puntos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="37"/>
         <source>Rules for Polygons</source>
-        <translation type="vanished">Reglas para Polígonos</translation>
+        <translation>Reglas para Polígonos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="44"/>
         <source>Plots should not overlap</source>
-        <translation type="vanished">Los Terrenos no deben superponerse</translation>
+        <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="52"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
-        <translation type="vanished">Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
+        <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="61"/>
         <source>Rules for Lines</source>
-        <translation type="vanished">Reglas para Líneas</translation>
+        <translation>Reglas para Líneas</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="65"/>
         <source>Boundary should not have dangles</source>
-        <translation type="vanished">Los Linderos no deben tener nodos sin conectar</translation>
+        <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="91"/>
         <source>Select All</source>
-        <translation type="vanished">Seleccionar Todas</translation>
+        <translation>Seleccionar Todas</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_quality.ui" line="98"/>
         <source>Clear Selection</source>
-        <translation type="vanished">Limpiar Selección</translation>
+        <translation>Limpiar Selección</translation>
     </message>
     <message>
         <source>Boundary Points should not overlap</source>
@@ -2852,6 +3408,19 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>DialogWelcome</name>
+    <message>
+        <location filename="../ui/dialogs/dlg_welcome_screen.ui" line="14"/>
+        <source>Welcome to the LADM_COL Assistant!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_welcome_screen.ui" line="42"/>
+        <source>¿Cuál es tu perfil?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DockWidget</name>
     <message>
         <location filename="../ui/change_detection/dockwidget_change_detection.ui" line="14"/>
@@ -2862,7 +3431,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetChangeDetection</name>
     <message>
-        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="112"/>
+        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="109"/>
         <source>&apos;Change detection&apos; has been closed because you just removed a required layer.</source>
         <translation>La herramienta &apos;Identificación de novedades&apos; ha sido cerrada porque acabas de remover una capa requerida.</translation>
     </message>
@@ -2870,52 +3439,52 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetChanges</name>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="190"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="187"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="191"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="188"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="192"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="189"/>
         <source>Folio de Matrícula Inmobiliaria</source>
         <translation>Folio de Matrícula Inmobiliaria</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="406"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="404"/>
         <source>parties</source>
         <translation>interesados</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="406"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="404"/>
         <source>party</source>
         <translation>interesado</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="408"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="406"/>
         <source>0 parties</source>
         <translation>0 interesados</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="415"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="413"/>
         <source>Geometry</source>
         <translation>Geometría</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="426"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="424"/>
         <source>No associated plot</source>
         <translation>No hay terreno asociado</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="430"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="428"/>
         <source>Polygon</source>
         <translation>Polígono</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="450"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="448"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
     </message>
@@ -2935,47 +3504,47 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró la tabla UEBAUNIT... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="193"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="184"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="194"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="185"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="195"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="186"/>
         <source>Folio de Matrícula Inmobiliaria</source>
         <translation>Folio de Matrícula Inmobiliaria</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="345"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="336"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="359"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="350"/>
         <source>Copy value</source>
         <translation>Copiar valor</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="365"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="356"/>
         <source>Open URL</source>
         <translation>Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="389"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="381"/>
         <source>Zoom to {} with {}={}</source>
         <translation>Zoom a {} con {}={}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="397"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="389"/>
         <source>Zoom to related plot(s)</source>
         <translation>Zoom a terreno asociado</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="401"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="393"/>
         <source>Open form for {} with {}={}</source>
         <translation>Abrir formulario para {} con {}={}</translation>
     </message>
@@ -3037,6 +3606,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../ui/change_detection/changes_parties_panel_widget.ui" line="14"/>
         <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="14"/>
+        <location filename="../ui/dialogs/settings_gpkg.ui" line="14"/>
+        <location filename="../ui/dialogs/settings_pg.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
@@ -3190,154 +3761,290 @@ p, li { white-space: pre-wrap; }
         <translation>Ver todos los predios</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_gpkg.ui" line="20"/>
         <source>Database File</source>
-        <translation type="vanished">Archivo de Base de Datos</translation>
+        <translation>Archivo de Base de Datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_gpkg.ui" line="30"/>
         <source>...</source>
-        <translation type="vanished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="20"/>
         <source>Create schema</source>
-        <translation type="vanished">Crear esquema</translation>
+        <translation>Crear esquema</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="40"/>
         <source>[Leave empty to use standard host: localhost]</source>
-        <translation type="vanished">[Deja vacío para usar el host predeterminado: localhost]</translation>
+        <translation>[Deja vacío para usar el host predeterminado: localhost]</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="47"/>
         <source>Port</source>
-        <translation type="vanished">Puerto</translation>
+        <translation>Puerto</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="54"/>
         <source>Database Username</source>
-        <translation type="vanished">Usuario</translation>
+        <translation>Usuario</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="127"/>
         <source>Password</source>
-        <translation type="vanished">Contraseña</translation>
+        <translation>Contraseña</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="75"/>
         <source>Host</source>
-        <translation type="vanished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="61"/>
         <source>Create database</source>
-        <translation type="vanished">Crear base de datos</translation>
+        <translation>Crear base de datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="85"/>
         <source>Schema</source>
-        <translation type="vanished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="120"/>
         <source>[Leave empty to use system password]</source>
-        <translation type="vanished">[Deja vacío para usar la contraseña del sistema]</translation>
+        <translation>[Deja vacío para usar la contraseña del sistema]</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="92"/>
         <source>Database</source>
-        <translation type="vanished">Base de datos</translation>
+        <translation>Base de datos</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="99"/>
         <source>[Leave empty to use standard port 5432]</source>
-        <translation type="vanished">[Deja vacío para usar puerto estándar 5432]</translation>
+        <translation>[Deja vacío para usar puerto estándar 5432]</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="106"/>
         <source>User</source>
-        <translation type="vanished">Usuario</translation>
+        <translation>Usuario</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/settings_pg.ui" line="113"/>
         <source>Refresh databases and schemas</source>
-        <translation type="vanished">Refrescar bases de datos y esquemas</translation>
+        <translation>Refrescar bases de datos y esquemas</translation>
+    </message>
+</context>
+<context>
+    <name>Form_etl_cobol</name>
+    <message>
+        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="26"/>
+        <source>Data settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="38"/>
+        <source>Database:</source>
+        <translation type="unfinished">Base de datos:</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="78"/>
+        <source>Connection settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Form_missing_supplies_cobol</name>
+    <message>
+        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="26"/>
+        <source>Export data</source>
+        <translation type="unfinished">Exportar datos</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="38"/>
+        <source>Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="62"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
     <name>GPKGConnector</name>
     <message>
-        <location filename="../lib/db/gpkg_connector.py" line="56"/>
         <source>There was an error connecting to the database: {}</source>
-        <translation>Hubo un error conectando a la base de datos: {}</translation>
+        <translation type="vanished">Hubo un error conectando a la base de datos: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/gpkg_connector.py" line="58"/>
         <source>Connection to GeoPackage successful!</source>
-        <translation>¡Conexión exitosa a base de datos de GeoPackage!</translation>
+        <translation type="vanished">¡Conexión exitosa a base de datos de GeoPackage!</translation>
+    </message>
+</context>
+<context>
+    <name>GetDBOrSchemaNameDialog</name>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="56"/>
+        <source>Enter the name of the database:</source>
+        <translation type="unfinished">Ingresa el nombre de la base de datos:</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="57"/>
+        <source>[Name of the database to be created]</source>
+        <translation type="unfinished">[Nombre de la base de datos a crear]</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="59"/>
+        <source>Enter the name of the schema:</source>
+        <translation type="unfinished">Ingresa el nombre del esquema:</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="60"/>
+        <source>[Name of the schema to be created]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="62"/>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="81"/>
+        <source>Create {type}</source>
+        <translation type="unfinished">Crear {type}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="87"/>
+        <source>The name of the database cannot be empty.</source>
+        <translation type="unfinished">El nombre de la base de datos no puede estar vacío.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_db_or_schema_name.py" line="89"/>
+        <source>The name of the schema cannot be empty.</source>
+        <translation type="unfinished">El nombre del esquema no puede estar vacío.</translation>
+    </message>
+</context>
+<context>
+    <name>GetJavaPathDialog</name>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_java_path.py" line="43"/>
+        <source>Get Java Path</source>
+        <translation type="unfinished">Obtener la ruta de instalación de java</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_java_path.py" line="46"/>
+        <source>[By default both %PATH and %JAVA_HOME are searched]</source>
+        <translation type="unfinished">[De forma predeterminada, se busca en %PATH y %JAVA_HOME]</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_java_path.py" line="50"/>
+        <source>Select Java application</source>
+        <translation type="unfinished">Seleccione la aplicación java</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_java_path.py" line="51"/>
+        <source>java (*)</source>
+        <translation type="unfinished">java (*)</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_get_java_path.py" line="65"/>
+        <source>Set JAVA Path</source>
+        <translation type="unfinished">Establecer ruta de java</translation>
     </message>
 </context>
 <context>
     <name>GroupPartyDialog</name>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="20"/>
         <source>Group Party</source>
-        <translation type="vanished">Agrupación de Interesados</translation>
+        <translation>Agrupación de Interesados</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="28"/>
         <source>Search parties         </source>
-        <translation type="vanished">Buscar interesados         </translation>
+        <translation>Buscar interesados         </translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="65"/>
         <source>Type</source>
-        <translation type="vanished">Tipo de agrupación</translation>
+        <translation>Tipo de agrupación</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="86"/>
         <source>Name</source>
-        <translation type="vanished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="112"/>
         <source>Select All</source>
-        <translation type="vanished">Seleccionar Todos</translation>
+        <translation>Seleccionar Todos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="126"/>
         <source>Select</source>
-        <translation type="vanished">Seleccionar</translation>
+        <translation>Seleccionar</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="140"/>
         <source>Deselect</source>
-        <translation type="vanished">Quitar de la selección</translation>
+        <translation>Quitar de la selección</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="154"/>
         <source>Deselect All</source>
-        <translation type="vanished">Quitar todos de la selección</translation>
+        <translation>Quitar todos de la selección</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="210"/>
         <source>Party</source>
-        <translation type="vanished">Interesado</translation>
+        <translation>Interesado</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="215"/>
         <source>Numerator</source>
-        <translation type="vanished">Numerador</translation>
+        <translation>Numerador</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/dlg_group_party.ui" line="220"/>
         <source>Denominator</source>
-        <translation type="vanished">Denominador</translation>
+        <translation>Denominador</translation>
     </message>
 </context>
 <context>
     <name>HelpStrings</name>
     <message>
-        <location filename="../config/help_strings.py" line="33"/>
+        <location filename="../config/help_strings.py" line="19"/>
         <source>Choose this option to load points to &lt;b&gt;Survey Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Survey Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents a building, right of way or auxiliary vertex.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Levantamiento&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Punto Levantamiento&lt;/b&gt; es una clase especializada de &lt;i&gt;LA_Punto&lt;/i&gt; que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="40"/>
         <source>Choose this option to load points to &lt;b&gt;Control Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Control Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents points belonging to the local network, used in cadastre operation for surveying physical information of the territorial objects.</source>
-        <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto de Control&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;. &lt;b&gt;Punto de Control&lt;/b&gt; es una clase especializada de &lt;i&gt;LA_Punto&lt;/i&gt; que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</translation>
+        <translation type="vanished">Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto de Control&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;. &lt;b&gt;Punto de Control&lt;/b&gt; es una clase especializada de &lt;i&gt;LA_Punto&lt;/i&gt; que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="46"/>
+        <location filename="../config/help_strings.py" line="32"/>
         <source>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.</source>
         <translation>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="66"/>
+        <location filename="../config/help_strings.py" line="52"/>
         <source>Choose this option if you want to create a &lt;b&gt;Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Party&lt;/b&gt; is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcels&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Interesado&lt;/b&gt; es una persona natural o jurídicaque tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="72"/>
+        <location filename="../config/help_strings.py" line="58"/>
         <source>Choose this option if you want to add a &lt;b&gt;Party&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Party&lt;/b&gt; is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcel&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -3352,12 +4059,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de paso&lt;/b&gt; digitalizando el eje usando &lt;i&gt;Puntos de levantamiento&lt;/i&gt; existentes y dando un valor de ancho.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="156"/>
+        <location filename="../config/help_strings.py" line="142"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right of Way&lt;/b&gt; digitizing a polygon using existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Right of Way&lt;/b&gt; is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de Paso&lt;/b&gt; digitalizando un polígono usando &lt;i&gt;Puntos de Levantamiento&lt;/i&gt; existentes.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="162"/>
+        <location filename="../config/help_strings.py" line="148"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right of Way&lt;/b&gt; digitizing centerline using existing &lt;i&gt;Survey Points&lt;/i&gt; and giving a width value.&lt;br&gt;&lt;br&gt;&lt;b&gt;Right of Way&lt;/b&gt; is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de paso&lt;/b&gt; digitalizando el eje usando &lt;i&gt;Puntos de levantamiento&lt;/i&gt; existentes y dando un valor de ancho.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
@@ -3390,22 +4097,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Antes de crear un &lt;b&gt;Predio&lt;/b&gt; debes relacionarlo con una o más &lt;b&gt;Unidades Espaciales&lt;/b&gt; existentes. Primero debes seleccionar las Unidades Espaciales de interés.&lt;br&gt;&lt;br&gt;Hay dos maneras de relacionar:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Seleccionar unidades espaciales en el mapa&lt;/b&gt;: Seleccionas la unidad espacial en el mapa y das clic derecho sobre el mismo para retornar a este diálogo, lo cual habilitará el botón para crear la relación.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Seleccionar unidades espaciales con base en una expresión&lt;/b&gt;: Seleccionas la unidad espacial usando una expresión, la cual debe ser válida y seleccionar por lo menos un registro. Si la expresión obtiene cero registros, el botón para crear la relación no se habilitará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="168"/>
+        <location filename="../config/help_strings.py" line="154"/>
         <source>Choose this option if you want to associate an &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Spatial Unit&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;ExtAddress&lt;/b&gt; is a class for manage the &lt;i&gt;Spatial Units&lt;/i&gt; addresses from &lt;i&gt;LADM-COL model&lt;/i&gt;.</source>
         <translation>Elige esta opción si quieres relacionar una &lt;b&gt;Dirección&lt;/b&gt; a una &lt;i&gt;Unidad Espacial&lt;/i&gt; existente.&lt;br&gt;&lt;br&gt;&lt;b&gt;ExtDirección&lt;/b&gt; es una clase para administrar las direcciones de &lt;i&gt;Unidades Espaciales&lt;/i&gt; en el &lt;i&gt;modelo LADM-COL&lt;/i&gt;.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="174"/>
+        <location filename="../config/help_strings.py" line="160"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Plot&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Plots:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Plot on the map&lt;/b&gt;: select one &lt;i&gt;Plot&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Plot&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="187"/>
+        <location filename="../config/help_strings.py" line="173"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Building&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Buildings:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Building on the map&lt;/b&gt;: select one &lt;i&gt;Building&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;:  select one &lt;i&gt;Building&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="200"/>
+        <location filename="../config/help_strings.py" line="186"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Building Unit&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Building Units:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Building Unit on the map&lt;/b&gt;: select one &lt;i&gt;Building Unit&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Building Unit&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3426,180 +4133,172 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario. Luego selecciona una capa para asociar todos sus objetos seleccionados a la nueva &lt;b&gt;Fuente Espacial&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="127"/>
+        <location filename="../config/help_strings.py" line="113"/>
         <source>To create a &lt;b&gt;plot&lt;/b&gt; you can use the existing boundaries, first you have at least one.&lt;br&gt;&lt;br&gt;There are three ways to select boundaries:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Boundaries on the map&lt;/b&gt;: select one o more &lt;i&gt;Boundaries&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the plots.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one o more &lt;i&gt;Boundaries&lt;/i&gt; using an expression.If one or more boundaries were selected the button for creating the plots will be enable.&lt;br&gt;&lt;br&gt;3. &lt;b&gt;Select all boundaries&lt;/b&gt;: Select all boundaries available, If one or more boundaries were selected the button for creating the plots will be enable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="214"/>
-        <source>Choose this option if you want to create a &lt;b&gt;Responsibility&lt;/b&gt; based on existing &lt;b&gt;Administrative Source(s)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Responsibility&lt;/b&gt; is a class of type &lt;i&gt;LA_RRR&lt;/i&gt; which stores responsibilities that parties have over parcels.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../config/help_strings.py" line="220"/>
-        <source>Before creating a &lt;b&gt;Responsibility&lt;/b&gt; you must associate with one or more existing &lt;b&gt;Administrative Sources&lt;/b&gt;, First you must select the Administrative Source(s) of interest&lt;br&gt;&lt;br&gt;You can select an Administrative Source(s) by:&lt;br&gt;&lt;br&gt;&lt;b&gt; * Expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../config/help_strings.py" line="231"/>
+        <location filename="../config/help_strings.py" line="200"/>
         <source>Choose this option if you want to create a &lt;b&gt;Restriction&lt;/b&gt; based on existing &lt;b&gt;Administrative Source(s)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Restriction&lt;/b&gt; are the restrictions on a parcel that affect rights that parties may have over it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="237"/>
+        <location filename="../config/help_strings.py" line="206"/>
         <source>Before creating a &lt;b&gt;Restriction&lt;/b&gt; you must associate with one or more existing &lt;b&gt;Administrative Sources&lt;/b&gt;, First you must select the Administrative Source(s) of interest&lt;br&gt;&lt;br&gt;You can select an Administrative Source(s) by:&lt;br&gt;&lt;br&gt;&lt;b&gt; * Expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="248"/>
+        <location filename="../config/help_strings.py" line="217"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right&lt;/b&gt; based on existing &lt;b&gt;Administrative Source(s)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Right&lt;/b&gt; is a class that stores right instances that a party has over a parcel. It is a specialization of the class LA_RRR.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="254"/>
+        <location filename="../config/help_strings.py" line="223"/>
         <source>Before creating a &lt;b&gt;Right&lt;/b&gt; you must associate with one or more existing &lt;b&gt;Administrative Sources&lt;/b&gt;, First you must select the Administrative Source(s) of interest&lt;br&gt;&lt;br&gt;You can select an Administrative Source(s) by:&lt;br&gt;&lt;br&gt;&lt;b&gt; * Expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="264"/>
+        <location filename="../config/help_strings.py" line="233"/>
         <source>Choose this option if you want to create a &lt;b&gt;Spatial Source&lt;/b&gt; using a form. Then select the &lt;b&gt;Spatial Features&lt;/b&gt; that you want to associate with the Spatial Source to create.&lt;br&gt;&lt;br&gt;&lt;b&gt;Spatial Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="270"/>
+        <location filename="../config/help_strings.py" line="239"/>
         <source>Before creating a &lt;b&gt;Spatial Source&lt;/b&gt;  you must associate with one or more existing &lt;b&gt;Spatial Features&lt;/b&gt;, First you must select the Spatial feature(s) of interest&lt;br&gt;&lt;br&gt;There are two ways to associate:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Spatial Feature(s) on the map&lt;/b&gt;: Here you can select on the map and immediately it will come back to wizard, this enables the button for create the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting Spatial Unit(s) by expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="289"/>
         <source>Choose this option if you want to create a &lt;b&gt;Property Record Card&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Property Record Card&lt;/b&gt; is created specifically to store the information collected for the parcels.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Ficha Predial&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Ficha Predial&lt;/b&gt; se crea específicamente para almacena la información recogida para los predios.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Ficha Predial&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Ficha Predial&lt;/b&gt; se crea específicamente para almacena la información recogida para los predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="295"/>
         <source>Choose this option if you want to create a &lt;b&gt;Market Research&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Market Research&lt;/b&gt; is information related to the market research carried out, with the objective to obtain the most probable market values, based on real estate transactions carried out.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Investigación de Mercado&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Investigación de Mercado&lt;/b&gt; es información relativa a las investigaciones de mercado llevadas a cabo, con el objetivo de obtener los valores de mercado más probables, a partir de transacciones inmobiliarias reales llevadas a cabo.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Investigación de Mercado&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Investigación de Mercado&lt;/b&gt; es información relativa a las investigaciones de mercado llevadas a cabo, con el objetivo de obtener los valores de mercado más probables, a partir de transacciones inmobiliarias reales llevadas a cabo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="301"/>
         <source>Choose this option if you want to create a &lt;b&gt;Nuclear Family&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Nuclear Family&lt;/b&gt; allows to registry the information related to the nuclear families of the cadastral survey for the pilots of the multipurpose cadastre.</source>
-        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Núcleo Familiar&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Núcleo Familiar&lt;/b&gt; permite registrar la información relativa a los núcleos familiares del levantamiento catastral de los pilotos del Catastro Multipropósito.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar un &lt;b&gt;Núcleo Familiar&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Núcleo Familiar&lt;/b&gt; permite registrar la información relativa a los núcleos familiares del levantamiento catastral de los pilotos del Catastro Multipropósito.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="307"/>
         <source>Choose this option if you want to create a &lt;b&gt;Natural Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Natural Party&lt;/b&gt; acting as party.</source>
-        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado Natural&lt;/b&gt; con un formulario..&lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Natural&lt;/b&gt; es una persona fiscal que actúa como interesado.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar un &lt;b&gt;Interesado Natural&lt;/b&gt; con un formulario..&lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Natural&lt;/b&gt; es una persona fiscal que actúa como interesado.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="313"/>
         <source>Choose this option if you want to create a &lt;b&gt;Legal Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Legal Party&lt;/b&gt; acting as party.</source>
-        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado Jurídico&lt;/b&gt; con un formulario. &lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Jurídico&lt;/b&gt; que actúa como interesado.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar un &lt;b&gt;Interesado Jurídico&lt;/b&gt; con un formulario. &lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Jurídico&lt;/b&gt; que actúa como interesado.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="319"/>
+        <location filename="../config/help_strings.py" line="258"/>
         <source>Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM_COL.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Click to download Excel template&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click to download Excel sample data&lt;/a&gt;</source>
         <translation>Puedes usar una estructura intermedia de Excel para importar datos jurídicos (alfanuméricos) a LADM_COL.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Clic para descargar la plantilla de Excel&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click para descargar datos de prueba en Excel&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="323"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a grouping of specific attributes that are needed to appraise the parcel.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt; La clase &lt;b&gt;Predio&lt;/b&gt; es una agrupación de atributos específicos para el avalúo del mismo. Por tanto, representa lo mismo que en el caso de los modelos de Catastro y de Registro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avaluo masivo de los predios catastrales, de acuerdo con la metodología vigente.</translation>
+        <translation type="vanished">Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt; La clase &lt;b&gt;Predio&lt;/b&gt; es una agrupación de atributos específicos para el avalúo del mismo. Por tanto, representa lo mismo que en el caso de los modelos de Catastro y de Registro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avaluo masivo de los predios catastrales, de acuerdo con la metodología vigente.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="329"/>
         <source>Choose this option if you want to create a &lt;b&gt;Horizontal Property Valuation&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Horizontal Property Valuation&lt;/b&gt; stores information related to the property, or basic unit of the plot, which serves as a main parcel to a horizontal property element.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio Matriz PH&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Predio Matriz PH&lt;/b&gt; es una clase para registrar la información relativa al predio, o unidad básica del terreno, que sirve de matriz a un elemento de propiedad horizontal.</translation>
+        <translation type="vanished">Elige esta opción si deseas crear un &lt;b&gt;Predio Matriz PH&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Predio Matriz PH&lt;/b&gt; es una clase para registrar la información relativa al predio, o unidad básica del terreno, que sirve de matriz a un elemento de propiedad horizontal.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="335"/>
         <source>Choose this option if you want to create a &lt;b&gt;Common Equipment&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Common Equipment&lt;/b&gt; stores information relative to the common equipment of the horizontal property main parcel.</source>
-        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Equipamiento Comunal&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Equipamiento Comunal&lt;/b&gt; es una clase para registrar la información relativa al equipamiento comunal del predio matriz de la propiedad horizontal (ver la clase PredioMatrizPH).</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar un &lt;b&gt;Equipamiento Comunal&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Equipamiento Comunal&lt;/b&gt; es una clase para registrar la información relativa al equipamiento comunal del predio matriz de la propiedad horizontal (ver la clase PredioMatrizPH).</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="341"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building&lt;/b&gt; (valuation model) is a grouping of specific attributes that are needed to appraise the building.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Construcción&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Construcción&lt;/b&gt; (modelo de Avalúos) es una agrupación de atributos específicos para el avalúo de la misma. Por tanto, representa lo mismo que en el caso del modelo de Catastro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avalúo masivo de las construcciones, de acuerdo con la metodología vigente.</translation>
+        <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Construcción&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Construcción&lt;/b&gt; (modelo de Avalúos) es una agrupación de atributos específicos para el avalúo de la misma. Por tanto, representa lo mismo que en el caso del modelo de Catastro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avalúo masivo de las construcciones, de acuerdo con la metodología vigente.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="347"/>
+        <location filename="../config/help_strings.py" line="64"/>
+        <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; based on existing plots.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian operation. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="71"/>
+        <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; without geometry.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian operation. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="262"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building Unit&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building Unit&lt;/b&gt; (valuation model) is a grouping of specific attributes that are needed to appraise the building.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Unidad de Construcción&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Unidad de Construcción&lt;/b&gt; (modelo de Avalúos) es una agrupación de atributos específicos para el avalúo de la misma. Por tanto, representa lo mismo que en el caso del modelo de Catastro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avalúo masivo de las construcciones, de acuerdo con la metodología vigente.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="353"/>
+        <location filename="../config/help_strings.py" line="268"/>
         <source>To associate the &lt;b&gt;Building unit valuation&lt;/b&gt; to an existing &lt;i&gt;Building unit&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Building unit:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting building on the map&lt;/b&gt;: select one &lt;i&gt;building unit&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Building unit&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="366"/>
+        <location filename="../config/help_strings.py" line="281"/>
         <source>&lt;b&gt;Building Unit Qualification (unconventional)&lt;/b&gt; is a class to store data for the valuation of the building unit.</source>
         <translation>&lt;b&gt;Calificación de Unidades de Construcción (No Convencional)&lt;/b&gt; es una clase para almacenar datos relativos a avalúos de construcciones que usan métodos no convencionales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="369"/>
+        <location filename="../config/help_strings.py" line="284"/>
         <source>&lt;b&gt;Building Unit Qualification (conventional)&lt;/b&gt; is a class to store data for the valuation of the building unit.</source>
         <translation>&lt;b&gt;Calificación de Unidades de Construcción (Convencional)&lt;/b&gt; es una clase para almacenar datos relativos a avalúos de construcciones que usan métodos convencionales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="372"/>
+        <location filename="../config/help_strings.py" line="287"/>
         <source>Choose this option if you want to create a &lt;b&gt;Geoeconomic Zone&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Geoeconomic Zone&lt;/b&gt; allows you to manage areas with similar economic and geographical characteristics.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Zona Homogénea Geoeconómica&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Zona Homogénea Geoeconómica&lt;/b&gt; permite gestionar las zonas con características económicas y de localización geográfica similares, definidas para caracterizar el avalúo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="378"/>
+        <location filename="../config/help_strings.py" line="293"/>
         <source>Choose this option if you want to create a &lt;b&gt;Physical Zone&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Physical Zone&lt;/b&gt; allows you to manage regions with similar physic characteristics.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Zona Homogénea Física&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Zona Homogénea Física&lt;/b&gt; permite gestionar las zonas físicamente homogéneas definidas para el avalúo y que delimitan las zonas que tienen características físicas similares.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="384"/>
+        <location filename="../config/help_strings.py" line="299"/>
         <source>Choose this option if you want to create a &lt;b&gt;Conventional Building Unit Qualification&lt;/b&gt; using a form.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Calificación de Unidad de Construcción Convencional&lt;/b&gt; con un formulario.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="387"/>
+        <location filename="../config/help_strings.py" line="302"/>
         <source>Choose this option if you want to create an &lt;b&gt;Unconventional Building Unit Qualification&lt;/b&gt; using a form.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Calificación de Unidad de Construcción No Convencional&lt;/b&gt; con un formulario.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="391"/>
+        <location filename="../config/help_strings.py" line="322"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;{plot_table}&apos; y opcionalmente una o mas &apos;{building_table}es&apos; y &apos;{building_unit_table}&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="392"/>
-        <location filename="../config/help_strings.py" line="394"/>
+        <location filename="../config/help_strings.py" line="327"/>
+        <location filename="../config/help_strings.py" line="337"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;{plot_table}&apos; y opcionalmente una o más &apos;{building_table}es&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="393"/>
+        <location filename="../config/help_strings.py" line="332"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada deber una o más &apos;{building_unit_table}&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="395"/>
+        <location filename="../config/help_strings.py" line="342"/>
         <source>Cuando el tipo de predio es  &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;{plot_table}&apos; y opcionalmente una o más &apos;{building_table}es&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="396"/>
+        <location filename="../config/help_strings.py" line="347"/>
+        <location filename="../config/help_strings.py" line="352"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada debe ser una &apos;{building_table}&apos; o &apos;{building_unit_table}&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="397"/>
-        <location filename="../config/help_strings.py" line="400"/>
+        <location filename="../config/help_strings.py" line="357"/>
+        <location filename="../config/help_strings.py" line="372"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada la unidad espacial asociada debe ser un &apos;{plot_table}&apos; y opcionalmente una o más &apos;{building_table}es&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="398"/>
-        <location filename="../config/help_strings.py" line="399"/>
+        <location filename="../config/help_strings.py" line="362"/>
+        <location filename="../config/help_strings.py" line="367"/>
         <source>Cuando el tipo de predio es &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; la unidad espacial asociada la unidad espacial asociada debe ser un &apos;{plot_table}&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="411"/>
+        <location filename="../config/help_strings.py" line="310"/>
         <source>               Choose this option to open a window that allows you to import data from a source {type} into the LADM_COL &lt;b&gt;{name}&lt;/b&gt; {type}.                &lt;br&gt;&lt;br&gt;               If the field structure of input and target {type}s differs, you can set a field mapping to define field transformations and correspondence.               &lt;br&gt;&lt;br&gt;               You can select previous mappings in the &lt;b&gt;Recent mappings&lt;/b&gt; list, which can save you time taking advantage of mappings that you already used.                </source>
         <translation>               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM_COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.               &lt;br&gt;&lt;br&gt;               Puedes seleccionar mapeos previos en el listado &lt;b&gt;Mapeos recientes&lt;/b&gt;, lo cual puede ahorrarte tiempo aprovechando mapeos que ya has usado.                </translation>
     </message>
@@ -3608,17 +4307,17 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM_COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.                </translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="419"/>
+        <location filename="../config/help_strings.py" line="318"/>
         <source>layer</source>
         <translation>capa</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="419"/>
+        <location filename="../config/help_strings.py" line="318"/>
         <source>table</source>
         <translation>tabla</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="54"/>
+        <location filename="../config/help_strings.py" line="40"/>
         <source>Choose this option if you want to create an &lt;b&gt;Administrative Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to documents (mortgage document, notarial documents, historical documents, and the like) that document the relationship between parties and parcels.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente administrativa&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
@@ -3649,7 +4348,7 @@ p, li { white-space: pre-wrap; }
 &lt;b&gt;Interesado natural&lt;/b&gt; es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="26"/>
+        <location filename="../config/help_strings.py" line="12"/>
         <source>Choose this option to load points to &lt;b&gt;Boundary Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which stores points that define a boundary.Boundary is an instance of &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; class and its specializations.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Lindero&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
@@ -3657,7 +4356,12 @@ p, li { white-space: pre-wrap; }
 Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y sus especializaciones.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="50"/>
+        <location filename="../config/help_strings.py" line="26"/>
+        <source>Choose this option to load points to &lt;b&gt;Control Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Control Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents points belonging to the local network, used in operation operation for surveying physical information of the territorial objects.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="36"/>
         <source>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Click to download CSV template&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click to download CSV sample data&lt;/a&gt;</source>
         <translation>Agregar un archivo separado por comas (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.
 &lt;br&gt;&lt;br&gt;
@@ -3666,22 +4370,20 @@ Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y 
 &lt;a href=&apos;#data&apos;&gt;Clic para descargar un CSV con datos de ejemplo&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="60"/>
+        <location filename="../config/help_strings.py" line="46"/>
         <source>Choose this option if you want to add an &lt;b&gt;Administrative Source&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the class &lt;i&gt;COL_Fuente&lt;/i&gt; to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between instances of interested and property.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente Administrativa&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Fuente Administrativa&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="78"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; based on existing plots.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; sin una geometría asociada. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
+        <translation type="vanished">Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; sin una geometría asociada. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="85"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; without geometry.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
+        <translation type="vanished">Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="92"/>
+        <location filename="../config/help_strings.py" line="78"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.The property is the legal territorial unit of Cadastre.It is formed by the terrain and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -3690,19 +4392,19 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="100"/>
+        <location filename="../config/help_strings.py" line="86"/>
         <source>Before creating a &lt;b&gt;Parcel&lt;/b&gt;  you must associate with one or more existing &lt;b&gt;Spatial Units&lt;/b&gt;.&lt;br&gt;&lt;br&gt;{msg_parcel_type}&lt;br&gt;There are two ways to associate:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Spatial Unit(s) on the map&lt;/b&gt;: Here you can select on the map and immediately it will come back to wizard, this enables the button for create the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting Spatial Unit(s) by expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="115"/>
+        <location filename="../config/help_strings.py" line="101"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from a re-factored layer.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de una capa re-factorizada.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Terreno&lt;/b&gt; es una porción de tierra con una extensión geográfica definida.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="121"/>
+        <location filename="../config/help_strings.py" line="107"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from existing &lt;i&gt;Boundaries&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de &lt;i&gt;Límites&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
@@ -3713,14 +4415,14 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Seleccione la capa de &lt;b&gt;Terreno&lt;/b&gt; de las disponibles en el proyecto de QGIS.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="141"/>
+        <location filename="../config/help_strings.py" line="127"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building&lt;/b&gt; is a type of legal space of the building unit of the LADM model that stores data specific of the resulting valuation.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntos de Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Construcción&lt;/b&gt; es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="150"/>
+        <location filename="../config/help_strings.py" line="136"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building Unit&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building Unit&lt;/b&gt; is a group of consolidated materials within a &lt;i&gt;Parcel&lt;/i&gt; that has specific characteristics in terms of physical constituent elements and their usage.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Unidad de Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntosde Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
@@ -3769,7 +4471,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 &lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="283"/>
+        <location filename="../config/help_strings.py" line="252"/>
         <source>Choose this option if you want to create a &lt;b&gt;Boundary&lt;/b&gt; using QGIS digitizing tools.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary&lt;/b&gt; is a specialization of the &lt;i&gt;LA_CadenaCarasLindero&lt;/i&gt; class to store boundaries that define plots. Two boundaries must not cross or overlap.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Lindero&lt;/b&gt; usando las herramientas de digitalización de QGIS.
 &lt;br&gt;&lt;br&gt;
@@ -3779,14 +4481,264 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="873"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="749"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="877"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="753"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="131"/>
+        <source>Select the Excel file with data in the intermediate structure</source>
+        <translation type="unfinished">Seleccione el archivo de Excel con datos en la estructura intermedia</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="135"/>
+        <source>Import</source>
+        <translation type="unfinished">Importar</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="160"/>
+        <source>You need to select an Excel file before continuing with the import.</source>
+        <translation type="unfinished">Debe seleccionar un archivo de Excel antes de continuar con la importación.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="168"/>
+        <source>The specified Excel file does not exist!</source>
+        <translation type="unfinished">El archivo de Excel especificado no existe!</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="175"/>
+        <source>Loading tables from the Excel file...</source>
+        <translation type="unfinished">Cargando tablas desde el archivo de Excel ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="193"/>
+        <source>One of the sheets of the Excel file couldn&apos;t be loaded! Check the format again.</source>
+        <translation type="unfinished">¡Una de las hojas del archivo de Excel no se pudo cargar! Compruebe el formato de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="201"/>
+        <source>Loading LADM_COL tables...</source>
+        <translation type="unfinished">Cargando tablas LADM_COL ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="234"/>
+        <source>ETL (step 1): Load col_interesado data...</source>
+        <translation type="unfinished">ETL (paso 1): Cargar datos col_interesado ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="279"/>
+        <source>ETL (step 2): Define group parties...</source>
+        <translation type="unfinished">ETL (paso 2): Definir agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="291"/>
+        <source>ETL (step 3): Load group parties...</source>
+        <translation type="unfinished">ETL (paso 3): Cargar agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="311"/>
+        <source>ETL (step 4): Join group parties t_id...</source>
+        <translation type="unfinished">ETL (paso 4): Asociar el t_id de la agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="327"/>
+        <source>ETL (step 5): Join group parties with parties...</source>
+        <translation type="unfinished">ETL (paso 5): Asociar la agrupación de interesados con los interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="343"/>
+        <source>ETL (step 6): Load group party members...</source>
+        <translation type="unfinished">ETL (paso 6): Cargar los miembros de las agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="357"/>
+        <source>ETL (step 7): Load parcels...</source>
+        <translation type="unfinished">ETL (paso 7): Cargar los predios ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="383"/>
+        <source>ETL (step 8): Concatenate Rights and Sources fields...</source>
+        <translation type="unfinished">ETL (paso 8): concatenar campos de derechos y fuentes ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="398"/>
+        <source>ETL (step 9): Load Administrative Sources...</source>
+        <translation type="unfinished">ETL (paso 9): Cargar las fuentes administrativas ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="424"/>
+        <source>ETL (step 10): Join concatenate source to administrative source t_id...</source>
+        <translation type="unfinished">ETL (paso 10): Asociar el soporte con el t_id de la fuente administrativa ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="441"/>
+        <source>ETL (step 11): Load extarchivo...</source>
+        <translation type="unfinished">ETL (paso 11): Cargar extarchivo ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="463"/>
+        <source>ETL (step 12): Join source and party t_id...</source>
+        <translation type="unfinished">ETL (paso 12): Asociar la fuente y el t_id del interesado ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="480"/>
+        <source>ETL (step 13): Join source, party, group party t_id...</source>
+        <translation type="unfinished">ETL (paso 13): Asociar la fuente, interesado y el t_id de la agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="497"/>
+        <source>ETL (step 14): Join source, party, group party, parcel t_id...</source>
+        <translation type="unfinished">ETL (paso 14): Asociar fuente, interesado, agrupación de interesados y el t_id del predio ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="514"/>
+        <source>ETL (step 15): Load Rights...</source>
+        <translation type="unfinished">ETL (paso 15): Cargar derechos ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="540"/>
+        <source>ETL (step 16): Join source, party, group party, parcel, right t_id...</source>
+        <translation type="unfinished">ETL (paso 16): Asociar fuente, interesado, agrupación de interesados, predio, t_id del derecho ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="557"/>
+        <source>ETL (step 17): Load rrrfuente...</source>
+        <translation type="unfinished">ETL (paso 17): Cargar rrrfuente ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="576"/>
+        <source>Import done!!!&lt;br/&gt;</source>
+        <translation type="unfinished">Importación realizada !!! &lt;br/&gt;</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="578"/>
+        <source>&lt;br/&gt;&lt;b&gt;{count}&lt;/b&gt; records loaded into table &lt;b&gt;{table}&lt;/b&gt;</source>
+        <translation type="unfinished">&lt;br/&gt; &lt;b&gt;{count}&lt;/b&gt; registros cargados en la tabla &lt;b&gt; {table} &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="594"/>
+        <source>The {} sheet has not information or has another name.</source>
+        <translation type="unfinished">La hoja {} no tiene información o tiene otro nombre.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="602"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="646"/>
+        <source>The title does not match the format in the sheet {}.</source>
+        <translation type="unfinished">El título no corresponde al formato en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="606"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="651"/>
+        <source>The column numero predial nuevo has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;numero predial nuevo&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="610"/>
+        <source>The column departamento has non-numeric values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;departamento&apos; tiene valores no numéricos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="614"/>
+        <source>The column municipio has non-numeric values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;municipio&apos; tiene valores no numéricos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="618"/>
+        <source>The column numero predial nuevo has non-numeric values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;numero predial nuevo&apos; tiene valores no numéricos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="624"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="673"/>
+        <source>The title does not match the format in sheet {}.</source>
+        <translation type="unfinished">El título no corresponde al formato en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="628"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="655"/>
+        <source>The column tipo documento has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;tipo documento&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="632"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="659"/>
+        <source>The column numero de documento has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;número de documento&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="636"/>
+        <source>The column numero de documento has more characters than expected in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;numero de documento&apos; tiene más caracteres de los esperados en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="640"/>
+        <source>The column tipo persona has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;tipo persona&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="663"/>
+        <source>The column id agrupación has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;id agrupación&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="667"/>
+        <source>The column numero de documento has more characters of the permitted in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;numero de documento&apos; tiene más caracteres de los esperados en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="677"/>
+        <source>The column tipo has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;tipo&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="681"/>
+        <source>The column tipo de fuente has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;tipo de fuente&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="685"/>
+        <source>The column estado_disponibilidad de la fuente has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;estado_disponibilidad de la fuente&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="693"/>
+        <source>Number of non-null parties plus number of non-null group parties is not equal to number of records in sheet {}. There might be rights without party or group party associated.</source>
+        <translation type="unfinished">El número de interesados más el número de agrupaciones no coincide con el número de registros en la hoja {}. Pueden haber derechos sin interesado o agrupación asociados.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="698"/>
+        <source>The column número documento Interesado has empty values in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;número documento Interesado&apos; tiene valores vacíos en la hoja {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="702"/>
+        <source>The column agrupacion has data but the sheet does not exist in sheet {}.</source>
+        <translation type="unfinished">La columna &apos;agrupacion&apos; tiene datos en la hoja {}, pero la hoja &apos;agrupacion&apos; no existe.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="823"/>
+        <source>Save File</source>
+        <translation type="unfinished">Guardar archivo</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="826"/>
+        <source>Excel File (*.xlsx *.xls)</source>
+        <translation type="unfinished">Archivo de Excel (* .xlsx * .xls)</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="835"/>
+        <source>Excel file not found. Update your plugin. For details see log.</source>
+        <translation type="unfinished">Archivo de Excel no encontrado. Actualiza tu plugin. Para más detalles ver log.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="850"/>
+        <source>The file couldn&apos;t be saved.</source>
+        <translation type="unfinished">No se pudo guardar el archivo.</translation>
     </message>
 </context>
 <context>
@@ -4039,32 +4991,99 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
 </context>
 <context>
+    <name>LayersForTopologicalEdition</name>
+    <message>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="14"/>
+        <source>Topological edition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="20"/>
+        <source>Boundary Points, Boundaries and Plots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="55"/>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="60"/>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="65"/>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="113"/>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="118"/>
+        <source>New Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="75"/>
+        <source>Survey Points, Buildings and Building Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_topological_edition.ui" line="141"/>
+        <source>Select the layers you want to edit topologically</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadLayersDialog</name>
+    <message>
+        <location filename="../gui/dialogs/dlg_load_layers.py" line="155"/>
+        <source> [already loaded]</source>
+        <translation type="unfinished"> [ya está cargada]</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_load_layers.py" line="309"/>
+        <source>There are no selected layers to load</source>
+        <translation type="unfinished">No hay capas seleccionadas para cargar</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_load_layers.py" line="312"/>
+        <source>There is 1 selected layer ready to be loaded</source>
+        <translation type="unfinished">Hay 1 capa seleccionada lista para cargar</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_load_layers.py" line="315"/>
+        <source>There are {} selected layers ready to be loaded</source>
+        <translation type="unfinished">Hay {} capas seleccionadas listas para cargar</translation>
+    </message>
+</context>
+<context>
     <name>LogExcelDialog</name>
     <message>
+        <location filename="../gui/dialogs/dlg_log_excel.py" line="34"/>
         <source>Export to PDF</source>
-        <translation type="vanished">Exportar a PDF</translation>
+        <translation>Exportar a PDF</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_log_excel.py" line="39"/>
+        <source>&lt;h2 align=&apos;center&apos;&gt;Errors importing from Excel into LADM-COL&lt;/h2&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="841"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="717"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="849"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="725"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="861"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="737"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
     <message>
+        <location filename="../gui/dialogs/dlg_log_quality.py" line="40"/>
         <source>Export to PDF</source>
-        <translation type="vanished">Exportar a PDF</translation>
+        <translation>Exportar a PDF</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_log_quality.py" line="46"/>
+        <source>&lt;h2 align=&apos;center&apos;&gt;Quality Check Results&lt;/h2&gt;&lt;div style=&apos;text-align:center;&apos;&gt;{}&lt;br&gt;Database: {}&lt;br&gt;Total execution time: {}&lt;/div&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>All Quality Check report successfully generated in folder &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;!</source>
@@ -4074,152 +5093,112 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogicChecksConfigStrings</name>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="90"/>
-        <location filename="../lib/db/pg_connector.py" line="95"/>
-        <location filename="../lib/db/pg_connector.py" line="100"/>
-        <location filename="../lib/db/pg_connector.py" line="105"/>
-        <location filename="../lib/db/pg_connector.py" line="110"/>
-        <location filename="../lib/db/pg_connector.py" line="135"/>
-        <location filename="../lib/db/pg_connector.py" line="160"/>
-        <location filename="../lib/db/pg_connector.py" line="197"/>
         <source>Logic Consistency Errors in table &apos;{table}&apos;</source>
-        <translation>Errores de Consistencia Lógica en la tabla &apos;{table}&apos;</translation>
+        <translation type="vanished">Errores de Consistencia Lógica en la tabla &apos;{table}&apos;</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="182"/>
         <source>Errors in relationships between Spatial Units and Parcels</source>
-        <translation>Errores en las relaciones entre Unidades Espaciales y Predios</translation>
+        <translation type="vanished">Errores en las relaciones entre Unidades Espaciales y Predios</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="232"/>
         <source>Fractions do not sum 1</source>
-        <translation>Las Fracciones no suman 1</translation>
+        <translation type="vanished">Las Fracciones no suman 1</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="252"/>
         <source>Parcels with repeated domain right</source>
-        <translation>Predios con derecho de dominio duplicado</translation>
+        <translation type="vanished">Predios con derecho de dominio duplicado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1776"/>
         <source>Logic Consistency Errors in table &apos;{}&apos;</source>
-        <translation>Errores de Consistencia Lógica en la tabla &apos;{}&apos;</translation>
+        <translation type="vanished">Errores de Consistencia Lógica en la tabla &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="80"/>
         <source>Duplicate records in &apos;{table}&apos;</source>
-        <translation>Registros duplicados en {table}</translation>
+        <translation type="vanished">Registros duplicados en {table}</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="149"/>
         <source>{business_name} must be NULL</source>
-        <translation>{business_name} debe ser NULL</translation>
+        <translation type="vanished">{business_name} debe ser NULL</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="151"/>
         <source>{legal_party} must be NULL</source>
-        <translation>{legal_party} debe ser NULL</translation>
+        <translation type="vanished">{legal_party} debe ser NULL</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="153"/>
         <source>{surname_party} must not be NULL and It must be filled in</source>
-        <translation>{surname_party} no debe ser NULL y se debe diligenciar</translation>
+        <translation type="vanished">{surname_party} no debe ser NULL y se debe diligenciar</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="155"/>
         <source>{first_name_party} must not be NULL and It must be filled in</source>
-        <translation>{first_name_party} no debe ser NULL y se debe diligenciar</translation>
+        <translation type="vanished">{first_name_party} no debe ser NULL y se debe diligenciar</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="157"/>
         <source>{doc_type} must be different from NIT</source>
-        <translation>{doc_type} debe ser diferente de NIT</translation>
+        <translation type="vanished">{doc_type} debe ser diferente de NIT</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="186"/>
         <source>{business_name} must not be NULL and It must be filled in</source>
-        <translation>{business_name} no debe ser NULL y se debe diligenciar</translation>
+        <translation type="vanished">{business_name} no debe ser NULL y se debe diligenciar</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="188"/>
         <source>{legal_party} must not be NULL and It must be filled in</source>
-        <translation>{legal_party} no debe ser NULL y se debe diligenciar</translation>
+        <translation type="vanished">{legal_party} no debe ser NULL y se debe diligenciar</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="190"/>
         <source>{surname_party} must be NULL</source>
-        <translation>{surname_party} debe ser NULL</translation>
+        <translation type="vanished">{surname_party} debe ser NULL</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="192"/>
         <source>{first_name_party} must be NULL</source>
-        <translation>{first_name_party} debe ser NULL</translation>
+        <translation type="vanished">{first_name_party} debe ser NULL</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="194"/>
         <source>{doc_type} must be equal to NIT or Secuencial_IGAC or Secuencial_SNR</source>
-        <translation>{doc_type} debe ser igual a NIT o Secuencial_IGAC o Secuencial_SNR</translation>
+        <translation type="vanished">{doc_type} debe ser igual a NIT o Secuencial_IGAC o Secuencial_SNR</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="223"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 0</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 0</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 0</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="225"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 9</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 9</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 9</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="227"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 8</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 8</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 8</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="229"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 7</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 7</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 7</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="231"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 5</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 5</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 5</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="233"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 4</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 4</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 4</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="235"/>
         <source>When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 3</source>
-        <translation>Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 3</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es {parcel_type}, la posición 22 del número predial debe ser 3</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="270"/>
-        <location filename="../utils/logic_checks.py" line="272"/>
-        <location filename="../utils/logic_checks.py" line="274"/>
-        <location filename="../utils/logic_checks.py" line="276"/>
-        <location filename="../utils/logic_checks.py" line="278"/>
-        <location filename="../utils/logic_checks.py" line="280"/>
         <source>When the {parcel_type_field} of {table} is &apos;{parcel_type}&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
-        <translation>Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="282"/>
-        <location filename="../utils/logic_checks.py" line="284"/>
         <source>When the {parcel_type_field} of {table} is &apos;{parcel_type}&apos; you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)</source>
-        <translation>Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 1 terreno, 0 construcciones y 0 unidades de construcción, pero tiene {plot_count} terreno(s), {building_count} construcción(es) y {building_unit_count} unidad(es) de construcción</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 1 terreno, 0 construcciones y 0 unidades de construcción, pero tiene {plot_count} terreno(s), {building_count} construcción(es) y {building_unit_count} unidad(es) de construcción</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="286"/>
         <source>When the {parcel_type_field} of {table} is &apos;{parcel_type}&apos; you should have 0 plot and 0 building but you have {plot_count} plot(s) and {building_count} building(s)</source>
-        <translation>Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 0 terrenos y 0 construcciones, pero tiene {plot_count} terreno(s) y {building_count} construcción(es)</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 0 terrenos y 0 construcciones, pero tiene {plot_count} terreno(s) y {building_count} construcción(es)</translation>
     </message>
     <message>
-        <location filename="../utils/logic_checks.py" line="288"/>
         <source>When the {parcel_type_field} of {table} is &apos;{parcel_type}&apos; you should have 0 plot and 1 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)</source>
-        <translation>Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 0 terrenos, 1 construcción y 0 unidades de construcción, pero tiene {plot_count} terreno(s), {building_count} construcción(es) y {building_unit_count} unidad(es) de construcción</translation>
+        <translation type="vanished">Cuando el {parcel_type_field} de {table} es &apos;{parcel_type}&apos;, el predio debería tener 0 terrenos, 1 construcción y 0 unidades de construcción, pero tiene {plot_count} terreno(s), {building_count} construcción(es) y {building_unit_count} unidad(es) de construcción</translation>
     </message>
     <message>
         <source>When the {parcel_type} of {table} is NPH the 22nd position of the property code must be 0</source>
@@ -4293,39 +5272,32 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ModelParser</name>
     <message>
-        <location filename="../utils/model_parser.py" line="67"/>
         <source>The plugin &apos;QGIS Model Baker&apos; is a prerequisite, but could not be found. Install it before continuing.</source>
-        <translation>El complemento &apos;QGIS Model Baker&apos; es un prerrequisito pero no se encontró. Instálalo antes de continuar.</translation>
+        <translation type="vanished">El complemento &apos;QGIS Model Baker&apos; es un prerrequisito pero no se encontró. Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="72"/>
         <source>The Cadastre model couldn&apos;t be found in the database...</source>
-        <translation>El modelo de Catastro-Registro no se encontró en la base de datos...</translation>
+        <translation type="vanished">El modelo de Catastro-Registro no se encontró en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="83"/>
         <source>Model revision not found</source>
-        <translation>No se encontró ninguna revisión (fecha de modificación) del modelo</translation>
+        <translation type="vanished">No se encontró ninguna revisión (fecha de modificación) del modelo</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="87"/>
         <source>The Cadastre model version found in the database is not supported!</source>
-        <translation>¡La versión encontrada del modelo de Catastro-Registro no está soportada!</translation>
+        <translation type="vanished">¡La versión encontrada del modelo de Catastro-Registro no está soportada!</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="100"/>
         <source>Couldn&apos;t determine versions to compare...</source>
-        <translation>No se pudieron determinar las versiones para la comparación...</translation>
+        <translation type="vanished">No se pudieron determinar las versiones para la comparación...</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="111"/>
         <source>The model version is not supported!</source>
-        <translation>¡La versión del modelo Catastro-Registro de la base de datos no está soportada!</translation>
+        <translation type="vanished">¡La versión del modelo Catastro-Registro de la base de datos no está soportada!</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="116"/>
         <source>Supported model version!</source>
-        <translation>¡Esta versión del modelo Catastro-Registro está soportada!</translation>
+        <translation type="vanished">¡Esta versión del modelo Catastro-Registro está soportada!</translation>
     </message>
 </context>
 <context>
@@ -4339,9 +5311,8 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="375"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
-        <translation>¡El esquema {} no existe en la base de datos!</translation>
+        <translation type="vanished">¡El esquema {} no existe en la base de datos!</translation>
     </message>
     <message>
         <source>The schema &apos;{}&apos; is not a valid INTERLIS schema. That is, the schema doesn&apos;t have some INTERLIS metadata tables.</source>
@@ -4356,104 +5327,86 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="381"/>
         <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
-        <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
+        <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
         <source>Connection to PostGIS successful!</source>
         <translation type="vanished">¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="335"/>
         <source>Connection to server was successful.</source>
-        <translation>La conexión al servidor fue exitosa.</translation>
+        <translation type="vanished">La conexión al servidor fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="343"/>
         <source>You should first select a database.</source>
-        <translation>Primero debes seleccionar una base de datos.</translation>
+        <translation type="vanished">Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="365"/>
         <source>Connection to the database was successful.</source>
-        <translation>La conexión a la base de datos fue exitosa.</translation>
+        <translation type="vanished">La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="371"/>
         <source>You should first select a schema.</source>
-        <translation>Primero debes seleccionar un esquema.</translation>
+        <translation type="vanished">Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="387"/>
         <source>Connection to the database schema was successful.</source>
-        <translation>La conexión al esquema de base de datos fue exitosa.</translation>
+        <translation type="vanished">La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="393"/>
         <source>The schema &apos;{}&apos; is not a valid LADM_COL schema. That is, the schema doesn&apos;t have the structure of the LADM_COL model.</source>
-        <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
+        <translation type="vanished">El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="404"/>
         <source>The schema &apos;{}&apos; has a valid LADM-COL structure!</source>
-        <translation>¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
+        <translation type="vanished">¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="407"/>
         <source>Connection successful!</source>
-        <translation>¡Conexión exitosa!</translation>
+        <translation type="vanished">¡Conexión exitosa!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="409"/>
         <source>There was a problem checking the connection. Most likely due to invalid or not supported test_level!</source>
-        <translation>Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación (test_level) no soportado!</translation>
+        <translation type="vanished">Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación (test_level) no soportado!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="427"/>
         <source>Connection is open!</source>
-        <translation>¡La conexión está abierta!</translation>
+        <translation type="vanished">¡La conexión está abierta!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="477"/>
         <source>Layer &apos;{}&apos; was not found in the database (schema: {}).</source>
-        <translation>No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
+        <translation type="vanished">No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="896"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
-        <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
+        <translation type="vanished">Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="916"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
-        <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
+        <translation type="vanished">Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="936"/>
         <source>No information for schema &apos;{}&apos;.</source>
-        <translation>No hay información para el esquema &apos;{}&apos;.</translation>
+        <translation type="vanished">No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="940"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
-        <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
+        <translation type="vanished">Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="944"/>
         <source>The user has both Create and Usage priviledges over the schema.</source>
-        <translation>El usuario tiene permiso de Crear y Usar el equema.</translation>
+        <translation type="vanished">El usuario tiene permiso de Crear y Usar el equema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="946"/>
         <source>The user has not enough priviledges over the schema.</source>
-        <translation>El usuario no tiene suficientes permisos sobre el equema.</translation>
+        <translation type="vanished">El usuario no tiene suficientes permisos sobre el equema.</translation>
     </message>
 </context>
 <context>
     <name>ParcelsChangesSummaryPanelWidget</name>
     <message>
-        <location filename="../gui/change_detection/parcels_changes_summary_panel.py" line="56"/>
+        <location filename="../gui/change_detection/parcels_changes_summary_panel.py" line="55"/>
         <source>Summary of changes detected</source>
         <translation>Resumen de novedades identificadas</translation>
     </message>
@@ -4508,9 +5461,8 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="160"/>
         <source>Extracting relations and domains from the database... This is done only once per session!</source>
-        <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
+        <translation type="vanished">Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
     <message>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
@@ -4529,9 +5481,8 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1004"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
-        <translation>¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
+        <translation type="vanished">¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
     </message>
     <message>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
@@ -4550,39 +5501,32 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Extrayendo datos de la base de datos... ¡Esto se realiza solamente una vez por cada sesión de QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="279"/>
         <source>Loading LADM_COL layers to QGIS and configuring their relations and forms...</source>
-        <translation>Cargando capas LADM_COL a QGIS y configurando sus formularios y relaciones...</translation>
+        <translation type="vanished">Cargando capas LADM_COL a QGIS y configurando sus formularios y relaciones...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="367"/>
         <source>{layer_name} layer couldn&apos;t be found... {description}</source>
-        <translation>No se encontró la capa {layer_name}... {description}</translation>
+        <translation type="vanished">No se encontró la capa {layer_name}... {description}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="839"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
-        <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
+        <translation type="vanished">No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="874"/>
         <source>CSV layer not valid!</source>
-        <translation>¡La capa CSV no es válida!</translation>
+        <translation type="vanished">¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="886"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
-        <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
+        <translation type="vanished">Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="921"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
-        <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
+        <translation type="vanished">Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="927"/>
         <source>No point was added to &apos;{}&apos;.</source>
-        <translation>No se agregó ningún punto a &apos;{}&apos;.</translation>
+        <translation type="vanished">No se agregó ningún punto a &apos;{}&apos;.</translation>
     </message>
     <message>
         <source>Table {} not found in the DB! {}</source>
@@ -4637,9 +5581,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se encontraron parejas id_lindero-id_terreno para la tabla &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="963"/>
         <source>You need to close the edit session on layer &apos;{}&apos; before using this tool!</source>
-        <translation>¡Necesitas cerrar la sesión de edición sobre la capa {} antes de usar esta herramienta!</translation>
+        <translation type="vanished">¡Necesitas cerrar la sesión de edición sobre la capa {} antes de usar esta herramienta!</translation>
     </message>
     <message>
         <source>There are no selected boundaries, do you like to use all the {} boundaries in the data base?</source>
@@ -4662,18 +5605,27 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
+        <location filename="../gui/wizards/operation/wiz_create_plot_operation.py" line="163"/>
+        <source>{} new plot(s) has(have) been created! To finish the creation of the plots, open its attribute table and fill in the mandatory fields.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/wizards/operation/wiz_create_plot_operation.py" line="164"/>
+        <source>Open table of attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/wizards/operation/wiz_create_plot_operation.py" line="171"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
-        <translation type="vanished">No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
+        <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1176"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
-        <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
+        <translation type="vanished">No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1182"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
-        <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
+        <translation type="vanished">¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>The plugin help cannot be open. Check the Internet connection.</source>
@@ -4688,32 +5640,28 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="559"/>
         <source>There are no points in layer &apos;{}&apos; to check for overlaps!</source>
-        <translation>¡No hay puntos en la capa {} para revisar superposiciones!</translation>
+        <translation type="vanished">¡No hay puntos en la capa {} para revisar superposiciones!</translation>
     </message>
     <message>
         <source>Overlapping points in {}</source>
         <translation type="vanished">Puntos superpuestos en {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="594"/>
         <source>A memory layer with {} overlapping points in &apos;{}&apos; has been added to the map!</source>
-        <translation>¡Una capa temporal con {} puntos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} puntos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="598"/>
         <source>There are no overlapping points in layer &apos;{}&apos;!</source>
-        <translation>¡No hay puntos superpuestos en la capa &apos;{}&apos;!</translation>
+        <translation type="vanished">¡No hay puntos superpuestos en la capa &apos;{}&apos;!</translation>
     </message>
     <message>
         <source>Layer {} not found in DB! {}</source>
         <translation type="vanished">¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="615"/>
         <source>There are no plots to check &apos;plots should be covered by boundaries&apos;.</source>
-        <translation>No hay terrenos para revisar &apos;los límites de Terrenos deben estar cubiertos por Linderos&apos;.</translation>
+        <translation type="vanished">No hay terrenos para revisar &apos;los límites de Terrenos deben estar cubiertos por Linderos&apos;.</translation>
     </message>
     <message>
         <source>Plot lines not covered by Boundaries</source>
@@ -4728,28 +5676,24 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Todos los límites de Terrenos están cubiertos por Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="134"/>
         <source>There are no boundary points to check &apos;boundary points should be covered by boundary nodes&apos;.</source>
-        <translation>No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Linderos&apos;.</translation>
+        <translation type="vanished">No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Linderos&apos;.</translation>
     </message>
     <message>
         <source>Boundary points should be covered by boundary nodes</source>
         <translation type="vanished">Los Puntos de Lindero deben estar cubiertos por nodos de Linderos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="153"/>
         <source>A memory layer with {} boundary points not covered by boundary nodes has been added to the map!</source>
-        <translation>¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de lindero ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de lindero ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="158"/>
         <source>All boundary points are covered by boundary nodes!</source>
-        <translation>¡Todos los Puntos de Lindero están cubiertos por nodos de Linderos!</translation>
+        <translation type="vanished">¡Todos los Puntos de Lindero están cubiertos por nodos de Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="910"/>
         <source>There are no boundaries to check &apos;boundaries should be covered by plots&apos;.</source>
-        <translation>No hay Linderos para revisar &apos;los Linderos deben estar cubiertos por límites de Terrenos&apos;.</translation>
+        <translation type="vanished">No hay Linderos para revisar &apos;los Linderos deben estar cubiertos por límites de Terrenos&apos;.</translation>
     </message>
     <message>
         <source>Boundaries not covered by plot lines</source>
@@ -4772,342 +5716,276 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Todos los límites de Terrenos están cubiertos por Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="637"/>
         <source>A memory layer with {} plots not covered by boundaries has been added to the map!</source>
-        <translation>¡Una capa temporal con {} límites de terreno no cubiertos por linderos ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} límites de terreno no cubiertos por linderos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="641"/>
         <source>All plots are covered by boundaries!</source>
-        <translation>¡Todos los terrenos están cubiertos por linderos!</translation>
+        <translation type="vanished">¡Todos los terrenos están cubiertos por linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="933"/>
         <source>A memory layer with {} boundaries not covered by plots has been added to the map!</source>
-        <translation>¡Una capa temporal con {} linderos no cubiertos por límites de terreno ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} linderos no cubiertos por límites de terreno ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="937"/>
         <source>All boundaries are covered by plots!</source>
-        <translation>¡Todos los linderos están cubiertos por terrenos!</translation>
+        <translation type="vanished">¡Todos los linderos están cubiertos por terrenos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1267"/>
         <source>A memory layer with {} overlapping polygons in layer &apos;{}&apos; has been added to the map!</source>
-        <translation>¡Una capa temporal con {} polígonos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} polígonos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1272"/>
         <source>There are no overlapping polygons in layer &apos;{}&apos;!</source>
-        <translation>¡No hay polígonos superpuestos en la capa &apos;{}&apos;!</translation>
+        <translation type="vanished">¡No hay polígonos superpuestos en la capa &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1284"/>
         <source>There are no boundaries to check for overlaps!</source>
-        <translation>¡No hay linderos para revisar superposiciones!</translation>
+        <translation type="vanished">¡No hay linderos para revisar superposiciones!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1304"/>
         <source>There are no overlapping boundaries.</source>
-        <translation>No hay linderos superpuestos.</translation>
+        <translation type="vanished">No hay linderos superpuestos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1312"/>
         <source>A memory layer with {} overlapping boundaries (point intersections) has been added to the map.</source>
-        <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo punto) ha sido agregada al mapa.</translation>
+        <translation type="vanished">Una capa temporal con {} linderos superpuestos (intersecciones tipo punto) ha sido agregada al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1317"/>
         <source>A memory layer with {} overlapping boundaries (line intersections) has been added to the map.</source>
-        <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo línea) ha sido agregada al mapa.</translation>
+        <translation type="vanished">Una capa temporal con {} linderos superpuestos (intersecciones tipo línea) ha sido agregada al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1324"/>
         <source>Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.</source>
-        <translation>Dos capas temporales con superposiciones de linderos ({} puntos superpuestos y {} líneas superpuestas) han sido agregadas al mapa.</translation>
+        <translation type="vanished">Dos capas temporales con superposiciones de linderos ({} puntos superpuestos y {} líneas superpuestas) han sido agregadas al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1342"/>
         <source>There are no boundaries to check &apos;boundaries should not be split&apos;!</source>
-        <translation>¡No hay linderos para revisar &apos;los Linderos deben terminar en cambio de colindancia&apos;!</translation>
+        <translation type="vanished">¡No hay linderos para revisar &apos;los Linderos deben terminar en cambio de colindancia&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1349"/>
         <source>There are no wrong boundaries!</source>
-        <translation>¡No hay linderos mal definidos!</translation>
+        <translation type="vanished">¡No hay linderos mal definidos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1799"/>
         <source>A memory layer with {} parcel errors has been added to the map!</source>
-        <translation>¡Una capa temporal con {} errores en Predios ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} errores en Predios ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1803"/>
         <source>Parcel-Right relationships are correct!</source>
-        <translation>¡Las relaciones Predio-Derecho son correctas!</translation>
+        <translation type="vanished">¡Las relaciones Predio-Derecho son correctas!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1814"/>
         <source>A memory layer with {} fractions which do not sum 1 has been added to the map!</source>
-        <translation>¡Una capa temporal con {} fracciones que no suman 1 ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} fracciones que no suman 1 ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1818"/>
         <source>Group Party Fractions are correct!</source>
-        <translation>¡Las fracciones en las agrupaciones de interesados son correctas!</translation>
+        <translation type="vanished">¡Las fracciones en las agrupaciones de interesados son correctas!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1871"/>
         <source>A memory layer with {error_count} duplicate records from {table} has been added to the map!</source>
-        <translation>¡Una capa temporal con {error_count} registros duplicados de la tabla {table} ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {error_count} registros duplicados de la tabla {table} ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1875"/>
         <source>There are no repeated records in {table}!</source>
-        <translation>¡No hay registros duplicados en {table}!</translation>
+        <translation type="vanished">¡No hay registros duplicados en {table}!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1921"/>
-        <location filename="../utils/quality.py" line="1962"/>
         <source>A memory layer with {error_count} error record(s) from {table} has been added to the map!</source>
-        <translation>¡Una capa temporal con {error_count} registros con errores de la tabla {table} ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {error_count} registros con errores de la tabla {table} ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1925"/>
-        <location filename="../utils/quality.py" line="1965"/>
         <source>No errors found when checking &apos;{rule}&apos; for &apos;{table}&apos;!</source>
-        <translation>¡No se encontraron errores al revisar &apos;{rule}&apos; para &apos;{table}&apos;!</translation>
+        <translation type="vanished">¡No se encontraron errores al revisar &apos;{rule}&apos; para &apos;{table}&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1979"/>
-        <location filename="../utils/quality.py" line="2035"/>
         <source>There are no buildings to check &apos;Building should be within Plots&apos;.</source>
-        <translation>No hay construcciones para revisar &apos;las construcciones deben estar dentro de un terreno&apos;.</translation>
+        <translation type="vanished">No hay construcciones para revisar &apos;las construcciones deben estar dentro de un terreno&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2016"/>
         <source>A memory layer with {} buildings not within a plot has been added to the map!</source>
-        <translation>¡Una capa temporal con {} construcciones que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} construcciones que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2020"/>
         <source>All buildings are within a plot.</source>
-        <translation>Todas las construcciones están dentro de su terreno correspondiente.</translation>
+        <translation type="vanished">Todas las construcciones están dentro de su terreno correspondiente.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2072"/>
         <source>A memory layer with {} building units not within a plot has been added to the map!</source>
-        <translation>¡Una capa temporal con {} unidades de construcción que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} unidades de construcción que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2075"/>
         <source>All building units are within a plot.</source>
-        <translation>Todas las unidades de construcción están dentro de su terreno correspondiente.</translation>
+        <translation type="vanished">Todas las unidades de construcción están dentro de su terreno correspondiente.</translation>
     </message>
     <message>
         <source>Wrong boundaries.</source>
         <translation type="vanished">Linderos mal definidos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1367"/>
         <source>A memory layer with {} wrong boundaries has been added to the map!</source>
-        <translation>¡Una capa temporal con {} linderos mal definidos ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} linderos mal definidos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1370"/>
         <source>There are no wrong boundaries.</source>
-        <translation>No hay linderos mal definidos.</translation>
+        <translation type="vanished">No hay linderos mal definidos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1382"/>
         <source>There are no boundaries to check for too long segments!</source>
-        <translation>¡No hay linderos para revisar linderos con segmentos muy largos!</translation>
+        <translation type="vanished">¡No hay linderos para revisar linderos con segmentos muy largos!</translation>
     </message>
     <message>
         <source>Boundary segments longer than {}m.</source>
         <translation type="vanished">Segmentos de lindero más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1413"/>
         <source>A memory layer with {} boundary segments longer than {}m. has been added to the map!</source>
-        <translation>¡Una capa temporal con {} segmentos de lindero más largos que {}m. ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} segmentos de lindero más largos que {}m. ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1417"/>
         <source>All boundary segments are within the length tolerance for segments ({}m.)!</source>
-        <translation>¡Todos los segmentos de lindero están dentro de la tolerancia de longitud para segmentos ({}m.)!</translation>
+        <translation type="vanished">¡Todos los segmentos de lindero están dentro de la tolerancia de longitud para segmentos ({}m.)!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="278"/>
-        <location filename="../utils/quality.py" line="1437"/>
         <source>There are no boundaries to check &apos;missing boundary points in boundaries&apos;.</source>
-        <translation>No hay linderos para revisar &apos;nodos de linderos deben estar cubiertos por puntos de lindero&apos;.</translation>
+        <translation type="vanished">No hay linderos para revisar &apos;nodos de linderos deben estar cubiertos por puntos de lindero&apos;.</translation>
     </message>
     <message>
         <source>Missing boundary points in boundaries</source>
         <translation type="vanished">Nodos de Lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1464"/>
         <source>Missing boundary point in boundary</source>
-        <translation>Nodos de Lindero sin Punto Lindero asociado</translation>
+        <translation type="vanished">Nodos de Lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1488"/>
         <source>Relation found more than once in the PointBFS table</source>
-        <translation>La relación entre Lindero y Punto de Lindero se encontró más de una vez en la tabla PuntoCCL</translation>
+        <translation type="vanished">La relación entre Lindero y Punto de Lindero se encontró más de una vez en la tabla PuntoCCL</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1493"/>
         <source>Relation not found in the PointBFS table</source>
-        <translation>La relación entre Lindero y Punto de Lindero no se encontró en la tabla PuntoCCL</translation>
+        <translation type="vanished">La relación entre Lindero y Punto de Lindero no se encontró en la tabla PuntoCCL</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="297"/>
-        <location filename="../utils/quality.py" line="1500"/>
         <source>A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!</source>
-        <translation>¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado o con puntos de lindero registrados incorrectamente en la tabla PuntoCCL ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado o con puntos de lindero registrados incorrectamente en la tabla PuntoCCL ha sido agregada al mapa!</translation>
     </message>
     <message>
         <source>A memory layer with {} boundary vertices with no associated boundary points has been added to the map!</source>
         <translation type="vanished">¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="301"/>
-        <location filename="../utils/quality.py" line="1504"/>
         <source>There are no missing boundary points in boundaries.</source>
-        <translation>No hay nodos de linderos sin puntos de lindero asociados.</translation>
+        <translation type="vanished">No hay nodos de linderos sin puntos de lindero asociados.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="428"/>
         <source>There are no plots to check &apos;Plots should be covered by boundary points&apos;.</source>
-        <translation>No hay terrenos para revisar &apos;los nodos de Terreno deben estar cubiertos por Puntos de Lindero&apos;.</translation>
+        <translation type="vanished">No hay terrenos para revisar &apos;los nodos de Terreno deben estar cubiertos por Puntos de Lindero&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="445"/>
         <source>A memory layer with {} plot nodes not covered by boundary points has been added to the map!</source>
-        <translation>¡Una capa temporal con {} nodos de terreno no cubiertos por puntos de lindero ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} nodos de terreno no cubiertos por puntos de lindero ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="451"/>
         <source>All plot nodes are covered by boundary points!</source>
-        <translation>¡Todos los nodos de Terreno están cubiertos por Puntos de Lindero!</translation>
+        <translation type="vanished">¡Todos los nodos de Terreno están cubiertos por Puntos de Lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="466"/>
         <source>There are no boundary points to check &apos;boundary points should be covered by Plot nodes&apos;.</source>
-        <translation>No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Terrenos&apos;.</translation>
+        <translation type="vanished">No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Terrenos&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="485"/>
         <source>A memory layer with {} boundary points not covered by plot nodes has been added to the map!</source>
-        <translation>¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de terreno ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de terreno ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="489"/>
         <source>All boundary points are covered by plot nodes!</source>
-        <translation>¡Todos los Puntos de Lindero están cubiertos por nodos de Terrenos!</translation>
+        <translation type="vanished">¡Todos los Puntos de Lindero están cubiertos por nodos de Terrenos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1521"/>
         <source>There are no buildings to check &apos;missing survey points in buildings&apos;.</source>
-        <translation>No hay construcciones para revisar &apos;nodos de construcciones deben estar cubiertos por puntos de levantamiento&apos;.</translation>
+        <translation type="vanished">No hay construcciones para revisar &apos;nodos de construcciones deben estar cubiertos por puntos de levantamiento&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1527"/>
         <source>Missing survey points in buildings</source>
-        <translation>Nodos de Construcción sin Punto de Levantamiento asociado</translation>
+        <translation type="vanished">Nodos de Construcción sin Punto de Levantamiento asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1547"/>
         <source>A memory layer with {} building vertices with no associated survey points has been added to the map!</source>
-        <translation>¡Una capa temporal con {} nodos de construcciones sin punto de levantamiento asociado ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} nodos de construcciones sin punto de levantamiento asociado ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1551"/>
         <source>There are no missing survey points in buildings.</source>
-        <translation>No hay puntos de levantamiento faltantes en las construcciones.</translation>
+        <translation type="vanished">No hay puntos de levantamiento faltantes en las construcciones.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1561"/>
         <source>There are no boundaries to check for dangles.</source>
-        <translation>No hay linderos para revisar nodos sin conectar.</translation>
+        <translation type="vanished">No hay linderos para revisar nodos sin conectar.</translation>
     </message>
     <message>
         <source>Dangles in boundaries</source>
         <translation type="vanished">Nodos sin conectar en linderos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1584"/>
         <source>A memory layer with {} boundary dangles has been added to the map!</source>
-        <translation>¡Una capa temporal con {} nodos sin conectar en linderos ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} nodos sin conectar en linderos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1588"/>
         <source>Boundaries have no dangles!</source>
-        <translation>¡Los linderos no tienen nodos sin conectar!</translation>
+        <translation type="vanished">¡Los linderos no tienen nodos sin conectar!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1660"/>
         <source>There are no Right of Way features to check &apos;Right of Way should not overlap buildings&apos;.</source>
-        <translation>No hay servidumbres para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
+        <translation type="vanished">No hay servidumbres para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1664"/>
         <source>There are no buildings to check &apos;Right of Way should not overlap buildings&apos;.</source>
-        <translation>No hay construcciones para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
+        <translation type="vanished">No hay construcciones para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
     <message>
         <source>Right of Way-Building overlaps</source>
         <translation type="vanished">Superposiciones entre Servidumbre y Construcción</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1689"/>
         <source>A memory layer with {} Right of Way-Building overlaps has been added to the map!</source>
-        <translation>¡Una capa temporal con {} superposiciones tipo polígono entre Servidumbre y Construcción ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} superposiciones tipo polígono entre Servidumbre y Construcción ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1693"/>
         <source>There are no Right of Way-Building overlaps.</source>
-        <translation>No hay superposiciones entre Servidumbres y Construcciones.</translation>
+        <translation type="vanished">No hay superposiciones entre Servidumbres y Construcciones.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1704"/>
         <source>There are no Plot features to check &apos;Plot should not have gaps&apos;.</source>
-        <translation>No hay terrenos para revisar &apos;no deben haber huecos entre Terrenos&apos;.</translation>
+        <translation type="vanished">No hay terrenos para revisar &apos;no deben haber huecos entre Terrenos&apos;.</translation>
     </message>
     <message>
         <source>Gaps in plots</source>
         <translation type="vanished">Huecos entre terrenos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1728"/>
         <source>A memory layer with {} gaps in layer Plots has been added to the map!</source>
-        <translation>¡Una capa temporal con {} huecos entre terrenos ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} huecos entre terrenos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1732"/>
         <source>There are no gaps in layer Plot.</source>
-        <translation>No hay huecos entre Terrenos.</translation>
+        <translation type="vanished">No hay huecos entre Terrenos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1742"/>
         <source>There are no Right Of Way features to check &apos;Right Of Way should not have Multipart geometries&apos;.</source>
-        <translation>No hay servidumbres de paso para revisar &apos;las Servidumbres de paso no deben tener geometrías multiparte&apos;.</translation>
+        <translation type="vanished">No hay servidumbres de paso para revisar &apos;las Servidumbres de paso no deben tener geometrías multiparte&apos;.</translation>
     </message>
     <message>
         <source>Multipart geometries in Right Of Way</source>
         <translation type="vanished">Geometrías multiparte en servidumbres de paso</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1766"/>
         <source>A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!</source>
-        <translation>¡Una capa temporal con {} geometrías multiparte en la capa Servidumbres de paso ha sido agregada al mapa!</translation>
+        <translation type="vanished">¡Una capa temporal con {} geometrías multiparte en la capa Servidumbres de paso ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1771"/>
         <source>There are no multipart geometries in layer Right Of Way.</source>
-        <translation>No hay geometrías multiparte en la capa servidumbres de paso.</translation>
+        <translation type="vanished">No hay geometrías multiparte en la capa servidumbres de paso.</translation>
     </message>
     <message>
         <source>{} layer couldn&apos;t be found... {}</source>
@@ -5150,32 +6028,31 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="586"/>
         <source>Data successfully imported to LADM_COL from intermediate structure (Excel file: &apos;{}&apos;)!!!</source>
-        <translation type="vanished">Datos importados exitosamente a LADM_COL desde la estructura intermedia (archivo de Excel: &apos;{}&apos;) !!!</translation>
+        <translation>Datos importados exitosamente a LADM_COL desde la estructura intermedia (archivo de Excel: &apos;{}&apos;) !!!</translation>
     </message>
 </context>
 <context>
     <name>QgisModelBaker</name>
     <message>
-        <location filename="../utils/qt_utils.py" line="62"/>
         <source>Open File</source>
-        <translation>Abrir archivo</translation>
+        <translation type="vanished">Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="63"/>
         <source>Any file(*)</source>
-        <translation>Cualquier archivo (*)</translation>
+        <translation type="vanished">Cualquier archivo (*)</translation>
     </message>
 </context>
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../gui/reports.py" line="170"/>
+        <location filename="../gui/reports/reports.py" line="171"/>
         <source>The dependency library to generate reports is not installed. Click on the button to download and install it.</source>
         <translation>Las dependencias para generar reportes no están instaladas. Clic en el botón para descargarlas e instalarlas.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="188"/>
+        <location filename="../gui/reports/reports.py" line="189"/>
         <source>The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again.</source>
         <translation>Se encontraron las dependencias para generar reportes, pero no en la versión requerida. Haz clic en el botón de la derecha para borrar la versión instalada y prueba de nuevo.</translation>
     </message>
@@ -5192,12 +6069,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La variable de entorno JAVA_HOME no está definida. Defínela como variable de entorno en Windows y reinicia QGIS antes de generar el anexo 17.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="201"/>
+        <location filename="../gui/reports/reports.py" line="202"/>
         <source>JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17.</source>
         <translation>La variable de entorno JAVA_HOME no está definida, defíne la variable de entorno y reinicia QGIS antes de generar el anexo 17.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="203"/>
+        <location filename="../gui/reports/reports.py" line="204"/>
         <source>JAVA_HOME not defined</source>
         <translation>JAVA_HOME no está definida</translation>
     </message>
@@ -5206,32 +6083,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="215"/>
+        <location filename="../gui/reports/reports.py" line="215"/>
         <source>To generate reports, first select at least a plot!</source>
         <translation>¡Primero selecciona por lo menos un predio para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="224"/>
+        <location filename="../gui/reports/reports.py" line="223"/>
         <source>Select a folder to save the reports to be generated</source>
         <translation>Selecciona una carpeta para almacenar los reportes que serán generados</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="228"/>
+        <location filename="../gui/reports/reports.py" line="226"/>
         <source>You need to select a folder where to save the reports before continuing.</source>
         <translation>Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="268"/>
+        <location filename="../gui/reports/reports.py" line="265"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="281"/>
+        <location filename="../gui/reports/reports.py" line="278"/>
         <source>Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="287"/>
+        <location filename="../gui/reports/reports.py" line="283"/>
         <source>Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque es un multipolígono. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
@@ -5327,24 +6204,20 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se encontró la tabla &apos;uebaunit&apos;... {}</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="207"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
-        <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
+        <translation type="vanished">¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="209"/>
         <source>Load layer {} now</source>
-        <translation>Cargar la capa {} ahora</translation>
+        <translation type="vanished">Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="214"/>
         <source>Select at least one benefited plot, one right of way and at least one administrative source to create relations!</source>
-        <translation>¡Debes seleccionar por lo menos un terreno beneficiado, una servidumbre de paso y por lo menos una fuente administrativa para crear relaciones!</translation>
+        <translation type="vanished">¡Debes seleccionar por lo menos un terreno beneficiado, una servidumbre de paso y por lo menos una fuente administrativa para crear relaciones!</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="237"/>
         <source>One or more pairs id_plot-id_parcel weren&apos;t found, this is needed to create benefited and restriction relations.</source>
-        <translation>No se encontraron pares de id_terreno-id_predio, esto es necesario para crear relaciones de restricciones y beneficiados.</translation>
+        <translation type="vanished">No se encontraron pares de id_terreno-id_predio, esto es necesario para crear relaciones de restricciones y beneficiados.</translation>
     </message>
     <message>
         <source>You have select at least one or more benefited plot and one more right of way and one or more administrative source to create relations!</source>
@@ -5355,11 +6228,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Uno o más pares de id_terreno-id_predio no fueron encontrados, esto es necesario para crear relaciones de restricciones y beneficiados.</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="254"/>
-        <location filename="../gui/right_of_way.py" line="302"/>
-        <location filename="../gui/right_of_way.py" line="338"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
-        <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
+        <translation type="vanished">¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
         <source>No pairs id_right_of_way-id_parcel benefited found.</source>
@@ -5372,6 +6242,19 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <source>No pairs source_relation-restriction found.</source>
         <translation type="vanished">No fueron encontrados pares de rrr_fuente-restriccion.</translation>
+    </message>
+</context>
+<context>
+    <name>SelectParcelDialog</name>
+    <message>
+        <location filename="../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py" line="52"/>
+        <source>Show details for selected parcel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py" line="53"/>
+        <source>Zoom to all listed parcels</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5409,53 +6292,50 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Debes seleccionar un Sistema de Referencia con EPSG válido!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1091"/>
         <source>The tested service is valid to upload files!</source>
-        <translation>¡El servicio probado es válido para subir archivos!</translation>
+        <translation type="vanished">¡El servicio probado es válido para subir archivos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1096"/>
         <source>The tested upload service is not compatible: no valid &apos;id&apos; found in response.</source>
-        <translation>El servicio probado no es compatible: no se encontró un &apos;id&apos; válido en la respuesta.</translation>
+        <translation type="vanished">El servicio probado no es compatible: no se encontró un &apos;id&apos; válido en la respuesta.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1100"/>
         <source>Response from the tested service is not compatible: not valid JSON found.</source>
-        <translation>La respuesta desde el servicio probado no es compatible: no se encontró un JSON válido.</translation>
+        <translation type="vanished">La respuesta desde el servicio probado no es compatible: no se encontró un JSON válido.</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="482"/>
-        <location filename="../utils/qgis_utils.py" line="1104"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="473"/>
         <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.</source>
         <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada.</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="486"/>
-        <location filename="../utils/qgis_utils.py" line="1108"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="477"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="492"/>
+        <location filename="../gui/queries/dockwidget_queries.py" line="482"/>
         <source>Not valid URL</source>
         <translation>La URL no es válida</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1114"/>
         <source>Not valid service URL to test!</source>
-        <translation>¡La URL del servicio no es válida!</translation>
+        <translation type="vanished">¡La URL del servicio no es válida!</translation>
     </message>
     <message>
+        <location filename="../gui/dialogs/dlg_settings.py" line="404"/>
         <source>Missing roads will be marked as errors.</source>
-        <translation type="vanished">Las vías faltantes serán marcadas como errores.</translation>
+        <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
     <message>
+        <location filename="../gui/db_panel/db_schema_db_panel.py" line="141"/>
         <source>First set the connection to the database before attempting to create a database.</source>
-        <translation type="vanished">Primero establece la conexión a la base de datos antes de intentar crear una base de datos.</translation>
+        <translation>Primero establece la conexión a la base de datos antes de intentar crear una base de datos.</translation>
     </message>
     <message>
+        <location filename="../gui/db_panel/db_schema_db_panel.py" line="157"/>
         <source>First set the connection to the database before attempting to create a schema.</source>
-        <translation type="vanished">Primero establece la conexión a la base de datos antes de intentar crear un esquema.</translation>
+        <translation>Primero establece la conexión a la base de datos antes de intentar crear un esquema.</translation>
     </message>
 </context>
 <context>
@@ -5473,53 +6353,40 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="71"/>
         <source>The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the &apos;Upload Pending Source Files&apos; menu.</source>
-        <translation>Los archivos fuente no se cargaron en el repositorio de documentos porque tiene esa opción desactivada. Aún puede cargar los archivos fuente más tarde usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
+        <translation type="vanished">Los archivos fuente no se cargaron en el repositorio de documentos porque tiene esa opción desactivada. Aún puede cargar los archivos fuente más tarde usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="80"/>
         <source>No file could be uploaded to the document repository. You can do it later from the &apos;Upload Pending Source Files&apos; menu. Reason: {}</source>
-        <translation>No se pudo cargar ningún archivo al repositorio de documentos. Puede hacerlo más tarde desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Razón: {}</translation>
+        <translation type="vanished">No se pudo cargar ningún archivo al repositorio de documentos. Puede hacerlo más tarde desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Razón: {}</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="173"/>
         <source>{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn&apos;t be found in the local disk!</source>
-        <translation>{} de {} registros {} no se ha cargado en el repositorio de documentos porque la ruta del archivo {} es NULL o no se pudo encontrar en el disco local!</translation>
+        <translation type="vanished">{} de {} registros {} no se ha cargado en el repositorio de documentos porque la ruta del archivo {} es NULL o no se pudo encontrar en el disco local!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="177"/>
-        <location filename="../lib/source_handler.py" line="188"/>
         <source>was</source>
-        <translation>fue</translation>
+        <translation type="vanished">fue</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="177"/>
-        <location filename="../lib/source_handler.py" line="188"/>
         <source>were</source>
-        <translation>fueron</translation>
+        <translation type="vanished">fueron</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="178"/>
-        <location filename="../lib/source_handler.py" line="189"/>
         <source>its</source>
-        <translation>su</translation>
+        <translation type="vanished">su</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="178"/>
-        <location filename="../lib/source_handler.py" line="189"/>
         <source>their</source>
-        <translation>sus</translation>
+        <translation type="vanished">sus</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="184"/>
         <source>{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!</source>
-        <translation>¡{} de {} archivos {} subidos al repositorio de documentos y {} ubicación remota almacenada en la base de datos!</translation>
+        <translation type="vanished">¡{} de {} archivos {} subidos al repositorio de documentos y {} ubicación remota almacenada en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="195"/>
         <source>{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.</source>
-        <translation>¡{} de {} archivos no se pudieron cargar en el repositorio de documentos debido a errores de carga! Vea el registro para más detalles.</translation>
+        <translation type="vanished">¡{} de {} archivos no se pudieron cargar en el repositorio de documentos debido a errores de carga! Vea el registro para más detalles.</translation>
     </message>
     <message>
         <source>{} out of {} files {} uploaded to the server and {} remote location stored in the database!</source>
@@ -5533,393 +6400,389 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>ToolBar</name>
     <message>
-        <location filename="../gui/toolbar.py" line="61"/>
         <source>First load the layer {} into QGIS!</source>
-        <translation>¡Primero carga la capa {} a QGIS!</translation>
+        <translation type="vanished">¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="62"/>
-        <location filename="../gui/toolbar.py" line="157"/>
-        <location filename="../gui/toolbar.py" line="244"/>
         <source>Load layer {} now</source>
-        <translation>Cargar la capa {} ahora</translation>
+        <translation type="vanished">Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="67"/>
-        <location filename="../gui/toolbar.py" line="162"/>
-        <location filename="../gui/toolbar.py" line="177"/>
-        <location filename="../gui/toolbar.py" line="249"/>
-        <location filename="../gui/toolbar.py" line="265"/>
         <source>Continue?</source>
-        <translation>¿Continuar?</translation>
+        <translation type="vanished">¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="68"/>
         <source>There are no selected boundaries, do you like to use all the {} boundaries in the data base?</source>
-        <translation>No hay linderos seleccionados. ¿Quieres usar todos los {} linderos en la base de datos?</translation>
+        <translation type="vanished">No hay linderos seleccionados. ¿Quieres usar todos los {} linderos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="76"/>
-        <location filename="../gui/toolbar.py" line="172"/>
         <source>First select at least one boundary!</source>
-        <translation>¡Primero selecciona por lo menos un lindero!</translation>
+        <translation type="vanished">¡Primero selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="101"/>
         <source>{} feature(s) was(were) analyzed generating {} boundary(ies)!</source>
-        <translation>¡Se analizaron {} líneas generando {} lindero(s)!</translation>
+        <translation type="vanished">¡Se analizaron {} líneas generando {} lindero(s)!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="107"/>
         <source>There are no boundaries to build.</source>
-        <translation>No hay linderos para construir.</translation>
+        <translation type="vanished">No hay linderos para construir.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="134"/>
         <source>You can start moving nodes in layers {} and {}, simultaneously!</source>
-        <translation>¡Puedes empezar a mover nodos simultáneamente en las capas {} y {}!</translation>
+        <translation type="vanished">¡Puedes empezar a mover nodos simultáneamente en las capas {} y {}!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="154"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
-        <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
+        <translation type="vanished">¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="163"/>
         <source>There are no selected boundaries, do you like to fill the &apos;{}&apos; table for all the {} boundaries in the data base?</source>
-        <translation>No hay linderos seleccionados. ¿Quieres llenar la tabla &apos;{}&apos; para todos los {} linderos en la base de datos?</translation>
+        <translation type="vanished">No hay linderos seleccionados. ¿Quieres llenar la tabla &apos;{}&apos; para todos los {} linderos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="178"/>
         <source>There are {selected} boundaries selected, do you like to fill the &apos;{table}&apos; table just for the selected boundaries?
 
 If you say &apos;No&apos;, the &apos;{table}&apos; table will be filled for all boundaries in the database.</source>
-        <translation>Hay {selected} linderos seleccionados, ¿quieres llenar la tabla &apos;{table}&apos; solamente para los linderos seleccionados?
+        <translation type="vanished">Hay {selected} linderos seleccionados, ¿quieres llenar la tabla &apos;{table}&apos; solamente para los linderos seleccionados?
 
 Si eliges &apos;No&apos;, se llenará la tabla &apos;{table}&apos; para todos los linderos en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="210"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
-        <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
+        <translation type="vanished">¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="221"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
-        <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
+        <translation type="vanished">No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="241"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
-        <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
+        <translation type="vanished">¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="250"/>
         <source>There are no selected plots, do you like to fill the &apos;{more}&apos; and &apos;{less}&apos; tables for all the {all} plots in the data base?</source>
-        <translation>No hay terrenos seleccionados. ¿Quieres llenar las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los {all} terrenos en la base de datos?</translation>
+        <translation type="vanished">No hay terrenos seleccionados. ¿Quieres llenar las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los {all} terrenos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="260"/>
         <source>First select at least one plot!</source>
-        <translation>¡Primero selecciona por lo menos un terreno!</translation>
+        <translation type="vanished">¡Primero selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="266"/>
         <source>There are {selected} plots selected, do you like to fill the &apos;{more}&apos; and &apos;{less}&apos; tables just for the selected plots?
 
 If you say &apos;No&apos;, the &apos;{more}&apos; and &apos;{less}&apos; tables will be filled for all plots in the database.</source>
-        <translation>Hay {selected} terrenos seleccionados, ¿quieres llenar las tablas &apos;{more}&apos; and &apos;{less}&apos; solo para los terrenos seleccionados?
+        <translation type="vanished">Hay {selected} terrenos seleccionados, ¿quieres llenar las tablas &apos;{more}&apos; and &apos;{less}&apos; solo para los terrenos seleccionados?
 
 Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los terrenos en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="303"/>
-        <location filename="../gui/toolbar.py" line="331"/>
         <source>{} out of {} records were saved into &apos;{}&apos;! {} out of {} records already existed in the database.</source>
-        <translation>¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
+        <translation type="vanished">¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/toolbar.py" line="314"/>
-        <location filename="../gui/toolbar.py" line="342"/>
         <source>No pairs id_boundary-id_plot found for &apos;{}&apos; table.</source>
-        <translation>No se encontraron parejas id_lindero-id_terreno para la tabla &apos;{}&apos;.</translation>
+        <translation type="vanished">No se encontraron parejas id_lindero-id_terreno para la tabla &apos;{}&apos;.</translation>
     </message>
 </context>
 <context>
     <name>TranslatableConfigStrings</name>
     <message>
-        <location filename="../config/general_config.py" line="27"/>
         <source>LADM COL Toolbar</source>
-        <translation>Herramientas LADM-COL</translation>
+        <translation type="vanished">Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="29"/>
+        <location filename="../config/general_config.py" line="23"/>
         <source>Build boundaries...</source>
         <translation>Construir linderos...</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="30"/>
+        <location filename="../config/general_config.py" line="24"/>
         <source>Move nodes...</source>
         <translation>Mover nodos...</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="31"/>
+        <location filename="../config/general_config.py" line="25"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="32"/>
+        <location filename="../config/general_config.py" line="26"/>
         <source>Fill More BFS and Less</source>
         <translation>Llenar más CCL y menos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="33"/>
+        <location filename="../config/general_config.py" line="27"/>
         <source>Fill Right of Way Relations</source>
         <translation>Llenar relaciones de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="34"/>
+        <location filename="../config/general_config.py" line="28"/>
         <source>Import from intermediate structure</source>
         <translation>Importar desde estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="35"/>
+        <location filename="../config/general_config.py" line="29"/>
         <source>Finalize geometry creation</source>
         <translation>Terminar la creación de geometrías</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="336"/>
+        <location filename="../config/general_config.py" line="380"/>
         <source>Validation errors</source>
         <translation>Errores de validación</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="337"/>
+        <location filename="../config/general_config.py" line="381"/>
         <source>Boundary Points should not overlap</source>
         <translation>Los Puntos de Lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="338"/>
+        <location filename="../config/general_config.py" line="382"/>
         <source>Control Points should not overlap</source>
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="339"/>
+        <location filename="../config/general_config.py" line="383"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="340"/>
+        <location filename="../config/general_config.py" line="384"/>
         <source>Right of way line</source>
         <translation>Linea de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="341"/>
+        <location filename="../config/general_config.py" line="385"/>
         <source>Boundary Points should be covered by plot nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="344"/>
+        <location filename="../config/general_config.py" line="386"/>
         <source>Boundary segments should not be longer than {}m.</source>
         <translation>Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="345"/>
+        <location filename="../config/general_config.py" line="387"/>
         <source>Boundaries should not overlap</source>
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="346"/>
+        <location filename="../config/general_config.py" line="388"/>
         <source>Boundaries should not be split</source>
         <translation>Los Linderos deben terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="347"/>
+        <location filename="../config/general_config.py" line="389"/>
         <source>Boundaries should be covered by Plots</source>
         <translation>Los Linderos deben estar cubiertos por límites de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="348"/>
+        <location filename="../config/general_config.py" line="390"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="349"/>
+        <location filename="../config/general_config.py" line="391"/>
         <source>Boundaries should not have dangles</source>
         <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="350"/>
+        <location filename="../config/general_config.py" line="392"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="351"/>
+        <location filename="../config/general_config.py" line="393"/>
         <source>Buildings should not overlap</source>
         <translation>Las Construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="352"/>
+        <location filename="../config/general_config.py" line="394"/>
         <source>Rights of Way should not overlap</source>
         <translation>Las Servidumbres de Paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="353"/>
+        <location filename="../config/general_config.py" line="395"/>
         <source>Plots should be covered by Boundaries</source>
         <translation>Los límites de Terreno deben estar cubiertos por Linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="354"/>
+        <location filename="../config/general_config.py" line="396"/>
         <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="355"/>
+        <location filename="../config/general_config.py" line="397"/>
         <source>Plots should not have gaps</source>
         <translation>No deben haber huecos entre Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="356"/>
+        <location filename="../config/general_config.py" line="398"/>
         <source>Right of Way should not have multipart geometries</source>
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="357"/>
+        <location filename="../config/general_config.py" line="399"/>
         <source>Buildings should be within Plots</source>
         <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="358"/>
+        <location filename="../config/general_config.py" line="400"/>
         <source>Building Units should be within Plots</source>
         <translation>Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="361"/>
+        <location filename="../config/general_config.py" line="401"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="362"/>
+        <location filename="../config/general_config.py" line="402"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="363"/>
+        <location filename="../config/general_config.py" line="403"/>
         <source>Table records should not be repeated</source>
         <translation>No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="365"/>
+        <location filename="../config/general_config.py" line="404"/>
         <source>Check that the {department} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {department} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="366"/>
+        <location filename="../config/general_config.py" line="405"/>
         <source>Check that the {municipality} field of the {parcel} table has three numerical characters</source>
         <translation>Revisar que el campo {municipality} de la tabla {parcel} tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="367"/>
-        <source>Check that the {zone} field of the {parcel} table has two numerical characters</source>
-        <translation>Revisar que el campo {zone} de la tabla {parcel} tiene dos caracteres numéricos</translation>
+        <location filename="../config/general_config.py" line="417"/>
+        <source>Topological relationship between boundary and plot is not recorded in the masccl table</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="368"/>
+        <location filename="../config/general_config.py" line="418"/>
+        <source>Topological relationship between boundary and plot is duplicated in the masccl table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="419"/>
+        <source>Topological relationship between boundary and plot is not recorded in the menosccl table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="420"/>
+        <source>Topological relationship between boundary and plot is duplicated in the menosccl table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="421"/>
+        <source>Topological relationship between boundary point and boundary is not recorded in the puntoccl table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="422"/>
+        <source>Topological relationship between boundary point and boundary is duplicated in the puntoccl table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check that the {zone} field of the {parcel} table has two numerical characters</source>
+        <translation type="vanished">Revisar que el campo {zone} de la tabla {parcel} tiene dos caracteres numéricos</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="406"/>
         <source>Check that the {parcel_number} has 30 numerical characters</source>
         <translation>Revisar que el {parcel_number} tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="369"/>
+        <location filename="../config/general_config.py" line="407"/>
         <source>Check that the {parcel_number_before} has 20 numerical characters</source>
         <translation>Revisar que el {parcel_number_before} tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="370"/>
+        <location filename="../config/general_config.py" line="408"/>
         <source>Check that attributes are appropriate for parties of type natural</source>
         <translation>Revisar que los atributos son apropiados para interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="371"/>
+        <location filename="../config/general_config.py" line="409"/>
         <source>Check that attributes are appropriate for parties of type legal</source>
         <translation>Revisar que los atributos son apropiados para interesados jurídicos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="372"/>
+        <location filename="../config/general_config.py" line="410"/>
         <source>Check that the type of parcel corresponds to position 22 of the {parcel_number}</source>
         <translation>Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="373"/>
+        <location filename="../config/general_config.py" line="411"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="376"/>
+        <location filename="../config/general_config.py" line="412"/>
         <source>Parcel does not have any Right associated</source>
         <translation>El Predio no tiene Derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="377"/>
+        <location filename="../config/general_config.py" line="413"/>
         <source>Parcel has more than one domain right associated</source>
         <translation>El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="380"/>
+        <location filename="../config/general_config.py" line="414"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="381"/>
+        <location filename="../config/general_config.py" line="415"/>
         <source>Plot is not covered by boundary</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="382"/>
+        <location filename="../config/general_config.py" line="416"/>
         <source>Boundary is not covered by plot</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="383"/>
-        <location filename="../config/general_config.py" line="385"/>
         <source>Topological relationship between boundary and plot is not recorded in the {} table</source>
-        <translation>La relación topológica entre lindero y terreno no está registrada en la tabla {}</translation>
+        <translation type="vanished">La relación topológica entre lindero y terreno no está registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="387"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the {} table</source>
-        <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de {}</translation>
+        <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="388"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the {} table</source>
-        <translation>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de {}</translation>
+        <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="389"/>
+        <location filename="../config/general_config.py" line="423"/>
         <source>Boundary point is not covered by boundary node</source>
         <translation>Punto lindero no está cubierto por un nodo de un lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="390"/>
+        <location filename="../config/general_config.py" line="424"/>
         <source>Boundary node is not covered by boundary point</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="391"/>
+        <location filename="../config/general_config.py" line="425"/>
         <source>Building is not over a plot</source>
         <translation>La Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="392"/>
+        <location filename="../config/general_config.py" line="426"/>
         <source>Building crosses a plot&apos;s limit</source>
         <translation>La Construcción cruza los límites de su Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="393"/>
+        <location filename="../config/general_config.py" line="427"/>
         <source>Building Unit is not over a plot</source>
         <translation>La Unidad de Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="394"/>
+        <location filename="../config/general_config.py" line="428"/>
         <source>Building Unit crosses a plot&apos;s limit</source>
         <translation>La Unidad de Construcción cruza los límites de su Terreno</translation>
     </message>
@@ -5936,10 +6799,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La relación topológica entre el lindero y el terreno no esta registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="384"/>
-        <location filename="../config/general_config.py" line="386"/>
         <source>Topological relationship between boundary and plot is duplicated in the {} table</source>
-        <translation>La relación topológica entre lindero y terreno está duplicada en la tabla {}</translation>
+        <translation type="vanished">La relación topológica entre lindero y terreno está duplicada en la tabla {}</translation>
     </message>
     <message>
         <source>Topological relationship between boundary and plot not recorded in the table {}</source>
@@ -5949,28 +6810,34 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>UploadProgressDialog</name>
     <message>
+        <location filename="../ui/dialogs/dlg_upload_progress.ui" line="14"/>
         <source>Upload Progress Dialog</source>
-        <translation type="vanished">Progreso de Cargue de Archivos Fuente</translation>
+        <translation>Progreso de Cargue de Archivos Fuente</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_upload_progress.ui" line="79"/>
         <source>Current file upload</source>
-        <translation type="vanished">Cargue del archivo actual</translation>
+        <translation>Cargue del archivo actual</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_upload_progress.ui" line="93"/>
         <source>Total process</source>
-        <translation type="vanished">Proceso total</translation>
+        <translation>Proceso total</translation>
     </message>
     <message>
+        <location filename="../ui/dialogs/dlg_upload_progress.ui" line="105"/>
         <source>Uploading 0 out of 0 files (0 files not found in the local disk)</source>
-        <translation type="vanished">Subiendo 0 de 0 archivos (No se encontraron 0 archivos en el disco local)</translation>
+        <translation>Subiendo 0 de 0 archivos (No se encontraron 0 archivos en el disco local)</translation>
     </message>
     <message>
+        <location filename="../gui/dialogs/dlg_upload_progress.py" line="42"/>
         <source>Uploading {} out of {} files ({} files not found in the local disk)</source>
-        <translation type="vanished">Subiendo {} de {} archivos (No se encontraron {} archivos en el disco local)</translation>
+        <translation>Subiendo {} de {} archivos (No se encontraron {} archivos en el disco local)</translation>
     </message>
     <message>
+        <location filename="../gui/dialogs/dlg_upload_progress.py" line="48"/>
         <source>Uploading {} out of {} files</source>
-        <translation type="vanished">Subiendo {} de {} archivos</translation>
+        <translation>Subiendo {} de {} archivos</translation>
     </message>
 </context>
 <context>
@@ -5984,12 +6851,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡El plugin {} parece requerir una versión más nueva de QGIS!                Si estás en Windows, puedes descargar una versión más reciente desde                &lt;a target=&quot;_blank&quot; href=&quot;https://qgis.org/downloads/weekly/&quot;&gt;este enlace&lt;/a&gt;.                Si no usas Windows, descarga un &lt;a href=&quot;https://qgis.org/en/site/forusers/download.html&quot; target=&quot;_blank&quot;&gt;binario reciente&lt;/a&gt;.                Mira el log para más detalles.</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="34"/>
+        <location filename="../__init__.py" line="38"/>
         <source>There was a problem loading the plugin {}. See the log for details.</source>
         <translation>Hubo un problema cargando el plugin {}. Revisa el log para más detalles.</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="48"/>
+        <location filename="../__init__.py" line="42"/>
+        <source>Open log panel...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__init__.py" line="55"/>
         <source>{} plugin requires QGIS {} version or higher. Please install the required version.</source>
         <translation>El plugin {} requiere QGIS versión {} o superior. Instala la versión requerida e intenta de nuevo.</translation>
     </message>
@@ -6119,72 +6991,87 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>dock_widget_queries</name>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="48"/>
         <source>Search</source>
-        <translation type="vanished">Consultas</translation>
+        <translation>Consultas</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="70"/>
         <source>By component</source>
-        <translation type="vanished">Por componente</translation>
+        <translation>Por componente</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="83"/>
         <source>Spatial query</source>
-        <translation type="vanished">Consulta espacial</translation>
+        <translation>Consulta espacial</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="89"/>
         <source>Select a Plot feature to identify related information:</source>
-        <translation type="vanished">Selecciona un terreno para traer información relacionada:</translation>
+        <translation>Selecciona un terreno para traer información relacionada:</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="101"/>
         <source>Identify</source>
-        <translation type="vanished">Identificar</translation>
+        <translation>Identificar</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="114"/>
         <source>Alphanumeric query</source>
-        <translation type="vanished">Consulta alfanumérica</translation>
+        <translation>Consulta alfanumérica</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="149"/>
         <source>Valor:</source>
-        <translation type="vanished">Valor:</translation>
+        <translation>Valor:</translation>
     </message>
     <message>
         <source>Clear</source>
         <translation type="vanished">Limpiar</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="192"/>
         <source>Query</source>
-        <translation type="vanished">Consultar</translation>
+        <translation>Consultar</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="122"/>
         <source>In field:</source>
-        <translation type="vanished">En el campo:</translation>
+        <translation>En el campo:</translation>
     </message>
     <message>
         <source>Search for...</source>
         <translation type="vanished">Buscar...</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="218"/>
         <source>Results</source>
-        <translation type="vanished">Resultados</translation>
+        <translation>Resultados</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="243"/>
         <source>Basic info</source>
-        <translation type="vanished">Básica</translation>
+        <translation>Básica</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="257"/>
         <source>Legal info</source>
-        <translation type="vanished">Jurídica</translation>
+        <translation>Jurídica</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="271"/>
         <source>Property record card</source>
-        <translation type="vanished">Ficha predial</translation>
+        <translation>Ficha predial</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="285"/>
         <source>Physical info</source>
-        <translation type="vanished">Física</translation>
+        <translation>Física</translation>
     </message>
     <message>
+        <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="302"/>
         <source>Economic info</source>
-        <translation type="vanished">Económica</translation>
+        <translation>Económica</translation>
     </message>
 </context>
 <context>
@@ -6194,52 +7081,78 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Agregar Puntos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="83"/>
         <source>Boundary Point</source>
-        <translation type="vanished">Punto Lindero</translation>
+        <translation>Punto Lindero</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="96"/>
         <source>Survey Point</source>
-        <translation type="vanished">Punto Levantamiento</translation>
+        <translation>Punto Levantamiento</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="510"/>
         <source>;</source>
-        <translation type="vanished">;</translation>
+        <translation>;</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="441"/>
         <source>Browse CSV files</source>
-        <translation type="vanished">Buscar archivos CSV</translation>
+        <translation>Buscar archivos CSV</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="455"/>
         <source>Delimiter</source>
-        <translation type="vanished">Separador</translation>
+        <translation>Separador</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="17"/>
         <source>Create Points</source>
-        <translation type="vanished">Crear Puntos</translation>
+        <translation>Crear Puntos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="64"/>
         <source>Point Type</source>
-        <translation type="vanished">Tipo de puntos</translation>
+        <translation>Tipo de puntos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="129"/>
         <source>Control Point</source>
-        <translation type="vanished">Punto de Control</translation>
+        <translation>Punto de Control</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="208"/>
         <source>Load data</source>
-        <translation type="vanished">Cargar datos</translation>
+        <translation>Cargar datos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="251"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="305"/>
         <source>From a CSV file with the required structure</source>
-        <translation type="vanished">Desde un archivo CSV con la estructura requerida</translation>
+        <translation>Desde un archivo CSV con la estructura requerida</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="331"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="539"/>
+        <source>Data CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="622"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -6254,21 +7167,25 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="222"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="444"/>
         <source>...</source>
-        <translation type="vanished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="525"/>
         <source>Elevation field</source>
-        <translation type="vanished">Campo Elevación</translation>
+        <translation>Campo Elevación</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="536"/>
         <source>Coordinate Reference System</source>
         <extracomment>coordinate reference system</extracomment>
-        <translation type="vanished">Sistema de Referencia de Coordenadas</translation>
+        <translation>Sistema de Referencia de Coordenadas</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -6279,16 +7196,19 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Deshabilitar campos automáticos mientras carga datos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="406"/>
         <source>Configure CSV Data Source</source>
-        <translation type="vanished">Configurar la fuente de datos CSV</translation>
+        <translation>Configurar la fuente de datos CSV</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="462"/>
         <source>Longitude field</source>
-        <translation type="vanished">Campo Longitud</translation>
+        <translation>Campo Longitud</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_points_operation.ui" line="479"/>
         <source>Latitude field</source>
-        <translation type="vanished">Campo Latitud</translation>
+        <translation>Campo Latitud</translation>
     </message>
 </context>
 <context>
@@ -6314,68 +7234,84 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">A una Unidad de Construcción</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="20"/>
         <source>Create and associate addresses</source>
-        <translation type="vanished">Crear y Relacionar Dirección</translation>
+        <translation>Crear y Relacionar Dirección</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="73"/>
         <source>How would you like to create and associate addresses?</source>
-        <translation type="vanished">¿Cómo deseas crear y relacionar una dirección?</translation>
+        <translation>¿Cómo deseas crear y relacionar una dirección?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="82"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="126"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="155"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="193"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="262"/>
         <source>Associate the new address with these spatial unit(s):</source>
-        <translation type="vanished">Relacionar la nueva dirección con esta(s) unidad(es) espacial(es):</translation>
+        <translation>Relacionar la nueva dirección con esta(s) unidad(es) espacial(es):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="280"/>
         <source>Select plot(s) on the map</source>
-        <translation type="vanished">Seleccionar terreno(s) en el mapa</translation>
+        <translation>Seleccionar terreno(s) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="306"/>
         <source>Select plot(s) based on an expression</source>
-        <translation type="vanished">Seleccionar terreno(s) con base en una expresión</translation>
+        <translation>Seleccionar terreno(s) con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="326"/>
         <source>Select building(s) on the map</source>
-        <translation type="vanished">Seleccionar construcción(es) en el mapa</translation>
+        <translation>Seleccionar construcción(es) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="346"/>
         <source>Select building(s) based on an expression</source>
-        <translation type="vanished">Seleccionar construcción(es) con base en una expresión</translation>
+        <translation>Seleccionar construcción(es) con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="366"/>
         <source>Select building unit(s) on the map</source>
-        <translation type="vanished">Seleccionar unidad(es) de construcción en el mapa</translation>
+        <translation>Seleccionar unidad(es) de construcción en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="386"/>
         <source>Select building unit(s) based on an expression</source>
-        <translation type="vanished">Seleccionar unidad(es) de construcción con base en una expresión</translation>
+        <translation>Seleccionar unidad(es) de construcción con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="400"/>
         <source>Plots(s)</source>
-        <translation type="vanished">Terreno(s)</translation>
+        <translation>Terreno(s)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="407"/>
         <source>Building(s)</source>
-        <translation type="vanished">Construcción(es)</translation>
+        <translation>Construcción(es)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_associate_extaddress_operation.ui" line="414"/>
         <source>Building unit(s)</source>
-        <translation type="vanished">Unidad(es) de Construcción</translation>
+        <translation>Unidad(es) de Construcción</translation>
     </message>
     <message>
         <source>Now you have to select the associated polygon</source>
@@ -6413,156 +7349,226 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">¿Cómo te gustaría crear construcciones?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="17"/>
         <source>Create Boundaries</source>
-        <translation type="vanished">Crear Linderos</translation>
+        <translation>Crear Linderos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="67"/>
         <source>How would you like to create boundaries?</source>
-        <translation type="vanished">¿Cómo te gustaría crear linderos?</translation>
+        <translation>¿Cómo te gustaría crear linderos?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="137"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="153"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="86"/>
         <source>Digitizing</source>
-        <translation type="vanished">Digitalizando</translation>
+        <translation>Digitalizando</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_boundaries_operation.ui" line="112"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
 </context>
 <context>
     <name>wiz_create_administrative_source_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="14"/>
         <source>Create Administrative Source</source>
-        <translation type="vanished">Crear Fuente Administrativa</translation>
+        <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="49"/>
         <source>How would you like to create administrative sources?</source>
-        <translation type="vanished">¿Cómo te gustaría crear fuentes administrativas?</translation>
+        <translation>¿Cómo te gustaría crear fuentes administrativas?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="68"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="125"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_administrative_source_operation.ui" line="154"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
 </context>
 <context>
     <name>wiz_create_building_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="17"/>
         <source>Create Building</source>
-        <translation type="vanished">Crear Construcción</translation>
+        <translation>Crear Construcción</translation>
     </message>
     <message>
         <source>How would you like to define buildings?</source>
         <translation type="vanished">¿Cómo te gustaría crear construcciones?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="67"/>
         <source>How would you like to create buildings?</source>
-        <translation type="vanished">¿Cómo te gustaría crear construcciones?</translation>
+        <translation>¿Cómo te gustaría crear construcciones?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="143"/>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="190"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="172"/>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="219"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="86"/>
         <source>Digitizing</source>
-        <translation type="vanished">Digitalizando</translation>
+        <translation>Digitalizando</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_operation.ui" line="112"/>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="159"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="17"/>
         <source>Create Right of Way</source>
-        <translation type="vanished">Crear Servidumbre de Paso</translation>
+        <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="67"/>
         <source>How would you like to create right of ways?</source>
-        <translation type="vanished">Cómo deseas crear servidumbres de paso?</translation>
+        <translation>Cómo deseas crear servidumbres de paso?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="86"/>
         <source>Digitizing centerline</source>
-        <translation type="vanished">Digitalizando el eje</translation>
+        <translation>Digitalizando el eje</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="133"/>
         <source>Digitizing Polygon</source>
-        <translation type="vanished">Digitalizando polígono</translation>
+        <translation>Digitalizando polígono</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_of_way_operation.ui" line="101"/>
         <source>Right of way width [m.]</source>
-        <translation type="vanished">Ancho de la servidumbre de paso [m.]</translation>
+        <translation>Ancho de la servidumbre de paso [m.]</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_building_unit_operation</name>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="17"/>
+        <source>Create Building Unit</source>
+        <translation type="unfinished">Crear Unidad de Construcción</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="67"/>
+        <source>How would you like to create building units?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="86"/>
+        <source>Digitizing</source>
+        <translation type="unfinished">Digitalizando</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="112"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="143"/>
+        <source>Source:</source>
+        <translation type="unfinished">Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_building_unit_operation.ui" line="172"/>
+        <source>Recent mappings:</source>
+        <translation type="unfinished">Mapeos recientes:</translation>
     </message>
 </context>
 <context>
     <name>wiz_create_building_unit_qualification_valuation</name>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="17"/>
         <source>Create building unit qualification (Valuation)</source>
-        <translation type="vanished">Crear Calificación de Unidad de Construcción (Avalúos)</translation>
+        <translation>Crear Calificación de Unidad de Construcción (Avalúos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="55"/>
         <source>Building unit qualification type</source>
-        <translation type="vanished">Tipo de calificación de unidad de construcción</translation>
+        <translation>Tipo de calificación de unidad de construcción</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="100"/>
         <source>Conventional</source>
-        <translation type="vanished">Conventional</translation>
+        <translation>Conventional</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="123"/>
         <source>Unconventional</source>
-        <translation type="vanished">No convencional</translation>
+        <translation>No convencional</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="180"/>
         <source>Load data</source>
-        <translation type="vanished">Cargar datos</translation>
+        <translation>Cargar datos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="199"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="225"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="259"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui" line="288"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
 </context>
 <context>
     <name>wiz_create_building_unit_valuation</name>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="14"/>
         <source>Create building unit (Valuation)</source>
-        <translation type="vanished">Crear unidad de construcción (Avalúos)</translation>
+        <translation>Crear unidad de construcción (Avalúos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="49"/>
         <source>How would you like to create buildings units?</source>
-        <translation type="vanished">¿Cómo te gustaría crear unidades de construcción (Avalúos)?</translation>
+        <translation>¿Cómo te gustaría crear unidades de construcción (Avalúos)?</translation>
     </message>
     <message>
         <source>Entering data manually using a form
@@ -6571,16 +7577,44 @@ p, li { white-space: pre-wrap; }
 (necesitas haber seleccionado una unidad de construcción)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="68"/>
+        <source>Entering data manually using a form</source>
+        <translation type="unfinished">Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="125"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="154"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="238"/>
+        <source>Associate the new building unit valuation with one building unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="256"/>
+        <source>Select building unit(s) based on an expression</source>
+        <translation type="unfinished">Seleccionar unidad(es) de construcción con base en una expresión</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="276"/>
+        <source>Select building unit(s) on the map</source>
+        <translation type="unfinished">Seleccionar unidad(es) de construcción en el mapa</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/valuation/wiz_create_building_unit_valuation.ui" line="296"/>
+        <source>Building unit(s):</source>
+        <translation type="unfinished">Unidad(es) de Construcción:</translation>
     </message>
 </context>
 <context>
@@ -6617,28 +7651,34 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Crear Interesado Natural</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="14"/>
         <source>Create Party</source>
-        <translation type="vanished">Crear Interesado</translation>
+        <translation>Crear Interesado</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="49"/>
         <source>How would you like to create parties?</source>
-        <translation type="vanished">¿Cómo te gustaría crear interesados?</translation>
+        <translation>¿Cómo te gustaría crear interesados?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="68"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="125"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_col_party_operation.ui" line="154"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
 </context>
 <context>
@@ -6671,28 +7711,34 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>wiz_create_geoeconomic_zone_valuation</name>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="17"/>
         <source>Create geoeconomic zone (Valuation)</source>
-        <translation type="vanished">Crear zona homogénea geoeconómica</translation>
+        <translation>Crear zona homogénea geoeconómica</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="67"/>
         <source>How would you like to create geoeconomic zones?</source>
-        <translation type="vanished">¿Cómo te gustaría crear zonas homogéneas geoeconómicas?</translation>
+        <translation>¿Cómo te gustaría crear zonas homogéneas geoeconómicas?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="81"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="110"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="125"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui" line="161"/>
         <source>Digitizing</source>
-        <translation type="vanished">Digitalizando</translation>
+        <translation>Digitalizando</translation>
     </message>
 </context>
 <context>
@@ -6879,8 +7925,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>wiz_create_parcel_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="17"/>
         <source>Create Parcel</source>
-        <translation type="vanished">Crear Predio</translation>
+        <translation>Crear Predio</translation>
     </message>
     <message>
         <source>How would you like to create parcels?</source>
@@ -6901,72 +7948,88 @@ Unidades de Construcción)</translation>
 (necesitas haber seleccionado un Terreno y/o Construcciones)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="160"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
         <source>Based on existing plot</source>
         <translation type="vanished">Con base en un terreno existente</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="55"/>
         <source>How would you like to create parcels?    </source>
-        <translation type="vanished">¿Cómo te gustaría crear predios?    </translation>
+        <translation>¿Cómo te gustaría crear predios?    </translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="74"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="100"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="131"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="238"/>
         <source>What spatial unit do you want to associate the parcel with?    </source>
-        <translation type="vanished">¿Cuáles unidades espaciales quieres asociar con el predio?    </translation>
+        <translation>¿Cuáles unidades espaciales quieres asociar con el predio?    </translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="363"/>
         <source>Plot(s):</source>
-        <translation type="vanished">Terreno(s):</translation>
+        <translation>Terreno(s):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="405"/>
         <source>Parcel type to be created:</source>
-        <translation type="vanished">Tipo de predio a crear:</translation>
+        <translation>Tipo de predio a crear:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="276"/>
         <source>Select plot(s) on the map</source>
-        <translation type="vanished">Seleccionar terreno(s) en el mapa</translation>
+        <translation>Seleccionar terreno(s) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="302"/>
         <source>Select plot(s) based on an expression</source>
-        <translation type="vanished">Seleccionar terreno(s) con base en una expresión</translation>
+        <translation>Seleccionar terreno(s) con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="390"/>
         <source>Building(s):</source>
-        <translation type="vanished">Construcción(es):</translation>
+        <translation>Construcción(es):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="349"/>
         <source>Select building(s) on the map</source>
-        <translation type="vanished">Seleccionar construcción(es) en el mapa</translation>
+        <translation>Seleccionar construcción(es) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="256"/>
         <source>Select building(s) based on an expression</source>
-        <translation type="vanished">Seleccionar construcción(es) con base en una expresión</translation>
+        <translation>Seleccionar construcción(es) con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="336"/>
         <source>Building unit(s):</source>
-        <translation type="vanished">Unidad(es) de Construcción:</translation>
+        <translation>Unidad(es) de Construcción:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="322"/>
         <source>Select building unit(s) on the map</source>
-        <translation type="vanished">Seleccionar unidad(es) de construcción en el mapa</translation>
+        <translation>Seleccionar unidad(es) de construcción en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_parcel_operation.ui" line="376"/>
         <source>Select building unit(s) based on an expression</source>
-        <translation type="vanished">Seleccionar unidad(es) de construcción con base en una expresión</translation>
+        <translation>Seleccionar unidad(es) de construcción con base en una expresión</translation>
     </message>
 </context>
 <context>
@@ -6999,55 +8062,92 @@ Unidades de Construcción)</translation>
 <context>
     <name>wiz_create_physical_zone_valuation</name>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="17"/>
         <source>Create physical zone (Valuation)</source>
-        <translation type="vanished">Crear zona homogénea física</translation>
+        <translation>Crear zona homogénea física</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="67"/>
         <source>How would you like to create physical zones?</source>
-        <translation type="vanished">¿Cómo te gustaría crear zonas homogéneas físicas?</translation>
+        <translation>¿Cómo te gustaría crear zonas homogéneas físicas?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="81"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="110"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="125"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui" line="161"/>
         <source>Digitizing</source>
-        <translation type="vanished">Digitalizando</translation>
+        <translation>Digitalizando</translation>
     </message>
 </context>
 <context>
     <name>wiz_create_plot_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="17"/>
         <source>Create plots</source>
-        <translation type="vanished">Crear terrenos</translation>
+        <translation>Crear terrenos</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="52"/>
         <source>How would you like to create plots?</source>
-        <translation type="vanished">¿Cómo te gustaría crear terrenos?</translation>
+        <translation>¿Cómo te gustaría crear terrenos?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="71"/>
         <source>Selecting existing boundaries</source>
-        <translation type="vanished">Seleccionando linderos existentes</translation>
+        <translation>Seleccionando linderos existentes</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="128"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="157"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="241"/>
+        <source>Selecting existing boundaries:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="259"/>
+        <source>Select boundary(ies) based on an expression</source>
+        <translation type="unfinished">Seleccionar lindero(s) con base en una expresión</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="279"/>
+        <source>Select boundary(ies) on the map</source>
+        <translation type="unfinished">Seleccionar lindero(s) en el mapa</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="299"/>
+        <source>Boundary(ies):</source>
+        <translation type="unfinished">Lindero(s):</translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="312"/>
+        <source>Select all boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/wizards/operation/wiz_create_plot_operation.ui" line="97"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
 </context>
 <context>
@@ -7129,12 +8229,14 @@ Unidades de Construcción)</translation>
 <context>
     <name>wiz_create_restriction_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="14"/>
         <source>Create Restriction</source>
-        <translation type="vanished">Crear Restricción</translation>
+        <translation>Crear Restricción</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="49"/>
         <source>How would you like to create restrictions?</source>
-        <translation type="vanished">¿Cómo te gustaría crear restricciones?</translation>
+        <translation>¿Cómo te gustaría crear restricciones?</translation>
     </message>
     <message>
         <source>Entering data manually using a form
@@ -7143,32 +8245,39 @@ Unidades de Construcción)</translation>
 (necesitas haber seleccionado Fuentes Administrativas)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="125"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="154"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="232"/>
         <source>What source do you want to associate the restriction with?</source>
-        <translation type="vanished">¿Cuáles fuentes quieres asociar con la restricción?</translation>
+        <translation>¿Cuáles fuentes quieres asociar con la restricción?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="244"/>
         <source>Administrative source(s):</source>
-        <translation type="vanished">Fuente(s) Administrativa(s):</translation>
+        <translation>Fuente(s) Administrativa(s):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="257"/>
         <source>Select Administrative Source(s) based on an expression</source>
-        <translation type="vanished">Seleccionar fuentes administrativas con base en una expresión</translation>
+        <translation>Seleccionar fuentes administrativas con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_restriction_operation.ui" line="68"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
@@ -7178,12 +8287,14 @@ Unidades de Construcción)</translation>
 <context>
     <name>wiz_create_right_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="14"/>
         <source>Create Right</source>
-        <translation type="vanished">Crear Derecho</translation>
+        <translation>Crear Derecho</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="49"/>
         <source>How would you like to create rights?</source>
-        <translation type="vanished">¿Cómo te gustaría crear derechos?</translation>
+        <translation>¿Cómo te gustaría crear derechos?</translation>
     </message>
     <message>
         <source>Entering data manually using a form
@@ -7192,32 +8303,39 @@ Unidades de Construcción)</translation>
 (necesitas haber seleccionado Fuentes Administrativas)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra tabla de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="125"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="154"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="232"/>
         <source>What source do you want to associate the right with?</source>
-        <translation type="vanished">¿Cuáles fuentes quieres asociar con el derecho?</translation>
+        <translation>¿Cuáles fuentes quieres asociar con el derecho?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="244"/>
         <source>Administrative source(s):</source>
-        <translation type="vanished">Fuente(s) Administrativa(s):</translation>
+        <translation>Fuente(s) Administrativa(s):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="257"/>
         <source>Select Administrative Source(s) based on an expression</source>
-        <translation type="vanished">Seleccionar fuentes administrativas con base en una expresión</translation>
+        <translation>Seleccionar fuentes administrativas con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_right_operation.ui" line="68"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
@@ -7227,84 +8345,103 @@ Unidades de Construcción)</translation>
 <context>
     <name>wiz_create_spatial_source_operation</name>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="17"/>
         <source>Create Spatial Source</source>
-        <translation type="vanished">Crear Fuente Espacial</translation>
+        <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="55"/>
         <source>How would you like to create spatial sources?</source>
-        <translation type="vanished">¿Cómo te gustaría crear fuentes espaciales?</translation>
+        <translation>¿Cómo te gustaría crear fuentes espaciales?</translation>
     </message>
     <message>
         <source>What spatial features do you want to associate the space source with?</source>
         <translation type="vanished">¿Cuáles geometrías quieres asociar con la fuente espacial?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="238"/>
         <source>Which features do you want to associate the spatial source with?</source>
-        <translation type="vanished">¿Cuáles objetos espaciales quieres asociar con la fuente espacial?</translation>
+        <translation>¿Cuáles objetos espaciales quieres asociar con la fuente espacial?</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="252"/>
         <source>Plot(s):</source>
-        <translation type="vanished">Terreno(s):</translation>
+        <translation>Terreno(s):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="265"/>
         <source>Select plot(s) on the map</source>
-        <translation type="vanished">Seleccionar terreno(s) en el mapa</translation>
+        <translation>Seleccionar terreno(s) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="291"/>
         <source>Select plot(s) based on an expression</source>
-        <translation type="vanished">Seleccionar terreno(s) con base en una expresión</translation>
+        <translation>Seleccionar terreno(s) con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="307"/>
         <source>Point(s)</source>
-        <translation type="vanished">Punto(s)</translation>
+        <translation>Punto(s)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="315"/>
         <source>Control:</source>
-        <translation type="vanished">Control:</translation>
+        <translation>Control:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="328"/>
         <source>Select control point(s) on the map</source>
-        <translation type="vanished">Seleccionar punto(s) de control en el mapa</translation>
+        <translation>Seleccionar punto(s) de control en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="348"/>
         <source>Select control point(s) based on an expression</source>
-        <translation type="vanished">Seleccionar punto(s) de control con base en una expresión</translation>
+        <translation>Seleccionar punto(s) de control con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="366"/>
         <source>Boundary:</source>
-        <translation type="vanished">Lindero:</translation>
+        <translation>Lindero:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="379"/>
         <source>Select boundary point(s) on the map</source>
-        <translation type="vanished">Seleccionar punto(s) de lindero en el mapa</translation>
+        <translation>Seleccionar punto(s) de lindero en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="399"/>
         <source>Select boundary point(s) based on an expression</source>
-        <translation type="vanished">Seleccionar punto(s) de lindero con base en una expresión</translation>
+        <translation>Seleccionar punto(s) de lindero con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="417"/>
         <source>Survey:</source>
-        <translation type="vanished">Levantamiento:</translation>
+        <translation>Levantamiento:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="430"/>
         <source>Select survey point(s) on the map</source>
-        <translation type="vanished">Seleccionar punto(s) de levantamiento en el mapa</translation>
+        <translation>Seleccionar punto(s) de levantamiento en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="450"/>
         <source>Select survey point(s) based on an expression</source>
-        <translation type="vanished">Seleccionar punto(s) de levantamiento con base en una expresión</translation>
+        <translation>Seleccionar punto(s) de levantamiento con base en una expresión</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="471"/>
         <source>Boundary(ies):</source>
-        <translation type="vanished">Lindero(s):</translation>
+        <translation>Lindero(s):</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="484"/>
         <source>Select boundary(ies) on the map</source>
-        <translation type="vanished">Seleccionar lindero(s) en el mapa</translation>
+        <translation>Seleccionar lindero(s) en el mapa</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="504"/>
         <source>Select boundary(ies) based on an expression</source>
-        <translation type="vanished">Seleccionar lindero(s) con base en una expresión</translation>
+        <translation>Seleccionar lindero(s) con base en una expresión</translation>
     </message>
     <message>
         <source>Entering data manually using a form.
@@ -7313,8 +8450,9 @@ Associate newly created source with selected features from:</source>
 Asociar la nueva fuente con los objetos seleccionados de:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="111"/>
         <source>Recent mappings:</source>
-        <translation type="vanished">Mapeos recientes:</translation>
+        <translation>Mapeos recientes:</translation>
     </message>
     <message>
         <source>Entering data manually using a form.
@@ -7323,16 +8461,19 @@ Associate newly created source with selected features from layer:</source>
 Asociar la nueva fuente con los objetos seleccionados de:</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="162"/>
         <source>Entering data manually using a form</source>
-        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="139"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
-        <translation type="vanished">Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
+        <location filename="../ui/wizards/operation/wiz_create_spatial_source_operation.ui" line="82"/>
         <source>Source:</source>
-        <translation type="vanished">Fuente:</translation>
+        <translation>Fuente:</translation>
     </message>
 </context>
 </TS>

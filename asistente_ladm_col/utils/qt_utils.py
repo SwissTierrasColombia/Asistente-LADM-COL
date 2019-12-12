@@ -128,7 +128,7 @@ class NetworkError(RuntimeError):
 def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
-                                                       QCoreApplication.translate('Asistente-LADM_COL', 'Export to PDF'),
+                                                       QCoreApplication.translate("Asistente-LADM_COL", "Export to PDF"),
                                                        settings.value(settings_path, '.'),
                                                        filter="PDF (*.pdf)")
 

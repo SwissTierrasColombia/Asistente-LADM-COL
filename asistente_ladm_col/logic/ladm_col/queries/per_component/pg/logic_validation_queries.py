@@ -205,7 +205,7 @@ def get_logic_validation_queries(schema, names):
                                                                                                COL_BAUNIT_RRR_T_UNIT_F=names.COL_BAUNIT_RRR_T_UNIT_F,
                                                                                                T_ID_F=names.T_ID_F),
                 'desc_error': 'Get parcels with no right',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with no right'),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Parcels with no right"),
                 'table': names.OP_PARCEL_T},
             'PARCELS_WITH_REPEATED_DOMAIN_RIGHT': {
                 'query': """SELECT conteo.{COL_BAUNIT_RRR_T_UNIT_F}

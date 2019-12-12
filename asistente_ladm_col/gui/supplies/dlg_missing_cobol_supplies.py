@@ -258,7 +258,7 @@ class MissingCobolSupplies(CobolBaseDialog):
             layer = QgsVectorLayer(layer_path, layer_path.split('layername=')[1], 'ogr')
             self.names_gpkg += '{} '.format(layer_path.split('layername=')[1])
             if not layer.isValid():
-                return False, QCoreApplication.translate("MissingCobolSupplies", "There were troubles loading {} layer.".format(layer_path.split('layername=')[1]))
+                return False, QCoreApplication.translate("MissingCobolSupplies", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
             LayerNode = root.findLayer(layer.id())

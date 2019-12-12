@@ -37,6 +37,7 @@ class LogHandlerEnum(Enum):
     STATUS_BAR = 2
     QGIS_LOG = 3
 
+
 class LogModeEnum(Enum):
     USER = 1
     DEV = 2

@@ -54,7 +54,7 @@ class STSession(QObject, metaclass=SingletonQObject):
         try:
             response = requests.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}".format(e))
+            msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}").format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 

@@ -1909,7 +1909,7 @@ class QualityUtils(QObject):
         if error_layer_exist is False:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "{table}_id".format(table=table)), QVariant.Int),
+            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QualityConfigStrings", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
