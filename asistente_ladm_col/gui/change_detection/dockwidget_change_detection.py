@@ -195,7 +195,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER], True)
         self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.names.OP_PLOT_T][LAYER], True)
 
 
@@ -229,9 +229,8 @@ class ChangeDetectionUtils(QObject):
         }
 
         self._supplies_layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None}
         }
 
     def initialize_data(self):
@@ -263,7 +262,7 @@ class ChangeDetectionUtils(QObject):
                 return None
             else:
                 # In some occasions the supplies and collected plots might not overlap and have different extents
-                self.iface.setActiveLayer(self._supplies_layers[self.names.OP_PLOT_T][LAYER])
+                self.iface.setActiveLayer(self._supplies_layers[self.names.GC_PLOT_T][LAYER])
                 self.iface.zoomToActiveLayer()
 
             self.qgis_utils.map_freeze_requested.emit(False)
@@ -305,16 +304,18 @@ class ChangeDetectionUtils(QObject):
         :return: dict() --> {PARCEL_NUMBER: X,
                              PARCEL_ATTRIBUTES: {PARCEL_ID: [self.names.T_ID_F], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
         """
-        base_db = self._supplies_db if inverse else self._db
-        compare_db = self._db if inverse else self._supplies_db
-
         layer_modifiers = {
             PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
             SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
         }
-        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
-        dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)
+
+        if inverse:
+            dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self._supplies_db, None)
+            dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None, layer_modifiers=layer_modifiers)
+        else:
+            dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None)
+            dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self._supplies_db, None, layer_modifiers=layer_modifiers)
 
         dict_compared_parcel_data = dict()
         for collected_parcel_number, collected_features in dict_collected_parcels.items():

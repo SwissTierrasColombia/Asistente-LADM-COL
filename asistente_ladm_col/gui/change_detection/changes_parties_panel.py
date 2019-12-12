@@ -67,8 +67,8 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         for row, supplies_party in enumerate(sorted_supplies_parties):
             collected_party_pair = {}
             for collected_party in sorted_collected_parties:
-                if supplies_party[self.names.OP_PARTY_T_DOCUMENT_ID_F] == supplies_party[self.names.OP_PARTY_T_DOCUMENT_ID_F]:
-                    collected_party_pair = supplies_party
+                if collected_party[self.names.OP_PARTY_T_DOCUMENT_ID_F] == supplies_party[self.names.OP_PARTY_T_DOCUMENT_ID_F]:
+                    collected_party_pair = collected_party
                     sorted_collected_parties.remove(collected_party_pair)
                     break
 

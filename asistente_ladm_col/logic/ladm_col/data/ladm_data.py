@@ -16,13 +16,22 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (QgsApplication,
-                       NULL,
+from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsWkbTypes,
                        QgsFeature)
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      DICT_KEY_PARCEL_T_DEPARTMENT_F,
+                                                      DICT_KEY_PARCEL_T_FMI_F,
+                                                      DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                      DICT_KEY_PARCEL_T_CONDITION_F,
+                                                      DICT_KEY_PARCEL_T_NAME_F,
+                                                      DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+                                                      DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+                                                      DICT_KEY_PARTY_T_NAME_F,
+                                                      DICT_KEY_PARTY_T_RIGHT,
+                                                      DICT_KEY_PLOT_T_AREA_F,
                                                       PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
@@ -35,20 +44,6 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 class LADM_DATA():
-
-    DICT_KEY_PARCEL_T_DEPARTMENT_F = "departamento"
-    DICT_KEY_PARCEL_T_FMI_F = "matricula_inmobiliaria"
-    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F = "numero_predial"
-    DICT_KEY_PARCEL_T_CONDITION_F = "condicion_predio"
-    DICT_KEY_PARCEL_T_NAME_F = "nombre"
-
-    DICT_KEY_PARTY_T_DOCUMENT_TYPE_F = "tipo_documento"
-    DICT_KEY_PARTY_T_DOCUMENT_ID_F = "documento_identidad"
-    DICT_KEY_PARTY_T_NAME_F = "nombre"
-    DICT_KEY_PARTY_T_RIGHT = "derecho"
-
-    DICT_KEY_PLOT_T_AREA_F = "area_terreno"
-
     """
     High-level class to get related information from the LADM-COL database.
     """
@@ -200,9 +195,9 @@ class LADM_DATA():
                         value = self.get_domain_value_from_code(db, self.names.GC_PARCEL_TYPE_D, feature.attribute(parcel_field))
                     else:
                         value = feature.attribute(parcel_field)
-                elif parcel_field == self.DICT_KEY_PARCEL_T_DEPARTMENT_F:
+                elif parcel_field == DICT_KEY_PARCEL_T_DEPARTMENT_F:
                     value = feature.attribute(self.names.GC_PARCEL_T_PARCEL_NUMBER_F)[:2]
-                elif parcel_field == self.DICT_KEY_PARCEL_T_NAME_F:
+                elif parcel_field == DICT_KEY_PARCEL_T_NAME_F:
                     value = NULL
 
                 dict_attrs[key_value_parcel] = value
@@ -261,12 +256,12 @@ class LADM_DATA():
 
                 if party_field in party_fields:
                     dict_party[key_value_party] = party_feature[party_field]
-                elif party_field == self.DICT_KEY_PARTY_T_NAME_F:
+                elif party_field == DICT_KEY_PARTY_T_NAME_F:
                     dict_party[key_value_party] = "{} {} {} {}".format(party_feature[self.names.GC_OWNER_T_FIRST_NAME_1_F],
                                                                        party_feature[self.names.GC_OWNER_T_FIRST_NAME_2_F],
                                                                        party_feature[self.names.GC_OWNER_T_SURNAME_1_F],
                                                                        party_feature[self.names.GC_OWNER_T_SURNAME_2_F])
-                elif party_field == self.DICT_KEY_PARTY_T_RIGHT:
+                elif party_field == DICT_KEY_PARTY_T_RIGHT:
                     dict_party[key_value_party] = NULL
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
@@ -444,6 +439,10 @@ class LADM_DATA():
             self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
         }
 
+        mapping_parcels_field = self.mapping_parcel_fields()
+        mapping_party_field = self.mapping_party_fields()
+        mapping_plot_field = self.mapping_plot_fields()
+
         if db.cadastral_form_model_exists():
             # TODO: Replace property record card for correct table model
             # layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
@@ -461,19 +460,21 @@ class LADM_DATA():
             dict_attrs = dict()
             for field in layers[self.names.OP_PARCEL_T][LAYER].fields():
                 if field.name() in parcel_fields_to_compare:
+                    key_value_parcel = mapping_parcels_field[field.name()] if field.name() in mapping_parcels_field else field.name()
+
                     if field.name() == self.names.OP_PARCEL_T_PARCEL_TYPE_F:
                         # Go for domain value, instead of t_id
                         value = self.get_domain_value_from_code(db, self.names.OP_CONDITION_PARCEL_TYPE_D, feature.attribute(field.name()))
                     else:
                         value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value
-
+                    dict_attrs[key_value_parcel] = value
             dict_attrs[self.names.T_ID_F] = feature[self.names.T_ID_F]
 
-            if dict_attrs[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
-                dict_features[dict_attrs[self.names.OP_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
+            key_value_parcel_number = mapping_parcels_field[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] if self.names.OP_PARCEL_T_PARCEL_NUMBER_F in mapping_parcels_field else self.names.OP_PARCEL_T_PARCEL_NUMBER_F
+            if dict_attrs[key_value_parcel_number] in dict_features:
+                dict_features[dict_attrs[key_value_parcel_number]].append(dict_attrs)
             else:
-                dict_features[dict_attrs[self.names.OP_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
+                dict_features[dict_attrs[key_value_parcel_number]] = [dict_attrs]
 
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[self.names.T_ID_F] for parcel_feature in parcel_features]
@@ -493,10 +494,12 @@ class LADM_DATA():
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
                         for plot_field in plot_fields_to_compare:
+                            key_value_plot = mapping_plot_field[plot_field] if plot_field in mapping_plot_field else plot_field
+
                             if plot_feature[plot_field] != NULL:
-                                item[plot_field] = plot_feature[plot_field]
+                                item[key_value_plot] = plot_feature[plot_field]
                             else:
-                                item[plot_field] = NULL
+                                item[key_value_plot] = NULL
 
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
@@ -524,10 +527,12 @@ class LADM_DATA():
         for party_feature in party_features:
             dict_party = dict()
             for party_field in party_fields_to_compare:
+                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
+
                 if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[party_field] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
                 else:
-                    dict_party[party_field] = party_feature[party_field]
+                    dict_party[key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
             right_type_id = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
             dict_party['derecho'] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
@@ -588,10 +593,12 @@ class LADM_DATA():
         for party_feature in party_features:
             dict_party = dict()
             for party_field in party_fields_to_compare:
+                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
+
                 if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[party_field] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
                 else:
-                    dict_party[party_field] = party_feature[party_field]
+                    dict_party[key_value_party] = party_feature[party_field]
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         # Reuse the dict to replace id_group_party for party info:
@@ -689,38 +696,59 @@ class LADM_DATA():
 
     def mapping_parcel_fields_for_supplies(self):
         return {
-            self.DICT_KEY_PARCEL_T_DEPARTMENT_F: self.DICT_KEY_PARCEL_T_DEPARTMENT_F,
-            self.names.GC_PARCEL_T_FMI_F: self.DICT_KEY_PARCEL_T_FMI_F,
-            self.names.GC_PARCEL_T_PARCEL_NUMBER_F: self.DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-            self.names.GC_PARCEL_T_CONDITION_F: self.DICT_KEY_PARCEL_T_CONDITION_F,
-            self.DICT_KEY_PARCEL_T_NAME_F: self.DICT_KEY_PARCEL_T_NAME_F
+            DICT_KEY_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            self.names.GC_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
+            self.names.GC_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            self.names.GC_PARCEL_T_CONDITION_F: DICT_KEY_PARCEL_T_CONDITION_F,
+            DICT_KEY_PARCEL_T_NAME_F: DICT_KEY_PARCEL_T_NAME_F
         }
 
     def mapping_party_fields_for_supplies(self):
         return {
-            self.names.GC_OWNER_T_DOCUMENT_TYPE_F: self.DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
-            self.names.GC_OWNER_T_DOCUMENT_ID_F: self.DICT_KEY_PARTY_T_DOCUMENT_ID_F,
-            self.DICT_KEY_PARTY_T_NAME_F: self.DICT_KEY_PARTY_T_NAME_F,
-            self.DICT_KEY_PARTY_T_RIGHT: self.DICT_KEY_PARTY_T_RIGHT
+            self.names.GC_OWNER_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            self.names.GC_OWNER_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            DICT_KEY_PARTY_T_NAME_F: DICT_KEY_PARTY_T_NAME_F,
+            DICT_KEY_PARTY_T_RIGHT: DICT_KEY_PARTY_T_RIGHT
         }
 
     def mapping_plot_fields_for_supplies(self):
         return {
-            self.names.GC_PLOT_T_ALPHANUMERIC_AREA: self.DICT_KEY_PLOT_T_AREA_F
+            self.names.GC_PLOT_T_ALPHANUMERIC_AREA: DICT_KEY_PLOT_T_AREA_F
+        }
+
+    def mapping_parcel_fields(self):
+        return {
+            self.names.OP_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            self.names.OP_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
+            self.names.OP_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            self.names.OP_PARCEL_T_PARCEL_TYPE_F: DICT_KEY_PARCEL_T_CONDITION_F,
+            self.names.COL_BAUNIT_T_NAME_F: DICT_KEY_PARCEL_T_NAME_F
+        }
+
+    def mapping_party_fields(self):
+        return {
+            self.names.OP_PARTY_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            self.names.OP_PARTY_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            self.names.COL_PARTY_T_NAME_F: DICT_KEY_PARTY_T_NAME_F
+        }
+
+    def mapping_plot_fields(self):
+        return {
+            self.names.OP_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
     def get_parcel_fields_to_compare_supplies(self):
-        return [self.DICT_KEY_PARCEL_T_DEPARTMENT_F,
+        return [DICT_KEY_PARCEL_T_DEPARTMENT_F,
                 self.names.GC_PARCEL_T_FMI_F,
                 self.names.GC_PARCEL_T_PARCEL_NUMBER_F,
                 self.names.GC_PARCEL_T_CONDITION_F,
-                self.DICT_KEY_PARCEL_T_NAME_F]
+                DICT_KEY_PARCEL_T_NAME_F]
 
     def get_party_fields_to_compare_supplies(self):
         return [self.names.GC_OWNER_T_DOCUMENT_TYPE_F,
                 self.names.GC_OWNER_T_DOCUMENT_ID_F,
-                self.DICT_KEY_PARTY_T_NAME_F,
-                self.DICT_KEY_PARTY_T_RIGHT]
+                DICT_KEY_PARTY_T_NAME_F,
+                DICT_KEY_PARTY_T_RIGHT]
 
     def get_plot_fields_to_compare_supplies(self):
         return [self.names.GC_PLOT_T_ALPHANUMERIC_AREA]

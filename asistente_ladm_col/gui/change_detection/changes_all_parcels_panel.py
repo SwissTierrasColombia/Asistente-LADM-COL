@@ -71,7 +71,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Remove selection in plot layers
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER].removeSelection()
 
         self.fill_table(filter_parcels)
 
@@ -118,13 +118,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
                 plot_layer = self.utils._layers[self.names.OP_PLOT_T][LAYER]
             else:
-                plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER]
+                plot_layer = self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER]
 
-            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._supplies_db,
-                          filter_parcels[self.names.T_ID_F],
-                          None, # Get QGIS plot ids
-                          plot_layer,
-                          self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER])
+            if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
+                                                                             filter_parcels[self.names.T_ID_F],
+                                                                             None,  # Get QGIS plot ids
+                                                                             plot_layer,
+                                                                             self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+            else:
+                plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
+                                                                                      filter_parcels[self.names.T_ID_F],
+                                                                                      None,  # Get QGIS plot ids
+                                                                                      plot_layer)
+
             self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
 
             # plot_layer.select(plot_ids)
@@ -211,17 +218,24 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             if plot_layer.selectedFeatureIds():
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
             else:  # Bajas
-                plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER]
+                plot_layer = self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER]
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
 
     def select_related_plots(self, parcels_t_ids, inverse):
-        plot_layer = self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER] if inverse else self.utils._layers[self.names.OP_PLOT_T][LAYER]
-        uebaunit_table = self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER] if inverse else self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER]
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._supplies_db if inverse else self.utils._db,
-                                                                     parcels_t_ids,
-                                                                     None,  # Get QGIS ids
-                                                                     plot_layer=plot_layer,
-                                                                     uebaunit_table=uebaunit_table)
+        plot_layer = self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER] if inverse else self.utils._layers[self.names.OP_PLOT_T][LAYER]
+        uebaunit_table = self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER]
+
+        if inverse:
+            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
+                                                                                  parcels_t_ids,
+                                                                                  None,  # Get QGIS ids
+                                                                                  plot_layer)
+        else:
+            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
+                                                                         parcels_t_ids,
+                                                                         None,  # Get QGIS ids
+                                                                         plot_layer=plot_layer,
+                                                                         uebaunit_table=uebaunit_table)
 
         #self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
         plot_layer.select(plot_ids)

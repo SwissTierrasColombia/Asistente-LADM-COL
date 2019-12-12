@@ -77,7 +77,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Remove selection in plot layers
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER].removeSelection()
 
         # Map tool before activate map swipe tool
         self.init_map_tool = self.utils.canvas.mapTool()
@@ -129,10 +129,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.utils.canvas.mapToolSet.connect(self.initialize_maptool)
 
-        if self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER] is None:
+        if self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER] is None:
             self.utils.add_layers()
 
-        self.maptool_identify.setLayer(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER])
+        self.maptool_identify.setLayer(self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER])
         cursor = QCursor()
         cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
@@ -147,7 +147,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[self.names.T_ID_F]
 
-        self.utils.canvas.flashFeatureIds(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER],
+        self.utils.canvas.flashFeatureIds(self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER],
                                     [plot_feature.id()],
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),
@@ -158,11 +158,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.show()
 
         self.spatial_query(plot_t_id)
-        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].selectByIds([plot_feature.id()])
+        self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER].selectByIds([plot_feature.id()])
 
     def spatial_query(self, plot_id):
         if plot_id:
-            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._supplies_db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
+            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots_supplies(self.utils._supplies_db, [plot_id], self.names.GC_PARCEL_T_PARCEL_NUMBER_F)
             if parcel_number:  # Delegate handling of duplicates to search_data() method
                 self.search_data(parcel_number=parcel_number[0])
 
@@ -177,8 +177,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER])
-        idx = self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self.utils._supplies_layers[self.names.GC_PARCEL_T][LAYER])
+        idx = self.utils._supplies_layers[self.names.GC_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def fill_combos(self):
@@ -213,10 +213,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Get supplies parcel's t_id and get related plot(s)
         expression = QgsExpression("{}='{}'".format(search_field, search_value))
         request = QgsFeatureRequest(expression)
-        field_idx = self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].fields().indexFromName(self.names.T_ID_F)
+        field_idx = self.utils._supplies_layers[self.names.GC_PARCEL_T][LAYER].fields().indexFromName(self.names.T_ID_F)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-        supplies_parcels = [feature for feature in self.utils._supplies_layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)]
+        supplies_parcels = [feature for feature in self.utils._supplies_layers[self.names.GC_PARCEL_T][LAYER].getFeatures(request)]
 
         if len(supplies_parcels) > 1:
             # We do not expect duplicates in the supplies source!
@@ -226,15 +226,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         supplies_plot_t_ids = []
         if supplies_parcels:
-            supplies_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._supplies_db,
-                                              [supplies_parcels[0][self.names.T_ID_F]],
-                                              self.names.T_ID_F,
-                                              plot_layer=self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER],
-                                              uebaunit_table=self.utils._supplies_layers[self.names.COL_UE_BAUNIT_T][LAYER])
+            supplies_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(
+                self.utils._supplies_db,
+                [supplies_parcels[0][self.names.T_ID_F]],
+                self.names.T_ID_F,
+                self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER])
 
             if supplies_plot_t_ids:
                 self._current_supplies_substring = "\"{}\" IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in supplies_plot_t_ids]))
-                self.parent.request_zoom_to_features(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER], list(), supplies_plot_t_ids)
+                self.parent.request_zoom_to_features(self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER], list(), supplies_plot_t_ids)
                 already_zoomed_in = True
 
 
@@ -290,7 +290,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 
                 # Activate Swipe Tool
-                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER])
+                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER])
                 if supplies_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
                     self.parent.activate_map_swipe_tool()
 
@@ -331,7 +331,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
         }
-        dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
+        dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes_supplies(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
         collected_attrs = dict()
@@ -448,7 +448,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
+        self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
         self.utils._layers[self.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):
