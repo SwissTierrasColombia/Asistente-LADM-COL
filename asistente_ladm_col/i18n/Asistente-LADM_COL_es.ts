@@ -26,17 +26,17 @@
     <message>
         <location filename="../config/general_config.py" line="157"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="158"/>
         <source>Several</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicado</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="159"/>
         <source>null</source>
-        <translation type="unfinished"></translation>
+        <translation>Nulo</translation>
     </message>
 </context>
 <context>
@@ -166,22 +166,22 @@
         <location filename="../config/gui/gui_config.py" line="59"/>
         <location filename="../gui/gui_builder/role_registry.py" line="55"/>
         <source>Data management</source>
-        <translation type="unfinished"></translation>
+        <translation>Administración de datos</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="69"/>
         <source>Data capture and structuring</source>
-        <translation type="unfinished"></translation>
+        <translation>Captura y estructuración de datos</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="75"/>
         <source>Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Operación</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="107"/>
         <source>Basic Administrative Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unidad básica administrativa</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="114"/>
@@ -196,7 +196,7 @@
     <message>
         <location filename="../config/gui/gui_config.py" line="151"/>
         <source>Supplies management</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestión de insumos</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="189"/>
@@ -205,14 +205,14 @@
         <location filename="../gui/gui_builder/role_registry.py" line="231"/>
         <location filename="../gui/gui_builder/role_registry.py" line="294"/>
         <source>Transition System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de Transición</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="215"/>
         <location filename="../gui/gui_builder/role_registry.py" line="65"/>
         <location filename="../gui/gui_builder/role_registry.py" line="303"/>
         <source>Create Operation objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear objetos de Operación</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="325"/>
@@ -451,27 +451,27 @@
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="227"/>
         <source>Refreshing GUI for the LADM_COL Assistant...</source>
-        <translation type="unfinished"></translation>
+        <translation>Refrescando la interfaz del Asistente LADM_COL...</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="281"/>
         <source>Login...</source>
-        <translation type="unfinished"></translation>
+        <translation>Autenticarse...</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="285"/>
         <source>Logout</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="299"/>
         <source>Load Cobol data</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar datos de Cobol</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="304"/>
         <source>Find missing Cobol supplies</source>
-        <translation type="unfinished"></translation>
+        <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="341"/>
@@ -481,17 +481,17 @@
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="465"/>
         <source>Supplies data settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de datos de Insumos</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1054"/>
         <source>Opening Query Changes per Parcel panel...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1065"/>
         <source>Opening Query Changes for All Parcels panel...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
         <source>Property record card</source>
@@ -679,62 +679,62 @@
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="97"/>
         <source>Structuring tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramientas de estructuración</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="113"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Básico</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="114"/>
         <source>The basic role helps you to explore the LADM_COL assistant main functionalities.</source>
-        <translation type="unfinished"></translation>
+        <translation>El rol &lt;b&gt;Básico&lt;/b&gt; te permite explorar las principales funcionalidades del Asistente LADM_COL.</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="170"/>
         <source>Supplies Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Proveedor de Insumos</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="171"/>
         <source>The Supplies Provider role generates a XTF file with supplies data for the Manager role.</source>
-        <translation type="unfinished"></translation>
+        <translation>El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="186"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="187"/>
         <source>The operator is in charge of capturing current cadastral data.</source>
-        <translation type="unfinished"></translation>
+        <translation>El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="245"/>
         <source>Change Detection</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificación de novedades</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="268"/>
         <source>Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestor</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="269"/>
         <source>The manager is in charge of preparing supplies for operators as well as validatinsg and managing the data provided by operators.</source>
-        <translation type="unfinished"></translation>
+        <translation>El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="345"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzado</translation>
+        <translation>Avanzado</translation>
     </message>
     <message>
         <location filename="../gui/gui_builder/role_registry.py" line="346"/>
         <source>The advanced role has access to all the functionality.</source>
-        <translation type="unfinished"></translation>
+        <translation>El rol &lt;b&gt;Avanzado&lt;/b&gt; tiene acceso a todas las funcionalidades del Asistente LADM_COL.</translation>
     </message>
 </context>
 <context>
@@ -2242,17 +2242,17 @@
     <message>
         <location filename="../ui/dialogs/dlg_get_java_path.ui" line="35"/>
         <source>Java Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta de java</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_get_java_path.ui" line="48"/>
         <source>If this is left empty, %PATH and %JAVA_HOME is searched</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se deja vacío, se busca en %PATH y %JAVA_HOME</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_get_java_path.ui" line="51"/>
         <source>[By default %PATH and %JAVA_HOME is searched]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Se busca en %PATH y %JAVA_HOME de manera predeterminada]</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_get_java_path.ui" line="58"/>
@@ -2354,7 +2354,7 @@
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="562"/>
         <source>https://ide.proadmintierra.info/ws/</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="588"/>
@@ -2364,7 +2364,7 @@
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="607"/>
         <source>Active role:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rol activo:</translation>
     </message>
     <message>
         <source>Enable/disable tools by organization:</source>
@@ -2482,63 +2482,63 @@
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="14"/>
         <source>Duplicate Parcels</source>
-        <translation type="unfinished"></translation>
+        <translation>Predios duplicados</translation>
     </message>
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="22"/>
         <source>Select one parcel to show detailed information</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona un predio para mostrar información detallada</translation>
     </message>
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="57"/>
         <source>T_Id</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="62"/>
         <source>NUPRE</source>
-        <translation type="unfinished"></translation>
+        <translation>NUPRE</translation>
     </message>
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="67"/>
         <source>FMI</source>
-        <translation type="unfinished"></translation>
+        <translation>FMI</translation>
     </message>
     <message>
         <location filename="../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui" line="72"/>
         <source>Parcel number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número Predial</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="14"/>
         <source>Set custom model paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir rutas personalizadas a modelos</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="74"/>
         <source>Add </source>
-        <translation type="unfinished"></translation>
+        <translation>Agregar </translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="90"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorar</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_custom_model_dir.ui" line="107"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_get_db_or_schema_name.ui" line="14"/>
         <location filename="../ui/dialogs/dlg_get_java_path.ui" line="14"/>
         <source>Create DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear base de datos</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_get_db_or_schema_name.ui" line="20"/>
         <source>object name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de objeto:</translation>
     </message>
 </context>
 <context>
@@ -6858,7 +6858,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../__init__.py" line="42"/>
         <source>Open log panel...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir panel de logs...</translation>
     </message>
     <message>
         <location filename="../__init__.py" line="55"/>
