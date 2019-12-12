@@ -75,7 +75,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
                                                       WIZARD_LAYERS,
-                                                      WIZARD_TOOL_NAME)
+                                                      WIZARD_TOOL_NAME,
+                                                      COLLECTED_DB_SOURCE)
 from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
@@ -219,12 +220,13 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         SLOT. Intermediate step to call refresh gui with proper parameters.
         """
-        self.refresh_gui(self.get_db_connection(), None, None)
+        self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
-        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
-        with ProcessWithStatus(msg):
-            self.gui_builder.build_gui(db, res)
+        if db_source == COLLECTED_DB_SOURCE:
+            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
+            with ProcessWithStatus(msg):
+                self.gui_builder.build_gui(db, res)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
