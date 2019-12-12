@@ -19,35 +19,26 @@
 import os
 from osgeo import gdal
 
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QMessageBox,
-                                 QDialogButtonBox,
-                                 QSizePolicy)
+from qgis.PyQt.QtWidgets import (QMessageBox,
+                                 QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
 from qgis.PyQt.QtGui import  QValidator
 from qgis.core import (Qgis,
                        QgsProject,
-                       QgsWkbTypes,
                        QgsVectorLayer,
-                       QgsProcessingFeedback,
-                       QgsVectorLayerJoinInfo,
                        QgsProcessingException)
 
 import processing
 
-from asistente_ladm_col.config.general_config import SETTINGS_CONNECTION_TAB_INDEX
-
-from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                DirValidator,
                                                make_folder_selector,
                                                normalize_local_url)
 
 from asistente_ladm_col.utils.ui import load_ui
-from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
+from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
 
 class MissingCobolSupplies(CobolBaseDialog):
@@ -59,16 +50,18 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.parent = parent
         self.names_gpkg = ''
         self.progress_configuration(0, 2)  # Start from: 0, number of steps: 2
-        self._running_missing_supplies = False
+        self._running_tool = False
+        self.tool_name = QCoreApplication.translate("MissingCobolSupplies", "Missing Supplies")
+        self.setWindowTitle(QCoreApplication.translate("MissingCobolSupplies", "Find missing Cobol supplies"))
 
-        load_ui('dialogs/wig_missing_cobol_supplies_export.ui', self.target_data)
+        load_ui('supplies/wig_missing_cobol_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
 
         self.disable_widgets()
 
         self.target_data.btn_browse_file_folder_supplies.clicked.connect(
                 make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
-                'MissingCobolSupplies', 'Select folder to save data'), parent=None))
+                "MissingCobolSupplies", "Select folder to save data"), parent=None))
 
         dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
         self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
@@ -86,6 +79,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
 
     def accepted(self):
+        self.bar.clearWidgets()
         self.save_settings()
         QSettings().setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
@@ -109,7 +103,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                 if res_lis:
                     res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                     if res_gdb:
-                        self._running_missing_supplies = True
+                        self._running_tool = True
                         self.run_model_missing_cobol_supplies()
                         self.progress_base = 100  # We start counting a second step from 100
 
@@ -135,19 +129,19 @@ class MissingCobolSupplies(CobolBaseDialog):
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.progress_base = 0
 
-                                self._running_missing_supplies = False
+                                self._running_tool = False
                             else:
                                 # User could have canceled while running the second algorithm
                                 if self.feedback.isCanceled():
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.progress_base = 0
-                                    self._running_missing_supplies = False
+                                    self._running_tool = False
                                 else:
                                     self.show_message(msg_gpkg, Qgis.Warning)
                         else:  # User canceled in the first algorithm
                             self.initialize_feedback()
                             self.progress_base = 0
-                            self._running_missing_supplies = False
+                            self._running_tool = False
                     else:
                         self.show_message(msg_gdb, Qgis.Warning)
                 else:
@@ -193,7 +187,7 @@ class MissingCobolSupplies(CobolBaseDialog):
 
     def run_model_missing_cobol_supplies(self):
         self.progress.setVisible(True)
-        self.logger.info(__name__, "Running ETL-Missing Cobol model...")
+        self.logger.info(__name__, "Running Missing Cobol Supplies model...")
 
         try:
             self.output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol",
@@ -226,7 +220,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                 self.logger.critical(__name__, msg)
                 self.show_message(msg, Qgis.Critical)
 
-        self.logger.info(__name__, "ETL-Missing Cobol model finished.")
+        self.logger.info(__name__, "Missing Cobol Supplies model finished.")
 
     def package_results(self, output):  
         for name in output.keys():
@@ -276,42 +270,6 @@ class MissingCobolSupplies(CobolBaseDialog):
         gdal.VectorTranslate(self.xlsx_path,
                              self.gpkg_path,
                              options='-f XLSX {}'.format(self.names_gpkg.strip()))
-    
-    def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
-
-        dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-
-        # We only need those tabs related to Model Baker/ili2db operations
-        for i in reversed(range(dlg.tabWidget.count())):
-            if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
-                dlg.tabWidget.removeTab(i)
-
-        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)  # To avoid unnecessary validations (LADM compliance)
-
-        if dlg.exec_():
-            self._db = dlg.get_db_connection()
-            self.update_connection_info()
-
-    def update_connection_info(self):
-        db_description = self._db.get_description_conn_string()
-        if db_description:
-            self.target_data.db_connect_label.setText(db_description)
-            self.target_data.db_connect_label.setToolTip(self._db.get_display_conn_string())
-        else:
-            self.target_data.db_connect_label.setText(
-                QCoreApplication.translate("MissingCobolSupplies", "The database is not defined!"))
-            self.target_data.db_connect_label.setToolTip('')
-
-    def additional_validations(self):
-        if hasattr(self.target_data, "txt_file_path_folder_supplies"):
-            state_folder = self.target_data.txt_file_path_folder_supplies.validator().validate(
-                self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
-        else:
-            state_folder = QValidator.Acceptable
-
-        return state_folder
 
     def disable_widgets(self):
         """
@@ -336,23 +294,3 @@ class MissingCobolSupplies(CobolBaseDialog):
             return True
         else:
             return False
-
-    def reject(self):
-        if self._running_missing_supplies:
-            reply = QMessageBox.question(self,
-                                         QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                                         QCoreApplication.translate("MissingCobolSupplies",
-                                                                    "The 'Missing Supplies' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database."),
-                                         QMessageBox.Yes, QMessageBox.No)
-
-            if reply == QMessageBox.Yes:
-                self.feedback.cancel()
-                self._running_missing_supplies = False
-                msg = QCoreApplication.translate("MissingCobolSupplies", QCoreApplication.translate("MissingCobolSupplies", "The 'Missing Supplies' tool was cancelled."))
-                self.logger.info(__name__, msg)
-                self.show_message(msg, Qgis.Info)
-        else:
-            if self._db_was_changed:
-                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
-            self.logger.info(__name__, "Dialog closed.")
-            self.done(1)

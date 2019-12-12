@@ -36,23 +36,19 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import (BLO_LIS_FILE_PATH,
-                                                      SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
 
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
-                                               FileValidator,
+from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
                                                Validators,
                                                make_file_selector,
                                                make_folder_selector)
 from asistente_ladm_col.utils import get_ui_class
 
-DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_etl_cobol.ui')
+DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 
 
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
@@ -64,7 +60,10 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.conn_manager = conn_manager
         self.parent = parent
         self.logger = Logger()
+
         self._dialog_mode = None
+        self._running_tool = False
+        self.tool_name = ""
 
         self.names = Names()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
@@ -162,7 +161,24 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         }
 
     def reject(self):
-        raise NotImplementedError
+        if self._running_tool:
+            reply = QMessageBox.question(self,
+                                         QCoreApplication.translate("CobolBaseDialog", "Warning"),
+                                         QCoreApplication.translate("CobolBaseDialog",
+                                                                    "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
+                                         QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                self.feedback.cancel()
+                self._running_tool = False
+                msg = QCoreApplication.translate("CobolBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
+                self.logger.info(__name__, msg)
+                self.show_message(msg, Qgis.Info)
+        else:
+            if self._db_was_changed:
+                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0], self.db_source)
+            self.logger.info(__name__, "Dialog closed.")
+            self.done(1)
 
     def finished_slot(self, result):
         self.bar.clearWidgets()
@@ -195,7 +211,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.target_data.setEnabled(enable)
         self.set_import_button_enabled(enable)
 
-    def db_connection_changed(self, db, ladm_col_db):
+    def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the supplies dialog (e.g., we might run an import schema before under the hood)
         self._db_was_changed = True

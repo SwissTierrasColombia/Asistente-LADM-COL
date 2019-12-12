@@ -16,35 +16,24 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QMessageBox,
-                                 QDialogButtonBox,
-                                 QSizePolicy)
+from qgis.PyQt.QtWidgets import (QMessageBox,
+                                 QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
-                              QSettings,
                               QCoreApplication)
 from qgis.PyQt.QtGui import  QValidator
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsWkbTypes,
-                       QgsVectorLayer,
-                       QgsProcessingFeedback,
-                       QgsVectorLayerJoinInfo)
-from qgis.gui import QgsMessageBar
+from qgis.core import (Qgis)
 
 import processing
 
-from asistente_ladm_col.config.general_config import (SETTINGS_CONNECTION_TAB_INDEX,
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                                      COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-
 from asistente_ladm_col.utils.ui import load_ui
-from asistente_ladm_col.gui.dialogs.dlg_cobol_base import CobolBaseDialog
+from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
 
 class ETLCobolDialog(CobolBaseDialog):
@@ -55,9 +44,11 @@ class ETLCobolDialog(CobolBaseDialog):
         self.conn_manager = conn_manager
         self.parent = parent
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
-        self._running_etl = False
+        self.tool_name = QCoreApplication.translate("ETLCobolDialog", "ETL-Cobol")
+        self.setWindowTitle(QCoreApplication.translate("ETLCobolDialog", "ETL: Cobol to Supplies model"))
+        self.db_source = SUPPLIES_DB_SOURCE
 
-        load_ui('dialogs/wig_cobol_supplies.ui', self.target_data)
+        load_ui('supplies/wig_cobol_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
 
         self.target_data.btn_browse_connection.clicked.connect(self.show_settings)
@@ -66,8 +57,6 @@ class ETLCobolDialog(CobolBaseDialog):
         self.restore_settings()
 
         # Trigger validations right now
-        self.txt_file_path_blo.setVisible(True)
-        QCoreApplication.processEvents()
         self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.text())
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
@@ -75,6 +64,7 @@ class ETLCobolDialog(CobolBaseDialog):
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def accepted(self):
+        self.bar.clearWidgets()
         self.save_settings()
 
         if self._db.test_connection()[0]:
@@ -103,7 +93,7 @@ class ETLCobolDialog(CobolBaseDialog):
                         if res_gdb:
                             res_model, msg_model = self.load_model_layers()
                             if res_model:
-                                self._running_etl = True
+                                self._running_tool = True
                                 self.run_model_etl_cobol()
                                 if not self.feedback.isCanceled():
                                     self.progress.setValue(100)
@@ -112,7 +102,7 @@ class ETLCobolDialog(CobolBaseDialog):
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
-                                self._running_etl = False
+                                self._running_tool = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)
                         else:
@@ -170,13 +160,25 @@ class ETLCobolDialog(CobolBaseDialog):
             feedback=self.feedback)
         self.logger.info(__name__, "ETL-Cobol model finished.")
 
+    def validate_inputs(self):
+        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
+        state_ter = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
+        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
+
+        if state_blo == QValidator.Acceptable and \
+                state_ter == QValidator.Acceptable and \
+                state_pro == QValidator.Acceptable and \
+                self.validate_common_inputs():
+            return True
+        else:
+            return False
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=self.db_source)
 
-        # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        if self.db_source == COLLECTED_DB_SOURCE:
+            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):
@@ -196,38 +198,5 @@ class ETLCobolDialog(CobolBaseDialog):
             self.target_data.db_connect_label.setToolTip(self._db.get_display_conn_string())
         else:
             self.target_data.db_connect_label.setText(
-                QCoreApplication.translate("ETLCobolDialog", "The database is not defined!"))
+                QCoreApplication.translate("CobolBaseDialog", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
-
-    def validate_inputs(self):
-        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
-        state_ter = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
-        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
-
-        if state_blo == QValidator.Acceptable and \
-                state_ter == QValidator.Acceptable and \
-                state_pro == QValidator.Acceptable and \
-                self.validate_common_inputs():
-            return True
-        else:
-            return False
-
-    def reject(self):
-        if self._running_etl:
-            reply = QMessageBox.question(self,
-                                         QCoreApplication.translate("CobolBaseDialog", "Warning"),
-                                         QCoreApplication.translate("CobolBaseDialog",
-                                                                    "The ETL Cobol is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database."),
-                                         QMessageBox.Yes, QMessageBox.No)
-
-            if reply == QMessageBox.Yes:
-                self.feedback.cancel()
-                self._running_etl = False
-                msg = QCoreApplication.translate("CobolBaseDialog", "The ETL-Cobol was cancelled.")
-                self.logger.info(__name__, msg)
-                self.show_message(msg, Qgis.Info)
-        else:
-            if self._db_was_changed:
-                self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0])
-            self.logger.info(__name__, "Dialog closed.")
-            self.done(1)
