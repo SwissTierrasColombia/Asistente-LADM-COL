@@ -34,8 +34,8 @@ from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
 
 from ...config.symbology import Symbology
-from ...config.general_config import (OFFICIAL_DB_PREFIX,
-                                      OFFICIAL_DB_SUFFIX,
+from ...config.general_config import (SUPPLIES_DB_PREFIX,
+                                      SUPPLIES_DB_PREFIX,
                                       PREFIX_LAYER_MODIFIERS,
                                       SUFFIX_LAYER_MODIFIERS,
                                       STYLE_GROUP_LAYER_MODIFIERS,
