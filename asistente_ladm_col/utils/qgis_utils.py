@@ -131,7 +131,7 @@ class QGISUtils(QObject):
             self._source_handler = SourceHandler(self)
         return self._source_handler
 
-    def cache_layers_and_relations(self, db, ladm_col_db):
+    def cache_layers_and_relations(self, db, ladm_col_db, db_source):
         if ladm_col_db:
             msg = QCoreApplication.translate("QGISUtils",
                 "Extracting relations and domains from the database... This is done only once per session!")
@@ -805,7 +805,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
                                                                          "No CSV file given or file doesn't exist."))
@@ -844,13 +844,15 @@ class QGISUtils(QObject):
                                                                          "CSV layer not valid!"))
             return False
 
-        csv_layer.setName("temporal_{}_csv".format(target_layer_name))
+        # Necessary export to have edit capabilities in the dataprovider
+        csv_layer.selectAll()
+        csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        csv_layer.removeSelection()
 
-        return csv_layer
+        return csv_layer_export
 
     @_activate_processing_plugin
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
-        csv_layer = self.csv_to_layer(csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation, decimal_point)
+    def copy_csv_to_db(self, csv_layer, db, target_layer_name):
         QgsProject.instance().addMapLayer(csv_layer)
 
         if not csv_layer or not csv_layer.isValid():

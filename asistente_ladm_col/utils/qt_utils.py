@@ -223,7 +223,7 @@ class FileValidator(QValidator):
             return QValidator.Acceptable, text, pos
 
 class DirValidator(QValidator):
-    def __init__(self, pattern='*', parent=None, allow_empty=False, allow_non_existing=False, allow_empty_dir=False):
+    def __init__(self, pattern=None, parent=None, allow_empty=False, allow_non_existing=False, allow_empty_dir=False):
         QValidator.__init__(self, parent)
         self.pattern = pattern
         self.allow_empty = allow_empty
@@ -237,13 +237,16 @@ class DirValidator(QValidator):
         if self.allow_empty and not text.strip():
             return QValidator.Acceptable, text, pos
 
-        pattern_matches = False
-        if type(self.pattern) is str:
-            pattern_matches = fnmatch.fnmatch(text, self.pattern)
-        elif type(self.pattern) is list:
-            pattern_matches = True in (fnmatch.fnmatch(text, pattern) for pattern in self.pattern)
+        if self.pattern != None:
+            pattern_matches = False
+            if type(self.pattern) is str:
+                pattern_matches = fnmatch.fnmatch(text, self.pattern)
+            elif type(self.pattern) is list:
+                pattern_matches = True in (fnmatch.fnmatch(text, pattern) for pattern in self.pattern)
+            else:
+                raise TypeError('pattern must be str or list, not {}'.format(type(self.pattern)))
         else:
-            raise TypeError('pattern must be str or list, not {}'.format(type(self.pattern)))
+            pattern_matches = True
 
         if not text \
                 or (not self.allow_non_existing and not os.path.isdir(text)) \

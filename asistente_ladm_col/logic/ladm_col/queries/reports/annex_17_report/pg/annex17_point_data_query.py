@@ -9,29 +9,29 @@ def get_annex17_point_data_query (schema, plot_id):
                     	,t
                     AS (
                     	SELECT t_id
-                    		,ST_ForceRHR(poligono_creado) AS poligono_creado
-                    	FROM {schema}.terreno AS t
+                    		,ST_ForceRHR(geometria) AS geometria
+                    	FROM {schema}.op_terreno AS t
                     		,parametros
                     	WHERE t.t_id = poligono_t_id
                     	)
                     	,a
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
+                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.geometria), st_ymax(t.geometria)), ST_SRID(t.geometria)) AS p
                     	FROM t
                     	)
                     	,b
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
+                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.geometria), st_ymax(t.geometria)), ST_SRID(t.geometria)) AS p
                     	FROM t
                     	)
                     	,c
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
+                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.geometria), st_ymin(t.geometria)), ST_SRID(t.geometria)) AS p
                     	FROM t
                     	)
                     	,d
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
+                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.geometria), st_ymin(t.geometria)), ST_SRID(t.geometria)) AS p
                     	FROM t
                     	)
                     	,m
@@ -39,26 +39,26 @@ def get_annex17_point_data_query (schema, plot_id):
                     	SELECT CASE
                     			WHEN criterio_observador = 1
                     				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(t.poligono_creado)), st_y(ST_centroid(t.poligono_creado))), ST_SRID(t.poligono_creado)) AS p
+                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(t.geometria)), st_y(ST_centroid(t.geometria))), ST_SRID(t.geometria)) AS p
                     						FROM t
                     						)
                     			WHEN criterio_observador = 2
                     				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
+                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.geometria))), st_y(ST_centroid(st_envelope(t.geometria)))), ST_SRID(t.geometria)) AS p
                     						FROM t
                     						)
                     			WHEN criterio_observador = 3
                     				THEN (
-                    						SELECT ST_SetSRID(ST_PointOnSurface(poligono_creado), ST_SRID(t.poligono_creado)) AS p
+                    						SELECT ST_SetSRID(ST_PointOnSurface(geometria), ST_SRID(t.geometria)) AS p
                     						FROM t
                     						)
                     			WHEN criterio_observador = 4
                     				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_ClosestPoint(poligono_creado, ST_centroid(t.poligono_creado))), st_y(ST_ClosestPoint(poligono_creado, ST_centroid(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
+                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_ClosestPoint(geometria, ST_centroid(t.geometria))), st_y(ST_ClosestPoint(geometria, ST_centroid(t.geometria)))), ST_SRID(t.geometria)) AS p
                     						FROM t
                     						)
                     			ELSE (
-                    					SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
+                    					SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.geometria))), st_y(ST_centroid(st_envelope(t.geometria)))), ST_SRID(t.geometria)) AS p
                     					FROM t
                     					)
                     			END AS p
@@ -66,7 +66,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	)
                     	,norte
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, b.p, m.p, a.p])), ST_SRID(t.poligono_creado)) geom
+                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, b.p, m.p, a.p])), ST_SRID(t.geometria)) geom
                     	FROM t
                     		,a
                     		,b
@@ -74,7 +74,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	)
                     	,este
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, b.p, c.p, m.p])), ST_SRID(t.poligono_creado)) geom
+                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, b.p, c.p, m.p])), ST_SRID(t.geometria)) geom
                     	FROM t
                     		,b
                     		,c
@@ -82,7 +82,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	)
                     	,sur
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, c.p, d.p, m.p])), ST_SRID(t.poligono_creado)) geom
+                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, c.p, d.p, m.p])), ST_SRID(t.geometria)) geom
                     	FROM t
                     		,m
                     		,c
@@ -90,7 +90,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	)
                     	,oeste
                     AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, m.p, d.p, a.p])), ST_SRID(t.poligono_creado)) geom
+                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, m.p, d.p, a.p])), ST_SRID(t.geometria)) geom
                     	FROM t
                     		,a
                     		,m
@@ -99,16 +99,16 @@ def get_annex17_point_data_query (schema, plot_id):
                     	,limite_poligono
                     AS (
                     	SELECT t_id
-                    		,ST_Boundary(poligono_creado) geom
+                    		,ST_Boundary(geometria) geom
                     	FROM t
                     	)
                     	,limite_vecinos
                     AS (
                     	SELECT o.t_id
-                    		,ST_Boundary(o.poligono_creado) geom
+                    		,ST_Boundary(o.geometria) geom
                     	FROM t
-                    		,{schema}.terreno o
-                    	WHERE o.poligono_creado && st_envelope(t.poligono_creado)
+                    		,{schema}.op_terreno o
+                    	WHERE o.geometria && st_envelope(t.geometria)
                     		AND t.t_id <> o.t_id
                     	)
                     	,pre_colindancias
@@ -182,7 +182,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	)
                     	,puntos_terreno
                     AS (
-                    	SELECT (ST_DumpPoints(poligono_creado)).* AS dp
+                    	SELECT (ST_DumpPoints(geometria)).* AS dp
                     	FROM t
                     	)
                     	,punto_nw
@@ -191,7 +191,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     		,st_distance(geom, nw) AS dist
                     	FROM puntos_terreno
                     		,(
-                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) AS nw
+                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(geometria)), st_ymax(st_envelope(geometria))), ST_SRID(geometria)) AS nw
                     			FROM t
                     			) a
                     	ORDER BY dist limit 1
@@ -212,7 +212,7 @@ def get_annex17_point_data_query (schema, plot_id):
                     	FROM lineas_colindancia
                     		,norte
                     		,(
-                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) AS nw
+                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(geometria)), st_ymax(st_envelope(geometria))), ST_SRID(geometria)) AS nw
                     			FROM t
                     			) a
                     	WHERE st_intersects(lineas_colindancia.geom, norte.geom)
@@ -254,9 +254,9 @@ def get_annex17_point_data_query (schema, plot_id):
                     			,geom
                     			,total
                     		FROM (
-                    			SELECT (ST_DumpPoints(ST_ForceRHR(poligono_creado))).* AS dp
-                    				,ST_NPoints(poligono_creado) total
-                    				,poligono_creado
+                    			SELECT (ST_DumpPoints(ST_ForceRHR(geometria))).* AS dp
+                    				,ST_NPoints(geometria) total
+                    				,geometria
                     			FROM t
                     			) AS a
                     			,(

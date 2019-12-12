@@ -13,8 +13,8 @@ from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 DEFAULT_LOG_MODE = LogModeEnum.DEV
 DEFAULT_LOG_FILE = ''
 
-OFFICIAL_DB_PREFIX = None
-OFFICIAL_DB_SUFFIX = " (Oficial)"
+SUPPLIES_DB_PREFIX = None
+SUPPLIES_DB_SUFFIX = " (Insumos)"
 PREFIX_LAYER_MODIFIERS = 'prefix'
 SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
@@ -64,11 +64,12 @@ HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
-
 # SISTEMA DE TRANSICIÓN
-ST_DOMAIN = "http://192.168.98.61:8090"
+ST_DOMAIN = "http://apist.proadmintierra.info"
 ST_LOGIN_SERVICE_URL = "{}/api/security/oauth/token".format(ST_DOMAIN)
 ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
+encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
+ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
 ST_GET_TASKS_SERVICE_URL = "{}/api/workspaces/v1/tasks/pending".format(ST_DOMAIN)
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
@@ -92,7 +93,7 @@ SETTINGS_MODELS_TAB_INDEX = 1
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.5'
+REPORTS_REQUIRED_VERSION = '0.6dev'
 URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
@@ -166,7 +167,7 @@ STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow,
                  CHANGE_DETECTION_NULL_PARCEL: Qt.yellow}
 SOURCE_DB = '_SOURCE_'
-OFFICIAL_DB_SOURCE = '_OFFICIAL_'
+SUPPLIES_DB_SOURCE = '_SUPPLIES_'
 COLLECTED_DB_SOURCE = '_COLLECTED_'
 PLOT_GEOMETRY_KEY = 'GEOMETRY_PLOT'
 
@@ -415,12 +416,12 @@ class TranslatableConfigStrings(QObject):
             CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points"),
             ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY: QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary"),
             ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT: QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot"),
-            ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(self.names.MORE_BFS_T),
-            ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(self.names.MORE_BFS_T),
-            ERROR_NO_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(self.names.LESS_BFS_T),
-            ERROR_DUPLICATE_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(self.names.LESS_BFS_T),
-            ERROR_NO_FOUND_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is not recorded in the {} table").format(self.names.POINT_BFS_T),
-            ERROR_DUPLICATE_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(self.names.POINT_BFS_T),
+            ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the masccl table"),
+            ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the masccl table"),
+            ERROR_NO_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the menosccl table"),
+            ERROR_DUPLICATE_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the menosccl table"),
+            ERROR_NO_FOUND_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is not recorded in the puntoccl table"),
+            ERROR_DUPLICATE_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the puntoccl table"),
             ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE: QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node"),
             ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT: QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point"),
             ERROR_BUILDING_IS_NOT_OVER_A_PLOT: QCoreApplication.translate("TranslatableConfigStrings", "Building is not over a plot"),

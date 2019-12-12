@@ -95,10 +95,14 @@ class GUI_Builder(QObject):
         """
         role_key = Role_Registry().get_active_role()
         self.logger.info(__name__, "Active role: {}".format(Role_Registry().get_role_name(role_key)))
+
+        if test_conn_result is None:
+            test_conn_result = db.test_connection()[0]
+
         gui_config = self._get_gui_config(db, test_conn_result, role_key)
         # self.logger.debug(__name__, "Filtered gui_config: {}".format(gui_config))
         role_actions = self._get_role_actions(role_key)
-        model_actions = self._get_model_actions(db)
+        model_actions = self._get_model_actions(db) if test_conn_result else list()
 
         # Here we define how to deal with actions, role permissions and models present
         # We decided to prefer always the rol's actions. Like this:
@@ -181,8 +185,6 @@ class GUI_Builder(QObject):
         :return: Dictionary in the form of a gui_config dict (still unfiltered).
         """
         gui_type = DEFAULT_GUI  # If test_connection is False, we use a default gui config
-        if test_conn_result is None:
-            test_conn_result = db.test_connection()[0]
 
         if test_conn_result:
             gui_config = Role_Registry().get_role_gui_config(role_key)
@@ -273,7 +275,7 @@ class GUI_Builder(QObject):
             widget = QPushButton(menu_def[WIDGET_NAME])
             menu = QMenu()
             if ICON in menu_def:
-                menu.setIcon(QIcon(menu_def[ICON]))
+                widget.setIcon(QIcon(menu_def[ICON]))
             widget.setMenu(menu)
 
         self._build_actions(menu_def[ACTIONS], menu)  # Now we have a normal menu, build actions on it

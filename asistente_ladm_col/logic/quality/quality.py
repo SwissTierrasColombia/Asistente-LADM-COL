@@ -681,8 +681,8 @@ class QualityUtils(QObject):
         list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
@@ -979,8 +979,8 @@ class QualityUtils(QObject):
         list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BUILDING_F, self.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
+        list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)

@@ -7,55 +7,55 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                             15		as tolerancia_sentidos --tolerancia en grados para la definicion del sentido de una linea
                             ),
                             t AS ( --Orienta los vertices del terreno en sentido horario
-	                        SELECT t_id, ST_ForceRHR(poligono_creado) as poligono_creado FROM {schema}.terreno AS t, parametros {where_id}
+	                        SELECT t_id, ST_ForceRHR(geometria) as geometria FROM {schema}.op_terreno AS t, parametros {where_id}
                                 ),
                             --bordes de la extension del poligono
                             a AS (
-	                        SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p FROM t
+	                        SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.geometria), st_ymax(t.geometria)), ST_SRID(t.geometria)) AS p FROM t
                             ),
                             b AS (
-                                SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p FROM t
+                                SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.geometria), st_ymax(t.geometria)), ST_SRID(t.geometria)) AS p FROM t
                             ),
                             c AS (
-                                SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p FROM t
+                                SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.geometria), st_ymin(t.geometria)), ST_SRID(t.geometria)) AS p FROM t
                             ),
                             d AS (
-                                SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p FROM t
+                                SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.geometria), st_ymin(t.geometria)), ST_SRID(t.geometria)) AS p FROM t
                             ),
                             --Punto medio (ubicación del observador para la definicion de las cardinalidades)
                             m AS (
                             SELECT
                                 CASE WHEN criterio_observador = 1 THEN --centroide del poligono
-                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(t.poligono_creado)), st_y(ST_centroid(t.poligono_creado))), ST_SRID(t.poligono_creado)) AS p FROM t )
+                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(t.geometria)), st_y(ST_centroid(t.geometria))), ST_SRID(t.geometria)) AS p FROM t )
                                 WHEN criterio_observador = 2 THEN --Centro del extent
-                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p FROM t )
+                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.geometria))), st_y(ST_centroid(st_envelope(t.geometria)))), ST_SRID(t.geometria)) AS p FROM t )
                                 WHEN criterio_observador = 3 THEN --Punto en la superficie
-                                ( SELECT ST_SetSRID(ST_PointOnSurface(poligono_creado), ST_SRID(t.poligono_creado)) AS p FROM t )
+                                ( SELECT ST_SetSRID(ST_PointOnSurface(geometria), ST_SRID(t.geometria)) AS p FROM t )
                                 WHEN criterio_observador = 4 THEN --Punto mas cercano al centroide pero que se intersecte el poligono si esta fuera
-                                ( SELECT ST_SetSRID(ST_MakePoint(st_x( ST_ClosestPoint( poligono_creado, ST_centroid(t.poligono_creado))), st_y( ST_ClosestPoint( poligono_creado,ST_centroid(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p FROM t )
+                                ( SELECT ST_SetSRID(ST_MakePoint(st_x( ST_ClosestPoint( geometria, ST_centroid(t.geometria))), st_y( ST_ClosestPoint( geometria,ST_centroid(t.geometria)))), ST_SRID(t.geometria)) AS p FROM t )
                                 ELSE --defecto: Centro del extent
-                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p FROM t )
+                                ( SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.geometria))), st_y(ST_centroid(st_envelope(t.geometria)))), ST_SRID(t.geometria)) AS p FROM t )
                                 END as p
                                 FROM parametros
                             ),
                             --Cuadrantes del polígono desde el observador a cada una de las esquinas de la extensión del polígono
                             norte AS (
-                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, b.p, m.p, a.p])), ST_SRID(t.poligono_creado)) geom FROM t,a,b,m
+                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, b.p, m.p, a.p])), ST_SRID(t.geometria)) geom FROM t,a,b,m
                             ),
                             este AS (
-                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, b.p, c.p, m.p])), ST_SRID(t.poligono_creado)) geom FROM t,b,c,m
+                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, b.p, c.p, m.p])), ST_SRID(t.geometria)) geom FROM t,b,c,m
                             ),
                             sur AS (
-                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, c.p, d.p, m.p])), ST_SRID(t.poligono_creado)) geom FROM t,m,c,d
+                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, c.p, d.p, m.p])), ST_SRID(t.geometria)) geom FROM t,m,c,d
                             ),
                             oeste AS (
-                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, m.p, d.p, a.p])), ST_SRID(t.poligono_creado)) geom FROM t,a,m,d
+                                SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, m.p, d.p, a.p])), ST_SRID(t.geometria)) geom FROM t,a,m,d
                             )
                             ,limite_poligono as(
-                                SELECT t_id, ST_Boundary(poligono_creado) geom FROM t
+                                SELECT t_id, ST_Boundary(geometria) geom FROM t
                             )
                             ,limite_vecinos as (  --obtiene el limite de los terrenos colindantes, filtrados por bounding box
-                                select o.t_id, ST_Boundary(o.poligono_creado) geom from t, {schema}.terreno o where o.poligono_creado && st_envelope(t.poligono_creado) and t.t_id <> o.t_id
+                                select o.t_id, ST_Boundary(o.geometria) geom from t, {schema}.op_terreno o where o.geometria && st_envelope(t.geometria) and t.t_id <> o.t_id
                             )
                             ,pre_colindancias as ( --inteseccion entre el limite del poligono y los terrenos cercanos, añade la geometria de los limites sin adjacencia
                                 SELECT limite_vecinos.t_id, st_intersection(limite_poligono.geom,limite_vecinos.geom) geom  FROM limite_poligono,limite_vecinos where st_intersects(limite_poligono.geom,limite_vecinos.geom) and limite_poligono.t_id <> limite_vecinos.t_id
@@ -107,7 +107,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                 select * from tmp_colindantes where ST_GeometryType(geom) <> 'ST_MultiLineString'
                             )
                             , puntos_terreno as (
-                                SELECT (ST_DumpPoints(poligono_creado)).* AS dp
+                                SELECT (ST_DumpPoints(geometria)).* AS dp
                                 FROM t
                             )
                             --Criterio 1: el punto inicial del terreno es el primer punto del lindero que intersecte con el punto ubicado mas cerca de la esquina nw del polígono
@@ -115,7 +115,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                 SELECT 	geom
                                     ,st_distance(geom, nw) AS dist
                                 FROM 	puntos_terreno,
-                                    (SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) as nw FROM t ) a
+                                    (SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(geometria)), st_ymax(st_envelope(geometria))), ST_SRID(geometria)) as nw FROM t ) a
                                 ORDER BY dist limit 1
                             )
                             , punto_inicial_por_lindero_con_punto_nw as (
@@ -129,7 +129,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                     ,st_distance(lineas_colindancia.geom,nw) distance_to_nw
                                     from lineas_colindancia
                                         ,norte
-                                        ,(SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) as nw FROM t ) a
+                                        ,(SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(geometria)), st_ymax(st_envelope(geometria))), ST_SRID(geometria)) as nw FROM t ) a
                                     where st_intersects(lineas_colindancia.geom, norte.geom)  order by dist desc, distance_to_nw
                                     limit 1
                             )
@@ -150,9 +150,9 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                         ,geom
                                         ,total
                                     FROM (
-                                        SELECT (ST_DumpPoints(ST_ForceRHR(poligono_creado))).* AS dp
-                                            ,ST_NPoints(poligono_creado) total
-                                            ,poligono_creado
+                                        SELECT (ST_DumpPoints(ST_ForceRHR(geometria))).* AS dp
+                                            ,ST_NPoints(geometria) total
+                                            ,geometria
                                         FROM t
                                         ) AS a
                                         ,(

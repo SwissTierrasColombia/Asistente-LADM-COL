@@ -130,7 +130,7 @@ class GeometryUtils(QObject):
                         if intersection_type == QgsWkbTypes.LineGeometry:
                             intersect_less_pairs.append((polygon[id_field], candidate_feature[id_field]))
                         else:
-                            self.logger.warning(
+                            self.logger.warning(__name__,
                                 "(Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
                                     polygon[id_field],
                                     candidate_feature[id_field],

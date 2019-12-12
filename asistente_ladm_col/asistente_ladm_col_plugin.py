@@ -43,7 +43,7 @@ from asistente_ladm_col.config.enums import (EnumDbActionType,
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
-                                                      OFFICIAL_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE,
                                                       PLUGIN_NAME,
                                                       PLUGIN_VERSION,
                                                       QUERIES_ACTION_OBJECTNAME,
@@ -76,7 +76,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
                                                       WIZARD_LAYERS,
-                                                      WIZARD_TOOL_NAME)
+                                                      WIZARD_TOOL_NAME,
+                                                      COLLECTED_DB_SOURCE)
 from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
@@ -90,9 +91,9 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.dialogs.dlg_etl_cobol import ETLCobolDialog
-from asistente_ladm_col.gui.transition_system.dlg_log_quality import LogQualityDialog
-from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
+from asistente_ladm_col.gui.supplies.dlg_etl_cobol import ETLCobolDialog
+from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
+from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
@@ -110,20 +111,21 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
-                                                 _official_db_connection_required,
-                                                 _operation_model_required,
-                                                 _different_db_connections_required)
+                                                 _supplies_db_connection_required,
+                                                 _operation_model_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
+from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
 
-    def __init__(self, iface):
+    def __init__(self, iface, unit_tests=False):
         QObject.__init__(self)
         self.iface = iface
+        self.unit_tests = unit_tests
         self.main_window = self.iface.mainWindow()
         self._about_dialog = None
         self._dock_widget_queries = None
@@ -151,10 +153,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_actions()
         self.set_connections()
 
-        # Ask for role name before building the GUI, only the first time the plugin is run
-        if self.gui_builder.show_welcome_screen():
-            dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
-            dlg_welcome.exec_()
+        if not self.unit_tests:
+            # Ask for role name before building the GUI, only the first time the plugin is run
+            if self.gui_builder.show_welcome_screen():
+                dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+                dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
@@ -220,12 +223,13 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         SLOT. Intermediate step to call refresh gui with proper parameters.
         """
-        self.refresh_gui(self.get_db_connection(), None)
+        self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
-    def refresh_gui(self, db, res):
-        msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
-        with ProcessWithStatus(msg):
-            self.gui_builder.build_gui(db, res)
+    def refresh_gui(self, db, res, db_source):
+        if db_source == COLLECTED_DB_SOURCE:
+            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
+            with ProcessWithStatus(msg):
+                self.gui_builder.build_gui(db, res)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
@@ -237,24 +241,32 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz_geometry_creation_finished)  # SIGNAL chaining
         self._finalize_geometry_creation_action.setEnabled(False)
 
-        self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.main_window)
+        self._build_boundary_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/build_boundaries.svg"),
+                                              TOOLBAR_BUILD_BOUNDARY, self.main_window)
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
 
         self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
             TOOLBAR_MOVE_NODES, self.main_window)
         self._topological_editing_action.triggered.connect(self.call_topological_editing)
 
-        self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.main_window)
+        self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                              TOOLBAR_FILL_POINT_BFS,
+                                              self.main_window)
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
 
-        self._fill_more_BFS_less_action = QAction(TOOLBAR_FILL_MORE_BFS_LESS, self.main_window)
+        self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                                  TOOLBAR_FILL_MORE_BFS_LESS,
+                                                  self.main_window)
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
 
-        self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
+        self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+                                                           TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
 
-        self._import_from_intermediate_structure_action = QAction(TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-                                                                  self.main_window)
+        self._import_from_intermediate_structure_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/excel.svg"),
+            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+            self.main_window)
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
 
         self.gui_builder.register_actions({
@@ -286,14 +298,21 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_supplies_actions(self):
         self._etl_cobol_supplies_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/etl_cobol.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
+            self.main_window)
+
+        self._missing_cobol_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/missing_supplies.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing Cobol supplies"),
             self.main_window)
 
         # Connections
         self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
+        self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
-        self.gui_builder.register_action(ACTION_RUN_ETL_COBOL, self._etl_cobol_supplies_action)
+        self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
+                                           ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
 
     def create_operation_actions(self):
         self._point_surveying_and_representation_operation_action = QAction(
@@ -347,7 +366,10 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
                 self.main_window)
-        self._upload_source_files_operation_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self.main_window)
+        self._upload_source_files_operation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/upload.svg"),
+                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                        "Upload Pending Source Files"),
+                                                             self.main_window)
 
         self._right_rrr_operation_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
@@ -360,7 +382,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._quality_operation_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/validation.svg"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self.main_window)
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_point_cad)
@@ -443,41 +465,46 @@ class AsistenteLADMCOLPlugin(QObject):
         self._query_changes_all_parcels_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self.main_window)
         self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self.main_window)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies data settings"), self.main_window)
 
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
-        self._settings_changes_action.triggered.connect(self.show_official_data_settings)
+        self._settings_changes_action.triggered.connect(self.show_supplies_data_settings)
 
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
             ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
-            ACTION_OFFICIAL_SETTINGS: self._settings_changes_action
+            ACTION_SUPPLIES_SETTINGS: self._settings_changes_action
         })
 
     def create_generic_actions(self):
-        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
+        self._load_layers_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/load_layers.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
                                            self.main_window)
         self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
         self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
-        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
+        self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
+                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)
         self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
-        self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
+        self._ant_map_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_ant.svg"),
+                                       QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
         self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-        self._import_schema_action = QAction(
+        self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
-        self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
+        self._import_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
                                            self.main_window)
-        self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
+        self._export_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
+        self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
+                                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
@@ -737,7 +764,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_etl_cobol_dialog(self):
         # TODO: Should use @_activate_processing_plugin
-        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg.exec_()
+
+    def show_missing_cobol_supplies_dialog(self):
+        dlg = MissingCobolSupplies(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -855,8 +886,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self):
         return self.conn_manager.get_db_connector_from_source()
 
-    def get_official_db_connection(self):
-        return self.conn_manager.get_db_connector_from_source(db_source=OFFICIAL_DB_SOURCE)
+    def get_supplies_db_connection(self):
+        return self.conn_manager.get_db_connector_from_source(db_source=SUPPLIES_DB_SOURCE)
 
     def call_dlg_import_schema(self, state):
         """
@@ -1021,8 +1052,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_operation_model_required
     @_db_connection_required
-    @_official_db_connection_required
-    @_different_db_connections_required
+    @_supplies_db_connection_required
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
         with ProcessWithStatus(msg):
@@ -1033,8 +1063,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_operation_model_required
     @_db_connection_required
-    @_official_db_connection_required
-    @_different_db_connections_required
+    @_supplies_db_connection_required
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
         with ProcessWithStatus(msg):
@@ -1047,23 +1076,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
                                                                        self.get_db_connection(),
-                                                                       self.get_official_db_connection(),
+                                                                       self.get_supplies_db_connection(),
                                                                        self.qgis_utils,
                                                                        self.ladm_data,
                                                                        all_parcels_mode)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
-        self.conn_manager.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
-    def show_official_data_settings(self):
-        dlg = OfficialDataSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
-        dlg.official_db_connection_changed.connect(self.conn_manager.official_db_connection_changed)
+    def show_supplies_data_settings(self):
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.exec_()
 
-    def show_official_data_settings_clear_message_bar(self):
+    def show_supplies_data_settings_clear_message_bar(self):
         self.clear_message_bar()
-        self.show_official_data_settings()
+        self.show_supplies_data_settings()
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
@@ -1143,7 +1171,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
 
     def session_logout_from_action(self):
-        """ Overwritte action.triggered SIGNAL parameters and call session_logout properly """
+        """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
         self.session_logout(True, True)
 
     def session_logout(self, show_confirmation_dialog=True, show_message=True):

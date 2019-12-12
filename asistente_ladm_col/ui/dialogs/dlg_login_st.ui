@@ -44,7 +44,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Access to Tansition System</string>
+          <string>Access to Transition System</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">

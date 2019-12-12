@@ -26,7 +26,8 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
-                                                      ST_LOGIN_SERVICE_PAYLOAD)
+                                                      ST_LOGIN_SERVICE_PAYLOAD,
+                                                      ST_LOGIN_AUTHORIZATION_CLIENT)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
@@ -48,7 +49,7 @@ class STSession(QObject, metaclass=SingletonQObject):
         payload = ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
         headers = {
             'Content-Type': "application/x-www-form-urlencoded",
-            'Authorization': "Basic c3Qtd2ViLWRldmVsb3AtaUxmdm9uU2g6MTIzNDU=",  # TODO build it from the plugin
+            'Authorization': ST_LOGIN_AUTHORIZATION_CLIENT,
             'Accept': "*/*",
             'Cache-Control': "no-cache",
             'Accept-Encoding': "gzip, deflate",
@@ -66,6 +67,7 @@ class STSession(QObject, metaclass=SingletonQObject):
             return False, msg
 
         status_OK = response.status_code == 200
+        self.logger.info(__name__, "Login response status code: {}".format(response.status_code))
         if status_OK:
             msg = QCoreApplication.translate("STSession", "User logged in successfully!")
             logged_data = json.loads(response.text)

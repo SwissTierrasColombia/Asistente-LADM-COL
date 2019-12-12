@@ -284,18 +284,18 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                                                                          "No CSV file given or file doesn't exist."))
             return
 
-        target_layer = self.current_point_name()
+        target_layer_name = self.current_point_name()
 
         with OverrideCursor(Qt.WaitCursor):
-            self.qgis_utils.copy_csv_to_db(csv_path,
-                                           self.txt_delimiter.text(),
-                                           self.cbo_longitude.currentText(),
-                                           self.cbo_latitude.currentText(),
-                                           self._db,
-                                           self.epsg,
-                                           target_layer,
-                                           self.cbo_elevation.currentText() or None,
-                                           self.detect_decimal_point(csv_path))
+            csv_layer = self.qgis_utils.csv_to_layer(csv_path,
+                                                     self.txt_delimiter.text(),
+                                                     self.cbo_longitude.currentText(),
+                                                     self.cbo_latitude.currentText(),
+                                                     self.epsg,
+                                                     self.cbo_elevation.currentText() or None,
+                                                     self.detect_decimal_point(csv_path))
+
+            self.qgis_utils.copy_csv_to_db(csv_layer, self._db, target_layer_name)
 
     def required_layers_are_available(self):
         layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)

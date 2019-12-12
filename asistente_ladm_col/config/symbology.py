@@ -52,10 +52,10 @@ class Symbology:
             }
         }
 
-    def get_official_style_group(self):
+    def get_supplies_style_group(self):
         return {
             self.names.OP_PLOT_T: {
-                QgsWkbTypes.PolygonGeometry: 'style_official_plot_polygon'
+                QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
             }
         }
 
