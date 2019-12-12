@@ -111,12 +111,13 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
+                                                 _validate_if_layers_in_editing_mode_with_changes,
                                                  _supplies_db_connection_required,
                                                  _operation_model_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
-
+from .resources_rc import *  # Necessary to show icons
 
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
@@ -1074,7 +1075,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.clear_message_bar()
         self.show_change_detection_settings()
 
-    def show_change_detection_settings(self):
+    @_validate_if_layers_in_editing_mode_with_changes
+    def show_change_detection_settings(self, *args, **kwargs):
         dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
         dlg.exec_()
 

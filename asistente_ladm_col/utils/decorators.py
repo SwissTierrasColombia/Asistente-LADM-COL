@@ -245,6 +245,24 @@ def _validate_if_wizard_is_open(func_to_decorate):
 
     return decorated_function
 
+
+def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        layers_modified = inst.qgis_utils.get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(
+            inst.get_db_connection())
+        layers_names = [layer.name() for layer in layers_modified]
+        if layers_modified:
+            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "Cannot open the Change Detection Settings Dialog because {} layer(s) is/are in editing session. please finish editing before trying to open the Change Detection Settings Dialog.").format(', '.join(layers_names)),
+                              Qgis.Info)
+        else:
+            func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+
+
 def _with_override_cursor(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):

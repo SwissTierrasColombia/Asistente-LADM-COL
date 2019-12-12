@@ -93,6 +93,27 @@ SETTINGS_SOURCES_TAB_INDEX = 4
 SETTINGS_ADVANCED_TAB_INDEX = 5
 
 
+# DB MODELS
+SUPPLIES_DB_MODEL = "SUPPLIES_DB_MODEL"
+SNR_DATA_DB_MODEL = "SNR_DATA_DB_MODEL"
+SUPPLIES_INTEGRATION_DB_MODEL = "SUPPLIES_INTEGRATION_DB_MODEL"
+OPERATION_DB_MODEL = "OPERATION_DB_MODEL"
+VALUATION_DB_MODEL = "VALUATION_DB_MODEL"
+CADASTRAL_FORM_DB_MODEL = "CADASTRAL_FORM_DB_MODEL"
+ANT_DB_MODEL = "ANT_DB_MODEL"
+REFERENCE_CARTOGRAPHY_DB_MODEL = "REFERENCE_CARTOGRAPHY_DB_MODEL"
+
+DICT_NAMES_DB_MODELS = {
+    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Model"),
+    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data Model"),
+    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration Model"),
+    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation Model"),
+    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation Model"),
+    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form Model"),
+    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT Model"),
+    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography Model"),
+}
+
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 REPORTS_REQUIRED_VERSION = '0.6dev'

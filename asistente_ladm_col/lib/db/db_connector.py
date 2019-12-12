@@ -23,6 +23,14 @@ from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.general_config import (SUPPLIES_DB_MODEL,
+                                                      SNR_DATA_DB_MODEL,
+                                                      SUPPLIES_INTEGRATION_DB_MODEL,
+                                                      OPERATION_DB_MODEL,
+                                                      VALUATION_DB_MODEL,
+                                                      CADASTRAL_FORM_DB_MODEL,
+                                                      ANT_DB_MODEL,
+                                                      REFERENCE_CARTOGRAPHY_DB_MODEL)
 
 class DBConnector(QObject):
     """
@@ -173,6 +181,28 @@ class DBConnector(QObject):
             return self.model_parser.supplies_model_exists()
 
         return False
+
+    def required_models_exist(self, models):
+        dict_required_models = dict()
+        for model in models:
+            if model == SUPPLIES_DB_MODEL:
+                dict_required_models[SUPPLIES_DB_MODEL] = self.supplies_model_exists()
+            if model == SNR_DATA_DB_MODEL:
+                dict_required_models[SNR_DATA_DB_MODEL] = self.snr_data_model_exists()
+            if model == SUPPLIES_INTEGRATION_DB_MODEL:
+                dict_required_models[SUPPLIES_INTEGRATION_DB_MODEL] = self.supplies_integration_model_exists()
+            if model == OPERATION_DB_MODEL:
+                dict_required_models[OPERATION_DB_MODEL] = self.operation_model_exists()
+            if model == VALUATION_DB_MODEL:
+                dict_required_models[VALUATION_DB_MODEL] = self.valuation_model_exists()
+            if model == CADASTRAL_FORM_DB_MODEL:
+                dict_required_models[CADASTRAL_FORM_DB_MODEL] = self.cadastral_form_model_exists()
+            if model == ANT_DB_MODEL:
+                dict_required_models[ANT_DB_MODEL] = self.ant_model_exists()
+            if model == REFERENCE_CARTOGRAPHY_DB_MODEL:
+                dict_required_models[REFERENCE_CARTOGRAPHY_DB_MODEL] = self.reference_cartography_model_exists()
+
+        return dict_required_models
 
     def read_model_parser(self):
         if self.model_parser is None:

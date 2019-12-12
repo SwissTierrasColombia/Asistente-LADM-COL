@@ -31,6 +31,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                                      DICT_NAMES_DB_MODELS,
                                                       COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE)
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
@@ -55,6 +56,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = db_source
+        self._required_models = list()
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -203,6 +205,20 @@ class SettingsDialog(QDialog, DIALOG_UI):
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
+
+            # To validate the required models there must be at least one defined model.
+            if self._required_models:
+                result_required_models = db.required_models_exist(self._required_models)
+
+                missing_required_models = list()
+                for model in result_required_models:
+                    if not result_required_models[model]:
+                        missing_required_models.append(DICT_NAMES_DB_MODELS[model])
+
+                if missing_required_models:
+                    msg = QCoreApplication.translate("SettingsDialog", "The required {} do not exist").format(', '.join(missing_required_models))
+                    self.show_message(msg, Qgis.Warning)
+                    return  # Do not close the dialog
 
             if valid_connection:
                 if self._db is not None:
@@ -424,3 +440,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
+
+    def set_required_models(self, required_models):
+        self._required_models = required_models
