@@ -178,10 +178,10 @@ class GUI_Config(QObject):
                     OBJECT_NAME: "ladm_col_change_detection_menu",
                     ICON: CHANGE_DETECTION_ICON,
                     ACTIONS: [
-                        ACTION_CHANGE_DETECTION_PER_PARCEL,
-                        ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                        ACTION_CHANGE_DETECTION_SETTINGS,
                         SEPARATOR,
-                        ACTION_CHANGE_DETECTION_SETTINGS
+                        ACTION_CHANGE_DETECTION_PER_PARCEL,
+                        ACTION_CHANGE_DETECTION_ALL_PARCELS
                     ]
                 },
                 SEPARATOR,

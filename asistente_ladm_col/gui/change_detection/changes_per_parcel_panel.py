@@ -43,6 +43,7 @@ from asistente_ladm_col.config.general_config import (SUPPLIES_DB_PREFIX,
                                                       PREFIX_LAYER_MODIFIERS,
                                                       SUFFIX_LAYER_MODIFIERS,
                                                       STYLE_GROUP_LAYER_MODIFIERS,
+                                                      DICT_ALIAS_KEYS_CHANGE_DETECTION,
                                                       SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
                                                       LAYER,
@@ -357,8 +358,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         for row, field_name in enumerate(field_names):
             supplies_value = supplies_attrs[field_name] if field_name in supplies_attrs else NULL
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
-
-            self.fill_row(field_name, supplies_value, collected_value, row, plural)
+            field_alias = DICT_ALIAS_KEYS_CHANGE_DETECTION[field_name] if field_name in DICT_ALIAS_KEYS_CHANGE_DETECTION else field_name
+            self.fill_row(field_alias, supplies_value, collected_value, row, plural)
 
         if number_of_rows:  # At least one row in the table?
             self.fill_geometry_row(PLOT_GEOMETRY_KEY,

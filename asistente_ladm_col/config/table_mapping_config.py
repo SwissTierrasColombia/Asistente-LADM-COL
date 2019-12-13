@@ -1,3 +1,4 @@
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import NULL
 
 from asistente_ladm_col.utils.singleton import Singleton
@@ -1412,21 +1413,21 @@ class Names(metaclass=Singleton):
         PLURAL WORDS, FOR DISPLAY PURPOSES
         """
         return {
-            self.OP_PLOT_T: "Terrenos",
-            self.OP_PARCEL_T: "Predios",
-            self.OP_BUILDING_T: "Construcciones",
-            self.OP_BUILDING_UNIT_T: "Unidades de Construcción",
-            self.EXT_ADDRESS_S: "Direcciones",
-            self.OP_PARTY_T: "Interesados",
-            self.OP_GROUP_PARTY_T: "Agrupación de interesados",
-            self.OP_RIGHT_T: "Derechos",
-            self.OP_RESTRICTION_T: "Restricciones",
-            self.OP_ADMINISTRATIVE_SOURCE_T: "Fuentes Administrativas",
-            self.OP_SPATIAL_SOURCE_T: "Fuentes Espaciales",
-            self.OP_BOUNDARY_T: "Linderos",
-            self.OP_BOUNDARY_POINT_T: "Puntos de Lindero",
-            self.OP_SURVEY_POINT_T: "Puntos de Levantamiento",
-            self.GC_OWNER_T: "Propietarios"
+            self.OP_PLOT_T: QCoreApplication.translate("Names", "Plots"),
+            self.OP_PARCEL_T: QCoreApplication.translate("Names", "Parcels"),
+            self.OP_BUILDING_T: QCoreApplication.translate("Names", "Buildings"),
+            self.OP_BUILDING_UNIT_T: QCoreApplication.translate("Names", "Buildings units"),
+            self.EXT_ADDRESS_S: QCoreApplication.translate("Names", "Addresses"),
+            self.OP_PARTY_T: QCoreApplication.translate("Names", "Parties"),
+            self.OP_GROUP_PARTY_T: QCoreApplication.translate("Names", "Group parties"),
+            self.OP_RIGHT_T: QCoreApplication.translate("Names", "Rights"),
+            self.OP_RESTRICTION_T: QCoreApplication.translate("Names", "Restrictions"),
+            self.OP_ADMINISTRATIVE_SOURCE_T: QCoreApplication.translate("Names", "Administrative sources"),
+            self.OP_SPATIAL_SOURCE_T: QCoreApplication.translate("Names", "Spatial sources"),
+            self.OP_BOUNDARY_T: QCoreApplication.translate("Names", "Boundaries"),
+            self.OP_BOUNDARY_POINT_T: QCoreApplication.translate("Names", "Boundary points"),
+            self.OP_SURVEY_POINT_T: QCoreApplication.translate("Names", "Survey point"),
+            self.GC_OWNER_T: QCoreApplication.translate("Names", "GC Owners")
         }
 
     def get_dict_package_icon(self):

@@ -30,8 +30,7 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                                      DICT_NAMES_DB_MODELS,
+from asistente_ladm_col.config.general_config import (DICT_NAMES_DB_MODELS,
                                                       COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE)
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog

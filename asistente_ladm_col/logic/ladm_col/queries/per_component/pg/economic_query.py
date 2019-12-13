@@ -128,7 +128,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                     WHERE op_terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
                     ORDER BY op_terreno.t_id
                  )
-                SELECT json_agg(info_terreno.op_terreno) AS terreno FROM info_terreno
+                SELECT json_agg(info_terreno.op_terreno) AS op_terreno FROM info_terreno
     """
 
     query = query.format(schema= schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number, previous_parcel_number=previous_parcel_number)

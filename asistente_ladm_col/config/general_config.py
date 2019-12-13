@@ -102,6 +102,17 @@ CADASTRAL_FORM_DB_MODEL = "CADASTRAL_FORM_DB_MODEL"
 ANT_DB_MODEL = "ANT_DB_MODEL"
 REFERENCE_CARTOGRAPHY_DB_MODEL = "REFERENCE_CARTOGRAPHY_DB_MODEL"
 
+DICT_NAMES_DB_MODELS = {
+    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Model"),
+    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data Model"),
+    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration Model"),
+    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation Model"),
+    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation Model"),
+    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form Model"),
+    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT Model"),
+    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography Model"),
+}
+
 # Change Detections keys to compare
 DICT_KEY_PARCEL_T_DEPARTMENT_F = "departamento"
 DICT_KEY_PARCEL_T_FMI_F = "matricula_inmobiliaria"
@@ -116,15 +127,17 @@ DICT_KEY_PARTY_T_RIGHT = "derecho"
 
 DICT_KEY_PLOT_T_AREA_F = "area_terreno"
 
-DICT_NAMES_DB_MODELS = {
-    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Model"),
-    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data Model"),
-    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration Model"),
-    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation Model"),
-    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation Model"),
-    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form Model"),
-    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT Model"),
-    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography Model"),
+DICT_ALIAS_KEYS_CHANGE_DETECTION = {
+    DICT_KEY_PARCEL_T_DEPARTMENT_F: QCoreApplication.translate("TranslatableConfigStrings", "Parcel department"),
+    DICT_KEY_PARCEL_T_FMI_F: QCoreApplication.translate("TranslatableConfigStrings", " Parcel FMI"),
+    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: QCoreApplication.translate("TranslatableConfigStrings", "Parcel number"),
+    DICT_KEY_PARCEL_T_CONDITION_F: QCoreApplication.translate("TranslatableConfigStrings", "Parcel condition"),
+    DICT_KEY_PARCEL_T_NAME_F: QCoreApplication.translate("TranslatableConfigStrings", "Parcel name"),
+    DICT_KEY_PARTY_T_DOCUMENT_TYPE_F: QCoreApplication.translate("TranslatableConfigStrings", "Document type"),
+    DICT_KEY_PARTY_T_DOCUMENT_ID_F: QCoreApplication.translate("TranslatableConfigStrings", "Document ID"),
+    DICT_KEY_PARTY_T_NAME_F: QCoreApplication.translate("TranslatableConfigStrings", "Party Name"),
+    DICT_KEY_PARTY_T_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Right"),
+    DICT_KEY_PLOT_T_AREA_F: QCoreApplication.translate("TranslatableConfigStrings", "Plot area"),
 }
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
