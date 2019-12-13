@@ -93,7 +93,6 @@ La versión actual ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
  - Realizar revisiones de calidad (topología):
-   - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
    - Revisar superposiciones en `Punto Lindero`.
    - Revisar superposiciones en `Punto de Control`.
    - Revisar superposiciones en `Lindero`.

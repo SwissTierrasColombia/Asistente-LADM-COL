@@ -161,6 +161,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_SCHEMA_IMPORT,
                 ACTION_RUN_ETL_COBOL,
                 ACTION_RUN_ETL_SNC,
+                ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_LOAD_LAYERS,
                 ACTION_EXPORT_DATA
             ]
@@ -172,6 +173,7 @@ class Role_Registry(metaclass=Singleton):
             ROLE_ACTIONS: [
                 ACTION_RUN_ETL_COBOL,
                 ACTION_RUN_ETL_SNC,
+                ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT
             ],
@@ -265,7 +267,7 @@ class Role_Registry(metaclass=Singleton):
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Manager"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "The manager is in charge of preparing supplies for operators as well as validatinsg and managing the data provided by operators."),
+                                                         "The manager is in charge of preparing supplies for operators as well as validating and managing the data provided by operators."),
             ROLE_ACTIONS: [
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,

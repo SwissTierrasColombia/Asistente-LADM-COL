@@ -102,7 +102,6 @@ class GUI_Builder(QObject):
         gui_config = self._get_gui_config(db, test_conn_result, role_key)
         # self.logger.debug(__name__, "Filtered gui_config: {}".format(gui_config))
         role_actions = self._get_role_actions(role_key)
-
         model_actions = self._get_model_actions(db) if test_conn_result else list()
 
         # Here we define how to deal with actions, role permissions and models present

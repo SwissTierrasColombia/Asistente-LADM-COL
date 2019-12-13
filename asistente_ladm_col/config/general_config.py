@@ -52,7 +52,6 @@ DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_2', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLAN
 
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
-DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
@@ -191,11 +190,11 @@ PARCEL_STATUS = '_PARCEL_STATUS_'
 PARCEL_STATUS_DISPLAY = ''
 CHANGE_DETECTION_NEW_PARCEL = QCoreApplication.translate("", "New parcel") # alta
 CHANGE_DETECTION_MISSING_PARCEL = QCoreApplication.translate("", "Missing parcel") # Baja
-CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("","Parcel changed")
-CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("","Only geometry changed")
-CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("",'OK')
-CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("",'Several')
-CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("",'null')
+CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("", "Parcel changed")
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("", "Only geometry changed")
+CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("", "OK")
+CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("", "Several")
+CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("", "null")
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
@@ -360,7 +359,6 @@ CHECK_OVERLAPS_IN_CONTROL_POINTS = "CHECK_OVERLAPS_IN_CONTROL_POINTS"
 CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
 CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES"
-CHECK_TOO_LONG_BOUNDARY_SEGMENTS = "CHECK_TOO_LONG_BOUNDARY_SEGMENTS"
 CHECK_OVERLAPS_IN_BOUNDARIES = "CHECK_OVERLAPS_IN_BOUNDARIES"
 CHECK_BOUNDARIES_ARE_NOT_SPLIT = "CHECK_BOUNDARIES_ARE_NOT_SPLIT"
 CHECK_BOUNDARIES_COVERED_BY_PLOTS = "CHECK_BOUNDARIES_COVERED_BY_PLOTS"
@@ -422,7 +420,6 @@ class TranslatableConfigStrings(QObject):
             CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line"),
             CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes"),
-            CHECK_TOO_LONG_BOUNDARY_SEGMENTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE))),
             CHECK_OVERLAPS_IN_BOUNDARIES: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap"),
             CHECK_BOUNDARIES_ARE_NOT_SPLIT: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split"),
             CHECK_BOUNDARIES_COVERED_BY_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots"),

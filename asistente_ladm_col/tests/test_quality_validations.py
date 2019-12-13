@@ -626,54 +626,6 @@ class TesQualityValidations(unittest.TestCase):
        for item in test_result:
            self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_NO_LESS_TABLE]))
 
-    def test_get_too_long_segments_from_simple_line(self):
-        print('\nINFO: Validating too long segments...')
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='too_long_lines')
-        boundary_layer = QgsVectorLayer(uri, 'too_long_lines', 'ogr')
-
-        tolerance = 200 # meters
-
-        features = [feature for feature in boundary_layer.getFeatures()]
-        self.assertEqual(len(features), 2)
-
-        ### feature 1 ###
-        feature = features[0]
-        lines = feature.geometry()
-        self.assertTrue(lines.isMultipart())
-        self.assertEqual(lines.constGet().numGeometries(), 4)
-
-        line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 2)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(1)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(2)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 0)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(3)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
-
-        ### feature 2 ###
-        feature = features[1]
-        lines = feature.geometry()
-        self.assertTrue(lines.isMultipart())
-        self.assertEqual(lines.constGet().numGeometries(), 1)
-
-        line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
-
     def test_overlapping_points(self):
         print('\nINFO: Validating overlaps in points...')
         test_layer = 'tests_puntolindero'

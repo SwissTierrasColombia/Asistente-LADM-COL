@@ -88,7 +88,6 @@ The current version ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-
    - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
  - Check quality rules (topology):
-   - Check too long `Boundary` segments (exceeding a given tolerance).
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
