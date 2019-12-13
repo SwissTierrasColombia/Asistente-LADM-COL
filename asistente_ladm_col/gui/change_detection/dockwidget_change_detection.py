@@ -37,6 +37,7 @@ from ...utils.qt_utils import OverrideCursor
 
 from ...config.symbology import Symbology
 from ...config.general_config import (SUPPLIES_DB_PREFIX,
+                                      DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                       SUPPLIES_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
                                       SUFFIX_LAYER_MODIFIERS,
@@ -322,13 +323,13 @@ class ChangeDetectionUtils(QObject):
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = NULL
+                dict_attrs_comparison[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] = NULL
                 dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
             else:
                 # A parcel number has at least one dict of attributes (i.e., one feature)
-                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
+                dict_attrs_comparison[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
                 dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
 
                 if len(collected_features) > 1:

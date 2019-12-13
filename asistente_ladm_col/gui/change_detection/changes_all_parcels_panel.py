@@ -29,20 +29,21 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 from qgis.gui import QgsPanelWidget
 
-from ...config.general_config import (PARCEL_STATUS_DISPLAY,
-                                      PARCEL_STATUS,
-                                      LAYER,
-                                      STATUS_COLORS,
-                                      SOURCE_DB,
-                                      COLLECTED_DB_SOURCE,
-                                      CHANGE_DETECTION_MISSING_PARCEL,
-                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                      CHANGE_DETECTION_NEW_PARCEL,
-                                      SUPPLIES_DB_SOURCE)
+from asistente_ladm_col.config.general_config import (PARCEL_STATUS_DISPLAY,
+                                                      DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                      PARCEL_STATUS,
+                                                      LAYER,
+                                                      STATUS_COLORS,
+                                                      SOURCE_DB,
+                                                      COLLECTED_DB_SOURCE,
+                                                      CHANGE_DETECTION_MISSING_PARCEL,
+                                                      CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                      CHANGE_DETECTION_NEW_PARCEL,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.table_mapping_config import Names
-from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
-from ...utils import get_ui_class
-from ...utils.qt_utils import OverrideCursor
+from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 
@@ -84,12 +85,12 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
         self.tbl_changes_all_parcels.clearContents()
-        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[self.names.OP_PARCEL_T_PARCEL_NUMBER_F]) if filter_parcels else len(self.compared_parcels_data))
+        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]) if filter_parcels else len(self.compared_parcels_data))
         self.tbl_changes_all_parcels.setSortingEnabled(False)
 
         row = 0
         for parcel_number, parcel_attrs in self.compared_parcels_data.items():
-            if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[self.names.OP_PARCEL_T_PARCEL_NUMBER_F]):
+            if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]):
                 item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
                 item.setData(Qt.UserRole, {self.names.T_ID_F: parcel_attrs[self.names.T_ID_F], 'inverse': inverse})
                 self.tbl_changes_all_parcels.setItem(row, 0, item)

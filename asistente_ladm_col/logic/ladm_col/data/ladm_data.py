@@ -535,7 +535,7 @@ class LADM_DATA():
                     dict_party[key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
             right_type_id = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
-            dict_party['derecho'] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
+            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -609,7 +609,7 @@ class LADM_DATA():
                 if id_party in dict_parties:
                     # Add extra attribute from right table
                     right_type_id = dict_group_party_right[id_group_party][self.names.OP_RIGHT_T_TYPE_F]
-                    dict_parties[id_party]['derecho'] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
+                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
