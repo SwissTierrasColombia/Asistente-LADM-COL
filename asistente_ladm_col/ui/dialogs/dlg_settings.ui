@@ -207,7 +207,7 @@
        <string>Quality</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="5" column="0">
+       <item row="3" column="0">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -220,57 +220,7 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="0">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>15</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Tolerance for too long boundary segments [m.]:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>79</width>
-             <height>18</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="txt_too_long_tolerance">
-           <property name="text">
-            <string>200</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="4" column="0">
+       <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string/>
@@ -358,14 +308,14 @@
          <zorder>horizontalSpacer_6</zorder>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="1" column="0">
         <widget class="QCheckBox" name="chk_use_roads">
          <property name="text">
           <string>Take roads into account when checking for gaps in plots</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="0" column="0">
         <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -675,7 +625,6 @@
   <tabstop>offline_models_radio_button</tabstop>
   <tabstop>custom_model_directories_line_edit</tabstop>
   <tabstop>custom_models_dir_button</tabstop>
-  <tabstop>txt_too_long_tolerance</tabstop>
   <tabstop>chk_use_roads</tabstop>
   <tabstop>chk_automatic_values_in_batch_mode</tabstop>
   <tabstop>namespace_collapsible_group_box</tabstop>

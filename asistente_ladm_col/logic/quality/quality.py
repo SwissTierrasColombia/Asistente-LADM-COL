@@ -40,7 +40,6 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                                       DEFAULT_USE_ROADS_VALUE,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
@@ -52,7 +51,6 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       CHECK_OVERLAPS_IN_CONTROL_POINTS,
                                                       CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
                                                       CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                                      CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
                                                       CHECK_OVERLAPS_IN_BOUNDARIES,
                                                       CHECK_BOUNDARIES_ARE_NOT_SPLIT,
                                                       CHECK_BOUNDARIES_COVERED_BY_PLOTS,
@@ -1385,53 +1383,6 @@ class QualityUtils(QObject):
                 else:
                     self.log_message(QCoreApplication.translate("QGISUtils",
                                      "There are no wrong boundaries."), Qgis.Success)
-
-    @_log_quality_checks
-    def check_too_long_segments(self, db, rule_name, translated_strings):
-        tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
-        features = []
-        boundary_layer = self.qgis_utils.get_layer(db, self.names.OP_BOUNDARY_T, load=True)
-        if not boundary_layer:
-            return
-
-        if boundary_layer.featureCount() == 0:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "There are no boundaries to check for too long segments!"), Qgis.Info)
-
-        else:
-            error_layer = QgsVectorLayer("LineString?crs={}".format(boundary_layer.sourceCrs().authid()),
-                            translated_strings[CHECK_TOO_LONG_BOUNDARY_SEGMENTS],
-                            "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("boundary_id", QVariant.Int),
-                              QgsField("distance", QVariant.Double)])
-            error_layer.updateFields()
-
-            for feature in boundary_layer.getFeatures():
-                lines = feature.geometry()
-                if lines.isMultipart():
-                    for part in range(lines.constGet().numGeometries()):
-                        line = lines.constGet().geometryN(part)
-                        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-                        for segment_info in segments_info:
-                            new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
-                            features.append(new_feature)
-                else:
-                    segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
-                    for segment_info in segments_info:
-                        new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
-                        features.append(new_feature)
-
-            error_layer.dataProvider().addFeatures(features)
-            if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
-
-                self.log_message(QCoreApplication.translate("QGISUtils",
-                                 "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance))
-
-            else:
-                self.log_message(QCoreApplication.translate("QGISUtils",
-                                 "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance), Qgis.Success)
 
     @_log_quality_checks
     def check_missing_boundary_points_in_boundaries(self, db, translated_strings):

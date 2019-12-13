@@ -90,7 +90,7 @@ SOURCES = ../__init__.py \
           ../gui/wizards/operation/wiz_create_spatial_source_operation.py \
           ../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py \
           ../gui/wizards/valuation/wiz_create_building_unit_valuation.py \
-          ../gui/wizards/abs_wizard_factory.py
+          ../gui/wizards/abs_wizard_factory.py \
           ../gui/wizards/map_interaction_expansion.py \
           ../gui/wizards/multi_page_spatial_wizard_factory.py \
           ../gui/wizards/multi_page_wizard_factory.py \

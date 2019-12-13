@@ -31,7 +31,6 @@ from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
                                                       CHECK_OVERLAPS_IN_CONTROL_POINTS,
                                                       CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
                                                       CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                                      CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
                                                       CHECK_OVERLAPS_IN_BOUNDARIES,
                                                       CHECK_BOUNDARIES_ARE_NOT_SPLIT,
                                                       CHECK_BOUNDARIES_COVERED_BY_PLOTS,
@@ -105,9 +104,6 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Lines")] = {
                 'icon' : 'lines',
                 'rules': [{
-                    'id': 'check_too_long_boundary_segments',
-                    'text': translated_strings[CHECK_TOO_LONG_BOUNDARY_SEGMENTS]
-                }, {
                     'id': 'check_overlaps_in_boundaries',
                     'text': translated_strings[CHECK_OVERLAPS_IN_BOUNDARIES]
                 }, {
@@ -258,8 +254,6 @@ class QualityDialog(QDialog, DIALOG_UI):
                     self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
                     self.quality.check_boundary_points_covered_by_plot_nodes(self._db, rule_name=rule_name, translated_strings=translated_strings)
-                elif id == 'check_too_long_boundary_segments':
-                    self.quality.check_too_long_segments(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_overlaps_in_boundaries':
                     self.quality.check_overlaps_in_boundaries(self._db, rule_name=rule_name, translated_strings=translated_strings)
                 elif id == 'check_boundaries_are_not_split':

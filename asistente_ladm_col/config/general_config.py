@@ -52,7 +52,6 @@ DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_2', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLAN
 
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
-DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
@@ -321,7 +320,6 @@ CHECK_OVERLAPS_IN_CONTROL_POINTS = "CHECK_OVERLAPS_IN_CONTROL_POINTS"
 CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
 CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES"
-CHECK_TOO_LONG_BOUNDARY_SEGMENTS = "CHECK_TOO_LONG_BOUNDARY_SEGMENTS"
 CHECK_OVERLAPS_IN_BOUNDARIES = "CHECK_OVERLAPS_IN_BOUNDARIES"
 CHECK_BOUNDARIES_ARE_NOT_SPLIT = "CHECK_BOUNDARIES_ARE_NOT_SPLIT"
 CHECK_BOUNDARIES_COVERED_BY_PLOTS = "CHECK_BOUNDARIES_COVERED_BY_PLOTS"
@@ -383,7 +381,6 @@ class TranslatableConfigStrings(QObject):
             CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line"),
             CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes"),
-            CHECK_TOO_LONG_BOUNDARY_SEGMENTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE))),
             CHECK_OVERLAPS_IN_BOUNDARIES: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap"),
             CHECK_BOUNDARIES_ARE_NOT_SPLIT: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split"),
             CHECK_BOUNDARIES_COVERED_BY_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots"),

@@ -70,7 +70,7 @@ class ETLCobolDialog(CobolBaseDialog):
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("ETLCobolDialog", "Warning"),
-                QCoreApplication.translate("ETLCobolDialog","The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
+                QCoreApplication.translate("ETLCobolDialog", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             lis_paths = {
