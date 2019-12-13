@@ -153,7 +153,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies","The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder" \
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder" \
                     ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -164,7 +164,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         if reply == QMessageBox.Yes and os.path.isfile(self.gpkg_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies","The <b>gpkg</b> already exist in the folder" \
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>gpkg</b> already exist in the folder" \
                     ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -175,7 +175,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         if reply == QMessageBox.Yes and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies","The <b>xlsx</b> already exist in the folder" \
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> already exist in the folder" \
                     ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -258,7 +258,7 @@ class MissingCobolSupplies(CobolBaseDialog):
             layer = QgsVectorLayer(layer_path, layer_path.split('layername=')[1], 'ogr')
             self.names_gpkg += '{} '.format(layer_path.split('layername=')[1])
             if not layer.isValid():
-                return False, QCoreApplication.translate("MissingCobolSupplies", "There were troubles loading {} layer.".format(layer_path.split('layername=')[1]))
+                return False, QCoreApplication.translate("MissingCobolSupplies", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
             LayerNode = root.findLayer(layer.id())

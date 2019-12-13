@@ -293,11 +293,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def crs_changed(self):
         if self.crsSelector.crs().authid()[:5] != 'EPSG:':
             self.crs_label.setStyleSheet('color: orange')
-            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", 'Please select an EPSG Coordinate Reference System'))
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Please select an EPSG Coordinate Reference System"))
             self.epsg = int(DEFAULT_EPSG)
         else:
             self.crs_label.setStyleSheet('')
-            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", 'Coordinate Reference System'))
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Coordinate Reference System"))
             authid = self.crsSelector.crs().authid()
             self.epsg = int(authid[5:])
 

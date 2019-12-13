@@ -30,8 +30,7 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE)
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
@@ -274,7 +273,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self.offline_models_radio_button.isChecked():
             settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
-        settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
@@ -333,7 +331,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_model_directories_line_edit.setVisible(False)
             self.custom_models_dir_button.setVisible(False)
 
-        self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
         use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)

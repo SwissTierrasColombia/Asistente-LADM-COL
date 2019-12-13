@@ -45,7 +45,7 @@ def _db_connection_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "The DB connection is not valid. Details: {}".format(msg)))
+                                                                                      "The DB connection is not valid. Details: {}").format(msg))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings_clear_message_bar)

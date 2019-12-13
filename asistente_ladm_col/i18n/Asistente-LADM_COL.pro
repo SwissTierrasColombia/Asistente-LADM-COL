@@ -1,97 +1,121 @@
-FORMS = ../ui/qgis_model_baker/dlg_import_schema.ui \
+FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
+        ../ui/change_detection/changes_parties_panel_widget.ui \
+        ../ui/change_detection/changes_per_parcel_panel_widget.ui \
+        ../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui \
+        ../ui/change_detection/dockwidget_change_detection.ui \
+        ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
+        ../ui/dialogs/dlg_about.ui \
+        ../ui/dialogs/dlg_custom_model_dir.ui \
+        ../ui/dialogs/dlg_get_db_or_schema_name.ui \
+        ../ui/dialogs/dlg_get_java_path.ui \
+        ../ui/dialogs/dlg_import_from_excel.ui \
+        ../ui/dialogs/dlg_load_layers.ui \
+        ../ui/dialogs/dlg_log_excel.ui \
+        ../ui/dialogs/dlg_log_quality.ui \
+        ../ui/dialogs/dlg_quality.ui \
+        ../ui/dialogs/dlg_settings.ui \
+        ../ui/dialogs/dlg_topological_edition.ui \
+        ../ui/dialogs/dlg_upload_progress.ui \
+        ../ui/dialogs/dlg_welcome_screen.ui \
+	    ../ui/dialogs/settings_gpkg.ui \
+	    ../ui/dialogs/settings_pg.ui \
+        ../ui/dockwidgets/dockwidget_queries.ui \
+        ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
-        ../ui/dockwidget_queries.ui \
-        ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
-        ../ui/wizards/operation/wiz_create_points_operation.ui \
+        ../ui/supplies/dlg_etl_cobol.ui \
+        ../ui/supplies/wig_cobol_supplies.ui \
+        ../ui/supplies/wig_missing_cobol_supplies_export.ui \
+        ../ui/transition_system/dlg_login_st.ui \
+        ../ui/wizards/operation/dlg_group_party.ui \
+	    ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
         ../ui/wizards/operation/wiz_create_administrative_source_operation.ui \
+        ../ui/wizards/operation/wiz_create_boundaries_operation.ui \
+        ../ui/wizards/operation/wiz_create_building_operation.ui \
+        ../ui/wizards/operation/wiz_create_building_unit_operation.ui \
+        ../ui/wizards/operation/wiz_create_col_party_operation.ui \
+        ../ui/wizards/operation/wiz_create_parcel_operation.ui \
+        ../ui/wizards/operation/wiz_create_plot_operation.ui \
+        ../ui/wizards/operation/wiz_create_points_operation.ui \
+        ../ui/wizards/operation/wiz_create_restriction_operation.ui \
+        ../ui/wizards/operation/wiz_create_right_of_way_operation.ui \
+        ../ui/wizards/operation/wiz_create_right_operation.ui \
+        ../ui/wizards/operation/wiz_create_spatial_source_operation.ui \
         ../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui \
         ../ui/wizards/valuation/wiz_create_building_unit_valuation.ui \
         ../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui \
-        ../ui/wizards/operation/wiz_create_plot_operation.ui \
-        ../ui/wizards/operation/wiz_create_boundaries_operation.ui \
-        ../ui/wizards/operation/wiz_create_parcel_operation.ui \
-        ../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui \
-        ../ui/wizards/operation/wiz_create_building_operation.ui \
-        ../ui/wizards/operation/wiz_create_right_of_way_operation.ui \
-        ../ui/wizards/operation/wiz_create_col_party_operation.ui \
-        ../ui/wizards/operation/wiz_create_restriction_operation.ui \
-        ../ui/wizards/operation/wiz_create_right_operation.ui \
-        ../ui/wizards/operation/wiz_create_spatial_source_operation.ui \
-        ../ui/change_detection/changes_all_parcels_panel_widget.ui \
-        ../ui/change_detection/changes_parties_panel_widget.ui \
-        ../ui/change_detection/changes_per_parcel_panel_widget.ui \
-        ../ui/change_detection/dockwidget_change_detection.ui \
-        ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
-        ../ui/dialogs/dlg_load_layers.ui \
-        ../ui/dialogs/dlg_settings_dialog.ui \
-        ../ui/dialogs/dlg_quality.ui \
-        ../ui/dialogs/dlg_about.ui \
-        ../ui/dialogs/dlg_upload_progress.ui \
-        ../ui/dialogs/dlg_group_party.ui \
-        ../ui/dialogs/dlg_log_excel.ui \
-        ../ui/dialogs/dlg_log_quality.ui \
-        ../ui/dialogs/dlg_welcome_screen.ui \
-	    ../ui/dialogs/settings_gpkg.ui \
-	    ../ui/dialogs/settings_pg.ui
+        ../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
-          ../utils/qgis_utils.py \
-          ../utils/logic_checks.py \
-          ../utils/qt_utils.py \
-          ../utils/quality.py \
-          ../utils/model_parser.py \
-          ../utils/decorators.py \
-          ../gui/wizards/operation/wiz_ext_address_operation.py \
-          ../gui/create_administrative_source_operation_wizard.py \
-          ../gui/create_building_unit_qualification_valuation_wizard.py \
-          ../gui/create_building_unit_valuation_wizard.py \
-          ../gui/create_col_party_operation_wizard.py \
-          ../gui/create_geoeconomic_zone_valuation_wizard.py \
-          ../gui/create_group_party_operation.py \
-          ../gui/create_restriction_operation_wizard.py \
-          ../gui/create_right_operation_wizard.py \
-          ../gui/create_spatial_source_operation_wizard.py \
-          ../gui/create_plot_operation_wizard.py \
-          ../gui/create_boundaries_operation_wizard.py \
-          ../gui/create_points_operation_wizard.py \
-          ../gui/create_parcel_operation_wizard.py \
-          ../gui/create_building_operation_wizard.py \
-          ../gui/create_building_unit_operation_wizard.py \
-          ../gui/create_right_of_way_operation_wizard.py \
-          ../gui/create_physical_zone_valuation_wizard.py \
-          ../gui/dockwidget_queries.py \
-          ../gui/toolbar.py \
-          ../gui/right_of_way.py \
-          ../gui/reports.py \
+          ../config/general_config.py \
+          ../config/help_strings.py \
+          ../config/gui/gui_config.py \
+          ../config/wizard_config.py \
+          ../gui/change_detection/changes_all_parcels_panel.py \
+          ../gui/change_detection/changes_parties_panel.py \
+          ../gui/change_detection/changes_per_parcel_panel.py \
+          ../gui/change_detection/dockwidget_change_detection.py \
+          ../gui/change_detection/parcels_changes_summary_panel.py \
+          ../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py \
+          ../gui/db_panel/db_schema_db_panel.py \
+          ../gui/db_panel/gpkg_config_panel.py \
+          ../gui/db_panel/pg_config_panel.py \
           ../gui/dialogs/dlg_about_dialog.py \
           ../gui/dialogs/dlg_custom_model_dir.py \
           ../gui/dialogs/dlg_get_db_or_schema_name.py \
           ../gui/dialogs/dlg_get_java_path.py \
           ../gui/dialogs/dlg_import_from_excel.py \
           ../gui/dialogs/dlg_load_layers.py \
-          ../gui/dialogs/dlg_log_quality.py \
           ../gui/dialogs/dlg_log_excel.py \
+          ../gui/dialogs/dlg_log_quality.py \
           ../gui/dialogs/dlg_quality.py \
-          ../gui/dialogs/dlg_settings_dialog.py \
+          ../gui/dialogs/dlg_settings.py \
           ../gui/dialogs/dlg_upload_progress.py \
           ../gui/dialogs/dlg_welcome_screen.py \
+          ../gui/gui_builder/gui_builder.py \
+          ../gui/gui_builder/role_registry.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
           ../gui/qgis_model_baker/dlg_import_data.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
-          ../gui/gui_builder/gui_builder.py \
-          ../gui/gui_builder/role_registry.py \
+          ../gui/queries/dockwidget_queries.py \
+          ../gui/reports/reports.py \
+          ../gui/wizards/operation/dlg_create_group_party_operation.py \
+          ../gui/wizards/operation/wiz_create_ext_address_operation.py \
+          ../gui/wizards/operation/wiz_create_parcel_operation.py \
+          ../gui/wizards/operation/wiz_create_plot_operation.py \
+          ../gui/wizards/operation/wiz_create_points_operation.py \
+          ../gui/wizards/operation/wiz_create_right_of_way_operation.py \
+          ../gui/wizards/operation/wiz_create_rrr_operation.py \
+          ../gui/wizards/operation/wiz_create_spatial_source_operation.py \
+          ../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py \
+          ../gui/wizards/valuation/wiz_create_building_unit_valuation.py \
+          ../gui/wizards/abs_wizard_factory.py \
+          ../gui/wizards/map_interaction_expansion.py \
+          ../gui/wizards/multi_page_spatial_wizard_factory.py \
+          ../gui/wizards/multi_page_wizard_factory.py \
+          ../gui/wizards/select_features_on_map_wrapper.py \
+          ../gui/wizards/single_page_spatial_wizard_factory.py \
+          ../gui/wizards/single_page_wizard_factory.py \
+          ../gui/wizards/spatial_wizard_factory.py \
+          ../gui/wizards/wizard_factory.py \
+          ../gui/supplies/dlg_cobol_base.py \
+          ../gui/supplies/dlg_etl_cobol.py \
+          ../gui/supplies/dlg_missing_cobol_supplies.py \
+          ../gui/right_of_way.py \
+          ../gui/toolbar.py \
+          ../lib/db/db_connection_manager.py \
           ../lib/db/gpkg_connector.py \
           ../lib/db/pg_connector.py \
+          ../lib/transition_system/st_session/st_session.py \
           ../lib/source_handler.py \
-          ../config/general_config.py \
-          ../config/help_strings.py \
-          ../data/ladm_data.py \
-          ../gui/change_detection/changes_all_parcels_panel.py \
-          ../gui/change_detection/changes_parties_panel.py \
-          ../gui/change_detection/changes_per_parcel_panel.py \
-          ../gui/change_detection/dockwidget_change_detection.py \
-          ../gui/change_detection/parcels_changes_summary_panel.py
+          ../logic/quality/logic_checks.py \
+          ../logic/quality/quality.py \
+          ../utils/decorators.py \
+          ../utils/qgis_utils.py \
+          ../utils/qt_utils.py \
+          ../utils/model_parser.py \
+          ../utils/qgis_model_baker_utils.py \
+          ../utils/utils.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

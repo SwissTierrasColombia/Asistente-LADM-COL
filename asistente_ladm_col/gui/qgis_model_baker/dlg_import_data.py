@@ -93,7 +93,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
 
         self.xtf_file_browse_button.clicked.connect(
-            make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData",'Open Transfer or Catalog File'),
+            make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData", "Open Transfer or Catalog File"),
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
 
         self.validators = Validators()
@@ -106,7 +106,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         # db
         self.connection_setting_button.clicked.connect(self.show_settings)
 
-        self.connection_setting_button.setText(QCoreApplication.translate("DialogImportData", 'Connection Settings'))
+        self.connection_setting_button.setText(QCoreApplication.translate("DialogImportData", "Connection Settings"))
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportData", "Show log"))
@@ -239,14 +239,14 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
-            message_error = 'Please set a valid XTF file before importing data. XTF file does not exist'
+            message_error = "Please set a valid XTF file before importing data. XTF file does not exist"
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
-            message_error = 'Please set a valid XTF before importing data.'
+            message_error = "Please set a valid XTF before importing data."
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()

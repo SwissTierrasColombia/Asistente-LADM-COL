@@ -40,7 +40,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         return type(self)()
 
     def group(self):
-        return QCoreApplication.translate("InsertFeaturesToLayer", 'Vector table')
+        return QCoreApplication.translate("InsertFeaturesToLayer", "Vector table")
 
     def groupId(self):
         return 'vectortable'
@@ -53,19 +53,19 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              QCoreApplication.translate("InsertFeaturesToLayer", 'Input layer'),
+                                                              QCoreApplication.translate("InsertFeaturesToLayer", "Input layer"),
                                                               [QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterVectorLayer(self.OUTPUT,
-                                                              QCoreApplication.translate("InsertFeaturesToLayer", 'Output layer'),
+                                                              QCoreApplication.translate("InsertFeaturesToLayer", "Output layer"),
                                                               [QgsProcessing.TypeVector]))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT,
-                                                        QCoreApplication.translate("InsertFeaturesToLayer", 'Output layer with new features')))
+                                                        QCoreApplication.translate("InsertFeaturesToLayer", "Output layer with new features")))
 
     def name(self):
         return 'insertfeaturestolayer'
 
     def displayName(self):
-        return QCoreApplication.translate("InsertFeaturesToLayer", 'Insert features to layer')
+        return QCoreApplication.translate("InsertFeaturesToLayer", "Insert features to layer")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
