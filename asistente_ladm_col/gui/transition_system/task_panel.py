@@ -17,8 +17,10 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import (pyqtSignal,
+from qgis.PyQt.QtCore import (Qt,
+                              pyqtSignal,
                               QCoreApplication)
+from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.lib.logger import Logger
@@ -62,4 +64,21 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         steps = self._task.get_steps()
         # Create task steps model
         # Set model to view
+        for i, step in enumerate(steps):
+            children = []
+            step_item = QTreeWidgetItem(["Step {}".format(i + 1)])
+            step_item.setToolTip(0, step.get_description())
+            step_item.setCheckState(0, Qt.Checked if step.get_status() else Qt.Unchecked)
 
+            action = step.get_action()
+            action_item = QTreeWidgetItem([step.get_name()])
+            step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+            children.append(action_item)
+
+            step_item.addChildren(children)
+            step_item.setExpanded(True)
+            self.trw_task_steps.addTopLevelItem(step_item)
+
+        for i in range(self.trw_task_steps.topLevelItemCount()):
+            self.trw_task_steps.topLevelItem(i).setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsSelectable)
+            self.trw_task_steps.topLevelItem(i).setExpanded(True)

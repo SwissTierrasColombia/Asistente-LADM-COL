@@ -111,6 +111,14 @@ selection-color: rgb(255, 255, 255);</string>
    </item>
    <item row="4" column="0" colspan="2">
     <widget class="QTreeWidget" name="trw_task_steps">
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
      <property name="headerHidden">
       <bool>true</bool>
      </property>

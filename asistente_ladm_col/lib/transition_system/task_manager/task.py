@@ -129,7 +129,7 @@ class STTask(QObject):
         pass
 
     def get_steps(self):
-        return self.__task_steps
+        return self.__task_steps.get_steps() if self.__task_steps is not None else list()
 
     def close_task(self):
         pass
