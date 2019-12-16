@@ -11,15 +11,6 @@ DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
 
-ANT_MODEL_PREFIX = "ANT"
-CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
-LADM_MODEL_PREFIX = "LADM_COL"
-OPERATION_MODEL_PREFIX = "Operacion"
-REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
-SNR_DATA_MODEL_PREFIX = "Datos_SNR"
-SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
-SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
-VALUATION_MODEL_PREFIX = "Avaluos"
 
 class Names(metaclass=Singleton):
     """
@@ -1256,6 +1247,7 @@ class Names(metaclass=Singleton):
         :param models: List of model prefixes present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
+        from asistente_ladm_col.config.general_config import LADM_MODEL_PREFIX
         required_names = ["T_ID_F",
                           "ILICODE_F",
                           "DESCRIPTION_F",

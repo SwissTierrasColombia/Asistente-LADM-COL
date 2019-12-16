@@ -17,19 +17,17 @@
 """
 
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt,
                               QObject)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
-from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+
 
 class GUI_Builder(QObject):
     """
