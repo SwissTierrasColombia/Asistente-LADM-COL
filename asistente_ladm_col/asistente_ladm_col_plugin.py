@@ -110,6 +110,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
                                                  _supplies_db_connection_required,
+                                                 _supplies_model_required,
+                                                 _valuation_model_required,
                                                  _operation_model_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
@@ -739,7 +741,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.progressMessageBar.setText(msg)
         QCoreApplication.processEvents()
-    
+
     def show_log_quality_dialog(self):
         dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
         dlg.exec_()
@@ -759,7 +761,9 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    def show_etl_cobol_dialog(self):
+    @_supplies_model_required
+    @_db_connection_required
+    def show_etl_cobol_dialog(self, *args):
         # TODO: Should use @_activate_processing_plugin
         dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
         dlg.exec_()
@@ -927,12 +931,15 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def show_wiz_point_cad(self, *args):
         self.wiz = CreatePointsOperationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
-    def show_wiz_boundaries_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_boundaries_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BOUNDARY_OPERATION)
 
     def set_wizard_is_open_flag(self, open):
@@ -951,25 +958,39 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         self._finalize_geometry_creation_action.setEnabled(enable)
 
-    def show_wiz_plot_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_plot_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_PLOT_OPERATION)
 
-    def show_wiz_building_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_building_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_OPERATION)
 
-    def show_wiz_building_unit_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_building_unit_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_OPERATION)
 
-    def show_wiz_right_of_way_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_right_of_way_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RIGHT_OF_WAY_OPERATION)
 
-    def show_wiz_extaddress_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_extaddress_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_EXT_ADDRESS_OPERATION)
 
-    def show_wiz_parcel_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_parcel_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_PARCEL_OPERATION)
 
-    def show_wiz_col_party_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_col_party_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @_validate_if_wizard_is_open
@@ -997,20 +1018,29 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             del dlg
 
-    def show_wiz_right_rrr_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_right_rrr_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RIGHT_OPERATION)
 
-    def show_wiz_restriction_rrr_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_restriction_rrr_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RESTRICTION_OPERATION)
 
-    def show_wiz_administrative_source_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_administrative_source_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION)
 
-    def show_wiz_spatial_source_cad(self):
+    @_operation_model_required
+    @_db_connection_required
+    def show_wiz_spatial_source_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_OPERATION)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_operation_model_required
     @_db_connection_required
     def upload_source_files(self, *args):
         self.qgis_utils.upload_source_files(self.get_db_connection())
@@ -1032,16 +1062,24 @@ class AsistenteLADMCOLPlugin(QObject):
         # TODO: Remove
         pass
 
-    def show_wiz_building_unit_valuation(self):
+    @_valuation_model_required
+    @_db_connection_required
+    def show_wiz_building_unit_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_VALUATION)
 
-    def show_wiz_building_unit_qualification_valuation(self):
+    @_valuation_model_required
+    @_db_connection_required
+    def show_wiz_building_unit_qualification_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
 
-    def show_wiz_geoeconomic_zone_valuation(self):
+    @_valuation_model_required
+    @_db_connection_required
+    def show_wiz_geoeconomic_zone_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION)
 
-    def show_wiz_physical_zone_valuation_action(self):
+    @_valuation_model_required
+    @_db_connection_required
+    def show_wiz_physical_zone_valuation_action(self, *args):
         self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION)
 
     @_validate_if_wizard_is_open

@@ -49,6 +49,19 @@ CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
 REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
 VALUATION_MODEL_PREFIX = "Avaluos"
 
+ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
+    LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
+    SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
+    SUPPLIES_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+    SUPPLIES_INTEGRATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies integration data"),
+    OPERATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
+    ANT_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
+    CADASTRAL_FORM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral form"),
+    REFERENCE_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cartography"),
+    VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
+}
+
+
 ASSISTANT_SUPPORTED_MODELS = ["{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL),
                               "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
                               "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS),

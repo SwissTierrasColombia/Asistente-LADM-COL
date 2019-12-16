@@ -5,29 +5,31 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import QPushButton
-from qgis.core import (Qgis,
-                       QgsApplication)
+from qgis.core import Qgis
 from qgis.utils import (isPluginLoaded,
                         loadPlugin,
                         startPlugin)
 
 from asistente_ladm_col.lib.logger import Logger
-from .qt_utils import OverrideCursor
-from .utils import is_plugin_version_valid
-from ..config.general_config import (PLUGIN_NAME,
-                                     QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                     QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
-                                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                     MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
-                                     LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                     LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
-                                     LOG_QUALITY_LIST_CONTAINER_OPEN,
-                                     LOG_QUALITY_LIST_CONTAINER_CLOSE,
-                                     LOG_QUALITY_CONTENT_SEPARATOR)
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.utils import is_plugin_version_valid
+from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                      ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL,
+                                                      SUPPLIES_MODEL_PREFIX,
+                                                      OPERATION_MODEL_PREFIX,
+                                                      VALUATION_MODEL_PREFIX,
+                                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
+                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                                      MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
+                                                      LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
+                                                      LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
+                                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                                      LOG_QUALITY_CONTENT_SEPARATOR)
 
 
 def _db_connection_required(func_to_decorate):
@@ -167,7 +169,7 @@ def _operation_model_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection. The 'Operation' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings."))
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[OPERATION_MODEL_PREFIX]))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings)
@@ -178,7 +180,8 @@ def _operation_model_required(func_to_decorate):
 
     return decorated_function
 
-def _cadastral_manager_model_required(func_to_decorate):
+
+def _supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         inst = args[0]
@@ -188,7 +191,7 @@ def _cadastral_manager_model_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection. The 'Datos Gestor Catastral' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings."))
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[SUPPLIES_MODEL_PREFIX]))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings)
@@ -198,6 +201,29 @@ def _cadastral_manager_model_required(func_to_decorate):
                 "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
 
     return decorated_function
+
+
+def _valuation_model_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        db = inst.get_db_connection()
+        if db.valuation_model_exists():
+            func_to_decorate(*args, **kwargs)
+        else:
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                                                           QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[VALUATION_MODEL_PREFIX]))
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
+            button.pressed.connect(inst.show_settings)
+            widget.layout().addWidget(button)
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
+
+    return decorated_function
+
 
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
