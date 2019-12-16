@@ -209,7 +209,8 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def set_gui_controls_enabled(self, enable):
         self.gbx_data_source.setEnabled(enable)
         self.target_data.setEnabled(enable)
-        self.set_import_button_enabled(enable)
+        if self.buttonBox.button(QDialogButtonBox.Ok) is not None:  # It's None if the tool finished successfully
+            self.set_import_button_enabled(enable)
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment

@@ -23,9 +23,9 @@ from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.lib.logger import Logger
 
 
-STEP_CODE_ACTION_MAPPING = {"001": ACTION_SCHEMA_IMPORT,
+STEP_CODE_ACTION_MAPPING = {"001": ACTION_SCHEMA_IMPORT_SUPPLIES,
                             "002": ACTION_RUN_ETL_COBOL,
-                            "003": ACTION_EXPORT_DATA,
+                            "003": ACTION_EXPORT_DATA_SUPPLIES,
                             "004": ACTION_ST_UPLOAD_XTF}
 
 class STTaskSteps(QObject):

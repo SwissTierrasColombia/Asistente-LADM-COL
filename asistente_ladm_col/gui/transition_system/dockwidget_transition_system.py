@@ -61,6 +61,7 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
     Main UI for the Transition System in the LADM_COL Assistant. It holds other panels.
     """
     logout_requested = pyqtSignal()
+    trigger_action_emitted = pyqtSignal(str)  # action tag
 
     def __init__(self, user, parent):
         super(DockWidgetTransitionSystem, self).__init__(parent)
@@ -109,4 +110,5 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
                 self.task_panel = None
 
             self.task_panel = TaskPanelWidget(task_id, self)
+            self.task_panel.trigger_action_emitted.connect(self.trigger_action_emitted)
             self.widget.showPanel(self.task_panel)

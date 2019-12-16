@@ -68,8 +68,7 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 
 class DialogImportData(QDialog, DIALOG_UI):
-
-    open_dlg_import_schema = pyqtSignal(list) # selected models
+    open_dlg_import_schema = pyqtSignal(dict)  # dict with key-value params
     BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
     BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
@@ -133,7 +132,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 self.accepted()
             elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
-                self.open_dlg_import_schema.emit(self.get_ili_models())  # Emit signal to open import schema dialog
+                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models(), 'db_source': self.db_source})  # Emit signal to open import schema dialog
 
     def close_dialog(self):
         if self._db_was_changed:

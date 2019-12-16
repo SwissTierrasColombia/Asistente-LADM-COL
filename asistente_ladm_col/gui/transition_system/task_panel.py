@@ -20,6 +20,8 @@
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication)
+from qgis.PyQt.QtGui import (QBrush,
+                             QColor)
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from qgis.gui import QgsPanelWidget
 
@@ -32,6 +34,8 @@ WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.
 
 
 class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
+    trigger_action_emitted = pyqtSignal(str)  # action tag
+
     def __init__(self, task_id, parent):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
@@ -44,6 +48,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("TaskPanelWidget", "Task details"))
 
+        self.trw_task_steps.itemDoubleClicked.connect(self.trigger_action)
+
         self.initialize_gui()
 
     def initialize_gui(self):
@@ -55,23 +61,28 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.logger.debug(__name__, "Setting task description in Task Panel...")
             self.lbl_name.setText(self._task.get_name())
             self.lbl_description.setText(self._task.get_description())
-            self.lbl_created_at.setText("Created at: {}".format(self._task.get_creation_date()))
-            self.lbl_started_at.setText("Started at: {}".format(self._task.get_started_date()))
-            self.lbl_deadline.setText("Deadline: {}".format(self._task.get_deadline()))
+            self.lbl_created_at.setText(QCoreApplication.translate("TaskPanelWidget", "Created at: {}").format(self._task.get_creation_date()))
+            self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
+            self.lbl_deadline.setText(QCoreApplication.translate("TaskPanelWidget", "Deadline: {}").format(self._task.get_deadline()))
             self.lbl_status.setText(self._task.get_status())
 
     def show_task_steps(self):
         steps = self._task.get_steps()
+        self.logger.debug(__name__, "Showing task steps in Task Panel. {} task steps found: {}.".format(
+            len(steps), ", ".join([s.get_name() for s in steps])))
+
         # Create task steps model
         # Set model to view
         for i, step in enumerate(steps):
             children = []
-            step_item = QTreeWidgetItem(["Step {}".format(i + 1)])
+            step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}").format(i + 1)])
+            step_item.setData(0, Qt.BackgroundRole, QBrush(QColor(219, 219, 219, 255)))
             step_item.setToolTip(0, step.get_description())
             step_item.setCheckState(0, Qt.Checked if step.get_status() else Qt.Unchecked)
 
             action = step.get_action()
             action_item = QTreeWidgetItem([step.get_name()])
+            action_item.setData(0, Qt.UserRole, action)
             step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             children.append(action_item)
 
@@ -82,3 +93,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         for i in range(self.trw_task_steps.topLevelItemCount()):
             self.trw_task_steps.topLevelItem(i).setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsSelectable)
             self.trw_task_steps.topLevelItem(i).setExpanded(True)
+
+    def trigger_action(self, item, column):
+        action = item.data(column, Qt.UserRole)
+        if action:
+            self.trigger_action_emitted.emit(action)
