@@ -162,16 +162,23 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.lb_msg_supplies.setText("")
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
-        if not self._db_supplies.supplies_model_exists() or not self._db_collected.operation_model_exists():
+        if self._db_collected.test_connection()[0] and self.radio_button_same_db.isChecked():
             if not self._db_collected.operation_model_exists():
                 self.lb_msg_collected.setText("Warning: DB connection is not valid")
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            else:
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        if self._db_collected.test_connection()[0] and self._db_supplies.test_connection()[0]:
+            if not self._db_supplies.supplies_model_exists() or not self._db_collected.operation_model_exists():
+                if not self._db_collected.operation_model_exists():
+                    self.lb_msg_collected.setText("Warning: DB connection is not valid")
+                    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
-            if not self._db_supplies.supplies_model_exists():
-                self.lb_msg_supplies.setText("Warning: DB connection is not valid")
-                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        else:
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+                if not self._db_supplies.supplies_model_exists():
+                    self.lb_msg_supplies.setText("Warning: DB connection is not valid")
+                    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            else:
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
         # validate selected db
         if self._db_collected.supplies_model_exists():
