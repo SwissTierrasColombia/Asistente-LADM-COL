@@ -1057,7 +1057,7 @@ class QGISUtils(QObject):
             url = QSettings().value('Asistente-LADM_COL/sources/service_transition_system', ST_DOMAIN)
 
         if url:
-            with ProcessWithStatus("Checking source service availability (this might take a while)..."):
+            with ProcessWithStatus("Checking Transition System service availability (this might take a while)..."):
                 if self.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -1083,10 +1083,10 @@ class QGISUtils(QObject):
                                 res = False
                                 msg['text'] = QCoreApplication.translate("SettingsDialog",
                                     "Response from the tested service is not as expected.")
-                        except json.decoder.JSONDecodeError as e:
+                        except:
                             res = False
                             msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                "Response from the tested service is not compatible: not valid JSON found.")
+                                "Response from the tested service is not as expected.")
                     else:
                         res = False
                         msg['text'] = QCoreApplication.translate("SettingsDialog",
