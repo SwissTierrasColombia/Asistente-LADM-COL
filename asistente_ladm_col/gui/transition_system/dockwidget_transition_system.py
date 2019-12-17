@@ -111,4 +111,8 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
 
             self.task_panel = TaskPanelWidget(task_id, self)
             self.task_panel.trigger_action_emitted.connect(self.trigger_action_emitted)
+            self.task_panel.call_parent_update_controls.connect(self.update_task_controls)
             self.widget.showPanel(self.task_panel)
+
+    def update_task_controls(self, panel):
+        self.main_panel.tasks_widget.update_controls()  # If task panel is accepted, update "Close Task" button

@@ -4,6 +4,7 @@ from qgis.PyQt.QtCore import (QSettings,
                               QObject,
                               Qt,
                               QCoreApplication)
+from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.table_mapping_config import Names
@@ -194,6 +195,11 @@ TEST_SERVER = "www.google.com"
 CSS_COLOR_ERROR_LABEL = "color:#FF0000"
 CSS_COLOR_OKAY_LABEL = "color:#478046"
 CSS_COLOR_INACTIVE_LABEL = "color:#646464"
+
+# Colors for Transition System task steps
+CHECKED_COLOR = QColor(166, 255, 152, 255)
+UNCHECKED_COLOR = QColor(255, 245, 152, 255)
+GRAY_COLOR = QColor(219, 219, 219, 255)
 
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"

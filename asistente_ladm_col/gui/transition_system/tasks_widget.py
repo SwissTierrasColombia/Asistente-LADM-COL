@@ -42,12 +42,12 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.session = STSession()
         self._user = user
 
-        self.lvw_tasks.itemSelectionChanged.connect(self.selection_changed)
+        self.lvw_tasks.itemSelectionChanged.connect(self.update_controls)
         self.btn_start_task.clicked.connect(self.start_task)
         self.btn_close_task.clicked.connect(self.close_task)
 
         self.show_tasks()
-        self.selection_changed()  # Initialize controls
+        self.update_controls()  # Initialize controls
 
     def show_tasks(self):
         tasks = self._get_user_tasks()
@@ -59,16 +59,17 @@ class TasksWidget(QWidget, WIDGET_UI):
             self.add_task_widget_item_to_view(task)
 
     def _get_user_tasks(self):
-        tasks = self.session.task_manager.get_tasks(self._user)
-        print(len(tasks))
-        for k, v in tasks.items():
-            print([k], v.get_name())
+        return self.session.task_manager.get_tasks(self._user)
 
-        return tasks
-
-    def selection_changed(self):
-        enable = len(self.lvw_tasks.selectedItems()) == 1
+    def update_controls(self):
+        selected_items = self.lvw_tasks.selectedItems()
+        enable = len(selected_items) == 1
         self.btn_start_task.setEnabled(enable)
+
+        if enable:
+            task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
+            enable = task.steps_complete()
+
         self.btn_close_task.setEnabled(enable)
 
     def update_task_count_label(self, count):
@@ -99,146 +100,3 @@ class TasksWidget(QWidget, WIDGET_UI):
         item.setSizeHint(QSize(widget_item.width(), widget_item.height()))
         item.setData(Qt.UserRole, task.id())
         self.lvw_tasks.addItem(item)
-
-    def _get_user_tasks2(self):
-        import json
-        return json.loads("""[
-            {
-                "id": 1,
-                "name": "Integración XTF",
-                "description": "Integración catastro-registro municipio ovejas.",
-                "deadline": "2019-11-29T13:32:31.007+0000",
-                "createdAt": "2019-11-29T13:32:31.007+0000",
-                "closingDate": null,
-                "taskState": {
-                    "id": 1,
-                    "name": "ASIGNADA"
-                },
-                "members": [
-                    {
-                        "id": 1,
-                        "memberCode": 2,
-                        "createdAt": "2019-11-29T13:32:31.014+0000",
-                        "user": {
-                            "id": 2,
-                            "firstName": "German",
-                            "lastName": "Carrillo",
-                            "email": "carrillo.german@gmail.com",
-                            "username": "gcarrillo",
-                            "password": "",
-                            "enabled": true,
-                            "createdAt": "2019-11-29T13:35:42.935+0000",
-                            "updatedAt": null,
-                            "roles": [
-                                {
-                                    "id": 2,
-                                    "name": "GESTOR"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "categories": [
-                    {
-                        "id": 1,
-                        "name": "INTEGRACIÓN"
-                    }
-                ],
-                "metadata": [
-                    {
-                        "id": 1,
-                        "key": "hostname",
-                        "value": "192.168.98.61"
-                    },
-                    {
-                        "id": 2,
-                        "key": "port",
-                        "value": "5432"
-                    },
-                    {
-                        "id": 3,
-                        "key": "database",
-                        "value": "integracion"
-                    },
-                    {
-                        "id": 4,
-                        "key": "username",
-                        "value": "postgres"
-                    },
-                    {
-                        "id": 5,
-                        "key": "password",
-                        "value": "123456"
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "name": "Generar XTF Cobol",
-                "description": "Generar insumos en XTF para el municipio ovejas.",
-                "deadline": "2019-12-24T23:59:00.007+0000",
-                "createdAt": "2019-11-29T13:32:31.007+0000",
-                "closingDate": null,
-                "taskState": {
-                    "id": 1,
-                    "name": "ASIGNADA"
-                },
-                "members": [
-                    {
-                        "id": 1,
-                        "memberCode": 2,
-                        "createdAt": "2019-11-29T13:32:31.014+0000",
-                        "user": {
-                            "id": 2,
-                            "firstName": "German",
-                            "lastName": "Carrillo",
-                            "email": "carrillo.german@gmail.com",
-                            "username": "gcarrillo",
-                            "password": "",
-                            "enabled": true,
-                            "createdAt": "2019-11-29T13:35:42.935+0000",
-                            "updatedAt": null,
-                            "roles": [
-                                {
-                                    "id": 2,
-                                    "name": "GESTOR"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "categories": [
-                    {
-                        "id": 2,
-                        "name": "GENERACIÓN XTF"
-                    }
-                ],
-                "metadata": [
-                    {
-                        "id": 1,
-                        "key": "hostname",
-                        "value": "192.168.98.61"
-                    },
-                    {
-                        "id": 2,
-                        "key": "port",
-                        "value": "5432"
-                    },
-                    {
-                        "id": 3,
-                        "key": "database",
-                        "value": "integracion"
-                    },
-                    {
-                        "id": 4,
-                        "key": "username",
-                        "value": "postgres"
-                    },
-                    {
-                        "id": 5,
-                        "key": "password",
-                        "value": "123456"
-                    }
-                ]
-            }
-        ]""")

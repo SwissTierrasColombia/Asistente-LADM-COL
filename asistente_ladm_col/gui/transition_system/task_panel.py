@@ -16,15 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
+import json
 
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtGui import (QBrush,
                              QColor)
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
+                                                      UNCHECKED_COLOR,
+                                                      GRAY_COLOR)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
@@ -35,6 +40,7 @@ WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.
 
 class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
     trigger_action_emitted = pyqtSignal(str)  # action tag
+    call_parent_update_controls = pyqtSignal(QgsPanelWidget)
 
     def __init__(self, task_id, parent):
         QgsPanelWidget.__init__(self, parent)
@@ -49,6 +55,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setPanelTitle(QCoreApplication.translate("TaskPanelWidget", "Task details"))
 
         self.trw_task_steps.itemDoubleClicked.connect(self.trigger_action)
+        self.trw_task_steps.itemChanged.connect(self.update_controls)
+        self.panelAccepted.connect(self.call_parent_update_controls)
 
         self.initialize_gui()
 
@@ -71,12 +79,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.logger.debug(__name__, "Showing task steps in Task Panel. {} task steps found: {}.".format(
             len(steps), ", ".join([s.get_name() for s in steps])))
 
-        # Create task steps model
-        # Set model to view
         for i, step in enumerate(steps):
             children = []
             step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}").format(i + 1)])
-            step_item.setData(0, Qt.BackgroundRole, QBrush(QColor(219, 219, 219, 255)))
+            step_item.setData(0, Qt.BackgroundRole, QBrush(GRAY_COLOR))
             step_item.setToolTip(0, step.get_description())
             step_item.setCheckState(0, Qt.Checked if step.get_status() else Qt.Unchecked)
 
@@ -87,7 +93,6 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             children.append(action_item)
 
             step_item.addChildren(children)
-            step_item.setExpanded(True)
             self.trw_task_steps.addTopLevelItem(step_item)
 
         for i in range(self.trw_task_steps.topLevelItemCount()):
@@ -98,3 +103,37 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         action = item.data(column, Qt.UserRole)
         if action:
             self.trigger_action_emitted.emit(action)
+
+    def set_item_style(self, item, column):
+        color = CHECKED_COLOR if item.checkState(column) == Qt.Checked else UNCHECKED_COLOR
+        item.setData(column, Qt.BackgroundRole, QBrush(color))
+
+        for index in range(item.childCount()):
+            color = GRAY_COLOR if item.checkState(column) == Qt.Checked else Qt.black
+            item.child(index).setData(column, Qt.ForegroundRole, QBrush(color))
+
+    def update_controls(self, item, column):
+        if item.childCount():  # Only do this for parents
+            self.trw_task_steps.blockSignals(True)
+            self.set_item_style(item, column)
+            self.save_task_steps_status(column)
+            self.trw_task_steps.blockSignals(False)
+
+        # Can we close the task?
+        self.btn_close_task.setEnabled(self.steps_complete())
+
+    def steps_complete(self):
+        """
+        :return: boolean --> Can we close the task
+        """
+        return self._task.steps_complete()
+
+    def save_task_steps_status(self, column):
+        steps_status = dict()
+        for i in range(self.trw_task_steps.topLevelItemCount()):
+            steps_status[i+1] = self.trw_task_steps.topLevelItem(i).checkState(column) == Qt.Checked
+
+        # Don't save if not necessary
+        status = QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(self._task.id()), "{}")
+        if status != json.dumps(steps_status):
+            self._task.save_steps_status(steps_status)

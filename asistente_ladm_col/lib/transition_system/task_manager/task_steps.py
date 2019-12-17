@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import json
+
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
-                              QObject)
+                              QObject,
+                              QSettings)
 
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.lib.logger import Logger
@@ -32,26 +35,28 @@ class STTaskSteps(QObject):
     """
     Manage task steps
     """
-    def __init__(self, steps_data):
+    def __init__(self, task_id, steps_data):
         QObject.__init__(self)
         self.logger = Logger()
 
         self.__steps = list()
 
-        self.__initialize_steps(steps_data)
+        self.__initialize_steps(task_id, steps_data)
 
-    def __initialize_steps(self, steps_data):
+    def __initialize_steps(self, task_id, steps_data):
         """
         Get actions and add them to each step
 
+        :param task_id: Id of the task (to retrieve steps status)
         :param steps_data: List of task steps. Each step is a dict with (at least) "description" y "code"
         :return: List of steps ready to use
         """
         for step_data in steps_data:
             step_data["action"] = self.__map_action_to_step(step_data["code"])
-            status = self.load_task_steps_status()
-            step_data["status"] = status if status is not None else step_data["status"]
+            step_data["status"] = step_data["status"]
             self.__steps.append(STTaskStep(step_data))
+
+        self.load_status(task_id)  # Update status if found in QSettings
 
     def __map_action_to_step(self, code):
         """
@@ -65,17 +70,50 @@ class STTaskSteps(QObject):
     def get_steps(self):
         return self.__steps
 
-    def save_task_steps_status(self):
+    def steps_complete(self):
+        """
+        :return: boolean --> Are all steps done?
+        """
+        for step in self.__steps:
+            if not step.get_status():
+                return False
+
+        return True
+
+    def save_status(self, task_id, steps_status):
         """
         Save status in QSettings
-        """
-        pass
 
-    def load_task_steps_status(self):
+        :param task_id: Id of the task.
+        :param steps_status: dict --> {step number: boolean status}
+        """
+        if steps_status:
+            self.logger.debug(__name__, "Saving step status for task ({}): {}".format(task_id, steps_status))
+            QSettings().setValue("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id),
+                                 json.dumps(steps_status))
+
+            for i, step in enumerate(self.__steps):
+                index = i + 1
+                if index in steps_status:
+                    step.set_status(steps_status[index])
+
+    def load_status(self, task_id):
         """
         Load status from QSettings
         """
-        return None
+        try:
+            status = json.loads(QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id), "{}"))
+        except TypeError as e:
+            # The QSettings value is not in the format we expect, just reset it
+            QSettings().setValue("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id), "{}")
+            return
+
+        if status:
+            self.logger.debug(__name__, "Loading step status for task ({}): {}".format(task_id, status))
+            for i, step in enumerate(self.__steps):
+                index = str(i+1)
+                if index in status:
+                    step.set_status(status[index])
 
 
 class STTaskStep(QObject):
@@ -110,3 +148,6 @@ class STTaskStep(QObject):
 
     def get_status(self):
         return self.__status
+
+    def set_status(self, status):
+        self.__status = status

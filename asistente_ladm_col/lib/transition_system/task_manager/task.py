@@ -89,7 +89,7 @@ class STTask(QObject):
         if self.METADATA_KEY in task_data:
             self.__metadata = task_data[self.METADATA_KEY]
         if self.STEPS_KEY in task_data:
-            self.__task_steps = STTaskSteps(task_data[self.STEPS_KEY])
+            self.__task_steps = STTaskSteps(self.__id, task_data[self.STEPS_KEY])
 
         for k, attribute in self.__get_mandatory_attributes().items():
             if attribute is None:
@@ -130,6 +130,13 @@ class STTask(QObject):
 
     def get_steps(self):
         return self.__task_steps.get_steps() if self.__task_steps is not None else list()
+
+    def steps_complete(self):
+        return self.__task_steps.steps_complete() if self.__task_steps is not None else None
+
+    def save_steps_status(self, steps_status):
+        if self.__task_steps is not None:
+            self.__task_steps.save_status(self.id(), steps_status)
 
     def close_task(self):
         pass
