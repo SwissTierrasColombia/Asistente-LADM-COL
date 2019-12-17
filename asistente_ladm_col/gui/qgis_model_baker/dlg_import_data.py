@@ -216,7 +216,8 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        if self.db_source == COLLECTED_DB_SOURCE:
+            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):
