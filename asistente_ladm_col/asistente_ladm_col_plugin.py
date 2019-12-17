@@ -761,8 +761,8 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    @_supplies_model_required
     @_db_connection_required
+    @_supplies_model_required
     def show_etl_cobol_dialog(self, *args):
         # TODO: Should use @_activate_processing_plugin
         dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
@@ -774,58 +774,58 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_topological_editing(self, *args):
         self.qgis_utils.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_fill_topology_table_pointbfs(self, *args):
         self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_fill_topology_tables_morebfs_less(self, *args):
         self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     @_activate_processing_plugin
     def call_fill_right_of_way_relations(self, *args):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def call_annex_17_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
         self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection(), self.qgis_utils)
@@ -861,16 +861,16 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
-    @_qgis_model_baker_required
     @_db_connection_required
+    @_qgis_model_baker_required
     def load_layers_from_qgis_model_baker(self, *args):
         dlg = LoadLayersDialog(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_queries(self, *args):
         if self._dock_widget_queries is not None:
             self._dock_widget_queries.close()
@@ -931,14 +931,14 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_point_cad(self, *args):
         self.wiz = CreatePointsOperationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_boundaries_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BOUNDARY_OPERATION)
 
@@ -958,45 +958,45 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         self._finalize_geometry_creation_action.setEnabled(enable)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_plot_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_PLOT_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_building_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_building_unit_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_right_of_way_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RIGHT_OF_WAY_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_extaddress_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_EXT_ADDRESS_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_parcel_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_PARCEL_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_col_party_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_dlg_group_party(self, *args):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
@@ -1018,37 +1018,37 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             del dlg
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_right_rrr_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RIGHT_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_restriction_rrr_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_RESTRICTION_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_administrative_source_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION)
 
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def show_wiz_spatial_source_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_OPERATION)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     def upload_source_files(self, *args):
         self.qgis_utils.upload_source_files(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
         dlg = QualityDialog(self.get_db_connection(), self.qgis_utils, self.quality)
@@ -1062,31 +1062,31 @@ class AsistenteLADMCOLPlugin(QObject):
         # TODO: Remove
         pass
 
-    @_valuation_model_required
     @_db_connection_required
+    @_valuation_model_required
     def show_wiz_building_unit_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_VALUATION)
 
-    @_valuation_model_required
     @_db_connection_required
+    @_valuation_model_required
     def show_wiz_building_unit_qualification_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
 
-    @_valuation_model_required
     @_db_connection_required
+    @_valuation_model_required
     def show_wiz_geoeconomic_zone_valuation(self, *args):
         self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION)
 
-    @_valuation_model_required
     @_db_connection_required
+    @_valuation_model_required
     def show_wiz_physical_zone_valuation_action(self, *args):
         self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     @_supplies_db_connection_required
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
@@ -1096,8 +1096,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_map_swipe_tool_required
-    @_operation_model_required
     @_db_connection_required
+    @_operation_model_required
     @_supplies_db_connection_required
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
