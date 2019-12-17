@@ -19,6 +19,7 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QPushButton,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsProject,
@@ -54,17 +55,19 @@ class ToolBar(QObject):
             return
         else:
             if layer.selectedFeatureCount() == 0:
-                reply = QMessageBox.question(None,
-                                             QCoreApplication.translate("ToolBar", "Continue?"),
-                                             QCoreApplication.translate("ToolBar",
-                                                                        "There are no selected boundaries, do you like to use all the {} boundaries in the data base?").format(
-                                                 layer.featureCount()),
-                                             QMessageBox.Yes, QMessageBox.No)
-                if reply == QMessageBox.Yes:
+
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Question)
+                msg.setText(QCoreApplication.translate("ToolBar", "There are no selected boundaries, do you like to use all the {} boundaries in the data base?").format(layer.featureCount()))
+                msg.setWindowTitle(QCoreApplication.translate("ToolBar", "Continue?"))
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Yes")), QMessageBox.YesRole)
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Cancel")), QMessageBox.RejectRole)
+                reply = msg.exec_()
+
+                if reply == 0:  # 0 YES
                     use_selection = False
-                else:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
-                                                                                 "First select at least one boundary!"))
+                elif reply == 1:  # 1 Cancel
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                     return
 
         if use_selection:
@@ -121,29 +124,36 @@ class ToolBar(QObject):
                         self.names.OP_BOUNDARY_T,
                         Qgis.Warning)
                 else:
-                    reply = QMessageBox.question(None,
-                                                 QCoreApplication.translate("ToolBar", "Continue?"),
-                                                 QCoreApplication.translate("ToolBar",
-                                                                            "There are no selected boundaries, do you like to fill the '{}' table for all the {} boundaries in the data base?")
-                                                 .format(self.names.POINT_BFS_T,
-                                                         layers[self.names.OP_BOUNDARY_T][LAYER].featureCount()),
-                                                 QMessageBox.Yes, QMessageBox.No)
-                    if reply == QMessageBox.Yes:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Question)
+                    msg.setText(QCoreApplication.translate("ToolBar", "There are no selected boundaries, do you like to fill the '{}' table for all the {} boundaries in the data base?").format(self.names.POINT_BFS_T, layers[self.names.OP_BOUNDARY_T][LAYER].featureCount()))
+                    msg.setWindowTitle(QCoreApplication.translate("ToolBar", "Continue?"))
+                    msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Yes")), QMessageBox.YesRole)
+                    msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Cancel")), QMessageBox.RejectRole)
+                    reply = msg.exec_()
+
+                    if reply == 0:  # 0 YES
                         use_selection = False
-                    else:
-                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
-                                                            "First select at least one boundary!"))
+                    elif reply == 1:  # 1 Cancel
+                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                         return
             else:
-                reply = QMessageBox.question(None,
-                                             QCoreApplication.translate("ToolBar", "Continue?"),
-                                             QCoreApplication.translate("ToolBar",
-                                                                        "There are {selected} boundaries selected, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.")
-                                             .format(selected=layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(),
-                                                     table=self.names.POINT_BFS_T),
-                                             QMessageBox.Yes, QMessageBox.No)
-                if reply == QMessageBox.No:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Question)
+                msg.setText(QCoreApplication.translate("ToolBar", "There are {selected} boundaries selected, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.").format(selected=layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(), table=self.names.POINT_BFS_T))
+                msg.setWindowTitle(QCoreApplication.translate("ToolBar", "Continue?"))
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Yes")), QMessageBox.YesRole)
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "No")), QMessageBox.NoRole)
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Cancel")), QMessageBox.RejectRole)
+
+                reply = msg.exec_()
+
+                if reply == 0:  # 0 YES
+                    use_selection = True
+                elif reply == 1:  # 1 NO
                     use_selection = False
+                elif reply == 2:  # 2 CANCEL
+                    return
 
         bfs_features = layers[self.names.POINT_BFS_T][LAYER].getFeatures()
 
@@ -205,31 +215,38 @@ class ToolBar(QObject):
                         self.names.OP_PLOT_T,
                         Qgis.Warning)
                 else:
-                    reply = QMessageBox.question(None,
-                                                 QCoreApplication.translate("ToolBar", "Continue?"),
-                                                 QCoreApplication.translate("ToolBar",
-                                                                            "There are no selected plots, do you like to fill the '{more}' and '{less}' tables for all the {all} plots in the data base?")
-                                                 .format(more=self.names.MORE_BFS_T,
-                                                         less=self.names.LESS_BFS_T,
-                                                         all=layers[self.names.OP_PLOT_T][LAYER].featureCount()),
-                                                 QMessageBox.Yes, QMessageBox.No)
-                    if reply == QMessageBox.Yes:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Question)
+                    msg.setText(QCoreApplication.translate("ToolBar",
+                                                           "There are no selected plots, do you like to fill the '{more}' and '{less}' tables for all the {all} plots in the data base?").format(more=self.names.MORE_BFS_T,less=self.names.LESS_BFS_T, all=layers[self.names.OP_PLOT_T][LAYER].featureCount()))
+                    msg.setWindowTitle(QCoreApplication.translate("ToolBar", "Continue?"))
+                    msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Yes")), QMessageBox.YesRole)
+                    msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Cancel")), QMessageBox.RejectRole)
+                    reply = msg.exec_()
+
+                    if reply == 0:  # 0 YES
                         use_selection = False
-                    else:
+                    elif reply == 1:  # 1 Cancel
                         self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
                                                                                      "First select at least one plot!"))
                         return
             else:
-                reply = QMessageBox.question(None,
-                                             QCoreApplication.translate("ToolBar", "Continue?"),
-                                             QCoreApplication.translate("ToolBar",
-                                                                        "There are {selected} plots selected, do you like to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.")
-                                             .format(selected=layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount(),
-                                                     more=self.names.MORE_BFS_T,
-                                                     less=self.names.LESS_BFS_T),
-                                             QMessageBox.Yes, QMessageBox.No)
-                if reply == QMessageBox.No:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Question)
+                msg.setText(QCoreApplication.translate("ToolBar", "There are {selected} plots selected, do you like to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.").format(selected=layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount(), more=self.names.MORE_BFS_T, less=self.names.LESS_BFS_T))
+                msg.setWindowTitle(QCoreApplication.translate("ToolBar", "Continue?"))
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Yes")), QMessageBox.YesRole)
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "No")), QMessageBox.NoRole)
+                msg.addButton(QPushButton(QCoreApplication.translate("ToolBar", "Cancel")), QMessageBox.RejectRole)
+
+                reply = msg.exec_()
+
+                if reply == 0:  # 0 YES
+                    use_selection = True
+                elif reply == 1:  # 1 NO
                     use_selection = False
+                elif reply == 2:  # 2 CANCEL
+                    return
 
         more_bfs_features = layers[self.names.MORE_BFS_T][LAYER].getFeatures()
         less_features = layers[self.names.LESS_BFS_T][LAYER].getFeatures()
