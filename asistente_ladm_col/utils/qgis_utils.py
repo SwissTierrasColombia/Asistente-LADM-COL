@@ -87,7 +87,9 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      PLUGIN_NAME,
                                      HELP_DIR_NAME,
                                      TranslatableConfigStrings,
+                                     ST_DOMAIN,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                     TRANSITION_SYSTEM_EXPECTED_RESPONSE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings, Logger
 from asistente_ladm_col.config.table_mapping_config import (Names,
@@ -1047,6 +1049,57 @@ class QGISUtils(QObject):
         file_path = os.path.join(FIELD_MAPPING_PATH, "{}.txt".format(field_mapping_name))
         if os.path.exists(file_path):
             os.remove(file_path)
+
+    def is_transition_system_service_valid(self, url=None):
+        res = False
+        msg = {'text': '', 'level': Qgis.Warning}
+        if url is None:
+            url = QSettings().value('Asistente-LADM_COL/sources/service_transition_system', ST_DOMAIN)
+
+        if url:
+            with ProcessWithStatus("Checking source service availability (this might take a while)..."):
+                if self.is_connected(TEST_SERVER):
+
+                    nam = QNetworkAccessManager()
+                    request = QNetworkRequest(QUrl(url))
+                    reply = nam.get(request)
+
+                    loop = QEventLoop()
+                    reply.finished.connect(loop.quit)
+                    loop.exec_()
+
+                    allData = reply.readAll()
+                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                    if status == 401:
+                        try:
+                            data = json.loads(str(allData, 'utf-8'))
+
+                            if 'error' in data and data['error'] == TRANSITION_SYSTEM_EXPECTED_RESPONSE:
+                                res = True
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested service is valid to connect with Transition System!")
+                                msg['level'] = Qgis.Info
+                            else:
+                                res = False
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "Response from the tested service is not as expected.")
+                        except json.decoder.JSONDecodeError as e:
+                            res = False
+                            msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                "Response from the tested service is not compatible: not valid JSON found.")
+                    else:
+                        res = False
+                        msg['text'] = QCoreApplication.translate("SettingsDialog",
+                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
+                else:
+                    res = False
+                    msg['text'] = QCoreApplication.translate("SettingsDialog",
+                        "There was a problem connecting to Internet.")
+        else:
+            res = False
+            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
+
+        return (res, msg)
 
     def is_source_service_valid(self, url=None):
         res = False
