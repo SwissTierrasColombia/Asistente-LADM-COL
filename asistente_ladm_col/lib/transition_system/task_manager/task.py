@@ -132,7 +132,10 @@ class STTask(QObject):
         return self.__task_steps.get_steps() if self.__task_steps is not None else list()
 
     def steps_complete(self):
-        return self.__task_steps.steps_complete() if self.__task_steps is not None else None
+        return self.__task_steps.steps_complete() if self.__task_steps is not None else False
+
+    def task_started(self):
+        return self.__task_steps.steps_started() if self.__task_steps is not None else False
 
     def save_steps_status(self, steps_status):
         if self.__task_steps is not None:

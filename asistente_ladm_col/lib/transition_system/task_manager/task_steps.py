@@ -80,6 +80,17 @@ class STTaskSteps(QObject):
 
         return True
 
+    def steps_started(self):
+        """
+        :return: boolean --> Whether at least one step is done or not
+        """
+        count = 0
+        for step in self.__steps:
+            if step.get_status():
+                count += 1
+
+        return count > 0  # and count < len(self.__steps)
+
     def save_status(self, task_id, steps_status):
         """
         Save status in QSettings

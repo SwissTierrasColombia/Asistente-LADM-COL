@@ -67,8 +67,15 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.btn_start_task.setEnabled(enable)
 
         if enable:
+            # Enable Close Task button?
             task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
             enable = task.steps_complete()
+
+            # Start or continue task?
+            if task.task_started():
+                self.btn_start_task.setText(QCoreApplication.translate("TasksWidget", "Continue task"))
+            else:
+                self.btn_start_task.setText(QCoreApplication.translate("TasksWidget", "Start task"))
 
         self.btn_close_task.setEnabled(enable)
 
