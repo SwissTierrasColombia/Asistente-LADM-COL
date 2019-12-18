@@ -71,6 +71,7 @@ ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
 encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
 ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
 ST_GET_TASKS_SERVICE_URL = "{}/api/workspaces/v1/tasks/pending".format(ST_DOMAIN)
+TRANSITION_SYSTEM_EXPECTED_RESPONSE = "unauthorized"
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 
