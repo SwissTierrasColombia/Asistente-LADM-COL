@@ -202,10 +202,6 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
 
-        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "Loading LADM_COL tables..."))
-        step += 1
-        self.progress.setValue(step/steps * 100)
-
         # GET LADM LAYERS
         layers = {
             self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
@@ -248,6 +244,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         'parcel':layers[self.names.OP_PARCEL_T][LAYER]}
 
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
+        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
 
         processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
