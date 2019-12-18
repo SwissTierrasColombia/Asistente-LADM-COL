@@ -21,8 +21,8 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
-from ...utils import get_ui_class
-from ...utils.qt_utils import save_pdf_format
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import save_pdf_format
 
 DIALOG_LOG_QUALITY_UI = get_ui_class('dialogs/dlg_log_quality.ui')
 

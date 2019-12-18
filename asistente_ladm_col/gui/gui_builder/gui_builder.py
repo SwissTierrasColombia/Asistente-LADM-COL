@@ -49,6 +49,9 @@ class GUI_Builder(QObject):
     def register_actions(self, dict_key_action):
         self._registered_actions.update(dict_key_action)
 
+    def get_action(self, action_tag):
+        return self._registered_actions[action_tag] if action_tag in self._registered_actions else None
+
     def build_gui(self, db, test_conn_result):
         """
         Build the plugin gui according to configurations.

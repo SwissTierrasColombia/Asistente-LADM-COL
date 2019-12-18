@@ -40,6 +40,8 @@
     <file>resources/images/login.svg</file>
     <file>resources/images/logout.svg</file>
     <file>resources/images/user.svg</file>
+    <file>resources/images/home.svg</file>
+    <file>resources/images/tasks.png</file>
     <file>resources/images/data_creation.svg</file>
     <file>resources/images/build_boundaries.svg</file>
     <file>resources/images/excel.svg</file>
