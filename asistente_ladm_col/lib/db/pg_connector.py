@@ -266,7 +266,7 @@ class PGConnector(DBConnector):
 
         if test_level == EnumTestLevel.LADM:
             return (True,
-                    QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(
+                    QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
                         self.schema))
 
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
@@ -278,12 +278,13 @@ class PGConnector(DBConnector):
     def check_at_least_one_ladm_model_exists(self):
         result = True
         msg = QCoreApplication.translate("PGConnector", "The version of the models is valid.")
-        if len(set(self.get_models()) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
+        models = self.get_models()
+        if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
             result = False
             msg = QCoreApplication.translate("PGConnector",
                                              "At least one LADM model must exist. "
                                              "Supported models are '{}' but you have '{}'").format(', '.join(ASSISTANT_SUPPORTED_MODELS),
-                                                                                                   ', '.join(self.get_models()))
+                                                                                                   ', '.join(models))
         return (result, msg)
 
     def open_connection(self, uri=None):
