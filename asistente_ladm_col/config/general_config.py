@@ -1,7 +1,6 @@
 import os.path
 
-from qgis.PyQt.QtCore import (QSettings,
-                              QObject,
+from qgis.PyQt.QtCore import (QObject,
                               Qt,
                               QCoreApplication)
 from qgis.PyQt.QtGui import QColor
@@ -37,19 +36,55 @@ ANT_MAP_REPORT = "Plano_ANT"
 
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
+LATEST_LADM_MODEL_VERSION_SUPPORTED = "1.3"
+VERSION_EXTENDED_MODELS = LATEST_OPERATION_MODEL_VERSION_SUPPORTED.replace('.', '_')
+VERSION_LADM_MODEL = LATEST_LADM_MODEL_VERSION_SUPPORTED.replace('.', '_')
 
-DEFAULT_MODEL_NAMES_CHECKED = {
-    'ANT_V2_9_6': Qt.Unchecked,
-    'Avaluos_V2_9_6': Qt.Unchecked,
-    'Cartografia_Referencia_V2_9_6': Qt.Unchecked,
-    'Datos_Gestor_Catastral_V2_9_6': Qt.Unchecked,
-    'Datos_Integracion_Insumos_V2_9_6': Qt.Unchecked,
-    'Datos_SNR_V2_9_6': Qt.Unchecked,
-    'Formulario_Catastro_V2_9_6': Qt.Unchecked,
-    'Operacion_V2_9_6': Qt.Checked
+LADM_MODEL_PREFIX = "LADM_COL"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+OPERATION_MODEL_PREFIX = "Operacion"
+ANT_MODEL_PREFIX = "ANT"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+VALUATION_MODEL_PREFIX = "Avaluos"
+
+ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
+    LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
+    SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
+    SUPPLIES_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+    SUPPLIES_INTEGRATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies integration data"),
+    OPERATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
+    ANT_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
+    CADASTRAL_FORM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral form"),
+    REFERENCE_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cartography"),
+    VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
 }
 
-DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_2', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLANAS_V1']
+
+ASSISTANT_SUPPORTED_MODELS = ["{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL),
+                              "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)]
+
+DEFAULT_MODEL_NAMES_CHECKED = {
+    '{}_V{}'.format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Checked
+}
+
+DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_3', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLANAS_V1']
 
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"

@@ -1,8 +1,7 @@
-from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
-                                                            CADASTRAL_FORM_MODEL_PREFIX,
-                                                            VALUATION_MODEL_PREFIX,
-                                                            SUPPLIES_MODEL_PREFIX)
-
+from asistente_ladm_col.config.general_config import (OPERATION_MODEL_PREFIX,
+                                                      CADASTRAL_FORM_MODEL_PREFIX,
+                                                      VALUATION_MODEL_PREFIX,
+                                                      SUPPLIES_MODEL_PREFIX)
 
 
 DEFAULT_GUI = 'DEFAULT_GUI'

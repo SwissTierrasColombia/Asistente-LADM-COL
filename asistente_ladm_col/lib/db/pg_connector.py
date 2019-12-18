@@ -24,8 +24,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri)
 
-from .db_connector import (DBConnector,
-                           EnumTestLevel)
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    EnumTestLevel)
 from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_query,
                                                                         economic_query,
                                                                         physical_query,
@@ -37,18 +37,19 @@ from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report.pg import (ant
 from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                   annex17_point_data_query,
                                                                                   annex17_plot_data_query)
-from asistente_ladm_col.config.general_config import INTERLIS_TEST_METADATA_TABLE_PG
-from asistente_ladm_col.config.table_mapping_config import (OPERATION_MODEL_PREFIX,
-                                                            CADASTRAL_FORM_MODEL_PREFIX,
-                                                            VALUATION_MODEL_PREFIX,
-                                                            LADM_MODEL_PREFIX,
-                                                            ANT_MODEL_PREFIX,
-                                                            REFERENCE_CARTOGRAPHY_PREFIX,
-                                                            SNR_DATA_MODEL_PREFIX,
-                                                            SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                                            SUPPLIES_MODEL_PREFIX)
-from ...utils.model_parser import ModelParser
-from ...utils.utils import normalize_iliname
+from asistente_ladm_col.config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
+                                                      ASSISTANT_SUPPORTED_MODELS,
+                                                      OPERATION_MODEL_PREFIX,
+                                                      CADASTRAL_FORM_MODEL_PREFIX,
+                                                      VALUATION_MODEL_PREFIX,
+                                                      LADM_MODEL_PREFIX,
+                                                      ANT_MODEL_PREFIX,
+                                                      REFERENCE_CARTOGRAPHY_PREFIX,
+                                                      SNR_DATA_MODEL_PREFIX,
+                                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                                      SUPPLIES_MODEL_PREFIX)
+from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.table_mapping_config import (T_ID,
                                                             DISPLAY_NAME,
                                                             ILICODE,
@@ -222,6 +223,11 @@ class PGConnector(DBConnector):
                                                           "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                     self.schema))
 
+
+            res, msg = self.check_at_least_one_ladm_model_exists()
+            if not res:
+                return (res, msg)  # Version of the models is not valid
+
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
@@ -268,6 +274,17 @@ class PGConnector(DBConnector):
 
         return (False, QCoreApplication.translate("PGConnector",
                                                   "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+
+    def check_at_least_one_ladm_model_exists(self):
+        result = True
+        msg = QCoreApplication.translate("PGConnector", "The version of the models is valid.")
+        if len(set(self.get_models()) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
+            result = False
+            msg = QCoreApplication.translate("PGConnector",
+                                             "At least one LADM model must exist. "
+                                             "Supported models are '{}' but you have '{}'").format(', '.join(ASSISTANT_SUPPORTED_MODELS),
+                                                                                                   ', '.join(self.get_models()))
+        return (result, msg)
 
     def open_connection(self, uri=None):
         if uri is None:
