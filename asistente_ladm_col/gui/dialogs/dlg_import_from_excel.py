@@ -23,7 +23,8 @@ from osgeo import ogr
 from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, 
@@ -137,7 +138,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                                       'Excel File (*.xlsx *.xls)')))
         self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ImportFromExcelDialog", "Import"))
 
-        self.progress.setVisible(False)
+        self.initialize_feedback()
         self.restore_settings()
 
         self.bar = QgsMessageBar()
@@ -249,7 +250,15 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
 
-        processing.run("model:ETL_intermediate_structure", params)
+        processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
+
+        if not self.feedback.isCanceled():
+            self.progress.setValue(100)
+            self.buttonBox.clear()
+            self.buttonBox.setEnabled(True)
+            self.buttonBox.addButton(QDialogButtonBox.Close)
+        else:
+            self.initialize_feedback() 
 
         # Print summary getting feature count in involved LADM_COL tables...
         summary = """<html><head/><body><p>"""
@@ -548,3 +557,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("import_from_excel")
+
+    def progress_changed(self):
+        QCoreApplication.processEvents()  # Listen to cancel from the user
+        self.progress.setValue(self.feedback.progress())
+
+    def initialize_feedback(self):
+        self.progress.setValue(0)
+        self.progress.setVisible(False)
+        self.feedback = QgsProcessingFeedback()         
+        self.feedback.progressChanged.connect(self.progress_changed)
