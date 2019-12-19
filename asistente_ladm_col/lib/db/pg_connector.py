@@ -282,9 +282,8 @@ class PGConnector(DBConnector):
         if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
             result = False
             msg = QCoreApplication.translate("PGConnector",
-                                             "At least one LADM model must exist. "
-                                             "Supported models are '{}' but you have '{}'").format(', '.join(ASSISTANT_SUPPORTED_MODELS),
-                                                                                                   ', '.join(models))
+                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
+                ', '.join(ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
         return (result, msg)
 
     def open_connection(self, uri=None):
