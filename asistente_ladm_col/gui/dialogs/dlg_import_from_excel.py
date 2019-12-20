@@ -37,6 +37,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QGridLayout,
                                  QDialogButtonBox,
+                                 QMessageBox,
                                  QFileDialog)
 
 from asistente_ladm_col.lib.logger import Logger
@@ -104,6 +105,8 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
         self.names = Names()
+        self._running_tool = False
+        self.tool_name = QCoreApplication.translate("ImportFromExcelDialog", "Import intermediate structure")
 
         self.fields = {EXCEL_SHEET_NAME_PLOT: [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
                             EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
@@ -128,7 +131,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.rejected.connect(self.rejected)
+        #self.buttonBox.rejected.connect(self.rejected)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_excel_path,
@@ -151,6 +154,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.import_from_excel()
 
     def import_from_excel(self):
+        self._running_tool = True
         steps = 18
         step = 0
         self.progress.setVisible(True)
@@ -271,6 +275,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.txt_log.setText(summary)
         self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
             "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
+        self._running_tool = False
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
@@ -537,8 +542,25 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                 self.show_message(msg, Qgis.Warning)
 
 
-    def rejected(self):
+    def reject(self):
         self.selected_items_dict = dict()
+            
+        if self._running_tool:
+            reply = QMessageBox.question(self,
+                                         QCoreApplication.translate("import_from_excel", "Warning"),
+                                         QCoreApplication.translate("import_from_excel",
+                                                                    "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
+                                         QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                self.feedback.cancel()
+                self._running_tool = False
+                msg = QCoreApplication.translate("import_from_excel", "The '{}' tool was cancelled.").format(self.tool_name)
+                self.logger.info(__name__, msg)
+                self.show_message(msg, Qgis.Info)
+        else:
+            self.logger.info(__name__, "Dialog closed.")
+            self.done(1)
 
     def save_settings(self):
         settings = QSettings()
