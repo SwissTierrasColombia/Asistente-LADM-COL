@@ -64,7 +64,7 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
 class DialogImportSchema(QDialog, DIALOG_UI):
-    open_dlg_import_data = pyqtSignal()
+    open_dlg_import_data = pyqtSignal(dict)  # dict with key-value params
 
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
@@ -122,7 +122,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 self.accepted()
             elif button.text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
                 self.close()  # Close import schema dialog and open import open dialog
-                self.open_dlg_import_data.emit()
+                self.open_dlg_import_data.emit({"db_source": self.db_source})
 
     def close_dialog(self):
         if self._db_was_changed:
@@ -183,7 +183,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        if self.db_source == COLLECTED_DB_SOURCE:
+            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
 
         if dlg.exec_():

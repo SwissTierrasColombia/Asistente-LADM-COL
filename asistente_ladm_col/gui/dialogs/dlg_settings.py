@@ -30,8 +30,9 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (DICT_NAMES_DB_MODELS,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      ST_DOMAIN,
+                                                      DICT_NAMES_DB_MODELS,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE)
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
@@ -77,6 +78,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.btn_test_ladm_col_structure.clicked.connect(self.test_ladm_col_structure)
 
         self.btn_test_service.clicked.connect(self.test_service)
+        self.btn_test_service_transition_system.clicked.connect(self.test_service_transition_system)
+
+        self.btn_default_value_sources.clicked.connect(self.set_default_value_source_service)
+        self.btn_default_value_transition_system.clicked.connect(self.set_default_value_transition_system_service)
+
         self.chk_use_roads.toggled.connect(self.update_images_state)
 
         self.bar = QgsMessageBar()
@@ -107,7 +113,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def show_tabs(self, tab_pages_list):
         if tab_pages_list:
-            # We only need those tabs related to Model Baker/ili2db operations
             for i in reversed(range(self.tabWidget.count())):
                 if i not in tab_pages_list:
                     self.tabWidget.removeTab(i)
@@ -304,6 +309,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
+        endpoint_transition_system = self.txt_service_transition_system.text().strip()
+        settings.setValue('Asistente-LADM_COL/sources/service_transition_system', (endpoint_transition_system[:-1] if endpoint_transition_system.endswith('/') else endpoint_transition_system) or ST_DOMAIN)
+
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
@@ -367,6 +375,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
 
+        self.txt_service_transition_system.setText(settings.value('Asistente-LADM_COL/sources/service_transition_system', ST_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
@@ -415,6 +424,19 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res, msg = self.qgis_utils.is_source_service_valid(self.txt_service_endpoint.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
+
+    def test_service_transition_system(self):
+        self.setEnabled(False)
+        QCoreApplication.processEvents()
+        res, msg = self.qgis_utils.is_transition_system_service_valid(self.txt_service_transition_system.text().strip())
+        self.setEnabled(True)
+        self.show_message(msg['text'], msg['level'])
+
+    def set_default_value_source_service(self):
+        self.txt_service_endpoint.setText(DEFAULT_ENDPOINT_SOURCE_SERVICE)
+
+    def set_default_value_transition_system_service(self):
+        self.txt_service_transition_system.setText(ST_DOMAIN)
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

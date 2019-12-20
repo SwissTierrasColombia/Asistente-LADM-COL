@@ -27,6 +27,12 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
         ../ui/transition_system/dlg_login_st.ui \
+        ../ui/transition_system/dockwidget_transition_system.ui \
+        ../ui/transition_system/home_widget.ui \
+        ../ui/transition_system/task_widget_item.ui \
+        ../ui/transition_system/tasks_widget.ui \
+        ../ui/transition_system/transition_system_initial_panel_widget.ui \
+        ../ui/transition_system/transition_system_task_panel_widget.ui \
         ../ui/wizards/operation/dlg_group_party.ui \
 	    ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
         ../ui/wizards/operation/wiz_create_administrative_source_operation.ui \
@@ -80,6 +86,14 @@ SOURCES = ../__init__.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
           ../gui/queries/dockwidget_queries.py \
           ../gui/reports/reports.py \
+          ../gui/supplies/dlg_cobol_base.py \
+          ../gui/supplies/dlg_etl_cobol.py \
+          ../gui/supplies/dlg_missing_cobol_supplies.py \
+          ../gui/transition_system/dlg_login_st.py \
+          ../gui/transition_system/dockwidget_transition_system.py \
+          ../gui/transition_system/task_panel.py \
+          ../gui/transition_system/tasks_widget.py \
+          ../gui/transition_system/transition_system_initial_panel.py \
           ../gui/wizards/operation/dlg_create_group_party_operation.py \
           ../gui/wizards/operation/wiz_create_ext_address_operation.py \
           ../gui/wizards/operation/wiz_create_parcel_operation.py \
@@ -99,9 +113,6 @@ SOURCES = ../__init__.py \
           ../gui/wizards/single_page_wizard_factory.py \
           ../gui/wizards/spatial_wizard_factory.py \
           ../gui/wizards/wizard_factory.py \
-          ../gui/supplies/dlg_cobol_base.py \
-          ../gui/supplies/dlg_etl_cobol.py \
-          ../gui/supplies/dlg_missing_cobol_supplies.py \
           ../gui/right_of_way.py \
           ../gui/toolbar.py \
           ../lib/db/db_connection_manager.py \

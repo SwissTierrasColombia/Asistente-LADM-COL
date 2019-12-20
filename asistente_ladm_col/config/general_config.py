@@ -1,16 +1,16 @@
 import os.path
 
-from qgis.PyQt.QtCore import (QSettings,
-                              QObject,
+from qgis.PyQt.QtCore import (QObject,
                               Qt,
                               QCoreApplication)
+from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEFAULT_LOG_MODE = LogModeEnum.USER
+DEFAULT_LOG_MODE = LogModeEnum.DEV
 DEFAULT_LOG_FILE = ''
 
 SUPPLIES_DB_PREFIX = None
@@ -36,19 +36,55 @@ ANT_MAP_REPORT = "Plano_ANT"
 
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
+LATEST_LADM_MODEL_VERSION_SUPPORTED = "1.3"
+VERSION_EXTENDED_MODELS = LATEST_OPERATION_MODEL_VERSION_SUPPORTED.replace('.', '_')
+VERSION_LADM_MODEL = LATEST_LADM_MODEL_VERSION_SUPPORTED.replace('.', '_')
 
-DEFAULT_MODEL_NAMES_CHECKED = {
-    'ANT_V2_9_6': Qt.Unchecked,
-    'Avaluos_V2_9_6': Qt.Unchecked,
-    'Cartografia_Referencia_V2_9_6': Qt.Unchecked,
-    'Datos_Gestor_Catastral_V2_9_6': Qt.Unchecked,
-    'Datos_Integracion_Insumos_V2_9_6': Qt.Unchecked,
-    'Datos_SNR_V2_9_6': Qt.Unchecked,
-    'Formulario_Catastro_V2_9_6': Qt.Unchecked,
-    'Operacion_V2_9_6': Qt.Checked
+LADM_MODEL_PREFIX = "LADM_COL"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+OPERATION_MODEL_PREFIX = "Operacion"
+ANT_MODEL_PREFIX = "ANT"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+VALUATION_MODEL_PREFIX = "Avaluos"
+
+ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
+    LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
+    SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
+    SUPPLIES_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+    SUPPLIES_INTEGRATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies integration data"),
+    OPERATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
+    ANT_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
+    CADASTRAL_FORM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral form"),
+    REFERENCE_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cartography"),
+    VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
 }
 
-DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_2', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLANAS_V1']
+
+ASSISTANT_SUPPORTED_MODELS = ["{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL),
+                              "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS),
+                              "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)]
+
+DEFAULT_MODEL_NAMES_CHECKED = {
+    '{}_V{}'.format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+    '{}_V{}'.format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Checked
+}
+
+DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_3', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLANAS_V1']
 
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
@@ -64,10 +100,13 @@ STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
 # SISTEMA DE TRANSICIÓN
-ST_LOGIN_SERVICE_URL = "http://apist.proadmintierra.info/api/security/oauth/token"
+ST_DOMAIN = "http://apist.proadmintierra.info"
+ST_LOGIN_SERVICE_URL = "{}/api/security/oauth/token".format(ST_DOMAIN)
 ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
 encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
 ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
+ST_GET_TASKS_SERVICE_URL = "{}/api/workspaces/v1/tasks/pending".format(ST_DOMAIN)
+TRANSITION_SYSTEM_EXPECTED_RESPONSE = "unauthorized"
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 
@@ -245,6 +284,11 @@ CSS_COLOR_ERROR_LABEL = "color:#FF0000"
 CSS_COLOR_OKAY_LABEL = "color:#478046"
 CSS_COLOR_INACTIVE_LABEL = "color:#646464"
 
+# Colors for Transition System task steps
+CHECKED_COLOR = QColor(166, 255, 152, 255)
+UNCHECKED_COLOR = QColor(255, 245, 152, 255)
+GRAY_COLOR = QColor(219, 219, 219, 255)
+
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
@@ -344,7 +388,9 @@ EXCEL_SHEET_TITLE_NPN = 'numero predial nuevo'
 EXCEL_SHEET_TITLE_NPV = 'numero predial viejo'
 EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
 EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
+EXCEL_SHEET_TITLE_PLOT_CONDITION = 'condicion predio'
 EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
+EXCEL_SHEET_TITLE_ADDRESS = 'direccion'
 EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
 EXCEL_SHEET_TITLE_MIDDLE = 'nombre2'
 EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1'

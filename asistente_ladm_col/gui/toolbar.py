@@ -54,17 +54,17 @@ class ToolBar(QObject):
             return
         else:
             if layer.selectedFeatureCount() == 0:
+
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
-                                                                        "There are no selected boundaries, do you like to use all the {} boundaries in the data base?").format(
+                                                                        "There are no selected boundaries. Do you want to use all the {} boundaries in the database?").format(
                                                  layer.featureCount()),
-                                             QMessageBox.Yes, QMessageBox.No)
+                                             QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                 if reply == QMessageBox.Yes:
                     use_selection = False
-                else:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
-                                                                                 "First select at least one boundary!"))
+                elif reply == QMessageBox.Cancel:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                     return
 
         if use_selection:
@@ -124,26 +124,28 @@ class ToolBar(QObject):
                     reply = QMessageBox.question(None,
                                                  QCoreApplication.translate("ToolBar", "Continue?"),
                                                  QCoreApplication.translate("ToolBar",
-                                                                            "There are no selected boundaries, do you like to fill the '{}' table for all the {} boundaries in the data base?")
-                                                 .format(self.names.POINT_BFS_T,
-                                                         layers[self.names.OP_BOUNDARY_T][LAYER].featureCount()),
-                                                 QMessageBox.Yes, QMessageBox.No)
+                                                                            "There are no selected boundaries. Do you want to fill the '{}' table for all the {} boundaries in the database?").format(
+                                                     self.names.POINT_BFS_T,
+                                                     layers[self.names.OP_BOUNDARY_T][LAYER].featureCount()),
+                                                 QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                     if reply == QMessageBox.Yes:
                         use_selection = False
-                    else:
-                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
-                                                            "First select at least one boundary!"))
+                    elif reply == QMessageBox.Cancel:
+                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                         return
             else:
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
-                                                                        "There are {selected} boundaries selected, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.")
-                                             .format(selected=layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(),
-                                                     table=self.names.POINT_BFS_T),
-                                             QMessageBox.Yes, QMessageBox.No)
-                if reply == QMessageBox.No:
+                                                                        "There are {selected} boundaries selected. Do you want to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.").format(
+                                                 selected=layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(), table=self.names.POINT_BFS_T),
+                                             QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+                if reply == QMessageBox.Yes:
+                    use_selection = True
+                elif reply == QMessageBox.No:
                     use_selection = False
+                elif reply == QMessageBox.Cancel:
+                    return
 
         bfs_features = layers[self.names.POINT_BFS_T][LAYER].getFeatures()
 
@@ -208,14 +210,13 @@ class ToolBar(QObject):
                     reply = QMessageBox.question(None,
                                                  QCoreApplication.translate("ToolBar", "Continue?"),
                                                  QCoreApplication.translate("ToolBar",
-                                                                            "There are no selected plots, do you like to fill the '{more}' and '{less}' tables for all the {all} plots in the data base?")
-                                                 .format(more=self.names.MORE_BFS_T,
-                                                         less=self.names.LESS_BFS_T,
-                                                         all=layers[self.names.OP_PLOT_T][LAYER].featureCount()),
-                                                 QMessageBox.Yes, QMessageBox.No)
+                                                                            "There are no selected plots. Do you want to fill the '{more}' and '{less}' tables for all the {all} plots in the database?").format(
+                                                     more=self.names.MORE_BFS_T, less=self.names.LESS_BFS_T,
+                                                     all=layers[self.names.OP_PLOT_T][LAYER].featureCount()),
+                                                 QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                     if reply == QMessageBox.Yes:
                         use_selection = False
-                    else:
+                    elif reply == QMessageBox.Cancel:
                         self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
                                                                                      "First select at least one plot!"))
                         return
@@ -223,13 +224,16 @@ class ToolBar(QObject):
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
-                                                                        "There are {selected} plots selected, do you like to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.")
-                                             .format(selected=layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount(),
-                                                     more=self.names.MORE_BFS_T,
-                                                     less=self.names.LESS_BFS_T),
-                                             QMessageBox.Yes, QMessageBox.No)
-                if reply == QMessageBox.No:
+                                                                        "There are {selected} plots selected. Do you want to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.").format(
+                                                 selected=layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount(),
+                                                 more=self.names.MORE_BFS_T, less=self.names.LESS_BFS_T),
+                                             QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+                if reply == QMessageBox.Yes:
+                    use_selection = True
+                elif reply == QMessageBox.No:
                     use_selection = False
+                elif reply == QMessageBox.Cancel:
+                    return
 
         more_bfs_features = layers[self.names.MORE_BFS_T][LAYER].getFeatures()
         less_features = layers[self.names.LESS_BFS_T][LAYER].getFeatures()

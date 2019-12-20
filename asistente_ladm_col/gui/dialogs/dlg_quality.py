@@ -24,6 +24,7 @@ from qgis.PyQt.QtGui import (QBrush,
                              QIcon,
                              QColor)
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QDialogButtonBox,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
 from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
@@ -74,6 +75,8 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.translatable_config_strings = TranslatableConfigStrings()
 
         self.trw_quality_rules.setItemsExpandable(False)
+        self.trw_quality_rules.itemSelectionChanged.connect(self.validate_selection_rules)
+        self.trw_quality_rules.itemSelectionChanged.emit()
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
@@ -198,6 +201,10 @@ class QualityDialog(QDialog, DIALOG_UI):
 
         self.load_items()
 
+    def validate_selection_rules(self):
+        # At least one quality rule must have been selected
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(bool(self.trw_quality_rules.selectedItems()))
+
     def load_items(self):
         self.trw_quality_rules.setUpdatesEnabled(False) # Don't render until we're ready
         self.trw_quality_rules.clear()
@@ -233,7 +240,10 @@ class QualityDialog(QDialog, DIALOG_UI):
         # we erase the group error layer every time it runs because we assume that data set changes.
         self.qgis_utils.remove_error_group_requested.emit()
         self.quality.initialize_log_dialog_quality()
-        self.quality.set_count_topology_rules(len(self.trw_quality_rules.selectedItems()))
+        selected_count = len(self.trw_quality_rules.selectedItems())
+
+        if selected_count > 0:
+            self.quality.set_count_topology_rules(selected_count)
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
@@ -311,7 +321,8 @@ class QualityDialog(QDialog, DIALOG_UI):
 
             iterator += 1
 
-        self.quality.generate_log_button()
+        if selected_count > 0:
+            self.quality.generate_log_button()
 
         if self.qgis_utils.error_group_exists():
             group = self.qgis_utils.get_error_layers_group()

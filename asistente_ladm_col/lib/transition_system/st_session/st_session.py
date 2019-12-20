@@ -17,7 +17,9 @@
  ***************************************************************************/
 """
 import requests
+from requests.adapters import HTTPAdapter
 import json
+
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QSettings,
@@ -27,16 +29,19 @@ from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
                                                       ST_LOGIN_SERVICE_PAYLOAD,
                                                       ST_LOGIN_AUTHORIZATION_CLIENT)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.transition_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 class STSession(QObject, metaclass=SingletonQObject):
     TOKEN_KEY = "Asistente-LADM_COL/transition_system/token"
 
     login_status_changed = pyqtSignal(bool)  # Status of the login: True if a user is logged in, False otherwise
+    logout_finished = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
+        self.task_manager = STTaskManager()
         self.__logged_user = None
 
     def login(self, user, password):
@@ -51,8 +56,11 @@ class STSession(QObject, metaclass=SingletonQObject):
             'Connection': "keep-alive",
             'cache-control': "no-cache"
         }
+        s = requests.Session()
+        s.mount(ST_LOGIN_SERVICE_URL, HTTPAdapter(max_retries=0))
+
         try:
-            response = requests.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
+            response = s.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}").format(e)
             self.logger.warning(__name__, msg)
@@ -63,8 +71,12 @@ class STSession(QObject, metaclass=SingletonQObject):
         if status_OK:
             msg = QCoreApplication.translate("STSession", "User logged in successfully!")
             logged_data = json.loads(response.text)
-            self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'], logged_data['last_name']), logged_data['email'], logged_data['roles'][0]['name'])
-            QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])
+            self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'],
+                                                             logged_data['last_name']),
+                                              logged_data['email'],
+                                              logged_data['roles'][0]['name'],
+                                              logged_data['access_token'])
+            QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])  # Register (login) the user
             self.login_status_changed.emit(True)
             self.logger.info(__name__, msg)
         else:
@@ -81,10 +93,12 @@ class STSession(QObject, metaclass=SingletonQObject):
         msg = ""
         logged_out = False
         if self.is_user_logged():
+            QSettings().setValue(self.TOKEN_KEY, "")  # Unregister (logout) the user
             self.__logged_user = None
-            QSettings().setValue(self.TOKEN_KEY, '')
             logged_out = True
             self.login_status_changed.emit(False)
+            self.logout_finished.emit()
+            self.task_manager.unregister_tasks()
             msg = QCoreApplication.translate("STSession", "User was logged out successfully!")
         else:
             msg = QCoreApplication.translate("STSession", "There was not logged in user! Therefore, no logout.")
@@ -99,14 +113,15 @@ class STSession(QObject, metaclass=SingletonQObject):
         return self.__logged_user.get_role() if self.__logged_user is not None else None
 
     def is_user_logged(self):
-        return bool(QSettings().value(self.TOKEN_KEY, ''))
+        return self.__logged_user is not None
 
 
 class STLoggedUser:
-    def __init__(self, name, e_mail, role):
+    def __init__(self, name, e_mail, role, token):
         self.__user_name = name
         self.__user_e_mail = e_mail
         self.__user_role = role
+        self.__token = token
 
     def get_name(self):
         return self.__user_name
@@ -116,3 +131,8 @@ class STLoggedUser:
 
     def get_role(self):
         return self.__user_role
+
+    def get_token(self):
+        # Should we make sure the TOKEN_KEY is stored? Apparently not. As we create and destroy the user as long as the
+        # session is alive.
+        return self.__token

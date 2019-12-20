@@ -24,7 +24,7 @@ from qgis.core import (QgsApplication,
                        Qgis)
 
 from asistente_ladm_col.lib.logger import Logger
-from .config.general_config import (PLUGIN_NAME,
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                     QGIS_REQUIRED_VERSION,
                                     QGIS_REQUIRED_VERSION_INT)
 

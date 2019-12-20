@@ -168,7 +168,9 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        if self.db_source == COLLECTED_DB_SOURCE:
+            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
         dlg.set_action_type(EnumDbActionType.EXPORT)
 
         if dlg.exec_():
