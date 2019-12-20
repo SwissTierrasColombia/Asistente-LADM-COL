@@ -25,10 +25,10 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
         SelectFeaturesOnMapWrapper.__init__(self)
 
     def post_save(self, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
@@ -50,7 +50,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
 
                 self._layers[AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
                 if building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "The new {} (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!").format(self.WIZARD_FEATURE_NAME, building_unit_valuation_id, building_unit_ids[0])
+                    message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!").format(self.WIZARD_FEATURE_NAME, building_unit_valuation_id, building_unit_ids[0])
 
         return message
 
@@ -59,7 +59,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
 
     def check_selected_features(self):
         _count = self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()
-        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
+        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         if _count != 1:

@@ -65,7 +65,7 @@ class WizardFactory(AbsWizardFactory):
 
                     self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
 
             self.close_wizard()
@@ -95,7 +95,7 @@ class WizardFactory(AbsWizardFactory):
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.logger.info_msg(__name__, message)
 

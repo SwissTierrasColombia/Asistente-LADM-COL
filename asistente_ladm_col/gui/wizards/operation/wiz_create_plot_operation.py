@@ -58,7 +58,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
+        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         _color = CSS_COLOR_OKAY_LABEL
@@ -111,7 +111,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
@@ -121,7 +121,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self.cbo_mapping.setEnabled(False)
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
@@ -133,7 +133,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self.qgis_utils.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"))
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations", "First select boundaries!"))
 
     #############################################################################
     # Custom methods

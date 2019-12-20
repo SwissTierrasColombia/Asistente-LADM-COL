@@ -42,11 +42,11 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
         SelectFeatureByExpressionDialogWrapper.__init__(self)
 
     def post_save(self, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
 
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
@@ -73,7 +73,7 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
                     new_features.append(new_feature)
 
                 self._layers[self.names.COL_RRR_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
-                message = QCoreApplication.translate(self.WIZARD_NAME,"The new {} (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(self.WIZARD_FEATURE_NAME, feature_rrr_id, ", ".join([str(b) for b in administrative_source_ids]))
+                message = QCoreApplication.translate("WizardTranslations","The new {} (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(self.WIZARD_FEATURE_NAME, feature_rrr_id, ", ".join([str(b) for b in administrative_source_ids]))
 
         return message
 
@@ -83,10 +83,10 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
     def check_selected_features(self):
         # Check selected features in administrative source layer
         if self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount()))
+            self.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount()))
             self.button(self.FinishButton).setDisabled(False)
         else:
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: 0 Features Selected"))
+            self.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: 0 Features Selected"))
             self.button(self.FinishButton).setDisabled(True)
 
     def disconnect_signals_select_features_by_expression(self):

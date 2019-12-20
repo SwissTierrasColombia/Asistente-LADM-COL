@@ -70,7 +70,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
         self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
-        self.wizardPage2.setButtonText(QWizard.FinishButton, QCoreApplication.translate(self.WIZARD_NAME, "Import"))
+        self.wizardPage2.setButtonText(QWizard.FinishButton, QCoreApplication.translate("WizardTranslations", "Import"))
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -82,14 +82,14 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
 
             if self.EDITING_LAYER_NAME == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
                 self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
@@ -162,12 +162,12 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
     def building_unit_qualification_option_changed(self):
         if self.rad_conventional.isChecked():
             self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE
-            self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME,
+            self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations",
                                                                 "Load data to conventional building unit qualification..."))
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP4])
 
         elif self.rad_unconventional.isChecked():
             self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE
-            self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME,
+            self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations",
                                                                 "Load data to unconventional building unit qualification..."))
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP5])

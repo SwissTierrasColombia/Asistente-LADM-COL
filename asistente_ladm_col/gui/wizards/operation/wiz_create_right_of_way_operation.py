@@ -83,7 +83,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -92,7 +92,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.width_line_edit.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
         elif self.rad_digitizing_line.isChecked():
             self.width_line_edit.setEnabled(True)
@@ -101,7 +101,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
@@ -126,7 +126,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
                     self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
 
             else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
 
             self.close_wizard()
@@ -142,7 +142,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.logger.info_msg(__name__, message)
 
@@ -187,20 +187,20 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.qgis_utils.active_snapping_all_layers(tolerance=9)
             self.open_form(layer)
 
-            self.logger.info_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+            self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
                 "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
 
     def post_save(self, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
         if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a {}. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME, self.WIZARD_FEATURE_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a {}. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME, self.WIZARD_FEATURE_NAME)
             self.logger.warning(__name__, "Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME))
         else:
             feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
-            message = QCoreApplication.translate(self.WIZARD_NAME, "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
+            message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
 
         return message
 
@@ -236,7 +236,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
             if not saved:
                 layer.rollBack()
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
                     self.logger.warning(__name__, "Commit error: {}".format(e))
@@ -301,12 +301,12 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
                 if feature.geometry().isGeosValid():
                     self.exec_form(layer)
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate("WizardTranslations", "Geometry is invalid. Do you want to return to the editing session?")
             else:
                 if len(layer.editBuffer().addedFeatures()) == 0:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate("WizardTranslations", "Geometry was not created. Do you want to return to the editing session?")
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate("WizardTranslations", "Many geometries were created but one was expected. Do you want to return to the editing session?")
 
         if message:
             self.show_message_associate_geometry_creation(message)
@@ -321,9 +321,9 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Question)
         msg.setText(message)
-        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, close the wizard")), QMessageBox.NoRole)
+        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "Continue editing?"))
+        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "Yes")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "No, close the wizard")), QMessageBox.NoRole)
         reply = msg.exec_()
 
         if reply == 1: # 1 close wizard, 0 yes
@@ -331,7 +331,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             if layer.isEditable():
                 layer.rollBack()
 
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(
                 self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
         else:
