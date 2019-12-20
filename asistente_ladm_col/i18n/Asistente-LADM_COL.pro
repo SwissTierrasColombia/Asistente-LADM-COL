@@ -128,7 +128,6 @@ SOURCES = ../__init__.py \
           ../logic/quality/logic_checks.py \
           ../logic/quality/quality.py \
           ../utils/decorators.py \
-          ../utils/decorators.py \
           ../utils/qgis_utils.py \
           ../utils/qt_utils.py \
           ../utils/model_parser.py \

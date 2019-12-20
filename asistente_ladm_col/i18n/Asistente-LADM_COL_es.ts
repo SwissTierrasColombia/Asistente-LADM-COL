@@ -175,12 +175,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="356"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="357"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="360"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="361"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -238,7 +238,7 @@
         <translation>Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="330"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="331"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -247,7 +247,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="486"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="487"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -265,29 +265,29 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="322"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="323"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="326"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="327"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="334"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="335"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="338"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="339"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="442"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="351"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="352"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="438"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -300,17 +300,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="372"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="373"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="378"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="379"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="382"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="383"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -323,17 +323,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="365"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="366"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="369"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="370"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="387"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="388"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -370,26 +370,26 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="484"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="519"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="520"/>
         <location filename="../utils/decorators.py" line="52"/>
-        <location filename="../utils/decorators.py" line="174"/>
-        <location filename="../utils/decorators.py" line="196"/>
-        <location filename="../utils/decorators.py" line="218"/>
+        <location filename="../utils/decorators.py" line="205"/>
+        <location filename="../utils/decorators.py" line="227"/>
+        <location filename="../utils/decorators.py" line="249"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="525"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="526"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="527"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="528"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -440,17 +440,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="498"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="507"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="513"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="514"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -461,87 +461,87 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="491"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="494"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="342"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="343"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="232"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="233"/>
         <source>Refreshing GUI for the LADM_COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM_COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="286"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="287"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="290"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="291"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="304"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="305"/>
         <source>Load Cobol data</source>
         <translation>Cargar datos de Cobol</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="309"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="310"/>
         <source>Find missing Cobol supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="346"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="347"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="470"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="471"/>
         <source>Supplies data settings</source>
         <translation>Configuración de datos de Insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="502"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
         <source>Create LADM-COL structure (Supplies)</source>
         <translation>Crear estructura LADM-COL (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="510"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="511"/>
         <source>Import data (Supplies)</source>
         <translation>Importar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="516"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="517"/>
         <source>Export data (Supplies)</source>
         <translation>Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1133"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1135"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1144"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1147"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1264"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1267"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1265"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1268"/>
         <source>Are you sure you want to log out from the Transition System?</source>
         <translation>¿Estás seguro que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -550,7 +550,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="428"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -575,17 +575,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="445"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="446"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="449"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="450"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="453"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="454"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -595,12 +595,12 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="466"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="467"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="468"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -609,22 +609,22 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="655"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="670"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="671"/>
         <source>Download and install dependency</source>
         <translation>Descargar e instalar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="677"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="678"/>
         <source>Report dependency download is in progress...</source>
         <translation>La descarga de las dependencias para generar reportes está en progreso...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="685"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="686"/>
         <source>Remove dependency</source>
         <translation>Borrar dependencias</translation>
     </message>
@@ -639,9 +639,9 @@
     </message>
     <message>
         <location filename="../utils/decorators.py" line="56"/>
-        <location filename="../utils/decorators.py" line="178"/>
-        <location filename="../utils/decorators.py" line="200"/>
-        <location filename="../utils/decorators.py" line="222"/>
+        <location filename="../utils/decorators.py" line="209"/>
+        <location filename="../utils/decorators.py" line="231"/>
+        <location filename="../utils/decorators.py" line="253"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
@@ -666,19 +666,24 @@
         <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="153"/>
+        <location filename="../utils/decorators.py" line="131"/>
+        <source>Change official settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="184"/>
         <source> Supplies Data Settings</source>
         <translation> Configuración de Datos de Isumos</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="157"/>
+        <location filename="../utils/decorators.py" line="188"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to supplies DB was not valid.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos de Insumos no es válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="171"/>
-        <location filename="../utils/decorators.py" line="193"/>
-        <location filename="../utils/decorators.py" line="215"/>
+        <location filename="../utils/decorators.py" line="202"/>
+        <location filename="../utils/decorators.py" line="224"/>
+        <location filename="../utils/decorators.py" line="246"/>
         <source>Check your database connection. The &apos;{}&apos; model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.</source>
         <translation>Compruebe su conexión a la base de datos. El modelo &apos;{}&apos; es necesario para esta funcionalidad, pero no se ha podido encontrar en su base de datos actual. Haga clic en el botón para ir a Configuración.</translation>
     </message>
@@ -703,43 +708,46 @@
         <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos oficial no es válida.</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="127"/>
         <source>Your &apos;official&apos; database is the same &apos;collected&apos; database!!! Click the proper button to change connection settings.</source>
-        <translation type="vanished">¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
+        <translation>¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
     </message>
     <message>
         <source> Change official settings</source>
         <translation type="vanished"> Cambiar conexión oficial</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="136"/>
         <source>Change collected settings</source>
-        <translation type="vanished">Cambiar conexión del barrido</translation>
+        <translation>Cambiar conexión del barrido</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="141"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, official DB is the same collected DB!</source>
-        <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
+        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="243"/>
+        <location filename="../utils/decorators.py" line="274"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="245"/>
+        <location filename="../utils/decorators.py" line="276"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="254"/>
+        <location filename="../utils/decorators.py" line="285"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="264"/>
+        <location filename="../utils/decorators.py" line="295"/>
         <source>There is a wizard open, you need to close it before continuing with another tool.</source>
         <translation>Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="266"/>
+        <location filename="../utils/decorators.py" line="297"/>
         <source>Close the open wizard</source>
         <translation>Cerrar el wizard abierto</translation>
     </message>
@@ -749,7 +757,7 @@
     </message>
     <message>
         <location filename="../utils/decorators.py" line="87"/>
-        <location filename="../utils/decorators.py" line="249"/>
+        <location filename="../utils/decorators.py" line="280"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -851,7 +859,7 @@
 <context>
     <name>AsistenteLADMColPlugin</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="522"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="523"/>
         <source>Supplies Settings</source>
         <translation>Configuración de Insumos</translation>
     </message>
@@ -1491,12 +1499,12 @@
         <translation type="vanished">No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1046"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1047"/>
         <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1048"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1049"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -4787,12 +4795,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="778"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="779"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="782"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="783"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -5420,17 +5428,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="746"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="747"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="754"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="755"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="766"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="767"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7306,7 +7314,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/toolbar.py" line="60"/>
         <source>There are no selected boundaries. Do you want to use all the {} boundaries in the database?</source>
-        <translation>No hay linderos seleccionados. ¿Desea utilizar todos los linderos {} de la base de datos?</translation>
+        <translation>No hay linderos seleccionados. ¿Desea utilizar todos los {} linderos de la base de datos?</translation>
     </message>
     <message>
         <location filename="../gui/toolbar.py" line="126"/>

@@ -114,7 +114,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _operation_model_required)
+                                                 _operation_model_required,
+                                                 _different_db_connections_required)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
@@ -1129,6 +1130,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
+    @_different_db_connections_required
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
         with ProcessWithStatus(msg):
@@ -1140,6 +1142,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
+    @_different_db_connections_required
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
         with ProcessWithStatus(msg):
