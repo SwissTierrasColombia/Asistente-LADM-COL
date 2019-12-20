@@ -71,7 +71,7 @@ class MultiPageWizardFactory(WizardFactory):
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
@@ -81,7 +81,7 @@ class MultiPageWizardFactory(WizardFactory):
             self.cbo_mapping.setEnabled(False)
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)

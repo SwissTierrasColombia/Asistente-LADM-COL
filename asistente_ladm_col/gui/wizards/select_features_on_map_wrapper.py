@@ -47,17 +47,17 @@ class SelectFeaturesOnMapWrapper:
 
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Question)
-        msg.setText(QCoreApplication.translate(self.WIZARD_NAME, "Do you really want to change the map tool?"))
-        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "CHANGING MAP TOOL?"))
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes, and close the wizard")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, continue editing")), QMessageBox.NoRole)
+        msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
+        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
+        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "No, continue editing")), QMessageBox.NoRole)
         reply = msg.exec_()
 
         if reply == 1: # 1 continue editing, 0 close wizard
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
         else:
-            message = QCoreApplication.translate(self.WIZARD_NAME,
+            message = QCoreApplication.translate("WizardTranslations",
                                                  "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
 
@@ -106,7 +106,7 @@ class SelectFeaturesOnMapWrapper:
                 self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 

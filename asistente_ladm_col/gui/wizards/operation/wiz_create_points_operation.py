@@ -80,7 +80,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
-                               file_filter=QCoreApplication.translate(self.WIZARD_NAME,'CSV File (*.csv *.txt)')))
+                               file_filter=QCoreApplication.translate("WizardTranslations",'CSV File (*.csv *.txt)')))
         self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.crsSelector.crsChanged.connect(self.crs_changed)
         self.crs = QgsCoordinateReferenceSystem()
@@ -114,7 +114,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_2_OPTION_CSV)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate(self.WIZARD_NAME,
+                                       QCoreApplication.translate("WizardTranslations",
                                             "Import"))
         self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_3_OPTION_CSV)
         self.txt_help_page_3.anchorClicked.connect(self.save_template)
@@ -184,7 +184,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):
             self.labelZ.setEnabled(False)
             self.cbo_elevation.setEnabled(False)
-            msg = QCoreApplication.translate(self.WIZARD_NAME,
+            msg = QCoreApplication.translate("WizardTranslations",
                                              "The current model does not support 3D geometries")
             self.cbo_elevation.setToolTip(msg)
             self.labelZ.setToolTip(msg)
@@ -221,16 +221,16 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
-            self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Load data to Boundary Points..."))
-            self.gbx_page_3.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Configure CSV data source for Boundary Points..."))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Boundary Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Boundary Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP)
         elif self.rad_survey_point.isChecked(): # self.rad_survey_point is checked
-            self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Load data to Survey Points..."))
-            self.gbx_page_3.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Configure CSV data source for Survey Points..."))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Survey Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Survey Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_SP)
         else: # self.rad_control_point is checked
-            self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Load data to Control Points..."))
-            self.gbx_page_3.setTitle(QCoreApplication.translate(self.WIZARD_NAME, "Configure CSV data source for Control Points..."))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Control Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Control Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_CP)
 
     def finished_dialog(self):
@@ -253,7 +253,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(output_layer_name)
 
             else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(output_layer_name))
 
             self.close_wizard()
@@ -263,7 +263,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.logger.info_msg(__name__, message)
         self.close()
@@ -280,7 +280,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         csv_path = self.txt_file_path.text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
-            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                                                                          "No CSV file given or file doesn't exist."))
             return
 
@@ -402,7 +402,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             return line.split(self.txt_delimiter.text())
 
         if error_reading:
-            self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                 "It was not possible to read field names from the CSV. Check the file and try again."))
         return []
 
@@ -438,10 +438,10 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                   QCoreApplication.translate(self.WIZARD_NAME,
+                                   QCoreApplication.translate("WizardTranslations",
                                                               "Save File"),
                                    os.path.join(settings.value('Asistente-LADM_COL/wizards/points_download_csv_path', '.'), filename),
-                                   QCoreApplication.translate(self.WIZARD_NAME,
+                                   QCoreApplication.translate("WizardTranslations",
                                                               "CSV File (*.csv *.txt)"))
 
         if new_filename:
@@ -450,7 +450,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
             if not template_file.exists():
                 self.logger.critical(__name__, "CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...")
-                msg = QCoreApplication.translate(self.WIZARD_NAME, "CSV file not found. Update your plugin. For details see log.")
+                msg = QCoreApplication.translate("WizardTranslations", "CSV file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
@@ -461,11 +461,11 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate(self.WIZARD_NAME, """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
+                msg = QCoreApplication.translate("WizardTranslations", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.logger.warning(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
-                msg = QCoreApplication.translate(self.WIZARD_NAME, "The file couldn\'t be saved.")
+                msg = QCoreApplication.translate("WizardTranslations", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 
     def show_message(self, message, level):

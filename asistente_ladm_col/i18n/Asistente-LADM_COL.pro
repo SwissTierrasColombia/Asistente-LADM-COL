@@ -67,7 +67,7 @@ SOURCES = ../__init__.py \
           ../gui/db_panel/db_schema_db_panel.py \
           ../gui/db_panel/gpkg_config_panel.py \
           ../gui/db_panel/pg_config_panel.py \
-          ../gui/dialogs/dlg_about_dialog.py \
+          ../gui/dialogs/dlg_about.py \
           ../gui/dialogs/dlg_custom_model_dir.py \
           ../gui/dialogs/dlg_get_db_or_schema_name.py \
           ../gui/dialogs/dlg_get_java_path.py \
@@ -115,13 +115,19 @@ SOURCES = ../__init__.py \
           ../gui/wizards/wizard_factory.py \
           ../gui/right_of_way.py \
           ../gui/toolbar.py \
+          ../lib/db/db_connector.py \
           ../lib/db/db_connection_manager.py \
           ../lib/db/gpkg_connector.py \
           ../lib/db/pg_connector.py \
+          ../lib/processing/algs/InsertFeaturesToLayer.py \
+          ../lib/processing/algs/PolygonsToLines.py \
           ../lib/transition_system/st_session/st_session.py \
+          ../lib/transition_system/task_manager/task_manager.py \
           ../lib/source_handler.py \
+          ../logic/ladm_col/queries/per_component/pg/logic_validation_queries.py \
           ../logic/quality/logic_checks.py \
           ../logic/quality/quality.py \
+          ../utils/decorators.py \
           ../utils/decorators.py \
           ../utils/qgis_utils.py \
           ../utils/qt_utils.py \

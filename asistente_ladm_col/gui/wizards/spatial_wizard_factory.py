@@ -70,7 +70,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
                     self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
 
             self.close_wizard()
@@ -101,7 +101,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.logger.info_msg(__name__, message)
 
@@ -127,7 +127,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
         self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-        self.logger.info_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+        self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
            "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
 
     def post_save(self, features):
