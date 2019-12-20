@@ -182,7 +182,7 @@ def get_igac_basic_query(schema, plot_t_id, parcel_fmi, parcel_number, previous_
             WHERE op_terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
             ORDER BY op_terreno.t_id
          )
-         SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
+         SELECT json_agg(info_terreno.terreno) AS op_terreno FROM info_terreno
     """
 
     query = query.format(schema=schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number, previous_parcel_number=previous_parcel_number)
