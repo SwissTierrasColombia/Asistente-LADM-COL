@@ -234,18 +234,18 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
 
         # Run the ETL
-        params = {'agrupacion':layers[self.names.OP_GROUP_PARTY_T][LAYER],
-        'colmiembros':layers[self.names.MEMBERS_T][LAYER],
-        'colrrrsourcet':layers[self.names.COL_RRR_SOURCE_T][LAYER],
-        'extarchivo':layers[self.names.EXT_ARCHIVE_S][LAYER],
-        'interesado':layers[self.names.OP_PARTY_T][LAYER],
-        'layergroupparty':layer_group_party,
-        'layerparcel':layer_parcel,
-        'layerparty':layer_party,
-        'layerright':layer_right,
-        'opderecho':layers[self.names.OP_RIGHT_T][LAYER],
-        'opfuenteadministrativatipo':layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
-        'parcel':layers[self.names.OP_PARCEL_T][LAYER]}
+        params = {'agrupacion': layers[self.names.OP_GROUP_PARTY_T][LAYER],
+                  'colmiembros': layers[self.names.MEMBERS_T][LAYER],
+                  'colrrrsourcet': layers[self.names.COL_RRR_SOURCE_T][LAYER],
+                  'extarchivo': layers[self.names.EXT_ARCHIVE_S][LAYER],
+                  'interesado': layers[self.names.OP_PARTY_T][LAYER],
+                  'layergroupparty': layer_group_party,
+                  'layerparcel': layer_parcel,
+                  'layerparty': layer_party,
+                  'layerright': layer_right,
+                  'opderecho': layers[self.names.OP_RIGHT_T][LAYER],
+                  'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
+                  'parcel': layers[self.names.OP_PARCEL_T][LAYER]}
 
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
@@ -586,3 +586,4 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.progress.setVisible(False)
         self.feedback = QgsProcessingFeedback()         
         self.feedback.progressChanged.connect(self.progress_changed)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
