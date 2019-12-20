@@ -346,8 +346,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         if index_data is None:
             return
 
-        print(index_data)
-
         if "value" in index_data:
             action_copy = QAction(QCoreApplication.translate("DockWidgetQueries", "Copy value"))
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))

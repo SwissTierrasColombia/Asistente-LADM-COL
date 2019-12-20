@@ -112,6 +112,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.rejected.connect(self.close_dialog)
 
     def show_tabs(self, tab_pages_list):
+        """
+        Show only those tabs that are listed in tab_pages_list, if any. If it's an empty list, show all tabs.
+        """
         if tab_pages_list:
             for i in reversed(range(self.tabWidget.count())):
                 if i not in tab_pages_list:
@@ -220,7 +223,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                         missing_required_models.append(DICT_NAMES_DB_MODELS[model])
 
                 if missing_required_models:
-                    msg = QCoreApplication.translate("SettingsDialog", "The required {} do not exist").format(', '.join(missing_required_models))
+                    msg = QCoreApplication.translate("SettingsDialog", "The required {} model(s) do(es) not exist").format(', '.join(missing_required_models))
                     self.show_message(msg, Qgis.Warning)
                     return  # Do not close the dialog
 

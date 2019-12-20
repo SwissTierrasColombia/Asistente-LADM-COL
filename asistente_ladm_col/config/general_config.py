@@ -142,14 +142,14 @@ ANT_DB_MODEL = "ANT_DB_MODEL"
 REFERENCE_CARTOGRAPHY_DB_MODEL = "REFERENCE_CARTOGRAPHY_DB_MODEL"
 
 DICT_NAMES_DB_MODELS = {
-    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Model"),
-    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data Model"),
-    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration Model"),
-    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation Model"),
-    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation Model"),
-    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form Model"),
-    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT Model"),
-    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography Model"),
+    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data"),
+    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration"),
+    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
+    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation"),
+    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form"),
+    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
+    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography"),
 }
 
 # Change Detections keys to compare
