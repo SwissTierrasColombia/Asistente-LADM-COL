@@ -4805,252 +4805,239 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>Mostrar errores encontrados</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="131"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="138"/>
         <source>Select the Excel file with data in the intermediate structure</source>
         <translation>Seleccione el archivo de Excel con datos en la estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="135"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="142"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="160"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="168"/>
         <source>You need to select an Excel file before continuing with the import.</source>
         <translation>Debe seleccionar un archivo de Excel antes de continuar con la importación.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="168"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="176"/>
         <source>The specified Excel file does not exist!</source>
         <translation>El archivo de Excel especificado no existe!</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="175"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="183"/>
         <source>Loading tables from the Excel file...</source>
         <translation>Cargando tablas desde el archivo de Excel ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="193"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="201"/>
         <source>One of the sheets of the Excel file couldn&apos;t be loaded! Check the format again.</source>
         <translation>¡Una de las hojas del archivo de Excel no se pudo cargar! Compruebe el formato de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="201"/>
         <source>Loading LADM_COL tables...</source>
-        <translation>Cargando tablas LADM_COL ...</translation>
+        <translation type="vanished">Cargando tablas LADM_COL ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="234"/>
         <source>ETL (step 1): Load col_interesado data...</source>
-        <translation>ETL (paso 1): Cargar datos col_interesado ...</translation>
+        <translation type="vanished">ETL (paso 1): Cargar datos col_interesado ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="279"/>
         <source>ETL (step 2): Define group parties...</source>
-        <translation>ETL (paso 2): Definir agrupación de interesados ...</translation>
+        <translation type="vanished">ETL (paso 2): Definir agrupación de interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="291"/>
         <source>ETL (step 3): Load group parties...</source>
-        <translation>ETL (paso 3): Cargar agrupación de interesados ...</translation>
+        <translation type="vanished">ETL (paso 3): Cargar agrupación de interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="311"/>
         <source>ETL (step 4): Join group parties t_id...</source>
-        <translation>ETL (paso 4): Asociar el t_id de la agrupación de interesados ...</translation>
+        <translation type="vanished">ETL (paso 4): Asociar el t_id de la agrupación de interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="327"/>
         <source>ETL (step 5): Join group parties with parties...</source>
-        <translation>ETL (paso 5): Asociar la agrupación de interesados con los interesados ...</translation>
+        <translation type="vanished">ETL (paso 5): Asociar la agrupación de interesados con los interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="343"/>
         <source>ETL (step 6): Load group party members...</source>
-        <translation>ETL (paso 6): Cargar los miembros de las agrupación de interesados ...</translation>
+        <translation type="vanished">ETL (paso 6): Cargar los miembros de las agrupación de interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="357"/>
         <source>ETL (step 7): Load parcels...</source>
-        <translation>ETL (paso 7): Cargar los predios ...</translation>
+        <translation type="vanished">ETL (paso 7): Cargar los predios ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="383"/>
         <source>ETL (step 8): Concatenate Rights and Sources fields...</source>
-        <translation>ETL (paso 8): concatenar campos de derechos y fuentes ...</translation>
+        <translation type="vanished">ETL (paso 8): concatenar campos de derechos y fuentes ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="398"/>
         <source>ETL (step 9): Load Administrative Sources...</source>
-        <translation>ETL (paso 9): Cargar las fuentes administrativas ...</translation>
+        <translation type="vanished">ETL (paso 9): Cargar las fuentes administrativas ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="424"/>
         <source>ETL (step 10): Join concatenate source to administrative source t_id...</source>
-        <translation>ETL (paso 10): Asociar el soporte con el t_id de la fuente administrativa ...</translation>
+        <translation type="vanished">ETL (paso 10): Asociar el soporte con el t_id de la fuente administrativa ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="441"/>
         <source>ETL (step 11): Load extarchivo...</source>
-        <translation>ETL (paso 11): Cargar extarchivo ...</translation>
+        <translation type="vanished">ETL (paso 11): Cargar extarchivo ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="463"/>
         <source>ETL (step 12): Join source and party t_id...</source>
-        <translation>ETL (paso 12): Asociar la fuente y el t_id del interesado ...</translation>
+        <translation type="vanished">ETL (paso 12): Asociar la fuente y el t_id del interesado ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="480"/>
         <source>ETL (step 13): Join source, party, group party t_id...</source>
-        <translation>ETL (paso 13): Asociar la fuente, interesado y el t_id de la agrupación de interesados ...</translation>
+        <translation type="vanished">ETL (paso 13): Asociar la fuente, interesado y el t_id de la agrupación de interesados ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="497"/>
         <source>ETL (step 14): Join source, party, group party, parcel t_id...</source>
-        <translation>ETL (paso 14): Asociar fuente, interesado, agrupación de interesados y el t_id del predio ...</translation>
+        <translation type="vanished">ETL (paso 14): Asociar fuente, interesado, agrupación de interesados y el t_id del predio ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="514"/>
         <source>ETL (step 15): Load Rights...</source>
-        <translation>ETL (paso 15): Cargar derechos ...</translation>
+        <translation type="vanished">ETL (paso 15): Cargar derechos ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="540"/>
         <source>ETL (step 16): Join source, party, group party, parcel, right t_id...</source>
-        <translation>ETL (paso 16): Asociar fuente, interesado, agrupación de interesados, predio, t_id del derecho ...</translation>
+        <translation type="vanished">ETL (paso 16): Asociar fuente, interesado, agrupación de interesados, predio, t_id del derecho ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="557"/>
         <source>ETL (step 17): Load rrrfuente...</source>
-        <translation>ETL (paso 17): Cargar rrrfuente ...</translation>
+        <translation type="vanished">ETL (paso 17): Cargar rrrfuente ...</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="576"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="109"/>
+        <source>Import intermediate structure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="266"/>
         <source>Import done!!!&lt;br/&gt;</source>
         <translation>!Importación realizada!&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="578"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="268"/>
         <source>&lt;br/&gt;&lt;b&gt;{count}&lt;/b&gt; records loaded into table &lt;b&gt;{table}&lt;/b&gt;</source>
         <translation>&lt;br/&gt; &lt;b&gt;{count}&lt;/b&gt; registros cargados en la tabla &lt;b&gt; {table} &lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="594"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="285"/>
         <source>The {} sheet has not information or has another name.</source>
         <translation>La hoja {} no tiene información o tiene otro nombre.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="602"/>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="646"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="293"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="337"/>
         <source>The title does not match the format in the sheet {}.</source>
         <translation>El título no corresponde al formato en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="606"/>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="651"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="297"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="342"/>
         <source>The column numero predial nuevo has empty values in sheet {}.</source>
         <translation>La columna &apos;numero predial nuevo&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="610"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="301"/>
         <source>The column departamento has non-numeric values in sheet {}.</source>
         <translation>La columna &apos;departamento&apos; tiene valores no numéricos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="614"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="305"/>
         <source>The column municipio has non-numeric values in sheet {}.</source>
         <translation>La columna &apos;municipio&apos; tiene valores no numéricos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="618"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="309"/>
         <source>The column numero predial nuevo has non-numeric values in sheet {}.</source>
         <translation>La columna &apos;numero predial nuevo&apos; tiene valores no numéricos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="624"/>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="673"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="315"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="364"/>
         <source>The title does not match the format in sheet {}.</source>
         <translation>El título no corresponde al formato en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="628"/>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="655"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="319"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="346"/>
         <source>The column tipo documento has empty values in sheet {}.</source>
         <translation>La columna &apos;tipo documento&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="632"/>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="659"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="323"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="350"/>
         <source>The column numero de documento has empty values in sheet {}.</source>
         <translation>La columna &apos;número de documento&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="636"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="327"/>
         <source>The column numero de documento has more characters than expected in sheet {}.</source>
         <translation>La columna &apos;numero de documento&apos; tiene más caracteres de los esperados en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="640"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="331"/>
         <source>The column tipo persona has empty values in sheet {}.</source>
         <translation>La columna &apos;tipo persona&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="663"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="354"/>
         <source>The column id agrupación has empty values in sheet {}.</source>
         <translation>La columna &apos;id agrupación&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="667"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="358"/>
         <source>The column numero de documento has more characters of the permitted in sheet {}.</source>
         <translation>La columna &apos;numero de documento&apos; tiene más caracteres de los esperados en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="677"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="368"/>
         <source>The column tipo has empty values in sheet {}.</source>
         <translation>La columna &apos;tipo&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="681"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="372"/>
         <source>The column tipo de fuente has empty values in sheet {}.</source>
         <translation>La columna &apos;tipo de fuente&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="685"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="376"/>
         <source>The column estado_disponibilidad de la fuente has empty values in sheet {}.</source>
         <translation>La columna &apos;estado_disponibilidad de la fuente&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="693"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="384"/>
         <source>Number of non-null parties plus number of non-null group parties is not equal to number of records in sheet {}. There might be rights without party or group party associated.</source>
         <translation>El número de interesados más el número de agrupaciones no coincide con el número de registros en la hoja {}. Pueden haber derechos sin interesado o agrupación asociados.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="698"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="389"/>
         <source>The column número documento Interesado has empty values in sheet {}.</source>
         <translation>La columna &apos;número documento Interesado&apos; tiene valores vacíos en la hoja {}.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="702"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="393"/>
         <source>The column agrupacion has data but the sheet does not exist in sheet {}.</source>
         <translation>La columna &apos;agrupacion&apos; tiene datos en la hoja {}, pero la hoja &apos;agrupacion&apos; no existe.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="823"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="514"/>
         <source>Save File</source>
         <translation>Guardar archivo</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="826"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="517"/>
         <source>Excel File (*.xlsx *.xls)</source>
         <translation>Archivo de Excel (* .xlsx * .xls)</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="835"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="526"/>
         <source>Excel file not found. Update your plugin. For details see log.</source>
         <translation>Archivo de Excel no encontrado. Actualiza tu plugin. Para más detalles ver log.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="850"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="541"/>
         <source>The file couldn&apos;t be saved.</source>
         <translation>No se pudo guardar el archivo.</translation>
     </message>
@@ -6642,7 +6629,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="586"/>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="276"/>
         <source>Data successfully imported to LADM_COL from intermediate structure (Excel file: &apos;{}&apos;)!!!</source>
         <translation>Datos importados exitosamente a LADM_COL desde la estructura intermedia (archivo de Excel: &apos;{}&apos;) !!!</translation>
     </message>
@@ -7560,32 +7547,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Nulo</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="421"/>
+        <location filename="../config/general_config.py" line="423"/>
         <source>Validation errors</source>
         <translation>Errores de validación</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="422"/>
+        <location filename="../config/general_config.py" line="424"/>
         <source>Boundary Points should not overlap</source>
         <translation>Los Puntos de Lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="423"/>
+        <location filename="../config/general_config.py" line="425"/>
         <source>Control Points should not overlap</source>
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="424"/>
+        <location filename="../config/general_config.py" line="426"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="425"/>
+        <location filename="../config/general_config.py" line="427"/>
         <source>Right of way line</source>
         <translation>Linea de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="426"/>
+        <location filename="../config/general_config.py" line="428"/>
         <source>Boundary Points should be covered by plot nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Terrenos</translation>
     </message>
@@ -7594,127 +7581,127 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="427"/>
+        <location filename="../config/general_config.py" line="429"/>
         <source>Boundaries should not overlap</source>
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="428"/>
+        <location filename="../config/general_config.py" line="430"/>
         <source>Boundaries should not be split</source>
         <translation>Los Linderos deben terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="429"/>
+        <location filename="../config/general_config.py" line="431"/>
         <source>Boundaries should be covered by Plots</source>
         <translation>Los Linderos deben estar cubiertos por límites de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="430"/>
+        <location filename="../config/general_config.py" line="432"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="431"/>
+        <location filename="../config/general_config.py" line="433"/>
         <source>Boundaries should not have dangles</source>
         <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="432"/>
+        <location filename="../config/general_config.py" line="434"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="433"/>
+        <location filename="../config/general_config.py" line="435"/>
         <source>Buildings should not overlap</source>
         <translation>Las Construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="434"/>
+        <location filename="../config/general_config.py" line="436"/>
         <source>Rights of Way should not overlap</source>
         <translation>Las Servidumbres de Paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="435"/>
+        <location filename="../config/general_config.py" line="437"/>
         <source>Plots should be covered by Boundaries</source>
         <translation>Los límites de Terreno deben estar cubiertos por Linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="436"/>
+        <location filename="../config/general_config.py" line="438"/>
         <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="437"/>
+        <location filename="../config/general_config.py" line="439"/>
         <source>Plots should not have gaps</source>
         <translation>No deben haber huecos entre Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="438"/>
+        <location filename="../config/general_config.py" line="440"/>
         <source>Right of Way should not have multipart geometries</source>
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="439"/>
+        <location filename="../config/general_config.py" line="441"/>
         <source>Buildings should be within Plots</source>
         <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="440"/>
+        <location filename="../config/general_config.py" line="442"/>
         <source>Building Units should be within Plots</source>
         <translation>Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="441"/>
+        <location filename="../config/general_config.py" line="443"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="442"/>
+        <location filename="../config/general_config.py" line="444"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="443"/>
+        <location filename="../config/general_config.py" line="445"/>
         <source>Table records should not be repeated</source>
         <translation>No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="444"/>
+        <location filename="../config/general_config.py" line="446"/>
         <source>Check that the {department} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {department} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="445"/>
+        <location filename="../config/general_config.py" line="447"/>
         <source>Check that the {municipality} field of the {parcel} table has three numerical characters</source>
         <translation>Revisar que el campo {municipality} de la tabla {parcel} tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="457"/>
+        <location filename="../config/general_config.py" line="459"/>
         <source>Topological relationship between boundary and plot is not recorded in the masccl table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="458"/>
+        <location filename="../config/general_config.py" line="460"/>
         <source>Topological relationship between boundary and plot is duplicated in the masccl table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="459"/>
+        <location filename="../config/general_config.py" line="461"/>
         <source>Topological relationship between boundary and plot is not recorded in the menosccl table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="460"/>
+        <location filename="../config/general_config.py" line="462"/>
         <source>Topological relationship between boundary and plot is duplicated in the menosccl table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="461"/>
+        <location filename="../config/general_config.py" line="463"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the puntoccl table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="462"/>
+        <location filename="../config/general_config.py" line="464"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the puntoccl table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla puntoccl</translation>
     </message>
@@ -7723,57 +7710,57 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Revisar que el campo {zone} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="446"/>
+        <location filename="../config/general_config.py" line="448"/>
         <source>Check that the {parcel_number} has 30 numerical characters</source>
         <translation>Revisar que el {parcel_number} tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="447"/>
+        <location filename="../config/general_config.py" line="449"/>
         <source>Check that the {parcel_number_before} has 20 numerical characters</source>
         <translation>Revisar que el {parcel_number_before} tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="448"/>
+        <location filename="../config/general_config.py" line="450"/>
         <source>Check that attributes are appropriate for parties of type natural</source>
         <translation>Revisar que los atributos son apropiados para interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="449"/>
+        <location filename="../config/general_config.py" line="451"/>
         <source>Check that attributes are appropriate for parties of type legal</source>
         <translation>Revisar que los atributos son apropiados para interesados jurídicos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="450"/>
+        <location filename="../config/general_config.py" line="452"/>
         <source>Check that the type of parcel corresponds to position 22 of the {parcel_number}</source>
         <translation>Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="451"/>
+        <location filename="../config/general_config.py" line="453"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="452"/>
+        <location filename="../config/general_config.py" line="454"/>
         <source>Parcel does not have any Right associated</source>
         <translation>El Predio no tiene Derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="453"/>
+        <location filename="../config/general_config.py" line="455"/>
         <source>Parcel has more than one domain right associated</source>
         <translation>El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="454"/>
+        <location filename="../config/general_config.py" line="456"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="455"/>
+        <location filename="../config/general_config.py" line="457"/>
         <source>Plot is not covered by boundary</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="456"/>
+        <location filename="../config/general_config.py" line="458"/>
         <source>Boundary is not covered by plot</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
@@ -7790,32 +7777,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="463"/>
+        <location filename="../config/general_config.py" line="465"/>
         <source>Boundary point is not covered by boundary node</source>
         <translation>Punto lindero no está cubierto por un nodo de un lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="464"/>
+        <location filename="../config/general_config.py" line="466"/>
         <source>Boundary node is not covered by boundary point</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="465"/>
+        <location filename="../config/general_config.py" line="467"/>
         <source>Building is not over a plot</source>
         <translation>La Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="466"/>
+        <location filename="../config/general_config.py" line="468"/>
         <source>Building crosses a plot&apos;s limit</source>
         <translation>La Construcción cruza los límites de su Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="467"/>
+        <location filename="../config/general_config.py" line="469"/>
         <source>Building Unit is not over a plot</source>
         <translation>La Unidad de Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="468"/>
+        <location filename="../config/general_config.py" line="470"/>
         <source>Building Unit crosses a plot&apos;s limit</source>
         <translation>La Unidad de Construcción cruza los límites de su Terreno</translation>
     </message>
@@ -8493,6 +8480,24 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../ui/dockwidgets/dockwidget_queries.ui" line="302"/>
         <source>Economic info</source>
         <translation>Económica</translation>
+    </message>
+</context>
+<context>
+    <name>import_from_excel</name>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="550"/>
+        <source>Warning</source>
+        <translation type="unfinished">Advertencia</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="551"/>
+        <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
+        <translation type="unfinished">La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_import_from_excel.py" line="558"/>
+        <source>The &apos;{}&apos; tool was cancelled.</source>
+        <translation type="unfinished">La herramienta &apos;{}&apos; fue cancelada.</translation>
     </message>
 </context>
 <context>

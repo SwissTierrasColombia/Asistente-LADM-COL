@@ -222,7 +222,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>203</width>
+         <width>250</width>
          <height>16777215</height>
         </size>
        </property>
@@ -243,6 +243,7 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
