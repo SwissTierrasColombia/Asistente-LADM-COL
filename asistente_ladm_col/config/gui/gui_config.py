@@ -134,13 +134,13 @@ class GUI_Config(QObject):
                                     ICON: SOURCE_ICON,
                                     ACTIONS: [
                                         ACTION_CREATE_ADMINISTRATIVE_SOURCE,
-                                        ACTION_CREATE_SPATIAL_SOURCE,
-                                        ACTION_UPLOAD_PENDING_SOURCE
+                                        ACTION_CREATE_SPATIAL_SOURCE
                                     ]
                                 }
                             ]
                         },
                         SEPARATOR,
+                        ACTION_UPLOAD_PENDING_SOURCE,
                         ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
                     ]
                 },

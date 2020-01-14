@@ -58,10 +58,10 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
 
     def post_save(self, features):
         constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
@@ -122,28 +122,28 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
                 self._layers[self.names.COL_UE_BAUNIT_T][LAYER].dataProvider().addFeatures(new_features)
 
                 if plot_ids and building_ids and building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif plot_ids and building_ids and not building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids]))
                 elif plot_ids and not building_ids and building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif plot_ids and not building_ids and not building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]))
                 elif not plot_ids and building_ids and not building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]))
                 elif not plot_ids and building_ids and building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                          "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif not plot_ids and not building_ids and building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                          "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids]))
                 elif not plot_ids and not building_ids and not building_unit_ids:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                          "The new parcel (t_id={}) was successfully created but this one wasn't associated with a spatial unit").format(parcel_id)
 
         return message
@@ -153,11 +153,11 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
 
     def check_selected_features(self):
         constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
-        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
+        self.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
         self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
+        self.lb_building.setText(QCoreApplication.translate("WizardTranslations","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
         self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
+        self.lb_building_unit.setText(QCoreApplication.translate("WizardTranslations","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
         self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         parcel_type = self.dict_parcel_type[self.cb_parcel_type.currentText()]
@@ -290,7 +290,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
 
             if not saved:
                 layer.rollBack()
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
                     self.logger.warning(__name__, "Commit error: {}".format(e))

@@ -14,17 +14,17 @@ Enlaces de interés: [Documentación](https://agenciaimplementacion.github.io/As
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
- :arrow_right: Se recomienda utilizar la versión 3.4.x de QGIS, disponible en https://qgis.org/downloads/
+ :arrow_right: Se recomienda utilizar la versión 3.10.x de QGIS, disponible en https://qgis.org/downloads/
 
 
 ## Funcionalidades
 
-La versión actual ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.0.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.3.1](https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip) y permite:
+La versión actual ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.3.1.2](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip) y permite:
 
- - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
- - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
- - Capturar datos para el modelo `AVALÚOS v2.2.1`.
- - Crear estructura de base de datos conforme con los modelos mencionados.
+ - Integración con el Sistema de Transición. Autenticación y gestión de tareas.
+ - Soporte de roles y generación de interfaz de usuario para cada rol.
+ - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
+ - Crear estructura de base de datos conforme con el modelo mencionado.
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
  - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
@@ -34,9 +34,6 @@ La versión actual ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Información de Ficha Predial.
    - Información Física.
    - Información Económica.
- - Preprocesar puntos: Medición controlada.
-   - Agrupamiento de puntos por cercanía.
-   - Cálculo de posición promediada para puntos del mismo grupo.
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
      - Validar para evitar insertar puntos superpuestos.
@@ -86,9 +83,7 @@ La versión actual ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
- - Crear `Ficha Predial`, `Investigación de Mercado`, `Núcleo Familiar`, `Interesado Natural` e `Interesado Jurídico`:
-   - Usando formularios preconfigurados.
-   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
@@ -111,27 +106,28 @@ La versión actual ([2.0.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar que las `Construcciones` estén dentro de su `Terreno` correspondiente.
    - Revisar que las `Unidades de Construcción` estén dentro de su `Terreno` correspondiente.
  - Realizar revisiones de calidad (consistencia lógica):
-   - Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado
-   - No deben haber registros duplicados
-   - Las fracciones de las agrupaciones de interesados deben sumar uno (1)
-   - Revisar que el campo departamento de la tabla predio tiene dos caracteres numéricos
-   - Revisar que el campo municipio de la tabla predio tiene tres caracteres numéricos
-   - Revisar que el campo zona de la tabla predio tiene dos caracteres numéricos
-   - Revisar que el número_predial tiene 30 caracteres numéricos
-   - Revisar que el número_predial_anterior tiene 20 caracteres numéricos
-   - Revisar que los atributos son apropiados para interesados naturales
-   - Revisar que los atributos son apropiados para interesados jurídicos
-   - Revisar que el tipo de Predio corresponde a la posición 22 del número_predial
-   - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio
+   - Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado.
+   - No deben haber registros duplicados.
+   - Las fracciones de las agrupaciones de interesados deben sumar uno (1).
+   - Revisar que el campo departamento de la tabla predio tiene dos caracteres numéricos.
+   - Revisar que el campo municipio de la tabla predio tiene tres caracteres numéricos.
+   - Revisar que el campo zona de la tabla predio tiene dos caracteres numéricos.
+   - Revisar que el número_predial tiene 30 caracteres numéricos.
+   - Revisar que el número_predial_anterior tiene 20 caracteres numéricos.
+   - Revisar que los atributos son apropiados para interesados naturales.
+   - Revisar que los atributos son apropiados para interesados jurídicos.
+   - Revisar que el tipo de Predio corresponde a la posición 22 del número_predial.
+   - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio.
  - Generar reporte de revisiones de calidad.
  - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
  - Generar reporte 'Plano ANT' con base en `Terrenos` seleccionados.
+ - Generar reporte de Omisiones y Comisiones.
  - Identificar novedades:
    - Comparar base de datos del barrido contra base de datos oficial y mostrar diferencias masivas y por predio.
  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
- - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
+ - Ayuda online y offline.
 
 ## Requerimientos mínimos
 
@@ -141,13 +137,13 @@ Para usar el Asistente LADM_COL se requiere:
    - Windows 8 o Windows 10
    - GNU/Linux
  - Software base:
-   - QGIS v3.4.6-Madeira o superior
+   - QGIS v3.10.0-A Coruña o superior
    - Java v1.8
-   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11).
+   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
    - PostGIS 2.4 o superior.
  - Plugins de QGIS:
    - Asistente LADM_COL
-   - QGIS Model Baker v4.3.1
+   - QGIS Model Baker v4.3.1.2
    - MapSwipe Tool v1.2
  
 ## Pruebas automatizadas al software

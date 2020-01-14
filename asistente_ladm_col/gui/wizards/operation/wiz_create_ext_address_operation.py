@@ -59,9 +59,9 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
         self._current_layer = None
 
     def check_selected_features(self):
-        self.rad_to_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
-        self.rad_to_building.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
-        self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
+        self.rad_to_plot.setText(QCoreApplication.translate("WizardTranslations", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
+        self.rad_to_building.setText(QCoreApplication.translate("WizardTranslations", "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
+        self.rad_to_building_unit.setText(QCoreApplication.translate("WizardTranslations", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
 
         if self._current_layer is None:
             if self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.OP_PLOT_T:
@@ -146,21 +146,21 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             self.button(self.FinishButton).setDisabled(True)
 
     def post_save(self, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-                message = QCoreApplication.translate(self.WIZARD_NAME,
+                message = QCoreApplication.translate("WizardTranslations",
                                                      "'{}' tool has been closed. Feature not found in layer {}... It's not posible create it. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
                 self.logger.warning(__name__, "Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME))
             else:
                 extaddress_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
-                message = QCoreApplication.translate(self.WIZARD_NAME,
+                message = QCoreApplication.translate("WizardTranslations",
                                                      "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, extaddress_tid)
         return message
 
@@ -188,7 +188,7 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
         else:
             # if the field of the spatial unit does not exist
             layer.rollBack()
-            message = QCoreApplication.translate(self.WIZARD_NAME,
+            message = QCoreApplication.translate("WizardTranslations",
                                                  "'{}' tool has been closed because when try to create {} it was not possible to associate a space unit.").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.close_wizard(message)
 
@@ -265,11 +265,11 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             self.qgis_utils.active_snapping_all_layers()
             self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-            self.logger.info_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+            self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
                 "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
         else:
             self.logger.warning_msg(__name__,
-                QCoreApplication.translate(self.WIZARD_NAME,
+                QCoreApplication.translate("WizardTranslations",
                                            "First select a {}.").format(self._db.get_ladm_layer_name(self._current_layer)), Qgis.Warning)
 
     def select_features_by_expression(self, layer):

@@ -17,9 +17,7 @@
 """
 import json
 
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt,
-                              QObject,
+from qgis.PyQt.QtCore import (QObject,
                               QSettings)
 
 from asistente_ladm_col.config.gui.common_keys import *

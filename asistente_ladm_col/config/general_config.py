@@ -10,7 +10,7 @@ from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEFAULT_LOG_MODE = LogModeEnum.DEV
+DEFAULT_LOG_MODE = LogModeEnum.USER
 DEFAULT_LOG_FILE = ''
 
 SUPPLIES_DB_PREFIX = None
@@ -214,8 +214,8 @@ MODULE_HELP_MAPPING = {
     'export_data' : 'data_management.html#export-data'
 }
 
-QGIS_REQUIRED_VERSION = '3.4.6-Madeira'
-QGIS_REQUIRED_VERSION_INT = 30406
+QGIS_REQUIRED_VERSION = '3.10.0-A Coruña'
+QGIS_REQUIRED_VERSION_INT = 31000
 JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
@@ -229,24 +229,24 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip' # 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'  # 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
-MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
 
 # Change detection
 PARCEL_STATUS = '_PARCEL_STATUS_'
 PARCEL_STATUS_DISPLAY = ''
-CHANGE_DETECTION_NEW_PARCEL = QCoreApplication.translate("", "New parcel") # alta
-CHANGE_DETECTION_MISSING_PARCEL = QCoreApplication.translate("", "Missing parcel") # Baja
-CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("", "Parcel changed")
-CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("", "Only geometry changed")
-CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("", "OK")
-CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("", "Several")
-CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("", "null")
+CHANGE_DETECTION_NEW_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "New parcel") # alta
+CHANGE_DETECTION_MISSING_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Missing parcel") # Baja
+CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("TranslatableConfigStrings", "Parcel changed")
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("TranslatableConfigStrings", "Only geometry changed")
+CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("TranslatableConfigStrings", "OK")
+CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("TranslatableConfigStrings", "Several")
+CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "null")
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
@@ -317,9 +317,8 @@ HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-doc
 
 
 # Wizards
-WIZARD_NAME = "wizard_name"
 WIZARD_CLASS = "wizard_class"
-WIZARD_FEATURE_NAME = "wizard_tool_name"
+WIZARD_FEATURE_NAME = "wizard_feature_name"
 WIZARD_UI = "wizard_ui"
 WIZARD_HELP = "wizard_help"
 WIZARD_HELP_PAGES = "wizard_help_page"

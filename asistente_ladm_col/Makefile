@@ -1,5 +1,5 @@
 
-all: resources_rc.py i18n/Asistente-LADM_COL_es.qm
+all: resources_rc.py i18n/Asistente-LADM_COL_locale.ts i18n/Asistente-LADM_COL_es.qm
 
 update_translations: i18n/Asistente-LADM_COL_locale.ts
 

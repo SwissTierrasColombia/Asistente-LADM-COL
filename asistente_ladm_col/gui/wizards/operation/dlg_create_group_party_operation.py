@@ -254,13 +254,13 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
              try:
                  v_n = int(self.tbl_selected_parties.item(index, 1).text())
              except ValueError as e:
-                 self.show_message(QCoreApplication.translate(self.WIZARD_NAME,
+                 self.show_message(QCoreApplication.translate("WizardTranslations",
                     "There are some invalid values in the numerator column. Fix them before continuing..."), Qgis.Warning)
                  return
              try:
                  v_d = int(self.tbl_selected_parties.item(index, 2).text())
              except ValueError as e:
-                 self.show_message(QCoreApplication.translate(self.WIZARD_NAME,
+                 self.show_message(QCoreApplication.translate("WizardTranslations",
                     "There are some invalid values in the denominator column. Fix them before continuing..."), Qgis.Warning)
                  return
 
@@ -370,10 +370,10 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         except TypeError as e:
             pass
 
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME,
+            message = QCoreApplication.translate("WizardTranslations",
                                                  "'{}' tool has been closed. We should have got only one group party... We cannot do anything with {} group parties").format(self.WIZARD_TOOL_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one group party... We cannot do anything with {} group parties".format(len(features)))
         else:
@@ -398,10 +398,10 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
                         party_ids.append(party_id)
 
                 if len(party_ids):
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                          "The new group party (t_id={}) was successfully created and associated with its corresponding party(ies) (t_id={})!").format(group_party_id, ", ".join([str(b) for b in party_ids]))
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                      "The new group party (t_id={}) was successfully created but this one wasn't associated with a party(ies)").format(group_party_id)
         self.close_wizard(message)
 
@@ -434,7 +434,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.logger.info_msg(__name__, message)
         self.disconnect_signals()

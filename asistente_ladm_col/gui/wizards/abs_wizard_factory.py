@@ -30,10 +30,8 @@ from qgis.PyQt.QtCore import (QSettings,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import Qgis
 
-from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
-                                                      TranslatableConfigStrings,
+from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
                                                       LAYER,
-                                                      WIZARD_NAME,
                                                       WIZARD_FEATURE_NAME, WIZARD_UI,
                                                       WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
@@ -62,7 +60,6 @@ class AbsWizardFactory(QWizard):
 
         load_ui(self.wizard_config[WIZARD_UI], self)
 
-        self.WIZARD_NAME = self.wizard_config[WIZARD_NAME]
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
@@ -131,7 +128,7 @@ class AbsWizardFactory(QWizard):
 
             if not saved:
                 layer.rollBack()
-                self.logger.warning_msg(__name__, QCoreApplication.translate(self.WIZARD_NAME,
+                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
                 for e in layer.commitErrors():
                     self.logger.warning(__name__, "Commit error: {}".format(e))
@@ -146,7 +143,7 @@ class AbsWizardFactory(QWizard):
         raise NotImplementedError
 
     def form_rejected(self):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 

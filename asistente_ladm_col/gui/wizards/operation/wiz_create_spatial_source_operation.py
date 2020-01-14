@@ -20,10 +20,10 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
         SelectFeaturesOnMapWrapper.__init__(self)
 
     def post_save(self, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
+        message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
+            message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             feature = features[0]
@@ -122,10 +122,10 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
                     all_new_features.extend(new_feature)
 
                 if all_new_features:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new spatial source (t_id={}) was successfully created and associated with the following features: {}").format(spatial_source_id, feature_ids_dict)
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                    message = QCoreApplication.translate("WizardTranslations",
                                                    "The new spatial source (t_id={}) was successfully created and it wasn't associated with a spatial unit").format(spatial_source_id)
 
         return message
@@ -135,15 +135,15 @@ class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
 
     def check_selected_features(self):
         # Check selected features in plot layer
-        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
+        self.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
         # Check selected features in boundary layer
-        self.lb_boundary.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
+        self.lb_boundary.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
         # Check selected features in boundary point layer
-        self.lb_boundary_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_POINT_T][LAYER].selectedFeatureCount()))
+        self.lb_boundary_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_POINT_T][LAYER].selectedFeatureCount()))
         # Check selected features in survey point layer
-        self.lb_survey_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Survey</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_SURVEY_POINT_T][LAYER].selectedFeatureCount()))
+        self.lb_survey_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Survey</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_SURVEY_POINT_T][LAYER].selectedFeatureCount()))
         # Check selected features in control point layer
-        self.lb_control_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Control</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_CONTROL_POINT_T][LAYER].selectedFeatureCount()))
+        self.lb_control_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Control</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_CONTROL_POINT_T][LAYER].selectedFeatureCount()))
 
         # Verifies that an feature has been selected
         if self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() + self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() + self._layers[self.names.OP_BOUNDARY_POINT_T][LAYER].selectedFeatureCount() + self._layers[self.names.OP_SURVEY_POINT_T][LAYER].selectedFeatureCount() + self._layers[self.names.OP_CONTROL_POINT_T][LAYER].selectedFeatureCount() >= 1:
