@@ -112,7 +112,6 @@ class LADM_DATA():
         if gc_parcel_table is not None:
             del layers[self.names.GC_PARCEL_T]
 
-
         if layers:
             self.qgis_utils.get_layers(db, layers, load=True)
             if not layers:
@@ -160,19 +159,16 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-        parcel_fields_to_compare = self.get_parcel_fields_to_compare_supplies()
-        party_fields_to_compare = self.get_party_fields_to_compare_supplies()
-        plot_fields_to_compare = self.get_plot_fields_to_compare_supplies()
+
+        mapping_parcels_field = self.mapping_parcel_fields_for_supplies()
+        mapping_party_field = self.mapping_party_fields_for_supplies()
+        mapping_plot_field = self.mapping_plot_fields_for_supplies()
 
         layers = {
             self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None}
         }
-
-        mapping_parcels_field = self.mapping_parcel_fields_for_supplies()
-        mapping_party_field = self.mapping_party_fields_for_supplies()
-        mapping_plot_field = self.mapping_plot_fields_for_supplies()
 
         self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
@@ -186,9 +182,7 @@ class LADM_DATA():
         for feature in parcel_features:
             dict_attrs = dict()
 
-            for parcel_field in parcel_fields_to_compare:
-                key_value_parcel = mapping_parcels_field[parcel_field] if parcel_field in mapping_parcels_field else parcel_field
-
+            for parcel_field, common_key_value_parcel in mapping_parcels_field.items():  # parcel fields to compare
                 if parcel_field in parcel_fields:
                     if parcel_field == self.names.GC_PARCEL_T_CONDITION_F:
                         # Go for domain value, instead of t_id
@@ -199,15 +193,14 @@ class LADM_DATA():
                     value = feature.attribute(self.names.GC_PARCEL_T_PARCEL_NUMBER_F)[:2]
                 elif parcel_field == DICT_KEY_PARCEL_T_NAME_F:
                     value = NULL
-
-                dict_attrs[key_value_parcel] = value
+                dict_attrs[common_key_value_parcel] = value
             dict_attrs[self.names.T_ID_F] = feature[self.names.T_ID_F]
 
-            key_value_parcel_number = mapping_parcels_field[self.names.GC_PARCEL_T_PARCEL_NUMBER_F] if self.names.GC_PARCEL_T_PARCEL_NUMBER_F in mapping_parcels_field else self.names.GC_PARCEL_T_PARCEL_NUMBER_F
-            if dict_attrs[key_value_parcel_number] in dict_features:
-                dict_features[dict_attrs[key_value_parcel_number]].append(dict_attrs)
+            # Group dictionary by parcel number common key
+            if dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
             else:
-                dict_features[dict_attrs[key_value_parcel_number]] = [dict_attrs]
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
 
         # =====================  Start adding plot info ==================================================
         plot_fields = [f.name() for f in layers[self.names.GC_PLOT_T][LAYER].fields()]
@@ -223,14 +216,12 @@ class LADM_DATA():
                 if item[self.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
-                        for plot_field in plot_fields_to_compare:
-                            key_value_plot = mapping_plot_field[plot_field] if plot_field in mapping_plot_field else plot_field
-
+                        for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
                             if plot_field in plot_fields:
                                 if plot_feature[plot_field] != NULL:
-                                    item[key_value_plot] = plot_feature[plot_field]
+                                    item[common_key_value_plot] = plot_feature[plot_field]
                                 else:
-                                    item[key_value_plot] = NULL
+                                    item[common_key_value_plot] = NULL
 
                         item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
@@ -251,18 +242,16 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for party_field in party_fields_to_compare:
-                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
-
+            for party_field, common_key_value_party in mapping_party_field.items():  # Party fields to compare
                 if party_field in party_fields:
-                    dict_party[key_value_party] = party_feature[party_field]
+                    dict_party[common_key_value_party] = party_feature[party_field]
                 elif party_field == DICT_KEY_PARTY_T_NAME_F:
-                    dict_party[key_value_party] = "{} {} {} {}".format(party_feature[self.names.GC_OWNER_T_FIRST_NAME_1_F],
-                                                                       party_feature[self.names.GC_OWNER_T_FIRST_NAME_2_F],
-                                                                       party_feature[self.names.GC_OWNER_T_SURNAME_1_F],
-                                                                       party_feature[self.names.GC_OWNER_T_SURNAME_2_F])
+                    dict_party[common_key_value_party] = "{} {} {} {}".format(party_feature[self.names.GC_OWNER_T_FIRST_NAME_1_F],
+                                                                              party_feature[self.names.GC_OWNER_T_FIRST_NAME_2_F],
+                                                                              party_feature[self.names.GC_OWNER_T_SURNAME_1_F],
+                                                                              party_feature[self.names.GC_OWNER_T_SURNAME_2_F])
                 elif party_field == DICT_KEY_PARTY_T_RIGHT:
-                    dict_party[key_value_party] = NULL
+                    dict_party[common_key_value_party] = NULL
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -426,9 +415,11 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-        parcel_fields_to_compare = self.get_parcel_fields_to_compare()
-        party_fields_to_compare = self.get_party_fields_to_compare()
-        plot_fields_to_compare = self.get_plot_fields_to_compare()
+
+        mapping_parcels_field = self.mapping_parcel_fields()
+        mapping_party_field = self.mapping_party_fields()
+        mapping_plot_field = self.mapping_plot_fields()
+
         layers = {
             self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -438,10 +429,6 @@ class LADM_DATA():
             self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
             self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
         }
-
-        mapping_parcels_field = self.mapping_parcel_fields()
-        mapping_party_field = self.mapping_party_fields()
-        mapping_plot_field = self.mapping_plot_fields()
 
         if db.cadastral_form_model_exists():
             # TODO: Replace property record card for correct table model
@@ -459,22 +446,22 @@ class LADM_DATA():
         for feature in parcel_features:
             dict_attrs = dict()
             for field in layers[self.names.OP_PARCEL_T][LAYER].fields():
-                if field.name() in parcel_fields_to_compare:
-                    key_value_parcel = mapping_parcels_field[field.name()] if field.name() in mapping_parcels_field else field.name()
-
+                if field.name() in mapping_parcels_field.keys():  # parcel fields to compare
                     if field.name() == self.names.OP_PARCEL_T_PARCEL_TYPE_F:
                         # Go for domain value, instead of t_id
                         value = self.get_domain_value_from_code(db, self.names.OP_CONDITION_PARCEL_TYPE_D, feature.attribute(field.name()))
                     else:
                         value = feature.attribute(field.name())
+
+                    key_value_parcel = mapping_parcels_field[field.name()]
                     dict_attrs[key_value_parcel] = value
             dict_attrs[self.names.T_ID_F] = feature[self.names.T_ID_F]
 
-            key_value_parcel_number = mapping_parcels_field[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] if self.names.OP_PARCEL_T_PARCEL_NUMBER_F in mapping_parcels_field else self.names.OP_PARCEL_T_PARCEL_NUMBER_F
-            if dict_attrs[key_value_parcel_number] in dict_features:
-                dict_features[dict_attrs[key_value_parcel_number]].append(dict_attrs)
+            # Group dictionary by parcel number common key
+            if dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
             else:
-                dict_features[dict_attrs[key_value_parcel_number]] = [dict_attrs]
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
 
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[self.names.T_ID_F] for parcel_feature in parcel_features]
@@ -493,13 +480,11 @@ class LADM_DATA():
                 if item[self.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
-                        for plot_field in plot_fields_to_compare:
-                            key_value_plot = mapping_plot_field[plot_field] if plot_field in mapping_plot_field else plot_field
-
+                        for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
                             if plot_feature[plot_field] != NULL:
-                                item[key_value_plot] = plot_feature[plot_field]
+                                item[common_key_value_plot] = plot_feature[plot_field]
                             else:
-                                item[key_value_plot] = NULL
+                                item[common_key_value_plot] = NULL
 
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
@@ -526,13 +511,11 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for party_field in party_fields_to_compare:
-                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
-
+            for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
                 else:
-                    dict_party[key_value_party] = party_feature[party_field]
+                    dict_party[common_key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
             right_type_id = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
             dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, self.names.OP_RIGHT_TYPE_D, right_type_id)
@@ -592,13 +575,11 @@ class LADM_DATA():
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
-            for party_field in party_fields_to_compare:
-                key_value_party = mapping_party_field[party_field] if party_field in mapping_party_field else party_field
-
+            for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == self.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, self.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
                 else:
-                    dict_party[key_value_party] = party_feature[party_field]
+                    dict_party[common_key_value_party] = party_feature[party_field]
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
         # Reuse the dict to replace id_group_party for party info:
@@ -736,37 +717,6 @@ class LADM_DATA():
         return {
             self.names.OP_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
-
-    def get_parcel_fields_to_compare_supplies(self):
-        return [DICT_KEY_PARCEL_T_DEPARTMENT_F,
-                self.names.GC_PARCEL_T_FMI_F,
-                self.names.GC_PARCEL_T_PARCEL_NUMBER_F,
-                self.names.GC_PARCEL_T_CONDITION_F,
-                DICT_KEY_PARCEL_T_NAME_F]
-
-    def get_party_fields_to_compare_supplies(self):
-        return [self.names.GC_OWNER_T_DOCUMENT_TYPE_F,
-                self.names.GC_OWNER_T_DOCUMENT_ID_F,
-                DICT_KEY_PARTY_T_NAME_F,
-                DICT_KEY_PARTY_T_RIGHT]
-
-    def get_plot_fields_to_compare_supplies(self):
-        return [self.names.GC_PLOT_T_ALPHANUMERIC_AREA]
-
-    def get_parcel_fields_to_compare(self):
-        return [self.names.OP_PARCEL_T_PARCEL_NUMBER_F,
-                self.names.OP_PARCEL_T_FMI_F,
-                self.names.COL_BAUNIT_T_NAME_F,
-                self.names.OP_PARCEL_T_DEPARTMENT_F,
-                self.names.OP_PARCEL_T_PARCEL_TYPE_F]
-
-    def get_party_fields_to_compare(self):
-        return [self.names.OP_PARTY_T_DOCUMENT_TYPE_F,  # Right type will also be added to parties
-                self.names.OP_PARTY_T_DOCUMENT_ID_F,
-                self.names.COL_PARTY_T_NAME_F]
-
-    def get_plot_fields_to_compare(self):
-        return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differently
 
     def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):
         """

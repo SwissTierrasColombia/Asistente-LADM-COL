@@ -84,7 +84,6 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      SUFFIX_LAYER_MODIFIERS,
                                      PREFIX_LAYER_MODIFIERS,
                                      VISIBLE_LAYER_MODIFIERS,
-                                     PLUGIN_NAME,
                                      HELP_DIR_NAME,
                                      TranslatableConfigStrings,
                                      ST_DOMAIN,
@@ -894,23 +893,6 @@ class QGISUtils(QObject):
             return False
 
         return True
-
-    def remove_all_layers_and_groups(self):
-        # Remove layers
-        QgsProject.instance().removeAllMapLayers()
-
-        # Remove groups
-        root = QgsProject.instance().layerTreeRoot()
-        for group in [child for child in root.children() if child.nodeType() == 0]:
-            root.removeChildNode(group)
-
-        self.map_refresh_requested.emit()
-
-    def get_all_layers_on_map(self):
-        layers = list()
-        for layer in QgsProject.instance().mapLayers().values():
-            layers.append(layer)
-        return layers
 
     def get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(self, db):
         layers = list()

@@ -281,7 +281,7 @@ def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
         layers_names = [layer.name() for layer in layers_modified]
         if layers_modified:
             inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "Cannot open the Change Detection Settings Dialog because {} layer(s) is/are in editing session. please finish editing before trying to open the Change Detection Settings Dialog.").format(', '.join(layers_names)),
+                                                         "The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.").format(', '.join(layers_names)),
                               Qgis.Info)
         else:
             func_to_decorate(*args, **kwargs)

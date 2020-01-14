@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 
+from qgis.core import QgsProject
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
@@ -229,7 +230,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
         if self._db_collected_was_changed or self._db_supplies_was_changed:
-            if self.qgis_utils.get_all_layers_on_map():
+            if list(QgsProject.instance().mapLayers().values()):
                 message = None
                 if self._db_collected_was_changed and self._db_supplies_was_changed:
                     message = "The connection of the collected and supplies database has changed,"
@@ -257,7 +258,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         reply = msg.exec_()
 
         if reply == 0:  # 0 YES
-            self.qgis_utils.remove_all_layers_and_groups()
+            QgsProject.instance().layerTreeRoot().removeAllChildren()
             self.close_dialog()
         elif reply == 1:  # 1 NO
             self.close_dialog()

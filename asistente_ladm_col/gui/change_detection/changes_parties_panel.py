@@ -43,7 +43,7 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils = utils
 
         # dict with 2 k:v pairs, one for collected data and one for supplies data
-        # Values are dicts themselves, with the party info we compare (see get_party_fields_to_compare + right type)
+        # Values are dicts themselves, with the party info we compare (see party_fields_to_compare + right type)
         self.data = data
 
         self.setDockMode(True)

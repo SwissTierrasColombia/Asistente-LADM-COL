@@ -520,9 +520,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._supplies_settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
-                                                 QCoreApplication.translate("AsistenteLADMColPlugin", "Supplies Settings"),
-                                                 self.main_window)
         self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
@@ -538,7 +535,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action.triggered.connect(self.show_queries)
         self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
-        self._supplies_settings_action.triggered.connect(self.show_supplies_data_settings_clear_message_bar)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -555,7 +551,6 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_EXPORT_DATA: self._export_data_action,
             ACTION_EXPORT_DATA_SUPPLIES: self._export_data_action_supplies,
             ACTION_SETTINGS: self._settings_action,
-            ACTION_SUPPLIES_SETTINGS: self._supplies_settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
         })
@@ -1132,6 +1127,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_supplies_db_connection_required
     @_operation_model_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
         with ProcessWithStatus(msg):
@@ -1144,6 +1140,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_supplies_db_connection_required
     @_operation_model_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
         with ProcessWithStatus(msg):
