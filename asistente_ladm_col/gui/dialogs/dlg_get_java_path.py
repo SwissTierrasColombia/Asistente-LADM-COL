@@ -25,11 +25,11 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ...utils import get_ui_class
-from ...utils.qt_utils import (Validators,
-                               FileValidator,
-                               make_file_selector)
-from ...utils.utils import Utils
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import (Validators,
+                                               FileValidator,
+                                               make_file_selector)
+from asistente_ladm_col.utils.java_utils import JavaUtils
 
 DIALOG_UI = get_ui_class('dialogs/dlg_get_java_path.ui')
 
@@ -67,7 +67,7 @@ class GetJavaPathDialog(QDialog, DIALOG_UI):
     def accepted(self):
         settings = QSettings()
 
-        (is_valid, java_message) = Utils.java_path_is_valid(self.java_path_line_edit.text().strip())
+        (is_valid, java_message) = JavaUtils.java_path_is_valid(self.java_path_line_edit.text().strip())
 
         if is_valid:
             self.java_path_line_edit.setEnabled(False)
