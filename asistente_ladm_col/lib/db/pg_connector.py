@@ -53,7 +53,9 @@ from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.table_mapping_config import (T_ID,
                                                             DISPLAY_NAME,
                                                             ILICODE,
-                                                            DESCRIPTION)
+                                                            DESCRIPTION,
+                                                            COMPOSED_KEY_SEPARATOR,
+                                                            TABLE_NAME)
 
 
 class PGConnector(DBConnector):
@@ -75,6 +77,8 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
         self._logic_validation_queries = None
+
+        self.table_and_field_names = list()  # Table and field name (keys) found in the current connection
 
     @DBConnector.uri.setter
     def uri(self, value):
@@ -258,7 +262,7 @@ class PGConnector(DBConnector):
             if not models:
                 return (False, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
 
-            res, msg = self.names.test_names(models)
+            res, msg = self.names.test_names(self.table_and_field_names)
             if not res:
                 return (False, QCoreApplication.translate("PGConnector",
                                                           "Table/field names from the DB are not correct. Details: {}.").format(
@@ -319,8 +323,19 @@ class PGConnector(DBConnector):
         Get table and field names from the DB. Should only be called once for a single connection, and should be
         refreshed after a connection changes.
 
-        :return: dict with ilinames as keys and sqlnames as values
+        :return: dict with table ilinames as keys and dict as values. The dicts found in the value contain field
+                 ilinames as keys and sqlnames as values. The table name itself is added with the key 'table_name'.
+                 Example:
+
+            "LADM_COL.LADM_Nucleo.col_masCcl": {
+                'table_name': 'col_masccl',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
+                'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
+            }
         """
+        # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
         sql_query = """SELECT DISTINCT
                       iliclass.iliname AS table_iliname,
                       tbls.tablename AS tablename,
@@ -341,9 +356,9 @@ class PGConnector(DBConnector):
                     LEFT JOIN {schema}.t_ili2db_attrname ilicol
                       ON a.attname = ilicol.sqlname 
                       AND ilicol.colowner = tbls.tablename
-                    WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
+                    WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0 AND ilicol.target IS NULL
                     ORDER BY tbls.tablename, fieldname;""".format(
-            schema=self.schema)  # TODO: Remove DISTINCT when ili2db 4.3.2 is released
+            schema=self.schema)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
@@ -358,34 +373,25 @@ class PGConnector(DBConnector):
             record['table_iliname'] = normalize_iliname(record['table_iliname'])
             if not record['table_iliname'] in dict_names:
                 dict_names[record['table_iliname']] = dict()
-                dict_names[record['table_iliname']]['table_name'] = record['tablename']
+                dict_names[record['table_iliname']][TABLE_NAME] = record['tablename']
 
             if record['field_iliname'] is None:
-                # Fields for domains, like 'description' (we map it in a custom later in this class method)
+                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
                 continue
 
             record['field_iliname'] = normalize_iliname(record['field_iliname'])
             dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
 
-        # Add required key-value pairs that do not come from the DB query
-        dict_names[T_ID] = "t_id"
-        dict_names[DISPLAY_NAME] = "dispname"
-        dict_names[ILICODE] = "ilicode"
-        dict_names[DESCRIPTION] = "description"
-
-        # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
+        # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-        # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-        # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
         sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
             a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
             FROM {schema}.t_ili2db_attrname a
                 INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
                 INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
-                INNER JOIN (SELECT a_s.iliname
-                    FROM {schema}.t_ili2db_attrname a_s
-                    GROUP BY a_s.iliname
-                    HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
+            WHERE a.target IS NOT NULL
             GROUP BY a.iliname, a.sqlname, c.iliname, o.iliname
             HAVING COUNT(a.iliname) = 1
             ORDER BY a.iliname""".format(schema=self.schema)
@@ -393,8 +399,9 @@ class PGConnector(DBConnector):
         cur.execute(sql_query)
         records = cur.fetchall()
         for record in records:
-            composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
-                                          normalize_iliname(record['iliname2']))
+            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
+                                           COMPOSED_KEY_SEPARATOR,
+                                           normalize_iliname(record['iliname2']))
             record['table_iliname'] = normalize_iliname(record['table_iliname'])
             if record['table_iliname'] in dict_names:
                 dict_names[record['table_iliname']][composed_key] = record['sqlname']
@@ -403,8 +410,19 @@ class PGConnector(DBConnector):
                 if record['colowner'] in dict_names:
                     dict_names[record['colowner']][composed_key] = record['sqlname']
 
+        self.table_and_field_names = [k1 for k,v in dict_names.items() for k1,v1 in v.items() if k1 != TABLE_NAME]
+        self.table_and_field_names.extend(list(dict_names.keys()))
+
+        # Add required key-value pairs that do not come from the DB query
+        dict_names[T_ID] = "t_id"
+        dict_names[DISPLAY_NAME] = "dispname"
+        dict_names[ILICODE] = "ilicode"
+        dict_names[DESCRIPTION] = "description"
+
         self.names.initialize_table_and_field_names(dict_names)
         self.names_read = True
+
+        #self.logger.debug(__name__, "DEBUG DICT: {}".format(dict_names["Operacion.Operacion.OP_Derecho"]))
 
         return True
 

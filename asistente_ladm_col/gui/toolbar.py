@@ -150,7 +150,7 @@ class ToolBar(QObject):
         bfs_features = layers[self.names.POINT_BFS_T][LAYER].getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[self.names.POINT_BFS_T_BOUNDARY_F], bfs_feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F]) for
+        existing_pairs = [(bfs_feature[self.names.POINT_BFS_T_OP_BOUNDARY_F], bfs_feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F]) for
                           bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
@@ -166,7 +166,7 @@ class ToolBar(QObject):
                 if not id_pair in existing_pairs:  # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(layers[self.names.POINT_BFS_T][LAYER])
-                    feature.setAttribute(self.names.POINT_BFS_T_BOUNDARY_F, id_pair[0])
+                    feature.setAttribute(self.names.POINT_BFS_T_OP_BOUNDARY_F, id_pair[0])
                     feature.setAttribute(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, id_pair[1])
                     features.append(feature)
             layers[self.names.POINT_BFS_T][LAYER].addFeatures(features)
@@ -240,7 +240,7 @@ class ToolBar(QObject):
 
         # Get unique pairs id_boundary-id_plot in both tables
         existing_more_pairs = [
-            (more_bfs_feature[self.names.MORE_BFS_T_OP_PLOT_F], more_bfs_feature[self.names.MORE_BFS_T_BOUNDARY_F]) for
+            (more_bfs_feature[self.names.MORE_BFS_T_OP_PLOT_F], more_bfs_feature[self.names.MORE_BFS_T_OP_BOUNDARY_F]) for
             more_bfs_feature in more_bfs_features]
         existing_more_pairs = set(existing_more_pairs)
         # Todo: Update when ili2db issue is solved.
@@ -287,7 +287,7 @@ class ToolBar(QObject):
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(layers[self.names.MORE_BFS_T][LAYER])
                     feature.setAttribute(self.names.MORE_BFS_T_OP_PLOT_F, id_pair[0])
-                    feature.setAttribute(self.names.MORE_BFS_T_BOUNDARY_F, id_pair[1])
+                    feature.setAttribute(self.names.MORE_BFS_T_OP_BOUNDARY_F, id_pair[1])
                     features.append(feature)
             layers[self.names.MORE_BFS_T][LAYER].addFeatures(features)
             layers[self.names.MORE_BFS_T][LAYER].commitChanges()

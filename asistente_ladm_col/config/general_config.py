@@ -10,7 +10,7 @@ from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEFAULT_LOG_MODE = LogModeEnum.USER
+DEFAULT_LOG_MODE = LogModeEnum.DEV
 DEFAULT_LOG_FILE = ''
 
 SUPPLIES_DB_PREFIX = None

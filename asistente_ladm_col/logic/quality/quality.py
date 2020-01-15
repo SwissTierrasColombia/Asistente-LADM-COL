@@ -208,8 +208,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_point = {feature[id_field]: feature for feature in boundary_point_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_BOUNDARY_F)
-        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_BOUNDARY_F]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_OP_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_F]}
                      for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],
@@ -360,8 +360,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_BOUNDARY_F)
-        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_BOUNDARY_F]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, self.names.POINT_BFS_T_OP_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[self.names.POINT_BFS_T_OP_BOUNDARY_F]}
                           for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         list_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
@@ -675,8 +675,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
-        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_OP_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_OP_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
         exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
@@ -973,8 +973,8 @@ class QualityUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
-        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_BOUNDARY_F]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(self.names.MORE_BFS_T_OP_BOUNDARY_F, self.names.MORE_BFS_T_OP_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[self.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.MORE_BFS_T_OP_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
         exp_less = '"{}" is not null and "{}" is not null'.format(self.names.LESS_BFS_T_OP_BOUNDARY_F, self.names.LESS_BFS_T_OP_PLOT_F)
@@ -1431,7 +1431,7 @@ class QualityUtils(QObject):
 
         dic_points_ccl = dict()
         for feature_point_ccl in layers[self.names.POINT_BFS_T][LAYER].getFeatures():
-            key = "{}-{}".format(feature_point_ccl[self.names.COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F], feature_point_ccl[self.names.POINT_BFS_T_BOUNDARY_F])
+            key = "{}-{}".format(feature_point_ccl[self.names.COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F], feature_point_ccl[self.names.POINT_BFS_T_OP_BOUNDARY_F])
             if key in dic_points_ccl:
                 dic_points_ccl[key] += 1
             else:

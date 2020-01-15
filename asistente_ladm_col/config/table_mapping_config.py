@@ -10,6 +10,7 @@ T_ID = 't_id'
 DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
+COMPOSED_KEY_SEPARATOR = ".."
 
 
 class Names(metaclass=Singleton):
@@ -463,11 +464,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Transformacion.Transformacion"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenValor.Tipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenValor.Volumen_Medicion"
-    MORE_BFS_T_BOUNDARY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_masCcl.ccl_mas"
     # "LADM_COL_V1_2.LADM_Nucleo.col_masCcl.ue_mas"
     # "LADM_COL_V1_2.LADM_Nucleo.col_masCl.ue_mas"
-    LESS_BFS_T_OP_BOUNDARY_F = None # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ccl_menos"
-                                    # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Operacion.Operacion.OP_Lindero" --> ccl_menos_op_lindero
     # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ue_menos"
     # "LADM_COL_V1_2.LADM_Nucleo.col_menosCl.ue_menos"
     MEMBERS_T_GROUP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.agrupacion"
@@ -479,7 +477,6 @@ class Names(metaclass=Singleton):
     VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version"
     # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Procedencia"
     # "LADM_COL_V1_2.LADM_Nucleo.OM_Observacion.Resultado_Calidad"
-    POINT_BFS_T_BOUNDARY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl.ccl"
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl.punto"
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCl.punto"
     COL_POINT_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente.fuente_espacial"
@@ -629,8 +626,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_volumen
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Terreno" --> op_terreno_volumen
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_volumen
-    # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_mas_crf_estructuralineal
-    # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Operacion.Operacion.OP_Lindero" --> ccl_mas_op_lindero
+    MORE_BFS_T_CRF_LINEAR_STRUCTURE_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_mas_crf_estructuralineal
+    MORE_BFS_T_OP_BOUNDARY_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas_Operacion.Operacion.OP_Lindero" --> ccl_mas_op_lindero
     MORE_BFS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Construccion" --> ue_mas_op_construccion
     MORE_BFS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
     MORE_BFS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
@@ -639,7 +636,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
     # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
     # "LADM_COL.LADM_Nucleo.col_masCl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion" --> ue_mas_op_unidadconstruccion
-    # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_menos_crf_estructuralineal
+    LESS_BFS_T_OP_BOUNDARY_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Operacion.Operacion.OP_Lindero" --> ccl_menos_op_lindero
+    LESS_BFS_T_CRF_LINEAR_STRUCTURE_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_menos_crf_estructuralineal
     LESS_BFS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Construccion" --> ue_menos_op_construccion
     LESS_BFS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso" --> ue_menos_op_servidumbrepaso
     LESS_BFS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Terreno" --> ue_menos_op_terreno
@@ -682,8 +680,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_procedencia
     # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Terreno" --> op_terreno_procedencia
     # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_procedencia
-    # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
-    # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    POINT_BFS_T_OP_BOUNDARY_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl..Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    POINT_BFS_T_CRF_LINEAR_STRUCTURE_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
     # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
     # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
     POINT_BFS_T_OP_CONTROL_POINT_F = None  # "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
@@ -768,8 +766,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Grabacion": "EXT_ARCHIVE_S_STORAGE_DATE_F",
             "LADM_COL.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres": "EXT_ARCHIVE_S_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ExtArchivo.Local_Id": "EXT_ARCHIVE_S_LOCAL_ID_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteAdministrativa": "EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteEspacial": "EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F"
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Operacion.Operacion.OP_FuenteAdministrativa": "EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Operacion.Operacion.OP_FuenteEspacial": "EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F"
         }},
         "LADM_COL.LADM_Nucleo.ExtDireccion": {VARIABLE_NAME: "EXT_ADDRESS_S", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal": "EXT_ADDRESS_S_VALUE_MAIN_ROAD_F",
@@ -786,10 +784,10 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_S_CITY_SECTOR_F",
             "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_S_POSTAL_CODE_F",
             "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_S_COMPLEMENT_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_S_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_S_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
@@ -797,60 +795,63 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F",
             "LADM_COL.LADM_Nucleo.col_miembros.participacion": "FRACTION_S_MEMBER_F",
             "Operacion.Operacion.op_predio_copropiedad.coeficiente": "FRACTION_S_COPROPERTY_COEFFICIENT_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Derecho": "FRACTION_S_OP_RIGHT_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Restriccion": "FRACTION_S_OP_RESTRICTION_F"
+            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido..Operacion.Operacion.OP_Derecho": "FRACTION_S_OP_RIGHT_F",
+            "LADM_COL.LADM_Nucleo.COL_RRR.Compartido..Operacion.Operacion.OP_Restriccion": "FRACTION_S_OP_RESTRICTION_F"
         }},
         "LADM_COL.LADM_Nucleo.COL_BAUnitTipo": {VARIABLE_NAME: "COL_BAUNIT_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_DimensionTipo": {VARIABLE_NAME: "COL_DIMENSION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_PuntoTipo": {VARIABLE_NAME: "COL_POINT_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.col_masCcl": {VARIABLE_NAME: "MORE_BFS_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas": "MORE_BFS_T_BOUNDARY_F",
-            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Construccion": "MORE_BFS_T_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso": "MORE_BFS_T_OP_RIGHT_OF_WAY_F",
-            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_Terreno": "MORE_BFS_T_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion": "MORE_BFS_T_OP_BUILDING_UNIT_F"
+            "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero": "MORE_BFS_T_OP_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal": "MORE_BFS_T_CRF_LINEAR_STRUCTURE_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion": "MORE_BFS_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso": "MORE_BFS_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno": "MORE_BFS_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion": "MORE_BFS_T_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_menosCcl": {VARIABLE_NAME: "LESS_BFS_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos": "LESS_BFS_T_OP_BOUNDARY_F",
-            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Construccion": "LESS_BFS_T_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso": "LESS_BFS_T_OP_RIGHT_OF_WAY_F",
-            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Terreno": "LESS_BFS_T_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion": "LESS_BFS_T_OP_BUILDING_UNIT_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos..Operacion.Operacion.OP_Lindero": "LESS_BFS_T_OP_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal": "LESS_BFS_T_CRF_LINEAR_STRUCTURE_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Operacion.Operacion.OP_Construccion": "LESS_BFS_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Operacion.Operacion.OP_ServidumbrePaso": "LESS_BFS_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Operacion.Operacion.OP_Terreno": "LESS_BFS_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Operacion.Operacion.OP_UnidadConstruccion": "LESS_BFS_T_OP_BUILDING_UNIT_F",
         }},
         "LADM_COL.LADM_Nucleo.col_miembros": {VARIABLE_NAME: "MEMBERS_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_miembros.agrupacion": "MEMBERS_T_GROUP_PARTY_F",
             "LADM_COL.LADM_Nucleo.col_miembros.interesado": "MEMBERS_T_PARTY_F"
         }},
         "LADM_COL.LADM_Nucleo.col_puntoCcl": {VARIABLE_NAME: "POINT_BFS_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl": "POINT_BFS_T_BOUNDARY_F",
-            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoControl": "POINT_BFS_T_OP_CONTROL_POINT_F",
-            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLevantamiento": "POINT_BFS_T_OP_SURVEY_POINT_F",
-            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto_Operacion.Operacion.OP_PuntoLindero": "POINT_BFS_T_OP_BOUNDARY_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl..Operacion.Operacion.OP_Lindero": "POINT_BFS_T_OP_BOUNDARY_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal": "POINT_BFS_T_CRF_LINEAR_STRUCTURE_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Operacion.Operacion.OP_PuntoControl": "POINT_BFS_T_OP_CONTROL_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Operacion.Operacion.OP_PuntoLevantamiento": "POINT_BFS_T_OP_SURVEY_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Operacion.Operacion.OP_PuntoLindero": "POINT_BFS_T_OP_BOUNDARY_POINT_F",
         }},
         "LADM_COL.LADM_Nucleo.col_puntoFuente": {VARIABLE_NAME: "COL_POINT_SOURCE_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial": "COL_POINT_SOURCE_T_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoControl": "COL_POINT_SOURCE_T_OP_CONTROL_POINT_F",
-            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLevantamiento": "COL_POINT_SOURCE_T_OP_SURVEY_POINT_F",
-            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto_Operacion.Operacion.OP_PuntoLindero": "COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F"
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoControl": "COL_POINT_SOURCE_T_OP_CONTROL_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoLevantamiento": "COL_POINT_SOURCE_T_OP_SURVEY_POINT_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoLindero": "COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_rrrFuente": {VARIABLE_NAME: "COL_RRR_SOURCE_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa": "COL_RRR_SOURCE_T_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Derecho": "COL_RRR_SOURCE_T_OP_RIGHT_F",
-            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr_Operacion.Operacion.OP_Restriccion": "COL_RRR_SOURCE_T_OP_RESTRICTION_F"
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Operacion.Operacion.OP_Derecho": "COL_RRR_SOURCE_T_OP_RIGHT_F",
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Operacion.Operacion.OP_Restriccion": "COL_RRR_SOURCE_T_OP_RESTRICTION_F"
         }},
         "LADM_COL.LADM_Nucleo.col_ueBaunit": {VARIABLE_NAME: "COL_UE_BAUNIT_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_ueBaunit.baunit": "COL_UE_BAUNIT_T_PARCEL_F",
-            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Terreno": "COL_UE_BAUNIT_T_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_Construccion": "COL_UE_BAUNIT_T_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F",
-            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue_Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F"
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_Terreno": "COL_UE_BAUNIT_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_Construccion": "COL_UE_BAUNIT_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F"
         }},
         "LADM_COL.LADM_Nucleo.col_ueFuente": {VARIABLE_NAME: "COL_UE_SOURCE_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_ueFuente.fuente_espacial": "COL_UE_SOURCE_T_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Construccion": "COL_UE_SOURCE_T_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F",
-            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_Terreno": "COL_UE_SOURCE_T_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.col_ueFuente.ue_Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_SOURCE_T_OP_BUILDING_UNIT_F"
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_Construccion": "COL_UE_SOURCE_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_Terreno": "COL_UE_SOURCE_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_SOURCE_T_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_baunitFuente": {VARIABLE_NAME: "COL_BAUNIT_SOURCE_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial": "BAUNIT_SOURCE_T_SOURCE_F",
@@ -883,7 +884,7 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_UnidadConstruccion.Identificador": "OP_BUILDING_UNIT_T_IDENTIFICATION_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Planta_Ubicacion": "OP_BUILDING_UNIT_T_FLOOR_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Uso": "OP_BUILDING_UNIT_T_USE_F",
-            "Operacion.Operacion.op_construccion_unidadconstruccion.op_construccion": "OP_BUILDING_UNIT_T_BUILDING_F",
+            "Operacion.Operacion.op_construccion_unidadconstruccion.op_construccion..Operacion.Operacion.OP_Construccion": "OP_BUILDING_UNIT_T_BUILDING_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Anio_Construccion": "OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Observaciones": "OP_BUILDING_UNIT_T_OBSERVATIONS_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Construccion": "OP_BUILDING_UNIT_T_BUILDING_TYPE_F",
@@ -924,15 +925,15 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
         "Operacion.Operacion.OP_Derecho": {VARIABLE_NAME: "OP_RIGHT_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad": "COL_BAUNIT_RRR_T_UNIT_F",
+            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad..Operacion.Operacion.OP_Predio": "COL_BAUNIT_RRR_T_UNIT_F",
             "Operacion.Operacion.OP_Derecho.Tipo": "OP_RIGHT_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
             "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
             "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
-            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
-            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado..Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado..Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1054,15 +1055,15 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
         "Operacion.Operacion.OP_Restriccion": {VARIABLE_NAME: "OP_RESTRICTION_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad": "COL_BAUNIT_RRR_T_UNIT_F",
+            "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad..Operacion.Operacion.OP_Predio": "COL_BAUNIT_RRR_T_UNIT_F",
             "Operacion.Operacion.OP_Restriccion.Tipo": "OP_RESTRICTION_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
             "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
             "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
-            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
-            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado..Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado..Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1125,6 +1126,7 @@ class Names(metaclass=Singleton):
 
         any_update = False
         table_names_count = 0
+        field_names_count = 0
         if dict_names:
             if T_ID not in dict_names or DISPLAY_NAME not in dict_names or ILICODE not in dict_names or DESCRIPTION not in dict_names:
                 self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
@@ -1138,6 +1140,7 @@ class Names(metaclass=Singleton):
                     for field_key, field_variable in attrs[FIELDS_DICT].items():
                         if field_key in dict_names[table_key]:
                             setattr(self, field_variable, dict_names[table_key][field_key])
+                            field_names_count += 1
 
             # Required fields mapped in a custom way
             self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
@@ -1150,6 +1153,7 @@ class Names(metaclass=Singleton):
 
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
+        self.logger.debug(__name__, "Number of field names set: {}".format(field_names_count))
         return any_update
 
     def reset_table_and_field_names(self):
@@ -1240,36 +1244,38 @@ class Names(metaclass=Singleton):
         self.PARTY_PACKAGE = "Interesados"
         self.SOURCE_PACKAGE = "Fuentes"
 
-    def test_names(self, models):
+    def test_names(self, table_and_field_names):
         """
         Test whether required table/field names are present.
 
-        :param models: List of model prefixes present in the db
+        :param table_and_field_names: List of table and field names present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
-        from asistente_ladm_col.config.general_config import LADM_MODEL_PREFIX
-        required_names = ["T_ID_F",
-                          "ILICODE_F",
-                          "DESCRIPTION_F",
-                          "DISPLAY_NAME_F"]
-
+        # Names that are mapped in the code
+        mapped_names = dict()
         for k, v in self.TABLE_DICT.items():
-            model = k.split(".")[0]
-            if model in models and model != LADM_MODEL_PREFIX:
-                # LADM classes may be added independently, for instance, Supplies adds only ExtArchivo. So, no need to
-                # add the whole LADM model to this test.
-                required_names.append(v[VARIABLE_NAME])
-                for k1, v1 in v[FIELDS_DICT].items():
-                    if k1.split(".")[0] in models:
-                        required_names.append(v1)
+            mapped_names[k] = v[VARIABLE_NAME]
+            for k1, v1 in v[FIELDS_DICT].items():
+                mapped_names[k1] = v1
 
-        self.logger.debug(__name__, "Number of required Names: {}".format(required_names))
+        # Iterate names from DB and add to a list to check only those that coming from the DB are also mapped in code
+        required_names = list(set([mapped_names[name] for name in table_and_field_names if name in mapped_names]))
+        if not required_names:
+            return (False, "The DB has no table or field names to check! As is, the plugin cannot get tables or fields from it!")
+        not_mapped = list(set([name for name in table_and_field_names if not name in mapped_names]))
+        self.logger.debug(__name__, "DB names not mapped in code ({}): First 10 --> {}".format(len(not_mapped), not_mapped[:10]))
+        self.logger.debug(__name__, "Number of required names: {}".format(len(required_names)))
+        required_names.extend(["T_ID_F",
+                               "ILICODE_F",
+                               "DESCRIPTION_F",
+                               "DISPLAY_NAME_F"])
+
         names_not_found = list()
         for required_name in required_names:
             if getattr(self, required_name) is None:
                 names_not_found.append(required_name)
 
-        self.logger.debug(__name__, "Names not found: {}".format(set(names_not_found)))
+        self.logger.debug(__name__, "Variable names not properly set: {}".format(names_not_found))
         if names_not_found:
             return (False, "Name '{}' was not found!".format(names_not_found[0]))
 
