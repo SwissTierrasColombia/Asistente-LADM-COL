@@ -43,15 +43,15 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       DEFAULT_INHERITANCE,
                                                       DEFAULT_MODEL_NAMES_CHECKED,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
+                                                      JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR,
                                                       CREATE_BASKET_COL,
                                                       CREATE_IMPORT_TID,
                                                       STROKE_ARCS,
                                                       SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
@@ -203,6 +203,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
+        if not JavaUtils.set_java_home():
+            message_error_java = QCoreApplication.translate("DialogImportSchema",
+                                                            """Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.""").format(JAVA_REQUIRED_VERSION)
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.clear()
+            self.txtStdout.setText(message_error_java)
+            self.show_message(message_error_java, Qgis.Warning)
+            return
+
         configuration = self.update_configuration()
 
         if not self.get_checked_models():
@@ -240,20 +249,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                     self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                # Set JAVA PATH
-                get_java_path_dlg = GetJavaPathDialog()
-                get_java_path_dlg.setModal(True)
-                if get_java_path_dlg.exec_():
-                    configuration = self.update_configuration()
-                if not get_java_path_from_qgis_model_baker():
-                    message_error_java = QCoreApplication.translate("DialogImportSchema",
-                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
-                    self.txtStdout.setTextColor(QColor('#000000'))
-                    self.txtStdout.clear()
-                    self.txtStdout.setText(message_error_java)
-                    self.show_message(message_error_java, Qgis.Warning)
-                self.enable()
-                self.progress_bar.hide()
+                message_error_java = QCoreApplication.translate("DialogImportSchema", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                self.txtStdout.setTextColor(QColor('#000000'))
+                self.txtStdout.clear()
+                self.txtStdout.setText(message_error_java)
+                self.show_message(message_error_java, Qgis.Warning)
                 return
 
             self.buttonBox.clear()
@@ -316,9 +316,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration.create_import_tid = CREATE_IMPORT_TID
         configuration.stroke_arcs = STROKE_ARCS
 
-        java_path = get_java_path_from_qgis_model_baker()
-        if java_path:
-            self.base_configuration.java_path = java_path
+        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        if full_java_exe_path:
+            self.base_configuration.java_path = full_java_exe_path
 
         # Check custom model directories
         if self.use_local_models:

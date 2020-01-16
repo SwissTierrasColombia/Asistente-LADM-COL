@@ -49,7 +49,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       REPORTS_REQUIRED_VERSION,
                                                       URL_REPORTS_LIBRARIES)
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (remove_readonly,
                                                normalize_local_url)
@@ -190,11 +189,6 @@ class ReportGenerator(QObject):
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
         if not JavaUtils.set_java_home():
-            get_java_path_dlg = GetJavaPathDialog()
-            get_java_path_dlg.setModal(True)
-            get_java_path_dlg.exec_()
-
-            if not JavaUtils.set_java_home():
                 self.msg = QMessageBox()
                 self.msg.setIcon(QMessageBox.Information)
                 self.msg.setText(QCoreApplication.translate("ReportGenerator",

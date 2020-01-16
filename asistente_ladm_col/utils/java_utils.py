@@ -25,14 +25,14 @@ import requests
 import sys
 import tarfile
 from pathlib import Path
+from shutil import which
 
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+                              QObject,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION)
-from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.config.general_config import JAVA_REQUIRED_VERSION
 from asistente_ladm_col.utils.utils import md5sum
 
 
@@ -62,7 +62,35 @@ class JavaUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.logger = Logger()
+
+    @staticmethod
+    def get_full_java_exe_path():
+        java_name = 'java.exe' if sys.platform == 'win32' else 'java'
+        pattern_java = "bin{}java".format(os.sep)
+        full_java_exe_path = ""
+
+        # Get JAVA_HOME environment variable
+        if 'JAVA_HOME' in os.environ:
+            java_home = os.environ['JAVA_HOME']
+
+            full_java_exe_path = os.path.join(java_home, 'bin', java_name)
+            (is_valid, java_message) = JavaUtils.java_path_is_valid(full_java_exe_path)
+
+            if not is_valid:
+                # Another try: does JAVA_HOME include bin dir?
+                full_java_exe_path = os.path.join(java_home, java_name)
+                (is_valid, java_message) = JavaUtils.java_path_is_valid(full_java_exe_path)
+                if not is_valid:
+                    full_java_exe_path = ""
+        else:
+            full_java_exe_path = which(java_name)
+            # verifies that the java configured in the system is valid.
+            (is_valid, java_message) = JavaUtils.java_path_is_valid(full_java_exe_path)
+            if not is_valid:
+                full_java_exe_path = ""
+
+        print(full_java_exe_path)
+        return full_java_exe_path
 
     @staticmethod
     def get_java_on_demand():
@@ -140,18 +168,12 @@ class JavaUtils(QObject):
     def set_java_home():
         """
         Attempt to set a valid JAVA_HOME only for the current session, which is used by reports (MapFish).
-        First try with the system JAVA_HOME, if not present, try with the Java configured in Model Baker. Otherwise return
-        false.
+        First try with the system JAVA_HOME, if not present, try with the Java configured in Model Baker.
+        if not the user is asked if he wants to be downloaded java on demand. Otherwise return false.
         :return: Whether a proper Java could be set or not in the current session's JAVA_HOME
         """
-        java_home = None
-        java_name = None
+        java_name = 'java.exe' if sys.platform == 'win32' else 'java'
         pattern_java = "bin{}java".format(os.sep)
-
-        if sys.platform == 'win32':
-            java_name = 'java.exe'
-        else:
-            java_name = 'java'
 
         # Get JAVA_HOME environment variable
         if 'JAVA_HOME' in os.environ:
@@ -172,10 +194,18 @@ class JavaUtils(QObject):
                 os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
                 # JAVA_HOME is valid, we'll use it as it is!
                 return True
+        else:
+            java_exe = which(java_name)
+            if java_exe:
+                # verifies that the java configured in the system is valid.
+                (is_valid, java_message) = JavaUtils.java_path_is_valid(java_exe)
+                if is_valid:
+                    os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
+                    return True
 
         # If JAVA_HOME environment variable doesn't exist
         # We use the value defined in QgisModelBaker
-        java_exe = get_java_path_from_qgis_model_baker()
+        java_exe = JavaUtils.get_java_path_from_qgis_model_baker()
 
         if java_exe:
             (is_valid, java_message) = JavaUtils.java_path_is_valid(java_exe)
@@ -186,26 +216,33 @@ class JavaUtils(QObject):
         # If JAVA_HOME environment variable doesn't exist
         # If JAVA_HOME is no defined in QgisModelBaker
         # We will download JAVA by demand
-        reply = QMessageBox.question(None,
-                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Continue?"),
-                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                "Java is a prerequisite, but was not found. Do you want it to be installed?"),
-                                     QMessageBox.Yes, QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            print("java will be downloaded ....")
 
-            # Check fist if java exist
-            full_path_java = os.path.join(JavaUtils.USER_OUTPUT_DIR, JavaUtils.JAVA_DIR_NAME, 'bin', JavaUtils.JAVA_NAME)
-            (is_valid, java_message) = JavaUtils.java_path_is_valid(full_path_java)
+        # Check if java was not installed previously, if it was download it is download again
+        full_path_java = os.path.join(JavaUtils.USER_OUTPUT_DIR, JavaUtils.JAVA_DIR_NAME, 'bin', JavaUtils.JAVA_NAME)
+        (is_valid, java_message) = JavaUtils.java_path_is_valid(full_path_java)
 
-            if not is_valid:
+        if is_valid:
+            # java was download previueslly, it is no necessary download again because it is valid.
+            os.environ['JAVA_HOME'] = full_path_java.split(pattern_java)[0]
+            return True
+        else:
+
+            reply = QMessageBox.question(None,
+                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Continue?"),
+                                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                    "Java {} is a prerequisite, but was not found. Do you want it to be installed?").format(JAVA_REQUIRED_VERSION),
+                                         QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
                 JavaUtils.get_java_on_demand()
+                (is_valid, java_message) = JavaUtils.java_path_is_valid(full_path_java)
 
-            full_path_java = os.path.join(JavaUtils.USER_OUTPUT_DIR, JavaUtils.JAVA_DIR_NAME, 'bin', JavaUtils.JAVA_NAME)
-            (is_valid, java_message) = JavaUtils.java_path_is_valid(full_path_java)
-
-            if is_valid:
-                os.environ['JAVA_HOME'] = full_path_java.split(pattern_java)[0]
-                return True
+                if is_valid:
+                    os.environ['JAVA_HOME'] = full_path_java.split(pattern_java)[0]
+                    return True
 
         return False
+
+    @staticmethod
+    def get_java_path_from_qgis_model_baker():
+        java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath', '', str)
+        return java_path

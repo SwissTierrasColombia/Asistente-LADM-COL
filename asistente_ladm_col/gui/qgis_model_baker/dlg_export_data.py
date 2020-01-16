@@ -19,7 +19,6 @@
  ***************************************************************************/
 """
 import os
-import re
 
 from QgisModelBaker.libili2db import iliexporter
 from QgisModelBaker.libili2db.ili2dbconfig import (ExportConfiguration,
@@ -43,12 +42,12 @@ from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_HIDDEN_MODELS,
+                                                      JAVA_REQUIRED_VERSION,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
@@ -187,6 +186,15 @@ class DialogExportData(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
+        if not JavaUtils.set_java_home():
+            message_error_java = QCoreApplication.translate("DialogExportData",
+                                                            """Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.""").format(JAVA_REQUIRED_VERSION)
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.clear()
+            self.txtStdout.setText(message_error_java)
+            self.show_message(message_error_java, Qgis.Warning)
+            return
+
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
@@ -253,21 +261,11 @@ class DialogExportData(QDialog, DIALOG_UI):
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                # Set JAVA PATH
-                get_java_path_dlg = GetJavaPathDialog()
-                get_java_path_dlg.setModal(True)
-                if get_java_path_dlg.exec_():
-                    configuration = self.update_configuration()
-
-                if not get_java_path_from_qgis_model_baker():
-                    message_error_java = QCoreApplication.translate("DialogExportData",
-                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
-                    self.txtStdout.setTextColor(QColor('#000000'))
-                    self.txtStdout.clear()
-                    self.txtStdout.setText(message_error_java)
-                    self.show_message(message_error_java, Qgis.Warning)
-                self.enable()
-                self.progress_bar.hide()
+                message_error_java = QCoreApplication.translate("DialogExportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                self.txtStdout.setTextColor(QColor('#000000'))
+                self.txtStdout.clear()
+                self.txtStdout.setText(message_error_java)
+                self.show_message(message_error_java, Qgis.Warning)
                 return
 
             self.buttonBox.clear()
@@ -306,9 +304,9 @@ class DialogExportData(QDialog, DIALOG_UI):
         item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
-        java_path = get_java_path_from_qgis_model_baker()
-        if java_path:
-            self.base_configuration.java_path = java_path
+        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        if full_java_exe_path:
+            self.base_configuration.java_path = full_java_exe_path
 
         # Check custom model directories
         if QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool):
