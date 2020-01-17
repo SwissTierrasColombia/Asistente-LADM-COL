@@ -368,12 +368,12 @@ class Names(metaclass=Singleton):
     #
     # "LADM_COL_V1_2.LADM_Nucleo.col_baunitComoInteresado.interesado"
     # "LADM_COL_V1_2.LADM_Nucleo.col_baunitComoInteresado.unidad"
-    BAUNIT_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitFuente.bfuente"
-    BAUNIT_SOURCE_T_UNIT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitFuente.unidad"
+    BAUNIT_SOURCE_T_SOURCE_F = None  # LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial --> fuente_espacial
+    BAUNIT_SOURCE_T_UNIT_F = None  # LADM_COL.LADM_Nucleo.col_baunitFuente.unidad..Operacion.Operacion.OP_Predio --> unidad
     COL_BAUNIT_RRR_T_UNIT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_baunitRrr.unidad"
-    COL_CCL_SOURCE_T_BOUNDARY_F = None # "LADM_COL_V1_2.LADM_Nucleo.col_cclFuente.ccl"
+    COL_CCL_SOURCE_T_BOUNDARY_F = None # LADM_COL.LADM_Nucleo.col_cclFuente.ccl..Operacion.Operacion.OP_Lindero --> ccl_op_lindero
                                        # "LADM_COL.LADM_Nucleo.col_cclFuente.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
-    COL_CCL_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_cclFuente.fuente_espacial"
+    COL_CCL_SOURCE_T_SOURCE_F = None  # LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial --> fuente_espacial
     # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Ddimensiones_Objetivo"
     # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Dimensiones_Origen"
     # "LADM_COL_V1_2.LADM_Nucleo.CC_MetodoOperacion.Formula"
@@ -396,7 +396,7 @@ class Names(metaclass=Singleton):
     COL_BFS_T_TEXTUAL_LOCATION_F = None  # "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual"
     COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"
     COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"
-    COL_SPATIAL_SOURCE_T_MEASUREMENTS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Mediciones"
+    COL_SPATIAL_SOURCE_T_MEASUREMENTS_F = None  # LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Mediciones..Operacion.Operacion.OP_FuenteEspacial --> op_fuenteespacial_mediciones
     COL_SPATIAL_SOURCE_T_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Tipo"
     # COL_SOURCE_T_QUALITY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Calidad"
     COL_SOURCE_T_AVAILABILITY_STATUS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"
@@ -468,8 +468,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.col_masCl.ue_mas"
     # "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ue_menos"
     # "LADM_COL_V1_2.LADM_Nucleo.col_menosCl.ue_menos"
-    MEMBERS_T_GROUP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.agrupacion"
-    MEMBERS_T_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.interesado"
+    MEMBERS_T_GROUP_PARTY_F = None  # LADM_COL.LADM_Nucleo.col_miembros.agrupacion..Operacion.Operacion.OP_Agrupacion_Interesados --> agrupacion
+    MEMBERS_T_PARTY_F = None  # LADM_COL.LADM_Nucleo.col_miembros.interesado..Operacion.Operacion.OP_Interesado --> interesado_op_interesado
     FRACTION_S_MEMBER_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_miembros.participacion"
     FRACTION_S_COPROPERTY_COEFFICIENT_F = None  # "Operacion.Operacion.op_predio_copropiedad.coeficiente"
     # "LADM_COL_V1_2.LADM_Nucleo.ObjetoVersionado.Calidad"
@@ -479,22 +479,22 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.OM_Observacion.Resultado_Calidad"
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCcl.punto"
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoCl.punto"
-    COL_POINT_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente.fuente_espacial"
+    COL_POINT_SOURCE_T_SOURCE_F = None  # LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial --> fuente_espacial
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoFuente.punto"
     # "LADM_COL_V1_2.LADM_Nucleo.col_puntoReferencia.ue"
     # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuente.fuente_administrativa"
     # "LADM_COL_V1_2.LADM_Nucleo.col_relacionFuenteUespacial.fuente_espacial"
     # "LADM_COL_V1_2.LADM_Nucleo.col_responsableFuente.fuente_administrativa"
     # "LADM_COL_V1_2.LADM_Nucleo.col_responsableFuente.interesado"
-    COL_RRR_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_rrrFuente.fuente_administrativa"
+    COL_RRR_SOURCE_T_SOURCE_F = None  # LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa..Operacion.Operacion.OP_FuenteAdministrativa --> fuente_administrativa
     # "LADM_COL_V1_2.LADM_Nucleo.col_rrrFuente.rrr"
     COL_RRR_PARTY_T_OP_PARTY_F = None  # "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado"
     COL_RRR_PARTY_T_OP_GROUP_PARTY_F = None  # "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados"
     # "LADM_COL_V1_2.LADM_Nucleo.col_topografoFuente.fuente_espacial"
     # "LADM_COL_V1_2.LADM_Nucleo.col_topografoFuente.topografo"
-    COL_UE_BAUNIT_T_PARCEL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit.baunit"
+    COL_UE_BAUNIT_T_PARCEL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit.baunit..Operacion.Operacion.OP_Predio" -->  baunit
     # "LADM_COL_V1_2.LADM_Nucleo.col_ueBaunit.ue"
-    COL_UE_SOURCE_T_SOURCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.col_ueFuente.fuente_espacial"
+    COL_UE_SOURCE_T_SOURCE_F = None  # LADM_COL.LADM_Nucleo.col_ueFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial --> fuente_espacial
     # "LADM_COL_V1_2.LADM_Nucleo.col_ueFuente.ue"
     # "LADM_COL_V1_2.LADM_Nucleo.col_ueUeGrupo.parte"
     # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente.fuente_administrativa"
@@ -793,8 +793,6 @@ class Names(metaclass=Singleton):
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
             "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F",
-            "LADM_COL.LADM_Nucleo.col_miembros.participacion": "FRACTION_S_MEMBER_F",
-            "Operacion.Operacion.op_predio_copropiedad.coeficiente": "FRACTION_S_COPROPERTY_COEFFICIENT_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Compartido..Operacion.Operacion.OP_Derecho": "FRACTION_S_OP_RIGHT_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Compartido..Operacion.Operacion.OP_Restriccion": "FRACTION_S_OP_RESTRICTION_F"
         }},
@@ -818,8 +816,9 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Operacion.Operacion.OP_UnidadConstruccion": "LESS_BFS_T_OP_BUILDING_UNIT_F",
         }},
         "LADM_COL.LADM_Nucleo.col_miembros": {VARIABLE_NAME: "MEMBERS_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_miembros.agrupacion": "MEMBERS_T_GROUP_PARTY_F",
-            "LADM_COL.LADM_Nucleo.col_miembros.interesado": "MEMBERS_T_PARTY_F"
+            "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F",
+            "LADM_COL.LADM_Nucleo.col_miembros.agrupacion..Operacion.Operacion.OP_Agrupacion_Interesados": "MEMBERS_T_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_miembros.interesado..Operacion.Operacion.OP_Interesado": "MEMBERS_T_PARTY_F"
         }},
         "LADM_COL.LADM_Nucleo.col_puntoCcl": {VARIABLE_NAME: "POINT_BFS_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_puntoCcl.ccl..Operacion.Operacion.OP_Lindero": "POINT_BFS_T_OP_BOUNDARY_F",
@@ -829,37 +828,37 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Operacion.Operacion.OP_PuntoLindero": "POINT_BFS_T_OP_BOUNDARY_POINT_F",
         }},
         "LADM_COL.LADM_Nucleo.col_puntoFuente": {VARIABLE_NAME: "COL_POINT_SOURCE_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial": "COL_POINT_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial": "COL_POINT_SOURCE_T_SOURCE_F",
             "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoControl": "COL_POINT_SOURCE_T_OP_CONTROL_POINT_F",
             "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoLevantamiento": "COL_POINT_SOURCE_T_OP_SURVEY_POINT_F",
             "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Operacion.Operacion.OP_PuntoLindero": "COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_rrrFuente": {VARIABLE_NAME: "COL_RRR_SOURCE_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa": "COL_RRR_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa..Operacion.Operacion.OP_FuenteAdministrativa": "COL_RRR_SOURCE_T_SOURCE_F",
             "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Operacion.Operacion.OP_Derecho": "COL_RRR_SOURCE_T_OP_RIGHT_F",
             "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Operacion.Operacion.OP_Restriccion": "COL_RRR_SOURCE_T_OP_RESTRICTION_F"
         }},
         "LADM_COL.LADM_Nucleo.col_ueBaunit": {VARIABLE_NAME: "COL_UE_BAUNIT_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_ueBaunit.baunit": "COL_UE_BAUNIT_T_PARCEL_F",
+            "LADM_COL.LADM_Nucleo.col_ueBaunit.baunit..Operacion.Operacion.OP_Predio": "COL_UE_BAUNIT_T_PARCEL_F",
             "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_Terreno": "COL_UE_BAUNIT_T_OP_PLOT_F",
             "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_Construccion": "COL_UE_BAUNIT_T_OP_BUILDING_F",
             "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F",
             "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F"
         }},
         "LADM_COL.LADM_Nucleo.col_ueFuente": {VARIABLE_NAME: "COL_UE_SOURCE_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_ueFuente.fuente_espacial": "COL_UE_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_ueFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial": "COL_UE_SOURCE_T_SOURCE_F",
             "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_Construccion": "COL_UE_SOURCE_T_OP_BUILDING_F",
             "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_ServidumbrePaso": "COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F",
             "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_Terreno": "COL_UE_SOURCE_T_OP_PLOT_F",
             "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Operacion.Operacion.OP_UnidadConstruccion": "COL_UE_SOURCE_T_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_baunitFuente": {VARIABLE_NAME: "COL_BAUNIT_SOURCE_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial": "BAUNIT_SOURCE_T_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.col_baunitFuente.unidad": "BAUNIT_SOURCE_T_UNIT_F"
+            "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial": "BAUNIT_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_baunitFuente.unidad..Operacion.Operacion.OP_Predio": "BAUNIT_SOURCE_T_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_cclFuente": {VARIABLE_NAME: "COL_CCL_SOURCE_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial": "COL_CCL_SOURCE_T_SOURCE_F",
-            "LADM_COL.LADM_Nucleo.col_cclFuente.ccl": "COL_CCL_SOURCE_T_BOUNDARY_F"
+            "LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial..Operacion.Operacion.OP_FuenteEspacial": "COL_CCL_SOURCE_T_SOURCE_F",
+            "LADM_COL.LADM_Nucleo.col_cclFuente.ccl..Operacion.Operacion.OP_Lindero": "COL_CCL_SOURCE_T_BOUNDARY_F"
         }},
         "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
@@ -1004,7 +1003,9 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
-        "Operacion.Operacion.op_predio_copropiedad": {VARIABLE_NAME: "OP_COPROPERTY_T", FIELDS_DICT: {}},
+        "Operacion.Operacion.op_predio_copropiedad": {VARIABLE_NAME: "OP_COPROPERTY_T", FIELDS_DICT: {
+            "Operacion.Operacion.op_predio_copropiedad.coeficiente..Operacion.Operacion.op_predio_copropiedad": "FRACTION_S_COPROPERTY_COEFFICIENT_F"
+        }},
         "Operacion.Operacion.op_predio_insumos_operacion": {VARIABLE_NAME: "OP_OPERATION_SUPPLIES_T", FIELDS_DICT: {}},
         "Operacion.Operacion.OP_PuntoControl": {VARIABLE_NAME: "OP_CONTROL_POINT_T", FIELDS_DICT: {
             "Operacion.Operacion.OP_PuntoControl.Exactitud_Horizontal": "OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F",
@@ -1104,7 +1105,7 @@ class Names(metaclass=Singleton):
         "Operacion.OP_RestriccionTipo": {VARIABLE_NAME: "OP_RESTRICTION_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_SexoTipo": {VARIABLE_NAME: "OP_GENRE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.OM_Observacion": {VARIABLE_NAME: "OM_OBSERVATION_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Mediciones": "COL_SPATIAL_SOURCE_T_MEASUREMENTS_F"
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Mediciones..Operacion.Operacion.OP_FuenteEspacial": "COL_SPATIAL_SOURCE_T_MEASUREMENTS_F"
         }},
     }
 
