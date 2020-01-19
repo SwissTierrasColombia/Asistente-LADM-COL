@@ -17,12 +17,20 @@
  ***************************************************************************/
 """
 import os
+import sqlite3
 
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .db_connector import (DBConnector,
-                           EnumTestLevel)
+from asistente_ladm_col.config.table_mapping_config import (T_ID,
+                                                            DISPLAY_NAME,
+                                                            ILICODE,
+                                                            DESCRIPTION,
+                                                            TABLE_NAME,
+                                                            COMPOSED_KEY_SEPARATOR)
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    EnumTestLevel)
+from asistente_ladm_col.utils.utils import normalize_iliname
 
 
 class GPKGConnector(DBConnector):
@@ -55,11 +63,90 @@ class GPKGConnector(DBConnector):
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
                     "There was an error connecting to the database: {}").format(e))
+
+        if not self._table_and_field_names:
+            self._initialize_names()
+
+        res, msg = self.names.test_names(self._table_and_field_names)
+        if not res:
+            return (False, QCoreApplication.translate("PGConnector",
+                    "Table/field names from the DB are not correct. Details: {}.").format(msg))
+
         return (True, QCoreApplication.translate("GPKGConnector",
                 "Connection to GeoPackage successful!"))
 
-    def save_connection(self):
-        self.conn = qgis.utils.spatialite_connect(self._uri)
+    def get_table_and_field_names(self):
+        """
+        Documented in super class
+        """
+        dict_names = dict()
+        cursor = self.conn.cursor()
+
+        # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
+        cursor.execute("""SELECT iliclass.iliname AS table_iliname,
+                                s.name AS tablename,
+                                ilicol.iliname AS field_iliname,
+                                ilicol.sqlname AS fieldname
+                            FROM sqlite_master s
+                            LEFT JOIN t_ili2db_attrname ilicol
+                            ON ilicol.colowner = s.name 
+                            AND ilicol.target IS NULL
+                            LEFT JOIN t_ili2db_classname iliclass
+                               ON s.name == iliclass.sqlname
+                            WHERE s.type='table' AND iliclass.iliname IS NOT NULL;""")
+        records = cursor.fetchall()
+
+        print("GPKG TEST1", len(records))
+        for record in records:
+            if record['table_iliname'] is None:
+                # Either t_ili2db_* tables (INTERLIS meta-attrs)
+                continue
+
+            table_iliname = normalize_iliname(record['table_iliname'])
+
+            if not table_iliname in dict_names:
+                dict_names[table_iliname] = dict()
+                dict_names[table_iliname][TABLE_NAME] = record['tablename']
+
+            if record['field_iliname'] is None:
+                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
+                continue
+
+            field_iliname = normalize_iliname(record['field_iliname'])
+            dict_names[table_iliname][field_iliname] = record['fieldname']
+
+        # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
+        cursor.execute("""SELECT a.iliname as table_iliname,
+                                   a.iliname, a.sqlname, 
+                                   c.iliname as iliname2, 
+                                   o.iliname as colowner
+                            FROM t_ili2db_attrname a
+                            INNER JOIN t_ili2db_classname o ON o.sqlname = a.colowner
+                            INNER JOIN t_ili2db_classname c ON c.sqlname = a.target
+                            ORDER BY a.iliname;""")
+        records = cursor.fetchall()
+        print("GPKG TEST2", len(records))
+        for record in records:
+            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
+                                           COMPOSED_KEY_SEPARATOR,
+                                           normalize_iliname(record['iliname2']))
+            table_iliname = normalize_iliname(record['table_iliname'])
+            if table_iliname in dict_names:
+                dict_names[table_iliname][composed_key] = record['sqlname']
+            else:
+                colowner = normalize_iliname(record['colowner'])
+                if colowner in dict_names:
+                    dict_names[colowner][composed_key] = record['sqlname']
+
+        cursor.close()
+
+        # Custom names
+        dict_names[T_ID] = "T_Id"
+        dict_names[DISPLAY_NAME] = "dispName"
+        dict_names[ILICODE] = "iliCode"
+        dict_names[DESCRIPTION] = "description"
+
+        return dict_names
 
     def validate_db(self):
         pass
@@ -74,7 +161,8 @@ class GPKGConnector(DBConnector):
         cursor = self.conn.cursor()
         cursor.execute("""SELECT modelname, content
                           FROM t_ili2db_model""")
-        return cursor
+        #return cursor
+        return ['Operacion_V2_9_6']
 
     def get_logic_validation_queries(self):
         raise NotImplementedError
@@ -107,6 +195,7 @@ class GPKGConnector(DBConnector):
 
     def open_connection(self):
         self.conn = qgis.utils.spatialite_connect(self._uri)
+        self.conn.row_factory = sqlite3.Row
 
     def close_connection(self):
         pass  # this connection does not need to be closed

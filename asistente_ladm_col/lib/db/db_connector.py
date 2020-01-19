@@ -21,7 +21,12 @@ import psycopg2
 from qgis.PyQt.QtCore import QObject
 from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            TABLE_NAME,
+                                                            T_ID,
+                                                            DISPLAY_NAME,
+                                                            ILICODE,
+                                                            DESCRIPTION)
 from asistente_ladm_col.lib.logger import Logger
 
 class DBConnector(QObject):
@@ -41,7 +46,7 @@ class DBConnector(QObject):
         self.conn = None
         self._dict_conn_params = None
         self.names = Names()
-        self.names_read = False  # Table/field names should be read only once per connector
+        self._table_and_field_names = list()  # Table/field names should be read only once per connector
         
         if uri is not None:
             self.uri = uri
@@ -76,9 +81,6 @@ class DBConnector(QObject):
         raise NotImplementedError
 
     def validate_db(self):
-        raise NotImplementedError
-
-    def _get_table_and_field_names(self):
         raise NotImplementedError
 
     def close_connection(self):
@@ -192,3 +194,45 @@ class DBConnector(QObject):
 
     def get_interlis_version(self):
         raise NotImplementedError
+
+    def get_table_and_field_names(self):  # TODO: Add test
+        """
+        Get table and field names from the DB. Should be called only once for a single connection.
+
+        :return: dict with table ilinames as keys and dict as values. The dicts found in the value contain field
+                 ilinames as keys and sqlnames as values. The table name itself is added with the key 'table_name'.
+                 Example:
+
+            "LADM_COL.LADM_Nucleo.col_masCcl": {
+                'table_name': 'col_masccl',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
+                'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
+            }
+        """
+        raise NotImplementedError
+
+    def _initialize_names(self):
+        """
+        Gets table and field names from the DB, initializes Names() and sets the member list for table and field names.
+        Should be called only once per DB connector.
+        """
+        dict_names = self.get_table_and_field_names()
+        self.names.initialize_table_and_field_names(dict_names)
+        self._set_table_and_field_names_list(dict_names)
+
+        # self.logger.debug(__name__, "DEBUG DICT: {}".format(dict_names["Operacion.Operacion.OP_Derecho"]))
+
+    def _set_table_and_field_names_list(self, dict_names):
+        """
+        Fill table_and_field_names list.
+        :param dict_names: See docs in _get_table_and_field_names
+        """
+        # Fill table names
+        for k,v in dict_names.items():
+            if k not in [T_ID, DISPLAY_NAME, ILICODE, DESCRIPTION]:  # Custom names will be handled by Names class
+                self._table_and_field_names.append(k)  # Table names
+                for k1, v1 in v.items():
+                    if k1 != TABLE_NAME:
+                        self._table_and_field_names.append(k1)  # Field names

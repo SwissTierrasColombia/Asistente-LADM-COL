@@ -53,9 +53,9 @@ from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.table_mapping_config import (T_ID,
                                                             DISPLAY_NAME,
                                                             ILICODE,
+                                                            TABLE_NAME,
                                                             DESCRIPTION,
-                                                            COMPOSED_KEY_SEPARATOR,
-                                                            TABLE_NAME)
+                                                            COMPOSED_KEY_SEPARATOR)
 
 
 class PGConnector(DBConnector):
@@ -77,8 +77,6 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
         self._logic_validation_queries = None
-
-        self.table_and_field_names = list()  # Table and field name (keys) found in the current connection
 
     @DBConnector.uri.setter
     def uri(self, value):
@@ -236,8 +234,8 @@ class PGConnector(DBConnector):
                 self.model_parser = ModelParser(self)
 
             # Validate table and field names
-            if not self.names_read:
-                self._get_table_and_field_names()
+            if not self._table_and_field_names:
+                self._initialize_names()
 
             models = list()
             if self.ladm_model_exists():
@@ -262,7 +260,7 @@ class PGConnector(DBConnector):
             if not models:
                 return (False, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
 
-            res, msg = self.names.test_names(self.table_and_field_names)
+            res, msg = self.names.test_names(self._table_and_field_names)
             if not res:
                 return (False, QCoreApplication.translate("PGConnector",
                                                           "Table/field names from the DB are not correct. Details: {}.").format(
@@ -318,22 +316,9 @@ class PGConnector(DBConnector):
     def validate_db(self):
         pass
 
-    def _get_table_and_field_names(self):
+    def get_table_and_field_names(self):
         """
-        Get table and field names from the DB. Should only be called once for a single connection, and should be
-        refreshed after a connection changes.
-
-        :return: dict with table ilinames as keys and dict as values. The dicts found in the value contain field
-                 ilinames as keys and sqlnames as values. The table name itself is added with the key 'table_name'.
-                 Example:
-
-            "LADM_COL.LADM_Nucleo.col_masCcl": {
-                'table_name': 'col_masccl',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
-                'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
-            }
+        Documented in the super class
         """
         # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
         sql_query = """SELECT DISTINCT
@@ -342,15 +327,10 @@ class PGConnector(DBConnector):
                       ilicol.iliname AS field_iliname,
                       a.attname AS fieldname      
                     FROM pg_catalog.pg_tables tbls
-                    LEFT JOIN {schema}.t_ili2db_table_prop tp
-                      ON tp.tablename = tbls.tablename
                     LEFT JOIN pg_index i
                       ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
                     LEFT JOIN pg_attribute a
                       ON a.attrelid = i.indrelid
-                    LEFT JOIN public.geometry_columns g
-                      ON g.f_table_schema = tbls.schemaname
-                      AND g.f_table_name = tbls.tablename
                     LEFT JOIN {schema}.t_ili2db_classname iliclass
                       ON tbls.tablename = iliclass.sqlname
                     LEFT JOIN {schema}.t_ili2db_attrname ilicol
@@ -364,6 +344,7 @@ class PGConnector(DBConnector):
         cur.execute(sql_query)
         records = cur.fetchall()
 
+        print("TEST1", len(records))
         dict_names = dict()
         for record in records:
             if record['table_iliname'] is None:
@@ -391,13 +372,11 @@ class PGConnector(DBConnector):
             FROM {schema}.t_ili2db_attrname a
                 INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
                 INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
-            WHERE a.target IS NOT NULL
-            GROUP BY a.iliname, a.sqlname, c.iliname, o.iliname
-            HAVING COUNT(a.iliname) = 1
             ORDER BY a.iliname""".format(schema=self.schema)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
         records = cur.fetchall()
+        print("TEST2", len(records))
         for record in records:
             composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
                                            COMPOSED_KEY_SEPARATOR,
@@ -410,21 +389,13 @@ class PGConnector(DBConnector):
                 if record['colowner'] in dict_names:
                     dict_names[record['colowner']][composed_key] = record['sqlname']
 
-        self.table_and_field_names = [k1 for k,v in dict_names.items() for k1,v1 in v.items() if k1 != TABLE_NAME]
-        self.table_and_field_names.extend(list(dict_names.keys()))
-
         # Add required key-value pairs that do not come from the DB query
         dict_names[T_ID] = "t_id"
         dict_names[DISPLAY_NAME] = "dispname"
         dict_names[ILICODE] = "ilicode"
         dict_names[DESCRIPTION] = "description"
 
-        self.names.initialize_table_and_field_names(dict_names)
-        self.names_read = True
-
-        #self.logger.debug(__name__, "DEBUG DICT: {}".format(dict_names["Operacion.Operacion.OP_Derecho"]))
-
-        return True
+        return dict_names
 
     def get_uri_for_layer(self, layer_name, geometry_type=None):
         res, cur = self.get_tables_info()
