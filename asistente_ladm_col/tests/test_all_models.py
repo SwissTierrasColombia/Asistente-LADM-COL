@@ -5,9 +5,11 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (VARIABLE_NAME,
-                                                            FIELDS_DICT)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            ILICODE,
+                                                            T_ID,
+                                                            DESCRIPTION,
+                                                            DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -19,7 +21,7 @@ class TestAllModels(unittest.TestCase):
         self.db_connection = get_dbconn('test_ladm_all_models')
         self.names = Names()
 
-    def test_snr_data_model(self):
+    def test_required_models(self):
         print("\nINFO: Validate if the schema for all models...")
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
@@ -33,28 +35,138 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(self.db_connection.ant_model_exists())
         self.assertTrue(self.db_connection.reference_cartography_model_exists())
 
-    def test_required_tables_names(self):
-        print("\nINFO: Validate minimum required tables...")
+    def test_names_from_model(self):
+        print("\nINFO: Validate names for all model...")
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
 
-        test_required_tables = ['GC_NEIGHBOURHOOD_T', 'GC_BUILDING_T', 'GC_HP_CONDOMINIUM_DATA_T', 'GC_BLOCK_T', 'GC_PERIMETER_T', 'GC_PARCEL_T', 'GC_OWNER_T', 'GC_RURAL_SECTOR_T', 'GC_URBAN_SECTOR_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'GC_RURAL_DIVISION_T', 'GC_COMMISSION_BUILDING_T', 'GC_COMMISSION_PLOT_T', 'GC_COMMISSION_BUILDING_UNIT_T', 'GC_PARCEL_TYPE_D', 'GC_ADDRESS_T', 'GC_BUILDING_UNIT_TYPE_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_BOUNDARIES_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'COL_AVAILABILITY_TYPE_D', 'COL_ADMINISTRATIVE_SOURCE_TYPE_D', 'COL_SPATIAL_SOURCE_TYPE_D', 'COL_GROUP_PARTY_TYPE_D', 'COL_INTERPOLATION_TYPE_D', 'COL_PRODUCTION_METHOD_TYPE_D', 'COL_SURFACE_RELATION_TYPE_D', 'COL_MONUMENTATION_TYPE_D', 'EXT_ARCHIVE_S', 'EXT_ADDRESS_S', 'EXT_PARTY_S', 'FRACTION_S', 'COL_BAUNIT_TYPE_D', 'COL_DIMENSION_TYPE_D', 'COL_POINT_TYPE_D', 'MORE_BFS_T', 'LESS_BFS_T', 'MEMBERS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_AGREEMENT_TYPE_D', 'OP_LOCATION_POINT_TYPE_D', 'OP_BUILDING_FLOOR_TYPE_D', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_CONDITION_PARCEL_TYPE_D', 'OP_RIGHT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_COPROPERTY_T', 'OP_OPERATION_SUPPLIES_T', 'OP_CONTROL_POINT_T', 'OP_SURVEY_POINT_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PHOTO_IDENTIFICATION_TYPE_D', 'OP_ETHNIC_GROUP_TYPE', 'OP_PARTY_DOCUMENT_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D', 'OP_RESTRICTION_TYPE_D', 'OP_GENRE_D', 'OM_OBSERVATION_T']
-        required_tables = list()
-        for key, value in self.names.TABLE_DICT.items():
-            if getattr(self.names, value[VARIABLE_NAME]):
-                required_tables.append(value[VARIABLE_NAME])
+        dict_names = self.db_connection.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 215)
 
-        self.assertListEqual(list(set(test_required_tables)), list(set(required_tables)))
+        expected_dict = {T_ID: 't_id',
+                         ILICODE: 'ilicode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispname',
+                         'Datos_SNR.Datos_SNR.SNR_Predio_Registro': {
+                             'table_name': 'snr_predio_registro',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Cabida_Linderos': 'cabida_linderos',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Codigo_ORIP': 'codigo_orip',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Fecha_Datos': 'fecha_datos',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria': 'matricula_inmobiliaria',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria_Matriz': 'matricula_inmobiliaria_matriz',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Anterior_en_FMI': 'numero_predial_anterior_en_fmi',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI': 'numero_predial_nuevo_en_fmi',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.NUPRE_en_FMI': 'nupre_en_fmi',
+                             'Datos_SNR.Datos_SNR.snr_fuente_cabidalinderos.snr_fuente_cabidalinderos..Datos_SNR.Datos_SNR.SNR_Fuente_CabidaLinderos': 'snr_fuente_cabidalinderos'
+                         },
+                         'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM': {
+                             'table_name': 'fcm_formulario_unico_cm',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Barrio_Vereda': 'barrio_vereda',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Categoria_Suelo': 'categoria_suelo',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Clase_Suelo': 'clase_suelo',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Corregimiento': 'corregimiento',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Destinacion_Economica': 'destinacion_economica',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Fecha_Inicio_Tenencia': 'fecha_inicio_tenencia',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Fecha_Visita_predial': 'fecha_visita_predial',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Formalidad': 'formalidad',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Localidad_Comuna': 'localidad_comuna',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Nombre_Reconocedor': 'nombre_reconocedor',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Numero_Predial_Predio_Matriz': 'numero_predial_predio_matriz',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Observaciones': 'observaciones',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Tiene_FMI': 'tiene_fmi',
+                             'Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM.Numeros_Prediales_Englobe..Formulario_Catastro.Formulario_Catastro.FCM_Formulario_Unico_CM': 'fcm_formulario_unic_cm_numeros_prediales_englobe',
+                             'Formulario_Catastro.Formulario_Catastro.fcm_formulario_predio.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
+                         },
+                         'Operacion.Operacion.op_predio_insumos_operacion': {
+                             'table_name': 'op_predio_insumos_operacion',
+                             'Operacion.Operacion.op_predio_insumos_operacion.ini_predio_insumos..Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_Predio_Insumos': 'ini_predio_insumos',
+                             'Operacion.Operacion.op_predio_insumos_operacion.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
+                         },
+                         'ANT.Fiso.ANT_Solicitud': {
+                             'table_name': 'ant_solicitud',
+                             'ANT.Fiso.ANT_Solicitud.Acepta_Notificacion_Correo_Electronico': 'acepta_notificacion_correo_electronico',
+                             'ANT.Fiso.ANT_Solicitud.Anio_Fallecimiento_Persona_Herencia': 'anio_fallecimiento_persona_herencia',
+                             'ANT.Fiso.ANT_Solicitud.Area_Aprox_Predio_Solicitud': 'area_aprox_predio_solicitud',
+                             'ANT.Fiso.ANT_Solicitud.Area_Explotacion_Aprox': 'area_explotacion_aprox',
+                             'ANT.Fiso.ANT_Solicitud.Cantidad_Presonas_Recibieron_Predio': 'cantidad_presonas_recibieron_predio',
+                             'ANT.Fiso.ANT_Solicitud.Centro_Poblado': 'centro_poblado',
+                             'ANT.Fiso.ANT_Solicitud.Clase_Explotacion': 'clase_explotacion',
+                             'ANT.Fiso.ANT_Solicitud.Corregimiento': 'corregimiento',
+                             'ANT.Fiso.ANT_Solicitud.Correo_Electronico': 'correo_electronico',
+                             'ANT.Fiso.ANT_Solicitud.Deja_herencia_Verdadero_Duenio': 'deja_herencia_verdadero_duenio',
+                             'ANT.Fiso.ANT_Solicitud.Direccion_Predio': 'direccion_predio',
+                             'ANT.Fiso.ANT_Solicitud.Documento_Respaldo_Negocio': 'documento_respaldo_negocio',
+                             'ANT.Fiso.ANT_Solicitud.Documento_Tiene_Nombre_Dejo_Herencia': 'documento_tiene_nombre_dejo_herencia',
+                             'ANT.Fiso.ANT_Solicitud.Documento_Tiene_Nombre_Tercero': 'documento_tiene_nombre_tercero',
+                             'ANT.Fiso.ANT_Solicitud.Documentos_Respaldo_Donacion': 'documentos_respaldo_donacion',
+                             'ANT.Fiso.ANT_Solicitud.Entidad_Adjudicacion_Ocupante': 'entidad_adjudicacion_ocupante',
+                             'ANT.Fiso.ANT_Solicitud.Entidad_Adjudicacion_Poseedor': 'entidad_adjudicacion_poseedor',
+                             'ANT.Fiso.ANT_Solicitud.Especifique_Titulo': 'especifique_titulo',
+                             'ANT.Fiso.ANT_Solicitud.Estado_Tramite_Ocupante': 'estado_tramite_ocupante',
+                             'ANT.Fiso.ANT_Solicitud.Estado_Tramite_Poseedor': 'estado_tramite_poseedor',
+                             'ANT.Fiso.ANT_Solicitud.Existe_Herederos': 'existe_herederos',
+                             'ANT.Fiso.ANT_Solicitud.Fecha_Explota_Predio': 'fecha_explota_predio',
+                             'ANT.Fiso.ANT_Solicitud.Fecha_Solicitud': 'fecha_solicitud',
+                             'ANT.Fiso.ANT_Solicitud.Fecha_Solicitud_Tramite_Ocupante': 'fecha_solicitud_tramite_ocupante',
+                             'ANT.Fiso.ANT_Solicitud.Fecha_Solicitud_Tramite_Poseedor': 'fecha_solicitud_tramite_poseedor',
+                             'ANT.Fiso.ANT_Solicitud.Herederos_Acuerdo_Adelantar_sucesion': 'herederos_acuerdo_adelantar_sucesion',
+                             'ANT.Fiso.ANT_Solicitud.Interesado_Programas_Formalizacion_Acceso_Tierras_ANT': 'interesado_programas_formalizacion_acceso_tierras_ant',
+                             'ANT.Fiso.ANT_Solicitud.Lista_Otros_Herederos': 'lista_otros_herederos',
+                             'ANT.Fiso.ANT_Solicitud.Modulo_Debe_Ingresar': 'modulo_debe_ingresar',
+                             'ANT.Fiso.ANT_Solicitud.Nombre_Duenio_predio': 'nombre_duenio_predio',
+                             'ANT.Fiso.ANT_Solicitud.Nombre_Predio': 'nombre_predio',
+                             'ANT.Fiso.ANT_Solicitud.Nombre_Predio_Mayor_Extension': 'nombre_predio_mayor_extension',
+                             'ANT.Fiso.ANT_Solicitud.Numero_Formulario': 'numero_formulario',
+                             'ANT.Fiso.ANT_Solicitud.Ocupante_Inicio_Adjudicacion_Predio': 'ocupante_inicio_adjudicacion_predio',
+                             'ANT.Fiso.ANT_Solicitud.Otro': 'otro',
+                             'ANT.Fiso.ANT_Solicitud.Parentesco_Persona_Donante': 'parentesco_persona_donante',
+                             'ANT.Fiso.ANT_Solicitud.Parentesco_Persona_Herencia': 'parentesco_persona_herencia',
+                             'ANT.Fiso.ANT_Solicitud.Persona_Vendio_Vive': 'persona_vendio_vive',
+                             'ANT.Fiso.ANT_Solicitud.Porque_No_Realizo_Escritura': 'porque_no_realizo_escritura',
+                             'ANT.Fiso.ANT_Solicitud.Poseedor_Inicio_Adjudicacion_Predio': 'poseedor_inicio_adjudicacion_predio',
+                             'ANT.Fiso.ANT_Solicitud.Predio_Parte_Predio_Mayor': 'predio_parte_predio_mayor',
+                             'ANT.Fiso.ANT_Solicitud.Quien_Vendio_Predio': 'quien_vendio_predio',
+                             'ANT.Fiso.ANT_Solicitud.Quienes_Habitan_Predio': 'quienes_habitan_predio',
+                             'ANT.Fiso.ANT_Solicitud.Regimen_Escogencia': 'regimen_escogencia',
+                             'ANT.Fiso.ANT_Solicitud.Registro_Titulo_Predio_SNR': 'registro_titulo_predio_snr',
+                             'ANT.Fiso.ANT_Solicitud.Tiene_Como_Contactar_Vendedor': 'tiene_como_contactar_vendedor',
+                             'ANT.Fiso.ANT_Solicitud.Vendedor_Dispuesto_Firmar_Escritura': 'vendedor_dispuesto_firmar_escritura',
+                             'ANT.Fiso.ANT_Solicitud.Vereda': 'vereda',
+                             'ANT.Fiso.ant_interesado_solicitud.op_interesado..Operacion.Operacion.OP_Interesado': 'op_interesado',
+                             'ANT.Fiso.ant_predio_solicitud.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
+                         },
+                         'Operacion.Operacion.OP_Predio': {
+                             'table_name': 'op_predio',
+                             'Operacion.Operacion.OP_Predio.Avaluo_Predio': 'avaluo_predio',
+                             'Operacion.Operacion.OP_Predio.Codigo_ORIP': 'codigo_orip',
+                             'LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version': 'comienzo_vida_util_version',
+                             'Operacion.Operacion.OP_Predio.Condicion_Predio': 'condicion_predio',
+                             'Operacion.Operacion.OP_Predio.Departamento': 'departamento',
+                             'Operacion.Operacion.OP_Predio.Direccion': 'direccion',
+                             'LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres': 'espacio_de_nombres',
+                             'LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version': 'fin_vida_util_version',
+                             'LADM_COL.LADM_Nucleo.Oid.Local_Id': 'local_id',
+                             'Operacion.Operacion.OP_Predio.Matricula_Inmobiliaria': 'matricula_inmobiliaria',
+                             'Operacion.Operacion.OP_Predio.Municipio': 'municipio',
+                             'LADM_COL.LADM_Nucleo.COL_BAUnit.Nombre': 'nombre',
+                             'Operacion.Operacion.OP_Predio.Numero_Predial': 'numero_predial',
+                             'Operacion.Operacion.OP_Predio.Numero_Predial_Anterior': 'numero_predial_anterior',
+                             'Operacion.Operacion.OP_Predio.NUPRE': 'nupre',
+                             'Operacion.Operacion.OP_Predio.Tipo': 'tipo'
+                         },
+                         'LADM_COL.LADM_Nucleo.col_masCcl': {
+                             'table_name': 'col_masccl',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas_op_lindero',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal': 'ccl_mas_crf_estructuralineal',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion': 'ue_mas_op_unidadconstruccion',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno': 'ue_mas_op_terreno',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso'
+                         }}
 
-    def test_required_fields_names(self):
-        print("\nINFO: Validate minimum required fields...")
-
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F', 'EXT_ARCHIVE_S_ACCEPTANCE_DATE_F', 'EXT_ARCHIVE_S_DELIVERY_DATE_F', 'EXT_ARCHIVE_S_STORAGE_DATE_F', 'EXT_ARCHIVE_S_NAMESPACE_F', 'EXT_ARCHIVE_S_LOCAL_ID_F', 'EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F', 'EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F', 'EXT_ADDRESS_S_VALUE_MAIN_ROAD_F', 'EXT_ADDRESS_S_PARCEL_NUMBER_F', 'EXT_ADDRESS_S_LOCALIZATION_F', 'EXT_ADDRESS_S_MAIN_ROAD_CLASS_F', 'EXT_ADDRESS_S_PARCEL_SECTOR_F', 'EXT_ADDRESS_S_PARCEL_NAME_F', 'EXT_ADDRESS_S_IS_MAIN_ADDRESS_F', 'EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F', 'EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F', 'EXT_ADDRESS_S_LETTER_MAIN_ROAD_F', 'EXT_ADDRESS_S_ADDRESS_TYPE_F', 'EXT_ADDRESS_S_CITY_SECTOR_F', 'EXT_ADDRESS_S_POSTAL_CODE_F', 'EXT_ADDRESS_S_COMPLEMENT_F', 'EXT_ADDRESS_S_OP_BUILDING_F', 'EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F', 'EXT_ADDRESS_S_OP_PLOT_F', 'EXT_ADDRESS_S_OP_BUILDING_UNIT_F', 'FRACTION_S_DENOMINATOR_F', 'FRACTION_S_NUMERATOR_F', 'FRACTION_S_OP_RIGHT_F', 'FRACTION_S_OP_RESTRICTION_F', 'MORE_BFS_T_OP_BOUNDARY_F', 'MORE_BFS_T_CRF_LINEAR_STRUCTURE_F', 'MORE_BFS_T_OP_BUILDING_F', 'MORE_BFS_T_OP_RIGHT_OF_WAY_F', 'MORE_BFS_T_OP_PLOT_F', 'MORE_BFS_T_OP_BUILDING_UNIT_F', 'LESS_BFS_T_OP_BOUNDARY_F', 'LESS_BFS_T_CRF_LINEAR_STRUCTURE_F', 'LESS_BFS_T_OP_BUILDING_F', 'LESS_BFS_T_OP_RIGHT_OF_WAY_F', 'LESS_BFS_T_OP_PLOT_F', 'LESS_BFS_T_OP_BUILDING_UNIT_F', 'FRACTION_S_MEMBER_F', 'MEMBERS_T_GROUP_PARTY_F', 'MEMBERS_T_PARTY_F', 'POINT_BFS_T_OP_BOUNDARY_F', 'POINT_BFS_T_CRF_LINEAR_STRUCTURE_F', 'POINT_BFS_T_OP_CONTROL_POINT_F', 'POINT_BFS_T_OP_SURVEY_POINT_F', 'POINT_BFS_T_OP_BOUNDARY_POINT_F', 'COL_POINT_SOURCE_T_SOURCE_F', 'COL_POINT_SOURCE_T_OP_CONTROL_POINT_F', 'COL_POINT_SOURCE_T_OP_SURVEY_POINT_F', 'COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F', 'COL_RRR_SOURCE_T_SOURCE_F', 'COL_RRR_SOURCE_T_OP_RIGHT_F', 'COL_RRR_SOURCE_T_OP_RESTRICTION_F', 'COL_UE_BAUNIT_T_PARCEL_F', 'COL_UE_BAUNIT_T_OP_PLOT_F', 'COL_UE_BAUNIT_T_OP_BUILDING_F', 'COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F', 'COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_SOURCE_F', 'COL_UE_SOURCE_T_OP_BUILDING_F', 'COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_OP_PLOT_F', 'COL_UE_SOURCE_T_OP_BUILDING_UNIT_F', 'BAUNIT_SOURCE_T_SOURCE_F', 'BAUNIT_SOURCE_T_UNIT_F', 'COL_CCL_SOURCE_T_SOURCE_F', 'COL_CCL_SOURCE_T_BOUNDARY_F', 'COL_GROUP_PARTY_T_TYPE_F', 'COL_PARTY_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BUILDING_UNIT_T_BUILT_AREA_F', 'OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F', 'OP_BUILDING_UNIT_T_BUILDING_VALUATION_F', 'OP_BUILDING_UNIT_T_IDENTIFICATION_F', 'OP_BUILDING_UNIT_T_FLOOR_F', 'OP_BUILDING_UNIT_T_USE_F', 'OP_BUILDING_UNIT_T_BUILDING_F', 'OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F', 'OP_BUILDING_UNIT_T_OBSERVATIONS_F', 'OP_BUILDING_UNIT_T_BUILDING_TYPE_F', 'OP_BUILDING_UNIT_T_DOMAIN_TYPE_F', 'OP_BUILDING_UNIT_T_FLOOR_TYPE_F', 'OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F', 'OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F', 'OP_BUILDING_UNIT_T_TOTAL_ROOMS_F', 'OP_BUILDING_UNIT_T_TOTAL_LOCALS_F', 'OP_BUILDING_UNIT_T_TOTAL_FLOORS_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BUILDING_T_BUILDING_AREA_F', 'OP_BUILDING_T_BUILDING_VALUATION_F', 'OP_BUILDING_T_NUMBER_OF_FLOORS_F', 'OP_BUILDING_T_BUILDING_CODE_F', 'OP_BUILDING_T_IDENTIFIER_F', 'OP_BUILDING_T_NUMBER_OF_MEZZANINE_F', 'OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F', 'OP_BUILDING_T_NUMBER_OF_BASEMENT_F', 'OP_BUILDING_T_BUILDING_TYPE_F', 'OP_BUILDING_T_DOMAIN_TYPE_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_BAUNIT_RRR_T_UNIT_F', 'OP_RIGHT_T_TYPE_F', 'COL_RRR_T_SHARE_CHECK_F', 'COL_RRR_T_DESCRIPTION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_RRR_T_EFFECTIVE_USAGE_F', 'COL_RRR_PARTY_T_OP_PARTY_F', 'COL_RRR_PARTY_T_OP_GROUP_PARTY_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F', 'OP_ADMINISTRATIVE_SOURCE_T_TYPE_F', 'COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F', 'COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F', 'COL_SOURCE_T_AVAILABILITY_STATUS_F', 'COL_SOURCE_T_DATE_DOCUMENT_F', 'COL_SOURCE_T_OFFICIAL_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_SOURCE_T_MAIN_TYPE_F', 'COL_SPATIAL_SOURCE_T_TYPE_F', 'COL_SOURCE_T_AVAILABILITY_STATUS_F', 'COL_SOURCE_T_DATE_DOCUMENT_F', 'COL_SOURCE_T_OFFICIAL_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_SOURCE_T_MAIN_TYPE_F', 'OP_PARTY_T_DOCUMENT_ID_F', 'OP_PARTY_T_ETHNIC_GROUP_F', 'OP_PARTY_T_SURNAME_1_F', 'OP_PARTY_T_FIRST_NAME_1_F', 'OP_PARTY_T_BUSINESS_NAME_F', 'OP_PARTY_T_SURNAME_2_F', 'OP_PARTY_T_FIRST_NAME_2_F', 'OP_PARTY_T_GENRE_F', 'OP_PARTY_T_TYPE_F', 'OP_PARTY_T_DOCUMENT_TYPE_F', 'COL_PARTY_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BOUNDARY_T_LENGTH_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_BFS_T_GEOMETRY_F', 'COL_BFS_T_TEXTUAL_LOCATION_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_PARCEL_T_VALUATION_F', 'OP_PARCEL_T_ORIP_CODE_F', 'OP_PARCEL_T_PARCEL_TYPE_F', 'OP_PARCEL_T_DEPARTMENT_F', 'OP_PARCEL_T_ADDRESS_F', 'OP_PARCEL_T_FMI_F', 'OP_PARCEL_T_MUNICIPALITY_F', 'OP_PARCEL_T_PARCEL_NUMBER_F', 'OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F', 'OP_PARCEL_T_NUPRE_F', 'OP_PARCEL_T_TYPE_F', 'COL_BAUNIT_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'FRACTION_S_COPROPERTY_COEFFICIENT_F', 'OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F', 'OP_CONTROL_POINT_T_ID_F', 'OP_CONTROL_POINT_T_POINT_TYPE_F', 'OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F', 'OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F', 'OP_SURVEY_POINT_T_ID_F', 'OP_SURVEY_POINT_T_POINT_TYPE_F', 'OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BOUNDARY_POINT_T_AGREEMENT_F', 'OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F', 'OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F', 'OP_BOUNDARY_POINT_T_ID_F', 'OP_BOUNDARY_POINT_T_POINT_TYPE_F', 'OP_BOUNDARY_POINT_T_POINT_LOCATION_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_BAUNIT_RRR_T_UNIT_F', 'OP_RESTRICTION_T_TYPE_F', 'COL_RRR_T_SHARE_CHECK_F', 'COL_RRR_T_DESCRIPTION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_RRR_T_EFFECTIVE_USAGE_F', 'COL_RRR_PARTY_T_OP_PARTY_F', 'COL_RRR_PARTY_T_OP_GROUP_PARTY_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_PLOT_T_PLOT_AREA_F', 'OP_PLOT_T_PLOT_VALUATION_F', 'OP_PLOT_T_GEOMETRY_F', 'OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F', 'OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_SPATIAL_SOURCE_T_MEASUREMENTS_F']
-        required_fields = list()
-        for key, value in self.names.TABLE_DICT.items():
-            for key_field, value_field in value[FIELDS_DICT].items():
-                if getattr(self.names, value_field):
-                    required_fields.append(value_field)
-
-        self.assertListEqual(list(set(test_required_fields)), list(set(required_fields)))
+        for k,v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
 
     @classmethod
     def tearDownClass(self):
