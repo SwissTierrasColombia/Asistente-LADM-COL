@@ -5,9 +5,11 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (VARIABLE_NAME,
-                                                            FIELDS_DICT)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            ILICODE,
+                                                            T_ID,
+                                                            DESCRIPTION,
+                                                            DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -19,7 +21,7 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
         self.db_connection = get_dbconn('test_ladm_integration')
         self.names = Names()
 
-    def test_snr_data_model(self):
+    def test_required_models(self):
         print("\nINFO: Validate if the schema for integration supplies model model...")
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
@@ -33,28 +35,55 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
         self.assertFalse(self.db_connection.ant_model_exists())
         self.assertFalse(self.db_connection.reference_cartography_model_exists())
 
-    def test_required_tables_names(self):
-        print("\nINFO: Validate minimum required tables...")
+    def test_names_from_model(self):
+        print("\nINFO: Validate names for Integration Supplies model...")
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
 
-        test_required_tables = ['GC_NEIGHBOURHOOD_T', 'GC_BUILDING_T', 'GC_HP_CONDOMINIUM_DATA_T', 'GC_BLOCK_T', 'GC_PERIMETER_T', 'GC_PARCEL_T', 'GC_OWNER_T', 'GC_RURAL_SECTOR_T', 'GC_URBAN_SECTOR_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'GC_RURAL_DIVISION_T', 'GC_COMMISSION_BUILDING_T', 'GC_COMMISSION_PLOT_T', 'GC_COMMISSION_BUILDING_UNIT_T', 'GC_PARCEL_TYPE_D', 'GC_ADDRESS_T', 'GC_BUILDING_UNIT_TYPE_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_BOUNDARIES_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'EXT_ARCHIVE_S']
-        required_tables = list()
-        for key, value in self.names.TABLE_DICT.items():
-            if getattr(self.names, value[VARIABLE_NAME]):
-                required_tables.append(value[VARIABLE_NAME])
+        dict_names = self.db_connection.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 40)
+        expected_dict = {T_ID: 't_id',
+                         ILICODE: 'ilicode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispname',
+                         'Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_Predio_Insumos': {
+                             'table_name': 'ini_predio_insumos',
+                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio_catastro',
+                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Datos_SNR.Datos_SNR.SNR_Predio_Registro': 'snr_predio_juridico'
+                         },
+                         'Datos_SNR.Datos_SNR.SNR_Predio_Registro': {
+                             'table_name': 'snr_predio_registro',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Cabida_Linderos': 'cabida_linderos',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Codigo_ORIP': 'codigo_orip',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Fecha_Datos': 'fecha_datos',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria': 'matricula_inmobiliaria',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria_Matriz': 'matricula_inmobiliaria_matriz',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Anterior_en_FMI': 'numero_predial_anterior_en_fmi',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI': 'numero_predial_nuevo_en_fmi',
+                             'Datos_SNR.Datos_SNR.SNR_Predio_Registro.NUPRE_en_FMI': 'nupre_en_fmi',
+                             'Datos_SNR.Datos_SNR.snr_fuente_cabidalinderos.snr_fuente_cabidalinderos..Datos_SNR.Datos_SNR.SNR_Fuente_CabidaLinderos': 'snr_fuente_cabidalinderos'
+                         },
+                         'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': {
+                             'table_name': 'gc_predio_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral': 'circulo_registral',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio': 'condicion_predio',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica': 'destinacion_economica',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Entidad_Emisora_Alerta': 'entidad_emisora_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Estado_Alerta': 'estado_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Alerta': 'fecha_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos': 'fecha_datos',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro': 'matricula_inmobiliaria_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial': 'numero_predial',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior': 'numero_predial_anterior',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos': 'sistema_procedencia_datos',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro': 'tipo_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio': 'tipo_predio',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Direcciones..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio_catastro_direcciones'
+                         }}
 
-        self.assertListEqual(list(set(test_required_tables)), list(set(required_tables)))
-
-    def test_required_fields_names(self):
-        print("\nINFO: Validate minimum required fields...")
-
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F', 'EXT_ARCHIVE_S_ACCEPTANCE_DATE_F', 'EXT_ARCHIVE_S_DELIVERY_DATE_F', 'EXT_ARCHIVE_S_STORAGE_DATE_F', 'EXT_ARCHIVE_S_NAMESPACE_F', 'EXT_ARCHIVE_S_LOCAL_ID_F']
-        required_fields = list()
-        for key, value in self.names.TABLE_DICT.items():
-            for key_field, value_field in value[FIELDS_DICT].items():
-                if getattr(self.names, value_field):
-                    required_fields.append(value_field)
-
-        self.assertListEqual(list(set(test_required_fields)), list(set(required_fields)))
+        for k,v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
 
     @classmethod
     def tearDownClass(self):

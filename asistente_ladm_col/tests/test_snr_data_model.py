@@ -5,9 +5,11 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (VARIABLE_NAME,
-                                                            FIELDS_DICT)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            ILICODE,
+                                                            T_ID,
+                                                            DESCRIPTION,
+                                                            DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -19,7 +21,7 @@ class TestSNRDataModel(unittest.TestCase):
         self.db_connection = get_dbconn('test_ladm_snr_data')
         self.names = Names()
 
-    def test_snr_data_model(self):
+    def test_required_models(self):
         print("\nINFO: Validate if the schema for snr data model...")
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
@@ -33,28 +35,26 @@ class TestSNRDataModel(unittest.TestCase):
         self.assertFalse(self.db_connection.ant_model_exists())
         self.assertFalse(self.db_connection.reference_cartography_model_exists())
 
-    def test_required_tables_names(self):
-        print("\nINFO: Validate minimum required tables...")
+    def test_names_from_model(self):
+        print("\nINFO: Validate names for SNR data model (small DB case)...")
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
 
-        test_required_tables = ['SNR_RIGHT_T', 'SNR_SOURCE_BOUNDARIES_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'EXT_ARCHIVE_S']
-        required_tables = list()
-        for key, value in self.names.TABLE_DICT.items():
-            if getattr(self.names, value[VARIABLE_NAME]):
-                required_tables.append(value[VARIABLE_NAME])
+        dict_names = self.db_connection.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 15)
 
-        self.assertListEqual(list(set(test_required_tables)), list(set(required_tables)))
+        expected_dict = {T_ID: 't_id',
+                         ILICODE: 'ilicode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispname',
+                         'Datos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Datos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Datos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
 
-    def test_required_fields_names(self):
-        print("\nINFO: Validate minimum required fields...")
-
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F', 'EXT_ARCHIVE_S_ACCEPTANCE_DATE_F', 'EXT_ARCHIVE_S_DELIVERY_DATE_F', 'EXT_ARCHIVE_S_STORAGE_DATE_F', 'EXT_ARCHIVE_S_NAMESPACE_F', 'EXT_ARCHIVE_S_LOCAL_ID_F']
-        required_fields = list()
-        for key, value in self.names.TABLE_DICT.items():
-            for key_field, value_field in value[FIELDS_DICT].items():
-                if getattr(self.names, value_field):
-                    required_fields.append(value_field)
-
-        self.assertListEqual(list(set(test_required_fields)), list(set(required_fields)))
+        for k,v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
 
     @classmethod
     def tearDownClass(self):

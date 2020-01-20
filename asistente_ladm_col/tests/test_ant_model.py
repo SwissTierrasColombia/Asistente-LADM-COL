@@ -5,9 +5,11 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (VARIABLE_NAME,
-                                                            FIELDS_DICT)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            ILICODE,
+                                                            T_ID,
+                                                            DESCRIPTION,
+                                                            DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -19,8 +21,8 @@ class TestANTModel(unittest.TestCase):
         self.db_connection = get_dbconn('test_ladm_ant')
         self.names = Names()
 
-    def test_snr_data_model(self):
-        print("\nINFO: Validate if the schema for ant model...")
+    def test_required_models(self):
+        print("\nINFO: Validate if the schema for ANT model...")
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
@@ -33,28 +35,68 @@ class TestANTModel(unittest.TestCase):
         self.assertTrue(self.db_connection.ant_model_exists())
         self.assertFalse(self.db_connection.reference_cartography_model_exists())
 
-    def test_required_tables_names(self):
-        print("\nINFO: Validate minimum required tables...")
+    def test_names_from_model(self):
+        print("\nINFO: Validate names for ANT model...")
+        result = self.db_connection.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
 
-        test_required_tables = ['GC_NEIGHBOURHOOD_T', 'GC_BUILDING_T', 'GC_HP_CONDOMINIUM_DATA_T', 'GC_BLOCK_T', 'GC_PERIMETER_T', 'GC_PARCEL_T', 'GC_OWNER_T', 'GC_RURAL_SECTOR_T', 'GC_URBAN_SECTOR_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'GC_RURAL_DIVISION_T', 'GC_COMMISSION_BUILDING_T', 'GC_COMMISSION_PLOT_T', 'GC_COMMISSION_BUILDING_UNIT_T', 'GC_PARCEL_TYPE_D', 'GC_ADDRESS_T', 'GC_BUILDING_UNIT_TYPE_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_BOUNDARIES_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'COL_AVAILABILITY_TYPE_D', 'COL_ADMINISTRATIVE_SOURCE_TYPE_D', 'COL_SPATIAL_SOURCE_TYPE_D', 'COL_GROUP_PARTY_TYPE_D', 'COL_INTERPOLATION_TYPE_D', 'COL_PRODUCTION_METHOD_TYPE_D', 'COL_SURFACE_RELATION_TYPE_D', 'COL_MONUMENTATION_TYPE_D', 'EXT_ARCHIVE_S', 'EXT_ADDRESS_S', 'EXT_PARTY_S', 'FRACTION_S', 'COL_BAUNIT_TYPE_D', 'COL_DIMENSION_TYPE_D', 'COL_POINT_TYPE_D', 'MORE_BFS_T', 'LESS_BFS_T', 'MEMBERS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_AGREEMENT_TYPE_D', 'OP_LOCATION_POINT_TYPE_D', 'OP_BUILDING_FLOOR_TYPE_D', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_CONDITION_PARCEL_TYPE_D', 'OP_RIGHT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_COPROPERTY_T', 'OP_OPERATION_SUPPLIES_T', 'OP_CONTROL_POINT_T', 'OP_SURVEY_POINT_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PHOTO_IDENTIFICATION_TYPE_D', 'OP_ETHNIC_GROUP_TYPE', 'OP_PARTY_DOCUMENT_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D', 'OP_RESTRICTION_TYPE_D', 'OP_GENRE_D', 'OM_OBSERVATION_T']
-        required_tables = list()
-        for key, value in self.names.TABLE_DICT.items():
-            if getattr(self.names, value[VARIABLE_NAME]):
-                required_tables.append(value[VARIABLE_NAME])
+        dict_names = self.db_connection.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 162)
+        expected_dict = {T_ID: 't_id',
+                         ILICODE: 'ilicode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispname',
+                         'ANT.Fiso.ANT_Interesado_Caracterizacion': {
+                             'table_name': 'ant_interesado_caracterizacion',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.A_Que_Titulo': 'a_que_titulo',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Alguna_Vez_Casado': 'alguna_vez_casado',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Autoriza_Ant': 'autoriza_ant',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Beneficiario_Incora_Incoder_ANT_URT': 'beneficiario_incora_incoder_ant_urt',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cabeza_hogar': 'cabeza_hogar',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Conflicto_Vigente_Descripcion': 'conflicto_vigente_descripcion',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Conserva_Registro': 'conserva_registro',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Considera_Propietario': 'considera_propietario',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Corregimiento': 'corregimiento',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Correo_Electronico': 'correo_electronico',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cuenta_Con_Predio_Rural': 'cuenta_con_predio_rural',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cuenta_Con_Sociedad_Patrimonial_Anterior_Sin_Liquidar': 'cuenta_con_sociedad_patrimonial_anterior_sin_liquidar',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Datos_Alternos_Contacto': 'datos_alternos_contacto',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Declara_Renta': 'declara_renta',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Departamento': 'departamento',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Direccion_Residencia': 'direccion_residencia',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Esta_Viva_Persona_Caso': 'esta_viva_persona_caso',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Estado_Civil_Actual': 'estado_civil_actual',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Explota_Predio': 'explota_predio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Explotan_Otros_Predios_Rurales': 'explotan_otros_predios_rurales',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Constitucion_Marital': 'fecha_constitucion_marital',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Ejerce_Relacion_Tenencia': 'fecha_ejerce_relacion_tenencia',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Habita_Predio': 'fecha_habita_predio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Resolucion': 'fecha_resolucion',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Genero': 'genero',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Habita_Predio': 'habita_predio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Hace_Parte_Asociacion_Economia_Campesina': 'hace_parte_asociacion_economia_campesina',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Correo_Electronico': 'mensaje_correo_electronico',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Texto_Telefono_Movil': 'mensaje_texto_telefono_movil',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Voz_Telefono_Movil': 'mensaje_voz_telefono_movil',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Municipio': 'municipio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Numero_Resolucion': 'numero_resolucion',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Patrimonio_Neto_SMMLV': 'patrimonio_neto_smmlv',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Porque_Considera_Derecho_Predio': 'porque_considera_derecho_predio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Propietario_Predio_Rural_Urbano_Vivienda': 'propietario_predio_rural_urbano_vivienda',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Registro_SNR': 'registro_snr',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Reside_Residio_Municipio_Ubicacion_Predio_Solicitud': 'reside_residio_municipio_ubicacion_predio_solicitud',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Se_Separo_Legalmente': 'se_separo_legalmente',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Tiene_Conflicto_Linderos_Servidumbre_Area': 'tiene_conflicto_linderos_servidumbre_area',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Tipo_Beneficio': 'tipo_beneficio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Ubicacion_Predio': 'ubicacion_predio',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Vereda': 'vereda',
+                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Vive_Actualmente_Persona_Con_Que_Caso': 'vive_actualmente_persona_con_que_caso',
+                             'ANT.Fiso.ant_interesado_caracterizacion.op_interesado..Operacion.Operacion.OP_Interesado': 'op_interesado'
+                         }}
 
-        self.assertListEqual(list(set(test_required_tables)), list(set(required_tables)))
-
-    def test_required_fields_names(self):
-        print("\nINFO: Validate minimum required fields...")
-
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F', 'EXT_ARCHIVE_S_ACCEPTANCE_DATE_F', 'EXT_ARCHIVE_S_DELIVERY_DATE_F', 'EXT_ARCHIVE_S_STORAGE_DATE_F', 'EXT_ARCHIVE_S_NAMESPACE_F', 'EXT_ARCHIVE_S_LOCAL_ID_F', 'EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F', 'EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F', 'EXT_ADDRESS_S_VALUE_MAIN_ROAD_F', 'EXT_ADDRESS_S_PARCEL_NUMBER_F', 'EXT_ADDRESS_S_LOCALIZATION_F', 'EXT_ADDRESS_S_MAIN_ROAD_CLASS_F', 'EXT_ADDRESS_S_PARCEL_SECTOR_F', 'EXT_ADDRESS_S_PARCEL_NAME_F', 'EXT_ADDRESS_S_IS_MAIN_ADDRESS_F', 'EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F', 'EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F', 'EXT_ADDRESS_S_LETTER_MAIN_ROAD_F', 'EXT_ADDRESS_S_ADDRESS_TYPE_F', 'EXT_ADDRESS_S_CITY_SECTOR_F', 'EXT_ADDRESS_S_POSTAL_CODE_F', 'EXT_ADDRESS_S_COMPLEMENT_F', 'EXT_ADDRESS_S_OP_BUILDING_F', 'EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F', 'EXT_ADDRESS_S_OP_PLOT_F', 'EXT_ADDRESS_S_OP_BUILDING_UNIT_F', 'FRACTION_S_DENOMINATOR_F', 'FRACTION_S_NUMERATOR_F', 'FRACTION_S_OP_RIGHT_F', 'FRACTION_S_OP_RESTRICTION_F', 'MORE_BFS_T_OP_BOUNDARY_F', 'MORE_BFS_T_OP_BUILDING_F', 'MORE_BFS_T_OP_RIGHT_OF_WAY_F', 'MORE_BFS_T_OP_PLOT_F', 'MORE_BFS_T_OP_BUILDING_UNIT_F', 'LESS_BFS_T_OP_BOUNDARY_F', 'LESS_BFS_T_OP_BUILDING_F', 'LESS_BFS_T_OP_RIGHT_OF_WAY_F', 'LESS_BFS_T_OP_PLOT_F', 'LESS_BFS_T_OP_BUILDING_UNIT_F', 'FRACTION_S_MEMBER_F', 'MEMBERS_T_GROUP_PARTY_F', 'MEMBERS_T_PARTY_F', 'POINT_BFS_T_OP_BOUNDARY_F', 'POINT_BFS_T_OP_CONTROL_POINT_F', 'POINT_BFS_T_OP_SURVEY_POINT_F', 'POINT_BFS_T_OP_BOUNDARY_POINT_F', 'COL_POINT_SOURCE_T_SOURCE_F', 'COL_POINT_SOURCE_T_OP_CONTROL_POINT_F', 'COL_POINT_SOURCE_T_OP_SURVEY_POINT_F', 'COL_POINT_SOURCE_T_OP_BOUNDARY_POINT_F', 'COL_RRR_SOURCE_T_SOURCE_F', 'COL_RRR_SOURCE_T_OP_RIGHT_F', 'COL_RRR_SOURCE_T_OP_RESTRICTION_F', 'COL_UE_BAUNIT_T_PARCEL_F', 'COL_UE_BAUNIT_T_OP_PLOT_F', 'COL_UE_BAUNIT_T_OP_BUILDING_F', 'COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F', 'COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_SOURCE_F', 'COL_UE_SOURCE_T_OP_BUILDING_F', 'COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_OP_PLOT_F', 'COL_UE_SOURCE_T_OP_BUILDING_UNIT_F', 'BAUNIT_SOURCE_T_SOURCE_F', 'BAUNIT_SOURCE_T_UNIT_F', 'COL_CCL_SOURCE_T_SOURCE_F', 'COL_CCL_SOURCE_T_BOUNDARY_F', 'COL_GROUP_PARTY_T_TYPE_F', 'COL_PARTY_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BUILDING_UNIT_T_BUILT_AREA_F', 'OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F', 'OP_BUILDING_UNIT_T_BUILDING_VALUATION_F', 'OP_BUILDING_UNIT_T_IDENTIFICATION_F', 'OP_BUILDING_UNIT_T_FLOOR_F', 'OP_BUILDING_UNIT_T_USE_F', 'OP_BUILDING_UNIT_T_BUILDING_F', 'OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F', 'OP_BUILDING_UNIT_T_OBSERVATIONS_F', 'OP_BUILDING_UNIT_T_BUILDING_TYPE_F', 'OP_BUILDING_UNIT_T_DOMAIN_TYPE_F', 'OP_BUILDING_UNIT_T_FLOOR_TYPE_F', 'OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F', 'OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F', 'OP_BUILDING_UNIT_T_TOTAL_ROOMS_F', 'OP_BUILDING_UNIT_T_TOTAL_LOCALS_F', 'OP_BUILDING_UNIT_T_TOTAL_FLOORS_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BUILDING_T_BUILDING_AREA_F', 'OP_BUILDING_T_BUILDING_VALUATION_F', 'OP_BUILDING_T_NUMBER_OF_FLOORS_F', 'OP_BUILDING_T_BUILDING_CODE_F', 'OP_BUILDING_T_IDENTIFIER_F', 'OP_BUILDING_T_NUMBER_OF_MEZZANINE_F', 'OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F', 'OP_BUILDING_T_NUMBER_OF_BASEMENT_F', 'OP_BUILDING_T_BUILDING_TYPE_F', 'OP_BUILDING_T_DOMAIN_TYPE_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_BAUNIT_RRR_T_UNIT_F', 'OP_RIGHT_T_TYPE_F', 'COL_RRR_T_SHARE_CHECK_F', 'COL_RRR_T_DESCRIPTION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_RRR_T_EFFECTIVE_USAGE_F', 'COL_RRR_PARTY_T_OP_PARTY_F', 'COL_RRR_PARTY_T_OP_GROUP_PARTY_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F', 'OP_ADMINISTRATIVE_SOURCE_T_TYPE_F', 'COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F', 'COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F', 'COL_SOURCE_T_AVAILABILITY_STATUS_F', 'COL_SOURCE_T_DATE_DOCUMENT_F', 'COL_SOURCE_T_OFFICIAL_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_SOURCE_T_MAIN_TYPE_F', 'COL_SPATIAL_SOURCE_T_TYPE_F', 'COL_SOURCE_T_AVAILABILITY_STATUS_F', 'COL_SOURCE_T_DATE_DOCUMENT_F', 'COL_SOURCE_T_OFFICIAL_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_SOURCE_T_MAIN_TYPE_F', 'OP_PARTY_T_DOCUMENT_ID_F', 'OP_PARTY_T_ETHNIC_GROUP_F', 'OP_PARTY_T_SURNAME_1_F', 'OP_PARTY_T_FIRST_NAME_1_F', 'OP_PARTY_T_BUSINESS_NAME_F', 'OP_PARTY_T_SURNAME_2_F', 'OP_PARTY_T_FIRST_NAME_2_F', 'OP_PARTY_T_GENRE_F', 'OP_PARTY_T_TYPE_F', 'OP_PARTY_T_DOCUMENT_TYPE_F', 'COL_PARTY_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BOUNDARY_T_LENGTH_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_BFS_T_GEOMETRY_F', 'COL_BFS_T_TEXTUAL_LOCATION_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_PARCEL_T_VALUATION_F', 'OP_PARCEL_T_ORIP_CODE_F', 'OP_PARCEL_T_PARCEL_TYPE_F', 'OP_PARCEL_T_DEPARTMENT_F', 'OP_PARCEL_T_ADDRESS_F', 'OP_PARCEL_T_FMI_F', 'OP_PARCEL_T_MUNICIPALITY_F', 'OP_PARCEL_T_PARCEL_NUMBER_F', 'OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F', 'OP_PARCEL_T_NUPRE_F', 'OP_PARCEL_T_TYPE_F', 'COL_BAUNIT_T_NAME_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'FRACTION_S_COPROPERTY_COEFFICIENT_F', 'OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F', 'OP_CONTROL_POINT_T_ID_F', 'OP_CONTROL_POINT_T_POINT_TYPE_F', 'OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F', 'OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F', 'OP_SURVEY_POINT_T_ID_F', 'OP_SURVEY_POINT_T_POINT_TYPE_F', 'OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_BOUNDARY_POINT_T_AGREEMENT_F', 'OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F', 'OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F', 'OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F', 'OP_BOUNDARY_POINT_T_ID_F', 'OP_BOUNDARY_POINT_T_POINT_TYPE_F', 'OP_BOUNDARY_POINT_T_POINT_LOCATION_F', 'COL_POINT_T_INTERPOLATION_POSITION_F', 'COL_POINT_T_ORIGINAL_LOCATION_F', 'COL_POINT_T_PRODUCTION_METHOD_F', 'COL_POINT_T_MONUMENTATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_BAUNIT_RRR_T_UNIT_F', 'OP_RESTRICTION_T_TYPE_F', 'COL_RRR_T_SHARE_CHECK_F', 'COL_RRR_T_DESCRIPTION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'COL_RRR_T_EFFECTIVE_USAGE_F', 'COL_RRR_PARTY_T_OP_PARTY_F', 'COL_RRR_PARTY_T_OP_GROUP_PARTY_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_GEOMETRY_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'OP_PLOT_T_PLOT_AREA_F', 'OP_PLOT_T_PLOT_VALUATION_F', 'OP_PLOT_T_GEOMETRY_F', 'OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F', 'OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F', 'COL_SPATIAL_UNIT_T_DIMENSION_F', 'COL_SPATIAL_UNIT_T_LABEL_F', 'COL_SPATIAL_UNIT_T_SURFACE_RELATION_F', 'OID_T_LOCAL_ID_F', 'OID_T_NAMESPACE_F', 'VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F', 'VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F', 'COL_SPATIAL_SOURCE_T_MEASUREMENTS_F']
-        required_fields = list()
-        for key, value in self.names.TABLE_DICT.items():
-            for key_field, value_field in value[FIELDS_DICT].items():
-                if getattr(self.names, value_field):
-                    required_fields.append(value_field)
-
-        self.assertListEqual(list(set(test_required_fields)), list(set(required_fields)))
+        for k,v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
 
     @classmethod
     def tearDownClass(self):
