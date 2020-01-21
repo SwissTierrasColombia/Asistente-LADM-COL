@@ -38,7 +38,6 @@ from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import
                                                                                   annex17_point_data_query,
                                                                                   annex17_plot_data_query)
 from asistente_ladm_col.config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                                      ASSISTANT_SUPPORTED_MODELS,
                                                       OPERATION_MODEL_PREFIX,
                                                       CADASTRAL_FORM_MODEL_PREFIX,
                                                       VALUATION_MODEL_PREFIX,
@@ -277,17 +276,6 @@ class PGConnector(DBConnector):
         return (False, QCoreApplication.translate("PGConnector",
                                                   "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
 
-    def check_at_least_one_ladm_model_exists(self):
-        result = True
-        msg = QCoreApplication.translate("PGConnector", "The version of the models is valid.")
-        models = self.get_models()
-        if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
-            result = False
-            msg = QCoreApplication.translate("PGConnector",
-                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
-                ', '.join(ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
-        return (result, msg)
-
     def open_connection(self, uri=None):
         if uri is None:
             uri = self._uri
@@ -313,30 +301,23 @@ class PGConnector(DBConnector):
             self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
-    def validate_db(self):
-        pass
-
     def get_table_and_field_names(self):
         """
         Documented in the super class
         """
         # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
-        sql_query = """SELECT DISTINCT
+        sql_query = """SELECT 
                       iliclass.iliname AS table_iliname,
                       tbls.tablename AS tablename,
                       ilicol.iliname AS field_iliname,
-                      a.attname AS fieldname      
+                      ilicol.sqlname AS fieldname      
                     FROM pg_catalog.pg_tables tbls
-                    LEFT JOIN pg_index i
-                      ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
-                    LEFT JOIN pg_attribute a
-                      ON a.attrelid = i.indrelid
                     LEFT JOIN {schema}.t_ili2db_classname iliclass
                       ON tbls.tablename = iliclass.sqlname
                     LEFT JOIN {schema}.t_ili2db_attrname ilicol
-                      ON a.attname = ilicol.sqlname 
-                      AND ilicol.colowner = tbls.tablename
-                    WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0 AND ilicol.target IS NULL
+                      ON ilicol.colowner = tbls.tablename
+                      AND ilicol.target IS NULL
+                    WHERE schemaname ='{schema}'
                     ORDER BY tbls.tablename, fieldname;""".format(
             schema=self.schema)
 

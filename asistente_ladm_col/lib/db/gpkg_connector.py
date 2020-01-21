@@ -28,8 +28,18 @@ from asistente_ladm_col.config.table_mapping_config import (T_ID,
                                                             DESCRIPTION,
                                                             TABLE_NAME,
                                                             COMPOSED_KEY_SEPARATOR)
+from asistente_ladm_col.config.general_config import (OPERATION_MODEL_PREFIX,
+                                                      CADASTRAL_FORM_MODEL_PREFIX,
+                                                      VALUATION_MODEL_PREFIX,
+                                                      LADM_MODEL_PREFIX,
+                                                      ANT_MODEL_PREFIX,
+                                                      REFERENCE_CARTOGRAPHY_PREFIX,
+                                                      SNR_DATA_MODEL_PREFIX,
+                                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
+                                                      SUPPLIES_MODEL_PREFIX, INTERLIS_TEST_METADATA_TABLE_PG)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
+from asistente_ladm_col.utils.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 
 
@@ -49,31 +59,119 @@ class GPKGConnector(DBConnector):
         self._uri = value
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
-        try:
+        """
+        WARNING: We check several levels in order:
+            1. SERVER
+            2. DB
+            #  We don't check SCHEMAs for GPKG
+            3. LADM
+            4. SCHEMA_IMPORT
+          If you need to modify this method, be careful and preserve the order!!!
 
-            # file no exist, but directory must exist
-            if test_level & EnumTestLevel.SCHEMA_IMPORT:
-                directory = os.path.dirname(self._uri)
+        :param test_level: (EnumTestLevel) level of connection with postgres
+        """
+        uri = self._uri
+        database = os.path.basename(self._dict_conn_params['dbfile'])
 
-                if not os.path.exists(directory):
-                    raise Exception("GeoPackage directory file not found.")
-            elif not os.path.exists(self._uri):
-                raise Exception("GeoPackage file not found.")
-            # TODO verify EnumTestLevel.LADM
-        except Exception as e:
-            return (False, QCoreApplication.translate("GPKGConnector",
-                    "There was an error connecting to the database: {}").format(e))
+        # First we do a very basic check, looking that the directory or file exists
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            # file does not exist, but directory must exist
+            directory = os.path.dirname(uri)
 
-        if not self._table_and_field_names:
-            self._initialize_names()
+            if not os.path.exists(directory):
+                return (False, QCoreApplication.translate("GPKGConnector", "GeoPackage directory file not found."))
+        else:
+            if not os.path.exists(uri):
+                return (False, QCoreApplication.translate("GPKGConnector", "GeoPackage file not found."))
 
-        res, msg = self.names.test_names(self._table_and_field_names)
-        if not res:
-            return (False, QCoreApplication.translate("PGConnector",
-                    "Table/field names from the DB are not correct. Details: {}.").format(msg))
+        # Now we can proceed in the order given in the docs
+        if test_level & EnumTestLevel.SERVER:
+            uri = self.get_connection_uri(self._dict_conn_params, 0)
+            res, msg = self.open_connection()
+            if res:
+                return (True, QCoreApplication.translate("GPKGConnector",
+                                                         "Connection to server was successful."))
+            else:
+                return (False, msg)
 
-        return (True, QCoreApplication.translate("GPKGConnector",
-                "Connection to GeoPackage successful!"))
+        if test_level == EnumTestLevel.DB:  # Just in the DB case
+            return (True, QCoreApplication.translate("GPKGConnector",
+                                                     "Connection to the database was successful."))
+
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
+
+        #  No schemas in GPKG, skipping EnumTestLevel.CHECK_SCHEMA
+
+        if test_level == EnumTestLevel.DB_SCHEMA:  # Test connection stops here
+            return (True, QCoreApplication.translate("GPKGConnector",
+                                                     "Connection to the database was successful."))
+
+        if test_level & EnumTestLevel._CHECK_LADM:
+            if not self._metadata_exists():
+                return (False, QCoreApplication.translate("GPKGConnector",
+                                                          "The database '{}' is not a valid LADM_COL database. That is, the database doesn't have the structure of the LADM_COL model.").format(
+                    database))
+
+            if self.get_ili2db_version() != 4:
+                return (False, QCoreApplication.translate("GPKGConnector",
+                                                          "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
+                    database))
+
+
+            res, msg = self.check_at_least_one_ladm_model_exists()
+            if not res:
+                return (res, msg)  # No LADM model found
+
+            if self.model_parser is None:
+                self.model_parser = ModelParser(self)
+
+            # Validate table and field names
+            if not self._table_and_field_names:
+                self._initialize_names()
+
+            models = list()
+            if self.ladm_model_exists():
+                models.append(LADM_MODEL_PREFIX)
+            if self.operation_model_exists():
+                models.append(OPERATION_MODEL_PREFIX)
+            if self.cadastral_form_model_exists():
+                models.append(CADASTRAL_FORM_MODEL_PREFIX)
+            if self.valuation_model_exists():
+                models.append(VALUATION_MODEL_PREFIX)
+            if self.ant_model_exists():
+                models.append(ANT_MODEL_PREFIX)
+            if self.reference_cartography_model_exists():
+                models.append(REFERENCE_CARTOGRAPHY_PREFIX)
+            if self.snr_data_model_exists():
+                models.append(SNR_DATA_MODEL_PREFIX)
+            if self.supplies_integration_model_exists():
+                models.append(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+            if self.supplies_model_exists():
+                models.append(SUPPLIES_MODEL_PREFIX)
+
+            if not models:
+                return (False, QCoreApplication.translate("GPKGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
+
+            res, msg = self.names.test_names(self._table_and_field_names)
+            if not res:
+                return (False, QCoreApplication.translate("PGConnector",
+                                                          "Table/field names from the DB are not correct. Details: {}.").format(
+                    msg))
+
+        if test_level == EnumTestLevel.LADM:
+            return (True,
+                    QCoreApplication.translate("GPKGConnector", "The database '{}' has a valid LADM_COL structure!").format(
+                        database))
+
+        # Next if captures and returns True on schema import
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
+
+        return (False, QCoreApplication.translate("GPKGConnector",
+                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
 
     def get_table_and_field_names(self):
         """
@@ -116,9 +214,9 @@ class GPKGConnector(DBConnector):
             dict_names[table_iliname][field_iliname] = record['fieldname']
 
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
-        cursor.execute("""SELECT a.iliname as table_iliname,
-                                   a.iliname, a.sqlname, 
-                                   c.iliname as iliname2, 
+        cursor.execute("""SELECT rtrim(rtrim(a.iliname, replace(a.iliname, '.', '')), '.') as table_iliname,
+                                   a.iliname, a.sqlname,
+                                   c.iliname as iliname2,
                                    o.iliname as colowner
                             FROM t_ili2db_attrname a
                             INNER JOIN t_ili2db_classname o ON o.sqlname = a.colowner
@@ -148,8 +246,11 @@ class GPKGConnector(DBConnector):
 
         return dict_names
 
-    def validate_db(self):
-        pass
+    def _metadata_exists(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(INTERLIS_TEST_METADATA_TABLE_PG))
+
+        return bool(cursor.fetchall())
 
     def get_uri_for_layer(self, layer_name, geometry_type=None):
         return (True, '{uri}|layername={table}'.format(
@@ -194,8 +295,24 @@ class GPKGConnector(DBConnector):
         return dict_conn['dbfile']
 
     def open_connection(self):
+        #if os.path.exists(self._uri):
         self.conn = qgis.utils.spatialite_connect(self._uri)
         self.conn.row_factory = sqlite3.Row
+        return (True, QCoreApplication.translate("GPKGConnector", "Connection is open!"))
+        #else:
+        #    return (False, QCoreApplication.translate("GPKGConnector",
+        #                   "Connection could not be open! The file ('{}') does not exist!".format(self._uri)))
 
     def close_connection(self):
-        pass  # this connection does not need to be closed
+        if self.conn:
+            self.conn.close()
+            self.logger.info(__name__, "Connection was closed!")
+            self.conn = None
+
+    def get_ili2db_version(self):
+        cur = self.conn.cursor()
+        cur.execute("""SELECT * from pragma_table_info('t_ili2db_attrname') WHERE name='owner';""")
+        if cur.fetchall():
+            return 3
+        else:
+            return 4  # ili2db 4 renamed such column to ColOwner

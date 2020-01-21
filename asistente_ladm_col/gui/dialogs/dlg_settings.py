@@ -154,7 +154,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         current_db = self.cbo_db_source.currentData()
         params = self._lst_panel[current_db].read_connection_parameters()
         db = self._lst_db[current_db].get_db_connector(params)
-        db.open_connection() # Open connection using gui parameters
         return db
 
     def get_db_connection(self):
