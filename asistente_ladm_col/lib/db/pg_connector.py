@@ -782,7 +782,7 @@ class PGConnector(DBConnector):
             schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         lst_models = list()
-        if result is not None and not isinstance(result, tuple):
+        if result is not None:
             lst_models = [db_model['modelname'] for db_model in result] 
         self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models

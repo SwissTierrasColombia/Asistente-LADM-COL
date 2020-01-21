@@ -263,9 +263,9 @@ class GPKGConnector(DBConnector):
         result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
                                     (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
         lst_models = list()
-        if result is not None and not isinstance(result, tuple):
-            lst_models = [db_model['modelname'] for db_model in result] 
-            
+        if result is not None:
+            lst_models = [db_model['modelname'] for db_model in result]
+        self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models
 
     def get_logic_validation_queries(self):
