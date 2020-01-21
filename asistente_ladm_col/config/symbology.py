@@ -12,36 +12,35 @@ class Symbology:
     ERROR_LAYER = 'error_layer'
 
     def __init__(self):
-        self.names = Names()
         self.translatable_config_strings = TranslatableConfigStrings()
 
-    def get_default_style_group(self):
+    def get_default_style_group(self, db):
          return {
-            self.names.OP_BOUNDARY_T: {
+            db.names.OP_BOUNDARY_T: {
                 QgsWkbTypes.LineGeometry: 'style_boundary'
             },
-            self.names.OP_BOUNDARY_POINT_T: {
+            db.names.OP_BOUNDARY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_boundary_point'
             },
-            self.names.OP_SURVEY_POINT_T: {
+            db.names.OP_SURVEY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_survey_point'
             },
-            self.names.OP_CONTROL_POINT_T: {
+            db.names.OP_CONTROL_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_control_point'
             },
-            self.names.OP_PLOT_T: {
+            db.names.OP_PLOT_T: {
                 QgsWkbTypes.PointGeometry: 'style_plot_point',
                 QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
             },
-            self.names.OP_BUILDING_T: {
+            db.names.OP_BUILDING_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building'
             },
-            self.names.OP_BUILDING_UNIT_T: {
+            db.names.OP_BUILDING_UNIT_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_unit_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
             },
-            self.names.OP_RIGHT_OF_WAY_T: {
+            db.names.OP_RIGHT_OF_WAY_T: {
                 QgsWkbTypes.PointGeometry: 'style_right_of_way_point',
                 QgsWkbTypes.PolygonGeometry: 'style_right_of_way'
             },
@@ -52,9 +51,9 @@ class Symbology:
             }
         }
 
-    def get_supplies_style_group(self):
+    def get_supplies_style_group(self, db):
         return {
-            self.names.OP_PLOT_T: {
+            db.names.OP_PLOT_T: {
                 QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
             }
         }

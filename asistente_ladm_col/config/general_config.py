@@ -416,7 +416,7 @@ ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = "ERROR_BUILDING_UNIT_CROSSES_A_PLOT_L
 
 class TranslatableConfigStrings(QObject):
     def __init__(self):
-        self.names = Names()
+        pass
 
     def get_translatable_config_strings(self):
         return {
@@ -443,13 +443,13 @@ class TranslatableConfigStrings(QObject):
             CHECK_PARCEL_RIGHT_RELATIONSHIP: QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right"),
             CHECK_FRACTION_SUM_FOR_PARTY_GROUPS: QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1"),
             FIND_DUPLICATE_RECORDS_IN_A_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Table records should not be repeated"),
-            CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=self.names.OP_PARCEL_T_DEPARTMENT_F, parcel=self.names.OP_PARCEL_T),
-            CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=self.names.OP_PARCEL_T_MUNICIPALITY_F, parcel=self.names.OP_PARCEL_T),
-            CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=self.names.OP_PARCEL_T_PARCEL_NUMBER_F),
-            CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F),
+            CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the department field of the parcel table has two numerical characters"),
+            CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the municipality field of the parcel table has three numerical characters"),
+            CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the parcel number has 30 numerical characters"),
+            CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the parcel number before has 20 numerical characters"),
             CHECK_COL_PARTY_NATURAL_TYPE: QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural"),
             CHECK_COL_PARTY_LEGAL_TYPE: QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type legal"),
-            CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER: QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the {parcel_number}").format(parcel_number=self.names.OP_PARCEL_T_PARCEL_NUMBER_F),
+            CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER: QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the parcel number"),
             CHECK_UEBAUNIT_PARCEL: QCoreApplication.translate("TranslatableConfigStrings", "Check that Spatial Units associated with Parcels correspond to the parcel type"),
             ERROR_PARCEL_WITH_NO_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated"),
             ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated"),

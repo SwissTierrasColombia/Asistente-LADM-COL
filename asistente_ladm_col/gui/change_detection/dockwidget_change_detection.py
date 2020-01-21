@@ -252,7 +252,7 @@ class ChangeDetectionUtils(QObject):
             layer_modifiers = {
                 PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
                 SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
+                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db)
             }
             self.qgis_utils.get_layers(self._supplies_db,
                                        self._supplies_layers,
@@ -311,7 +311,7 @@ class ChangeDetectionUtils(QObject):
         layer_modifiers = {
             PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
             SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db)
         }
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
         dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)

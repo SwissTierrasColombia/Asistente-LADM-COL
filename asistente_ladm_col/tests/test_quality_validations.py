@@ -25,6 +25,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
                                             get_pg_conn,
+                                            get_gpkg_conn,
                                             restore_schema)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.quality.quality import QualityUtils
@@ -137,6 +138,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
         self.assertEqual(boundary_point_layer.featureCount(), 82)
@@ -151,7 +154,8 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                     boundary_point_layer,
                                                                                                      plot_layer, error_layer,
                                                                                                      topology_rule,
                                                                                                      self.names.T_ID_F)
@@ -182,6 +186,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
         self.assertEqual(boundary_point_layer.featureCount(), 82)
@@ -196,7 +202,8 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                     boundary_point_layer,
                                                                                                      plot_layer, error_layer,
                                                                                                      topology_rule,
                                                                                                      self.names.T_ID_F)
@@ -248,7 +255,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
@@ -350,7 +357,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -473,7 +480,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.quality.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -567,7 +574,7 @@ class TesQualityValidations(unittest.TestCase):
                                     QgsField('error_type', QVariant.String)])
        error_layer.updateFields()
 
-       features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
+       features = self.quality.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
        # the algorithm was successfully executed
        self.assertEqual(len(features), 11)
@@ -861,6 +868,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary_points_')
@@ -872,7 +881,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -889,6 +898,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
         point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "Boundary points", "memory")
@@ -899,7 +910,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -925,6 +936,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing survey points in buildings...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
         uril = gpkg_path + '|layername={layername}'.format(layername='p_levantamiento')
@@ -936,7 +949,7 @@ class TesQualityValidations(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(survey_layer, building_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 

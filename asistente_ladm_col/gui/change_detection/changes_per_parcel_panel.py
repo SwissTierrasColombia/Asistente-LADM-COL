@@ -329,7 +329,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         layer_modifiers = {
             PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
             SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self.utils._supplies_db)
         }
         dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 
