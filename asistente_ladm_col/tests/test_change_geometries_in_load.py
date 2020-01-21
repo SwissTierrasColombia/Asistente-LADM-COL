@@ -9,7 +9,7 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            get_dbconn,
+                                            get_pg_conn,
                                             restore_schema,
                                             run_etl_model,
                                             clean_table)
@@ -35,15 +35,15 @@ class TestGeomsLoad(unittest.TestCase):
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         self.gpkg_path = get_test_copy_path(GPKG_PATH_DISTINCT_GEOMS)
 
-        self.db_distinct_geoms = get_dbconn(SCHEMA_DISTINCT_GEOMS)
-        self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
+        self.db_distinct_geoms = get_pg_conn(SCHEMA_DISTINCT_GEOMS)
+        self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
         self.qgis_utils = QGISUtils()
         self.names = Names()
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
-        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
 
         print("Validating Point to Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points')
@@ -101,13 +101,13 @@ class TestGeomsLoad(unittest.TestCase):
     def test_valid_import_geom_3d_to_db_postgres(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ (Postgres) geometries...')
 
-        result = self.db_connection.test_connection()
+        result = self.db_pg.test_connection()
         result_distinct = self.db_distinct_geoms.test_connection()
         self.assertTrue(result[0], 'The test connection is not working for empty db')
         self.assertTrue(result_distinct[0], 'The test connection is not working for distinct db')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
 
         print("Validating Point to PointZ")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points', load=True)
