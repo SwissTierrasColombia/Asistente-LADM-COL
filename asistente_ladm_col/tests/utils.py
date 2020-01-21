@@ -27,7 +27,7 @@ from qgis.core import QgsApplication
 from qgis.analysis import QgsNativeAlgorithms
 
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import FIELDS_DICT, VARIABLE_NAME
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
 QgsApplication.setPrefixPath('/usr', True)
@@ -53,7 +53,7 @@ asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 
 
-def get_dbconn(schema):
+def get_pg_conn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
     dict_conn['host'] = DB_HOSTNAME
@@ -66,9 +66,16 @@ def get_dbconn(schema):
 
     return db
 
+def get_gpkg_conn(path):
+    dict_conn = dict()
+    dict_conn['dbfile'] = path
+    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
 def restore_schema(schema):
     print("\nRestoring schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
@@ -95,7 +102,7 @@ def restore_schema(schema):
 
 def drop_schema(schema):
     print("\nDropping schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA "{}" CASCADE;""".format(schema))
@@ -108,7 +115,7 @@ def drop_schema(schema):
 
 def clean_table(schema, table):
     print("\nCleaning table {}.{}...".format(schema, table))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
@@ -189,3 +196,20 @@ def run_etl_model(input_layer, out_layer, ladm_col_layer_name):
         return
 
     return out_layer
+
+
+def get_required_fields(db_connection):
+    required_fields = list()
+    for key, value in db_connection.names.TABLE_DICT.items():
+        for key_field, value_field in value[FIELDS_DICT].items():
+            if getattr(db_connection.names, value_field):
+                required_fields.append(value_field)
+    return required_fields
+
+
+def get_required_tables(db_connection):
+    required_tables = list()
+    for key, value in db_connection.names.TABLE_DICT.items():
+        if getattr(db_connection.names, value[VARIABLE_NAME]):
+            required_tables.append(value[VARIABLE_NAME])
+    return required_tables

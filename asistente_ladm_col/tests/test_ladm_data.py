@@ -10,7 +10,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.tests.utils import (get_dbconn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
 
@@ -21,8 +21,8 @@ class TestLADMData(unittest.TestCase):
 
         restore_schema('test_ladm_col_queries')
 
-        self.db_connection = get_dbconn('test_ladm_col_queries')
-        result = self.db_connection.test_connection()
+        self.db_pg = get_pg_conn('test_ladm_col_queries')
+        result = self.db_pg.test_connection()
         print('test_connection', result)
 
         if not result[1]:
@@ -41,7 +41,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, self.names.T_ID_F)
+            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg, parcel_ids_test, self.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
@@ -52,7 +52,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, self.names.OP_PLOT_T_PLOT_AREA_F)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg, parcel_ids_test, self.names.OP_PLOT_T_PLOT_AREA_F)
             self.assertCountEqual(plot_custom_field_ids, plot_custom_field_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -60,12 +60,12 @@ class TestLADMData(unittest.TestCase):
 
         layers = {self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
                   self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
-        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection,
+            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg,
                                                                    parcel_ids_test,
                                                                    self.names.T_ID_F,
                                                                    plot_layer=layers[self.names.OP_PLOT_T][LAYER],
@@ -81,7 +81,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test, self.names.T_ID_F)
+            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg, plot_ids_test, self.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
@@ -94,7 +94,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
+            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg,
                                                                                   plot_ids_test,
                                                                                   self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
             self.assertCountEqual(parcel_custom_field_ids, parcel_custom_field_ids_tests[count],
@@ -107,12 +107,12 @@ class TestLADMData(unittest.TestCase):
             self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
-        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
+            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg,
                                                                      plot_ids_test,
                                                                      self.names.T_ID_F,
                                                                      parcel_table=layers[self.names.OP_PARCEL_T][LAYER],
@@ -670,7 +670,7 @@ class TestLADMData(unittest.TestCase):
                                                                  'documento_identidad': '22',
                                                                  'nombre': '22 22primer apellido 22segundo apellido 22primer nombre 22segundo nombre',
                                                                  'derecho': 'Dominio'}]}]}
-        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_connection)
+        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg)
         self.assertCountEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")
@@ -695,7 +695,7 @@ class TestLADMData(unittest.TestCase):
             ]
         }
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
-        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_connection, search_criterion=search_criterion)
+        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
         self.assertCountEqual(features, features_test)
 
         features_test = {'253940000000000230241000000000':
@@ -903,7 +903,7 @@ class TestLADMData(unittest.TestCase):
             ]
         }
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230241000000000'}
-        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_connection, search_criterion=search_criterion)
+        features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
         self.assertCountEqual(features, features_test)
 
     def tearDownClass():

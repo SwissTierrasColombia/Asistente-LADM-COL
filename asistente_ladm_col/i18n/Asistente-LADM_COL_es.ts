@@ -4205,12 +4205,12 @@ Rol:</translation>
 <context>
     <name>GPKGConnector</name>
     <message>
-        <location filename="../lib/db/gpkg_connector.py" line="56"/>
+        <location filename="../lib/db/gpkg_connector.py" line="64"/>
         <source>There was an error connecting to the database: {}</source>
         <translation>Hubo un error conectando a la base de datos: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/gpkg_connector.py" line="58"/>
+        <location filename="../lib/db/gpkg_connector.py" line="75"/>
         <source>Connection to GeoPackage successful!</source>
         <translation>¡Conexión exitosa a base de datos de GeoPackage!</translation>
     </message>
@@ -5788,7 +5788,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="199"/>
+        <location filename="../lib/db/pg_connector.py" line="201"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
@@ -5805,7 +5805,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="206"/>
+        <location filename="../lib/db/pg_connector.py" line="208"/>
         <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
         <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
     </message>
@@ -5814,47 +5814,48 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="159"/>
+        <location filename="../lib/db/pg_connector.py" line="161"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al servidor fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="166"/>
+        <location filename="../lib/db/pg_connector.py" line="168"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="190"/>
+        <location filename="../lib/db/pg_connector.py" line="192"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="195"/>
+        <location filename="../lib/db/pg_connector.py" line="197"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="212"/>
+        <location filename="../lib/db/pg_connector.py" line="214"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="217"/>
+        <location filename="../lib/db/pg_connector.py" line="219"/>
         <source>The schema &apos;{}&apos; is not a valid LADM_COL schema. That is, the schema doesn&apos;t have the structure of the LADM_COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="222"/>
+        <location filename="../lib/db/pg_connector.py" line="224"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="259"/>
+        <location filename="../lib/db/pg_connector.py" line="261"/>
         <source>The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!</source>
         <translation>¡La base de datos no tiene modelos de LADM_COL! Como está, ¡no puede ser usada por el Asistente LADM_COL!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="263"/>
+        <location filename="../lib/db/gpkg_connector.py" line="72"/>
+        <location filename="../lib/db/pg_connector.py" line="265"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
@@ -5863,67 +5864,67 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="269"/>
+        <location filename="../lib/db/pg_connector.py" line="271"/>
         <source>The schema &apos;{}&apos; has a valid LADM_COL structure!</source>
         <translation>El esquema &apos;{}&apos; tiene una estructura LADM_COL válida!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="273"/>
+        <location filename="../lib/db/pg_connector.py" line="275"/>
         <source>Connection successful!</source>
         <translation>¡Conexión exitosa!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="275"/>
+        <location filename="../lib/db/pg_connector.py" line="277"/>
         <source>There was a problem checking the connection. Most likely due to invalid or not supported test_level!</source>
         <translation>Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación (test_level) no soportado!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="280"/>
+        <location filename="../lib/db/pg_connector.py" line="282"/>
         <source>The version of the models is valid.</source>
         <translation>La versión de los modelos es válida.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="284"/>
+        <location filename="../lib/db/pg_connector.py" line="286"/>
         <source>At least one LADM_COL model should exist! Supported models are &apos;{}&apos; but you have &apos;{}&apos;.</source>
         <translation>Por lo menos un modelo LADM_COL debe existir! Los modelos soportados son &apos;{}&apos; pero usted tiene &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="306"/>
+        <location filename="../lib/db/pg_connector.py" line="308"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="450"/>
+        <location filename="../lib/db/pg_connector.py" line="439"/>
         <source>Layer &apos;{}&apos; was not found in the database (schema: {}).</source>
         <translation>No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="889"/>
+        <location filename="../lib/db/pg_connector.py" line="878"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="910"/>
+        <location filename="../lib/db/pg_connector.py" line="899"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="932"/>
+        <location filename="../lib/db/pg_connector.py" line="921"/>
         <source>No information for schema &apos;{}&apos;.</source>
         <translation>No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="936"/>
+        <location filename="../lib/db/pg_connector.py" line="925"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
         <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="941"/>
+        <location filename="../lib/db/pg_connector.py" line="930"/>
         <source>The user has both Create and Usage priviledges over the schema.</source>
         <translation>El usuario tiene permiso de Crear y Usar el equema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="945"/>
+        <location filename="../lib/db/pg_connector.py" line="934"/>
         <source>The user has not enough priviledges over the schema.</source>
         <translation>El usuario no tiene suficientes permisos sobre el equema.</translation>
     </message>

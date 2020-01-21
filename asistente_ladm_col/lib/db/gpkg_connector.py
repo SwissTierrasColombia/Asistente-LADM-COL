@@ -260,10 +260,13 @@ class GPKGConnector(DBConnector):
 
     def get_models(self):
         cursor = self.conn.cursor()
-        cursor.execute("""SELECT modelname, content
-                          FROM t_ili2db_model""")
-        #return cursor
-        return ['Operacion_V2_9_6']
+        result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
+                                    (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
+        lst_models = list()
+        if result is not None and not isinstance(result, tuple):
+            lst_models = [db_model['modelname'] for db_model in result] 
+            
+        return lst_models
 
     def get_logic_validation_queries(self):
         raise NotImplementedError
