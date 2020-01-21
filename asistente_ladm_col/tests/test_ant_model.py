@@ -5,8 +5,9 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            ILICODE,
+from asistente_ladm_col.tests.utils import (get_required_fields,
+                                            get_required_tables)
+from asistente_ladm_col.config.table_mapping_config import (ILICODE,
                                                             T_ID,
                                                             DESCRIPTION,
                                                             DISPLAY_NAME)
@@ -18,89 +19,78 @@ class TestANTModel(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_ant')
+<<<<<<< HEAD
         self.db_connection = get_pg_conn('test_ladm_ant')
-        self.names = Names()
+=======
+        self.db_connection_pg = get_dbconn('test_ladm_ant')
+>>>>>>> 7577cc1c1690c6a5c6348a842dab217a8269b21e
 
-    def test_required_models(self):
+    def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for ANT model...")
-        result = self.db_connection.test_connection()
+        result = self.db_connection_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_models(self.db_connection_pg)
 
-        self.assertTrue(self.db_connection.supplies_model_exists())
-        self.assertTrue(self.db_connection.snr_data_model_exists())
-        self.assertTrue(self.db_connection.supplies_integration_model_exists())
-        self.assertTrue(self.db_connection.operation_model_exists())
-        self.assertFalse(self.db_connection.valuation_model_exists())
-        self.assertFalse(self.db_connection.cadastral_form_model_exists())
-        self.assertTrue(self.db_connection.ant_model_exists())
-        self.assertFalse(self.db_connection.reference_cartography_model_exists())
+    def check_required_models(self, db_connection):
+        self.assertTrue(db_connection.supplies_model_exists())
+        self.assertTrue(db_connection.snr_data_model_exists())
+        self.assertTrue(db_connection.supplies_integration_model_exists())
+        self.assertTrue(db_connection.operation_model_exists())
+        self.assertFalse(db_connection.valuation_model_exists())
+        self.assertFalse(db_connection.cadastral_form_model_exists())
+        self.assertTrue(db_connection.ant_model_exists())
+        self.assertFalse(db_connection.reference_cartography_model_exists())
 
-    def test_names_from_model(self):
+    def test_names_from_model_pg(self):
         print("\nINFO: Validate names for ANT model...")
-        result = self.db_connection.test_connection()
+        result = self.db_connection_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-
-        dict_names = self.db_connection.get_table_and_field_names()
+        dict_names = self.db_connection_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 162)
         expected_dict = {T_ID: 't_id',
                          ILICODE: 'ilicode',
                          DESCRIPTION: 'description',
                          DISPLAY_NAME: 'dispname',
-                         'ANT.Fiso.ANT_Interesado_Caracterizacion': {
-                             'table_name': 'ant_interesado_caracterizacion',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.A_Que_Titulo': 'a_que_titulo',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Alguna_Vez_Casado': 'alguna_vez_casado',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Autoriza_Ant': 'autoriza_ant',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Beneficiario_Incora_Incoder_ANT_URT': 'beneficiario_incora_incoder_ant_urt',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cabeza_hogar': 'cabeza_hogar',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Conflicto_Vigente_Descripcion': 'conflicto_vigente_descripcion',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Conserva_Registro': 'conserva_registro',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Considera_Propietario': 'considera_propietario',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Corregimiento': 'corregimiento',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Correo_Electronico': 'correo_electronico',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cuenta_Con_Predio_Rural': 'cuenta_con_predio_rural',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Cuenta_Con_Sociedad_Patrimonial_Anterior_Sin_Liquidar': 'cuenta_con_sociedad_patrimonial_anterior_sin_liquidar',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Datos_Alternos_Contacto': 'datos_alternos_contacto',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Declara_Renta': 'declara_renta',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Departamento': 'departamento',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Direccion_Residencia': 'direccion_residencia',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Esta_Viva_Persona_Caso': 'esta_viva_persona_caso',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Estado_Civil_Actual': 'estado_civil_actual',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Explota_Predio': 'explota_predio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Explotan_Otros_Predios_Rurales': 'explotan_otros_predios_rurales',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Constitucion_Marital': 'fecha_constitucion_marital',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Ejerce_Relacion_Tenencia': 'fecha_ejerce_relacion_tenencia',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Habita_Predio': 'fecha_habita_predio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Fecha_Resolucion': 'fecha_resolucion',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Genero': 'genero',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Habita_Predio': 'habita_predio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Hace_Parte_Asociacion_Economia_Campesina': 'hace_parte_asociacion_economia_campesina',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Correo_Electronico': 'mensaje_correo_electronico',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Texto_Telefono_Movil': 'mensaje_texto_telefono_movil',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Mensaje_Voz_Telefono_Movil': 'mensaje_voz_telefono_movil',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Municipio': 'municipio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Numero_Resolucion': 'numero_resolucion',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Patrimonio_Neto_SMMLV': 'patrimonio_neto_smmlv',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Porque_Considera_Derecho_Predio': 'porque_considera_derecho_predio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Propietario_Predio_Rural_Urbano_Vivienda': 'propietario_predio_rural_urbano_vivienda',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Registro_SNR': 'registro_snr',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Reside_Residio_Municipio_Ubicacion_Predio_Solicitud': 'reside_residio_municipio_ubicacion_predio_solicitud',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Se_Separo_Legalmente': 'se_separo_legalmente',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Tiene_Conflicto_Linderos_Servidumbre_Area': 'tiene_conflicto_linderos_servidumbre_area',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Tipo_Beneficio': 'tipo_beneficio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Ubicacion_Predio': 'ubicacion_predio',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Vereda': 'vereda',
-                             'ANT.Fiso.ANT_Interesado_Caracterizacion.Vive_Actualmente_Persona_Con_Que_Caso': 'vive_actualmente_persona_con_que_caso',
-                             'ANT.Fiso.ant_interesado_caracterizacion.op_interesado..Operacion.Operacion.OP_Interesado': 'op_interesado'
+                         'ANT.Fiso.ANT_Conflictos': {
+                             'table_name': 'ant_conflictos',
+                             'ANT.Fiso.ANT_Conflictos.Conflicto': 'conflicto',
+                             'ANT.Fiso.ANT_Conflictos.Descripcion': 'descripcion',
+                             'ANT.Fiso.ant_conflictos_predio.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
                          }}
 
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
             self.assertEqual(v, dict_names[k])
 
+    def test_required_table_names_pg(self):
+        print("\nINFO: Validate minimum required tables from names...")
+        result = self.db_connection_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_table_names(self.db_connection_pg)
+
+    def check_required_table_names(self, db_connection):
+        test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D']
+        required_tables = get_required_tables(db_connection)
+
+        for test_required_table in test_required_tables:
+            self.assertIn(test_required_table, required_tables)
+
+    def test_required_field_names_pg(self):
+        print("\nINFO: Validate minimum required fields from names...")
+        result = self.db_connection_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_field_names(self.db_connection_pg)
+
+    def check_required_field_names(self, db_connection):
+        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'FRACTION_S_NUMERATOR_F', 'FRACTION_S_OP_RIGHT_F', 'FRACTION_S_OP_RESTRICTION_F', 'MORE_BFS_T_OP_BOUNDARY_F', 'MORE_BFS_T_OP_BUILDING_F', 'MORE_BFS_T_OP_RIGHT_OF_WAY_F', 'MORE_BFS_T_OP_PLOT_F', 'MORE_BFS_T_OP_BUILDING_UNIT_F', 'LESS_BFS_T_OP_BOUNDARY_F', 'LESS_BFS_T_OP_BUILDING_F', 'LESS_BFS_T_OP_RIGHT_OF_WAY_F', 'LESS_BFS_T_OP_PLOT_F', 'LESS_BFS_T_OP_BUILDING_UNIT_F', 'FRACTION_S_MEMBER_F', 'MEMBERS_T_GROUP_PARTY_F', 'MEMBERS_T_PARTY_F', 'POINT_BFS_T_OP_BOUNDARY_F', 'POINT_BFS_T_OP_CONTROL_POINT_F', 'POINT_BFS_T_OP_SURVEY_POINT_F', 'POINT_BFS_T_OP_BOUNDARY_POINT_F', 'COL_POINT_SOURCE_T_SOURCE_F', 'COL_POINT_SOURCE_T_OP_CONTROL_POINT_F', 'COL_UE_BAUNIT_T_OP_BUILDING_F', 'COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F', 'COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_SOURCE_F', 'COL_UE_SOURCE_T_OP_BUILDING_F', 'COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_OP_PLOT_F', 'COL_UE_SOURCE_T_OP_BUILDING_UNIT_F', 'BAUNIT_SOURCE_T_SOURCE_F', 'BAUNIT_SOURCE_T_UNIT_F', 'COL_CCL_SOURCE_T_SOURCE_F', 'COL_CCL_SOURCE_T_BOUNDARY_F', 'COL_GROUP_PARTY_T_TYPE_F', 'COL_PARTY_T_NAME_F']
+        required_fields = get_required_fields(db_connection)
+
+        for test_required_field in test_required_fields:
+            self.assertIn(test_required_field, required_fields)
+
     @classmethod
     def tearDownClass(self):
-        self.db_connection.conn.close()
+        self.db_connection_pg.conn.close()
 
 
 if __name__ == '__main__':
