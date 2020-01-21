@@ -10,7 +10,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.tests.utils import (get_dbconn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
 
@@ -21,7 +21,7 @@ class TestLADMData(unittest.TestCase):
 
         restore_schema('test_ladm_col_queries')
 
-        self.db_connection = get_dbconn('test_ladm_col_queries')
+        self.db_connection = get_pg_conn('test_ladm_col_queries')
         result = self.db_connection.test_connection()
         print('test_connection', result)
 

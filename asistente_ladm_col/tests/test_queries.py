@@ -5,7 +5,7 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (get_dbconn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 from asistente_ladm_col.tests.resources.expected_results.queries.basic_query_test_results import basic_query_test_results
 from asistente_ladm_col.tests.resources.expected_results.queries.economic_query_test_results import economic_query_test_results
@@ -20,7 +20,7 @@ class TestQueries(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_col_queries')
-        self.db_connection = get_dbconn('test_ladm_col_queries')
+        self.db_connection = get_pg_conn('test_ladm_col_queries')
         self.names = Names()
 
     def test_igac_basic_info_query(self):

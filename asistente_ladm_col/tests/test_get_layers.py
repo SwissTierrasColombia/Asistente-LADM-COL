@@ -7,7 +7,7 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            get_dbconn,
+                                            get_pg_conn,
                                             restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
@@ -23,7 +23,7 @@ class TestGetLayers(unittest.TestCase):
         self.qgis_utils = QGISUtils()
 
         restore_schema('test_ladm_col')
-        self.db_connection = get_dbconn('test_ladm_col')
+        self.db_connection = get_pg_conn('test_ladm_col')
         self.names = Names()
 
     def test_get_layer(self):

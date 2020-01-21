@@ -10,7 +10,7 @@ from asistente_ladm_col.config.table_mapping_config import (Names,
                                                             T_ID,
                                                             DESCRIPTION,
                                                             DISPLAY_NAME)
-from asistente_ladm_col.tests.utils import (get_dbconn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
 
@@ -18,7 +18,7 @@ class TestANTModel(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_ant')
-        self.db_connection = get_dbconn('test_ladm_ant')
+        self.db_connection = get_pg_conn('test_ladm_ant')
         self.names = Names()
 
     def test_required_models(self):

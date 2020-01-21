@@ -15,7 +15,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             run_etl_model,
                                             import_asistente_ladm_col,
                                             import_processing,
-                                            get_dbconn,
+                                            get_pg_conn,
                                             get_test_path,
                                             restore_schema,
                                             clean_table)
@@ -39,7 +39,7 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
         restore_schema(SCHEMA_LADM_COL_EMPTY)
-        self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
+        self.db_connection = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
         self.names = Names()
         import_asistente_ladm_col()

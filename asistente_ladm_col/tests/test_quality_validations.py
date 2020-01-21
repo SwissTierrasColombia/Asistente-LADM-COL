@@ -24,7 +24,7 @@ from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
-                                            get_dbconn,
+                                            get_pg_conn,
                                             restore_schema)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.quality.quality import QualityUtils
@@ -47,13 +47,13 @@ class TesQualityValidations(unittest.TestCase):
 
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-            self.db_connection = get_dbconn(test_connection_db)
+            self.db_connection = get_pg_conn(test_connection_db)
 
         self.names = Names()
 
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
-        self.db_connection = get_dbconn(schema_name)
+        self.db_connection = get_pg_conn(schema_name)
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -223,7 +223,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
-        self.db_connection = get_dbconn(schema_name)
+        self.db_connection = get_pg_conn(schema_name)
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -319,7 +319,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
-        self.db_connection = get_dbconn(schema_name)
+        self.db_connection = get_pg_conn(schema_name)
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -442,7 +442,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_topology_plot_must_be_covered_by_boundary(self):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
-        self.db_connection = get_dbconn(schema_name)
+        self.db_connection = get_pg_conn(schema_name)
         result = self.db_connection.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -536,7 +536,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_topology_boundary_must_be_covered_by_plot(self):
        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
        schema_name = 'test_ladm_validations_topology_tables'
-       self.db_connection = get_dbconn(schema_name)
+       self.db_connection = get_pg_conn(schema_name)
        result = self.db_connection.test_connection()
        self.assertTrue(result[0], 'The test connection is not working')
        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')

@@ -9,7 +9,7 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            get_dbconn,
+                                            get_pg_conn,
                                             restore_schema,
                                             run_etl_model,
                                             clean_table)
@@ -35,8 +35,8 @@ class TestGeomsLoad(unittest.TestCase):
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         self.gpkg_path = get_test_copy_path(GPKG_PATH_DISTINCT_GEOMS)
 
-        self.db_distinct_geoms = get_dbconn(SCHEMA_DISTINCT_GEOMS)
-        self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
+        self.db_distinct_geoms = get_pg_conn(SCHEMA_DISTINCT_GEOMS)
+        self.db_connection = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
         self.qgis_utils = QGISUtils()
         self.names = Names()

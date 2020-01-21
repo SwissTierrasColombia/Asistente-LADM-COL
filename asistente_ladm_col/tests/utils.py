@@ -53,7 +53,7 @@ asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 
 
-def get_dbconn(schema):
+def get_pg_conn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
     dict_conn['host'] = DB_HOSTNAME
@@ -66,9 +66,16 @@ def get_dbconn(schema):
 
     return db
 
+def get_gpkg_conn(path):
+    dict_conn = dict()
+    dict_conn['dbfile'] = path
+    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
 def restore_schema(schema):
     print("\nRestoring schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
@@ -95,7 +102,7 @@ def restore_schema(schema):
 
 def drop_schema(schema):
     print("\nDropping schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA "{}" CASCADE;""".format(schema))
@@ -108,7 +115,7 @@ def drop_schema(schema):
 
 def clean_table(schema, table):
     print("\nCleaning table {}.{}...".format(schema, table))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
