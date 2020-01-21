@@ -19,18 +19,13 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_integration')
-<<<<<<< HEAD
-        self.db_connection = get_pg_conn('test_ladm_integration')
-        self.names = Names()
-=======
-        self.db_connection_pg = get_dbconn('test_ladm_integration')
->>>>>>> 7577cc1c1690c6a5c6348a842dab217a8269b21e
+        self.db_pg = get_pg_conn('test_ladm_integration')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for integration supplies model model...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_models(self.db_connection_pg)
+        self.check_required_models(self.db_pg)
 
     def check_required_models(self, db_connection):
         self.assertTrue(db_connection.supplies_model_exists())
@@ -44,10 +39,10 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Integration Supplies model...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
-        dict_names = self.db_connection_pg.get_table_and_field_names()
+        dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 40)
         expected_dict = {T_ID: 't_id',
                          ILICODE: 'ilicode',
@@ -65,9 +60,9 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_table_names(self.db_connection_pg)
+        self.check_required_table_names(self.db_pg)
 
     def check_required_table_names(self, db_connection):
         test_required_tables = ['GC_PARCEL_T', 'GC_OWNER_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'EXT_ARCHIVE_S']
@@ -78,9 +73,9 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_field_names(self.db_connection_pg)
+        self.check_required_field_names(self.db_pg)
 
     def check_required_field_names(self, db_connection):
         test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F']
@@ -91,7 +86,7 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        self.db_connection_pg.conn.close()
+        self.db_pg.conn.close()
 
 
 if __name__ == '__main__':

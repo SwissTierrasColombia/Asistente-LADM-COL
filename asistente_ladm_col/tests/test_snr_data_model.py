@@ -19,13 +19,13 @@ class TestSNRDataModel(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_snr_data')
-        self.db_connection = get_pg_conn('test_ladm_snr_data')
+        self.db_pg = get_pg_conn('test_ladm_snr_data')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for snr data model...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_models(self.db_connection_pg)
+        self.check_required_models(self.db_pg)
 
     def check_required_models(self, db_connection):
         self.assertFalse(db_connection.supplies_model_exists())
@@ -39,11 +39,11 @@ class TestSNRDataModel(unittest.TestCase):
 
     def test_names_from_db_pg(self):
         print("\nINFO: Validate names for SNR data model (small DB case)...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
 
-        dict_names = self.db_connection_pg.get_table_and_field_names()
+        dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 15)
 
         expected_dict = {T_ID: 't_id',
@@ -60,9 +60,9 @@ class TestSNRDataModel(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_table_names(self.db_connection_pg)
+        self.check_required_table_names(self.db_pg)
 
     def check_required_table_names(self, db_connection):
         test_required_tables = ['SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'EXT_ARCHIVE_S']
@@ -73,9 +73,9 @@ class TestSNRDataModel(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_field_names(self.db_connection_pg)
+        self.check_required_field_names(self.db_pg)
 
     def check_required_field_names(self, db_connection):
         test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F']
@@ -86,7 +86,7 @@ class TestSNRDataModel(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        self.db_connection_pg.conn.close()
+        self.db_pg.conn.close()
 
 
 if __name__ == '__main__':

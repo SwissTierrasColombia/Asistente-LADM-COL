@@ -19,13 +19,13 @@ class TestReferenceCartographyModel(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         restore_schema('test_ladm_reference_cartography')
-        self.db_connection = get_pg_conn('test_ladm_reference_cartography')
+        self.db_pg = get_pg_conn('test_ladm_reference_cartography')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for reference cartography model...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_models(self.db_connection_pg)
+        self.check_required_models(self.db_pg)
 
     def check_required_models(self, db_connection):
         self.assertTrue(db_connection.supplies_model_exists())
@@ -39,10 +39,10 @@ class TestReferenceCartographyModel(unittest.TestCase):
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Reference Cartography data model (edge case for field keys)...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
-        dict_names = self.db_connection_pg.get_table_and_field_names()
+        dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 161)
 
         expected_dict = {T_ID: 't_id',
@@ -63,9 +63,9 @@ class TestReferenceCartographyModel(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_table_names(self.db_connection_pg)
+        self.check_required_table_names(self.db_pg)
 
     def check_required_table_names(self, db_connection):
         test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D']
@@ -76,9 +76,9 @@ class TestReferenceCartographyModel(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names...")
-        result = self.db_connection_pg.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.check_required_field_names(self.db_connection_pg)
+        self.check_required_field_names(self.db_pg)
 
     def check_required_field_names(self, db_connection):
         test_required_fields = ['MORE_BFS_T_CRF_LINEAR_STRUCTURE_F', 'LESS_BFS_T_CRF_LINEAR_STRUCTURE_F', 'POINT_BFS_T_CRF_LINEAR_STRUCTURE_F']
@@ -89,7 +89,7 @@ class TestReferenceCartographyModel(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        self.db_connection_pg.conn.close()
+        self.db_pg.conn.close()
 
 
 if __name__ == '__main__':
