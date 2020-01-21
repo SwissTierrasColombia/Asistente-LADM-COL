@@ -96,7 +96,6 @@ class GPKGConnector(DBConnector):
                             WHERE s.type='table' AND iliclass.iliname IS NOT NULL;""")
         records = cursor.fetchall()
 
-        print("GPKG TEST1", len(records))
         for record in records:
             if record['table_iliname'] is None:
                 # Either t_ili2db_* tables (INTERLIS meta-attrs)
@@ -125,7 +124,7 @@ class GPKGConnector(DBConnector):
                             INNER JOIN t_ili2db_classname c ON c.sqlname = a.target
                             ORDER BY a.iliname;""")
         records = cursor.fetchall()
-        print("GPKG TEST2", len(records))
+
         for record in records:
             composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
                                            COMPOSED_KEY_SEPARATOR,

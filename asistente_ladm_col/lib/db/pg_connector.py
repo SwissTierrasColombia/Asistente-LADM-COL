@@ -344,7 +344,6 @@ class PGConnector(DBConnector):
         cur.execute(sql_query)
         records = cur.fetchall()
 
-        print("TEST1", len(records))
         dict_names = dict()
         for record in records:
             if record['table_iliname'] is None:
@@ -376,7 +375,6 @@ class PGConnector(DBConnector):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
         records = cur.fetchall()
-        print("TEST2", len(records))
         for record in records:
             composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
                                            COMPOSED_KEY_SEPARATOR,

@@ -1210,7 +1210,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
-        wiz_settings = self.wizard_config.get_wizard_config(wizard_name)
+        wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection(), wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
                                                          wiz_settings[WIZARD_LAYERS],
                                                          wiz_settings[WIZARD_TOOL_NAME]):

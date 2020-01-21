@@ -45,8 +45,8 @@ class SymbologyUtils(QObject):
         self.symbology = Symbology()
 
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):
-        style_group = self.symbology.get_default_style_group()
-        style_group_const = self.symbology.get_default_style_group()
+        style_group = self.symbology.get_default_style_group(db)
+        style_group_const = self.symbology.get_default_style_group(db)
         if STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
             if layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]:
                 style_group = layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]

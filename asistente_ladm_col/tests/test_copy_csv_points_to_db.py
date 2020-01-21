@@ -86,7 +86,7 @@ class TestCopy(unittest.TestCase):
         print("Copying CSV data with no elevation...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.db_connection, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
@@ -113,7 +113,7 @@ class TestCopy(unittest.TestCase):
         print("Copying CSV data in WGS84...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.db_connection, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.validate_number_of_boundary_points_in_db(schema, 3)
 
     def validate_points_in_db_from_wgs84(self, schema):
@@ -149,7 +149,7 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Copying CSV data with elevation...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.db_connection, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
@@ -209,7 +209,7 @@ class TestCopy(unittest.TestCase):
         if not overlapping:
             self.boundary_point_layer_resolve_domains_for_test(csv_layer)
             test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
-            run_etl_model(csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+            run_etl_model(self.db_connection, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
 
         self.validate_number_of_boundary_points_in_db(schema, 0)
 
