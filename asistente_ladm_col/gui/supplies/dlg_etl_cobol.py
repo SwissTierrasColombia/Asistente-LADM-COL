@@ -29,6 +29,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
+
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
@@ -99,8 +100,10 @@ class ETLCobolDialog(CobolBaseDialog):
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
+                                    self.logger.status('')
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
+                                    self.logger.status('')
                                 self._running_tool = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)

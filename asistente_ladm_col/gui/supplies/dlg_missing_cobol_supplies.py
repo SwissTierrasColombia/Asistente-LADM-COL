@@ -109,6 +109,7 @@ class MissingCobolSupplies(CobolBaseDialog):
 
                         # Since we have two steps, we need to check at this point if the user already canceled
                         if not self.MyFeedBack.isCanceled():
+                            self.logger.status('')
                             res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
                             if res_gpkg:
                                 self.generate_excel_report()
@@ -124,10 +125,12 @@ class MissingCobolSupplies(CobolBaseDialog):
                                         path1=self.xlsx_path,
                                         normalized_path2=normalize_local_url(self.gpkg_path),
                                         path2=self.gpkg_path)
+                                    self.logger.status('')
                                     self.logger.success_msg(__name__, msg)
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.progress_base = 0
+                                    self.logger.status('')
 
                                 self._running_tool = False
                             else:
@@ -142,6 +145,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                             self.initialize_feedback()
                             self.progress_base = 0
                             self._running_tool = False
+                            self.logger.status('')
                     else:
                         self.show_message(msg_gdb, Qgis.Warning)
                 else:

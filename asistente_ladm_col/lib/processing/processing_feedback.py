@@ -4,7 +4,7 @@ from asistente_ladm_col.lib.logger import Logger
 class MyFeedBack(QgsProcessingFeedback):
 
     def setProgressText(self, text):
-        Logger().status(text.strip('Running ').split(' [')[0].strip())
+        Logger().status(text.strip('Running').split(' [')[0].strip())
 
     """def pushInfo(self, info):
         print(info)
