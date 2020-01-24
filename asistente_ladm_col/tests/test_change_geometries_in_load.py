@@ -40,6 +40,12 @@ class TestGeomsLoad(unittest.TestCase):
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
+        result = self.db_pg.test_connection()
+        result_distinct = self.db_distinct_geoms.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working for empty db')
+        self.assertTrue(result_distinct[0], 'The test connection is not working for distinct db')
+        self.assertIsNotNone(self.db_pg.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.db_pg.names.OP_BOUNDARY_POINT_T, load=True)
 
         print("Validating Point to Point")

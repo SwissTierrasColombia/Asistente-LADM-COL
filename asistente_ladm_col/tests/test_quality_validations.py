@@ -87,6 +87,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
 
         test_result = [{'selected_ids': [1], 'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'selected_ids': [1], 'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -116,6 +117,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         test_result = [{'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -144,6 +146,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -193,6 +196,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -680,6 +684,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
@@ -892,6 +897,7 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -922,6 +928,7 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -960,6 +967,7 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
@@ -993,6 +1001,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
         uri_boundary = gpkg_path + '|layername=good_boundary'
@@ -1090,6 +1099,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
@@ -1123,6 +1133,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
         uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')

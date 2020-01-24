@@ -27,6 +27,7 @@ class TestTopology(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
         self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='tests_boundaries')
         boundary_layer = QgsVectorLayer(uri, 'tests_boundaries', 'ogr')
