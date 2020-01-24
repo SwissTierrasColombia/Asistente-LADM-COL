@@ -45,11 +45,12 @@ from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
                                                Validators,
                                                make_file_selector,
-                                               make_folder_selector)
+                                               make_folder_selector,
+                                               ProcessWithStatus)
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.lib.processing.processing_feedback import MyFeedBack
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
-
 
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -139,7 +140,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def progress_changed(self):
         QCoreApplication.processEvents()  # Listen to cancel from the user
-        self.progress.setValue(self.progress_base + self.feedback.progress())
+        self.progress.setValue(self.progress_base + self.MyFeedBack.progress())
 
     def initialize_layers(self):
         self._layers = {
@@ -169,7 +170,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
-                self.feedback.cancel()
+                self.MyFeedBack.cancel()
                 self._running_tool = False
                 msg = QCoreApplication.translate("CobolBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
@@ -202,8 +203,8 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
-        self.feedback = QgsProcessingFeedback()         
-        self.feedback.progressChanged.connect(self.progress_changed)
+        self.MyFeedBack = MyFeedBack()     
+        self.MyFeedBack.progressChanged.connect(self.progress_changed)
         self.set_gui_controls_enabled(True)
 
     def set_gui_controls_enabled(self, enable):

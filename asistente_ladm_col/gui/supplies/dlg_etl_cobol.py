@@ -35,7 +35,6 @@ from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
-
 class ETLCobolDialog(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
@@ -95,7 +94,7 @@ class ETLCobolDialog(CobolBaseDialog):
                             if res_model:
                                 self._running_tool = True
                                 self.run_model_etl_cobol()
-                                if not self.feedback.isCanceled():
+                                if not self.MyFeedBack.isCanceled():
                                     self.progress.setValue(100)
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
@@ -157,7 +156,7 @@ class ETLCobolDialog(CobolBaseDialog):
             'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
             'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
-            feedback=self.feedback)
+            feedback=self.MyFeedBack)
         self.logger.info(__name__, "ETL-Cobol model finished.")
 
     def validate_inputs(self):
