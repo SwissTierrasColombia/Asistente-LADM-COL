@@ -13,5 +13,19 @@ TEST_SCHEMAS_MAPPING = {
     'test_ladm_integration': 'test_ladm_integration_v2.9.6.backup',
     'test_ladm_reference_cartography': 'test_ladm_reference_cartography_v2.9.6.backup',
     'test_ladm_ant': 'test_ladm_ant_v2.9.6.backup',
-    'test_ladm_all_models': 'test_ladm_all_models_v2.9.6.backup'
+    'test_ladm_all_models': 'test_ladm_all_models_v2.9.6.backup',
+    'test_ladm_operation_model_gpkg': 'test_ladm_operation_model_v2_9_6.gpkg',
+    'test_ladm_valuation_model_gpkg': 'test_ladm_valuation_model_v2_9_6.gpkg',
+    'test_ladm_cadastral_form_model_gpkg': 'test_ladm_cadastral_form_model_v2_9_6.gpkg',
+    'test_ladm_snr_gpkg': 'test_ladm_snr_model_v2_9_6.gpkg',
+    'test_ladm_cadastral_manager_data_gpkg': 'test_ladm_cadastral_manager_model_v2_9_6.gpkg',
+    'test_ladm_integration_gpkg': 'test_ladm_integration_model_v2_9_6.gpkg',
+    'test_ladm_reference_cartography_gpkg': 'test_ladm_reference_cartography_model_v2_9_6.gpkg',
+    'test_ladm_ant_gpkg': 'test_ladm_ant_model_v2_9_6.gpkg',
+    'test_ladm_all_models_gpkg': 'test_ladm_all_models_v2_9_6.gpkg',
+    'tests_data_gpkg': 'tests_data.gpkg',
+    'topology_cases_gpkg': 'topology_cases.gpkg',
+    'adjust_boundaries_cases_gpkg': 'adjust_boundaries_cases.gpkg',
+    'no_interlis_gpkg': 'no_interlis.gpkg',
+    'interlis_no_ladm_col_models_gpkg': 'interlis_no_ladm_col_models.gpkg'
 }

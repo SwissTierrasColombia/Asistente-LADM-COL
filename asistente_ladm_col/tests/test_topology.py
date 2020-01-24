@@ -25,7 +25,7 @@ class TestTopology(unittest.TestCase):
         # extracted with: iface.activeLayer().dataProvider().dataSourceUri() in qgis console
         # and type is: layer.providerType()
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 

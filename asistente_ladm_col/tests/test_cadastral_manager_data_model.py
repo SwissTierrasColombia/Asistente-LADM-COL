@@ -11,7 +11,7 @@ from asistente_ladm_col.config.table_mapping_config import (ILICODE,
                                                             T_ID,
                                                             DESCRIPTION,
                                                             DISPLAY_NAME)
-from asistente_ladm_col.tests.utils import (get_pg_conn,
+from asistente_ladm_col.tests.utils import (get_pg_conn, get_gpkg_conn,
                                             restore_schema)
 
 
@@ -20,12 +20,19 @@ class TestCadastralManagerDataModel(unittest.TestCase):
     def setUpClass(self):
         restore_schema('test_ladm_cadastral_manager_data')
         self.db_pg = get_pg_conn('test_ladm_cadastral_manager_data')
+        self.db_gpkg = get_gpkg_conn('test_ladm_cadastral_manager_data_gpkg')
 
     def test_required_models_pg(self):
-        print("\nINFO: Validate if the schema for cadastral manager data model...")
+        print("\nINFO: Validate if the schema for cadastral manager data model in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_models(self.db_pg)
+
+    def test_required_models_gpkg(self):
+        print("\nINFO: Validate if the schema for cadastral manager data model in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_models(self.db_gpkg)
 
     def check_required_models(self, db_connection):
         self.assertTrue(db_connection.supplies_model_exists())
@@ -38,7 +45,7 @@ class TestCadastralManagerDataModel(unittest.TestCase):
         self.assertFalse(db_connection.reference_cartography_model_exists())
 
     def test_names_from_db_pg(self):
-        print("\nINFO: Validate names for Cadastral Manager Data model (the expected common DB case)...")
+        print("\nINFO: Validate names for Cadastral Manager Data model (the expected common DB case) in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
@@ -71,11 +78,51 @@ class TestCadastralManagerDataModel(unittest.TestCase):
             self.assertIn(k, dict_names)
             self.assertEqual(v, dict_names[k])
 
+    def test_names_from_db_gpkg(self):
+        print("\nINFO: Validate names for Cadastral Manager Data model (the expected common DB case) in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+        dict_names = self.db_gpkg.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 28)
+
+        expected_dict = {T_ID: 'T_Id',
+                         ILICODE: 'iliCode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispName',
+                         'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': {
+                             'table_name': 'gc_predio_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral': 'circulo_registral',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio': 'condicion_predio',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica': 'destinacion_economica',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Entidad_Emisora_Alerta': 'entidad_emisora_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Estado_Alerta': 'estado_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Alerta': 'fecha_alerta',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos': 'fecha_datos',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro': 'matricula_inmobiliaria_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial': 'numero_predial',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior': 'numero_predial_anterior',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos': 'sistema_procedencia_datos',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro': 'tipo_catastro',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio': 'tipo_predio',
+                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Direcciones..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio_catastro_direcciones'
+                         }}
+
+        for k, v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
+
     def test_required_table_names_pg(self):
-        print("\nINFO: Validate minimum required tables from names...")
+        print("\nINFO: Validate minimum required tables from names in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_table_names(self.db_pg)
+
+    def test_required_table_names_gpkg(self):
+        print("\nINFO: Validate minimum required tables from names in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
         test_required_tables = ['GC_PARCEL_T', 'GC_OWNER_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'GC_PARCEL_TYPE_D', 'GC_BUILDING_UNIT_TYPE_T']
@@ -85,10 +132,16 @@ class TestCadastralManagerDataModel(unittest.TestCase):
             self.assertIn(test_required_table, required_tables)
 
     def test_required_field_names_pg(self):
-        print("\nINFO: Validate minimum required fields from names...")
+        print("\nINFO: Validate minimum required fields from names in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_field_names(self.db_pg)
+
+    def test_required_field_names_gpkg(self):
+        print("\nINFO: Validate minimum required fields from names in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):
         test_required_fields = []
@@ -100,6 +153,7 @@ class TestCadastralManagerDataModel(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         self.db_pg.conn.close()
+        self.db_gpkg.conn.close()
 
 
 if __name__ == '__main__':

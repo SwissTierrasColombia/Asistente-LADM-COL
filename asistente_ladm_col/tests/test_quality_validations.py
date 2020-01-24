@@ -85,7 +85,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of selected boundary ...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
 
@@ -115,7 +115,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -144,7 +144,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -194,7 +194,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -682,7 +682,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -783,7 +783,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating search for missing vertices...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         self.names = self.db_gpkg.names
 
         # Map between case number and number of vertices that should be added
@@ -819,7 +819,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating polygons must be covered by lines...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         self.names = self.db_gpkg.names
 
         diff_geom = [['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
@@ -852,7 +852,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating lines must be covered by polygons...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         self.names = self.db_gpkg.names
 
         diff_geom = ['',
@@ -896,7 +896,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
@@ -927,7 +927,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
@@ -966,7 +966,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing survey points in buildings...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
@@ -999,7 +999,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -1097,7 +1097,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -1131,7 +1131,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundaries_are_not_split(self):
         print('\nINFO: Validating boundaries are not split...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 

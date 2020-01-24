@@ -12,6 +12,7 @@ from asistente_ladm_col.config.table_mapping_config import (ILICODE,
                                                             DESCRIPTION,
                                                             DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
+                                            get_gpkg_conn,
                                             restore_schema)
 
 
@@ -20,9 +21,16 @@ class TestSNRDataModel(unittest.TestCase):
     def setUpClass(self):
         restore_schema('test_ladm_snr_data')
         self.db_pg = get_pg_conn('test_ladm_snr_data')
+        self.db_gpkg = get_gpkg_conn('test_ladm_snr_gpkg')
+
+    def test_required_models_gpkg(self):
+        print("\nINFO: Validate if the schema for snr data model in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_models(self.db_gpkg)
 
     def test_required_models_pg(self):
-        print("\nINFO: Validate if the schema for snr data model...")
+        print("\nINFO: Validate if the schema for snr data model in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_models(self.db_pg)
@@ -38,7 +46,7 @@ class TestSNRDataModel(unittest.TestCase):
         self.assertFalse(db_connection.reference_cartography_model_exists())
 
     def test_names_from_db_pg(self):
-        print("\nINFO: Validate names for SNR data model (small DB case)...")
+        print("\nINFO: Validate names for SNR data model (small DB case) in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
@@ -58,11 +66,39 @@ class TestSNRDataModel(unittest.TestCase):
             self.assertIn(k, dict_names)
             self.assertEqual(v, dict_names[k])
 
+    def test_names_from_db_gpkg(self):
+        print("\nINFO: Validate names for SNR data model (small DB case) for GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+
+
+        dict_names = self.db_gpkg.get_table_and_field_names()
+        self.assertEqual(len(dict_names), 15)
+
+        expected_dict = {T_ID: 'T_Id',
+                         ILICODE: 'iliCode',
+                         DESCRIPTION: 'description',
+                         DISPLAY_NAME: 'dispName',
+                         'Datos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Datos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Datos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
+        for k,v in expected_dict.items():
+            self.assertIn(k, dict_names)
+            self.assertEqual(v, dict_names[k])
+
+
     def test_required_table_names_pg(self):
-        print("\nINFO: Validate minimum required tables from names...")
+        print("\nINFO: Validate minimum required tables from names in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_table_names(self.db_pg)
+
+    def test_required_table_names_gpkg(self):
+        print("\nINFO: Validate minimum required tables from names in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
         test_required_tables = ['SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'EXT_ARCHIVE_S']
@@ -72,10 +108,16 @@ class TestSNRDataModel(unittest.TestCase):
             self.assertIn(test_required_table, required_tables)
 
     def test_required_field_names_pg(self):
-        print("\nINFO: Validate minimum required fields from names...")
+        print("\nINFO: Validate minimum required fields from names in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_field_names(self.db_pg)
+
+    def test_required_field_names_gpkg(self):
+        print("\nINFO: Validate minimum required fields from names from GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):
         test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F']
@@ -87,6 +129,7 @@ class TestSNRDataModel(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         self.db_pg.conn.close()
+        self.db_gpkg.conn.close()
 
 
 if __name__ == '__main__':

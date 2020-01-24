@@ -66,10 +66,22 @@ def get_pg_conn(schema):
 
     return db
 
-def get_gpkg_conn(path):
+def get_gpkg_conn_from_path(path):
     dict_conn = dict()
     dict_conn['dbfile'] = path
     db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
+
+def get_gpkg_conn(gpkg_schema_name):
+    dict_conn = dict()
+    db = None
+    if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
+        gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
+        gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        dict_conn['dbfile'] = gpkg_path
+        db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
 
     return db
 
