@@ -1,13 +1,12 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import AuxNames
 
 # For this module use multiline "\" instead of triple double quotes
 
 class HelpStrings(QObject):
     def __init__(self):
-        self.names = Names()
 
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP = QCoreApplication.translate("HelpStrings", "\
 Choose this option to load points to <b>Boundary Points</b> layer from <i>LADM_COL</i> model.\
@@ -318,57 +317,46 @@ Choose this option if you want to create an <b>Unconventional Building Unit Qual
                     type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate("HelpStrings", "table"))
 
     def get_message_parcel_type(self, parcel_type):
-        if parcel_type == self.names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
+        if parcel_type == AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s' and '{building_unit_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T, building_unit_table=self.names.OP_BUILDING_UNIT_T)
+                                              "When the type of parcel is <b>'No Horizontal Property'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings' and 'Building Units'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s'").format(
-                parcel_type=self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T)
+                                              "When the type of parcel is <b>'Horizontal Property Parent'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be one or more '{building_unit_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT, building_unit_table=self.names.OP_BUILDING_UNIT_T)
+                                              "When the type of parcel is <b>'Horizontal Property Parcel Unit'</b> the spatial unit associated must be one or more 'Building Units'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_CONDOMINIUM_PARENT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_CONDOMINIUM_PARENT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s'").format(
-                parcel_type=self.names.PARCEL_TYPE_CONDOMINIUM_PARENT, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T)
+                                              "When the type of parcel is <b>'Condominium Parent'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s'").format(
-                parcel_type=self.names.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T)
+                                              "When the type of parcel is <b>'Condominium Parcel Unit'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
+        elif parcel_type == AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{building_table}' or '{building_unit_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA, building_table=self.names.OP_BUILDING_T, building_unit_table=self.names.OP_BUILDING_UNIT_T)
+                                              "When the type of parcel is <b>'Horizontal Property Mejora'</b> the spatial unit associated must be a 'Building' or 'Building Unit'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
+        elif parcel_type == AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{building_table}' or '{building_unit_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, building_table=self.names.OP_BUILDING_T, building_unit_table=self.names.OP_BUILDING_UNIT_T)
+                                              "When the type of parcel is <b>'No Horizontal Property Mejora'</b> the spatial unit associated must be a 'Building' or 'Building Unit'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_CEMETERY_PARENT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_CEMETERY_PARENT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s'").format(
-                parcel_type=self.names.PARCEL_TYPE_CEMETERY_PARENT, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T)
+                                              "When the type of parcel is <b>'Cemetery Parent'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
+        elif parcel_type == AuxNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT, plot_table=self.names.OP_PLOT_T)
+                                              "When the type of parcel is <b>'Cemetery Parcel Unit'</b> the spatial unit associated must be a 'Plot'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_ROAD:
+        elif parcel_type == AuxNames.PARCEL_TYPE_ROAD:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}'").format(
-                parcel_type=self.names.PARCEL_TYPE_ROAD, plot_table=self.names.OP_PLOT_T)
+                                              "When the type of parcel is <b>'Road'</b> the spatial unit associated must be a 'Plot'")
 
-        elif parcel_type == self.names.PARCEL_TYPE_PUBLIC_USE:
+        elif parcel_type == AuxNames.PARCEL_TYPE_PUBLIC_USE:
             return QCoreApplication.translate("HelpStrings",
-                                              "When the type of parcel is <b>'{parcel_type}'</b> the spatial unit associated must be a '{plot_table}' and optionally one or more '{building_table}s'").format(
-                parcel_type=self.names.PARCEL_TYPE_PUBLIC_USE, plot_table=self.names.OP_PLOT_T, building_table=self.names.OP_BUILDING_T)
+                                              "When the type of parcel is <b>'Public Use'</b> the spatial unit associated must be a 'Plot' and optionally one or more 'Buildings'")

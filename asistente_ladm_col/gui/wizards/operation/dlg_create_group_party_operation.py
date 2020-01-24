@@ -33,9 +33,8 @@ from qgis.core import (QgsVectorLayerUtils,
                        edit)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (PLUGIN_NAME, LAYER)
+from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
@@ -53,7 +52,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.logger = Logger()
-        self.names = Names()
+        self.names = self._db.names
         self.help_strings = HelpStrings()
 
         self.data = {} # {t_id: [display_text, denominator, numerator]}

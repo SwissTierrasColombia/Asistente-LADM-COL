@@ -41,10 +41,9 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP4,
                                                       WIZARD_HELP5,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
-from ....config.table_mapping_config import (VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
-                                             VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)
-from ....gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
-from ....utils.qt_utils import enable_next_wizard
+from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
+from asistente_ladm_col.utils.qt_utils import enable_next_wizard
 
 
 class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
@@ -91,7 +90,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
 
-            if self.EDITING_LAYER_NAME == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
+            if self.EDITING_LAYER_NAME == AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
                 self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
             else:
                 self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
@@ -119,7 +118,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.rad_unconventional.setChecked(True)
 
     def show_help(self):
-        if self.EDITING_LAYER_NAME == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
+        if self.EDITING_LAYER_NAME == AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
             self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
         else:
             self.qgis_utils.show_help("create_building_unit_qualification_valuation_unconventional")
@@ -161,13 +160,13 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
 
     def building_unit_qualification_option_changed(self):
         if self.rad_conventional.isChecked():
-            self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE
+            self.EDITING_LAYER_NAME = AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE
             self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations",
                                                                 "Load data to conventional building unit qualification..."))
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP4])
 
         elif self.rad_unconventional.isChecked():
-            self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE
+            self.EDITING_LAYER_NAME = AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE
             self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations",
                                                                 "Load data to unconventional building unit qualification..."))
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP5])

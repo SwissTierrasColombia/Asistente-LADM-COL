@@ -176,14 +176,14 @@ def unload_qgis_model_baker():
     if plugin_found:
         del(qgis.utils.plugins["QgisModelBaker"])
 
-def run_etl_model(db, input_layer, out_layer, ladm_col_layer_name):
+def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     import_processing()
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 
     if model:
         automatic_fields_definition = True
 
-        mapping = refactor_fields.get_refactor_fields_mapping(db, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,

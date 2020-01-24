@@ -11,8 +11,6 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.config.table_mapping_config import Names
-
 import_qgis_model_baker()
 
 

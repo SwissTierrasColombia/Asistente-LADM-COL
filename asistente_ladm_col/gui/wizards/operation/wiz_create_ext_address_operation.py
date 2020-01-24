@@ -37,7 +37,6 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
                                                       WIZARD_HELP3,
-                                                      PLUGIN_NAME,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
                                                       CSS_COLOR_INACTIVE_LABEL)

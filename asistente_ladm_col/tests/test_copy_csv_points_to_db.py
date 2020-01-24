@@ -1,5 +1,3 @@
-import datetime
-
 import nose2
 import psycopg2
 from qgis.testing import (unittest,
@@ -21,7 +19,6 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             clean_table)
 from asistente_ladm_col.utils.qgis_utils import (QGISUtils,
                                                  GeometryUtils)
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
@@ -41,7 +38,7 @@ class TestCopy(unittest.TestCase):
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
-        self.names = Names()
+        self.names = self.db_pg.names
         import_asistente_ladm_col()
         self.ladm_data = LADM_DATA(self.qgis_utils)
         self.geometry = GeometryUtils()
@@ -86,7 +83,7 @@ class TestCopy(unittest.TestCase):
         print("Copying CSV data with no elevation...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(self.db_pg, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.names, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
@@ -113,7 +110,7 @@ class TestCopy(unittest.TestCase):
         print("Copying CSV data in WGS84...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(self.db_pg, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.names, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.validate_number_of_boundary_points_in_db(schema, 3)
 
     def validate_points_in_db_from_wgs84(self, schema):
@@ -149,7 +146,7 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Copying CSV data with elevation...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        run_etl_model(self.db_pg, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+        run_etl_model(self.names, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
         self.assertEqual(test_layer.featureCount(), 51)
         self.validate_number_of_boundary_points_in_db(schema, 51)
 
@@ -209,7 +206,7 @@ class TestCopy(unittest.TestCase):
         if not overlapping:
             self.boundary_point_layer_resolve_domains_for_test(csv_layer)
             test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-            run_etl_model(self.db_pg, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
+            run_etl_model(self.names, csv_layer, test_layer, self.names.OP_BOUNDARY_POINT_T)
 
         self.validate_number_of_boundary_points_in_db(schema, 0)
 

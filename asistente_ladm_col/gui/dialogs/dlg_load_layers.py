@@ -30,15 +30,16 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
-from ...config.general_config import (TABLE_NAME,
-                                      LAYER,
-                                      GEOMETRY_COLUMN,
-                                      GEOMETRY_TYPE,
-                                      KIND_SETTINGS,
-                                      TABLE_ALIAS,
-                                      MODEL)
-from asistente_ladm_col.config.table_mapping_config import Names
-from ...utils import get_ui_class
+from asistente_ladm_col.config.general_config import (TABLE_NAME,
+                                                      LAYER,
+                                                      GEOMETRY_COLUMN,
+                                                      GEOMETRY_TYPE,
+                                                      KIND_SETTINGS,
+                                                      TABLE_ALIAS,
+                                                      MODEL)
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.utils import get_ui_class
 
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
@@ -51,7 +52,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.names = Names()
+        self.names = self._db.names
         self.models_tree = dict()
         self.selected_items_dict = dict()
         self.icon_names = ['points.png', 'lines.png', 'polygons.png', 'tables.png', 'domains.png', 'structures.png', 'relationships.svg']
@@ -63,7 +64,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
-        for name, layer_list in self.names.get_layer_sets().items():
+        for name, layer_list in LayerConfig.get_layer_sets(self.names).items():
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
@@ -140,9 +141,9 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
             for table in sorted_tables:
                 current_table_info = self.models_tree[model][table]
-                if current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_DOMAIN and not show_domains \
-                   or current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE and not show_structures \
-                   or current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION and not show_associations:
+                if current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_DOMAIN and not show_domains \
+                   or current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_STRUCTURE and not show_structures \
+                   or current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
@@ -162,11 +163,11 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                         font.setBold(True)
                         table_item.setData(0, Qt.FontRole, font)
 
-                if current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_DOMAIN:
+                if current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
-                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE:
+                elif current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_STRUCTURE:
                     icon_name = self.icon_names[5]
-                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION:
+                elif current_table_info[KIND_SETTINGS] == AuxNames.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM_COL/resources/images/{}".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)

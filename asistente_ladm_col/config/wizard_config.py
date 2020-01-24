@@ -22,13 +22,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            VALUATION_GEOECONOMIC_ZONE_TABLE,
-                                                            VALUATION_PHYSICAL_ZONE_TABLE,
-                                                            AVALUOUNIDADCONSTRUCCION_TABLE,
-                                                            VALUATION_BUILDING_UNIT_TABLE,
-                                                            VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE,
-                                                            VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE)
+from asistente_ladm_col.config.table_mapping_config import AuxNames
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_CLASS,
                                                       WIZARD_FEATURE_NAME,
@@ -88,7 +82,7 @@ class WizardConfig:
     def __init__(self):
         pass
 
-    def get_wizard_config(self, db, wizard_config_name):
+    def get_wizard_config(self, names, wizard_config_name):
         if wizard_config_name == WIZARD_CREATE_COL_PARTY_CADASTRAL:
             return {
                 WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_WIZARD_TYPE,
@@ -105,10 +99,10 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_PARTY_T: {'name': db.names.OP_PARTY_T, 'geometry': None, LAYER: None}
+                    names.OP_PARTY_T: {'name': names.OP_PARTY_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_PARTY_T,
-                WIZARD_READ_ONLY_FIELDS: [db.names.COL_PARTY_T_NAME_F],
+                WIZARD_EDITING_LAYER_NAME: names.OP_PARTY_T,
+                WIZARD_READ_ONLY_FIELDS: [names.COL_PARTY_T_NAME_F],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
         elif wizard_config_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION:
@@ -129,10 +123,10 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': db.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.EXT_ARCHIVE_S: {'name': db.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None}
+                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.EXT_ARCHIVE_S: {'name': names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_ADMINISTRATIVE_SOURCE_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_ADMINISTRATIVE_SOURCE_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -152,10 +146,10 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-                    db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None}
+                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
+                    names.OP_BOUNDARY_POINT_T: {'name': names.OP_BOUNDARY_POINT_T, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_BOUNDARY_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_BOUNDARY_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.LineLayer
             }
@@ -175,10 +169,10 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_SURVEY_POINT_T: {'name': db.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_BUILDING_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_BUILDING_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -198,11 +192,11 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_BUILDING_UNIT_T: {'name': db.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_SURVEY_POINT_T: {'name': db.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_BUILDING_UNIT_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_BUILDING_UNIT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -222,11 +216,11 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_RIGHT_T: {'name': db.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
-                    db.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': db.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.COL_RRR_SOURCE_T: {'name': db.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
+                    names.OP_RIGHT_T: {'name': names.OP_RIGHT_T, 'geometry': None, LAYER: None},
+                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.COL_RRR_SOURCE_T: {'name': names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_RIGHT_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_RIGHT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -246,11 +240,11 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RESTRICTION_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_RESTRICTION_T: {'name': db.names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
-                    db.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': db.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.COL_RRR_SOURCE_T: {'name': db.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
+                    names.OP_RESTRICTION_T: {'name': names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
+                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.COL_RRR_SOURCE_T: {'name': names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_RESTRICTION_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_RESTRICTION_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -272,18 +266,18 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_SPATIAL_SOURCE_T: {'name': db.names.OP_SPATIAL_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.EXT_ARCHIVE_S: {'name': db.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
-                    db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.COL_UE_SOURCE_T: {'name': db.names.COL_UE_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-                    db.names.COL_CCL_SOURCE_T: {'name': db.names.COL_CCL_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.COL_POINT_SOURCE_T: {'name': db.names.COL_POINT_SOURCE_T, 'geometry': None, LAYER: None},
-                    db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-                    db.names.OP_SURVEY_POINT_T: {'name': db.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-                    db.names.OP_CONTROL_POINT_T: {'name': db.names.OP_CONTROL_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_SPATIAL_SOURCE_T: {'name': names.OP_SPATIAL_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.EXT_ARCHIVE_S: {'name': names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
+                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.COL_UE_SOURCE_T: {'name': names.COL_UE_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+                    names.COL_CCL_SOURCE_T: {'name': names.COL_CCL_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.COL_POINT_SOURCE_T: {'name': names.COL_POINT_SOURCE_T, 'geometry': None, LAYER: None},
+                    names.OP_BOUNDARY_POINT_T: {'name': names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
+                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
+                    names.OP_CONTROL_POINT_T: {'name': names.OP_CONTROL_POINT_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_SPATIAL_SOURCE_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_SPATIAL_SOURCE_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -304,15 +298,15 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PARCEL_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_PARCEL_T: {'name': db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-                    db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_BUILDING_UNIT_T: {'name': db.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
-                    db.names.OP_CONDITION_PARCEL_TYPE_D: {'name': db.names.OP_CONDITION_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
+                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_PARCEL_T: {'name': names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.COL_UE_BAUNIT_T: {'name': names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
+                    names.OP_CONDITION_PARCEL_TYPE_D: {'name': names.OP_CONDITION_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_PARCEL_T,
-                WIZARD_READ_ONLY_FIELDS: [db.names.OP_PARCEL_T_PARCEL_TYPE_F],
+                WIZARD_EDITING_LAYER_NAME: names.OP_PARCEL_T,
+                WIZARD_READ_ONLY_FIELDS: [names.OP_PARCEL_T_PARCEL_TYPE_F],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
         elif wizard_config_name == WIZARD_CREATE_PLOT_OPERATION:
@@ -331,10 +325,10 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PLOT_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
+                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_PLOT_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_PLOT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -355,12 +349,12 @@ class WizardConfig:
                     WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_OPERATION_PAGE_2_OPTION_3
                 },
                 WIZARD_LAYERS: {
-                    db.names.EXT_ADDRESS_S: {'name': db.names.EXT_ADDRESS_S, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
-                    db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_BUILDING_UNIT_T: {'name': db.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+                    names.EXT_ADDRESS_S: {'name': names.EXT_ADDRESS_S, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
+                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.EXT_ADDRESS_S,
+                WIZARD_EDITING_LAYER_NAME: names.EXT_ADDRESS_S,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PointLayer
             }
@@ -382,11 +376,11 @@ class WizardConfig:
                     WIZARD_HELP4: help_strings.WIZ_ASSOCIATE_EXTADDRESS_OPERATION_PAGE_2_OPTION_3
                 },
                 WIZARD_LAYERS: {
-                    db.names.OP_RIGHT_OF_WAY_T: {'name': db.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    db.names.OP_SURVEY_POINT_T: {'name': db.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_RIGHT_OF_WAY_T: {'name': names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: db.names.OP_RIGHT_OF_WAY_T,
+                WIZARD_EDITING_LAYER_NAME: names.OP_RIGHT_OF_WAY_T,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -408,9 +402,9 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
+                    AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: VALUATION_GEOECONOMIC_ZONE_TABLE,
+                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -430,9 +424,9 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    VALUATION_PHYSICAL_ZONE_TABLE: {'name': VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
+                    AuxNames.VALUATION_PHYSICAL_ZONE_TABLE: {'name': AuxNames.VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: VALUATION_PHYSICAL_ZONE_TABLE,
+                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_PHYSICAL_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -454,11 +448,11 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    VALUATION_BUILDING_UNIT_TABLE: {'name': VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
-                    db.names.OP_BUILDING_UNIT_T: {'name': db.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
+                    AuxNames.VALUATION_BUILDING_UNIT_TABLE: {'name': AuxNames.VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
+                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                    AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: VALUATION_BUILDING_UNIT_TABLE,
+                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_BUILDING_UNIT_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -484,12 +478,12 @@ class WizardConfig:
                     WIZARD_HELP5: help_strings.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM
                 },
                 WIZARD_LAYERS: {
-                    VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {
-                        'name': VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None},
-                    VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
-                        'name': VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
+                    AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {
+                        'name': AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None},
+                    AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
+                        'name': AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
+                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }

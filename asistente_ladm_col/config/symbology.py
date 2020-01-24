@@ -5,7 +5,6 @@ from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
                                                       CHECK_PLOTS_COVERED_BY_BOUNDARIES,
                                                       CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
                                                       CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
-from asistente_ladm_col.config.table_mapping_config import Names
 
 
 class Symbology:
@@ -14,33 +13,33 @@ class Symbology:
     def __init__(self):
         self.translatable_config_strings = TranslatableConfigStrings()
 
-    def get_default_style_group(self, db):
+    def get_default_style_group(self, names):
          return {
-            db.names.OP_BOUNDARY_T: {
+            names.OP_BOUNDARY_T: {
                 QgsWkbTypes.LineGeometry: 'style_boundary'
             },
-            db.names.OP_BOUNDARY_POINT_T: {
+            names.OP_BOUNDARY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_boundary_point'
             },
-            db.names.OP_SURVEY_POINT_T: {
+            names.OP_SURVEY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_survey_point'
             },
-            db.names.OP_CONTROL_POINT_T: {
+            names.OP_CONTROL_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_control_point'
             },
-            db.names.OP_PLOT_T: {
+            names.OP_PLOT_T: {
                 QgsWkbTypes.PointGeometry: 'style_plot_point',
                 QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
             },
-            db.names.OP_BUILDING_T: {
+            names.OP_BUILDING_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building'
             },
-            db.names.OP_BUILDING_UNIT_T: {
+            names.OP_BUILDING_UNIT_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_unit_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
             },
-            db.names.OP_RIGHT_OF_WAY_T: {
+            names.OP_RIGHT_OF_WAY_T: {
                 QgsWkbTypes.PointGeometry: 'style_right_of_way_point',
                 QgsWkbTypes.PolygonGeometry: 'style_right_of_way'
             },
@@ -51,9 +50,9 @@ class Symbology:
             }
         }
 
-    def get_supplies_style_group(self, db):
+    def get_supplies_style_group(self, names):
         return {
-            db.names.OP_PLOT_T: {
+            names.OP_PLOT_T: {
                 QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
             }
         }

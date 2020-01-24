@@ -43,10 +43,10 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     Qt,
     QVariant)
-from qgis.PyQt.QtGui import QColor, QIcon, QBrush, QFont
+from qgis.PyQt.QtGui import QIcon, QBrush, QFont
 
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import DEFAULT_ENDPOINT_SOURCE_SERVICE
-from asistente_ladm_col.config.table_mapping_config import Names
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
@@ -136,8 +136,8 @@ class TreeItem(object):
 
 
 class TreeModel(QAbstractItemModel):
-    def __init__(self, headers=None, data=None, parent=None):
-        self.names = Names()
+    def __init__(self, names, headers=None, data=None, parent=None):
+        self.names = names
         super(TreeModel, self).__init__(parent)
 
         rootData = ("",) # [header for header in headers]
@@ -305,8 +305,9 @@ class TreeModel(QAbstractItemModel):
         object collections in the form:
             "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 8, "records":{k,v pairs}}, ...]
         """
-        plural = self.names.get_dict_plural()
-        icons = self.names.get_dict_package_icon()
+        plural = LayerConfig.get_dict_plural(self.names)
+        icons = LayerConfig.get_dict_package_icon()
+        dict_table_package = LayerConfig.get_dict_table_package(self.names)
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
                 if not len(values):  # Empty object
@@ -316,8 +317,7 @@ class TreeModel(QAbstractItemModel):
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
                     kv_item.setData(0, {"type": key}, Qt.UserRole)
                     kv_item.setData(0, QIcon(
-                        icons[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None,
-                                                    Qt.DecorationRole)
+                        icons[dict_table_package[key]]) if key in dict_table_package else None, Qt.DecorationRole)
                     continue
 
                 for value in values:
@@ -364,8 +364,10 @@ class TreeModel(QAbstractItemModel):
         collection_parent = parent.child(parent.childCount() - 1)
         collection_parent.setData(0, "{} ({})".format(plural[key] if key in plural else key, len(collection)))
         collection_parent.setData(0, {"type": key}, Qt.UserRole)
+        dict_table_package = LayerConfig.get_dict_table_package(self.names)
+
         res = collection_parent.setData(0, QIcon(
-            icons[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None, Qt.DecorationRole)
+            icons[dict_table_package[key]]) if key in dict_table_package else None, Qt.DecorationRole)
 
         for object in collection:
             # Fill LADM_COL object

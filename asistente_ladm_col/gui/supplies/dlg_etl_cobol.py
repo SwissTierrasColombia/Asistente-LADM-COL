@@ -41,6 +41,7 @@ class ETLCobolDialog(CobolBaseDialog):
         CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
         self.qgis_utils = qgis_utils
         self._db = db
+        self.names = self._db.names
         self.conn_manager = conn_manager
         self.parent = parent
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1

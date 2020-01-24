@@ -1,7 +1,6 @@
 import nose2
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
-                       QgsDataSourceUri,
                        QgsField,
                        QgsWkbTypes)
 from qgis.testing import (unittest,
@@ -20,7 +19,7 @@ from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
                                                       ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
                                                       ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
                                                       ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -34,6 +33,7 @@ from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 import_qgis_model_baker()
 import_processing()
 import processing
+
 
 class TesQualityValidations(unittest.TestCase):
 
@@ -50,11 +50,11 @@ class TesQualityValidations(unittest.TestCase):
             restore_schema(test_connection_db)
             self.db_pg = get_pg_conn(test_connection_db)
 
-        self.names = Names()
-
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
         self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
+
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -73,7 +73,7 @@ class TesQualityValidations(unittest.TestCase):
 
         for table in test_results:
             test_result = test_results[table]
-            fields = self.names.get_logic_consistency_tables()[table]
+            fields = LayerConfig.get_logic_consistency_tables(self.names)[table]
             error_layer = None
             error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
             result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]
@@ -85,6 +85,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of selected boundary ...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         test_result = [{'selected_ids': [1], 'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'selected_ids': [1], 'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -101,7 +103,7 @@ class TesQualityValidations(unittest.TestCase):
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             test_selected_ids = test_result[i]['selected_ids']
             #boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(self.names, boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:
@@ -112,6 +114,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         test_result = [{'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -139,6 +143,7 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -187,6 +192,7 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -231,6 +237,8 @@ class TesQualityValidations(unittest.TestCase):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
+
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -327,6 +335,8 @@ class TesQualityValidations(unittest.TestCase):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
+
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -450,6 +460,8 @@ class TesQualityValidations(unittest.TestCase):
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
+
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -544,6 +556,8 @@ class TesQualityValidations(unittest.TestCase):
        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
        schema_name = 'test_ladm_validations_topology_tables'
        self.db_pg = get_pg_conn(schema_name)
+       self.names = self.db_pg.names
+
        result = self.db_pg.test_connection()
        self.assertTrue(result[0], 'The test connection is not working')
        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
@@ -664,6 +678,9 @@ class TesQualityValidations(unittest.TestCase):
     def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
+
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
 
@@ -761,6 +778,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating search for missing vertices...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         # Map between case number and number of vertices that should be added
         # For instance, the 4th case (reflected in the layer's name) should
@@ -795,6 +814,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating polygons must be covered by lines...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         diff_geom = [['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
                      ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
@@ -813,7 +834,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(self.names, polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -826,6 +847,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating lines must be covered by polygons...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
 
         diff_geom = ['',
                      '',
@@ -842,7 +865,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_as_lines_layer, 'fid')
+            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(self.names, lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:
@@ -968,6 +991,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
+
         uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
         uri_boundary = gpkg_path + '|layername=good_boundary'
         uri_points_ccl_table = gpkg_path + '|layername=pointsCcl'
@@ -1062,6 +1088,9 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
+
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
@@ -1092,6 +1121,9 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundaries_are_not_split(self):
         print('\nINFO: Validating boundaries are not split...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn(gpkg_path)
+        self.names = self.db_gpkg.names
+
         uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
         uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')
         uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
@@ -1099,17 +1131,17 @@ class TesQualityValidations(unittest.TestCase):
         bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
         good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
 
-        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
+        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
         self.assertEqual(len(bad_boundary_errors_list), 4)
         self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
-        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
+        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
         self.assertEqual(len(bbox_boundary_errors_list), 9)
         self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
-        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
+        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
         self.assertEqual(len(good_boundary_errors_list), 0)
 

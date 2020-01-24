@@ -39,6 +39,7 @@ import processing
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       DEFAULT_USE_ROADS_VALUE,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
@@ -80,7 +81,6 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       ERROR_BUILDING_CROSSES_A_PLOT_LIMIT,
                                                       ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT,
                                                       ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT)
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils.utils import Utils
 from asistente_ladm_col.utils.decorators import _log_quality_checks
 
@@ -158,7 +158,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate(
                                  "QGISUtils", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
@@ -302,7 +302,7 @@ class QualityUtils(QObject):
             data_provider.addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()))
@@ -451,7 +451,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
                 self.log_message(QCoreApplication.translate(
                                  "QGISUtils",
                                  "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
@@ -490,7 +490,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(added_layer.featureCount()))
@@ -599,7 +599,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
                                  added_layer.featureCount(), point_layer_name))
@@ -644,7 +644,7 @@ class QualityUtils(QObject):
                                                                         db.names.T_ID_F)
             if features:
                 error_layer.dataProvider().addFeatures(features)
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()))
@@ -683,7 +683,7 @@ class QualityUtils(QObject):
         list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, db.names.T_ID_F)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -741,7 +741,7 @@ class QualityUtils(QObject):
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
         # and inner_rings and boundary. No need to check further topological rules for plots
 
-        errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
+        errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(db.names, plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
             # All plots with geometric errors are eliminated. It is not necessary check more
@@ -943,7 +943,7 @@ class QualityUtils(QObject):
 
             if features:
                 error_layer.dataProvider().addFeatures(features)
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "A memory layer with {} boundaries not covered by plots has been added to the map!").format(added_layer.featureCount()))
@@ -982,7 +982,7 @@ class QualityUtils(QObject):
         list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, db.names.T_ID_F)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -1045,7 +1045,7 @@ class QualityUtils(QObject):
         # and inner_rings and boundary. If the geometry fails, there is no need to check further topological rules for
         # plots
 
-        errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
+        errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(db.names, boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
         for error_diff in errors_boundary_plot_diffs:
             boundary_id = error_diff['id']
             # All boundaries with geometric errors are eliminated. It is not necessary check more
@@ -1277,7 +1277,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
@@ -1323,12 +1323,12 @@ class QualityUtils(QObject):
                     msg = ''
 
                     if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
-                        added_point_layer = self.add_error_layer(error_point_layer)
+                        added_point_layer = self.add_error_layer(db, error_point_layer)
                         msg = QCoreApplication.translate("QGISUtils",
                             "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
 
                     if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
-                        added_line_layer = self.add_error_layer(error_line_layer)
+                        added_line_layer = self.add_error_layer(db, error_line_layer)
                         msg = QCoreApplication.translate("QGISUtils",
                             "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
 
@@ -1358,7 +1358,7 @@ class QualityUtils(QObject):
                              "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
 
         else:
-            wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
+            wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(db.names, boundary_layer)
 
             if wrong_boundaries is None:
                 self.log_message(QCoreApplication.translate("QGISUtils",
@@ -1378,7 +1378,7 @@ class QualityUtils(QObject):
 
                 error_layer.dataProvider().addFeatures(features)
                 if error_layer.featureCount() > 0:
-                    added_layer = self.add_error_layer(error_layer)
+                    added_layer = self.add_error_layer(db, error_layer)
                     self.log_message(QCoreApplication.translate("QGISUtils",
                                      "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()))
                 else:
@@ -1460,7 +1460,7 @@ class QualityUtils(QObject):
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            added_layer = self.add_error_layer(db, error_layer)
 
             self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
                 "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()))
@@ -1503,7 +1503,7 @@ class QualityUtils(QObject):
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            added_layer = self.add_error_layer(db, error_layer)
 
             self.logger.info_msg(__name__, QCoreApplication.translate("QualityUtils",
                 "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()))
@@ -1539,7 +1539,7 @@ class QualityUtils(QObject):
             error_layer.dataProvider().addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()))
@@ -1644,7 +1644,7 @@ class QualityUtils(QObject):
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
@@ -1683,7 +1683,7 @@ class QualityUtils(QObject):
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()))
@@ -1721,7 +1721,7 @@ class QualityUtils(QObject):
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
@@ -1752,7 +1752,7 @@ class QualityUtils(QObject):
 
         if errors_count > 0:
             if error_layer_exist is False:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
             else:
                 added_layer = error_layer
 
@@ -1769,7 +1769,7 @@ class QualityUtils(QObject):
         error_layer = self.logic.get_fractions_which_sum_is_not_one(db, error_layer)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            added_layer = self.add_error_layer(db, error_layer)
 
             self.log_message(QCoreApplication.translate("QualityUtils",
                              "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
@@ -1799,7 +1799,7 @@ class QualityUtils(QObject):
 
         return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))
 
-    def add_error_layer(self, error_layer):
+    def add_error_layer(self, db, error_layer):
         group = self.qgis_utils.get_error_layers_group()
 
         # Check if layer is loaded and remove it
@@ -1814,12 +1814,12 @@ class QualityUtils(QObject):
         added_layer = group.insertLayer(index, added_layer).layer()
         if added_layer.isSpatial():
             # db connection is none because we are using a memory layer
-            self.qgis_utils.symbology.set_layer_style_from_qml(None, added_layer, is_error_layer=True)
+            self.qgis_utils.symbology.set_layer_style_from_qml(db, added_layer, is_error_layer=True)
         return added_layer
 
     @_log_quality_checks
     def find_duplicate_records_in_a_table(self, db, rule_name):
-        logic_consistency_tables = db.names.get_logic_consistency_tables()
+        logic_consistency_tables = LayerConfig.get_logic_consistency_tables(db.names)
         for table in logic_consistency_tables:
             fields = logic_consistency_tables[table]
 
@@ -1827,7 +1827,7 @@ class QualityUtils(QObject):
             error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer, db.names.T_ID_F)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table))
@@ -1876,7 +1876,7 @@ class QualityUtils(QObject):
 
         if len(new_features) > 0:
             if error_layer_exist is False:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
             else:
                 added_layer = error_layer
 
@@ -1918,7 +1918,7 @@ class QualityUtils(QObject):
 
         if errors_count > 0:
             if error_layer_exist is False:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
             else:
                 added_layer = error_layer
 
@@ -1974,7 +1974,7 @@ class QualityUtils(QObject):
             data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()))
@@ -2030,7 +2030,7 @@ class QualityUtils(QObject):
             data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+                added_layer = self.add_error_layer(db, error_layer)
 
                 self.log_message(QCoreApplication.translate("QualityUtils",
                                  "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()))

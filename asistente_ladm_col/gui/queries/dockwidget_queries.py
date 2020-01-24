@@ -44,8 +44,11 @@ from qgis.gui import (QgsDockWidget,
                       QgsMapToolIdentifyFeature)
 
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.general_config import (TEST_SERVER,
+                                                      LAYER,
+                                                      SUFFIX_GET_THUMBNAIL)
+from asistente_ladm_col.config.table_mapping_config import AuxNames
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus,
@@ -58,7 +61,7 @@ DOCKWIDGET_UI = get_ui_class('dockwidgets/dockwidget_queries.ui')
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
-    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
+    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
     def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
@@ -71,7 +74,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.logger = Logger()
         self.canvas = iface.mapCanvas()
         self.active_map_tool_before_custom = None
-        self.names = Names()
+        self.names = self._db.names
 
         self.clipboard = QApplication.clipboard()
 
@@ -261,9 +264,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             # Zoom to resulting plots
             plot_t_ids = self.get_plot_t_ids_from_basic_info(records)
             if plot_t_ids:
-                features = self.ladm_data.get_features_from_t_ids(self._layers[self.names.OP_PLOT_T][LAYER], plot_t_ids, True, True)
+                features = self.ladm_data.get_features_from_t_ids(self._layers[self.names.OP_PLOT_T][LAYER], self.names.T_ID_F, plot_t_ids, True, True)
                 plot_ids = [feature.id() for feature in features]
-                self.zoom_to_features_requested.emit(self._layers[self.names.OP_PLOT_T][LAYER], plot_ids, list(), 500)
+                self.zoom_to_features_requested.emit(self._layers[self.names.OP_PLOT_T][LAYER], plot_ids, dict(), 500)
                 self._layers[self.names.OP_PLOT_T][LAYER].selectByIds(plot_ids)
 
         records = self._db.get_igac_legal_info(**kwargs)
@@ -285,7 +288,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         :param tree_view:
         :return:
         """
-        tree_view.setModel(TreeModel(data=records))
+        tree_view.setModel(TreeModel(self.names, data=records))
         tree_view.expandAll()
         self.add_thumbnails_to_tree_view(tree_view)
 
@@ -361,10 +364,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
             table_name = index_data["type"]
-            table_package = self.names.get_dict_table_package()
+            table_package = LayerConfig.get_dict_table_package(self.names)
             t_id = index_data["id"]
             geometry_type = None
-            if table_name in table_package and table_package[table_name] == self.names.SPATIAL_UNIT_PACKAGE:
+            if table_name in table_package and table_package[table_name] == AuxNames.SPATIAL_UNIT_PACKAGE:
                 # Layers in Spatial Unit package have double geometry, we need the polygon one
                 geometry_type=QgsWkbTypes.PolygonGeometry
 

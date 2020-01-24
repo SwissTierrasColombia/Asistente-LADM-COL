@@ -5,15 +5,11 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            ILICODE,
-                                                            T_ID,
-                                                            DESCRIPTION,
-                                                            DISPLAY_NAME)
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
                                             get_test_path)
+
 
 class TestGetModels(unittest.TestCase):
     @classmethod

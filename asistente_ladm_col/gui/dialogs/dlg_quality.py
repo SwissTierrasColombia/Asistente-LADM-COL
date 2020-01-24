@@ -58,7 +58,6 @@ from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
                                                       CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER,
                                                       CHECK_UEBAUNIT_PARCEL,
                                                       CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
@@ -71,7 +70,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.names = Names()
+        self.names = self._db.names
         self.translatable_config_strings = TranslatableConfigStrings()
 
         self.trw_quality_rules.setItemsExpandable(False)

@@ -22,24 +22,23 @@ from qgis.gui import QgsPanelWidget
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication)
 
-from ...config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
-                                      CHANGE_DETECTION_MISSING_PARCEL,
-                                      CHANGE_DETECTION_PARCEL_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_REMAINS,
-                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                      CHANGE_DETECTION_NULL_PARCEL,
-                                      LAYER,
-                                      PARCEL_STATUS,
-                                      SOURCE_DB,
-                                      COLLECTED_DB_SOURCE,
-                                      SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                      CHANGE_DETECTION_MISSING_PARCEL,
+                                                      CHANGE_DETECTION_PARCEL_CHANGED,
+                                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                      CHANGE_DETECTION_PARCEL_REMAINS,
+                                                      CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                      CHANGE_DETECTION_NULL_PARCEL,
+                                                      LAYER,
+                                                      PARCEL_STATUS,
+                                                      SOURCE_DB,
+                                                      COLLECTED_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/parcels_changes_summary_panel_widget.ui')
-
 COUNT_KEY = 'count'
+
 
 class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
     all_parcels_panel_requested = pyqtSignal(str)
@@ -47,7 +46,6 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent, utils):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
-        self.names = Names()
         self.parent = parent
         self.utils = utils
 
@@ -59,30 +57,30 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         inverse_compared_parcels_data = self.utils.get_compared_parcels_data(inverse=True)
 
         # Summarize and show in its proper control
-        summary = {CHANGE_DETECTION_NEW_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_MISSING_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_CHANGED: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_REMAINS: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_SEVERAL_PARCELS: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_NULL_PARCEL: {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
+        summary = {CHANGE_DETECTION_NEW_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_MISSING_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_CHANGED: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_REMAINS: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_SEVERAL_PARCELS: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_NULL_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
 
         total_count = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
-            count = len(parcel_attrs[self.names.T_ID_F])
+            count = len(parcel_attrs[self.utils._db.names.T_ID_F])
             total_count += count
             summary[parcel_attrs[PARCEL_STATUS]][COUNT_KEY] += count
-            summary[parcel_attrs[PARCEL_STATUS]][self.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
-            summary[parcel_attrs[PARCEL_STATUS]][self.names.T_ID_F].extend(parcel_attrs[self.names.T_ID_F])
+            summary[parcel_attrs[PARCEL_STATUS]][self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+            summary[parcel_attrs[PARCEL_STATUS]][self.utils._db.names.T_ID_F].extend(parcel_attrs[self.utils._db.names.T_ID_F])
 
         # Fill missing parcel data
         for parcel_number, parcel_attrs in inverse_compared_parcels_data.items():
             if parcel_attrs[PARCEL_STATUS] == CHANGE_DETECTION_NEW_PARCEL:
-                count = len(parcel_attrs[self.names.T_ID_F])
+                count = len(parcel_attrs[self.utils._supplies_db.names.T_ID_F])
                 total_count += count
                 summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY] += count
-                summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
-                summary[CHANGE_DETECTION_MISSING_PARCEL][self.names.T_ID_F].extend(parcel_attrs[self.names.T_ID_F])
+                summary[CHANGE_DETECTION_MISSING_PARCEL][self.utils._supplies_db.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+                summary[CHANGE_DETECTION_MISSING_PARCEL][self.utils._supplies_db.names.T_ID_F].extend(parcel_attrs[self.utils._supplies_db.names.T_ID_F])
                 summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = SUPPLIES_DB_SOURCE
 
         self.lbl_new_parcels_count.setText(str(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY]))
@@ -131,7 +129,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
             partial(self.parent.show_all_parcels_panel, dict()))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.names.OP_PLOT_T][LAYER])
+        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER])
         self.utils.iface.zoomToActiveLayer()

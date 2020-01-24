@@ -1,19 +1,15 @@
 from functools import partial
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsVectorLayerUtils,
-                       Qgis)
+from qgis.core import (QgsVectorLayerUtils)
 
-from ....config.general_config import (LAYER,
-                                       CSS_COLOR_OKAY_LABEL,
-                                       CSS_COLOR_ERROR_LABEL,
-                                       PLUGIN_NAME)
-from ....config.table_mapping_config import (AVALUOUNIDADCONSTRUCCION_TABLE,
-                                             AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD,
-                                             AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD)
-from ....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from ....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
-from ....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL)
+from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
 class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
@@ -42,13 +38,13 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 # Fill avaluounidadconstruccion table
                 new_features = []
                 for building_unit_id in building_unit_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
-                    new_feature.setAttribute(AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
-                    new_feature.setAttribute(AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
+                    new_feature.setAttribute(AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
+                    new_feature.setAttribute(AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
                     self.logger.info(__name__, "Saving Building unit-Building unit valuation: {}-{}".format(building_unit_id, building_unit_valuation_id))
                     new_features.append(new_feature)
 
-                self._layers[AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                self._layers[AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
                 if building_unit_ids:
                     message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!").format(self.WIZARD_FEATURE_NAME, building_unit_valuation_id, building_unit_ids[0])
 

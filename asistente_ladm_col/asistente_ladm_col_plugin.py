@@ -147,9 +147,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
+        self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
         self.quality = QualityUtils(self.qgis_utils)
-        self.toolbar = ToolBar(self.iface, self.qgis_utils, self.get_db_connection())
+        self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.ladm_data = LADM_DATA(self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
@@ -716,9 +716,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
 
-    def zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
+    def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
         if t_ids:
-            features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
+            t_id_name = list(t_ids.keys())[0]
+            t_ids_list = t_ids[t_id_name]
+
+            features = self.ladm_data.get_features_from_t_ids(layer, t_id_name, t_ids_list, True, True)
             for feature in features:
                 ids.append(feature.id())
 
@@ -1210,7 +1213,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
-        wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection(), wizard_name)
+        wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
                                                          wiz_settings[WIZARD_LAYERS],
                                                          wiz_settings[WIZARD_TOOL_NAME]):

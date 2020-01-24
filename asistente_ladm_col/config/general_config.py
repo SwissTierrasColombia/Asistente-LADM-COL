@@ -6,7 +6,6 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 

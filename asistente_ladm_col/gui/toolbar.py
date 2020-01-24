@@ -18,8 +18,7 @@
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QMessageBox)
+from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayerUtils,
@@ -27,30 +26,27 @@ from qgis.core import (Qgis,
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
 class ToolBar(QObject):
 
-    def __init__(self, iface, qgis_utils, db):
+    def __init__(self, iface, qgis_utils):
         QObject.__init__(self)
         self.iface = iface
         self.qgis_utils = qgis_utils
-        self.db = db
         self.logger = Logger()
-        self.names = Names()
         self.geometry = GeometryUtils()
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
-        layer = self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_BOUNDARY_T)
+        layer = self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_BOUNDARY_T)
         use_selection = True
 
         if layer is None:
             self.logger.message_with_button_load_layer_emitted.emit(
-                QCoreApplication.translate("ToolBar", "First load the layer {} into QGIS!").format(self.names.OP_BOUNDARY_T),
-                QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T), self.names.OP_BOUNDARY_T, Qgis.Warning)
+                QCoreApplication.translate("ToolBar", "First load the layer {} into QGIS!").format(db.names.OP_BOUNDARY_T),
+                QCoreApplication.translate("ToolBar", "Load layer {} now").format(db.names.OP_BOUNDARY_T), db.names.OP_BOUNDARY_T, Qgis.Warning)
             return
         else:
             if layer.selectedFeatureCount() == 0:
@@ -68,10 +64,10 @@ class ToolBar(QObject):
                     return
 
         if use_selection:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer, self.names.T_ID_F)
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(db.names, layer, db.names.T_ID_F)
             num_boundaries = layer.selectedFeatureCount()
         else:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer, self.names.T_ID_F)
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer, db.names.T_ID_F)
             num_boundaries = layer.featureCount()
 
         if len(new_boundary_geoms) > 0:
@@ -86,8 +82,8 @@ class ToolBar(QObject):
                 feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
 
                 # TODO: Remove when local id and working space are defined
-                feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
-                feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_BOUNDARY_T)
+                feature.setAttribute(db.names.OID_T_LOCAL_ID_F, 1)
+                feature.setAttribute(db.names.OID_T_NAMESPACE_F, db.names.OP_BOUNDARY_T)
 
                 new_fix_boundary_features.append(feature)
 
@@ -101,9 +97,9 @@ class ToolBar(QObject):
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         layers = {
-            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-            self.names.POINT_BFS_T: {'name': self.names.POINT_BFS_T, 'geometry': None, LAYER: None},
-            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
+            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
+            db.names.POINT_BFS_T: {'name': db.names.POINT_BFS_T, 'geometry': None, LAYER: None},
+            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -111,22 +107,22 @@ class ToolBar(QObject):
             return None
 
         if use_selection:
-            if layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_BOUNDARY_T) is None:
+            if layers[db.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
+                if self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_BOUNDARY_T) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
-                            self.names.OP_BOUNDARY_T),
-                        QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_BOUNDARY_T),
-                        self.names.OP_BOUNDARY_T,
+                            db.names.OP_BOUNDARY_T),
+                        QCoreApplication.translate("ToolBar", "Load layer {} now").format(db.names.OP_BOUNDARY_T),
+                        db.names.OP_BOUNDARY_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
                                                  QCoreApplication.translate("ToolBar", "Continue?"),
                                                  QCoreApplication.translate("ToolBar",
                                                                             "There are no selected boundaries. Do you want to fill the '{}' table for all the {} boundaries in the database?").format(
-                                                     self.names.POINT_BFS_T,
-                                                     layers[self.names.OP_BOUNDARY_T][LAYER].featureCount()),
+                                                     db.names.POINT_BFS_T,
+                                                     layers[db.names.OP_BOUNDARY_T][LAYER].featureCount()),
                                                  QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                     if reply == QMessageBox.Yes:
                         use_selection = False
@@ -138,7 +134,7 @@ class ToolBar(QObject):
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
                                                                         "There are {selected} boundaries selected. Do you want to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.").format(
-                                                 selected=layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(), table=self.names.POINT_BFS_T),
+                                                 selected=layers[db.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount(), table=db.names.POINT_BFS_T),
                                              QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
                 if reply == QMessageBox.Yes:
                     use_selection = True
@@ -147,35 +143,35 @@ class ToolBar(QObject):
                 elif reply == QMessageBox.Cancel:
                     return
 
-        bfs_features = layers[self.names.POINT_BFS_T][LAYER].getFeatures()
+        bfs_features = layers[db.names.POINT_BFS_T][LAYER].getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[self.names.POINT_BFS_T_OP_BOUNDARY_F], bfs_feature[self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F]) for
+        existing_pairs = [(bfs_feature[db.names.POINT_BFS_T_OP_BOUNDARY_F], bfs_feature[db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F]) for
                           bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
-        id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[self.names.OP_BOUNDARY_T][LAYER],
-                                                                  layers[self.names.OP_BOUNDARY_POINT_T][LAYER],
-                                                                  self.names.T_ID_F,
+        id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[db.names.OP_BOUNDARY_T][LAYER],
+                                                                  layers[db.names.OP_BOUNDARY_POINT_T][LAYER],
+                                                                  db.names.T_ID_F,
                                                                   use_selection=use_selection)
 
         if id_pairs:
-            layers[self.names.POINT_BFS_T][LAYER].startEditing()
+            layers[db.names.POINT_BFS_T][LAYER].startEditing()
             features = list()
             for id_pair in id_pairs:
                 if not id_pair in existing_pairs:  # Avoid duplicated pairs in the DB
                     # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(layers[self.names.POINT_BFS_T][LAYER])
-                    feature.setAttribute(self.names.POINT_BFS_T_OP_BOUNDARY_F, id_pair[0])
-                    feature.setAttribute(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, id_pair[1])
+                    feature = QgsVectorLayerUtils().createFeature(layers[db.names.POINT_BFS_T][LAYER])
+                    feature.setAttribute(db.names.POINT_BFS_T_OP_BOUNDARY_F, id_pair[0])
+                    feature.setAttribute(db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, id_pair[1])
                     features.append(feature)
-            layers[self.names.POINT_BFS_T][LAYER].addFeatures(features)
-            layers[self.names.POINT_BFS_T][LAYER].commitChanges()
+            layers[db.names.POINT_BFS_T][LAYER].addFeatures(features)
+            layers[db.names.POINT_BFS_T][LAYER].commitChanges()
             self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
                 "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_pairs),
-                    self.names.POINT_BFS_T,
+                    db.names.POINT_BFS_T,
                     len(id_pairs) - len(features),
                     len(id_pairs)
                 ))
@@ -185,10 +181,10 @@ class ToolBar(QObject):
 
     def fill_topology_tables_morebfs_less(self, db, use_selection=True):
         layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.MORE_BFS_T: {'name': self.names.MORE_BFS_T, 'geometry': None, LAYER: None},
-            self.names.LESS_BFS_T: {'name': self.names.LESS_BFS_T, 'geometry': None, LAYER: None},
-            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            db.names.MORE_BFS_T: {'name': db.names.MORE_BFS_T, 'geometry': None, LAYER: None},
+            db.names.LESS_BFS_T: {'name': db.names.LESS_BFS_T, 'geometry': None, LAYER: None},
+            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -196,23 +192,23 @@ class ToolBar(QObject):
             return None
 
         if use_selection:
-            if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T,
+            if layers[db.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
+                if self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_PLOT_T,
                                                              geometry_type=QgsWkbTypes.PolygonGeometry) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(
-                            self.names.OP_PLOT_T),
-                        QCoreApplication.translate("ToolBar", "Load layer {} now").format(self.names.OP_PLOT_T),
-                        self.names.OP_PLOT_T,
+                            db.names.OP_PLOT_T),
+                        QCoreApplication.translate("ToolBar", "Load layer {} now").format(db.names.OP_PLOT_T),
+                        db.names.OP_PLOT_T,
                         Qgis.Warning)
                 else:
                     reply = QMessageBox.question(None,
                                                  QCoreApplication.translate("ToolBar", "Continue?"),
                                                  QCoreApplication.translate("ToolBar",
                                                                             "There are no selected plots. Do you want to fill the '{more}' and '{less}' tables for all the {all} plots in the database?").format(
-                                                     more=self.names.MORE_BFS_T, less=self.names.LESS_BFS_T,
-                                                     all=layers[self.names.OP_PLOT_T][LAYER].featureCount()),
+                                                     more=db.names.MORE_BFS_T, less=db.names.LESS_BFS_T,
+                                                     all=layers[db.names.OP_PLOT_T][LAYER].featureCount()),
                                                  QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                     if reply == QMessageBox.Yes:
                         use_selection = False
@@ -225,8 +221,8 @@ class ToolBar(QObject):
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
                                                                         "There are {selected} plots selected. Do you want to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.").format(
-                                                 selected=layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount(),
-                                                 more=self.names.MORE_BFS_T, less=self.names.LESS_BFS_T),
+                                                 selected=layers[db.names.OP_PLOT_T][LAYER].selectedFeatureCount(),
+                                                 more=db.names.MORE_BFS_T, less=db.names.LESS_BFS_T),
                                              QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
                 if reply == QMessageBox.Yes:
                     use_selection = True
@@ -235,70 +231,70 @@ class ToolBar(QObject):
                 elif reply == QMessageBox.Cancel:
                     return
 
-        more_bfs_features = layers[self.names.MORE_BFS_T][LAYER].getFeatures()
-        less_features = layers[self.names.LESS_BFS_T][LAYER].getFeatures()
+        more_bfs_features = layers[db.names.MORE_BFS_T][LAYER].getFeatures()
+        less_features = layers[db.names.LESS_BFS_T][LAYER].getFeatures()
 
         # Get unique pairs id_boundary-id_plot in both tables
         existing_more_pairs = [
-            (more_bfs_feature[self.names.MORE_BFS_T_OP_PLOT_F], more_bfs_feature[self.names.MORE_BFS_T_OP_BOUNDARY_F]) for
+            (more_bfs_feature[db.names.MORE_BFS_T_OP_PLOT_F], more_bfs_feature[db.names.MORE_BFS_T_OP_BOUNDARY_F]) for
             more_bfs_feature in more_bfs_features]
         existing_more_pairs = set(existing_more_pairs)
         # Todo: Update when ili2db issue is solved.
         # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-        existing_less_pairs = [(less_feature[self.names.LESS_BFS_T_OP_PLOT_F], less_feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]) for
+        existing_less_pairs = [(less_feature[db.names.LESS_BFS_T_OP_PLOT_F], less_feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]) for
                                less_feature in less_features]
         existing_less_pairs = set(existing_less_pairs)
 
-        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(layers[self.names.OP_BOUNDARY_T][LAYER],
-                                                                            layers[self.names.OP_PLOT_T][LAYER],
-                                                                            self.names.T_ID_F,
+        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(layers[db.names.OP_BOUNDARY_T][LAYER],
+                                                                            layers[db.names.OP_PLOT_T][LAYER],
+                                                                            db.names.T_ID_F,
                                                                             use_selection=use_selection)
         if id_less_pairs:
-            layers[self.names.LESS_BFS_T][LAYER].startEditing()
+            layers[db.names.LESS_BFS_T][LAYER].startEditing()
             features = list()
             for id_pair in id_less_pairs:
                 if not id_pair in existing_less_pairs:  # Avoid duplicated pairs in the DB
                     # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(layers[self.names.LESS_BFS_T][LAYER])
-                    feature.setAttribute(self.names.LESS_BFS_T_OP_PLOT_F, id_pair[0])
+                    feature = QgsVectorLayerUtils().createFeature(layers[db.names.LESS_BFS_T][LAYER])
+                    feature.setAttribute(db.names.LESS_BFS_T_OP_PLOT_F, id_pair[0])
                     # Todo: Update LESS_BFS_T_OP_BOUNDARY_F by LESS_BFS_T_OP_BOUNDARY_F.
                     # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-                    feature.setAttribute(self.names.LESS_BFS_T_OP_BOUNDARY_F, id_pair[1])
+                    feature.setAttribute(db.names.LESS_BFS_T_OP_BOUNDARY_F, id_pair[1])
                     features.append(feature)
-            layers[self.names.LESS_BFS_T][LAYER].addFeatures(features)
-            layers[self.names.LESS_BFS_T][LAYER].commitChanges()
+            layers[db.names.LESS_BFS_T][LAYER].addFeatures(features)
+            layers[db.names.LESS_BFS_T][LAYER].commitChanges()
             self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
                 "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_less_pairs),
-                    self.names.LESS_BFS_T,
+                    db.names.LESS_BFS_T,
                     len(id_less_pairs) - len(features),
                     len(id_less_pairs)
                 ))
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
-                "No pairs id_boundary-id_plot found for '{}' table.").format(self.names.LESS_BFS_T))
+                "No pairs id_boundary-id_plot found for '{}' table.").format(db.names.LESS_BFS_T))
 
         if id_more_pairs:
-            layers[self.names.MORE_BFS_T][LAYER].startEditing()
+            layers[db.names.MORE_BFS_T][LAYER].startEditing()
             features = list()
             for id_pair in id_more_pairs:
                 if not id_pair in existing_more_pairs:  # Avoid duplicated pairs in the DB
                     # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(layers[self.names.MORE_BFS_T][LAYER])
-                    feature.setAttribute(self.names.MORE_BFS_T_OP_PLOT_F, id_pair[0])
-                    feature.setAttribute(self.names.MORE_BFS_T_OP_BOUNDARY_F, id_pair[1])
+                    feature = QgsVectorLayerUtils().createFeature(layers[db.names.MORE_BFS_T][LAYER])
+                    feature.setAttribute(db.names.MORE_BFS_T_OP_PLOT_F, id_pair[0])
+                    feature.setAttribute(db.names.MORE_BFS_T_OP_BOUNDARY_F, id_pair[1])
                     features.append(feature)
-            layers[self.names.MORE_BFS_T][LAYER].addFeatures(features)
-            layers[self.names.MORE_BFS_T][LAYER].commitChanges()
+            layers[db.names.MORE_BFS_T][LAYER].addFeatures(features)
+            layers[db.names.MORE_BFS_T][LAYER].commitChanges()
             self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
                 "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
                     len(features),
                     len(id_more_pairs),
-                    self.names.MORE_BFS_T,
+                    db.names.MORE_BFS_T,
                     len(id_more_pairs) - len(features),
                     len(id_more_pairs)
                 ))
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
-                "No pairs id_boundary-id_plot found for '{}' table.").format(self.names.MORE_BFS_T))
+                "No pairs id_boundary-id_plot found for '{}' table.").format(db.names.MORE_BFS_T))

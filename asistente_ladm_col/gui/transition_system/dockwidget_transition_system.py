@@ -16,42 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-import qgis
 from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal,
-                              QCoreApplication,
-                              QObject)
-from qgis.core import (QgsVectorLayer,
-                       QgsWkbTypes,
-                       Qgis,
-                       NULL,
-                       QgsGeometry)
+                              pyqtSignal)
 from qgis.gui import QgsDockWidget
 
 from asistente_ladm_col.gui.transition_system.task_panel import TaskPanelWidget
 from asistente_ladm_col.gui.transition_system.transition_system_initial_panel import TransitionSystemInitialPanelWidget
-from ...utils import get_ui_class
-from ...utils.qt_utils import OverrideCursor
-
-from ...config.symbology import Symbology
-from ...config.general_config import (SUPPLIES_DB_PREFIX,
-                                      SUPPLIES_DB_PREFIX,
-                                      PREFIX_LAYER_MODIFIERS,
-                                      SUFFIX_LAYER_MODIFIERS,
-                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                      CHANGE_DETECTION_NEW_PARCEL,
-                                      CHANGE_DETECTION_PARCEL_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_REMAINS,
-                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                      CHANGE_DETECTION_NULL_PARCEL,
-                                      LAYER,
-                                      PARCEL_STATUS,
-                                      PARCEL_STATUS_DISPLAY,
-                                      PLOT_GEOMETRY_KEY)
-
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 DOCKWIDGET_UI = get_ui_class('transition_system/dockwidget_transition_system.ui')
 

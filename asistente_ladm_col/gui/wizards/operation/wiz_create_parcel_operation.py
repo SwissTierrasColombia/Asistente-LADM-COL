@@ -28,9 +28,9 @@ from functools import partial
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import (QgsVectorLayerUtils,
-                       Qgis)
+from qgis.core import QgsVectorLayerUtils
 
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
@@ -39,8 +39,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP2,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
-                                                      CSS_COLOR_INACTIVE_LABEL,
-                                                      PLUGIN_NAME)
+                                                      CSS_COLOR_INACTIVE_LABEL)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -57,7 +56,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
         self._spatial_unit_layers = dict()
 
     def post_save(self, features):
-        constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
+        constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
@@ -152,7 +151,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
+        constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         self.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
         self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
         self.lb_building.setText(QCoreApplication.translate("WizardTranslations","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
@@ -219,7 +218,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
     # Override methods
     #############################################################################
     def adjust_page_2_controls(self):
-        constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
+        constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         self.button(self.FinishButton).setDisabled(True)
         self.disconnect_signals()
 
@@ -319,7 +318,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
     #############################################################################
 
     def validate_type_of_parcel(self, parcel_type):
-        constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
+        constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         # Activate all push buttons
         self.btn_plot_map.setEnabled(True)
         self.btn_plot_expression.setEnabled(True)
@@ -354,7 +353,7 @@ class CreateParcelOperationWizard(MultiPageWizardFactory,
         self.txt_help_page_2.setHtml(msg_help)
 
     def is_constraint_satisfied(self, parcel_type):
-        constraint_types_of_parcels = self.names.get_constraint_types_of_parcels()
+        constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         result = True
         for spatial_unit in constraint_types_of_parcels[parcel_type]:
             _layer = self._spatial_unit_layers[spatial_unit]

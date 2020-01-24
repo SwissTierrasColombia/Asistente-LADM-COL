@@ -13,7 +13,6 @@ from asistente_ladm_col.tests.resources.expected_results.queries.legal_query_tes
 from asistente_ladm_col.tests.resources.expected_results.queries.physical_query_test_results import physical_query_test_results
 from asistente_ladm_col.tests.resources.expected_results.queries.property_record_card_query_test_results import property_record_card_query_test_results
 
-from asistente_ladm_col.config.table_mapping_config import Names
 
 class TestQueries(unittest.TestCase):
 
@@ -21,7 +20,6 @@ class TestQueries(unittest.TestCase):
     def setUpClass(self):
         restore_schema('test_ladm_col_queries')
         self.db_pg = get_pg_conn('test_ladm_col_queries')
-        self.names = Names()
 
     def test_igac_basic_info_query(self):
         print("\nINFO: Validating basic info query from IGAC...")
