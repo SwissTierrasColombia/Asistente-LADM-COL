@@ -17,8 +17,11 @@
  ***************************************************************************/
 """
 import psycopg2
+from PyQt5.QtCore import QCoreApplication
 
 from qgis.PyQt.QtCore import QObject
+
+from asistente_ladm_col.config.general_config import ASSISTANT_SUPPORTED_MODELS
 from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
 from asistente_ladm_col.config.table_mapping_config import (Names,
@@ -78,9 +81,6 @@ class DBConnector(QObject):
         return self.dict_conn_params == db.dict_conn_params
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
-        raise NotImplementedError
-
-    def validate_db(self):
         raise NotImplementedError
 
     def close_connection(self):
@@ -236,3 +236,20 @@ class DBConnector(QObject):
                 for k1, v1 in v.items():
                     if k1 != TABLE_NAME:
                         self._table_and_field_names.append(k1)  # Field names
+
+    def check_at_least_one_ladm_model_exists(self):
+        result = True
+        msg = QCoreApplication.translate("DBConnector", "The version of all models is valid.")
+        models = self.get_models()
+        if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
+            result = False
+            msg = QCoreApplication.translate("DBConnector",
+                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
+                ', '.join(ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
+        return (result, msg)
+
+    def open_connection(self):
+        """
+        :return: Whether the connection is opened after calling this method or not
+        """
+        raise NotImplementedError
