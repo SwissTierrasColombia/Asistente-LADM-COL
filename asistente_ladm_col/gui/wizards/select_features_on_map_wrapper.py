@@ -23,7 +23,6 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QPushButton)
-from qgis.core import Qgis
 
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.lib.logger import Logger

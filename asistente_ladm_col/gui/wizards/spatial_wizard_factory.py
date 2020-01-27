@@ -32,8 +32,8 @@ from qgis.core import (QgsProject,
 from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from .map_interaction_expansion import MapInteractionExpansion
-from ...config.general_config import LAYER
+from asistente_ladm_col.gui.wizards.map_interaction_expansion import MapInteractionExpansion
+from asistente_ladm_col.config.general_config import LAYER
 
 
 class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):

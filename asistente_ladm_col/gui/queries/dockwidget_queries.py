@@ -48,7 +48,7 @@ from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (TEST_SERVER,
                                                       LAYER,
                                                       SUFFIX_GET_THUMBNAIL)
-from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus,
@@ -367,7 +367,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             table_package = LayerConfig.get_dict_table_package(self.names)
             t_id = index_data["id"]
             geometry_type = None
-            if table_name in table_package and table_package[table_name] == AuxNames.SPATIAL_UNIT_PACKAGE:
+            if table_name in table_package and table_package[table_name] == LADMNames.SPATIAL_UNIT_PACKAGE:
                 # Layers in Spatial Unit package have double geometry, we need the polygon one
                 geometry_type=QgsWkbTypes.PolygonGeometry
 

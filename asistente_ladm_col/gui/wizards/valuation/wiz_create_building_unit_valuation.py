@@ -3,7 +3,7 @@ from functools import partial
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils)
 
-from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
@@ -38,13 +38,13 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 # Fill avaluounidadconstruccion table
                 new_features = []
                 for building_unit_id in building_unit_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
-                    new_feature.setAttribute(AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
-                    new_feature.setAttribute(AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
+                    new_feature.setAttribute(LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
+                    new_feature.setAttribute(LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
                     self.logger.info(__name__, "Saving Building unit-Building unit valuation: {}-{}".format(building_unit_id, building_unit_valuation_id))
                     new_features.append(new_feature)
 
-                self._layers[AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
                 if building_unit_ids:
                     message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!").format(self.WIZARD_FEATURE_NAME, building_unit_valuation_id, building_unit_ids[0])
 

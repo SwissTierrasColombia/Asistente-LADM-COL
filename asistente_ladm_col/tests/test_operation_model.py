@@ -7,10 +7,10 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
-from asistente_ladm_col.config.table_mapping_config import (ILICODE,
-                                                            T_ID,
-                                                            DESCRIPTION,
-                                                            DISPLAY_NAME)
+from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
+                                                      T_ID_KEY,
+                                                      DESCRIPTION_KEY,
+                                                      DISPLAY_NAME_KEY)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)
@@ -53,10 +53,10 @@ class TestOperationModel(unittest.TestCase):
         dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 144)
 
-        expected_dict = {T_ID: 't_id',
-                         ILICODE: 'ilicode',
-                         DESCRIPTION: 'description',
-                         DISPLAY_NAME: 'dispname',
+        expected_dict = {T_ID_KEY: 't_id',
+                         ILICODE_KEY: 'ilicode',
+                         DESCRIPTION_KEY: 'description',
+                         DISPLAY_NAME_KEY: 'dispname',
                          'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
                                                              'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
                                                              'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
@@ -77,10 +77,10 @@ class TestOperationModel(unittest.TestCase):
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 144)
 
-        expected_dict = {T_ID: 'T_Id',
-                         ILICODE: 'iliCode',
-                         DESCRIPTION: 'description',
-                         DISPLAY_NAME: 'dispName',
+        expected_dict = {T_ID_KEY: 'T_Id',
+                         ILICODE_KEY: 'iliCode',
+                         DESCRIPTION_KEY: 'description',
+                         DISPLAY_NAME_KEY: 'dispName',
                          'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
                                                              'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
                                                              'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
@@ -98,7 +98,7 @@ class TestOperationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_table_names(self.db_pg)
 
-    def test_required_table_names_pg(self):
+    def test_required_table_names_gpkg(self):
         print("\nINFO: Validate minimum required tables from names in GPKG...")
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')

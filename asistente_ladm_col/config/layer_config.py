@@ -1,8 +1,15 @@
 from qgis.core import NULL
-from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 
 class LayerConfig:
+
+    SUPPLIES_DB_PREFIX = None
+    SUPPLIES_DB_SUFFIX = " (Insumos)"
+    PREFIX_LAYER_MODIFIERS = 'prefix'
+    SUFFIX_LAYER_MODIFIERS = 'suffix'
+    STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
+    VISIBLE_LAYER_MODIFIERS = 'visible'
 
     @staticmethod
     def get_layer_constraints(names):
@@ -34,17 +41,17 @@ class LayerConfig:
                                                   OP_PLOT_T=names.OP_PLOT_T,
                                                   OP_BUILDING_T=names.OP_BUILDING_T,
                                                   OP_BUILDING_UNIT_T=names.OP_BUILDING_UNIT_T,
-                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
-                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=AuxNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
-                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=AuxNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
-                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
-                                                  PARCEL_TYPE_CEMETERY_PARENT=AuxNames.PARCEL_TYPE_CEMETERY_PARENT,
-                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=AuxNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
-                                                  PARCEL_TYPE_ROAD=AuxNames.PARCEL_TYPE_ROAD,
-                                                  PARCEL_TYPE_PUBLIC_USE=AuxNames.PARCEL_TYPE_PUBLIC_USE),
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_CEMETERY_PARENT=LADMNames.PARCEL_TYPE_CEMETERY_PARENT,
+                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_ROAD=LADMNames.PARCEL_TYPE_ROAD,
+                                                  PARCEL_TYPE_PUBLIC_USE=LADMNames.PARCEL_TYPE_PUBLIC_USE),
                     'description': 'La parcela debe tener una o varias unidades espaciales asociadas. Verifique las reglas '
                     # ''Parcel must have one or more spatial units associated with it. Check the rules.'
                 },
@@ -83,17 +90,17 @@ class LayerConfig:
                                             TRUE
                                     END""".format(OP_PARCEL_T_PARCEL_TYPE_F=names.OP_PARCEL_T_PARCEL_TYPE_F,
                                                   OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D,
-                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
-                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=AuxNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
-                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=AuxNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
-                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
-                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
-                                                  PARCEL_TYPE_CEMETERY_PARENT=AuxNames.PARCEL_TYPE_CEMETERY_PARENT,
-                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=AuxNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
-                                                  PARCEL_TYPE_ROAD=AuxNames.PARCEL_TYPE_ROAD,
-                                                  PARCEL_TYPE_PUBLIC_USE=AuxNames.PARCEL_TYPE_PUBLIC_USE,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARENT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                                  PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                                  PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
+                                                  PARCEL_TYPE_CEMETERY_PARENT=LADMNames.PARCEL_TYPE_CEMETERY_PARENT,
+                                                  PARCEL_TYPE_CEMETERY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
+                                                  PARCEL_TYPE_ROAD=LADMNames.PARCEL_TYPE_ROAD,
+                                                  PARCEL_TYPE_PUBLIC_USE=LADMNames.PARCEL_TYPE_PUBLIC_USE,
                                                   OP_PARCEL_T_PARCEL_NUMBER_F=names.OP_PARCEL_T_PARCEL_NUMBER_F),
                     'description': 'El campo debe tener 30 caracteres numéricos y la posición 22 debe coincidir con el tipo de predio.'
                 },
@@ -133,10 +140,10 @@ class LayerConfig:
                                             TRUE
                                     END""".format(OP_PARTY_T_TYPE_F=names.OP_PARTY_T_TYPE_F,
                                                   OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D,
-                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
-                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                                                   OP_PARTY_DOCUMENT_TYPE_D=names.OP_PARTY_DOCUMENT_TYPE_D,
-                                                  OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=AuxNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                                                  OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
                                                   OP_PARTY_T_DOCUMENT_TYPE_F=names.OP_PARTY_T_DOCUMENT_TYPE_F),
                     'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial IGAC\' o \'Secuencial SNR\'. '
                 },
@@ -151,8 +158,8 @@ class LayerConfig:
                                         TRUE
                                 END""".format(OP_PARTY_T_TYPE_F=names.OP_PARTY_T_TYPE_F,
                                               OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D,
-                                              OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
-                                              OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                              OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                              OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                                               OP_PARTY_T_FIRST_NAME_1_F=names.OP_PARTY_T_FIRST_NAME_1_F),
                     'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
                 },
@@ -167,8 +174,8 @@ class LayerConfig:
                                 TRUE
                         END""".format(OP_PARTY_T_TYPE_F=names.OP_PARTY_T_TYPE_F,
                                       OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D,
-                                      OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
-                                      OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                      OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                      OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                                       OP_PARTY_T_SURNAME_1_F=names.OP_PARTY_T_SURNAME_1_F),
                     'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
                 },
@@ -183,8 +190,8 @@ class LayerConfig:
                                             TRUE
                                     END""".format(OP_PARTY_T_TYPE_F=names.OP_PARTY_T_TYPE_F,
                                                   OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D,
-                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
-                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=AuxNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                                  OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                                                   OP_PARTY_T_BUSINESS_NAME_F=names.OP_PARTY_T_BUSINESS_NAME_F),
                     'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
 
@@ -303,57 +310,57 @@ class LayerConfig:
         # * = Optional, i.e., zero or more features could be selected
         # None = Won't be stored as a related feature (selected features will be ignored)
         return {
-            AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
+            LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: '*'
             },
-            AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
+            LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
+            LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
                 names.OP_PLOT_T: None,
                 names.OP_BUILDING_T: None,
                 names.OP_BUILDING_UNIT_T: '+'
             },
-            AuxNames.PARCEL_TYPE_CONDOMINIUM_PARENT: {
+            LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
+            LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA: {
+            LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA: {
                 names.OP_PLOT_T: None,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: '+'
             },
-            AuxNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA: {
+            LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA: {
                 names.OP_PLOT_T: None,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: '+'
             },
-            AuxNames.PARCEL_TYPE_CEMETERY_PARENT: {
+            LADMNames.PARCEL_TYPE_CEMETERY_PARENT: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT: {
+            LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: None,
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_ROAD: {
+            LADMNames.PARCEL_TYPE_ROAD: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: None,
                 names.OP_BUILDING_UNIT_T: None
             },
-            AuxNames.PARCEL_TYPE_PUBLIC_USE: {
+            LADMNames.PARCEL_TYPE_PUBLIC_USE: {
                 names.OP_PLOT_T: 1,
                 names.OP_BUILDING_T: '*',
                 names.OP_BUILDING_UNIT_T: None
@@ -367,31 +374,31 @@ class LayerConfig:
         """
         return {
             # Resources don't seem to be initialized at this point, so return path and build icon when needed
-            AuxNames.SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
-            AuxNames.SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
-            AuxNames.BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
-            AuxNames.RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
-            AuxNames.PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
-            AuxNames.SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
+            LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
+            LADMNames.SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
+            LADMNames.BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
+            LADMNames.RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
+            LADMNames.PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
+            LADMNames.SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
         }
 
     @staticmethod
     def get_dict_table_package(names):
         return {
-            names.OP_PARCEL_T: AuxNames.BA_UNIT_PACKAGE,
-            names.OP_PLOT_T: AuxNames.SPATIAL_UNIT_PACKAGE,
-            names.OP_BUILDING_T: AuxNames.SPATIAL_UNIT_PACKAGE,
-            names.OP_BUILDING_UNIT_T: AuxNames.SPATIAL_UNIT_PACKAGE,
-            names.OP_RIGHT_OF_WAY_T: AuxNames.SPATIAL_UNIT_PACKAGE,
-            names.OP_PARTY_T: AuxNames.PARTY_PACKAGE,
-            names.OP_GROUP_PARTY_T: AuxNames.PARTY_PACKAGE,
-            names.OP_RIGHT_T: AuxNames.RRR_PACKAGE,
-            names.OP_RESTRICTION_T: AuxNames.RRR_PACKAGE,
-            names.OP_ADMINISTRATIVE_SOURCE_T: AuxNames.SOURCE_PACKAGE,
-            names.OP_SPATIAL_SOURCE_T: AuxNames.SOURCE_PACKAGE,
-            names.OP_BOUNDARY_POINT_T: AuxNames.SURVEYING_AND_REPRESENTATION_PACKAGE,
-            names.OP_SURVEY_POINT_T: AuxNames.SURVEYING_AND_REPRESENTATION_PACKAGE,
-            names.OP_BOUNDARY_T: AuxNames.SURVEYING_AND_REPRESENTATION_PACKAGE
+            names.OP_PARCEL_T: LADMNames.BA_UNIT_PACKAGE,
+            names.OP_PLOT_T: LADMNames.SPATIAL_UNIT_PACKAGE,
+            names.OP_BUILDING_T: LADMNames.SPATIAL_UNIT_PACKAGE,
+            names.OP_BUILDING_UNIT_T: LADMNames.SPATIAL_UNIT_PACKAGE,
+            names.OP_RIGHT_OF_WAY_T: LADMNames.SPATIAL_UNIT_PACKAGE,
+            names.OP_PARTY_T: LADMNames.PARTY_PACKAGE,
+            names.OP_GROUP_PARTY_T: LADMNames.PARTY_PACKAGE,
+            names.OP_RIGHT_T: LADMNames.RRR_PACKAGE,
+            names.OP_RESTRICTION_T: LADMNames.RRR_PACKAGE,
+            names.OP_ADMINISTRATIVE_SOURCE_T: LADMNames.SOURCE_PACKAGE,
+            names.OP_SPATIAL_SOURCE_T: LADMNames.SOURCE_PACKAGE,
+            names.OP_BOUNDARY_POINT_T: LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE,
+            names.OP_SURVEY_POINT_T: LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE,
+            names.OP_BOUNDARY_T: LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE
         }
 
     @staticmethod

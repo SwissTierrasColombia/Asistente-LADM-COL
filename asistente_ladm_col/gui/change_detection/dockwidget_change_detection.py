@@ -36,22 +36,18 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 from asistente_ladm_col.config.symbology import Symbology
-from asistente_ladm_col.config.general_config import (SUPPLIES_DB_PREFIX,
-                                                      SUPPLIES_DB_SUFFIX,
-                                                      PREFIX_LAYER_MODIFIERS,
-                                                      SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                                      CHANGE_DETECTION_NEW_PARCEL,
-                                                      CHANGE_DETECTION_PARCEL_CHANGED,
-                                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                                      CHANGE_DETECTION_PARCEL_REMAINS,
-                                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                      CHANGE_DETECTION_NULL_PARCEL,
-                                                      LAYER,
-                                                      PARCEL_STATUS,
-                                                      PARCEL_STATUS_DISPLAY,
-                                                      PLOT_GEOMETRY_KEY)
+from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      LAYER)
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                                   CHANGE_DETECTION_PARCEL_CHANGED,
+                                                                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                                   CHANGE_DETECTION_PARCEL_REMAINS,
+                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                                   CHANGE_DETECTION_NULL_PARCEL,
+                                                                   PARCEL_STATUS,
+                                                                   PARCEL_STATUS_DISPLAY,
+                                                                   PLOT_GEOMETRY_KEY)
 
 DOCKWIDGET_UI = get_ui_class('change_detection/dockwidget_change_detection.ui')
 
@@ -246,9 +242,9 @@ class ChangeDetectionUtils(QObject):
             # Now load supplies layers
             # Set layer modifiers
             layer_modifiers = {
-                PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
-                SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+                LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
+                LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
+                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
             }
             self.qgis_utils.get_layers(self._supplies_db,
                                        self._supplies_layers,
@@ -305,9 +301,9 @@ class ChangeDetectionUtils(QObject):
         compare_db = self._db if inverse else self._supplies_db
 
         layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+            LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
+            LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
         }
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
         dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)

@@ -66,7 +66,7 @@ class TreeItem(object):
         return len(self.childItems)
 
     def childNumber(self):
-        if self.parentItem != None:
+        if self.parentItem is not None:
             return self.parentItem.childItems.index(self)
         return 0
 

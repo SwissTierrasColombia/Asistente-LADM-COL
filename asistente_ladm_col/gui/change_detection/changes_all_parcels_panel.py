@@ -30,16 +30,17 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.config.general_config import (PARCEL_STATUS_DISPLAY,
-                                                      PARCEL_STATUS,
-                                                      LAYER,
-                                                      STATUS_COLORS,
+from asistente_ladm_col.config.general_config import (LAYER,
                                                       SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
-                                                      CHANGE_DETECTION_MISSING_PARCEL,
-                                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                      CHANGE_DETECTION_NEW_PARCEL,
                                                       SUPPLIES_DB_SOURCE)
+from asistente_ladm_col.config.gui.change_detection_config import (STATUS_COLORS,
+                                                                   PARCEL_STATUS_DISPLAY,
+                                                                   PARCEL_STATUS,
+                                                                   CHANGE_DETECTION_MISSING_PARCEL,
+                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                                   CHANGE_DETECTION_NEW_PARCEL)
+
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor

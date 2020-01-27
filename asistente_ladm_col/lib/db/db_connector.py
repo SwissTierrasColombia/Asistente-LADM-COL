@@ -21,22 +21,24 @@ from PyQt5.QtCore import QCoreApplication
 
 from qgis.PyQt.QtCore import QObject
 
-from asistente_ladm_col.config.general_config import ASSISTANT_SUPPORTED_MODELS
-from ...utils.model_parser import ModelParser
-from ...config.enums import EnumTestLevel
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            TABLE_NAME,
-                                                            T_ID,
-                                                            DISPLAY_NAME,
-                                                            ILICODE,
-                                                            DESCRIPTION)
+from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
+                                                      QueryNames,
+                                                      LADMNames,
+                                                      T_ID_KEY,
+                                                      DISPLAY_NAME_KEY,
+                                                      ILICODE_KEY,
+                                                      DESCRIPTION_KEY)
 from asistente_ladm_col.lib.logger import Logger
+
+COMPOSED_KEY_SEPARATOR = ".."
+
 
 class DBConnector(QObject):
     """
     Superclass for all DB connectors.
     """
-
     _DEFAULT_VALUES = dict()
 
     def __init__(self, uri, conn_dict=dict()):
@@ -48,7 +50,7 @@ class DBConnector(QObject):
         self.schema = None
         self.conn = None
         self._dict_conn_params = None
-        self.names = Names()
+        self.names = TableAndFieldNames()
         self._table_and_field_names = list()  # Table/field names should be read only once per connector
         
         if uri is not None:
@@ -84,9 +86,6 @@ class DBConnector(QObject):
         raise NotImplementedError
 
     def close_connection(self):
-        raise NotImplementedError
-
-    def get_uri_for_layer(self, layer_name, geometry_type=None):
         raise NotImplementedError
 
     def get_description(self):
@@ -231,21 +230,21 @@ class DBConnector(QObject):
         """
         # Fill table names
         for k,v in dict_names.items():
-            if k not in [T_ID, DISPLAY_NAME, ILICODE, DESCRIPTION]:  # Custom names will be handled by Names class
+            if k not in [T_ID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
                 self._table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
-                    if k1 != TABLE_NAME:
+                    if k1 != QueryNames.TABLE_NAME:
                         self._table_and_field_names.append(k1)  # Field names
 
     def check_at_least_one_ladm_model_exists(self):
         result = True
         msg = QCoreApplication.translate("DBConnector", "The version of all models is valid.")
         models = self.get_models()
-        if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
+        if len(set(models) & set(LADMNames.ASSISTANT_SUPPORTED_MODELS)) == 0:
             result = False
             msg = QCoreApplication.translate("DBConnector",
                                              "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
-                ', '.join(ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
+                ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
         return (result, msg)
 
     def open_connection(self):

@@ -1,6 +1,6 @@
 from qgis.PyQt.QtCore import QSettings
 
-from asistente_ladm_col.config.table_mapping_config import AuxNames
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 class RefactorFieldsMappings:
 
@@ -249,7 +249,7 @@ class RefactorFieldsMappings:
         # --------------------------------
         # UNIQUE CADASTRAL FORM MODEL
         # --------------------------------
-        elif layer_name == AuxNames.UNIQUE_CADASTRAL_FORM_TABLE:
+        elif layer_name == LADMNames.UNIQUE_CADASTRAL_FORM_TABLE:
             mapping = [
                 {'expression': '"corregimiento"', 'length': 100, 'name': 'corregimiento', 'precision': -1, 'type': 10},
                 {'expression': '"localidad_comuna"', 'length': 100, 'name': 'localidad_comuna', 'precision': -1, 'type': 10},
@@ -266,7 +266,7 @@ class RefactorFieldsMappings:
                 {'expression': '"nombre_reconocedor"', 'length': 255, 'name': 'nombre_reconocedor', 'precision': -1, 'type': 10},
                 {'expression': '"op_predio"', 'length': -1, 'name': 'op_predio', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE:
+        elif layer_name == LADMNames.UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE:
             mapping = [
                 {'expression': '"nombre_quien_atendio"', 'length': 255, 'name': 'nombre_quien_atendio', 'precision': -1, 'type': 10},
                 {'expression': '"relacion_con_predio"', 'length': 100, 'name': 'relacion_con_predio', 'precision': -1, 'type': 10},
@@ -279,7 +279,7 @@ class RefactorFieldsMappings:
         # --------------------------------
         # VALUATION MODEL
         # --------------------------------
-        elif layer_name == AuxNames.VALUATION_BUILDING_UNIT_TABLE:
+        elif layer_name == LADMNames.VALUATION_BUILDING_UNIT_TABLE:
             mapping = [
                 {'expression': '"tipo_unidad_construccion"', 'length': -1, 'name': 'tipo_unidad_construccion', 'precision': 0, 'type': 4},
                 {'expression': '"puntuacion"', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2},
@@ -288,44 +288,44 @@ class RefactorFieldsMappings:
                 {'expression': '"observaciones"', 'length': 255, 'name': 'observaciones', 'precision': -1, 'type': 10},
                 {'expression': '"op_unidad_construccion"', 'length': -1, 'name': 'op_unidad_construccion', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_COMPONENT_BUILDING:
+        elif layer_name == LADMNames.VALUATION_COMPONENT_BUILDING:
             mapping = [
                 {'expression': '"tipo_componente"', 'length': -1, 'name': 'tipo_componente', 'precision': 0, 'type': 4},
                 {'expression': '"cantidad"', 'length': -1, 'name': 'cantidad', 'precision': 0, 'type': 2},
                 {'expression': '"av_unidad_construccion"', 'length': -1, 'name': 'av_unidad_construccion', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE:
+        elif layer_name == LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE:
             mapping = [
                 {'expression': '"tipo_anexo"', 'length': -1, 'name': 'tipo_anexo', 'precision': 0, 'type': 4},
                 {'expression': '"descripcion_anexo"', 'length': 256, 'name': 'descripcion_anexo', 'precision': -1, 'type': 10},
                 {'expression': '"puntaje_anexo"', 'length': 2, 'name': 'puntaje_anexo', 'precision': -1, 'type': 10},
                 {'expression': '"av_unidad_construccion"', 'length': -1, 'name': 'av_unidad_construccion', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
+        elif layer_name == LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
             mapping = [
                 {'expression': '"tipo_calificar"', 'length': -1, 'name': 'tipo_calificar', 'precision': 0, 'type': 4},
                 {'expression': '"total_calificacion"', 'length': -1, 'name': 'total_calificacion', 'precision': 0, 'type': 2},
                 {'expression': '"av_unidad_construccion"', 'length': -1, 'name': 'av_unidad_construccion', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_GROUP_QUALIFICATION:
+        elif layer_name == LADMNames.VALUATION_GROUP_QUALIFICATION:
             mapping = [
                 {'expression': '"clase_calificacion"', 'length': -1, 'name': 'clase_calificacion', 'precision': 0, 'type': 4},
                 {'expression': '"conservacion"', 'length': -1, 'name': 'conservacion', 'precision': 0, 'type': 4},
                 {'expression': '"subtotal"', 'length': -1, 'name': 'subtotal', 'precision': 0, 'type': 2},
                 {'expression': '"av_calificacion_convencional"', 'length': -1, 'name': 'av_calificacion_convencional', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_BUILDING_OBJECT:
+        elif layer_name == LADMNames.VALUATION_BUILDING_OBJECT:
             mapping = [
                 {'expression': '"puntos"', 'length': -1, 'name': 'puntos', 'precision': 0, 'type': 2},
                 {'expression': '"caracteristica"', 'length': 255, 'name': 'caracteristica', 'precision': -1, 'type': 10},
                 {'expression': '"av_grupo_calificacion"', 'length': -1, 'name': 'av_grupo_calificacion', 'precision': 0, 'type': 4}
             ]
-        elif layer_name == AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE:
+        elif layer_name == LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE:
             mapping = [
                 {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10},
                 {'expression': '"valor"', 'length': -1, 'name': 'valor', 'precision': 0, 'type': 2}
             ]
-        elif layer_name == AuxNames.VALUATION_PHYSICAL_ZONE_TABLE:
+        elif layer_name == LADMNames.VALUATION_PHYSICAL_ZONE_TABLE:
             mapping = [
                 {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10}
             ]

@@ -22,8 +22,8 @@ from qgis.core import (NULL,
                        QgsWkbTypes,
                        QgsFeature)
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      PLOT_GEOMETRY_KEY)
+from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.lib.logger import Logger
 
 # TODO: Update with correct field

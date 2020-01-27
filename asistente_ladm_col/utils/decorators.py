@@ -14,10 +14,6 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL,
-                                                      SUPPLIES_MODEL_PREFIX,
-                                                      OPERATION_MODEL_PREFIX,
-                                                      VALUATION_MODEL_PREFIX,
                                                       QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
@@ -30,6 +26,7 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
                                                       LOG_QUALITY_LIST_CONTAINER_OPEN,
                                                       LOG_QUALITY_LIST_CONTAINER_CLOSE,
                                                       LOG_QUALITY_CONTENT_SEPARATOR)
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 
 def _db_connection_required(func_to_decorate):
@@ -200,7 +197,7 @@ def _operation_model_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[OPERATION_MODEL_PREFIX]))
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.OPERATION_MODEL_PREFIX]))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings)
@@ -222,7 +219,7 @@ def _supplies_model_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[SUPPLIES_MODEL_PREFIX]))
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.SUPPLIES_MODEL_PREFIX]))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings)
@@ -244,7 +241,7 @@ def _valuation_model_required(func_to_decorate):
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[VALUATION_MODEL_PREFIX]))
+                                                                                      "Check your database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.VALUATION_MODEL_PREFIX]))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
             button.pressed.connect(inst.show_settings)

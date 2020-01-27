@@ -27,7 +27,6 @@ from qgis.core import QgsApplication
 from qgis.analysis import QgsNativeAlgorithms
 
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
-from asistente_ladm_col.config.table_mapping_config import FIELDS_DICT, VARIABLE_NAME
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
 QgsApplication.setPrefixPath('/usr', True)
@@ -213,7 +212,7 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
 def get_required_fields(db_connection):
     required_fields = list()
     for key, value in db_connection.names.TABLE_DICT.items():
-        for key_field, value_field in value[FIELDS_DICT].items():
+        for key_field, value_field in value[db_connection.names.FIELDS_DICT].items():
             if getattr(db_connection.names, value_field):
                 required_fields.append(value_field)
     return required_fields
@@ -222,6 +221,6 @@ def get_required_fields(db_connection):
 def get_required_tables(db_connection):
     required_tables = list()
     for key, value in db_connection.names.TABLE_DICT.items():
-        if getattr(db_connection.names, value[VARIABLE_NAME]):
-            required_tables.append(value[VARIABLE_NAME])
+        if getattr(db_connection.names, value[db_connection.names.VARIABLE_NAME]):
+            required_tables.append(value[db_connection.names.VARIABLE_NAME])
     return required_tables

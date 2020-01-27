@@ -29,8 +29,8 @@ from qgis.core import (QgsFeatureRenderer,
 
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   DEFAULT_LANGUAGE)
-from asistente_ladm_col.config.general_config import (STYLES_DIR,
-                                                      STYLE_GROUP_LAYER_MODIFIERS)
+from asistente_ladm_col.config.general_config import STYLES_DIR
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.lib.logger import Logger
 
@@ -47,9 +47,9 @@ class SymbologyUtils(QObject):
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):
         style_group = self.symbology.get_default_style_group(db.names)
         style_group_const = self.symbology.get_default_style_group(db.names)
-        if STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
-            if layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]:
-                style_group = layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]
+        if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]:
+                style_group = layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]
 
         qml_name = None
         if is_error_layer:

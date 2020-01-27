@@ -19,16 +19,8 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import (LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
-                                                      OPERATION_MODEL_PREFIX,
-                                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                                      VALUATION_MODEL_PREFIX,
-                                                      LADM_MODEL_PREFIX,
-                                                      ANT_MODEL_PREFIX,
-                                                      REFERENCE_CARTOGRAPHY_PREFIX,
-                                                      SNR_DATA_MODEL_PREFIX,
-                                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                                      SUPPLIES_MODEL_PREFIX)
+from asistente_ladm_col.config.general_config import LATEST_OPERATION_MODEL_VERSION_SUPPORTED
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.utils import is_version_valid
@@ -55,40 +47,40 @@ class ModelParser(QObject):
 
         if self._pro_gen_db_connector:
             for current_model_name in self._get_models():
-                if current_model_name.startswith(OPERATION_MODEL_PREFIX):
-                    parts = current_model_name.split(OPERATION_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.OPERATION_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.OPERATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_operation_model = self.parse_version(parts[1])
-                if current_model_name.startswith(CADASTRAL_FORM_MODEL_PREFIX):
-                    parts = current_model_name.split(CADASTRAL_FORM_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.CADASTRAL_FORM_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.CADASTRAL_FORM_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_cadastral_form_model = self.parse_version(parts[1])
-                if current_model_name.startswith(VALUATION_MODEL_PREFIX):
-                    parts = current_model_name.split(VALUATION_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.VALUATION_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.VALUATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_valuation_model = self.parse_version(parts[1])
-                if current_model_name.startswith(LADM_MODEL_PREFIX):
-                    parts = current_model_name.split(LADM_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.LADM_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.LADM_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_ladm_model = self.parse_version(parts[1])
-                if current_model_name.startswith(ANT_MODEL_PREFIX):
-                    parts = current_model_name.split(ANT_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.ANT_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.ANT_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_ant_model = self.parse_version(parts[1])
-                if current_model_name.startswith(REFERENCE_CARTOGRAPHY_PREFIX):
-                    parts = current_model_name.split(REFERENCE_CARTOGRAPHY_PREFIX)
+                if current_model_name.startswith(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX):
+                    parts = current_model_name.split(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX)
                     if len(parts) > 1:
                         self.current_version_reference_cartography_model = self.parse_version(parts[1])
-                if current_model_name.startswith(SNR_DATA_MODEL_PREFIX):
-                    parts = current_model_name.split(SNR_DATA_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.SNR_DATA_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.SNR_DATA_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_snr_data_model = self.parse_version(parts[1])
-                if current_model_name.startswith(SUPPLIES_INTEGRATION_MODEL_PREFIX):
-                    parts = current_model_name.split(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_supplies_integration_model = self.parse_version(parts[1])
-                if current_model_name.startswith(SUPPLIES_MODEL_PREFIX):
-                    parts = current_model_name.split(SUPPLIES_MODEL_PREFIX)
+                if current_model_name.startswith(LADMNames.SUPPLIES_MODEL_PREFIX):
+                    parts = current_model_name.split(LADMNames.SUPPLIES_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_supplies_model = self.parse_version(parts[1])
 

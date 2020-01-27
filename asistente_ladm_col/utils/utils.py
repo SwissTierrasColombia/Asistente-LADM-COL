@@ -53,11 +53,11 @@ class Utils(QObject):
             return "{}{}".format(format(time*1000, '.0f'), unit_millisecond)
         elif time < 60:
             return "{}{}".format(format(time, time_format), unit_second)
-        elif time >= 60 and time < 3600:
+        elif 60 <= time < 3600:
             minu = int(time/float(60))
             seg = 60*(time/float(60) - minu)
             return "{}{} {}{}".format(minu, unit_minutes, format(seg, time_format), unit_second)
-        elif time >= 3600 and time < 86400:
+        elif 3600 <= time < 86400:
             h = int(time/float(3600))
             minu = int(60*(time/float(3600) - h))
             seg = 60*((60*(time/float(3600) - h)) - minu)

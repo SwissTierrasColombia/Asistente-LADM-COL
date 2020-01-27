@@ -44,13 +44,10 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_INHERITANCE,
                                                       DEFAULT_HIDDEN_MODELS,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
-                                                      CREATE_BASKET_COL,
-                                                      CREATE_IMPORT_TID,
-                                                      STROKE_ARCS,
                                                       SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
@@ -380,10 +377,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.delete_data = False
 
         configuration.epsg = QSettings().value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)
-        configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = CREATE_BASKET_COL
-        configuration.create_import_tid = CREATE_IMPORT_TID
-        configuration.stroke_arcs = STROKE_ARCS
+        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
+        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = LADMNames.STROKE_ARCS
 
         java_path = get_java_path_from_qgis_model_baker()
         if java_path:

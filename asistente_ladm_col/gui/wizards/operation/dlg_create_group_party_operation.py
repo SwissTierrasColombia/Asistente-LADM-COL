@@ -305,11 +305,9 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
                 if porcentajes[t][1] == 0:
                     return (False, QCoreApplication.translate("CreateGroupParty",
                             "There are denominators equal to zero. You need to change those values."))
-                    break
                 elif porcentajes[t][1] < porcentajes[t][0]:
                     return (False, QCoreApplication.translate("CreateGroupParty",
                             "The denominator cannot be less than the numerator."))
-                    break
                 else:
                     fraction = Fraction(porcentajes[t][0], porcentajes[t][1]) + fraction
             if fraction != 1.0:

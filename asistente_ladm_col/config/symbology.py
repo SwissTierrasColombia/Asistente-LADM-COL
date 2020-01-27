@@ -1,10 +1,10 @@
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
 
 
 class Symbology:

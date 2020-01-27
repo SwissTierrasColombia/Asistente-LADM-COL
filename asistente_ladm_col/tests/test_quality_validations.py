@@ -8,17 +8,17 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                                                      ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
-                                                      ERROR_NO_FOUND_POINT_BFS,
-                                                      ERROR_DUPLICATE_POINT_BFS,
-                                                      ERROR_DUPLICATE_LESS_TABLE,
-                                                      ERROR_NO_LESS_TABLE,
-                                                      ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                      ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
-                                                      ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                                                      ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                                                           ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
+                                                           ERROR_NO_FOUND_POINT_BFS,
+                                                           ERROR_DUPLICATE_POINT_BFS,
+                                                           ERROR_DUPLICATE_LESS_TABLE,
+                                                           ERROR_NO_LESS_TABLE,
+                                                           ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                           ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
+                                                           ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                                                           ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,

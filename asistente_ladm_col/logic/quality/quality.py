@@ -47,40 +47,40 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CLOSE,
-                                                      CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
-                                                      CHECK_OVERLAPS_IN_CONTROL_POINTS,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                                      CHECK_OVERLAPS_IN_BOUNDARIES,
-                                                      CHECK_BOUNDARIES_ARE_NOT_SPLIT,
-                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
-                                                      CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
-                                                      CHECK_DANGLES_IN_BOUNDARIES,
-                                                      CHECK_OVERLAPS_IN_PLOTS,
-                                                      CHECK_OVERLAPS_IN_BUILDINGS,
-                                                      CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
-                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                      CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
-                                                      CHECK_GAPS_IN_PLOTS,
-                                                      CHECK_MULTIPART_IN_RIGHT_OF_WAY,
-                                                      CHECK_BUILDING_WITHIN_PLOTS,
-                                                      CHECK_BUILDING_UNIT_WITHIN_PLOTS,
-                                                      ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                                                      ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                                                      ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                      ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                      ERROR_NO_LESS_TABLE,
-                                                      ERROR_DUPLICATE_LESS_TABLE,
-                                                      ERROR_NO_FOUND_POINT_BFS,
-                                                      ERROR_DUPLICATE_POINT_BFS,
-                                                      ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
-                                                      ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
-                                                      ERROR_BUILDING_IS_NOT_OVER_A_PLOT,
-                                                      ERROR_BUILDING_CROSSES_A_PLOT_LIMIT,
-                                                      ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT,
-                                                      ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT)
+                                                      LOG_QUALITY_LIST_ITEM_CLOSE)
+from asistente_ladm_col.config.translation_strings import (CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
+                                                           CHECK_OVERLAPS_IN_CONTROL_POINTS,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                                           CHECK_OVERLAPS_IN_BOUNDARIES,
+                                                           CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                           CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                           CHECK_DANGLES_IN_BOUNDARIES,
+                                                           CHECK_OVERLAPS_IN_PLOTS,
+                                                           CHECK_OVERLAPS_IN_BUILDINGS,
+                                                           CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
+                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                           CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                                           CHECK_GAPS_IN_PLOTS,
+                                                           CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                                           CHECK_BUILDING_WITHIN_PLOTS,
+                                                           CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                                           ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                                                           ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                                                           ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                           ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                           ERROR_NO_LESS_TABLE,
+                                                           ERROR_DUPLICATE_LESS_TABLE,
+                                                           ERROR_NO_FOUND_POINT_BFS,
+                                                           ERROR_DUPLICATE_POINT_BFS,
+                                                           ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
+                                                           ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
+                                                           ERROR_BUILDING_IS_NOT_OVER_A_PLOT,
+                                                           ERROR_BUILDING_CROSSES_A_PLOT_LIMIT,
+                                                           ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT,
+                                                           ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT)
 from asistente_ladm_col.utils.utils import Utils
 from asistente_ladm_col.utils.decorators import _log_quality_checks
 
@@ -1311,10 +1311,10 @@ class QualityUtils(QObject):
                         translated_strings[CHECK_OVERLAPS_IN_BOUNDARIES]
                     ))
 
-                if (type(error_point_layer) is not QgsVectorLayer and \
-                   type(error_line_layer) is not QgsVectorLayer) or \
-                   (error_point_layer.featureCount() == 0 and \
-                   error_line_layer.featureCount() == 0):
+                if (type(error_point_layer) is not QgsVectorLayer and
+                    type(error_line_layer) is not QgsVectorLayer) or \
+                   (error_point_layer.featureCount() == 0 and
+                    error_line_layer.featureCount() == 0):
 
                     self.log_message(QCoreApplication.translate("QGISUtils",
                                      "There are no overlapping boundaries."), Qgis.Success)

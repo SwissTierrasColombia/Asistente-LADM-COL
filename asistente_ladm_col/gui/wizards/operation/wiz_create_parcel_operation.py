@@ -32,14 +32,11 @@ from qgis.core import QgsVectorLayerUtils
 
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_QSETTINGS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
-                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
-                                                      WIZARD_HELP2,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
-                                                      CSS_COLOR_INACTIVE_LABEL)
+                                                      CSS_COLOR_INACTIVE_LABEL, WIZARD_HELP_PAGES, WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, WIZARD_HELP2)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper

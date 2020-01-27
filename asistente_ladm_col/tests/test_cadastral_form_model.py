@@ -7,10 +7,10 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
-from asistente_ladm_col.config.table_mapping_config import (ILICODE,
-                                                            T_ID,
-                                                            DESCRIPTION,
-                                                            DISPLAY_NAME)
+from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
+                                                      T_ID_KEY,
+                                                      DESCRIPTION_KEY,
+                                                      DISPLAY_NAME_KEY)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)
@@ -52,10 +52,10 @@ class TestCadastralFormModel(unittest.TestCase):
 
         dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 177)
-        expected_dict = {T_ID: 't_id',
-                         ILICODE: 'ilicode',
-                         DESCRIPTION: 'description',
-                         DISPLAY_NAME: 'dispname',
+        expected_dict = {T_ID_KEY: 't_id',
+                         ILICODE_KEY: 'ilicode',
+                         DESCRIPTION_KEY: 'description',
+                         DISPLAY_NAME_KEY: 'dispname',
                          'Formulario_Catastro.FCM_DestinacionEconomicaTipo': {
                              'table_name': 'fcm_destinacioneconomicatipo'
                          }}
@@ -71,10 +71,10 @@ class TestCadastralFormModel(unittest.TestCase):
 
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 177)
-        expected_dict = {T_ID: 'T_Id',
-                         ILICODE: 'iliCode',
-                         DESCRIPTION: 'description',
-                         DISPLAY_NAME: 'dispName',
+        expected_dict = {T_ID_KEY: 'T_Id',
+                         ILICODE_KEY: 'iliCode',
+                         DESCRIPTION_KEY: 'description',
+                         DISPLAY_NAME_KEY: 'dispName',
                          'Formulario_Catastro.FCM_DestinacionEconomicaTipo': {
                              'table_name': 'fcm_destinacioneconomicatipo'
                          }}

@@ -29,12 +29,10 @@ from qgis.PyQt.QtCore import (QSettings,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
 
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      LAYER,
-                                                      WIZARD_FEATURE_NAME, WIZARD_UI,
-                                                      WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
-                                                      WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
+from asistente_ladm_col.config.general_config import LAYER, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
+    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_TOOL_NAME, WIZARD_LAYERS, WIZARD_EDITING_LAYER_NAME, \
+    WIZARD_READ_ONLY_FIELDS
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_utils import QGISUtils

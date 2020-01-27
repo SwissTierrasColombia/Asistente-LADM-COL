@@ -371,7 +371,7 @@ class ReportGenerator(QObject):
                     "There was an error with the download. The downloaded file is invalid."))
             except PermissionError as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')))
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path, 'impresion'))))
             else:
                 self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
 

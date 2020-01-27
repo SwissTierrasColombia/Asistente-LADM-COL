@@ -46,20 +46,10 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_NAME,
                                                       PLUGIN_VERSION,
-                                                      QUERIES_ACTION_OBJECTNAME,
                                                       RELEASE_URL,
                                                       URL_REPORTS_LIBRARIES,
-                                                      TOOLBAR_BUILD_BOUNDARY,
-                                                      TOOLBAR_MOVE_NODES,
-                                                      TOOLBAR_FILL_POINT_BFS,
-                                                      TOOLBAR_FILL_MORE_BFS_LESS,
-                                                      TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
-                                                      TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-                                                      TOOLBAR_FINALIZE_GEOMETRY_CREATION,
-                                                      ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
-                                                      WIZARD_TYPE,
-                                                      WIZARD_CLASS,
-                                                      WIZARD_CREATE_COL_PARTY_CADASTRAL,
+                                                      COLLECTED_DB_SOURCE, WIZARD_CLASS, WIZARD_TOOL_NAME, WIZARD_TYPE,
+                                                      WIZARD_LAYERS, WIZARD_CREATE_COL_PARTY_CADASTRAL,
                                                       WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION,
                                                       WIZARD_CREATE_BOUNDARY_OPERATION,
                                                       WIZARD_CREATE_BUILDING_OPERATION,
@@ -67,18 +57,21 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_RIGHT_OPERATION,
                                                       WIZARD_CREATE_RESTRICTION_OPERATION,
                                                       WIZARD_CREATE_SPATIAL_SOURCE_OPERATION,
-                                                      WIZARD_CREATE_PARCEL_OPERATION,
-                                                      WIZARD_CREATE_PLOT_OPERATION,
+                                                      WIZARD_CREATE_PARCEL_OPERATION, WIZARD_CREATE_PLOT_OPERATION,
                                                       WIZARD_CREATE_EXT_ADDRESS_OPERATION,
                                                       WIZARD_CREATE_RIGHT_OF_WAY_OPERATION,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
-                                                      WIZARD_LAYERS,
-                                                      WIZARD_TOOL_NAME,
-                                                      COLLECTED_DB_SOURCE)
-from asistente_ladm_col.config.wizard_config import WizardConfig
+                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
+from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                                           TOOLBAR_BUILD_BOUNDARY,
+                                                           TOOLBAR_MOVE_NODES,
+                                                           TOOLBAR_FILL_POINT_BFS,
+                                                           TOOLBAR_FILL_MORE_BFS_LESS,
+                                                           TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
+                                                           TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
+from asistente_ladm_col.config.wizard_config import (WizardConfig)
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.transition_system.dlg_login_st import LoginSTDialog
@@ -219,7 +212,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.session.login_status_changed.connect(self.set_login_controls_enabled)
 
-    def uninstall_custom_expression_functions(self):
+    @staticmethod
+    def uninstall_custom_expression_functions():
         res = QgsExpression.unregisterFunction('get_domain_code_from_value')
 
     def call_refresh_gui(self):
@@ -239,7 +233,6 @@ class AsistenteLADMCOLPlugin(QObject):
             QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
             TOOLBAR_FINALIZE_GEOMETRY_CREATION,
             self.main_window)
-        self._finalize_geometry_creation_action.setObjectName(ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
         self._finalize_geometry_creation_action.triggered.connect(
             self.wiz_geometry_creation_finished)  # SIGNAL chaining
         self._finalize_geometry_creation_action.setEnabled(False)
@@ -486,7 +479,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self.main_window)
         self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
-        self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
         self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)

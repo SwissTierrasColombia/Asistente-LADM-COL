@@ -22,23 +22,16 @@ import sqlite3
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from asistente_ladm_col.config.table_mapping_config import (T_ID,
-                                                            DISPLAY_NAME,
-                                                            ILICODE,
-                                                            DESCRIPTION,
-                                                            TABLE_NAME,
-                                                            COMPOSED_KEY_SEPARATOR)
-from asistente_ladm_col.config.general_config import (OPERATION_MODEL_PREFIX,
-                                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                                      VALUATION_MODEL_PREFIX,
-                                                      LADM_MODEL_PREFIX,
-                                                      ANT_MODEL_PREFIX,
-                                                      REFERENCE_CARTOGRAPHY_PREFIX,
-                                                      SNR_DATA_MODEL_PREFIX,
-                                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                                      SUPPLIES_MODEL_PREFIX, INTERLIS_TEST_METADATA_TABLE_PG)
+from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
+                                                      DISPLAY_NAME_KEY,
+                                                      ILICODE_KEY,
+                                                      DESCRIPTION_KEY,
+                                                      QueryNames,
+                                                      LADMNames)
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
-                                                    EnumTestLevel)
+                                                    COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.utils.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 
@@ -134,23 +127,23 @@ class GPKGConnector(DBConnector):
 
             models = list()
             if self.ladm_model_exists():
-                models.append(LADM_MODEL_PREFIX)
+                models.append(LADMNames.LADM_MODEL_PREFIX)
             if self.operation_model_exists():
-                models.append(OPERATION_MODEL_PREFIX)
+                models.append(LADMNames.OPERATION_MODEL_PREFIX)
             if self.cadastral_form_model_exists():
-                models.append(CADASTRAL_FORM_MODEL_PREFIX)
+                models.append(LADMNames.CADASTRAL_FORM_MODEL_PREFIX)
             if self.valuation_model_exists():
-                models.append(VALUATION_MODEL_PREFIX)
+                models.append(LADMNames.VALUATION_MODEL_PREFIX)
             if self.ant_model_exists():
-                models.append(ANT_MODEL_PREFIX)
+                models.append(LADMNames.ANT_MODEL_PREFIX)
             if self.reference_cartography_model_exists():
-                models.append(REFERENCE_CARTOGRAPHY_PREFIX)
+                models.append(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX)
             if self.snr_data_model_exists():
-                models.append(SNR_DATA_MODEL_PREFIX)
+                models.append(LADMNames.SNR_DATA_MODEL_PREFIX)
             if self.supplies_integration_model_exists():
-                models.append(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+                models.append(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX)
             if self.supplies_model_exists():
-                models.append(SUPPLIES_MODEL_PREFIX)
+                models.append(LADMNames.SUPPLIES_MODEL_PREFIX)
 
             if not models:
                 return (False, QCoreApplication.translate("GPKGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
@@ -181,53 +174,57 @@ class GPKGConnector(DBConnector):
         cursor = self.conn.cursor()
 
         # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
-        cursor.execute("""SELECT iliclass.iliname AS table_iliname,
-                                s.name AS tablename,
-                                ilicol.iliname AS field_iliname,
-                                ilicol.sqlname AS fieldname
+        cursor.execute("""SELECT iliclass.iliname AS {table_iliname},
+                                s.name AS {table_name},
+                                ilicol.iliname AS {field_iliname},
+                                ilicol.sqlname AS {field_name}
                             FROM sqlite_master s
                             LEFT JOIN t_ili2db_attrname ilicol
                             ON ilicol.colowner = s.name 
                             AND ilicol.target IS NULL
                             LEFT JOIN t_ili2db_classname iliclass
                                ON s.name == iliclass.sqlname
-                            WHERE s.type='table' AND iliclass.iliname IS NOT NULL;""")
+                            WHERE s.type='table' AND iliclass.iliname IS NOT NULL;""".format(
+            table_iliname=QueryNames.TABLE_ILINAME,
+            table_name=QueryNames.TABLE_NAME,
+            field_iliname=QueryNames.FIELD_ILINAME,
+            field_name=QueryNames.FIELD_NAME))
         records = cursor.fetchall()
 
         for record in records:
-            if record['table_iliname'] is None:
+            if record[QueryNames.TABLE_ILINAME] is None:
                 # Either t_ili2db_* tables (INTERLIS meta-attrs)
                 continue
 
-            table_iliname = normalize_iliname(record['table_iliname'])
+            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
 
             if not table_iliname in dict_names:
                 dict_names[table_iliname] = dict()
-                dict_names[table_iliname][TABLE_NAME] = record['tablename']
+                dict_names[table_iliname][QueryNames.TABLE_NAME] = record[QueryNames.TABLE_NAME]
 
-            if record['field_iliname'] is None:
+            if record[QueryNames.FIELD_ILINAME] is None:
                 # Fields for domains, like 'description' (we map it in a custom way later in this class method)
                 continue
 
-            field_iliname = normalize_iliname(record['field_iliname'])
-            dict_names[table_iliname][field_iliname] = record['fieldname']
+            field_iliname = normalize_iliname(record[QueryNames.FIELD_ILINAME])
+            dict_names[table_iliname][field_iliname] = record[QueryNames.FIELD_NAME]
 
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
-        cursor.execute("""SELECT rtrim(rtrim(a.iliname, replace(a.iliname, '.', '')), '.') as table_iliname,
+        cursor.execute("""SELECT rtrim(rtrim(a.iliname, replace(a.iliname, '.', '')), '.') as {table_iliname},
                                    a.iliname, a.sqlname,
                                    c.iliname as iliname2,
                                    o.iliname as colowner
                             FROM t_ili2db_attrname a
                             INNER JOIN t_ili2db_classname o ON o.sqlname = a.colowner
                             INNER JOIN t_ili2db_classname c ON c.sqlname = a.target
-                            ORDER BY a.iliname;""")
+                            ORDER BY a.iliname;""".format(table_iliname=QueryNames.TABLE_ILINAME))
         records = cursor.fetchall()
 
         for record in records:
             composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
                                            COMPOSED_KEY_SEPARATOR,
                                            normalize_iliname(record['iliname2']))
-            table_iliname = normalize_iliname(record['table_iliname'])
+            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
             if table_iliname in dict_names:
                 dict_names[table_iliname][composed_key] = record['sqlname']
             else:
@@ -238,16 +235,16 @@ class GPKGConnector(DBConnector):
         cursor.close()
 
         # Custom names
-        dict_names[T_ID] = "T_Id"
-        dict_names[DISPLAY_NAME] = "dispName"
-        dict_names[ILICODE] = "iliCode"
-        dict_names[DESCRIPTION] = "description"
+        dict_names[T_ID_KEY] = "T_Id"
+        dict_names[DISPLAY_NAME_KEY] = "dispName"
+        dict_names[ILICODE_KEY] = "iliCode"
+        dict_names[DESCRIPTION_KEY] = "description"
 
         return dict_names
 
     def _metadata_exists(self):
         cursor = self.conn.cursor()
-        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(INTERLIS_TEST_METADATA_TABLE_PG))
+        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
         return bool(cursor.fetchall())
 

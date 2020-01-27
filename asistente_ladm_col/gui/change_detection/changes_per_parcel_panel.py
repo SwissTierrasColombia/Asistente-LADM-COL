@@ -38,15 +38,10 @@ from qgis.gui import (QgsPanelWidget,
 
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.symbology import Symbology
-from asistente_ladm_col.config.general_config import (SUPPLIES_DB_PREFIX,
-                                                      SUPPLIES_DB_SUFFIX,
-                                                      PREFIX_LAYER_MODIFIERS,
-                                                      SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                                      SUPPLIES_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
-                                                      LAYER,
-                                                      PLOT_GEOMETRY_KEY)
+                                                      LAYER)
+from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.decorators import _with_override_cursor
@@ -330,9 +325,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Custom layer modifiers
         layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self.utils._supplies_db.names)
+            LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
+            LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self.utils._supplies_db.names)
         }
         dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 

@@ -1,21 +1,26 @@
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication)
+
+from asistente_ladm_col.config.general_config import (VERSION_LADM_MODEL,
+                                                      VERSION_EXTENDED_MODELS)
 from asistente_ladm_col.utils.singleton import Singleton
 from asistente_ladm_col.lib.logger import Logger
 
-TABLE_NAME = 'table_name'
-VARIABLE_NAME = 'variable'
-FIELDS_DICT = 'fields_dict'
-T_ID = 't_id'
-DESCRIPTION = 'description'
-ILICODE = 'ilicode'
-DISPLAY_NAME = 'display_name'
-COMPOSED_KEY_SEPARATOR = ".."
 
+T_ID_KEY = 't_id'
+DESCRIPTION_KEY = 'description'
+ILICODE_KEY = 'ilicode'
+DISPLAY_NAME_KEY = 'display_name'
+    
 
-class Names:
+class TableAndFieldNames:
     """
     Note: Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
           one could shorten table and field names via ili2db.
     """
+    VARIABLE_NAME = 'variable'
+    FIELDS_DICT = 'FIELDS_DICT'
+
     ############################################ TABLE VARIABLES ###########################################################
     T_ID_F = None
     ILICODE_F = None
@@ -1126,25 +1131,25 @@ class Names:
         table_names_count = 0
         field_names_count = 0
         if dict_names:
-            if T_ID not in dict_names or DISPLAY_NAME not in dict_names or ILICODE not in dict_names or DESCRIPTION not in dict_names:
+            if T_ID_KEY not in dict_names or DISPLAY_NAME_KEY not in dict_names or ILICODE_KEY not in dict_names or DESCRIPTION_KEY not in dict_names:
                 self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
                 return False
 
             for table_key, attrs in self.TABLE_DICT.items():
                 if table_key in dict_names:
-                    setattr(self, attrs[VARIABLE_NAME], dict_names[table_key][TABLE_NAME])
+                    setattr(self, attrs[self.VARIABLE_NAME], dict_names[table_key][QueryNames.TABLE_NAME])
                     table_names_count += 1
                     any_update = True
-                    for field_key, field_variable in attrs[FIELDS_DICT].items():
+                    for field_key, field_variable in attrs[self.FIELDS_DICT].items():
                         if field_key in dict_names[table_key]:
                             setattr(self, field_variable, dict_names[table_key][field_key])
                             field_names_count += 1
 
             # Required fields mapped in a custom way
-            self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
-            self.ILICODE_F = dict_names[ILICODE] if ILICODE in dict_names else None
-            self.DESCRIPTION_F = dict_names[DESCRIPTION] if DESCRIPTION in dict_names else None
-            self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME] if DISPLAY_NAME in dict_names else None
+            self.T_ID_F = dict_names[T_ID_KEY] if T_ID_KEY in dict_names else None
+            self.ILICODE_F = dict_names[ILICODE_KEY] if ILICODE_KEY in dict_names else None
+            self.DESCRIPTION_F = dict_names[DESCRIPTION_KEY] if DESCRIPTION_KEY in dict_names else None
+            self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME_KEY] if DISPLAY_NAME_KEY in dict_names else None
 
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
@@ -1156,8 +1161,8 @@ class Names:
         Make all table and field variables None again to prepare the next mapping.
         """
         for table_key, attrs in self.TABLE_DICT.items():
-            setattr(self, attrs[VARIABLE_NAME], None)
-            for field_key, field_variable in attrs[FIELDS_DICT].items():
+            setattr(self, attrs[self.VARIABLE_NAME], None)
+            for field_key, field_variable in attrs[self.FIELDS_DICT].items():
                 setattr(self, field_variable, None)
 
         self.T_ID_F = None
@@ -1212,8 +1217,8 @@ class Names:
         # Names that are mapped in the code
         mapped_names = dict()
         for k, v in self.TABLE_DICT.items():
-            mapped_names[k] = v[VARIABLE_NAME]
-            for k1, v1 in v[FIELDS_DICT].items():
+            mapped_names[k] = v[self.VARIABLE_NAME]
+            for k1, v1 in v[self.FIELDS_DICT].items():
                 mapped_names[k1] = v1
 
         # Iterate names from DB and add to a list to check only those that coming from the DB are also mapped in code
@@ -1240,7 +1245,7 @@ class Names:
         return (True, "")
 
 
-class AuxNames(metaclass=Singleton):
+class LADMNames(metaclass=Singleton):
     """
     Singleton to handle domain values ('which are not dependent on the database engine') a single point of access.
     """
@@ -1279,6 +1284,62 @@ class AuxNames(metaclass=Singleton):
     SOURCE_PACKAGE = "Fuentes"
 
     RESTRICTION_TYPE_D_RIGHT_OF_WAY_ILICODE_VALUE = "Servidumbre"
+
+    """
+    LADM VARIABLES
+    """
+    LADM_MODEL_PREFIX = "LADM_COL"
+    SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+    SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
+    SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+    OPERATION_MODEL_PREFIX = "Operacion"
+    ANT_MODEL_PREFIX = "ANT"
+    CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+    REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
+    VALUATION_MODEL_PREFIX = "Avaluos"
+
+    ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
+        LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
+        SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
+        SUPPLIES_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+        SUPPLIES_INTEGRATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings",
+                                                                      "Supplies integration data"),
+        OPERATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
+        ANT_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
+        CADASTRAL_FORM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral form"),
+        REFERENCE_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cartography"),
+        VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
+    }
+
+    ASSISTANT_SUPPORTED_MODELS = ["{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL),
+                                  "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS),
+                                  "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)]
+
+    DEFAULT_MODEL_NAMES_CHECKED = {
+        '{}_V{}'.format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
+        '{}_V{}'.format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Checked
+    }
+
+    DEFAULT_INHERITANCE = 'smart2'
+    # Settings to create schema according to LADM-COL
+    CREATE_BASKET_COL = False
+    CREATE_IMPORT_TID = False
+    STROKE_ARCS = True
+
+    # For testing if an schema comes from ili2db
+    INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
     # TODO: Remove when LADM model version 3 is fully defined
 
@@ -1368,3 +1429,27 @@ class AuxNames(metaclass=Singleton):
         }
     }
 
+
+class QueryNames:
+    TABLE_NAME = 'table_name'
+    TABLE_ILINAME = 'table_iliname'
+    FIELD_ILINAME = 'field_iliname'
+    FIELD_NAME = 'field_name'
+
+    SCHEMA_NAME = 'schema_name'
+    PRIMARY_KEY = 'primary_key'
+    GEOMETRY_COLUMN = 'geometry_column'
+    SRID = 'srid'
+    MODEL = 'model'
+    REFERENCING_LAYER = 'referencing_table'
+    REFERENCING_FIELD = 'referencing_column'
+    REFERENCED_LAYER = 'referenced_table'
+    REFERENCED_FIELD = 'referenced_column'
+
+    # QGIS Model Baker definitions
+    SCHEMA_NAME_MODEL_BAKER = 'schemaname'
+    TABLE_NAME_MODEL_BAKER = 'tablename'
+    KIND_SETTINGS_MODEL_BAKER = 'kind_settings'
+    GEOMETRY_TYPE_MODEL_BAKER = 'type'
+    TABLE_ALIAS = 'table_alias'
+    RELATION_NAME_MODEL_BAKER = 'constraint_name'

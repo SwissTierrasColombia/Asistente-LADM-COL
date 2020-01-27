@@ -22,44 +22,18 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from asistente_ladm_col.config.table_mapping_config import AuxNames
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_CLASS,
-                                                      WIZARD_FEATURE_NAME,
-                                                      WIZARD_UI,
-                                                      WIZARD_HELP,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_QSETTINGS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
-                                                      WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE,
-                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
-                                                      WIZARD_HELP1,
-                                                      WIZARD_HELP2,
-                                                      WIZARD_HELP3,
-                                                      WIZARD_HELP4,
-                                                      WIZARD_HELP5,
-                                                      WIZARD_TYPE,
-                                                      WIZARD_LAYERS,
-                                                      WIZARD_EDITING_LAYER_NAME,
-                                                      WIZARD_MAP_LAYER_PROXY_MODEL,
-                                                      WIZARD_READ_ONLY_FIELDS,
-                                                      WIZARD_CREATE_COL_PARTY_CADASTRAL,
-                                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION,
-                                                      WIZARD_CREATE_BOUNDARY_OPERATION,
-                                                      WIZARD_CREATE_BUILDING_OPERATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_OPERATION,
-                                                      WIZARD_CREATE_RIGHT_OPERATION,
-                                                      WIZARD_CREATE_RESTRICTION_OPERATION,
-                                                      WIZARD_CREATE_SPATIAL_SOURCE_OPERATION,
-                                                      WIZARD_CREATE_PARCEL_OPERATION,
-                                                      WIZARD_CREATE_PLOT_OPERATION,
-                                                      WIZARD_CREATE_EXT_ADDRESS_OPERATION,
-                                                      WIZARD_CREATE_RIGHT_OF_WAY_OPERATION,
-                                                      WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
-                                                      WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_VALUATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
-                                                      WIZARD_TOOL_NAME)
+from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.general_config import LAYER, WIZARD_CLASS, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
+    WIZARD_HELP_PAGES, WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, \
+    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, WIZARD_TOOL_NAME, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, WIZARD_HELP4, \
+    WIZARD_HELP5, WIZARD_TYPE, WIZARD_LAYERS, WIZARD_EDITING_LAYER_NAME, WIZARD_MAP_LAYER_PROXY_MODEL, \
+    WIZARD_READ_ONLY_FIELDS, WIZARD_CREATE_COL_PARTY_CADASTRAL, WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION, \
+    WIZARD_CREATE_BOUNDARY_OPERATION, WIZARD_CREATE_BUILDING_OPERATION, WIZARD_CREATE_BUILDING_UNIT_OPERATION, \
+    WIZARD_CREATE_RIGHT_OPERATION, WIZARD_CREATE_RESTRICTION_OPERATION, WIZARD_CREATE_SPATIAL_SOURCE_OPERATION, \
+    WIZARD_CREATE_PARCEL_OPERATION, WIZARD_CREATE_PLOT_OPERATION, WIZARD_CREATE_EXT_ADDRESS_OPERATION, \
+    WIZARD_CREATE_RIGHT_OF_WAY_OPERATION, WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, \
+    WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, WIZARD_CREATE_BUILDING_UNIT_VALUATION, \
+    WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION
 
 from asistente_ladm_col.config.enums import WizardTypeEnum
 from asistente_ladm_col.gui.wizards.operation.wiz_create_parcel_operation import CreateParcelOperationWizard
@@ -402,9 +376,9 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_GEOECONOMIC_ZONE_TABLE,
+                WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -424,9 +398,9 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    AuxNames.VALUATION_PHYSICAL_ZONE_TABLE: {'name': AuxNames.VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.VALUATION_PHYSICAL_ZONE_TABLE: {'name': LADMNames.VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_PHYSICAL_ZONE_TABLE,
+                WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_PHYSICAL_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
@@ -448,11 +422,11 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    AuxNames.VALUATION_BUILDING_UNIT_TABLE: {'name': AuxNames.VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
+                    LADMNames.VALUATION_BUILDING_UNIT_TABLE: {'name': LADMNames.VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
                     names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AuxNames.AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE: {'name': LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_BUILDING_UNIT_TABLE,
+                WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_BUILDING_UNIT_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
@@ -478,12 +452,12 @@ class WizardConfig:
                     WIZARD_HELP5: help_strings.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM
                 },
                 WIZARD_LAYERS: {
-                    AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {
-                        'name': AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None},
-                    AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
-                        'name': AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {
+                        'name': LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None},
+                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
+                        'name': LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
                 },
-                WIZARD_EDITING_LAYER_NAME: AuxNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
+                WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
