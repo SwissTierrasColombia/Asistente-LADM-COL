@@ -1865,27 +1865,30 @@ class QualityUtils(QObject):
                               QgsField(QCoreApplication.translate("QualityConfigStrings", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
-        records = db.execute_sql_query(query)
+        res, records = db.execute_sql_query(query)
 
-        new_features = []
-        for record in records:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer,QgsGeometry(), {0: record[db.names.T_ID_F], 1:desc_error})
-            new_features.append(new_feature)
+        if res:
+            new_features = []
+            for record in records:
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,QgsGeometry(), {0: record[db.names.T_ID_F], 1:desc_error})
+                new_features.append(new_feature)
 
-        error_layer.dataProvider().addFeatures(new_features)
+            error_layer.dataProvider().addFeatures(new_features)
 
-        if len(new_features) > 0:
-            if error_layer_exist is False:
-                added_layer = self.add_error_layer(db, error_layer)
+            if len(new_features) > 0:
+                if error_layer_exist is False:
+                    added_layer = self.add_error_layer(db, error_layer)
+                else:
+                    added_layer = error_layer
+
+                self.log_message(QCoreApplication.translate("QualityUtils",
+                                 "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table))
+
             else:
-                added_layer = error_layer
-
-            self.log_message(QCoreApplication.translate("QualityUtils",
-                             "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table))
-
+                self.log_message(QCoreApplication.translate("QualityUtils",
+                                 "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
         else:
-            self.log_message(QCoreApplication.translate("QualityUtils",
-                             "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule, records))
 
     @_log_quality_checks
     def advanced_logic_validations(self, db, rule, rule_name):

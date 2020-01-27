@@ -655,15 +655,15 @@ class PGConnector(DBConnector):
         """
         res, msg = self.check_and_fix_connection()
         if not res:
-            return (res, msg)
+            return res, msg
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         try:
             cur.execute(query)
-            return cur.fetchall()
-        except ProgrammingError:
-            return None
+            return True, cur.fetchall()
+        except ProgrammingError as e:
+            return False, e
 
     def execute_sql_query_dict_cursor(self, query):
         """
@@ -687,11 +687,13 @@ class PGConnector(DBConnector):
     def get_models(self, schema=None):
         query = "SELECT distinct split_part(iliname,'.',1) as modelname FROM {schema}.t_ili2db_trafo".format(
             schema=schema if schema else self.schema)
-        result = self.execute_sql_query(query)
+        res, result = self.execute_sql_query(query)
         lst_models = list()
-        if result is not None:
-            lst_models = [db_model['modelname'] for db_model in result] 
-        self.logger.debug(__name__, "Models found: {}".format(lst_models))
+        if res:
+            lst_models = [db_model['modelname'] for db_model in result]
+            self.logger.debug(__name__, "Models found: {}".format(lst_models))
+        else:
+            self.logger.error_msg(__name__, "Error getting models: {}".format(result))
         return lst_models
 
     def create_database(self, uri, db_name):
