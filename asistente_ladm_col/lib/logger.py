@@ -109,7 +109,10 @@ class Logger(QObject, metaclass=SingletonQObject):
     def clear_message_bar(self):
         self.clear_message_bar_emitted.emit()
 
-    def status(self, msg):
+    def clear_status(self):
+        self.status()
+
+    def status(self, msg=None):
         if msg is None:
             self.clear_status_bar_emitted.emit()
         else:
