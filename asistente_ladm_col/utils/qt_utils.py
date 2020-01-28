@@ -290,4 +290,4 @@ class ProcessWithStatus():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
-        Logger().status(None)
+        Logger().clear_status()

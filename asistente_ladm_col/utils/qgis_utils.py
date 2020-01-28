@@ -326,7 +326,7 @@ class QGISUtils(QObject):
                     profiler.end()
                     self.logger.debug(__name__, "Post load... {}".format(profiler.totalTime()))
                     profiler.clear()
-                    self.logger.status(None)
+                    self.logger.clear_status()
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)

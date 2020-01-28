@@ -108,12 +108,12 @@ class MissingCobolSupplies(CobolBaseDialog):
                         self.progress_base = 100  # We start counting a second step from 100
 
                         # Since we have two steps, we need to check at this point if the user already canceled
-                        if not self.MyFeedBack.isCanceled():
-                            self.logger.status('')
+                        if not self.custom_feedback.isCanceled():
+                            self.logger.clear_status()
                             res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
                             if res_gpkg:
                                 self.generate_excel_report()
-                                if not self.MyFeedBack.isCanceled():
+                                if not self.custom_feedback.isCanceled():
                                     self.progress.setValue(self.progress_maximum)
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
@@ -125,17 +125,17 @@ class MissingCobolSupplies(CobolBaseDialog):
                                         path1=self.xlsx_path,
                                         normalized_path2=normalize_local_url(self.gpkg_path),
                                         path2=self.gpkg_path)
-                                    self.logger.status('')
+                                    self.logger.clear_status()
                                     self.logger.success_msg(__name__, msg)
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.progress_base = 0
-                                    self.logger.status('')
+                                    self.logger.clear_status()
 
                                 self._running_tool = False
                             else:
                                 # User could have canceled while running the second algorithm
-                                if self.MyFeedBack.isCanceled():
+                                if self.custom_feedback.isCanceled():
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.progress_base = 0
                                     self._running_tool = False
@@ -145,7 +145,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                             self.initialize_feedback()
                             self.progress_base = 0
                             self._running_tool = False
-                            self.logger.status('')
+                            self.logger.clear_status()
                     else:
                         self.show_message(msg_gdb, Qgis.Warning)
                 else:
@@ -195,7 +195,7 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         try:
             self.output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol",
-                {'rconstruccion': self.gdb_paths['R_CONSTRUCCION'],
+                                                           {'rconstruccion': self.gdb_paths['R_CONSTRUCCION'],
                 'rterreno': self.gdb_paths['R_TERRENO'],
                 'runidad': self.gdb_paths['R_UNIDAD'],
                 'rvereda': self.gdb_paths['R_VEREDA'],
@@ -214,9 +214,9 @@ class MissingCobolSupplies(CobolBaseDialog):
                 'qgis:refactorfields_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
                 'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT',
                 'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT'},
-                feedback=self.MyFeedBack)
+                                                           feedback=self.custom_feedback)
         except QgsProcessingException as e:
-            if self.MyFeedBack.isCanceled():
+            if self.custom_feedback.isCanceled():
                 # The algorithm can throw errors even if canceled, so catch them and if we canceled, silent them.
                 return False, 'Missing cobol supplies algorithm canceled!'
             else:
@@ -245,9 +245,9 @@ class MissingCobolSupplies(CobolBaseDialog):
                     'OUTPUT': self.gpkg_path,
                     'OVERWRITE': True,
                     'SAVE_STYLES': True},
-                feedback=self.MyFeedBack)
+                                               feedback=self.custom_feedback)
         except QgsProcessingException as e:
-            if self.MyFeedBack.isCanceled():
+            if self.custom_feedback.isCanceled():
                 # The algorithm can throw errors even if canceled, so catch them and if we canceled, silent them.
                 return False, 'Package results canceled!'
             else:

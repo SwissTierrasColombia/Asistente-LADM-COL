@@ -29,12 +29,12 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
+
 
 class ETLCobolDialog(CobolBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -95,15 +95,15 @@ class ETLCobolDialog(CobolBaseDialog):
                             if res_model:
                                 self._running_tool = True
                                 self.run_model_etl_cobol()
-                                if not self.MyFeedBack.isCanceled():
+                                if not self.custom_feedback.isCanceled():
                                     self.progress.setValue(100)
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
-                                    self.logger.status('')
+                                    self.logger.clear_status()
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
-                                    self.logger.status('')
+                                    self.logger.clear_status()
                                 self._running_tool = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)
@@ -125,8 +125,8 @@ class ETLCobolDialog(CobolBaseDialog):
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)
         self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies", 
-            {'barrio': self.gdb_paths['U_BARRIO'],
+        processing.run("model:ETL-model-supplies",
+                       {'barrio': self.gdb_paths['U_BARRIO'],
             'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
             'gccomisionconstruccion': self._layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
             'gccomisionterreno': self._layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
@@ -159,7 +159,7 @@ class ETLCobolDialog(CobolBaseDialog):
             'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
             'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
-            feedback=self.MyFeedBack)
+                       feedback=self.custom_feedback)
         self.logger.info(__name__, "ETL-Cobol model finished.")
 
     def validate_inputs(self):
