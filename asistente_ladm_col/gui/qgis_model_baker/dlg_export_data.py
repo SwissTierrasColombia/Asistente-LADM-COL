@@ -42,8 +42,8 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_HIDDEN_MODELS,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
@@ -140,7 +140,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         if model_names:
             for model_name in model_names:
-                if model_name not in DEFAULT_HIDDEN_MODELS:
+                if model_name not in LADMNames.DEFAULT_HIDDEN_MODELS:
                     item = QStandardItem(model_name)
                     item.setCheckable(False)
                     item.setEditable(False)

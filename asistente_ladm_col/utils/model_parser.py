@@ -19,7 +19,6 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import LATEST_OPERATION_MODEL_VERSION_SUPPORTED
 from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
@@ -101,13 +100,13 @@ class ModelParser(QObject):
 
         res = is_version_valid(
                 self.current_version_operation_model,
-                LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+                LADMNames.LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
                 False,  # Exact version required
                 QCoreApplication.translate("ModelParser", "Operation Model"))
         if not res:
             return (False, QCoreApplication.translate("ModelParser", "MODEL VERSION INVALID: The 'Operation' model version found in the database ({}) is not supported (it is lesser than {})!").format(
                 self.current_version_operation_model,
-                LATEST_OPERATION_MODEL_VERSION_SUPPORTED))
+                LADMNames.LATEST_OPERATION_MODEL_VERSION_SUPPORTED))
 
         return (True, QCoreApplication.translate("ModelParser", "Supported model version!"))
 

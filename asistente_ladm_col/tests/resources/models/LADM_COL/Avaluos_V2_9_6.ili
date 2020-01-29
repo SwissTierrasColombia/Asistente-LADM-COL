@@ -1,0 +1,451 @@
+INTERLIS 2.3;
+
+/** Perfil Nacional colombiano de la ISO 19152 LADM COL generado con INTERLIS 2 - Extension de Avaluos.
+ * 
+ * -----------------------------------------------------------
+ *  Revisiones historicas
+ *  2017.06.02 vbp: Extraido el modelo a parir del TOPIC del mismo nombre en el modelo de Catastro y Registro
+ *  2017.06.29 vbp: Añadidos dominios procedentes de Catastro-Registro
+ *  2017.06.29 vbp: Extraidos dominios de valores de atributos de las clases --> integridad estructural, facilidad de lectura, unicidad de criterio en todos los modelos.
+ * -----------------------------------------------------------
+ * 
+ *  02.06.2017/vb: Generacion del modelo extraido a partir de version anterior del modelo de Catastro, donde aparecia como TOPIC
+ *  09.11.2017/ : cambio de nombre al dominio COL_DestinoEconomicoTipo
+ *  01.02.2018/ : Cambio en cardinalidad en asociacion avaluoPredio de 1 a 0..1
+ *  05.02.2018/ : Cambio en cardinalidad en asociaciones avaluoConstruccion y AvaluoUnidadConstruccion de 1 a 0..1
+ *  07.03.2018/fm-gc : Cambio en tipo de geometria de las clases Zona_Homogenea_Fisica y Zona_Homogenea_Geoeconomica de GM_Surface2D a GM_MultiSurface2D
+ *  08.03.2018/fm-gc: se ajusta la cardinalidad de atributo Comun_Uso_Exclusivo en la clase Predio
+ *  09.07.2018/ : Cambio en cardinalidad en asociaciones avaluoConstruccion y AvaluoUnidadConstruccion de 1 a 0..1
+ * 08.08.2018/ : (AT) Se agrega la clase abstracta Calificacion_Unidad_Construccion con clases especializadas Calificacion_No_Convencional y Calificacion_Convencional; Cambio en la cardinalidad de relación entre Unidad_Construccion y Calificacion_Unidad_Construccion pasa de 1 - 1..* a 1 - 1; Cambio en los valores del dominio COL_AccesoTipo; Se agrega el atributo numérico Nivel_de_Acceso en clase Unidad_Construccion; Cambio en el nombre del atributo Actividad_Econo por Uso; Se agrega el dominio COL_UsoConstruccionTipo para que tengan correspondencia con dominios SNC; Cambio en tipo de dato Material de manera que se quita el dominio y se deja abierto para el operador; Cambio en los valores del dominio COL_DestinoEconomicoTipo; Se elimina el atributo numero_total_pisos de clase Unidad_Construccion; Se cambia la cardinalidad de los atributos de Unidad_Construccion y Predio; Cambio de nombre en los atributos Conservacion_Cubierta y Puntos_Cubierta_Conservacion de la clase Calificacion_Convencional por Conservacion_Estructura y Puntos_Estructura_Conservacion; Ajuste de valores de los dominio COL_TipoCalificarTipo, COL_ArmazonTipo, COL_MurosTipo, COL_CubiertaTipo, COL_CubrimientoMurosTipo, COL_CalidadEnchapeTipo; Se agregan los dominios COL_ConservacionCalificacion y COL_AnexoTipo; Se adiciona el atributo Num_Sotanos en la clase Predio_Matriz_PH
+ * 21.08.2018/ : (AT) Se modifica el atributo Cercania_Hitos de la clase Predio dejandolo de tipo String
+ * 23.08.2018/ : (AT) Se cambia el nombre de la relación y de los roles entre unidad_construccion y calificacion_unidad_construccion
+ * 
+ * -----------------------------------------------------------
+ * 
+ *  (c) IGAC y SNR con apoyo de la Cooperacion Suiza
+ * 
+ * -----------------------------------------------------------
+ */
+MODEL Avaluos_V2_9_6 (es)
+AT "http://www.proadmintierra.info/"
+VERSION "V2.2.1"  // 2018-02-01 // =
+  IMPORTS ISO19107_PLANAS_V1,Operacion_V2_9_6,LADM_COL_V1_3;
+
+  DOMAIN
+
+    AV_DisponibilidadAguaTipo = (
+      !!@ ili2db.dispName = "Zonas con aguas abundantes"
+      Zonas_Con_Aguas_Abundantes,
+      !!@ ili2db.dispName = "Zonas con aguas suficientes"
+      Zonas_Con_Aguas_Suficientes,
+      !!@ ili2db.dispName = "Zonas con aguas escasas"
+      Zonas_Con_Aguas_Escasas,
+      !!@ ili2db.dispName = "Zonas sin agua"
+      Zonas_Sin_Aguas
+    );
+
+    AV_InfluenciaVialRuralTipo = (
+      !!@ ili2db.dispName = "Buenas 1 - Pavimentada, dos o más vías"
+      Buenas_1,
+      !!@ ili2db.dispName = "Buenas 2 - Sin pavimentar, dos o más vías"
+      Buenas_2,
+      !!@ ili2db.dispName = "Regulares 3 - Pavimentadas, vía angosta"
+      Regulares_3,
+      !!@ ili2db.dispName = "Regulares 4 - Sin pavimentar, vía angosta"
+      Regulares_4,
+      !!@ ili2db.dispName = "Malas 5 - Transitable en tiempo seco"
+      Malas_5,
+      !!@ ili2db.dispName = "Malas 6 - Carreteable sólo para vehículos medianos"
+      Malas_6,
+      !!@ ili2db.dispName = "Malas 7 - Camino real o de herradura"
+      Malas_7,
+      !!@ ili2db.dispName = "Sin vías 8 - Sendero"
+      Sin_Vias_8,
+      !!@ ili2db.dispName = "Sin vías 9 - Sin vías"
+      Sin_Vias_9
+    );
+
+    AV_InfluenciaVialUrbanaTipo = (
+      !!@ ili2db.dispName = "Pavimentadas"
+      Pavimentadas,
+      !!@ ili2db.dispName = "Sin pavimentar"
+      Sin_Pavimentar,
+      !!@ ili2db.dispName = "Peatonales"
+      Peatonales,
+      !!@ ili2db.dispName = "Sin vías"
+      Sin_Vias
+    );
+
+    AV_ServiciosPublicosTipo = (
+      !!@ ili2db.dispName = "Sin servicios"
+      Sin_Servicios,
+      !!@ ili2db.dispName = "Servicios básicos incompletos"
+      Servicios_Basicos_incompletos,
+      !!@ ili2db.dispName = "Servicios básicos completos"
+      Servicios_Basicos_Completos,
+      !!@ ili2db.dispName = "Servicios básicos y complementarios"
+      Servicios_Basicos_Y_Complementarios,
+      !!@ ili2db.dispName = "Servicios básicos incompletos y complementarios"
+      Servicios_Basicos_Incompletos_Y_Complementarios
+    );
+
+    AV_TipificacionConstruccionTipo = (
+      !!@ ili2db.dispName = "Residencial 1 – (Bajo-Bajo)"
+      Residencial_1_Bajo_Bajo,
+      !!@ ili2db.dispName = "Residencial 2 – (Bajo)"
+      Residencial_2_Bajo,
+      !!@ ili2db.dispName = "Residencial 3 – (Medio-Bajo)"
+      Residencial_3_Medio_Bajo,
+      !!@ ili2db.dispName = "Residencial 4 – (Medio)"
+      Residencial_4_Medio,
+      !!@ ili2db.dispName = "Residencial 5 – (Medio-Alto)"
+      Residencial_5_Medio_Alto,
+      !!@ ili2db.dispName = "Residencial 6 – (Alto)"
+      Residencial_6_Alto,
+      !!@ ili2db.dispName = "Comercial barrial"
+      Comercial_Barrial,
+      !!@ ili2db.dispName = "Comercial sectorial"
+      Comercial_Sectorial
+    );
+
+    AV_TopografiaZonaTipo = (
+      !!@ ili2db.dispName = "Plano"
+      Plano,
+      !!@ ili2db.dispName = "Inclinado"
+      Inclinado,
+      !!@ ili2db.dispName = "Empinado"
+      Empinado
+    );
+
+    AV_UsoSueloRuralTipo = (
+      !!@ ili2db.dispName = "Edificios"
+      Edificios,
+      !!@ ili2db.dispName = "Otras construcciones"
+      Otras_Construcciones,
+      !!@ ili2db.dispName = "Parques naturales"
+      Parques_Naturales,
+      !!@ ili2db.dispName = "Cultivos de carácter permanente"
+      Cultivos_De_Caracter_Permanente,
+      !!@ ili2db.dispName = "Tierras de labor irrigadas"
+      Tierras_De_Labor_Irrigadas,
+      !!@ ili2db.dispName = "Tierras de labor no irrigadas"
+      Tierras_De_Labor_No_Irrigadas,
+      !!@ ili2db.dispName = "Tierras con maleza"
+      Tierras_Con_Maleza,
+      !!@ ili2db.dispName = "Tierras improductivas"
+      Tierras_Improductivas,
+      !!@ ili2db.dispName = "Pastos naturales"
+      Pastos_Naturales,
+      !!@ ili2db.dispName = "Pastos artificiales"
+      Pastos_Artificales,
+      !!@ ili2db.dispName = "Pastos naturales mejorados"
+      Pastos_Naturales_Mejorados,
+      !!@ ili2db.dispName = "Bosques"
+      Bosques,
+      !!@ ili2db.dispName = "Selvas vírgenes"
+      Selvas_Virgenes,
+      !!@ ili2db.dispName = "Cuerpos de agua"
+      Cuerpos_De_Agua,
+      !!@ ili2db.dispName = "Condiciones especiales"
+      Condiciones_Especiales,
+      !!@ ili2db.dispName = "Mixto"
+      Mixto
+    );
+
+    AV_UsoSueloUrbanoTipo = (
+      !!@ ili2db.dispName = "Residencial"
+      Residencial,
+      !!@ ili2db.dispName = "Comercial"
+      Comercial,
+      !!@ ili2db.dispName = "Industrial"
+      Industrial,
+      !!@ ili2db.dispName = "Institucional"
+      Institucional,
+      !!@ ili2db.dispName = "Lote"
+      Lote
+    );
+
+    AV_UsoUConsTipo = (
+      !!@ ili2db.dispName = "Vivienda de hasta 3 pisos"
+      Vivienda_Hasta_3_Pisos,
+      !!@ ili2db.dispName = "Ramadas, cobertizos o caneyes"
+      Ramadas_Cobertizos_Caneyes,
+      !!@ ili2db.dispName = "Galpones o gallineros"
+      Galpones_Gallineros,
+      !!@ ili2db.dispName = "Establos, pesebreras o caballerizas"
+      Establos_Pesebreras_Caballerizas,
+      !!@ ili2db.dispName = "Cocheras, bañeras o porquerizas"
+      Cocheras_Banieras_Porquerizas,
+      !!@ ili2db.dispName = "Bodega casa bomba"
+      Bodega_Casa_Bomba,
+      !!@ ili2db.dispName = "Industrias"
+      Industrias,
+      !!@ ili2db.dispName = "Silos"
+      Silos,
+      !!@ ili2db.dispName = "Piscinas"
+      Piscinas,
+      !!@ ili2db.dispName = "Tanques"
+      Tanques,
+      !!@ ili2db.dispName = "Beneficiaderos"
+      Beneficiaderos,
+      !!@ ili2db.dispName = "Colegios y universidades"
+      Colegios_Y_Universidades,
+      !!@ ili2db.dispName = "Bibliotecas"
+      Bibliotecas,
+      !!@ ili2db.dispName = "Garajes cubiertos"
+      Garajes_Cubiertos,
+      !!@ ili2db.dispName = "Bodegas comerciales, grandes almacenes"
+      Bodegas_Comerciales_Grandes_Almacenes,
+      !!@ ili2db.dispName = "Secaderos"
+      Secaderos,
+      !!@ ili2db.dispName = "Centros hospitales, centros médicos"
+      Clinicas_Hospitales_Centros_Medicos,
+      !!@ ili2db.dispName = "Pozos"
+      Pozos,
+      !!@ ili2db.dispName = "Kioskos"
+      Kioskos,
+      !!@ ili2db.dispName = "Albercas o bañaderas"
+      Albercas_Baniaderas,
+      !!@ ili2db.dispName = "Hoteles en propiedad horizontal"
+      Hoteles_En_PH,
+      !!@ ili2db.dispName = "Corrales"
+      Corrales,
+      !!@ ili2db.dispName = "Casa de elbas"
+      Casa_Elbas,
+      !!@ ili2db.dispName = "Comercio"
+      Comercio,
+      !!@ ili2db.dispName = "Iglesias"
+      Iglesias,
+      !!@ ili2db.dispName = "Hoteles"
+      Hoteles,
+      !!@ ili2db.dispName = "Clubes o casinos"
+      Clubes_Casinos,
+      !!@ ili2db.dispName = "Oficinas o consultorios"
+      Oficinas_Consultorios,
+      !!@ ili2db.dispName = "Apartamentos de más de 4 pisos"
+      Apartamentos_Mas_De_4_Pisos,
+      !!@ ili2db.dispName = "Restaurante"
+      Restaurante,
+      !!@ ili2db.dispName = "Pensiones o residencias"
+      Pensiones_Residencias,
+      !!@ ili2db.dispName = "Puesto de salud"
+      Puesto_De_Salud,
+      !!@ ili2db.dispName = "Parqueaderos"
+      Parqueaderos,
+      !!@ ili2db.dispName = "Barracas"
+      Barracas,
+      !!@ ili2db.dispName = "Teatro o cinemas"
+      Teatro_Cinemas,
+      !!@ ili2db.dispName = "Aulas de clase"
+      Aulas_De_Clase,
+      !!@ ili2db.dispName = "Coliseos"
+      Coliseos,
+      !!@ ili2db.dispName = "Casas de culto"
+      Casas_De_Culto,
+      !!@ ili2db.dispName = "Talleres"
+      Talleres,
+      !!@ ili2db.dispName = "Jardín infantil en casa"
+      Jardin_Infantil_En_Casa,
+      !!@ ili2db.dispName = "Torres de enfriamiento"
+      Torres_De_Enfriamiento,
+      !!@ ili2db.dispName = "Muelles"
+      Muelles,
+      !!@ ili2db.dispName = "Estación de bombeo"
+      Estacion_De_Bombeo,
+      !!@ ili2db.dispName = "Estadio, plaza de toros"
+      Estadio_Plaza_De_Toros,
+      !!@ ili2db.dispName = "Cárceles"
+      Carceles,
+      !!@ ili2db.dispName = "Parque cementerio"
+      Parque_Cementerio,
+      !!@ ili2db.dispName = "Vivienda colonial"
+      Vivienda_Colonial,
+      !!@ ili2db.dispName = "Comercio colonial"
+      Comercio_Colonial,
+      !!@ ili2db.dispName = "Oficinas o consultorios colonial"
+      Oficinas_Consultorios_Colonial,
+      !!@ ili2db.dispName = "Apartamentos en edificios de 4 o 5 pisos"
+      Aptos_En_Edificios_4_5_Pisos,
+      !!@ ili2db.dispName = "Centros comerciales"
+      Centros_Comerciales,
+      !!@ ili2db.dispName = "Canchas de tenis"
+      Canchas_De_Tenis,
+      !!@ ili2db.dispName = "Toboganes"
+      Toboganes,
+      !!@ ili2db.dispName = "Vivienda recreacional"
+      Vivienda_Recreacional,
+      !!@ ili2db.dispName = "Camaroneras"
+      Camaroneras,
+      !!@ ili2db.dispName = "Fuertes y castillos"
+      Fuertes_Y_Castillos,
+      !!@ ili2db.dispName = "Murallas"
+      Murallas,
+      !!@ ili2db.dispName = "Vivienda de hasta 3 pisos"
+      Vivienda_Hasta_3_Pisos_En_PH,
+      !!@ ili2db.dispName = "Apartamentos de 4 y más pisos en propiedad horizontal"
+      Apartamentos_4_Y_Mas_Pisos_En_PH,
+      !!@ ili2db.dispName = "Vivienda recreacional en propiedad horizontal"
+      Vivienda_Recreacional_En_PH,
+      !!@ ili2db.dispName = "Bodega casa bomba en propiedad horizontal"
+      Bodega_Casa_Bomba_En_PH,
+      !!@ ili2db.dispName = "Bodega comercial en propiedad horizontal"
+      Bodega_Comercial_En_PH,
+      !!@ ili2db.dispName = "Comercio en propiedad horizontal"
+      Comercio_En_PH,
+      !!@ ili2db.dispName = "Centros comerciales en propiedad horizontal"
+      Centros_Comerciales_En_PH,
+      !!@ ili2db.dispName = "Oficinas o consultorios en propiedad horizontal"
+      Oficinas_Consultorios_En_PH,
+      !!@ ili2db.dispName = "Parqueaderos en propiedad horizontal"
+      Parqueaderos_En_PH,
+      !!@ ili2db.dispName = "Garajes en propiedad horizontal"
+      Garajes_En_PH,
+      !!@ ili2db.dispName = "Industria en propiedad horizontal"
+      Industria_En_PH,
+      !!@ ili2db.dispName = "Marquesinas, patios o cubiertos"
+      Marquesinas_Patios_Cubiertos,
+      !!@ ili2db.dispName = "Lagunas de oxidación"
+      Lagunas_De_Oxidacion,
+      !!@ ili2db.dispName = "Vía férrea"
+      Via_Ferrea,
+      !!@ ili2db.dispName = "Carretera"
+      Carretera,
+      !!@ ili2db.dispName = "Teatro o cinema en propiedad horizontal"
+      Teatro_Cinema_En_PH,
+      !!@ ili2db.dispName = "Iglesia en propiedad horizontal"
+      Iglesia_En_PH,
+      !!@ ili2db.dispName = "Restaurante en propiedad horizontal"
+      Restaurante_En_PH,
+      !!@ ili2db.dispName = "Hotel colonial"
+      Hotel_Colonial,
+      !!@ ili2db.dispName = "Restaurante colonial"
+      Restaurante_Colonial,
+      !!@ ili2db.dispName = "Entidad educativa colonial o colegio colonial"
+      Entidad_Educativa_Colonial_Colegio_Colonial,
+      !!@ ili2db.dispName = "Cimientos de estructura, muros y placa base"
+      Cimientos_Estructura_Muros_Y_Placa_Base
+    );
+
+  /** Este Topic agrupa a las clases específicas del avalúo, así como sus atributos.
+   */
+  TOPIC Avaluos =
+    OID AS INTERLIS.UUIDOID;
+    DEPENDS ON Operacion_V2_9_6.Operacion;
+
+    !!@ ili2db.dispName = "(Avalúos) Tabla Calificación de la Construcción"
+    CLASS AV_Tabla_Calificacion_Construccion =
+      !!@ ili2db.dispName = "Valor M2 de construcción"
+      Valor_M2_Construccion : TEXT*20;
+      !!@ ili2db.dispName = "Uso"
+      Uso : Avaluos_V2_9_6.AV_UsoUConsTipo;
+      !!@ ili2db.dispName = "Puntuación"
+      Puntuacion : TEXT*20;
+    END AV_Tabla_Calificacion_Construccion;
+
+    !!@ ili2db.dispName = "(Avalúos) Tipología de la construcción"
+    CLASS AV_Tipologia_Construccion =
+      !!@ ili2db.dispName = "Identificador de la tipología"
+      Id_Tipologia : TEXT*20;
+      !!@ ili2db.dispName = "Descripción de la tipología"
+      Descripcion_Tipologia : TEXT;
+      !!@ ili2db.dispName = "Uso"
+      Uso : TEXT;
+      !!@ ili2db.dispName = "Valor unitario"
+      Valor_Unitario : 0 .. 100000000000000000000000000000000000000000000000000 [LADM_COL_V1_3.COP];
+    END AV_Tipologia_Construccion;
+
+    /** Esta clase permite gestionar las zonas físicamente homogéneas definidas para el avalúo y que delimitan las zonas que tienen características físicas similares. REVISAR DOCUMENTACIÓN
+     */
+    !!@ ili2db.dispName = "(Avalúos) Zona homogénea física rural"
+    CLASS AV_Zona_Homogenea_Fisica_Rural =
+      /** Código único del registro de la instancia de ZonaHomegeneaFisca.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*7;
+      !!@ ili2db.dispName = "Código zona física"
+      Codigo_Zona_Fisica : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Área homogénea tierra"
+      Area_Homogenea_Tierra : 0.00 .. 99999999999999990000000.00;
+      !!@ ili2db.dispName = "Disponibilidad agua"
+      Disponibilidad_Agua : Avaluos_V2_9_6.AV_DisponibilidadAguaTipo;
+      !!@ ili2db.dispName = "Influencia vial"
+      Influencia_Vial : Avaluos_V2_9_6.AV_InfluenciaVialRuralTipo;
+      !!@ ili2db.dispName = "Uso actual del suelo"
+      Uso_Actual_Suelo : Avaluos_V2_9_6.AV_UsoSueloRuralTipo;
+      !!@ ili2db.dispName = "Norma uso del suelo"
+      Norma_Uso_Suelo : TEXT*250;
+      !!@ ili2db.dispName = "Vigencia"
+      Vigencia : INTERLIS.XMLDate;
+      /** Definición de la geometría espacial georreferenciada de la zona homogénea física, delimitada mediante un polígono que contiene sus linderos y la superficie ocupada.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END AV_Zona_Homogenea_Fisica_Rural;
+
+    !!@ ili2db.dispName = "(Avalúos) Zona homogénea fisíca urbana"
+    CLASS AV_Zona_Homogenea_Fisica_Urbana =
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*7;
+      !!@ ili2db.dispName = "Código zona física"
+      Codigo_Zona_Fisica : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Topografía"
+      Topografia : Avaluos_V2_9_6.AV_TopografiaZonaTipo;
+      !!@ ili2db.dispName = "Influencia vial"
+      Influencia_Vial : Avaluos_V2_9_6.AV_InfluenciaVialUrbanaTipo;
+      !!@ ili2db.dispName = "Servicio público"
+      Servicio_Publico : Avaluos_V2_9_6.AV_ServiciosPublicosTipo;
+      !!@ ili2db.dispName = "Uso actual del suelo"
+      Uso_Actual_Suelo : Avaluos_V2_9_6.AV_UsoSueloUrbanoTipo;
+      !!@ ili2db.dispName = "Norma uso del suelo"
+      Norma_Uso_Suelo : TEXT*250;
+      !!@ ili2db.dispName = "Tipificación de la construcción"
+      Tipificacion_Construccion : Avaluos_V2_9_6.AV_TipificacionConstruccionTipo;
+      !!@ ili2db.dispName = "Vigencia"
+      Vigencia : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END AV_Zona_Homogenea_Fisica_Urbana;
+
+    !!@ ili2db.dispName = "(Avalúos) Zona homogénea geoeconómica urbana"
+    CLASS AV_Zona_Homogenea_Geoeconomica_Urbana =
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*7;
+      !!@ ili2db.dispName = "Código zona geoeconómica"
+      Codigo_Zona_Geoeconomica : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Valor del metro cuadrado"
+      Valor_Metro : MANDATORY 0.00 .. 100000000000000000000000000000.00 [LADM_COL_V1_3.COP];
+      !!@ ili2db.dispName = "Subzona física"
+      Subzona_Fisica : TEXT;
+      !!@ ili2db.dispName = "Vigencia"
+      Vigencia : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END AV_Zona_Homogenea_Geoeconomica_Urbana;
+
+    /** Esta clase permite gestionar las zonas con características económicas y de localización geográfica similares, definidas para caracterizar el avalúo.
+     */
+    !!@ ili2db.dispName = "(Avalúos) Zona homogénea geoeconómica rural"
+    CLASS AV_Zona_Homogenea_Geoeconomica_Rural =
+      /** Código único del registro de la instancia de la zona geoeconómica.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*7;
+      !!@ ili2db.dispName = "Código zona geoeconómica"
+      Codigo_Zona_Geoeconomica : MANDATORY TEXT*20;
+      /** Valor económico de la zona homogénea que representa la instancia de la clase.
+       */
+      !!@ ili2db.dispName = "Valor por hectárea"
+      Valor_Hectarea : MANDATORY 0.00 .. 100000000000000000000000000000000.00;
+      !!@ ili2db.dispName = "Subzona física"
+      Subzona_Fisica : TEXT;
+      !!@ ili2db.dispName = "Vigencia"
+      Vigencia : INTERLIS.XMLDate;
+      /** Definición de la geometría espacial georreferenciada de la zona homogénea geoeconómica, delimitada mediante un polígono que contiene sus linderos y la superficie ocupada.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END AV_Zona_Homogenea_Geoeconomica_Rural;
+
+  END Avaluos;
+
+END Avaluos_V2_9_6.

@@ -76,7 +76,7 @@ class TestDBTestConnection(unittest.TestCase):
         db_pg = get_pg_conn('ladm_col_210')
         res, msg = db_pg.test_connection()
         self.assertFalse(res, msg)
-        self.assertIn("At least one LADM_COL model should exist! Supported models are 'LADM_COL_V1_3, Datos_SNR_V2_9_6, Datos_Gestor_Catastral_V2_9_6, Datos_Integracion_Insumos_V2_9_6, Operacion_V2_9_6, ANT_V2_9_6, Formulario_Catastro_V2_9_6, Cartografia_Referencia_V2_9_6, Avaluos_V2_9_6'", msg)
+        self.assertIn("At least one LADM_COL model should exist! Supported models are", msg)
         db_pg.conn.close()
 
     def test_gpkg_test_connection(self):

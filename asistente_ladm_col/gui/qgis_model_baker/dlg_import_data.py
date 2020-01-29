@@ -44,7 +44,6 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_HIDDEN_MODELS,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.config.mapping_config import LADMNames
@@ -164,7 +163,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 models_name = self.find_models_xtf(self.xtf_file_line_edit.text().strip())
 
                 for model_name in models_name:
-                    if not model_name in DEFAULT_HIDDEN_MODELS:
+                    if not model_name in LADMNames.DEFAULT_HIDDEN_MODELS:
                         item = QStandardItem(model_name)
                         item.setCheckable(False)
                         item.setEditable(False)

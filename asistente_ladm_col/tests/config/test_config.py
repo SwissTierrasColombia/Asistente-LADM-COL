@@ -19,6 +19,8 @@ TEST_SCHEMAS_MAPPING = {
     'interlis_ili2db3_ladm': 'interlis_ili2db3_ladm_col_221.backup',
     'bad_interlis_ladm': 'bad_interlis_ladm_col_v_2.9.6.backup',
     'ladm_col_210': 'ladm_col_operation_v_210.backup',
+    'test_import_data':'test_import_data_ladm_v2.9.6.backup',
+    'test_export_data':'test_export_data_ladm_v2.9.6.backup',
     'test_ladm_operation_model_gpkg': 'test_ladm_operation_model_v2_9_6.gpkg',
     'test_ladm_valuation_model_gpkg': 'test_ladm_valuation_model_v2_9_6.gpkg',
     'test_ladm_cadastral_form_model_gpkg': 'test_ladm_cadastral_form_model_v2_9_6.gpkg',

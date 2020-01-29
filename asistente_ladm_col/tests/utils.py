@@ -224,3 +224,7 @@ def get_required_tables(db_connection):
         if getattr(db_connection.names, value[db_connection.names.VARIABLE_NAME]):
             required_tables.append(value[db_connection.names.VARIABLE_NAME])
     return required_tables
+
+def testdata_path(path):
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(basepath, 'resources', path)

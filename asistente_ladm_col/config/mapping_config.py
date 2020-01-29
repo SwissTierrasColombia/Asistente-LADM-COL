@@ -1,8 +1,6 @@
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import (VERSION_LADM_MODEL,
-                                                      VERSION_EXTENDED_MODELS)
 from asistente_ladm_col.utils.singleton import Singleton
 from asistente_ladm_col.lib.logger import Logger
 
@@ -1298,6 +1296,30 @@ class LADMNames(metaclass=Singleton):
     REFERENCE_CARTOGRAPHY_PREFIX = "Cartografia_Referencia"
     VALUATION_MODEL_PREFIX = "Avaluos"
 
+    """
+    MODELS SUPPORTED IN LADM
+    """
+    # From this version on the plugin will work, a message will block prior versions
+    LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
+    LATEST_LADM_MODEL_VERSION_SUPPORTED = "1.3"
+    VERSION_EXTENDED_MODELS = LATEST_OPERATION_MODEL_VERSION_SUPPORTED.replace('.', '_')
+    VERSION_LADM_MODEL = LATEST_LADM_MODEL_VERSION_SUPPORTED.replace('.', '_')
+
+    SUPPORTED_ISO_CARTESIAN_COORDINATES = 'ISO19107_PLANAS_V1'
+    SUPPORTED_MAGNA_BOG_COORDINATES = 'ISO19107_V1_MAGNABOG'
+
+    SUPPORTED_LADM_MODEL= "{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL)
+    SUPPORTED_SNR_DATA_MODEL= "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_SUPPLIES_MODEL= "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_SUPPLIES_INTEGRATION_MODEL= "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_OPERATION_MODEL= "{}_V{}".format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_ANT_MODEL= "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_CADASTRAL_FORM_MODEL= "{}_V{}".format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_REFERENCE_CARTOGRAPHY= "{}_V{}".format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_VALUATION_MODEL= "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
+
+    DEFAULT_HIDDEN_MODELS = [SUPPORTED_LADM_MODEL, SUPPORTED_MAGNA_BOG_COORDINATES, SUPPORTED_ISO_CARTESIAN_COORDINATES]
+
     ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
         LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
         SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
@@ -1311,25 +1333,25 @@ class LADMNames(metaclass=Singleton):
         VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
     }
 
-    ASSISTANT_SUPPORTED_MODELS = ["{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL),
-                                  "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS),
-                                  "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)]
+    ASSISTANT_SUPPORTED_MODELS = [SUPPORTED_LADM_MODEL,
+                                  SUPPORTED_SNR_DATA_MODEL,
+                                  SUPPORTED_SUPPLIES_MODEL,
+                                  SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
+                                  SUPPORTED_OPERATION_MODEL,
+                                  SUPPORTED_ANT_MODEL,
+                                  SUPPORTED_CADASTRAL_FORM_MODEL,
+                                  SUPPORTED_REFERENCE_CARTOGRAPHY,
+                                  SUPPORTED_VALUATION_MODEL]
 
     DEFAULT_MODEL_NAMES_CHECKED = {
-        '{}_V{}'.format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(REFERENCE_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(CADASTRAL_FORM_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Unchecked,
-        '{}_V{}'.format(OPERATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS): Qt.Checked
+        SUPPORTED_ANT_MODEL: Qt.Unchecked,
+        SUPPORTED_VALUATION_MODEL: Qt.Unchecked,
+        SUPPORTED_REFERENCE_CARTOGRAPHY: Qt.Unchecked,
+        SUPPORTED_SUPPLIES_MODEL: Qt.Unchecked,
+        SUPPORTED_SUPPLIES_INTEGRATION_MODEL: Qt.Unchecked,
+        SUPPORTED_SNR_DATA_MODEL: Qt.Unchecked,
+        SUPPORTED_CADASTRAL_FORM_MODEL: Qt.Unchecked,
+        SUPPORTED_OPERATION_MODEL: Qt.Checked
     }
 
     DEFAULT_INHERITANCE = 'smart2'
