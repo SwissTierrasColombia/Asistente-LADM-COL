@@ -184,13 +184,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-            res, msg = db.test_connection(test_level)
+            res, code, msg = db.test_connection(test_level)
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     # Only check LADM-schema if we are not in an SCHEMA IMPORT.
                     # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
-                    ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
+                    ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM)
 
                 if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     self.show_message(msg, Qgis.Warning)
@@ -374,7 +374,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, msg = db.test_connection(test_level)
+        res, code, msg = db.test_connection(test_level)
 
         if db is not None:
             db.close_connection()
@@ -385,7 +385,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM)
 
         if db is not None:
             db.close_connection()
