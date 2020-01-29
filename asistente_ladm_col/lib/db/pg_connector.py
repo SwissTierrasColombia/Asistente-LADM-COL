@@ -24,7 +24,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri)
 
-from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_query,
@@ -142,6 +143,7 @@ class PGConnector(DBConnector):
           If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
+        :return Triple: boolean result, message code, message text
         """
         uri = self._uri
 
@@ -149,21 +151,21 @@ class PGConnector(DBConnector):
             uri = self.get_connection_uri(self._dict_conn_params, 0)
             res, msg = self.open_connection()
             if res:
-                return (True, QCoreApplication.translate("PGConnector",
-                                                         "Connection to server was successful."))
+                return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                         "Connection to server was successful.")
             else:
-                return (False, msg)
+                return False, EnumTestConnectionMsg.CONNECTION_TO_SERVER_FAILED, msg
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
-                return (False, QCoreApplication.translate("PGConnector",
+                return (False, EnumTestConnectionMsg.DATABASE_NOT_FOUND, QCoreApplication.translate("PGConnector",
                                                           "You should first select a database."))
 
         # Client side check
         if self.conn is None or self.conn.closed:
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
         if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
             self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
 
@@ -177,49 +179,48 @@ class PGConnector(DBConnector):
             self.conn.close()
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
         if test_level == EnumTestLevel.DB:  # Just in the DB case
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the database was successful."))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database was successful.")
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == '':
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "You should first select a schema."))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("PGConnector",
+                                                          "You should first select a schema.")
 
             if not self._schema_exists():
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "The schema '{}' does not exist in the database!").format(
-                    self.schema))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("PGConnector",
+                        "The schema '{}' does not exist in the database!").format(
+                        self.schema)
 
             res, msg = self.get_schema_privileges(uri, self.schema)
             if not res:
-                return (False,
-                        QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.USER_HAS_NO_PERMISSION, QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
                             self._dict_conn_params['username'],
-                            self.schema))
+                            self.schema)
 
         if test_level == EnumTestLevel.DB_SCHEMA:
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the database schema was successful."))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database schema was successful.")
 
         if test_level & EnumTestLevel._CHECK_LADM:
             if not self._metadata_exists():
-                return (False, QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate("PGConnector",
                                                           "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
-                    self.schema))
+                    self.schema)
 
             if self.get_ili2db_version() != 4:
-                return (False, QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, QCoreApplication.translate("PGConnector",
                                                           "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
-                    self.schema))
+                    self.schema)
 
 
             res, msg = self.check_at_least_one_ladm_model_exists()
             if not res:
-                return (res, msg)  # Version of the models is not valid
+                return res, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, msg  # Version of the models is not valid
 
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
@@ -249,24 +250,24 @@ class PGConnector(DBConnector):
                 models.append(LADMNames.SUPPLIES_MODEL_PREFIX)
 
             if not models:
-                return (False, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
+                return False, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!")
 
             res, msg = self.names.test_names(self._table_and_field_names)
             if not res:
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "Table/field names from the DB are not correct. Details: {}.").format(
-                    msg))
+                return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
+                                                                                                    "Table/field names from the DB are not correct. Details: {}.").format(
+                    msg)
 
         if test_level == EnumTestLevel.LADM:
-            return (True,
-                    QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
-                        self.schema))
+            return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
+                "PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
+                self.schema)
 
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate("PGConnector", "Connection successful!")
 
-        return (False, QCoreApplication.translate("PGConnector",
-                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("PGConnector",
+                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
 
     def open_connection(self, uri=None):
         if uri is None:
@@ -278,14 +279,13 @@ class PGConnector(DBConnector):
             try:
                 self.conn = psycopg2.connect(uri)
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                return (
-                False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
+                return False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e))
 
             self.logger.info(__name__, "Connection was open! {}".format(self.conn))
         else:
             self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
+        return True, QCoreApplication.translate("PGConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
@@ -374,16 +374,16 @@ class PGConnector(DBConnector):
 
     def check_and_fix_connection(self):
         if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
+            res, code, msg = self.test_connection()
             if not res:
-                return (res, msg)
+                return res, msg
 
         if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
             self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
             if self.conn.get_transaction_status() != psycopg2.extensions.TRANSACTION_STATUS_IDLE:
                 return (False, "Error: PG transaction had an error and couldn't be recovered...")
 
-        return (True, '')
+        return True, ''
 
     def get_igac_basic_info(self, **kwargs):
         """
@@ -749,7 +749,7 @@ class PGConnector(DBConnector):
         True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
 
     def get_dbnames_list(self, uri):
-        res, msg = self.test_connection(EnumTestLevel.SERVER)
+        res, code, msg = self.test_connection(EnumTestLevel.SERVER)
         if not res:
             return (False, msg)
 

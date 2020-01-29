@@ -35,7 +35,7 @@ def _db_connection_required(func_to_decorate):
         # Check if current connection is valid and disable access if not
         inst = args[0]
         db = inst.get_db_connection()
-        res, msg = db.test_connection()
+        res, code, msg = db.test_connection()
         if res:
             if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
                 inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True, db_source=None)
@@ -172,7 +172,7 @@ def _supplies_db_connection_required(func_to_decorate):
         inst = args[0]
         # Check if current connection is valid and disable access if not
         db = inst.get_supplies_db_connection()
-        res, msg = db.test_connection()
+        res, code, msg = db.test_connection()
         if res:
             func_to_decorate(inst)
         else:

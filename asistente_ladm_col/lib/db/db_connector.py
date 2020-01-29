@@ -245,7 +245,7 @@ class DBConnector(QObject):
             msg = QCoreApplication.translate("DBConnector",
                                              "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
                 ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
-        return (result, msg)
+        return result, msg
 
     def open_connection(self):
         """
