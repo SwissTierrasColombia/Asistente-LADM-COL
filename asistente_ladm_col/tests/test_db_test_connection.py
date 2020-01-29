@@ -64,7 +64,7 @@ class TestDBTestConnection(unittest.TestCase):
         db_pg = get_pg_conn('bad_interlis_ladm')
         res, code, msg = db_pg.test_connection()
         self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND)
+        self.assertEqual(code, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE)
         db_pg.conn.close()
 
     def test_pg_test_connection_interlis_ladm_col_models_upper_version(self):
