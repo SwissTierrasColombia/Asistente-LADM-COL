@@ -5,7 +5,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="ladm_col:fieldcalculatorforinputlayer" name="alg_id" type="QString"/>
-      <Option value="UNI_NUM_30" name="component_description" type="QString"/>
+      <Option value="Calculando número predial treinta dígitos UNI" name="component_description" type="QString"/>
       <Option value="599" name="component_pos_x" type="double"/>
       <Option value="233" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -63,7 +63,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT_COD_0_AND_8" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de UNI para generar UNI_8" name="component_description" type="QString"/>
       <Option value="606" name="component_pos_x" type="double"/>
       <Option value="319" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -91,7 +91,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT CONSTRUCCIONES 5" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de la combinación entre R_CONSTRUCCION con U_CONSTRUCCION generar CONSTRUCCION_5" name="component_description" type="QString"/>
       <Option value="1185" name="component_pos_x" type="double"/>
       <Option value="249" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -119,7 +119,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT_COD_5" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de UNI para generar UNI_5" name="component_description" type="QString"/>
       <Option value="875" name="component_pos_x" type="double"/>
       <Option value="247" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -147,7 +147,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT UNIDADES_9" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de la combinación entre R_UNIDAD con U_UNIDAD para generar UNIDADES_9" name="component_description" type="QString"/>
       <Option value="274" name="component_pos_x" type="double"/>
       <Option value="748" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -175,7 +175,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT_COD_9" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de UNI para generar UNI_9" name="component_description" type="QString"/>
       <Option value="617" name="component_pos_x" type="double"/>
       <Option value="750" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -203,7 +203,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT_UNI_MANZANA" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de la agrupación de UNI para generar UNI_MANZANA" name="component_description" type="QString"/>
       <Option value="883" name="component_pos_x" type="double"/>
       <Option value="687" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -231,7 +231,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:extractbyexpression" name="alg_id" type="QString"/>
-      <Option value="EXTRACT_UNI_VEREDA" name="component_description" type="QString"/>
+      <Option value="Extrayendo datos de la agrupación de UNI para generar UNI_VEREDA" name="component_description" type="QString"/>
       <Option value="1413" name="component_pos_x" type="double"/>
       <Option value="685" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -259,7 +259,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN TERRENOS AND UNI_8_AND_0" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI con la combinación de las capas de TERRENOS" name="component_description" type="QString"/>
       <Option value="229.99999999999997" name="component_pos_x" type="double"/>
       <Option value="294.70933892969566" name="component_pos_y" type="double"/>
       <Option name="dependencies" type="StringList">
@@ -327,7 +327,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN UNI_VEREDA AND VEREDA" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI_VEREDA con VEREDA" name="component_description" type="QString"/>
       <Option value="1655" name="component_pos_x" type="double"/>
       <Option value="834" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -391,7 +391,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN UNI_8_AND_0 AND TERRENOS" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI_8 con la combinación de las capas de TERRENO" name="component_description" type="QString"/>
       <Option value="612" name="component_pos_x" type="double"/>
       <Option value="388" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -456,7 +456,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN CONSTRUCCIONES AND UNI_5" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI_5 con CONSTRUCCIONES_5" name="component_description" type="QString"/>
       <Option value="881" name="component_pos_x" type="double"/>
       <Option value="363" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -521,9 +521,9 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN UNI_5 AND CONSTRUCCIONES" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI_5 con CONSTRUCCIONES_5" name="component_description" type="QString"/>
       <Option value="1182" name="component_pos_x" type="double"/>
-      <Option value="356" name="component_pos_y" type="double"/>
+      <Option value="363.9478001744904" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
       <Option value="native:joinattributestable_4" name="id" type="QString"/>
       <Option name="outputs"/>
@@ -586,9 +586,9 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN UNIDAD AND UNI_9" name="component_description" type="QString"/>
-      <Option value="275" name="component_pos_x" type="double"/>
-      <Option value="846" name="component_pos_y" type="double"/>
+      <Option value="Uniendo la capa UNI_9 con UNIDAD_9" name="component_description" type="QString"/>
+      <Option value="273.86459997507274" name="component_pos_x" type="double"/>
+      <Option value="847.1354000249272" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
       <Option value="native:joinattributestable_5" name="id" type="QString"/>
       <Option name="outputs"/>
@@ -651,7 +651,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="Join attributes by field value" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNIDADES_9 con UNI_9" name="component_description" type="QString"/>
       <Option value="621" name="component_pos_x" type="double"/>
       <Option value="848" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -716,7 +716,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN MANZANA AND UNI_MANZANA" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa U_MANZANA con UNI_MANZANA" name="component_description" type="QString"/>
       <Option value="888" name="component_pos_x" type="double"/>
       <Option value="840" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -780,7 +780,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN UNI_MANZANA AND MANZANA" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa UNI_MANZANA con U_MANZANA " name="component_description" type="QString"/>
       <Option value="1138" name="component_pos_x" type="double"/>
       <Option value="835" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -844,7 +844,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:joinattributestable" name="alg_id" type="QString"/>
-      <Option value="JOIN VEREDA AND UNI_VEREDA" name="component_description" type="QString"/>
+      <Option value="Uniendo la capa VEREDA con UNI_VEREDA" name="component_description" type="QString"/>
       <Option value="1412" name="component_pos_x" type="double"/>
       <Option value="833" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -908,7 +908,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:mergevectorlayers" name="alg_id" type="QString"/>
-      <Option value="Merge Terrenos" name="component_description" type="QString"/>
+      <Option value="Combinando R_TERRENO con U_TERRENO" name="component_description" type="QString"/>
       <Option value="230" name="component_pos_x" type="double"/>
       <Option value="194" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -939,7 +939,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:mergevectorlayers" name="alg_id" type="QString"/>
-      <Option value="Merge Construcciones" name="component_description" type="QString"/>
+      <Option value="Combinando R_CONSTRUCCION con U_CONSTRUCCION" name="component_description" type="QString"/>
       <Option value="1183" name="component_pos_x" type="double"/>
       <Option value="149" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -970,7 +970,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="native:mergevectorlayers" name="alg_id" type="QString"/>
-      <Option value="Merge Unidades" name="component_description" type="QString"/>
+      <Option value="Combinando R_UNIDAD con U_UNIDAD" name="component_description" type="QString"/>
       <Option value="277" name="component_pos_x" type="double"/>
       <Option value="648" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1001,7 +1001,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:aggregate" name="alg_id" type="QString"/>
-      <Option value="AGGREGATE UNI_MANZANA" name="component_description" type="QString"/>
+      <Option value="Agrupando UNI a partir del número predial" name="component_description" type="QString"/>
       <Option value="890" name="component_pos_x" type="double"/>
       <Option value="618" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1063,7 +1063,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:fieldcalculator" name="alg_id" type="QString"/>
-      <Option value="UNI_NUM_20" name="component_description" type="QString"/>
+      <Option value="Calculando número predial veinte dígitos UNI" name="component_description" type="QString"/>
       <Option value="603" name="component_pos_x" type="double"/>
       <Option value="153" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1120,9 +1120,9 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:fieldcalculator" name="alg_id" type="QString"/>
-      <Option value="NUM_PRE_20_B_MANZANA" name="component_description" type="QString"/>
-      <Option value="887" name="component_pos_x" type="double"/>
-      <Option value="765.5" name="component_pos_y" type="double"/>
+      <Option value="Calculando número predial veinte dígitos UNI_MANZANA" name="component_description" type="QString"/>
+      <Option value="887.0000000000001" name="component_pos_x" type="double"/>
+      <Option value="759.822999875364" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
       <Option value="qgis:fieldcalculator_2" name="id" type="QString"/>
       <Option name="outputs"/>
@@ -1178,7 +1178,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:fieldcalculator" name="alg_id" type="QString"/>
-      <Option value="NUM_PRE_20_B_VEREDA" name="component_description" type="QString"/>
+      <Option value="Calculando número predial veinte dígitos UNI_VEREDA" name="component_description" type="QString"/>
       <Option value="1412" name="component_pos_x" type="double"/>
       <Option value="755" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1236,7 +1236,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields COMISIONES_TERRENO" name="component_description" type="QString"/>
+      <Option value="Mapeando campos COMISIONES_TERRENO" name="component_description" type="QString"/>
       <Option value="234" name="component_pos_x" type="double"/>
       <Option value="398" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1245,8 +1245,8 @@
         <Option name="COMISIONES_TERRENO" type="Map">
           <Option value="qgis:refactorfields_1" name="child_id" type="QString"/>
           <Option value="COMISIONES_TERRENO" name="component_description" type="QString"/>
-          <Option value="238" name="component_pos_x" type="double"/>
-          <Option value="493" name="component_pos_y" type="double"/>
+          <Option value="238.71119571252137" name="component_pos_x" type="double"/>
+          <Option value="478.19740077274326" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="COMISIONES_TERRENO" name="name" type="QString"/>
@@ -1311,7 +1311,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields OMISIONES_VR" name="component_description" type="QString"/>
+      <Option value="Mapeando campos OMISIONES_VR" name="component_description" type="QString"/>
       <Option value="1661" name="component_pos_x" type="double"/>
       <Option value="915" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1320,8 +1320,8 @@
         <Option name="OMISIONES_VR" type="Map">
           <Option value="qgis:refactorfields_10" name="child_id" type="QString"/>
           <Option value="OMISIONES_VR" name="component_description" type="QString"/>
-          <Option value="1675.8817204301076" name="component_pos_x" type="double"/>
-          <Option value="985.4537634408603" name="component_pos_y" type="double"/>
+          <Option value="1674.7943959119393" name="component_pos_x" type="double"/>
+          <Option value="995.1974007727432" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="OMISIONES_VR" name="name" type="QString"/>
@@ -1386,7 +1386,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields OMISIONES TERRENO" name="component_description" type="QString"/>
+      <Option value="Mapeando campos OMISIONES TERRENO" name="component_description" type="QString"/>
       <Option value="613" name="component_pos_x" type="double"/>
       <Option value="456" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1395,8 +1395,8 @@
         <Option name="OMISIONES_TERRENO" type="Map">
           <Option value="qgis:refactorfields_2" name="child_id" type="QString"/>
           <Option value="OMISIONES_TERRENO" name="component_description" type="QString"/>
-          <Option value="613" name="component_pos_x" type="double"/>
-          <Option value="529" name="component_pos_y" type="double"/>
+          <Option value="618.8465957374488" name="component_pos_x" type="double"/>
+          <Option value="531.6558006730345" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="OMISIONES_TERRENO" name="name" type="QString"/>
@@ -1461,7 +1461,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields COMISIONES_MEJORAS" name="component_description" type="QString"/>
+      <Option value="Mapeando campos COMISIONES_MEJORAS" name="component_description" type="QString"/>
       <Option value="883" name="component_pos_x" type="double"/>
       <Option value="444" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1470,8 +1470,8 @@
         <Option name="COMISIONES_MEJORAS" type="Map">
           <Option value="qgis:refactorfields_3" name="child_id" type="QString"/>
           <Option value="COMISIONES_MEJORAS" name="component_description" type="QString"/>
-          <Option value="897.8331584470095" name="component_pos_x" type="double"/>
-          <Option value="525.1301154249738" name="component_pos_y" type="double"/>
+          <Option value="891.1173957873029" name="component_pos_x" type="double"/>
+          <Option value="527.6036008475248" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="COMISIONES_MEJORAS" name="name" type="QString"/>
@@ -1536,7 +1536,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields OMISIONES_MEJORAS" name="component_description" type="QString"/>
+      <Option value="Mapeando campos OMISIONES_MEJORAS" name="component_description" type="QString"/>
       <Option value="1181" name="component_pos_x" type="double"/>
       <Option value="442" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1545,8 +1545,8 @@
         <Option name="OMISIONES_MEJORAS" type="Map">
           <Option value="qgis:refactorfields_4" name="child_id" type="QString"/>
           <Option value="OMISIONES_MEJORAS" name="component_description" type="QString"/>
-          <Option value="1178.897166841553" name="component_pos_x" type="double"/>
-          <Option value="516.3557187827912" name="component_pos_y" type="double"/>
+          <Option value="1181.1695956128126" name="component_pos_x" type="double"/>
+          <Option value="524.4682008225977" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="OMISIONES_MEJORAS" name="name" type="QString"/>
@@ -1611,7 +1611,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields COMISIONES_UNID_PH" name="component_description" type="QString"/>
+      <Option value="Mapeando campos COMISIONES_UNID_PH" name="component_description" type="QString"/>
       <Option value="267" name="component_pos_x" type="double"/>
       <Option value="928" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1620,8 +1620,8 @@
         <Option name="COMISIONES_UNID_PH" type="Map">
           <Option value="qgis:refactorfields_5" name="child_id" type="QString"/>
           <Option value="COMISIONES_UNID_PH" name="component_description" type="QString"/>
-          <Option value="278.41075268817207" name="component_pos_x" type="double"/>
-          <Option value="1011.1806451612903" name="component_pos_y" type="double"/>
+          <Option value="263.7633955380309" name="component_pos_x" type="double"/>
+          <Option value="1000.2496005982529" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="COMISIONES_UNID_PH" name="name" type="QString"/>
@@ -1686,7 +1686,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields OMISIONES_UNID_PH" name="component_description" type="QString"/>
+      <Option value="Mapeando campos OMISIONES_UNID_PH" name="component_description" type="QString"/>
       <Option value="623" name="component_pos_x" type="double"/>
       <Option value="928" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1695,8 +1695,8 @@
         <Option name="OMISIONES_UNID_PH" type="Map">
           <Option value="qgis:refactorfields_6" name="child_id" type="QString"/>
           <Option value="OMISIONES_UNID_PH" name="component_description" type="QString"/>
-          <Option value="621.683870967742" name="component_pos_x" type="double"/>
-          <Option value="1013.494623655914" name="component_pos_y" type="double"/>
+          <Option value="622.0341955878854" name="component_pos_x" type="double"/>
+          <Option value="997.9788005483986" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="OMISIONES_UNID_PH" name="name" type="QString"/>
@@ -1761,17 +1761,17 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields COMISIONES_MZ" name="component_description" type="QString"/>
-      <Option value="889.8430107526882" name="component_pos_x" type="double"/>
-      <Option value="920.8430107526882" name="component_pos_y" type="double"/>
+      <Option value="Mapeando campos COMISIONES_MZ" name="component_description" type="QString"/>
+      <Option value="888.7076107277611" name="component_pos_x" type="double"/>
+      <Option value="920.8430107526881" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
       <Option value="qgis:refactorfields_7" name="id" type="QString"/>
       <Option name="outputs" type="Map">
         <Option name="COMISIONES_MZ" type="Map">
           <Option value="qgis:refactorfields_7" name="child_id" type="QString"/>
           <Option value="COMISIONES_MZ" name="component_description" type="QString"/>
-          <Option value="895.4688172043011" name="component_pos_x" type="double"/>
-          <Option value="1005.1806451612905" name="component_pos_y" type="double"/>
+          <Option value="888.8772063405738" name="component_pos_x" type="double"/>
+          <Option value="995.3634114007954" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="COMISIONES_MZ" name="name" type="QString"/>
@@ -1836,7 +1836,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields OMISIONES_MZ" name="component_description" type="QString"/>
+      <Option value="Mapeando campos OMISIONES_MZ" name="component_description" type="QString"/>
       <Option value="1143" name="component_pos_x" type="double"/>
       <Option value="921" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1845,8 +1845,8 @@
         <Option name="OMISIONES_MZ" type="Map">
           <Option value="qgis:refactorfields_8" name="child_id" type="QString"/>
           <Option value="OMISIONES_MZ" name="component_description" type="QString"/>
-          <Option value="1137.0559139784948" name="component_pos_x" type="double"/>
-          <Option value="1000.7096774193549" name="component_pos_y" type="double"/>
+          <Option value="1146.5757956875943" name="component_pos_x" type="double"/>
+          <Option value="994.3850006231801" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="OMISIONES_MZ" name="name" type="QString"/>
@@ -1911,7 +1911,7 @@
       <Option value="true" name="active" type="bool"/>
       <Option name="alg_config"/>
       <Option value="qgis:refactorfields" name="alg_id" type="QString"/>
-      <Option value="Refactor fields COMISIONES_VR" name="component_description" type="QString"/>
+      <Option value="Mapeando campos COMISIONES_VR" name="component_description" type="QString"/>
       <Option value="1416" name="component_pos_x" type="double"/>
       <Option value="918" name="component_pos_y" type="double"/>
       <Option name="dependencies"/>
@@ -1920,8 +1920,8 @@
         <Option name="COMISIONES_VR" type="Map">
           <Option value="qgis:refactorfields_9" name="child_id" type="QString"/>
           <Option value="COMISIONES_VR" name="component_description" type="QString"/>
-          <Option value="1403.1139784946236" name="component_pos_x" type="double"/>
-          <Option value="993.0817204301075" name="component_pos_y" type="double"/>
+          <Option value="1422.9819957623758" name="component_pos_x" type="double"/>
+          <Option value="994.7912006979616" name="component_pos_y" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option value="false" name="mandatory" type="bool"/>
           <Option value="COMISIONES_VR" name="name" type="QString"/>

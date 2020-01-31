@@ -165,7 +165,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 if current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
                 elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE:
-                    icon_name = self.icon_names[5]
+                    if geometry_type is None:
+                        icon_name = self.icon_names[5]
                 elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM_COL/resources/images/{}".format(icon_name))
