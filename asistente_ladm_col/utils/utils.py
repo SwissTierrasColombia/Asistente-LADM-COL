@@ -16,14 +16,19 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 import hashlib
+import shutil
 from functools import partial
 
 import qgis.utils
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, QCoreApplication
 
+from asistente_ladm_col.config.general_config import DEPENDENCIES_BASE_PATH
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
+from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
+                                               remove_readonly,
+                                               normalize_local_url)
 
 
 class Utils(QObject):
@@ -60,6 +65,23 @@ class Utils(QObject):
             minu = int(60*((24*(time/float(86400) - D) - h)))
             seg = 60*((60*((24*(time/float(86400) - D) - h))) - minu)
             return "{}{} {}{} {}{} {}{}".format(D, unit_days, h, unit_hours, minu, unit_minutes, format(seg, time_format), unit_second)
+
+    @staticmethod
+    def remove_dependency_directory(dir_name_dependency):
+        """
+        We need to get rid of dependencies when they don't match the version
+        that should be installed for this version of the plugin.
+        """
+        base_path = os.path.join(DEPENDENCIES_BASE_PATH, dir_name_dependency)
+
+        # Since folders might contain read only files, we need to delete them
+        # using a callback (see https://docs.python.org/3/library/shutil.html#rmtree-example)
+        shutil.rmtree(base_path, onerror=remove_readonly)
+        Logger().clear_message_bar()
+
+        if os.path.exists(base_path):
+            Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
+                                                                      "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))
 
 def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
     plugin_found = plugin_name in qgis.utils.plugins
@@ -110,6 +132,7 @@ def is_version_valid(current_version, min_required_version, exact_required_versi
 
     return True
 
+
 def normalize_iliname(name):
     """
     Removes version from an iliname
@@ -120,6 +143,7 @@ def normalize_iliname(name):
     parts = name.split(".")
     parts[0] = parts[0].split("_V")[0]
     return ".".join(parts)
+
 
 def md5sum(filename):
     with open(filename, mode='rb') as f:

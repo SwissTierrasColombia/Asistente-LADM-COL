@@ -74,6 +74,12 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.db_source = db_source
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
+
+        self.java_utils = JavaUtils()
+        self.java_utils.download_java_completed.connect(self.download_java_complete)
+        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_utils.set_display_wait_cursor(True)
+
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -186,13 +192,14 @@ class DialogExportData(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
-        if not JavaUtils.set_java_home():
-            message_error_java = QCoreApplication.translate("DialogExportData",
-                                                            """Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.""").format(JAVA_REQUIRED_VERSION)
+        java_home_exist = self.java_utils.set_java_home()
+        if not java_home_exist:
+            message_java = QCoreApplication.translate("DialogExportData", """>> Java {} will be configured""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
-            self.txtStdout.setText(message_error_java)
-            self.show_message(message_error_java, Qgis.Warning)
+            self.txtStdout.setText(message_java)
+            self.java_utils.get_java_on_demand()
+            self.disable()
             return
 
         configuration = self.update_configuration()
@@ -232,7 +239,6 @@ class DialogExportData(QDialog, DIALOG_UI):
             
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
-            self.progress_bar.setValue(0)
 
             self.disable()
             self.txtStdout.setTextColor(QColor('#000000'))
@@ -256,8 +262,6 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             try:
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
-                    self.enable()
-                    self.progress_bar.hide()
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
@@ -273,6 +277,14 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
+
+    def download_java_complete(self):
+        self.accepted()
+
+    def download_java_progress_change(self, progress):
+        self.progress_bar.setValue(progress/2)
+        if (progress % 20) == 0:
+            self.txtStdout.append('...')
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -384,6 +396,9 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        if level == Qgis.Warning:
+            self.enable()
+
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
 

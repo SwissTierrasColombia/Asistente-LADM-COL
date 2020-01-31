@@ -84,7 +84,6 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      SUFFIX_LAYER_MODIFIERS,
                                      PREFIX_LAYER_MODIFIERS,
                                      VISIBLE_LAYER_MODIFIERS,
-                                     PLUGIN_NAME,
                                      HELP_DIR_NAME,
                                      TranslatableConfigStrings,
                                      ST_DOMAIN,
@@ -1172,7 +1171,8 @@ class QGISUtils(QObject):
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
-    def is_connected(self, hostname):
+    @staticmethod
+    def is_connected(hostname):
         try:
             host = socket.gethostbyname(hostname)
             s = socket.create_connection((host, 80), 2)

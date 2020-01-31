@@ -83,6 +83,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
+        self.java_utils = JavaUtils()
+        self.java_utils.download_java_completed.connect(self.download_java_complete)
+        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_utils.set_display_wait_cursor(True)
 
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -236,23 +240,24 @@ class DialogImportData(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
-        if not JavaUtils.set_java_home():
-            message_error_java = QCoreApplication.translate("DialogImportData",
-                                                            """Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.""").format(JAVA_REQUIRED_VERSION)
-            self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.clear()
-            self.txtStdout.setText(message_error_java)
-            self.show_message(message_error_java, Qgis.Warning)
-            return
-
-        configuration = self.update_configuration()
-
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
             message_error = "Please set a valid XTF file before importing data. XTF file does not exist"
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
+
+        java_home_exist = self.java_utils.set_java_home()
+        if not java_home_exist:
+            message_java = QCoreApplication.translate("DialogImportData", """>> Java {} will be configured""").format(JAVA_REQUIRED_VERSION)
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.clear()
+            self.txtStdout.setText(message_java)
+            self.java_utils.get_java_on_demand()
+            self.disable()
+            return
+
+        configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             message_error = "Please set a valid XTF before importing data."
@@ -298,7 +303,6 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
-            self.progress_bar.setValue(0)
 
             self.disable()
             self.txtStdout.setTextColor(QColor('#000000'))
@@ -322,8 +326,6 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             try:
                 if dataImporter.run() != iliimporter.Importer.SUCCESS:
-                    self.enable()
-                    self.progress_bar.hide()
                     self.show_message(QCoreApplication.translate("DialogImportData", "An error occurred when importing the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
@@ -339,6 +341,14 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogImportData", "Import of the data was successfully completed"), Qgis.Success)
+
+    def download_java_complete(self):
+        self.accepted()
+
+    def download_java_progress_change(self, progress):
+        self.progress_bar.setValue(progress/2)
+        if (progress % 20) == 0:
+            self.txtStdout.append('...')
 
     def remove_create_structure_button(self):
         for button in self.buttonBox.buttons():
@@ -429,7 +439,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.show_message(QCoreApplication.translate("DialogImportData", "Error when importing data"), Qgis.Warning)
-            self.enable()
 
             # Open log
             if self.log_config.isCollapsed():
@@ -463,5 +472,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        if level == Qgis.Warning:
+            self.enable()
+
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
