@@ -95,6 +95,10 @@ class GPKGConnector(DBConnector):
             return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("GPKGConnector",
                                                                                                        "Connection to the database was successful.")
 
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate(
+                "PGConnector", "Connection successful!")
+
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:
@@ -163,10 +167,6 @@ class GPKGConnector(DBConnector):
         if test_level == EnumTestLevel.LADM:
             return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector", "The database '{}' has a valid LADM_COL structure!").format(
                 database)
-
-        if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate(
-                "PGConnector", "Connection successful!")
 
         return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("GPKGConnector",
                                                                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
