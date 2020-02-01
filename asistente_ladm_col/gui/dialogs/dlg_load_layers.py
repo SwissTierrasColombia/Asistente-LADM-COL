@@ -160,9 +160,10 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
                 if current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
-                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_STRUCTURE:
-                    icon_name = self.icon_names[5]
-                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_ASSOCIATION:
+                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_STRUCTURE:
+                    if geometry_type is None:
+                        icon_name = self.icon_names[5]
+                elif current_table_info[KIND_SETTINGS] == self.names.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM_COL/resources/images/{}".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
