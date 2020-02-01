@@ -25,17 +25,16 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import QgsWkbTypes
 
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.table_mapping_config import Names
-from ...utils import get_ui_class
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_topological_edition.ui')
 
 
 class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
-    def __init__(self, parent=None):
+    def __init__(self, names, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.names = Names()
+        self.names = names
         self.selected_layers_info = dict()
 
         self.lst_plots.clear()

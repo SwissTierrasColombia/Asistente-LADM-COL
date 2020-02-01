@@ -22,8 +22,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtGui import (QBrush,
-                             QColor)
+from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from qgis.gui import QgsPanelWidget
 
@@ -31,9 +30,8 @@ from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
-from ...utils import get_ui_class
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.ui')
 
@@ -49,7 +47,6 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self._task = self.session.task_manager.get_task(task_id)
         self.parent = parent
         self.logger = Logger()
-        self.names = Names()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("TaskPanelWidget", "Task details"))

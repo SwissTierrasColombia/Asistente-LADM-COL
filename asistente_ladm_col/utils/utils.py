@@ -21,16 +21,15 @@ import os
 import re
 import subprocess
 import sys
+import hashlib
+from functools import partial
 
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from qgis.core import (QgsApplication,
-                       Qgis)
 
 from asistente_ladm_col.lib.logger import Logger
-from ..config.general_config import (JAVA_REQUIRED_VERSION,
-                                     PLUGIN_NAME)
+from ..config.general_config import JAVA_REQUIRED_VERSION
 from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ..utils.qt_utils import get_plugin_metadata
 
@@ -53,11 +52,11 @@ class Utils(QObject):
             return "{}{}".format(format(time*1000, '.0f'), unit_millisecond)
         elif time < 60:
             return "{}{}".format(format(time, time_format), unit_second)
-        elif time >= 60 and time < 3600:
+        elif 60 <= time < 3600:
             minu = int(time/float(60))
             seg = 60*(time/float(60) - minu)
             return "{}{} {}{}".format(minu, unit_minutes, format(seg, time_format), unit_second)
-        elif time >= 3600 and time < 86400:
+        elif 3600 <= time < 86400:
             h = int(time/float(3600))
             minu = int(60*(time/float(3600) - h))
             seg = 60*((60*(time/float(3600) - h)) - minu)
@@ -217,3 +216,10 @@ def normalize_iliname(name):
     parts = name.split(".")
     parts[0] = parts[0].split("_V")[0]
     return ".".join(parts)
+
+def md5sum(filename):
+    with open(filename, mode='rb') as f:
+        d = hashlib.md5()
+        for buf in iter(partial(f.read, 128), b''):
+            d.update(buf)
+    return d.hexdigest()

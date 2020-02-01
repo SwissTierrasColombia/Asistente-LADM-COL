@@ -1,4 +1,5 @@
 from qgis.PyQt.QtCore import QCoreApplication
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 
 def get_logic_validation_queries(schema, names):
@@ -56,8 +57,8 @@ def get_logic_validation_queries(schema, names):
                            col_party_type=names.OP_PARTY_T_TYPE_F,
                            OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D,
                            ILICODE_F=names.ILICODE_F,
-                           OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=names.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
-                           OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=names.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                           OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                           OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
                            OP_PARTY_DOCUMENT_TYPE_D=names.OP_PARTY_DOCUMENT_TYPE_D,
                            business_name=names.OP_PARTY_T_BUSINESS_NAME_F,
                            col_party_surname=names.OP_PARTY_T_SURNAME_1_F,
@@ -83,8 +84,8 @@ def get_logic_validation_queries(schema, names):
                                 p.{col_party_first_name} IS NOT NULL OR
                                 p.{col_party_doc_type} NOT IN ((select {id} from {schema}.{OP_PARTY_DOCUMENT_TYPE_D} where {ILICODE_F} = '{OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}')))
                         """.format(schema=schema, table=names.OP_PARTY_T, id=names.T_ID_F,
-                                   OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D, ILICODE_F=names.ILICODE_F, OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=names.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
-                                   OP_PARTY_DOCUMENT_TYPE_D=names.OP_PARTY_DOCUMENT_TYPE_D, OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=names.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                                   OP_PARTY_TYPE_D=names.OP_PARTY_TYPE_D, ILICODE_F=names.ILICODE_F, OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                   OP_PARTY_DOCUMENT_TYPE_D=names.OP_PARTY_DOCUMENT_TYPE_D, OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
                                    col_party_type=names.OP_PARTY_T_TYPE_F, business_name=names.OP_PARTY_T_BUSINESS_NAME_F,
                                    col_party_surname=names.OP_PARTY_T_SURNAME_1_F,
                                    col_party_first_name=names.OP_PARTY_T_FIRST_NAME_1_F,
@@ -112,15 +113,15 @@ def get_logic_validation_queries(schema, names):
                                ({parcel_type}= (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT}') AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
                                ({parcel_type} in (select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} in ('{PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA}', '{PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA}')) AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
                 """.format(schema=schema, input_table=names.OP_PARCEL_T, join_table=names.COL_UE_BAUNIT_T,
-                           OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
-                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
-                           PARCEL_TYPE_CONDOMINIUM_PARENT=names.PARCEL_TYPE_CONDOMINIUM_PARENT,
-                           PARCEL_TYPE_CEMETERY_PARENT=names.PARCEL_TYPE_CEMETERY_PARENT,
-                           PARCEL_TYPE_PUBLIC_USE=names.PARCEL_TYPE_PUBLIC_USE,
-                           PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=names.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
-                           PARCEL_TYPE_CEMETERY_PARCEL_UNIT=names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT, PARCEL_TYPE_ROAD=names.PARCEL_TYPE_ROAD,
-                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
-                           PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                           OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                           PARCEL_TYPE_CONDOMINIUM_PARENT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                           PARCEL_TYPE_CEMETERY_PARENT=LADMNames.PARCEL_TYPE_CEMETERY_PARENT,
+                           PARCEL_TYPE_PUBLIC_USE=LADMNames.PARCEL_TYPE_PUBLIC_USE,
+                           PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                           PARCEL_TYPE_CEMETERY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT, PARCEL_TYPE_ROAD=LADMNames.PARCEL_TYPE_ROAD,
+                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                           PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
                            join_field=names.COL_UE_BAUNIT_T_PARCEL_F, id=names.T_ID_F, parcel_type=names.OP_PARCEL_T_PARCEL_TYPE_F,
                            ueb_plot=names.COL_UE_BAUNIT_T_OP_PLOT_F, ueb_building=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
                            ueb_building_unit=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F),
@@ -140,13 +141,13 @@ def get_logic_validation_queries(schema, names):
                                (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}=(select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_ROAD}')) OR
                                (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}=(select {id} from {schema}.{OP_CONDITION_PARCEL_TYPE_D} where {ILICODE_F} = '{PARCEL_TYPE_PUBLIC_USE}'))
                             )""".format(schema=schema, table=names.OP_PARCEL_T, id=names.T_ID_F,
-                                    OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
-                                    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
-                                    PARCEL_TYPE_CONDOMINIUM_PARENT=names.PARCEL_TYPE_CONDOMINIUM_PARENT, PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=names.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
-                                    PARCEL_TYPE_CEMETERY_PARENT=names.PARCEL_TYPE_CEMETERY_PARENT, PARCEL_TYPE_CEMETERY_PARCEL_UNIT=names.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
-                                    PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=names.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
-                                    PARCEL_TYPE_ROAD=names.PARCEL_TYPE_ROAD, PARCEL_TYPE_PUBLIC_USE=names.PARCEL_TYPE_PUBLIC_USE,
-                                    parcel_number=names.OP_PARCEL_T_PARCEL_NUMBER_F, parcel_type=names.OP_PARCEL_T_PARCEL_TYPE_F),
+                                        OP_CONDITION_PARCEL_TYPE_D=names.OP_CONDITION_PARCEL_TYPE_D, ILICODE_F=names.ILICODE_F, PARCEL_TYPE_NO_HORIZONTAL_PROPERTY=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                        PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                        PARCEL_TYPE_CONDOMINIUM_PARENT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT, PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                        PARCEL_TYPE_CEMETERY_PARENT=LADMNames.PARCEL_TYPE_CEMETERY_PARENT, PARCEL_TYPE_CEMETERY_PARCEL_UNIT=LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
+                                        PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                        PARCEL_TYPE_ROAD=LADMNames.PARCEL_TYPE_ROAD, PARCEL_TYPE_PUBLIC_USE=LADMNames.PARCEL_TYPE_PUBLIC_USE,
+                                        parcel_number=names.OP_PARCEL_T_PARCEL_NUMBER_F, parcel_type=names.OP_PARCEL_T_PARCEL_TYPE_F),
                 'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
                                                          "Logic Consistency Errors in table '{table}'").format(
@@ -218,7 +219,7 @@ def get_logic_validation_queries(schema, names):
                     WHERE p.{T_ID_F} = conteo.{COL_BAUNIT_RRR_T_UNIT_F} and conteo.dominios > 1""".format(schema=schema,
                                                                                                           OP_RIGHT_TYPE_D=names.OP_RIGHT_TYPE_D,
                                                                                                           ILICODE_F=names.ILICODE_F,
-                                                                                                          OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V=names.OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V,
+                                                                                                          OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V=LADMNames.OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V,
                                                                                                           T_ID_F=names.T_ID_F,
                                                                                                           OP_RIGHT_T=names.OP_RIGHT_T,
                                                                                                           OP_RIGHT_T_TYPE_F=names.OP_RIGHT_T_TYPE_F,

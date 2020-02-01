@@ -30,21 +30,19 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QPushButton,
                                  QMessageBox)
-from qgis.core import (Qgis,
-                       QgsProject,
+from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsMapLayerProxyModel)
 
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      PLUGIN_NAME,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
-                                                      RIGHT_OF_WAY_LINE_LAYER,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
+from asistente_ladm_col.config.translation_strings import RIGHT_OF_WAY_LINE_LAYER
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 

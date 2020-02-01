@@ -40,14 +40,10 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_INHERITANCE,
-                                                      DEFAULT_MODEL_NAMES_CHECKED,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       TOML_FILE_DIR,
-                                                      CREATE_BASKET_COL,
-                                                      CREATE_IMPORT_TID,
-                                                      STROKE_ARCS,
                                                       SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
@@ -142,7 +138,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        for modelname, checked in DEFAULT_MODEL_NAMES_CHECKED.items():
+        for modelname, checked in LADMNames.DEFAULT_MODEL_NAMES_CHECKED.items():
             item = QListWidgetItem(modelname)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Checked if modelname in self.selected_models or checked == Qt.Checked else Qt.Unchecked)  # From parameter or by default
@@ -311,10 +307,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
         configuration.epsg = self.epsg
-        configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = CREATE_BASKET_COL
-        configuration.create_import_tid = CREATE_IMPORT_TID
-        configuration.stroke_arcs = STROKE_ARCS
+        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
+        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = LADMNames.STROKE_ARCS
 
         java_path = get_java_path_from_qgis_model_baker()
         if java_path:

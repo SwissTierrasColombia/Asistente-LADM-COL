@@ -25,8 +25,8 @@ from qgis.core import (QgsApplication,
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
-                                    QGIS_REQUIRED_VERSION,
-                                    QGIS_REQUIRED_VERSION_INT)
+                                                      QGIS_REQUIRED_VERSION,
+                                                      QGIS_REQUIRED_VERSION_INT)
 
 
 def classFactory(iface):

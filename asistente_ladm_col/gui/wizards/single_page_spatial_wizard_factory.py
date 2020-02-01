@@ -27,13 +27,10 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (Qgis, QgsMapLayerProxyModel)
+from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP1,
-                                                      PLUGIN_NAME,
-                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
+from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP_PAGES, WIZARD_HELP1, \
+    WIZARD_MAP_LAYER_PROXY_MODEL
 from asistente_ladm_col.gui.wizards.spatial_wizard_factory import SpatialWizardFactory
 
 

@@ -157,8 +157,8 @@ class MissingCobolSupplies(CobolBaseDialog):
         if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder" \
-                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder"
+                                                                   ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
             return reply
@@ -168,8 +168,8 @@ class MissingCobolSupplies(CobolBaseDialog):
         if reply == QMessageBox.Yes and os.path.isfile(self.gpkg_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies", "The <b>gpkg</b> already exist in the folder" \
-                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>gpkg</b> already exist in the folder"
+                                                                   ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
             return reply
@@ -179,8 +179,8 @@ class MissingCobolSupplies(CobolBaseDialog):
         if reply == QMessageBox.Yes and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("MissingCobolSupplies", "Warning"),
-                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> already exist in the folder" \
-                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
+                QCoreApplication.translate("MissingCobolSupplies", "The <b>xlsx</b> already exist in the folder"
+                                                                   ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
             return reply

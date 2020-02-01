@@ -1,0 +1,548 @@
+INTERLIS 2.3;
+
+MODEL Datos_Gestor_Catastral_V2_9_6 (es)
+AT "mailto:PC4@localhost"
+VERSION "2019-08-01"  =
+  IMPORTS ISO19107_PLANAS_V1,LADM_COL_V1_3;
+
+  DOMAIN
+
+    GC_CondicionPredioTipo = (
+      !!@ ili2db.dispName = "No propiedad horizontal"
+      NPH,
+      !!@ ili2db.dispName = "Propiedad horizontal"
+      PH(
+        Matriz,
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Condiminio"
+      Condominio(
+        Matriz,
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Mejora"
+      Mejora(
+        PH,
+        NPH
+      ),
+      !!@ ili2db.dispName = "Parque cementerio"
+      Parque_Cementerio(
+        Matriz,
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Vía"
+      Via,
+      !!@ ili2db.dispName = "Bien de uso público"
+      Bien_Uso_Publico
+    );
+
+    GC_SistemaProcedenciaDatosTipo = (
+      !!@ ili2db.dispName = "Sistema Nacional Catastral"
+      SNC,
+      !!@ ili2db.dispName = "Cobol"
+      Cobol
+    );
+
+    GC_UnidadConstruccionTipo = (
+      !!@ ili2db.dispName = "Convencional"
+      Convencional,
+      !!@ ili2db.dispName = "No convencional"
+      No_Convencional
+    );
+
+  !!@ ili2db.dispName = "(GC) Dirección"
+  STRUCTURE GC_Direccion =
+    !!@ ili2db.dispName = "Valor"
+    Valor : TEXT*255;
+    !!@ ili2db.dispName = "Principal"
+    Principal : BOOLEAN;
+    !!@ ili2db.dispName = "Geometría de referencia"
+    Geometria_Referencia : ISO19107_PLANAS_V1.GM_Curve3D;
+  END GC_Direccion;
+
+  TOPIC Datos_Gestor_Catastral =
+
+    !!@ ili2db.dispName = "(GC) Barrio"
+    CLASS GC_Barrio =
+      !!@ ili2db.dispName = "Código"
+      Codigo : TEXT*13;
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : TEXT*100;
+      !!@ ili2db.dispName = "Sector código"
+      Sector_Codigo : TEXT*9;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Barrio;
+
+    !!@ ili2db.dispName = "(GC) Comisiones Construcción"
+    CLASS GC_Comisiones_Construccion =
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END GC_Comisiones_Construccion;
+
+    !!@ ili2db.dispName = "(GC) Comisiones Terreno"
+    CLASS GC_Comisiones_Terreno =
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Comisiones_Terreno;
+
+    !!@ ili2db.dispName = "(GC) Comisiones Unidad Construcción"
+    CLASS GC_Comisiones_Unidad_Construccion =
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END GC_Comisiones_Unidad_Construccion;
+
+    !!@ ili2db.dispName = "(GC) Construcción"
+    CLASS GC_Construccion =
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*30;
+      !!@ ili2db.dispName = "Etiqueta"
+      Etiqueta : TEXT*50;
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Datos_Gestor_Catastral_V2_9_6.GC_UnidadConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : TEXT*20;
+      !!@ ili2db.dispName = "Número de pisos"
+      Numero_Pisos : 0 .. 200;
+      !!@ ili2db.dispName = "Número de sótanos"
+      Numero_Sotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Número de mezanines"
+      Numero_Mezanines : 0 .. 99;
+      !!@ ili2db.dispName = "Número de semisótanos"
+      Numero_Semisotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Código de edificación"
+      Codigo_Edificacion : 0 .. 10000000000000000000;
+      !!@ ili2db.dispName = "Código de terreno"
+      Codigo_Terreno : TEXT*30;
+      !!@ ili2db.dispName = "Área construida"
+      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END GC_Construccion;
+
+    !!@ ili2db.dispName = "(GC) Datos Propiedad Horizontal Condominio"
+    CLASS GC_Datos_PH_Condiminio =
+      !!@ ili2db.dispName = "Área total de terreno"
+      Area_Total_Terreno : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área total de terreno privada"
+      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área total de terreno común"
+      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área total construida"
+      Area_Total_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área total construida privada"
+      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área total construida común"
+      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Torre número"
+      Torre_No : TEXT*10;
+      !!@ ili2db.dispName = "Total pisos de torre"
+      Total_Pisos_Torre : 0 .. 200;
+      !!@ ili2db.dispName = "Total de unidades privadas"
+      Total_Unidades_Privadas : 0 .. 99999999;
+      !!@ ili2db.dispName = "Total de sótanos"
+      Total_Sotanos : 0 .. 30;
+      !!@ ili2db.dispName = "Total de unidades de sótano"
+      Total_Unidades_Sotano : 0 .. 99999999;
+    END GC_Datos_PH_Condiminio;
+
+    !!@ ili2db.dispName = "(GC) Manzana"
+    CLASS GC_Manzana =
+      !!@ ili2db.dispName = "Código"
+      Codigo : TEXT*17;
+      !!@ ili2db.dispName = "Código anterior"
+      Codigo_Anterior : TEXT*255;
+      !!@ ili2db.dispName = "Código de barrio"
+      Barrio_Codigo : TEXT*13;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Manzana;
+
+    !!@ ili2db.dispName = "(GC) Perímetro"
+    CLASS GC_Perimetro =
+      !!@ ili2db.dispName = "Código del departamento"
+      Departamento_Codigo : TEXT*2;
+      !!@ ili2db.dispName = "Código del municipio"
+      Municipio_Codigo : TEXT*5;
+      !!@ ili2db.dispName = "Tipo de avalúo"
+      Tipo_Avaluo : TEXT*30;
+      !!@ ili2db.dispName = "Nombre geográfico"
+      Nombre_Geografico : TEXT*50;
+      !!@ ili2db.dispName = "Código nombre"
+      Codigo_Nombre : TEXT*255;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Perimetro;
+
+    /** Datos del propietario en catastro
+     */
+    !!@ ili2db.dispName = "(GC) Predio Catastro"
+    CLASS GC_Predio_Catastro =
+      !!@ ili2db.dispName = "Tipo de catastro"
+      Tipo_Catastro : TEXT*255;
+      !!@ ili2db.dispName = "Número predial"
+      Numero_Predial : TEXT*30;
+      !!@ ili2db.dispName = "Número predial anterior"
+      Numero_Predial_Anterior : TEXT*20;
+      !!@ ili2db.dispName = "Círculo registral"
+      Circulo_Registral : TEXT*4;
+      !!@ ili2db.dispName = "Matrícula inmobiliaria catastro"
+      Matricula_Inmobiliaria_Catastro : TEXT*80;
+      !!@ ili2db.dispName = "Direcciones"
+      Direcciones : BAG {0..*} OF Datos_Gestor_Catastral_V2_9_6.GC_Direccion;
+      !!@ ili2db.dispName = "Tipo de predio"
+      Tipo_Predio : TEXT*100;
+      !!@ ili2db.dispName = "Condición del predio"
+      Condicion_Predio : Datos_Gestor_Catastral_V2_9_6.GC_CondicionPredioTipo;
+      !!@ ili2db.dispName = "Destinación económica"
+      Destinacion_Economica : TEXT*150;
+      !!@ ili2db.dispName = "Estado alerta"
+      Estado_Alerta : TEXT*30;
+      !!@ ili2db.dispName = "Entidad emisora de la alerta"
+      Entidad_Emisora_Alerta : TEXT*255;
+      !!@ ili2db.dispName = "Fecha de alerta"
+      Fecha_Alerta : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Sistema procedencia de los datos"
+      Sistema_Procedencia_Datos : Datos_Gestor_Catastral_V2_9_6.GC_SistemaProcedenciaDatosTipo;
+      !!@ ili2db.dispName = "Fecha de los datos"
+      Fecha_Datos : MANDATORY INTERLIS.XMLDate;
+    END GC_Predio_Catastro;
+
+    /** Datos del propietario en catastro
+     */
+    !!@ ili2db.dispName = "(GC) Propietario"
+    CLASS GC_Propietario =
+      !!@ ili2db.dispName = "Tipo de documento"
+      Tipo_Documento : TEXT*100;
+      !!@ ili2db.dispName = "Número de documento"
+      Numero_Documento : TEXT*50;
+      !!@ ili2db.dispName = "Dígito de verificación"
+      Digito_Verificacion : TEXT*1;
+      !!@ ili2db.dispName = "Primer nombre"
+      Primer_Nombre : TEXT*255;
+      !!@ ili2db.dispName = "Segundo nombre"
+      Segundo_Nombre : TEXT*255;
+      !!@ ili2db.dispName = "Primer apellido"
+      Primer_Apellido : TEXT*255;
+      !!@ ili2db.dispName = "Segundo apellido"
+      Segundo_Apellido : TEXT*255;
+      !!@ ili2db.dispName = "Razón social"
+      Razon_Social : TEXT*255;
+    END GC_Propietario;
+
+    !!@ ili2db.dispName = "(GC) Sector Rural"
+    CLASS GC_Sector_Rural =
+      !!@ ili2db.dispName = "Código"
+      Codigo : TEXT*9;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Sector_Rural;
+
+    !!@ ili2db.dispName = "(GC) Sector Urbano"
+    CLASS GC_Sector_Urbano =
+      !!@ ili2db.dispName = "Código"
+      Codigo : TEXT*9;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Sector_Urbano;
+
+    /** Datos del terreno, asociado al predio en catastro
+     */
+    !!@ ili2db.dispName = "(GC) Terreno"
+    CLASS GC_Terreno =
+      !!@ ili2db.dispName = "Área terreno alfanumérica"
+      Area_Terreno_Alfanumerica : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área terreno digital"
+      Area_Terreno_Digital : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Código de manzana vereda"
+      Manzana_Vereda_Codigo : TEXT*17;
+      !!@ ili2db.dispName = "Número de subterráneos"
+      Numero_Subterraneos : 0 .. 999999999999999;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Terreno;
+
+    !!@ ili2db.dispName = "(GC) Unidad Construcción"
+    CLASS GC_Unidad_Construccion =
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*2;
+      !!@ ili2db.dispName = "Etiqueta"
+      Etiqueta : TEXT*50;
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : TEXT*20;
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Datos_Gestor_Catastral_V2_9_6.GC_UnidadConstruccionTipo;
+      !!@ ili2db.dispName = "Planta"
+      Planta : TEXT*10;
+      !!@ ili2db.dispName = "Total de habitaciones"
+      Total_Habitaciones : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de baños"
+      Total_Banios : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de locales"
+      Total_Locales : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de pisos"
+      Total_Pisos : 0 .. 150;
+      !!@ ili2db.dispName = "Uso"
+      Uso : TEXT*255;
+      !!@ ili2db.dispName = "Año de construcción"
+      Anio_Construccion : 1512 .. 2500;
+      !!@ ili2db.dispName = "Puntaje"
+      Puntaje : 0 .. 200;
+      !!@ ili2db.dispName = "Área construida"
+      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Área privada"
+      Area_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Código terreno"
+      Codigo_Terreno : TEXT*30;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END GC_Unidad_Construccion;
+
+    !!@ ili2db.dispName = "(GC) Vereda"
+    CLASS GC_Vereda =
+      !!@ ili2db.dispName = "Código"
+      Codigo : TEXT*17;
+      !!@ ili2db.dispName = "Código anterior"
+      Codigo_Anterior : TEXT*13;
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : TEXT*100;
+      !!@ ili2db.dispName = "Código del sector"
+      Sector_Codigo : TEXT*9;
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V1.GM_MultiSurface2D;
+    END GC_Vereda;
+
+    ASSOCIATION gc_construccion_predio =
+      gc_predio -- {1} GC_Predio_Catastro;
+      gc_construccion -- {0..*} GC_Construccion;
+    END gc_construccion_predio;
+
+    ASSOCIATION gc_construccion_unidad =
+      gc_unidad_construccion -- {0..*} GC_Unidad_Construccion;
+      gc_construccion -- {1} GC_Construccion;
+    END gc_construccion_unidad;
+
+    ASSOCIATION gc_copropiedad =
+      gc_matriz -<> {0..1} GC_Predio_Catastro;
+      gc_unidad -- {0..*} GC_Predio_Catastro;
+      Coeficiente_Copropiedad : 0.0000000 .. 100.0000000;
+    END gc_copropiedad;
+
+    ASSOCIATION gc_ph_predio =
+      gc_predio -- {1} GC_Predio_Catastro;
+      gc_datos_ph -- {0..1} GC_Datos_PH_Condiminio;
+    END gc_ph_predio;
+
+    ASSOCIATION gc_propietario_predio =
+      gc_predio_catastro -- {1} GC_Predio_Catastro;
+      gc_propietario -- {0..*} GC_Propietario;
+    END gc_propietario_predio;
+
+    ASSOCIATION gc_terreno_predio =
+      gc_predio -- {1} GC_Predio_Catastro;
+      gc_terreno -- {0..*} GC_Terreno;
+    END gc_terreno_predio;
+
+  END Datos_Gestor_Catastral;
+
+END Datos_Gestor_Catastral_V2_9_6.
+
+MODEL Datos_SNR_V2_9_6 (es)
+AT "http://www.proadmintierra.info/"
+VERSION "V2.3"  // 2019-07-31 // =
+  IMPORTS LADM_COL_V1_3;
+
+  DOMAIN
+
+    SNR_CalidadDerechoTipo = (
+      !!@ ili2db.dispName = "Dominio"
+      Dominio,
+      !!@ ili2db.dispName = "Falsa tradición"
+      Falsa_Tradicion,
+      !!@ ili2db.dispName = "Nuda propiedad"
+      Nuda_Propiedad,
+      !!@ ili2db.dispName = "Propiedad colectiva"
+      Propiedad_Colectiva,
+      !!@ ili2db.dispName = "Usufructo"
+      Usufructo
+    );
+
+    SNR_DocumentoTitularTipo = (
+      !!@ ili2db.dispName = "Cédula de ciudadanía"
+      Cedula_Ciudadania,
+      !!@ ili2db.dispName = "Cédula de extranjería"
+      Cedula_Extranjeria,
+      !!@ ili2db.dispName = "NIT"
+      NIT,
+      !!@ ili2db.dispName = "Pasaporte"
+      Pasaporte,
+      !!@ ili2db.dispName = "Tarjeta de identidad"
+      Tarjeta_Identidad,
+      !!@ ili2db.dispName = "Libreta militar"
+      Libreta_Militar,
+      !!@ ili2db.dispName = "Registro civil"
+      Registro_Civil,
+      !!@ ili2db.dispName = "Cédula militar"
+      Cedula_Militar,
+      !!@ ili2db.dispName = "NUIP"
+      NUIP,
+      !!@ ili2db.dispName = "Secuencial SNR"
+      Secuencial_SNR
+    );
+
+    SNR_FuenteTipo = (
+      !!@ ili2db.dispName = "Acto administrativo"
+      Acto_Administrativo,
+      !!@ ili2db.dispName = "Escritura pública"
+      Escritura_Publica,
+      !!@ ili2db.dispName = "Sentencia judicial"
+      Sentencia_Judicial
+    );
+
+    SNR_PersonaTitularTipo = (
+      !!@ ili2db.dispName = "Persona natural"
+      Persona_Natural,
+      !!@ ili2db.dispName = "Persona jurídica"
+      Persona_Juridica
+    );
+
+  TOPIC Datos_SNR =
+
+    !!@ ili2db.dispName = "(SNR) Derecho"
+    CLASS SNR_Derecho =
+      /** Calidad de derecho en registro
+       */
+      !!@ ili2db.dispName = "Calidad derecho registro"
+      Calidad_Derecho_Registro : MANDATORY Datos_SNR_V2_9_6.SNR_CalidadDerechoTipo;
+      !!@ ili2db.dispName = "Código naturaleza jurídica"
+      Codigo_Naturaleza_Juridica : TEXT*5;
+    END SNR_Derecho;
+
+    !!@ ili2db.dispName = "(SNR) Fuente Cabida Linderos"
+    CLASS SNR_Fuente_CabidaLinderos =
+      !!@ ili2db.dispName = "Tipo de documento"
+      Tipo_Documento : Datos_SNR_V2_9_6.SNR_FuenteTipo;
+      !!@ ili2db.dispName = "Número de documento"
+      Numero_Documento : TEXT*255;
+      !!@ ili2db.dispName = "Fecha de documento"
+      Fecha_Documento : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Ente emisor"
+      Ente_Emisor : TEXT*255;
+      !!@ ili2db.dispName = "Ciudad emisora"
+      Ciudad_Emisora : TEXT*255;
+      !!@ ili2db.dispName = "Archivo"
+      Archivo : LADM_COL_V1_3.LADM_Nucleo.ExtArchivo;
+    END SNR_Fuente_CabidaLinderos;
+
+    /** Datos del documento que soporta el derecho
+     */
+    !!@ ili2db.dispName = "(SNR) Fuente Derecho"
+    CLASS SNR_Fuente_Derecho =
+      !!@ ili2db.dispName = "Tipo de documento"
+      Tipo_Documento : Datos_SNR_V2_9_6.SNR_FuenteTipo;
+      !!@ ili2db.dispName = "Número de documento"
+      Numero_Documento : TEXT*255;
+      !!@ ili2db.dispName = "Fecha del documento"
+      Fecha_Documento : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Ente emisor"
+      Ente_Emisor : MTEXT*255;
+      !!@ ili2db.dispName = "Ciudad emisora"
+      Ciudad_Emisora : TEXT*255;
+    END SNR_Fuente_Derecho;
+
+    /** Datos del predio entregados por registro
+     */
+    !!@ ili2db.dispName = "(SNR) Predio Registro"
+    CLASS SNR_Predio_Registro =
+      !!@ ili2db.dispName = "Código ORIP"
+      Codigo_ORIP : TEXT*3;
+      !!@ ili2db.dispName = "Matrícula inmobiliaria"
+      Matricula_Inmobiliaria : TEXT*80;
+      !!@ ili2db.dispName = "Número predial nuevo en FMI"
+      Numero_Predial_Nuevo_en_FMI : TEXT*30;
+      !!@ ili2db.dispName = "Número predial anterior en FMI"
+      Numero_Predial_Anterior_en_FMI : TEXT*30;
+      !!@ ili2db.dispName = "NUPRE en FMI"
+      NUPRE_en_FMI : TEXT*11;
+      !!@ ili2db.dispName = "Cabida y linderos"
+      Cabida_Linderos : MTEXT;
+      /** Matricula inmobiliaria matriz, cuando aplique
+       */
+      !!@ ili2db.dispName = "Matrícula inmobiliaria matriz"
+      Matricula_Inmobiliaria_Matriz : TEXT*80;
+      !!@ ili2db.dispName = "Fecha de datos"
+      Fecha_Datos : MANDATORY INTERLIS.XMLDate;
+    END SNR_Predio_Registro;
+
+    /** Datos de titulares de derecho en registro
+     */
+    !!@ ili2db.dispName = "(SNR) Titular"
+    CLASS SNR_Titular =
+      /** Tipo de persona
+       */
+      !!@ ili2db.dispName = "Tipo de persona"
+      Tipo_Persona : Datos_SNR_V2_9_6.SNR_PersonaTitularTipo;
+      !!@ ili2db.dispName = "Tipo de documento"
+      Tipo_Documento : Datos_SNR_V2_9_6.SNR_DocumentoTitularTipo;
+      !!@ ili2db.dispName = "Número de documento"
+      Numero_Documento : MANDATORY TEXT*50;
+      !!@ ili2db.dispName = "Nombres"
+      Nombres : TEXT*500;
+      !!@ ili2db.dispName = "Primer apellido"
+      Primer_Apellido : TEXT*255;
+      !!@ ili2db.dispName = "Segundo apellido"
+      Segundo_Apellido : TEXT*255;
+      !!@ ili2db.dispName = "Razón social"
+      Razon_Social : MTEXT*255;
+    END SNR_Titular;
+
+    ASSOCIATION snr_derecho_predio =
+      snr_predio_registro -- {1} SNR_Predio_Registro;
+      snr_derecho -- {1..*} SNR_Derecho;
+    END snr_derecho_predio;
+
+    ASSOCIATION snr_fuente_cabidalinderos =
+      snr_predio_registro -- {0..*} SNR_Predio_Registro;
+      snr_fuente_cabidalinderos -- {0..1} SNR_Fuente_CabidaLinderos;
+    END snr_fuente_cabidalinderos;
+
+    ASSOCIATION snr_fuente_derecho =
+      snr_derecho -- {1..*} SNR_Derecho;
+      snr_fuente_derecho -- {1} SNR_Fuente_Derecho;
+    END snr_fuente_derecho;
+
+    ASSOCIATION snr_titular_derecho =
+      snr_titular -- {1..*} SNR_Titular;
+      snr_derecho -- {1..*} SNR_Derecho;
+      Porcentaje_Participacion : 0 .. 100;
+    END snr_titular_derecho;
+
+  END Datos_SNR;
+
+END Datos_SNR_V2_9_6.
+
+MODEL Datos_Integracion_Insumos_V2_9_6 (es)
+AT "mailto:PC4@localhost"
+VERSION "2019-09-06"  =
+  IMPORTS Datos_Gestor_Catastral_V2_9_6,Datos_SNR_V2_9_6;
+
+  TOPIC Datos_Integracion_Insumos =
+    DEPENDS ON Datos_SNR_V2_9_6.Datos_SNR,Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral;
+
+    !!@ ili2db.dispName = "(Integración Insumos) Predio Insumos"
+    CLASS INI_Predio_Insumos =
+    END INI_Predio_Insumos;
+
+    ASSOCIATION ini_predio_integracion_gc =
+      gc_predio_catastro (EXTERNAL) -- {0..1} Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral.GC_Predio_Catastro;
+      ini_predio_insumos -- {0..1} INI_Predio_Insumos;
+    END ini_predio_integracion_gc;
+
+    ASSOCIATION ini_predio_integracion_snr =
+      snr_predio_juridico (EXTERNAL) -- {0..1} Datos_SNR_V2_9_6.Datos_SNR.SNR_Predio_Registro;
+      ini_predio -- {0..1} INI_Predio_Insumos;
+    END ini_predio_integracion_snr;
+
+  END Datos_Integracion_Insumos;
+
+END Datos_Integracion_Insumos_V2_9_6.

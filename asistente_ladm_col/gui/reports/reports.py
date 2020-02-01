@@ -41,16 +41,13 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QProgressBar)
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
-                       Qgis,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TEST_SERVER,
-                                                      PLUGIN_NAME,
                                                       REPORTS_REQUIRED_VERSION,
                                                       URL_REPORTS_LIBRARIES)
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (remove_readonly,
@@ -67,7 +64,6 @@ class ReportGenerator(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.names = Names()
         self.logger = Logger()
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -206,7 +202,7 @@ class ReportGenerator(QObject):
                 self.msg.exec_()
                 return
 
-        plot_layer = self.qgis_utils.get_layer(db, self.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
+        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
         if not plot_layer:
             return
 
@@ -269,19 +265,19 @@ class ReportGenerator(QObject):
         multi_polygons = []
 
         for selected_plot in selected_plots:
-            plot_id = selected_plot[self.names.T_ID_F]
+            plot_id = selected_plot[db.names.T_ID_F]
 
             geometry = selected_plot.geometry()
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
 
             # Generate data file
@@ -295,7 +291,7 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
             current_report_path = os.path.join(save_into_folder, file_name)
@@ -375,7 +371,7 @@ class ReportGenerator(QObject):
                     "There was an error with the download. The downloaded file is invalid."))
             except PermissionError as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')))
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path, 'impresion'))))
             else:
                 self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
 

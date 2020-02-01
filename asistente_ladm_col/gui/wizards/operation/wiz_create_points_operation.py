@@ -28,18 +28,14 @@ from qgis.PyQt.QtWidgets import (QWizard,
                                  QSizePolicy,
                                  QGridLayout)
 from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsVectorLayer,
                        QgsMapLayerProxyModel,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
-                                                      LAYER,
+from asistente_ladm_col.config.general_config import (LAYER,
                                                       DEFAULT_EPSG)
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
@@ -62,7 +58,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.logger = Logger()
-        self.names = Names()
+        self.names = self._db.names
         self.help_strings = HelpStrings()
 
         self._layers = {

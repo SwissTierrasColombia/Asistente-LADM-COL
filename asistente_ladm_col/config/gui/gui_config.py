@@ -3,7 +3,7 @@ from copy import deepcopy
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from .common_keys import *
+from asistente_ladm_col.config.gui.common_keys import *
 
 
 class GUI_Config(QObject):
@@ -14,7 +14,7 @@ class GUI_Config(QObject):
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
             WIDGET_NAME: "LAD&M_COL",
-            OBJECT_NAME: 'main_menu',
+            OBJECT_NAME: MENU_LADM_COL_OBJECTNAME,
             ACTIONS: [
                 {
                     WIDGET_TYPE: MENU,
@@ -50,7 +50,7 @@ class GUI_Config(QObject):
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
             WIDGET_NAME: "LAD&M_COL",
-            OBJECT_NAME: 'main_menu',
+            OBJECT_NAME: MENU_LADM_COL_OBJECTNAME,
             ACTIONS: [
                 ACTION_DOWNLOAD_GUIDE,
                 SEPARATOR,
@@ -73,7 +73,7 @@ class GUI_Config(QObject):
                         {
                             WIDGET_TYPE: MENU,
                             WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operation"),
-                            OBJECT_NAME: "ladm_col_operation_menu",
+                            OBJECT_NAME: MENU_OPERATION_OBJECTNAME,
                             ICON: OPERATION_ICON,
                             ACTIONS: [
                                 {
@@ -164,7 +164,7 @@ class GUI_Config(QObject):
                 {
                     WIDGET_TYPE: MENU,
                     WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
-                    OBJECT_NAME: "ladm_col_reports_menu",
+                    OBJECT_NAME: MENU_REPORTS_OBJECTNAME,
                     ICON: REPORTS_ICON,
                     ACTIONS: [
                         ACTION_REPORT_ANNEX_17,

@@ -7,9 +7,9 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            get_gpkg_conn,
                                             get_test_copy_path)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.config.table_mapping_config import Names
 
 import_qgis_model_baker()
 
@@ -19,13 +19,16 @@ class TestTopology(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.qgis_utils = QGISUtils()
-        self.names = Names()
 
     def test_pair_boundary_plot(self):
         print('\nValidating boundaries plots')
         # extracted with: iface.activeLayer().dataProvider().dataSourceUri() in qgis console
         # and type is: layer.providerType()
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='tests_boundaries')
         boundary_layer = QgsVectorLayer(uri, 'tests_boundaries', 'ogr')
 

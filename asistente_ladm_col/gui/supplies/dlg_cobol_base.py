@@ -23,7 +23,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
-from qgis.PyQt.QtGui import  QValidator
+from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsWkbTypes,
@@ -32,10 +32,8 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
-
-from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      BLO_LIS_FILE_PATH)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -61,8 +59,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._dialog_mode = None
         self._running_tool = False
         self.tool_name = ""
-
-        self.names = Names()
+        self.names = self._db.names
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self.validators = Validators()
         self.initialize_feedback()

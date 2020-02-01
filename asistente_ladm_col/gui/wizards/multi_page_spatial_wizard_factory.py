@@ -29,16 +29,12 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP1,
-                                                      WIZARD_HELP2,
-                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
-
+from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP_PAGES, WIZARD_HELP1, WIZARD_HELP2, \
+    WIZARD_MAP_LAYER_PROXY_MODEL
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from .spatial_wizard_factory import SpatialWizardFactory
-from ...utils.qt_utils import (enable_next_wizard,
+from asistente_ladm_col.gui.wizards.spatial_wizard_factory import SpatialWizardFactory
+from asistente_ladm_col.utils.qt_utils import (enable_next_wizard,
                                disable_next_wizard)
 
 

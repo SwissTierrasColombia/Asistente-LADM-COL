@@ -24,8 +24,10 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri)
 
+from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
-                                                    EnumTestLevel)
+                                                    COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_query,
                                                                         economic_query,
                                                                         physical_query,
@@ -37,24 +39,15 @@ from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report.pg import (ant
 from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                   annex17_point_data_query,
                                                                                   annex17_plot_data_query)
-from asistente_ladm_col.config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                                      ASSISTANT_SUPPORTED_MODELS,
-                                                      OPERATION_MODEL_PREFIX,
-                                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                                      VALUATION_MODEL_PREFIX,
-                                                      LADM_MODEL_PREFIX,
-                                                      ANT_MODEL_PREFIX,
-                                                      REFERENCE_CARTOGRAPHY_PREFIX,
-                                                      SNR_DATA_MODEL_PREFIX,
-                                                      SUPPLIES_INTEGRATION_MODEL_PREFIX,
-                                                      SUPPLIES_MODEL_PREFIX)
+from asistente_ladm_col.config.mapping_config import LADMNames
+
 from asistente_ladm_col.utils.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
-from asistente_ladm_col.config.table_mapping_config import (T_ID,
-                                                            DISPLAY_NAME,
-                                                            ILICODE,
-                                                            DESCRIPTION)
-
+from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
+                                                      DISPLAY_NAME_KEY,
+                                                      ILICODE_KEY,
+                                                      DESCRIPTION_KEY,
+                                                      QueryNames)
 
 class PGConnector(DBConnector):
     _PROVIDER_NAME = 'postgres'
@@ -100,6 +93,7 @@ class PGConnector(DBConnector):
         return result
 
     def _postgis_exists(self):
+        # Todo: Use it in test_connection()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""
                     SELECT
@@ -132,7 +126,7 @@ class PGConnector(DBConnector):
                           count(tablename)
                         FROM pg_catalog.pg_tables
                         WHERE schemaname = '{}' and tablename = '{}'
-            """.format(self.schema, INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
             return bool(cur.fetchone()[0])
 
@@ -149,6 +143,7 @@ class PGConnector(DBConnector):
           If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
+        :return Triple: boolean result, message code, message text
         """
         uri = self._uri
 
@@ -156,21 +151,21 @@ class PGConnector(DBConnector):
             uri = self.get_connection_uri(self._dict_conn_params, 0)
             res, msg = self.open_connection()
             if res:
-                return (True, QCoreApplication.translate("PGConnector",
-                                                         "Connection to server was successful."))
+                return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                         "Connection to server was successful.")
             else:
-                return (False, msg)
+                return False, EnumTestConnectionMsg.CONNECTION_TO_SERVER_FAILED, msg
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
-                return (False, QCoreApplication.translate("PGConnector",
+                return (False, EnumTestConnectionMsg.DATABASE_NOT_FOUND, QCoreApplication.translate("PGConnector",
                                                           "You should first select a database."))
 
         # Client side check
         if self.conn is None or self.conn.closed:
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
         if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
             self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
 
@@ -184,107 +179,95 @@ class PGConnector(DBConnector):
             self.conn.close()
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
         if test_level == EnumTestLevel.DB:  # Just in the DB case
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the database was successful."))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database was successful.")
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == '':
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "You should first select a schema."))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("PGConnector",
+                                                          "You should first select a schema.")
 
             if not self._schema_exists():
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "The schema '{}' does not exist in the database!").format(
-                    self.schema))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("PGConnector",
+                        "The schema '{}' does not exist in the database!").format(
+                        self.schema)
 
             res, msg = self.get_schema_privileges(uri, self.schema)
             if not res:
-                return (False,
-                        QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.USER_HAS_NO_PERMISSION, QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
                             self._dict_conn_params['username'],
-                            self.schema))
+                            self.schema)
 
         if test_level == EnumTestLevel.DB_SCHEMA:
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the database schema was successful."))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database schema was successful.")
 
         if test_level & EnumTestLevel._CHECK_LADM:
             if not self._metadata_exists():
-                return (False, QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate("PGConnector",
                                                           "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
-                    self.schema))
+                    self.schema)
 
             if self.get_ili2db_version() != 4:
-                return (False, QCoreApplication.translate("PGConnector",
+                return False, EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, QCoreApplication.translate("PGConnector",
                                                           "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
-                    self.schema))
+                    self.schema)
 
 
             res, msg = self.check_at_least_one_ladm_model_exists()
             if not res:
-                return (res, msg)  # Version of the models is not valid
+                return res, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, msg  # Version of the models is not valid
 
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
             # Validate table and field names
-            if not self.names_read:
-                self._get_table_and_field_names()
+            if not self._table_and_field_names:
+                self._initialize_names()
 
             models = list()
             if self.ladm_model_exists():
-                models.append(LADM_MODEL_PREFIX)
+                models.append(LADMNames.LADM_MODEL_PREFIX)
             if self.operation_model_exists():
-                models.append(OPERATION_MODEL_PREFIX)
+                models.append(LADMNames.OPERATION_MODEL_PREFIX)
             if self.cadastral_form_model_exists():
-                models.append(CADASTRAL_FORM_MODEL_PREFIX)
+                models.append(LADMNames.CADASTRAL_FORM_MODEL_PREFIX)
             if self.valuation_model_exists():
-                models.append(VALUATION_MODEL_PREFIX)
+                models.append(LADMNames.VALUATION_MODEL_PREFIX)
             if self.ant_model_exists():
-                models.append(ANT_MODEL_PREFIX)
+                models.append(LADMNames.ANT_MODEL_PREFIX)
             if self.reference_cartography_model_exists():
-                models.append(REFERENCE_CARTOGRAPHY_PREFIX)
+                models.append(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX)
             if self.snr_data_model_exists():
-                models.append(SNR_DATA_MODEL_PREFIX)
+                models.append(LADMNames.SNR_DATA_MODEL_PREFIX)
             if self.supplies_integration_model_exists():
-                models.append(SUPPLIES_INTEGRATION_MODEL_PREFIX)
+                models.append(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX)
             if self.supplies_model_exists():
-                models.append(SUPPLIES_MODEL_PREFIX)
+                models.append(LADMNames.SUPPLIES_MODEL_PREFIX)
 
             if not models:
-                return (False, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!"))
+                return False, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!")
 
-            res, msg = self.names.test_names(models)
+            res, msg = self.names.test_names(self._table_and_field_names)
             if not res:
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "Table/field names from the DB are not correct. Details: {}.").format(
-                    msg))
+                return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
+                                                                                                    "Table/field names from the DB are not correct. Details: {}.").format(
+                    msg)
 
         if test_level == EnumTestLevel.LADM:
-            return (True,
-                    QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
-                        self.schema))
+            return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
+                "PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
+                self.schema)
 
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate("PGConnector", "Connection successful!")
 
-        return (False, QCoreApplication.translate("PGConnector",
-                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
-
-    def check_at_least_one_ladm_model_exists(self):
-        result = True
-        msg = QCoreApplication.translate("PGConnector", "The version of the models is valid.")
-        models = self.get_models()
-        if len(set(models) & set(ASSISTANT_SUPPORTED_MODELS)) == 0:
-            result = False
-            msg = QCoreApplication.translate("PGConnector",
-                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
-                ', '.join(ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
-        return (result, msg)
+        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("PGConnector",
+                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
 
     def open_connection(self, uri=None):
         if uri is None:
@@ -296,14 +279,13 @@ class PGConnector(DBConnector):
             try:
                 self.conn = psycopg2.connect(uri)
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                return (
-                False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
+                return False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e))
 
             self.logger.info(__name__, "Connection was open! {}".format(self.conn))
         else:
             self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
+        return True, QCoreApplication.translate("PGConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
@@ -311,39 +293,28 @@ class PGConnector(DBConnector):
             self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
-    def validate_db(self):
-        pass
-
-    def _get_table_and_field_names(self):
+    def get_table_and_field_names(self):
         """
-        Get table and field names from the DB. Should only be called once for a single connection, and should be
-        refreshed after a connection changes.
-
-        :return: dict with ilinames as keys and sqlnames as values
+        Documented in the super class
         """
-        sql_query = """SELECT DISTINCT
-                      iliclass.iliname AS table_iliname,
-                      tbls.tablename AS tablename,
-                      ilicol.iliname AS field_iliname,
-                      a.attname AS fieldname      
+        # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
+        sql_query = """SELECT 
+                      iliclass.iliname AS {table_iliname},
+                      tbls.tablename AS {table_name},
+                      ilicol.iliname AS {field_iliname},
+                      ilicol.sqlname AS {field_name}      
                     FROM pg_catalog.pg_tables tbls
-                    LEFT JOIN {schema}.t_ili2db_table_prop tp
-                      ON tp.tablename = tbls.tablename
-                    LEFT JOIN pg_index i
-                      ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
-                    LEFT JOIN pg_attribute a
-                      ON a.attrelid = i.indrelid
-                    LEFT JOIN public.geometry_columns g
-                      ON g.f_table_schema = tbls.schemaname
-                      AND g.f_table_name = tbls.tablename
                     LEFT JOIN {schema}.t_ili2db_classname iliclass
                       ON tbls.tablename = iliclass.sqlname
                     LEFT JOIN {schema}.t_ili2db_attrname ilicol
-                      ON a.attname = ilicol.sqlname 
-                      AND ilicol.colowner = tbls.tablename
-                    WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
-                    ORDER BY tbls.tablename, fieldname;""".format(
-            schema=self.schema)  # TODO: Remove DISTINCT when ili2db 4.3.2 is released
+                      ON ilicol.colowner = tbls.tablename
+                      AND ilicol.target IS NULL
+                    WHERE schemaname ='{schema}'
+                    ORDER BY tbls.tablename, ilicol.sqlname;""".format(table_iliname=QueryNames.TABLE_ILINAME,
+                                                                  table_name=QueryNames.TABLE_NAME,
+                                                                  field_iliname=QueryNames.FIELD_ILINAME,
+                                                                  field_name=QueryNames.FIELD_NAME,
+                                                                  schema=self.schema)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
@@ -351,152 +322,68 @@ class PGConnector(DBConnector):
 
         dict_names = dict()
         for record in records:
-            if record['table_iliname'] is None:
+            if record[QueryNames.TABLE_ILINAME] is None:
                 # Either t_ili2db_* tables (INTERLIS meta-attrs)
                 continue
 
-            record['table_iliname'] = normalize_iliname(record['table_iliname'])
-            if not record['table_iliname'] in dict_names:
-                dict_names[record['table_iliname']] = dict()
-                dict_names[record['table_iliname']]['table_name'] = record['tablename']
+            record[QueryNames.TABLE_ILINAME] = normalize_iliname(record[QueryNames.TABLE_ILINAME])
+            if not record[QueryNames.TABLE_ILINAME] in dict_names:
+                dict_names[record[QueryNames.TABLE_ILINAME]] = dict()
+                dict_names[record[QueryNames.TABLE_ILINAME]][QueryNames.TABLE_NAME] = record[QueryNames.TABLE_NAME]
 
-            if record['field_iliname'] is None:
-                # Fields for domains, like 'description' (we map it in a custom later in this class method)
+            if record[QueryNames.FIELD_ILINAME] is None:
+                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
                 continue
 
-            record['field_iliname'] = normalize_iliname(record['field_iliname'])
-            dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
+            record[QueryNames.FIELD_ILINAME] = normalize_iliname(record[QueryNames.FIELD_ILINAME])
+            dict_names[record[QueryNames.TABLE_ILINAME]][record[QueryNames.FIELD_ILINAME]] = record[QueryNames.FIELD_NAME]
 
-        # Add required key-value pairs that do not come from the DB query
-        dict_names[T_ID] = "t_id"
-        dict_names[DISPLAY_NAME] = "dispname"
-        dict_names[ILICODE] = "ilicode"
-        dict_names[DESCRIPTION] = "description"
-
-        # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
+        # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-        # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-        # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
-        sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
+        #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as {table_iliname},
             a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
             FROM {schema}.t_ili2db_attrname a
                 INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
                 INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
-                INNER JOIN (SELECT a_s.iliname
-                    FROM {schema}.t_ili2db_attrname a_s
-                    GROUP BY a_s.iliname
-                    HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
-            GROUP BY a.iliname, a.sqlname, c.iliname, o.iliname
-            HAVING COUNT(a.iliname) = 1
-            ORDER BY a.iliname""".format(schema=self.schema)
+            ORDER BY a.iliname""".format(table_iliname=QueryNames.TABLE_ILINAME,
+                                         schema=self.schema)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
         records = cur.fetchall()
         for record in records:
-            composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
-                                          normalize_iliname(record['iliname2']))
-            record['table_iliname'] = normalize_iliname(record['table_iliname'])
-            if record['table_iliname'] in dict_names:
-                dict_names[record['table_iliname']][composed_key] = record['sqlname']
+            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
+                                           COMPOSED_KEY_SEPARATOR,
+                                           normalize_iliname(record['iliname2']))
+            record[QueryNames.TABLE_ILINAME] = normalize_iliname(record[QueryNames.TABLE_ILINAME])
+            if record[QueryNames.TABLE_ILINAME] in dict_names:
+                dict_names[record[QueryNames.TABLE_ILINAME]][composed_key] = record['sqlname']
             else:
                 record['colowner'] = normalize_iliname(record['colowner'])
                 if record['colowner'] in dict_names:
                     dict_names[record['colowner']][composed_key] = record['sqlname']
 
-        self.names.initialize_table_and_field_names(dict_names)
-        self.names_read = True
+        # Add required key-value pairs that do not come from the DB query
+        dict_names[T_ID_KEY] = "t_id"
+        dict_names[DISPLAY_NAME_KEY] = "dispname"
+        dict_names[ILICODE_KEY] = "ilicode"
+        dict_names[DESCRIPTION_KEY] = "description"
 
-        return True
-
-    def get_uri_for_layer(self, layer_name, geometry_type=None):
-        res, cur = self.get_tables_info()
-        if not res:
-            return (res, cur)
-        data_source_uri = ''
-
-        for record in cur:
-            if record['schemaname'] == self.schema and record['tablename'] == layer_name.lower():
-                if record['geometry_column']:
-                    if geometry_type is not None:
-                        if QgsWkbTypes.geometryType(QgsWkbTypes.parseType(record['type'])) == geometry_type:
-                            data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                                uri=self._uri,
-                                primary_key=record['primary_key'],
-                                srid=record['srid'],
-                                type=record['type'],
-                                schema=record['schemaname'],
-                                table=record['tablename'],
-                                geometry_column=record['geometry_column']
-                            )
-                    else:
-                        data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                            uri=self._uri,
-                            primary_key=record['primary_key'],
-                            srid=record['srid'],
-                            type=record['type'],
-                            schema=record['schemaname'],
-                            table=record['tablename'],
-                            geometry_column=record['geometry_column']
-                        )
-                else:
-                    data_source_uri = '{uri} key={primary_key} table="{schema}"."{table}"'.format(
-                        uri=self._uri,
-                        primary_key=record['primary_key'],
-                        schema=record['schemaname'],
-                        table=record['tablename']
-                    )
-        if data_source_uri:
-            return (True, data_source_uri)
-        return (False, QCoreApplication.translate("PGConnector",
-                                                  "Layer '{}' was not found in the database (schema: {}).").format(
-            layer_name, self.schema))
+        return dict_names
 
     def check_and_fix_connection(self):
         if self.conn is None or self.conn.closed:
-            res, msg = self.test_connection()
+            res, code, msg = self.test_connection()
             if not res:
-                return (res, msg)
+                return res, msg
 
         if self.conn.get_transaction_status() == psycopg2.extensions.TRANSACTION_STATUS_INERROR:  # 3
             self.conn.rollback()  # Go back to TRANSACTION_STATUS_IDLE (0)
             if self.conn.get_transaction_status() != psycopg2.extensions.TRANSACTION_STATUS_IDLE:
                 return (False, "Error: PG transaction had an error and couldn't be recovered...")
 
-        return (True, '')
-
-    def get_tables_info(self):
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("""
-                    SELECT
-                      tbls.schemaname AS schemaname,
-                      tbls.tablename AS tablename,
-                      a.attname AS primary_key,
-                      g.f_geometry_column AS geometry_column,
-                      g.srid AS srid,
-                      g.type AS type
-                    FROM pg_catalog.pg_tables tbls
-                    LEFT JOIN pg_index i
-                      ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
-                    LEFT JOIN pg_attribute a
-                      ON a.attrelid = i.indrelid
-                      AND a.attnum = ANY(i.indkey)
-                    LEFT JOIN public.geometry_columns g
-                      ON g.f_table_schema = tbls.schemaname
-                      AND g.f_table_name = tbls.tablename
-                    WHERE i.indisprimary AND schemaname ='{}'
-                    """.format(self.schema))
-        return (True, cur)
-
-    def retrieve_sql_data(self, sql_query):
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(sql_query)
-        results = cur.fetchall()
-        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
-        return colnames, results
+        return True, ''
 
     def get_igac_basic_info(self, **kwargs):
         """
@@ -768,15 +655,15 @@ class PGConnector(DBConnector):
         """
         res, msg = self.check_and_fix_connection()
         if not res:
-            return (res, msg)
+            return res, msg
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         try:
             cur.execute(query)
-            return cur.fetchall()
-        except ProgrammingError:
-            return None
+            return True, cur.fetchall()
+        except ProgrammingError as e:
+            return False, e
 
     def execute_sql_query_dict_cursor(self, query):
         """
@@ -797,24 +684,16 @@ class PGConnector(DBConnector):
             self._logic_validation_queries = logic_validation_queries.get_logic_validation_queries(self.schema, self.names)
         return self._logic_validation_queries
 
-    def _schema_names_list(self):
-        query = """
-                    SELECT n.nspname as "schema_name"
-                    FROM pg_catalog.pg_namespace n
-                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public'
-                    ORDER BY 1"""
-
-        result = self.execute_sql_query(query)
-        return result if not isinstance(result, tuple) else None
-
     def get_models(self, schema=None):
         query = "SELECT distinct split_part(iliname,'.',1) as modelname FROM {schema}.t_ili2db_trafo".format(
             schema=schema if schema else self.schema)
-        result = self.execute_sql_query(query)
+        res, result = self.execute_sql_query(query)
         lst_models = list()
-        if result is not None and not isinstance(result, tuple):
-            lst_models = [db_model['modelname'] for db_model in result] 
-        self.logger.debug(__name__, "Models found: {}".format(lst_models))
+        if res:
+            lst_models = [db_model['modelname'] for db_model in result]
+            self.logger.debug(__name__, "Models found: {}".format(lst_models))
+        else:
+            self.logger.error_msg(__name__, "Error getting models: {}".format(result))
         return lst_models
 
     def create_database(self, uri, db_name):
@@ -870,7 +749,7 @@ class PGConnector(DBConnector):
         True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
 
     def get_dbnames_list(self, uri):
-        res, msg = self.test_connection(EnumTestLevel.SERVER)
+        res, code, msg = self.test_connection(EnumTestLevel.SERVER)
         if not res:
             return (False, msg)
 
@@ -897,9 +776,9 @@ class PGConnector(DBConnector):
             conn = psycopg2.connect(uri)
             cur = conn.cursor()
             query = """
-            SELECT n.nspname as "schema_name" FROM pg_catalog.pg_namespace n 
-            WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public' ORDER BY "schema_name"
-            """
+                SELECT n.nspname as "{schema_name}" FROM pg_catalog.pg_namespace n 
+                WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public' ORDER BY "{schema_name}"
+            """.format(schema_name=QueryNames.SCHEMA_NAME)
             cur.execute(query)
             schemas = cur.fetchall()
             for schema in schemas:
@@ -950,11 +829,11 @@ class PGConnector(DBConnector):
             layer_uri = layer.dataProvider().uri()
             db_uri = QgsDataSourceUri(self._uri)
 
-            result = (layer_uri.schema() == self.schema and \
-                      layer_uri.database() == db_uri.database() and \
-                      layer_uri.host() == db_uri.host() and \
-                      layer_uri.port() == db_uri.port() and \
-                      layer_uri.username() == db_uri.username() and \
+            result = (layer_uri.schema() == self.schema and
+                      layer_uri.database() == db_uri.database() and
+                      layer_uri.host() == db_uri.host() and
+                      layer_uri.port() == db_uri.port() and
+                      layer_uri.username() == db_uri.username() and
                       layer_uri.password() == db_uri.password())
 
         return result
@@ -995,7 +874,7 @@ class PGConnector(DBConnector):
         cur.execute("""SELECT *
                        FROM information_schema.columns
                        WHERE table_schema = '{schema}'
-                       AND(table_name='t_ili2db_attrname' OR table_name = 't_ili2db_model' )
+                       AND(table_name='t_ili2db_attrname' OR table_name='t_ili2db_model' )
                        AND(column_name='owner' OR column_name = 'file' )
                     """.format(schema=self.schema))
         if cur.rowcount > 1:

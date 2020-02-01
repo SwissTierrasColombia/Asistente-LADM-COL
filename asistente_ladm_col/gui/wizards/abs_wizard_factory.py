@@ -28,16 +28,12 @@ from qgis.PyQt.QtCore import (QSettings,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import Qgis
 
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      LAYER,
-                                                      WIZARD_FEATURE_NAME, WIZARD_UI,
-                                                      WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
-                                                      WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
+from asistente_ladm_col.config.general_config import LAYER, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
+    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_TOOL_NAME, WIZARD_LAYERS, WIZARD_EDITING_LAYER_NAME, \
+    WIZARD_READ_ONLY_FIELDS
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.ui import load_ui
@@ -54,10 +50,9 @@ class AbsWizardFactory(QWizard):
         self.qgis_utils = qgis_utils
         self.wizard_config = wizard_settings
         self.logger = Logger()
-        self.names = Names()
+        self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-
         load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
