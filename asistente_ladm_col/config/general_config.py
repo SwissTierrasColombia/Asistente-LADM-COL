@@ -1,10 +1,14 @@
 import os.path
+import platform
 
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
+
+DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL')
+DEPENDENCY_REPORTS_DIR_NAME = 'impresion'
 
 DEFAULT_LOG_MODE = LogModeEnum.DEV
 DEFAULT_LOG_FILE = ''
@@ -18,7 +22,7 @@ ANT_MAP_REPORT = "Plano_ANT"
 DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
-FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
+FIELD_MAPPING_PATH = os.path.join(DEPENDENCIES_BASE_PATH, 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
@@ -83,6 +87,32 @@ MODULE_HELP_MAPPING = {
 QGIS_REQUIRED_VERSION = '3.10.0-A Coruña'
 QGIS_REQUIRED_VERSION_INT = 31000
 JAVA_REQUIRED_VERSION = 1.8
+
+KEY_JAVA_OS_VERSION = platform.system() + '_' + platform.architecture()[0]
+
+DICT_JAVA_DOWNLOAD_URL = {
+    'Linux_32bit': 'https://javadl.oracle.com/webapps/download/AutoDL?BundleId=241524_1f5b5a70bf22433b84d0e960903adac8',  # jre-8u241-linux-i586.tar.gz
+    'Linux_64bit': 'https://javadl.oracle.com/webapps/download/AutoDL?BundleId=241526_1f5b5a70bf22433b84d0e960903adac8',  # jre-8u241-linux-x64.tar.gz
+    'Darwin_64bit': 'https://github.com/frekele/oracle-java/releases/download/8u212-b10/jre-8u212-macosx-x64.tar.gz',  # jre-8u212-macosx-x64.tar.gz
+    'Windows_32bit': 'https://javadl.oracle.com/webapps/download/AutoDL?BundleId=240727_5b13a193868b4bf28bcb45c792fce896',  # jre-8u231-windows-i586.tar.gz
+    'Windows_64bit': 'https://javadl.oracle.com/webapps/download/AutoDL?BundleId=240729_5b13a193868b4bf28bcb45c792fce896'  # jre-8u231-windows-x64.tar.gz
+}
+
+DICT_JAVA_MD5SUM = {
+    'Linux_32bit': '349cf9d4ce26c3ea413be17f59d8b4fe',
+    'Linux_64bit': '98f53c5894eeb2e8ffcff84092e0d2f2',
+    'Darwin_64bit': '0927df5891c5adf324707da73c6890fa',
+    'Windows_32bit': 'e76d2497116cf285c9750bef639cde0b',
+    'Windows_64bit': 'e8e21d73ea1c2f0b21bb22fc9e54b8fc'
+}
+
+DICT_JAVA_DIR_NAME = {
+    'Linux_32bit': 'jre1.8.0_241',
+    'Linux_64bit': 'jre1.8.0_241',
+    'Darwin_64bit': 'jre1.8.0_212.jre/Contents/Home',
+    'Windows_32bit': 'jre1.8.0_231',
+    'Windows_64bit': 'jre1.8.0_231'
+}
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
