@@ -27,7 +27,7 @@ from qgis.core import (Qgis,
                        QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
-                              QCoreApplication, 
+                              QCoreApplication,
                               QFile,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
@@ -35,60 +35,59 @@ import processing
 
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
-                                 QGridLayout,
                                  QDialogButtonBox,
                                  QMessageBox,
                                  QFileDialog)
 
 from asistente_ladm_col.lib.logger import Logger
-from ...utils.qt_utils import make_file_selector, normalize_local_url
-from ...config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import Names
-from ...config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
-                                      EXCEL_SHEET_TITLE_MUNICIPALITY,
-                                      EXCEL_SHEET_TITLE_ZONE,
-                                      EXCEL_SHEET_TITLE_REGISTRATION_PLOT,
-                                      EXCEL_SHEET_TITLE_NPN,
-                                      EXCEL_SHEET_TITLE_NPV,
-                                      EXCEL_SHEET_TITLE_PLOT_NAME,
-                                      EXCEL_SHEET_TITLE_PLOT_CONDITION,
-                                      EXCEL_SHEET_TITLE_VALUATION,
-                                      EXCEL_SHEET_TITLE_PLOT_TYPE,
-                                      EXCEL_SHEET_TITLE_ADDRESS,
-                                      EXCEL_SHEET_TITLE_FIRST_NAME,
-                                      EXCEL_SHEET_TITLE_MIDDLE,
-                                      EXCEL_SHEET_TITLE_FIRST_SURNAME,
-                                      EXCEL_SHEET_TITLE_SECOND_SURNAME,
-                                      EXCEL_SHEET_TITLE_BUSINESS_NAME,
-                                      EXCEL_SHEET_TITLE_SEX,
-                                      EXCEL_SHEET_TITLE_DOCUMENT_TYPE,
-                                      EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
-                                      EXCEL_SHEET_TITLE_KIND_PERSON,
-                                      EXCEL_SHEET_TITLE_ISSUING_ENTITY,
-                                      EXCEL_SHEET_TITLE_DATE_ISSUE,
-                                      EXCEL_SHEET_TITLE_ID_GROUP,
-                                      EXCEL_SHEET_TITLE_TYPE,
-                                      EXCEL_SHEET_TITLE_GROUP,
-                                      EXCEL_SHEET_TITLE_SOURCE_TYPE,
-                                      EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER,
-                                      EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE,
-                                      EXCEL_SHEET_TITLE_STATE_SOURCE,
-                                      EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE,
-                                      EXCEL_SHEET_TITLE_STORAGE_PATH,
-                                      LAYER,
-                                      PLUGIN_NAME,
-                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
-                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
-                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
-                                      LOG_QUALITY_CONTENT_SEPARATOR,
-                                      EXCEL_SHEET_NAME_PLOT,
-                                      EXCEL_SHEET_NAME_PARTY,
-                                      EXCEL_SHEET_NAME_GROUP,
-                                      EXCEL_SHEET_NAME_RIGHT)
-from ...utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
+from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                                      LOG_QUALITY_CONTENT_SEPARATOR)
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_import_from_excel.ui')
+
+# Excel titles
+EXCEL_SHEET_NAME_PLOT = 'predio'
+EXCEL_SHEET_NAME_PARTY = 'interesado'
+EXCEL_SHEET_NAME_GROUP = 'agrupacion'
+EXCEL_SHEET_NAME_RIGHT = 'derecho'
+EXCEL_SHEET_TITLE_DEPARTMENT = 'departamento'
+EXCEL_SHEET_TITLE_MUNICIPALITY = 'municipio'
+EXCEL_SHEET_TITLE_ZONE = 'zona'
+EXCEL_SHEET_TITLE_REGISTRATION_PLOT = 'matricula predio'
+EXCEL_SHEET_TITLE_NPN = 'numero predial nuevo'
+EXCEL_SHEET_TITLE_NPV = 'numero predial viejo'
+EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
+EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
+EXCEL_SHEET_TITLE_PLOT_CONDITION = 'condicion predio'
+EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
+EXCEL_SHEET_TITLE_ADDRESS = 'direccion'
+EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
+EXCEL_SHEET_TITLE_MIDDLE = 'nombre2'
+EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1'
+EXCEL_SHEET_TITLE_SECOND_SURNAME = 'apellido2'
+EXCEL_SHEET_TITLE_BUSINESS_NAME = 'razon social'
+EXCEL_SHEET_TITLE_SEX = 'sexo persona'
+EXCEL_SHEET_TITLE_DOCUMENT_TYPE = 'tipo documento'
+EXCEL_SHEET_TITLE_DOCUMENT_NUMBER = 'numero de documento'
+EXCEL_SHEET_TITLE_KIND_PERSON = 'tipo persona'
+EXCEL_SHEET_TITLE_ISSUING_ENTITY = 'organo emisor del documento'
+EXCEL_SHEET_TITLE_DATE_ISSUE = 'fecha emision del documento'
+EXCEL_SHEET_TITLE_ID_GROUP = 'id agrupación'
+EXCEL_SHEET_TITLE_TYPE = 'tipo'
+EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER = 'número documento Interesado'
+EXCEL_SHEET_TITLE_GROUP = 'agrupación'
+EXCEL_SHEET_TITLE_SOURCE_TYPE = 'tipo de fuente'
+EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE = 'Descripción de la fuente'
+EXCEL_SHEET_TITLE_STATE_SOURCE = 'estado_disponibilidad de la fuente'
+EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE = 'Es oficial la fuente'
+EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 
 
 class ImportFromExcelDialog(QDialog, DIALOG_UI):
@@ -104,7 +103,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
-        self.names = Names()
+        self.names = self._db.names
         self._running_tool = False
         self.tool_name = QCoreApplication.translate("ImportFromExcelDialog", "Import intermediate structure")
 

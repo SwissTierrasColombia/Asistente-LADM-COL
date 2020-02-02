@@ -23,6 +23,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
@@ -220,11 +221,11 @@ class GUI_Builder(QObject):
         """
         actions = list()
         if db.operation_model_exists():
-            actions.extend(MODELS_GUI_DICT[OPERATION_MODEL_PREFIX])
+            actions.extend(MODELS_GUI_DICT[LADMNames.OPERATION_MODEL_PREFIX])
         if db.cadastral_form_model_exists():
-            actions.extend(MODELS_GUI_DICT[CADASTRAL_FORM_MODEL_PREFIX])
+            actions.extend(MODELS_GUI_DICT[LADMNames.CADASTRAL_FORM_MODEL_PREFIX])
         if db.valuation_model_exists():
-            actions.extend(MODELS_GUI_DICT[VALUATION_MODEL_PREFIX])
+            actions.extend(MODELS_GUI_DICT[LADMNames.VALUATION_MODEL_PREFIX])
 
         return list(set(actions))
 

@@ -28,44 +28,37 @@ from qgis.core import (QgsVectorLayer,
                        QgsGeometry)
 from qgis.gui import QgsDockWidget
 
-from ...gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
-from ...gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
-from ...gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
-from ...gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
-from ...utils import get_ui_class
-from ...utils.qt_utils import OverrideCursor
+from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
+from asistente_ladm_col.gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
+from asistente_ladm_col.gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
+from asistente_ladm_col.gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
-from ...config.symbology import Symbology
-from ...config.general_config import (SUPPLIES_DB_PREFIX,
-                                      SUPPLIES_DB_SUFFIX,
-                                      PREFIX_LAYER_MODIFIERS,
-                                      SUFFIX_LAYER_MODIFIERS,
-                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                      CHANGE_DETECTION_NEW_PARCEL,
-                                      CHANGE_DETECTION_PARCEL_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                      CHANGE_DETECTION_PARCEL_REMAINS,
-                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                      CHANGE_DETECTION_NULL_PARCEL,
-                                      LAYER,
-                                      PARCEL_STATUS,
-                                      PARCEL_STATUS_DISPLAY,
-                                      PLOT_GEOMETRY_KEY)
-
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.symbology import Symbology
+from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      LAYER)
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                                   CHANGE_DETECTION_PARCEL_CHANGED,
+                                                                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                                   CHANGE_DETECTION_PARCEL_REMAINS,
+                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                                   CHANGE_DETECTION_NULL_PARCEL,
+                                                                   PARCEL_STATUS,
+                                                                   PARCEL_STATUS_DISPLAY,
+                                                                   PLOT_GEOMETRY_KEY)
 
 DOCKWIDGET_UI = get_ui_class('change_detection/dockwidget_change_detection.ui')
 
 
 class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
-    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
+    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
     def __init__(self, iface, db, supplies_db, qgis_utils, ladm_data, all_parcels_mode=True):
         super(DockWidgetChangeDetection, self).__init__(None)
         self.setupUi(self)
-        self.names = Names()
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.utils = ChangeDetectionUtils(iface, db, supplies_db, qgis_utils, ladm_data)
@@ -183,7 +176,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
     def initialize_layers(self):
         self.utils.initialize_layers()
 
-    def request_zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
+    def request_zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
         self.zoom_to_features_requested.emit(layer, ids, t_ids, duration)
 
     def activate_map_swipe_tool(self):
@@ -195,8 +188,8 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.names.OP_PLOT_T][LAYER], True)
-        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], True)
 
 
 class ChangeDetectionUtils(QObject):
@@ -211,7 +204,6 @@ class ChangeDetectionUtils(QObject):
         self._supplies_db = supplies_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.names = Names()
         self.symbology = Symbology()
 
         self._layers = dict()
@@ -223,15 +215,15 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self._db.names.OP_PLOT_T: {'name': self._db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self._db.names.OP_PARCEL_T: {'name': self._db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self._db.names.COL_UE_BAUNIT_T: {'name': self._db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
 
         self._supplies_layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self._supplies_db.names.OP_PLOT_T: {'name': self._supplies_db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self._supplies_db.names.OP_PARCEL_T: {'name': self._supplies_db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self._supplies_db.names.COL_UE_BAUNIT_T: {'name': self._supplies_db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
 
     def initialize_data(self):
@@ -240,7 +232,7 @@ class ChangeDetectionUtils(QObject):
 
     def add_layers(self):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[self.names.OP_PLOT_T][LAYER] is None:
+        if self._layers[self._db.names.OP_PLOT_T][LAYER] is None:
             self.qgis_utils.map_freeze_requested.emit(True)
 
             self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
@@ -250,9 +242,9 @@ class ChangeDetectionUtils(QObject):
             # Now load supplies layers
             # Set layer modifiers
             layer_modifiers = {
-                PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
-                SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-                STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
+                LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
+                LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
+                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
             }
             self.qgis_utils.get_layers(self._supplies_db,
                                        self._supplies_layers,
@@ -263,7 +255,7 @@ class ChangeDetectionUtils(QObject):
                 return None
             else:
                 # In some occasions the supplies and collected plots might not overlap and have different extents
-                self.iface.setActiveLayer(self._supplies_layers[self.names.OP_PLOT_T][LAYER])
+                self.iface.setActiveLayer(self._supplies_layers[self._supplies_db.names.OP_PLOT_T][LAYER])
                 self.iface.zoomToActiveLayer()
 
             self.qgis_utils.map_freeze_requested.emit(False)
@@ -303,15 +295,15 @@ class ChangeDetectionUtils(QObject):
                  Inverse True is useful to find missing parcels (from the supplies authority's perspective)
 
         :return: dict() --> {PARCEL_NUMBER: X,
-                             PARCEL_ATTRIBUTES: {PARCEL_ID: [self.names.T_ID_F], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
+                             PARCEL_ATTRIBUTES: {PARCEL_ID: [self._db.names.T_ID_F], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
         """
         base_db = self._supplies_db if inverse else self._db
         compare_db = self._db if inverse else self._supplies_db
 
         layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: SUPPLIES_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: SUPPLIES_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group()
+            LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
+            LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
         }
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
         dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)
@@ -321,14 +313,14 @@ class ChangeDetectionUtils(QObject):
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = NULL
-                dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
+                dict_attrs_comparison[base_db.names.OP_PARCEL_T_PARCEL_NUMBER_F] = NULL
+                dict_attrs_comparison[base_db.names.T_ID_F] = [feature[base_db.names.T_ID_F] for feature in collected_features]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
             else:
                 # A parcel number has at least one dict of attributes (i.e., one feature)
-                dict_attrs_comparison[self.names.OP_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
-                dict_attrs_comparison[self.names.T_ID_F] = [feature[self.names.T_ID_F] for feature in collected_features]
+                dict_attrs_comparison[base_db.names.OP_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
+                dict_attrs_comparison[base_db.names.T_ID_F] = [feature[base_db.names.T_ID_F] for feature in collected_features]
 
                 if len(collected_features) > 1:
                     dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_SEVERAL_PARCELS
@@ -340,8 +332,8 @@ class ChangeDetectionUtils(QObject):
                     else:
                         supplies_features = dict_supplies_parcels[collected_parcel_number]
 
-                        del collected_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
-                        del supplies_features[0][self.names.T_ID_F]  # We won't compare ID_FIELDS
+                        del collected_features[0][base_db.names.T_ID_F]  # We won't compare ID_FIELDS
+                        del supplies_features[0][compare_db.names.T_ID_F]  # We won't compare ID_FIELDS
 
                         # Compare all attributes except geometry: a change in feature attrs is enough to mark it as
                         #   changed in the summary panel

@@ -33,14 +33,10 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP1,
-                                                      WIZARD_HELP2,
-                                                      WIZARD_HELP3,
-                                                      PLUGIN_NAME,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
-                                                      CSS_COLOR_INACTIVE_LABEL)
+                                                      CSS_COLOR_INACTIVE_LABEL, WIZARD_HELP_PAGES, WIZARD_HELP1,
+                                                      WIZARD_HELP2, WIZARD_HELP3)
 from asistente_ladm_col.gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper

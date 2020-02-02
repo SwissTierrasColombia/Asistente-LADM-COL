@@ -20,13 +20,10 @@ from PyQt5.uic import loadUi
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import Qgis
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.gui.transition_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.ui import (get_ui_class,
                                          get_ui_file_path)
@@ -45,7 +42,6 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self._user = user
         self.parent = parent
         self.logger = Logger()
-        self.names = Names()
         self.session = STSession()
         self._current_widget = None
 

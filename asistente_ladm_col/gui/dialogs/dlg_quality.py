@@ -27,38 +27,37 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
-                                                      CHECK_OVERLAPS_IN_CONTROL_POINTS,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                                      CHECK_OVERLAPS_IN_BOUNDARIES,
-                                                      CHECK_BOUNDARIES_ARE_NOT_SPLIT,
-                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
-                                                      CHECK_DANGLES_IN_BOUNDARIES,
-                                                      CHECK_OVERLAPS_IN_PLOTS,
-                                                      CHECK_OVERLAPS_IN_BUILDINGS,
-                                                      CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
-                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                      CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
-                                                      CHECK_GAPS_IN_PLOTS,
-                                                      CHECK_MULTIPART_IN_RIGHT_OF_WAY,
-                                                      CHECK_BUILDING_WITHIN_PLOTS,
-                                                      CHECK_BUILDING_UNIT_WITHIN_PLOTS,
-                                                      CHECK_PARCEL_RIGHT_RELATIONSHIP,
-                                                      CHECK_FRACTION_SUM_FOR_PARTY_GROUPS,
-                                                      FIND_DUPLICATE_RECORDS_IN_A_TABLE,
-                                                      CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS,
-                                                      CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS,
-                                                      CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS,
-                                                      CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS,
-                                                      CHECK_COL_PARTY_NATURAL_TYPE,
-                                                      CHECK_COL_PARTY_LEGAL_TYPE,
-                                                      CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER,
-                                                      CHECK_UEBAUNIT_PARCEL,
-                                                      CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           CHECK_OVERLAPS_IN_BOUNDARY_POINTS,
+                                                           CHECK_OVERLAPS_IN_CONTROL_POINTS,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                                           CHECK_OVERLAPS_IN_BOUNDARIES,
+                                                           CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                                           CHECK_DANGLES_IN_BOUNDARIES,
+                                                           CHECK_OVERLAPS_IN_PLOTS,
+                                                           CHECK_OVERLAPS_IN_BUILDINGS,
+                                                           CHECK_OVERLAPS_IN_RIGHTS_OF_WAY,
+                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                           CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                                           CHECK_GAPS_IN_PLOTS,
+                                                           CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                                           CHECK_BUILDING_WITHIN_PLOTS,
+                                                           CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                                           CHECK_PARCEL_RIGHT_RELATIONSHIP,
+                                                           CHECK_FRACTION_SUM_FOR_PARTY_GROUPS,
+                                                           FIND_DUPLICATE_RECORDS_IN_A_TABLE,
+                                                           CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS,
+                                                           CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS,
+                                                           CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS,
+                                                           CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS,
+                                                           CHECK_COL_PARTY_NATURAL_TYPE,
+                                                           CHECK_COL_PARTY_LEGAL_TYPE,
+                                                           CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER,
+                                                           CHECK_UEBAUNIT_PARCEL,
+                                                           CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
@@ -71,7 +70,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.names = Names()
+        self.names = self._db.names
         self.translatable_config_strings = TranslatableConfigStrings()
 
         self.trw_quality_rules.setItemsExpandable(False)

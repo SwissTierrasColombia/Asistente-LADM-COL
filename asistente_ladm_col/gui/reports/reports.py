@@ -48,7 +48,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TEST_SERVER,
                                                       REPORTS_REQUIRED_VERSION,
                                                       URL_REPORTS_LIBRARIES)
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 from asistente_ladm_col.utils.java_utils import JavaUtils
@@ -63,7 +62,6 @@ class ReportGenerator(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.names = Names()
         self.logger = Logger()
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
@@ -197,7 +195,7 @@ class ReportGenerator(QObject):
                                                                          "Java is a necessary prerequisite but it was not found, it will be configured!"))
             return
 
-        plot_layer = self.qgis_utils.get_layer(db, self.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
+        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
         if not plot_layer:
             return
 
@@ -260,19 +258,19 @@ class ReportGenerator(QObject):
         multi_polygons = []
 
         for selected_plot in selected_plots:
-            plot_id = selected_plot[self.names.T_ID_F]
+            plot_id = selected_plot[db.names.T_ID_F]
 
             geometry = selected_plot.geometry()
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
 
             # Generate data file
@@ -286,7 +284,7 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
             current_report_path = os.path.join(save_into_folder, file_name)

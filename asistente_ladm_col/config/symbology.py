@@ -1,47 +1,45 @@
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
-                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
-from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
 
 
 class Symbology:
     ERROR_LAYER = 'error_layer'
 
     def __init__(self):
-        self.names = Names()
         self.translatable_config_strings = TranslatableConfigStrings()
 
-    def get_default_style_group(self):
+    def get_default_style_group(self, names):
          return {
-            self.names.OP_BOUNDARY_T: {
+            names.OP_BOUNDARY_T: {
                 QgsWkbTypes.LineGeometry: 'style_boundary'
             },
-            self.names.OP_BOUNDARY_POINT_T: {
+            names.OP_BOUNDARY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_boundary_point'
             },
-            self.names.OP_SURVEY_POINT_T: {
+            names.OP_SURVEY_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_survey_point'
             },
-            self.names.OP_CONTROL_POINT_T: {
+            names.OP_CONTROL_POINT_T: {
                 QgsWkbTypes.PointGeometry: 'style_control_point'
             },
-            self.names.OP_PLOT_T: {
+            names.OP_PLOT_T: {
                 QgsWkbTypes.PointGeometry: 'style_plot_point',
                 QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
             },
-            self.names.OP_BUILDING_T: {
+            names.OP_BUILDING_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building'
             },
-            self.names.OP_BUILDING_UNIT_T: {
+            names.OP_BUILDING_UNIT_T: {
                 QgsWkbTypes.PointGeometry: 'style_building_unit_point',
                 QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
             },
-            self.names.OP_RIGHT_OF_WAY_T: {
+            names.OP_RIGHT_OF_WAY_T: {
                 QgsWkbTypes.PointGeometry: 'style_right_of_way_point',
                 QgsWkbTypes.PolygonGeometry: 'style_right_of_way'
             },
@@ -52,9 +50,9 @@ class Symbology:
             }
         }
 
-    def get_supplies_style_group(self):
+    def get_supplies_style_group(self, names):
         return {
-            self.names.OP_PLOT_T: {
+            names.OP_PLOT_T: {
                 QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
             }
         }

@@ -1,7 +1,4 @@
-from asistente_ladm_col.config.general_config import (OPERATION_MODEL_PREFIX,
-                                                      CADASTRAL_FORM_MODEL_PREFIX,
-                                                      VALUATION_MODEL_PREFIX,
-                                                      SUPPLIES_MODEL_PREFIX)
+from asistente_ladm_col.config.mapping_config import LADMNames
 
 
 DEFAULT_GUI = 'DEFAULT_GUI'
@@ -100,15 +97,21 @@ SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
 REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
 
+# MENU OBJECTNAMES
+MENU_OPERATION_OBJECTNAME = "ladm_col_operation_menu"
+MENU_LADM_COL_OBJECTNAME = "ladm_col_menu"
+MENU_REPORTS_OBJECTNAME = "ladm_col_reports_menu"
+
+
 MODELS_GUI_DICT = {
-    OPERATION_MODEL_PREFIX: [
+    LADMNames.OPERATION_MODEL_PREFIX: [
         ACTION_CHECK_QUALITY_RULES
     ],
-    CADASTRAL_FORM_MODEL_PREFIX: [
+    LADMNames.CADASTRAL_FORM_MODEL_PREFIX: [
     ],
-    VALUATION_MODEL_PREFIX: [
+    LADMNames.VALUATION_MODEL_PREFIX: [
     ],
-    SUPPLIES_MODEL_PREFIX: [
+    LADMNames.SUPPLIES_MODEL_PREFIX: [
         ACTION_RUN_ETL_COBOL,
         ACTION_RUN_ETL_SNC,
         ACTION_FIND_MISSING_COBOL_SUPPLIES

@@ -44,14 +44,10 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_INHERITANCE,
-                                                      DEFAULT_HIDDEN_MODELS,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
-                                                      CREATE_BASKET_COL,
-                                                      CREATE_IMPORT_TID,
-                                                      STROKE_ARCS,
                                                       SETTINGS_MODELS_TAB_INDEX)
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
@@ -171,7 +167,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 models_name = self.find_models_xtf(self.xtf_file_line_edit.text().strip())
 
                 for model_name in models_name:
-                    if not model_name in DEFAULT_HIDDEN_MODELS:
+                    if not model_name in LADMNames.DEFAULT_HIDDEN_MODELS:
                         item = QStandardItem(model_name)
                         item.setCheckable(False)
                         item.setEditable(False)
@@ -388,10 +384,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.delete_data = False
 
         configuration.epsg = QSettings().value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)
-        configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = CREATE_BASKET_COL
-        configuration.create_import_tid = CREATE_IMPORT_TID
-        configuration.stroke_arcs = STROKE_ARCS
+        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
+        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = LADMNames.STROKE_ARCS
 
         full_java_exe_path = JavaUtils.get_full_java_exe_path()
         if full_java_exe_path:

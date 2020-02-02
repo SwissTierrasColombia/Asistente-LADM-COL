@@ -26,7 +26,6 @@
  """
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
-from qgis.core import Qgis
 
 from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper

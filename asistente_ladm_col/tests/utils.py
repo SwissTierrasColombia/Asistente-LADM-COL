@@ -27,7 +27,6 @@ from qgis.core import QgsApplication
 from qgis.analysis import QgsNativeAlgorithms
 
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
 QgsApplication.setPrefixPath('/usr', True)
@@ -53,7 +52,7 @@ asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 
 
-def get_dbconn(schema):
+def get_pg_conn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
     dict_conn['host'] = DB_HOSTNAME
@@ -66,9 +65,28 @@ def get_dbconn(schema):
 
     return db
 
+def get_gpkg_conn_from_path(path):
+    dict_conn = dict()
+    dict_conn['dbfile'] = path
+    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
+
+def get_gpkg_conn(gpkg_schema_name):
+    dict_conn = dict()
+    db = None
+    if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
+        gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
+        gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        dict_conn['dbfile'] = gpkg_path
+        db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
 def restore_schema(schema):
     print("\nRestoring schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
@@ -95,7 +113,7 @@ def restore_schema(schema):
 
 def drop_schema(schema):
     print("\nDropping schema {}...".format(schema))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA "{}" CASCADE;""".format(schema))
@@ -108,7 +126,7 @@ def drop_schema(schema):
 
 def clean_table(schema, table):
     print("\nCleaning table {}.{}...".format(schema, table))
-    db_connection = get_dbconn(schema)
+    db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
@@ -169,14 +187,14 @@ def unload_qgis_model_baker():
     if plugin_found:
         del(qgis.utils.plugins["QgisModelBaker"])
 
-def run_etl_model(input_layer, out_layer, ladm_col_layer_name):
+def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     import_processing()
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 
     if model:
         automatic_fields_definition = True
 
-        mapping = refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
@@ -189,3 +207,24 @@ def run_etl_model(input_layer, out_layer, ladm_col_layer_name):
         return
 
     return out_layer
+
+
+def get_required_fields(db_connection):
+    required_fields = list()
+    for key, value in db_connection.names.TABLE_DICT.items():
+        for key_field, value_field in value[db_connection.names.FIELDS_DICT].items():
+            if getattr(db_connection.names, value_field):
+                required_fields.append(value_field)
+    return required_fields
+
+
+def get_required_tables(db_connection):
+    required_tables = list()
+    for key, value in db_connection.names.TABLE_DICT.items():
+        if getattr(db_connection.names, value[db_connection.names.VARIABLE_NAME]):
+            required_tables.append(value[db_connection.names.VARIABLE_NAME])
+    return required_tables
+
+def testdata_path(path):
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(basepath, 'resources', path)

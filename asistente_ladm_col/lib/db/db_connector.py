@@ -17,18 +17,28 @@
  ***************************************************************************/
 """
 import psycopg2
+from PyQt5.QtCore import QCoreApplication
 
 from qgis.PyQt.QtCore import QObject
-from ...utils.model_parser import ModelParser
-from ...config.enums import EnumTestLevel
-from asistente_ladm_col.config.table_mapping_config import Names
+
+from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
+                                                      QueryNames,
+                                                      LADMNames,
+                                                      T_ID_KEY,
+                                                      DISPLAY_NAME_KEY,
+                                                      ILICODE_KEY,
+                                                      DESCRIPTION_KEY)
 from asistente_ladm_col.lib.logger import Logger
+
+COMPOSED_KEY_SEPARATOR = ".."
+
 
 class DBConnector(QObject):
     """
     Superclass for all DB connectors.
     """
-
     _DEFAULT_VALUES = dict()
 
     def __init__(self, uri, conn_dict=dict()):
@@ -40,8 +50,8 @@ class DBConnector(QObject):
         self.schema = None
         self.conn = None
         self._dict_conn_params = None
-        self.names = Names()
-        self.names_read = False  # Table/field names should be read only once per connector
+        self.names = TableAndFieldNames()
+        self._table_and_field_names = list()  # Table/field names should be read only once per connector
         
         if uri is not None:
             self.uri = uri
@@ -75,16 +85,7 @@ class DBConnector(QObject):
     def test_connection(self, test_level=EnumTestLevel.LADM):
         raise NotImplementedError
 
-    def validate_db(self):
-        raise NotImplementedError
-
-    def _get_table_and_field_names(self):
-        raise NotImplementedError
-
     def close_connection(self):
-        raise NotImplementedError
-
-    def get_uri_for_layer(self, layer_name, geometry_type=None):
         raise NotImplementedError
 
     def get_description(self):
@@ -191,4 +192,63 @@ class DBConnector(QObject):
         raise NotImplementedError
 
     def get_interlis_version(self):
+        raise NotImplementedError
+
+    def get_table_and_field_names(self):  # TODO: Add test
+        """
+        Get table and field names from the DB. Should be called only once for a single connection.
+
+        :return: dict with table ilinames as keys and dict as values. The dicts found in the value contain field
+                 ilinames as keys and sqlnames as values. The table name itself is added with the key 'table_name'.
+                 Example:
+
+            "LADM_COL.LADM_Nucleo.col_masCcl": {
+                'table_name': 'col_masccl',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
+                'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
+            }
+        """
+        raise NotImplementedError
+
+    def _initialize_names(self):
+        """
+        Gets table and field names from the DB, initializes Names() and sets the member list for table and field names.
+        Should be called only once per DB connector.
+        """
+        dict_names = self.get_table_and_field_names()
+        self.names.initialize_table_and_field_names(dict_names)
+        self._set_table_and_field_names_list(dict_names)
+
+        # self.logger.debug(__name__, "DEBUG DICT: {}".format(dict_names["Operacion.Operacion.OP_Derecho"]))
+
+    def _set_table_and_field_names_list(self, dict_names):
+        """
+        Fill table_and_field_names list.
+        :param dict_names: See docs in _get_table_and_field_names
+        """
+        # Fill table names
+        for k,v in dict_names.items():
+            if k not in [T_ID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
+                self._table_and_field_names.append(k)  # Table names
+                for k1, v1 in v.items():
+                    if k1 != QueryNames.TABLE_NAME:
+                        self._table_and_field_names.append(k1)  # Field names
+
+    def check_at_least_one_ladm_model_exists(self):
+        result = True
+        msg = QCoreApplication.translate("DBConnector", "The version of all models is valid.")
+        models = self.get_models()
+        if len(set(models) & set(LADMNames.ASSISTANT_SUPPORTED_MODELS)) == 0:
+            result = False
+            msg = QCoreApplication.translate("DBConnector",
+                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
+                ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
+        return result, msg
+
+    def open_connection(self):
+        """
+        :return: Whether the connection is opened after calling this method or not
+        """
         raise NotImplementedError
