@@ -78,7 +78,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
         self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
-        self.java_utils.set_display_wait_cursor(True)
 
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -192,9 +191,9 @@ class DialogExportData(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
-        java_home_exist = self.java_utils.set_java_home()
-        if not java_home_exist:
-            message_java = QCoreApplication.translate("DialogExportData", """>> Java {} will be configured""").format(JAVA_REQUIRED_VERSION)
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
+            message_java = QCoreApplication.translate("DialogExportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)

@@ -187,12 +187,11 @@ class ReportGenerator(QObject):
                     "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
             return
 
-        # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        java_home_exist = self.java_utils.set_java_home()
-        if not java_home_exist:
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
             self.java_utils.get_java_on_demand()
             self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                         "Java is a necessary prerequisite but it was not found, it will be configured!"))
+                                                                         "Java is a prerequisite. Since it was not found, it is being configured..."))
             return
 
         plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)

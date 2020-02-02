@@ -27,8 +27,6 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.config.general_config import DEPENDENCIES_BASE_PATH
 from asistente_ladm_col.lib.logger import Logger
-from ..config.general_config import JAVA_REQUIRED_VERSION
-from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
                                                remove_readonly,
                                                normalize_local_url)

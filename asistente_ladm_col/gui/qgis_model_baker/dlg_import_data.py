@@ -79,10 +79,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
+
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
         self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
-        self.java_utils.set_display_wait_cursor(True)
 
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -243,9 +243,9 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-        java_home_exist = self.java_utils.set_java_home()
-        if not java_home_exist:
-            message_java = QCoreApplication.translate("DialogImportData", """>> Java {} will be configured""").format(JAVA_REQUIRED_VERSION)
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
+            message_java = QCoreApplication.translate("DialogImportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)
