@@ -226,7 +226,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.OP_PLOT_T][LAYER]
                 bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
 
-        self.utils.iface.mapCanvas().zoomToFeatureExtent(bbox_selected_features)
+        if zoom_to_selected:
+            self.utils.iface.mapCanvas().zoomToFeatureExtent(bbox_selected_features)
 
     def select_related_plots(self, parcels_t_ids, inverse):
 
