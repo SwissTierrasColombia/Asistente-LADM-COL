@@ -11,40 +11,40 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.tests.utils import (get_pg_conn,
+                                            normalize_responce,
                                             restore_schema)
 
 
 class TestChangeDetectionsSupplies(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_change_detections')
-
-        self.db_connection = get_pg_conn('test_change_detections')
-        result = self.db_connection.test_connection()
+        cls.db_pg = get_pg_conn('test_change_detections')
+        result = cls.db_pg.test_connection()
         print('test_connection', result)
 
         if not result[1]:
             print('The test connection is not working')
             return
 
-        self.qgis_utils = QGISUtils()
-        self.ladm_data = LADM_DATA(self.qgis_utils)
+        cls.qgis_utils = QGISUtils()
+        cls.ladm_data = LADM_DATA(cls.qgis_utils)
 
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")
 
-        result = self.db_connection.test_connection()
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.db_connection.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.db_pg.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
         parcel_ids_tests = [list(), [1000], [1000, 1001, 1002]]
         plot_ids_tests = [list(), [1112], [1112, 1102, 1086]]
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_connection, parcel_ids_test, self.db_connection.names.T_ID_F)
+            plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_pg, parcel_ids_test, self.db_pg.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertEqual(sorted(plot_ids), sorted(plot_ids_tests[count]), "Failure with data set {}".format(count + 1))
@@ -55,22 +55,22 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_connection, parcel_ids_test, self.db_connection.names.GC_PLOT_T_DIGITAL_PLOT_AREA_F)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_pg, parcel_ids_test, self.db_pg.names.GC_PLOT_T_DIGITAL_PLOT_AREA_F)
             self.assertEqual(sorted(plot_custom_field_ids), sorted(plot_custom_field_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id) with preloaded tables...")
 
-        layers = {self.db_connection.names.GC_PLOT_T: {'name': self.db_connection.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}}
-        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        layers = {self.db_pg.names.GC_PLOT_T: {'name': self.db_pg.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}}
+        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_connection,
+            plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_pg,
                                                                             parcel_ids_test,
-                                                                            self.db_connection.names.T_ID_F,
-                                                                            gc_plot_layer=layers[self.db_connection.names.GC_PLOT_T][LAYER])
+                                                                            self.db_pg.names.T_ID_F,
+                                                                            gc_plot_layer=layers[self.db_pg.names.GC_PLOT_T][LAYER])
             self.assertEqual(sorted(plot_ids), sorted(plot_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -82,7 +82,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_connection, plot_ids_test, self.db_connection.names.T_ID_F)
+            parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_pg, plot_ids_test, self.db_pg.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertEqual(sorted(parcel_ids), sorted(parcel_ids_tests[count]), "Failure with data set {}".format(count + 1))
@@ -95,26 +95,26 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_connection,
+            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_pg,
                                                                                            plot_ids_test,
-                                                                                           self.db_connection.names.GC_PARCEL_T_PARCEL_NUMBER_F)
+                                                                                           self.db_pg.names.GC_PARCEL_T_PARCEL_NUMBER_F)
             self.assertEqual(sorted(parcel_custom_field_ids), sorted(parcel_custom_field_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
         print("\nINFO: Validating get parcels related to plots in supplies model (Case: t_id) with preloaded tables...")
 
         layers = {
-            self.db_connection.names.GC_PARCEL_T: {'name': self.db_connection.names.GC_PARCEL_T, 'geometry': None, LAYER: None}
+            self.db_pg.names.GC_PARCEL_T: {'name': self.db_pg.names.GC_PARCEL_T, 'geometry': None, LAYER: None}
         }
-        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_connection,
+            parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_pg,
                                                                               plot_ids_test,
-                                                                              self.db_connection.names.T_ID_F,
-                                                                              gc_parcel_table=layers[self.db_connection.names.GC_PARCEL_T][LAYER])
+                                                                              self.db_pg.names.T_ID_F,
+                                                                              gc_parcel_table=layers[self.db_pg.names.GC_PARCEL_T][LAYER])
             self.assertEqual(sorted(parcel_ids), sorted(parcel_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -1120,8 +1120,8 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
                 }
             ]
         }
-        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_connection)
-        self.normalize_responce(features)
+        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_pg)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")
@@ -1148,9 +1148,9 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
                 }
             ]
         }
-        search_criterion = {self.db_connection.names.GC_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230099335131315'}
-        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_connection, search_criterion=search_criterion)
-        self.normalize_responce(features)
+        search_criterion = {self.db_pg.names.GC_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230099335131315'}
+        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_pg, search_criterion=search_criterion)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
         features_test = {
@@ -1174,21 +1174,15 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
                 }
             ]
         }
-        search_criterion = {self.db_connection.names.GC_PARCEL_T_FMI_F: '760ab38'}
-        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_connection, search_criterion=search_criterion)
-        self.normalize_responce(features)
+        search_criterion = {self.db_pg.names.GC_PARCEL_T_FMI_F: '760ab38'}
+        features = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self.db_pg, search_criterion=search_criterion)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
-    def normalize_responce(self, dict_response):
-        for key_parcel in dict_response:
-            features = dict_response[key_parcel]
-            for feature in features:
-                if 'GEOMETRY_PLOT' in feature:
-                    if feature['GEOMETRY_PLOT']:
-                        feature['GEOMETRY_PLOT'] = feature['GEOMETRY_PLOT'].asWkt()
-
-    def tearDownClass():
-        print('tearDown test_ladm_data')
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
 
 
 if __name__ == '__main__':

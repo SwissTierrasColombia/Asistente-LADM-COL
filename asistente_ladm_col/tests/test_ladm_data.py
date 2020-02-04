@@ -8,32 +8,31 @@ from qgis.testing import (start_app,
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.tests.utils import (get_pg_conn,
+                                            normalize_responce,
                                             restore_schema)
 
 
 class TestLADMData(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col_queries')
-
-        self.db_pg = get_pg_conn('test_ladm_col_queries')
-        result = self.db_pg.test_connection()
+        cls.db_pg = get_pg_conn('test_ladm_col_queries')
+        result = cls.db_pg.test_connection()
         print('test_connection', result)
 
         if not result[1]:
             print('The test connection is not working')
             return
 
-        self.qgis_utils = QGISUtils()
-        self.ladm_data = LADM_DATA(self.qgis_utils)
-        self.names = self.db_pg.names
+        cls.qgis_utils = QGISUtils()
+        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.names = cls.db_pg.names
 
     def test_get_plots_related_to_parcels(self):
         print("\nINFO: Validating get plots related to parcels (Case: t_id)...")
@@ -1087,7 +1086,7 @@ class TestLADMData(unittest.TestCase):
         }
 
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg)
-        self.normalize_responce(features)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")
@@ -1117,7 +1116,7 @@ class TestLADMData(unittest.TestCase):
 
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
-        self.normalize_responce(features)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
         features_test = {
@@ -1367,19 +1366,13 @@ class TestLADMData(unittest.TestCase):
 
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230241000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
-        self.normalize_responce(features)
+        normalize_responce(features)
         self.assertEqual(features, features_test)
 
-    def normalize_responce(self, dict_response):
-        for key_parcel in dict_response:
-            features = dict_response[key_parcel]
-            for feature in features:
-                if PLOT_GEOMETRY_KEY in feature:
-                    if feature[PLOT_GEOMETRY_KEY]:
-                        feature[PLOT_GEOMETRY_KEY] = feature[PLOT_GEOMETRY_KEY].asWkt()
-
-    def tearDownClass():
-        print('tearDown test_ladm_data')
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
 
 
 if __name__ == '__main__':

@@ -38,17 +38,18 @@ import processing
 class TesQualityValidations(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
-        self.quality = QualityUtils(self.qgis_utils)
-        self.logic_checks = LogicChecks()
-        self.translatable_config_strings = TranslatableConfigStrings()
+    def setUpClass(cls):
+        cls.qgis_utils = QGISUtils()
+        cls.quality = QualityUtils(cls.qgis_utils)
+        cls.logic_checks = LogicChecks()
+        cls.translatable_config_strings = TranslatableConfigStrings()
 
+        print("INFO: Restoring databases to be used")
         test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
 
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-            self.db_pg = get_pg_conn(test_connection_db)
+            cls.db_pg = get_pg_conn(test_connection_db)
 
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
@@ -1330,9 +1331,6 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_with_no_plot[0].geometry().asWkt(), expected_geometry_no_plot)
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
-
-    def tearDownClass():
-        print('tearDown test_boundaries_digitizing')
 
 
 if __name__ == '__main__':

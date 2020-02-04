@@ -12,9 +12,6 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
 
 
 class TestGetModels(unittest.TestCase):
-    @classmethod
-    def setUpClass(self):
-        print('setUp test_get_models')
 
     def test_pg_get_models(self):
         print("\nINFO: Validate get models method() in postgres...")
@@ -78,9 +75,6 @@ class TestGetModels(unittest.TestCase):
 
             model_names = self.db_gpkg.get_models()
             self.assertEqual(set(expected_dict[gpkg_schema_name]), set(model_names))
-
-    def tearDownClass():
-        print('tearDown test_get_models')
 
 
 if __name__ == '__main__':

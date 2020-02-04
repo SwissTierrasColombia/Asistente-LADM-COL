@@ -262,17 +262,16 @@ class LADM_DATA():
             dict_parcel_parties[id_parcel] = party_info
 
         # Append party info
-        tag_party = DICT_KEY_PARTIES
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[db.names.T_ID_F] in dict_parcel_parties:
                     # Make join
-                    if tag_party in item:
-                        item[tag_party].append(dict_parcel_parties[item[db.names.T_ID_F]])
+                    if DICT_KEY_PARTIES in item:
+                        item[DICT_KEY_PARTIES].append(dict_parcel_parties[item[db.names.T_ID_F]])
                     else:
-                        item[tag_party] = dict_parcel_parties[item[db.names.T_ID_F]]
+                        item[DICT_KEY_PARTIES] = dict_parcel_parties[item[db.names.T_ID_F]]
                 else:
-                    item[tag_party] = NULL
+                    item[DICT_KEY_PARTIES] = NULL
 
         return dict_features
 
@@ -529,17 +528,16 @@ class LADM_DATA():
             dict_parcel_parties[id_parcel] = party_info
 
         # Append party info
-        tag_party = DICT_KEY_PARTIES
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[db.names.T_ID_F] in dict_parcel_parties:
                     # Make join
-                    if tag_party in item:
-                        item[tag_party].append(dict_parcel_parties[item[db.names.T_ID_F]])
+                    if DICT_KEY_PARTIES in item:
+                        item[DICT_KEY_PARTIES].append(dict_parcel_parties[item[db.names.T_ID_F]])
                     else:
-                        item[tag_party] = dict_parcel_parties[item[db.names.T_ID_F]]
+                        item[DICT_KEY_PARTIES] = dict_parcel_parties[item[db.names.T_ID_F]]
                 else:
-                    item[tag_party] = NULL
+                    item[DICT_KEY_PARTIES] = NULL
 
         # =====================  Start add group party info ==================================================
         dict_parcel_group_parties = dict()  # {id_parcel: [id_group_party1, id_group_party2]}
@@ -602,19 +600,18 @@ class LADM_DATA():
             dict_parcel_group_parties[id_parcel] = group_party_info
 
         # Append group party info
-        tag_group_party = DICT_KEY_PARTIES
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[db.names.T_ID_F] in dict_parcel_group_parties:
                     # Make join
-                    if tag_group_party in item:
-                        if item[tag_group_party]:
+                    if DICT_KEY_PARTIES in item:
+                        if item[DICT_KEY_PARTIES]:
                             for info in dict_parcel_group_parties[item[db.names.T_ID_F]]:
-                                item[tag_group_party].append(info)
+                                item[DICT_KEY_PARTIES].append(info)
                         else:
-                            item[tag_group_party] = dict_parcel_group_parties[item[db.names.T_ID_F]]
+                            item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
                     else:
-                        item[tag_group_party] = dict_parcel_group_parties[item[db.names.T_ID_F]]
+                        item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
 
         # =====================  Start add record card info ==================================================
         # TODO: Replace property record card for correct table model
