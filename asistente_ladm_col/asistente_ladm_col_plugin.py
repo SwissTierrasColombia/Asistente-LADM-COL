@@ -218,7 +218,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
-        self.session.login_status_changed.connect(self.set_login_controls_enabled)
+        self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
     def uninstall_custom_expression_functions():
@@ -294,7 +294,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._st_login_action.triggered.connect(self.show_st_login_dialog)
         self._st_logout_action.triggered.connect(self.session_logout_from_action)
-        self._st_logout_action.setEnabled(False)
+        self._st_logout_action.setVisible(False)
 
         self.gui_builder.register_actions({
             ACTION_ST_LOGIN: self._st_login_action,
@@ -1279,14 +1279,14 @@ class AsistenteLADMCOLPlugin(QObject):
             if show_message:
                 self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
 
-    def set_login_controls_enabled(self, login_activated):
+    def set_login_controls_visibility(self, login_activated):
         """
-        React upon changes in ST login. If a user is logged in or logged out, we want to activate only certain controls.
+        React upon changes in ST login. If a user is logged in or logged out, we want to show only certain controls.
 
         :param login_activated: Boolean, True if a user is logged in
         """
-        self._st_login_action.setEnabled(not login_activated)
-        self._st_logout_action.setEnabled(login_activated)
+        self._st_login_action.setVisible(not login_activated)
+        self._st_logout_action.setVisible(login_activated)
 
     def trigger_action_emitted(self, action_tag):
         action = self.gui_builder.get_action(action_tag)
