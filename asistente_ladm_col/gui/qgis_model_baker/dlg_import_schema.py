@@ -146,7 +146,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         for modelname, checked in LADMNames.DEFAULT_MODEL_NAMES_CHECKED.items():
             item = QListWidgetItem(modelname)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(Qt.Checked if modelname in self.selected_models or checked == Qt.Checked else Qt.Unchecked)  # From parameter or by default
+            if self.selected_models:  # From parameters
+                item.setCheckState(Qt.Checked if modelname in self.selected_models else Qt.Unchecked)
+            else:  # By default
+                item.setCheckState(Qt.Checked if checked == Qt.Checked else Qt.Unchecked)
             self.import_models_list_widget.addItem(item)
 
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)

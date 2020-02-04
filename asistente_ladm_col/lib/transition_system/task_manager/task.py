@@ -35,7 +35,6 @@ class STTask(QObject):
     MEMBERS_KEY = 'members'
     CATEGORIES_KEY = 'categories'
     METADATA_KEY = 'metadata'
-    STEPS_KEY = 'steps'
 
     def __init__(self, task_data):
         QObject.__init__(self)
@@ -86,13 +85,14 @@ class STTask(QObject):
             self.__categories = task_data[self.CATEGORIES_KEY]
         if self.METADATA_KEY in task_data:
             self.__metadata = task_data[self.METADATA_KEY]
-        if self.STEPS_KEY in task_data:
-            self.__task_steps = STTaskSteps(self.__id, task_data[self.STEPS_KEY])
 
         for k, attribute in self.__get_mandatory_attributes().items():
             if attribute is None:
                 self.logger.debug(__name__, "Missing attribute to create task: {}".format(k))
                 self.__is_valid = False
+
+        if self.__is_valid:
+            self.__task_steps = STTaskSteps(self.id(), self.get_type())
 
         self.logger.debug(__name__, "Task is valid? {}".format(self.is_valid()))
 
@@ -109,7 +109,7 @@ class STTask(QObject):
         return self.__description
 
     def get_type(self):
-        return self.__categories[0]['name'] if self.__categories is not None else None
+        return self.__categories[0]['id'] if self.__categories is not None else None
 
     def get_deadline(self):
         return self.__deadline
@@ -128,6 +128,9 @@ class STTask(QObject):
 
     def get_steps(self):
         return self.__task_steps.get_steps() if self.__task_steps is not None else list()
+
+    def get_step(self, id):
+        return self.__task_steps.get_step(id) if self.__task_steps is not None else None
 
     def steps_complete(self):
         return self.__task_steps.steps_complete() if self.__task_steps is not None else False

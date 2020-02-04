@@ -31,14 +31,6 @@ HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
-# SISTEMA DE TRANSICIÓN
-ST_DOMAIN = "http://apist.proadmintierra.info"
-ST_LOGIN_SERVICE_URL = "{}/api/security/oauth/token".format(ST_DOMAIN)
-ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
-encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
-ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
-ST_GET_TASKS_SERVICE_URL = "{}/api/workspaces/v1/tasks/pending".format(ST_DOMAIN)
-TRANSITION_SYSTEM_EXPECTED_RESPONSE = "unauthorized"
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 

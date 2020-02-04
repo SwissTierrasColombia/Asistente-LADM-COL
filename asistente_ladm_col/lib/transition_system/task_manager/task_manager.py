@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               QObject)
 
-from asistente_ladm_col.config.general_config import ST_GET_TASKS_SERVICE_URL
+from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.task_manager.task import STTask
 
@@ -50,7 +50,7 @@ class STTaskManager(QObject):
 
         try:
             self.logger.debug(__name__, "Retrieving tasks from server...")
-            response = requests.request("GET", ST_GET_TASKS_SERVICE_URL, headers=headers)
+            response = requests.request("GET", TransitionSystemConfig().ST_GET_TASKS_SERVICE_URL, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
             self.logger.warning(__name__, msg)
@@ -67,6 +67,9 @@ class STTaskManager(QObject):
         else:
              if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession", "There is an error in the task server! Message from server: '{}'".format(response_data["message"]))
+                self.logger.warning(__name__, msg)
+             elif response.status_code == 401:
+                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
                 self.logger.warning(__name__, msg)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
