@@ -68,6 +68,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
+from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
                                                            TOOLBAR_MOVE_NODES,
@@ -142,6 +143,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.set_mode(DEFAULT_LOG_MODE)
         self.gui_builder = GUI_Builder(self.iface)
         self.session = STSession()
+        task_steps_config = TaskStepsConfig()
+        task_steps_config.set_slot_caller(self)
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())

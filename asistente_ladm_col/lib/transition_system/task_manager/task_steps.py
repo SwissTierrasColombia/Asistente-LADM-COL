@@ -20,53 +20,53 @@ import json
 from qgis.PyQt.QtCore import (QObject,
                               QSettings)
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.task_steps_config import (TaskStepsConfig,
+                                                         STEP_NUMBER,
+                                                         STEP_NAME,
+                                                         STEP_DESCRIPTION,
+                                                         STEP_ACTION,
+                                                         STEP_CUSTOM_ACTION_SLOT)
 from asistente_ladm_col.lib.logger import Logger
 
-
-STEP_CODE_ACTION_MAPPING = {"001": ACTION_SCHEMA_IMPORT_SUPPLIES,
-                            "002": ACTION_RUN_ETL_COBOL,
-                            "003": ACTION_EXPORT_DATA_SUPPLIES,
-                            "004": ACTION_ST_UPLOAD_XTF}
 
 class STTaskSteps(QObject):
     """
     Manage task steps
     """
-    def __init__(self, task_id, steps_data):
+    def __init__(self, task_id, task_type):
         QObject.__init__(self)
+        self.task_id = task_id
+        self.task_type = task_type
         self.logger = Logger()
 
         self.__steps = list()
+        self.task_steps_config = TaskStepsConfig()
 
-        self.__initialize_steps(task_id, steps_data)
+        self.__initialize_steps()
 
-    def __initialize_steps(self, task_id, steps_data):
+    def __initialize_steps(self):
         """
-        Get actions and add them to each step
-
-        :param task_id: Id of the task (to retrieve steps status)
-        :param steps_data: List of task steps. Each step is a dict with (at least) "description" y "code"
+        Get actions from task step config and create STTaskStep objects for the task
         :return: List of steps ready to use
         """
+        steps_data = self.task_steps_config.get_steps_data(self.task_type)
+        self.logger.info(__name__, "{} steps found for task id {}!".format(len(steps_data), self.task_id))
+
         for step_data in steps_data:
-            step_data["action"] = self.__map_action_to_step(step_data["code"])
-            step_data["status"] = step_data["status"]
             self.__steps.append(STTaskStep(step_data))
 
-        self.load_status(task_id)  # Update status if found in QSettings
-
-    def __map_action_to_step(self, code):
-        """
-        Get actions and add them to each step
-
-        :param code:
-        :return: action key corresponding to the given code
-        """
-        return STEP_CODE_ACTION_MAPPING[code] if code in STEP_CODE_ACTION_MAPPING else None
+        self.load_status(self.task_id)  # Update status if found in QSettings
 
     def get_steps(self):
         return self.__steps
+
+    def get_step(self, id):
+        for step in self.__steps:
+            if step.get_id() == id:
+                return step
+
+        self.logger.warning(__name__, "Step '{}' not found!".format(id))
+        return None
 
     def steps_complete(self):
         """
@@ -133,18 +133,25 @@ class STTaskStep(QObject):
         QObject.__init__(self)
         self.logger = Logger()
 
+        self.__id = None
         self.__name = ""
         self.__description = ""
-        self.__action = ""
+        self.__action_tag = ""
+        self.__custom_action_slot = None
         self.__status = False
 
         self.__initialize_task_step(step_data)
 
     def __initialize_task_step(self, step_data):
-        self.__name = step_data["description"]
-        self.__action = step_data["action"]
-        self.__description = step_data["description"]
-        self.__status = step_data["status"]
+        self.__id = step_data[STEP_NUMBER]
+        self.__name = step_data[STEP_NAME]
+        self.__action_tag = step_data[STEP_ACTION]
+        self.__description = step_data[STEP_DESCRIPTION]
+        if STEP_CUSTOM_ACTION_SLOT in step_data:
+            self.__custom_action_slot = step_data[STEP_CUSTOM_ACTION_SLOT]
+
+    def get_id(self):
+        return self.__id
 
     def get_name(self):
         return self.__name
@@ -152,8 +159,11 @@ class STTaskStep(QObject):
     def get_description(self):
         return self.__description
 
-    def get_action(self):
-        return self.__action
+    def get_action_tag(self):
+        return self.__action_tag
+
+    def get_custom_action_slot(self):
+        return self.__custom_action_slot
 
     def get_status(self):
         return self.__status

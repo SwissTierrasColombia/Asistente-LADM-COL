@@ -68,6 +68,9 @@ class STTaskManager(QObject):
              if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession", "There is an error in the task server! Message from server: '{}'".format(response_data["message"]))
                 self.logger.warning(__name__, msg)
+             elif response.status_code == 401:
+                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                self.logger.warning(__name__, msg)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
         if not self.__registered_tasks:
