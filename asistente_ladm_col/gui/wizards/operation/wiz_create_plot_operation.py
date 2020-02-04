@@ -28,10 +28,8 @@ from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
 
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP1,
                                                       CSS_COLOR_OKAY_LABEL,
-                                                      CSS_COLOR_ERROR_LABEL)
+                                                      CSS_COLOR_ERROR_LABEL, WIZARD_HELP_PAGES, WIZARD_HELP1)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper

@@ -1,11 +1,9 @@
 from functools import partial
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsVectorLayerUtils,
-                       Qgis)
+from qgis.core import QgsVectorLayerUtils
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      PLUGIN_NAME)
+from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper

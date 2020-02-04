@@ -34,8 +34,8 @@ class ConfigDbSupported(QObject):
         self._db_items[db_item.get_id()] = db_item
         self.id_default_db = db_item.get_id()
 
-        # db_item = GpkgFactory()
-        # self._db_items[db_item.get_id()] = db_item
+        db_item = GpkgFactory()
+        self._db_items[db_item.get_id()] = db_item
 
     def get_db_items(self):
         return self._db_items

@@ -41,6 +41,7 @@ class ETLCobolDialog(CobolBaseDialog):
         CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
         self.qgis_utils = qgis_utils
         self._db = db
+        self.names = self._db.names
         self.conn_manager = conn_manager
         self.parent = parent
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
@@ -95,13 +96,15 @@ class ETLCobolDialog(CobolBaseDialog):
                             if res_model:
                                 self._running_tool = True
                                 self.run_model_etl_cobol()
-                                if not self.feedback.isCanceled():
+                                if not self.custom_feedback.isCanceled():
                                     self.progress.setValue(100)
                                     self.buttonBox.clear()
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
+                                    self.logger.clear_status()
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
+                                    self.logger.clear_status()
                                 self._running_tool = False
                             else:
                                 self.show_message(msg_model, Qgis.Warning)
@@ -123,8 +126,8 @@ class ETLCobolDialog(CobolBaseDialog):
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)
         self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies", 
-            {'barrio': self.gdb_paths['U_BARRIO'],
+        processing.run("model:ETL-model-supplies",
+                       {'barrio': self.gdb_paths['U_BARRIO'],
             'gcbarrio': self._layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
             'gccomisionconstruccion': self._layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
             'gccomisionterreno': self._layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
@@ -157,7 +160,7 @@ class ETLCobolDialog(CobolBaseDialog):
             'ouputlayer': self._layers[self.names.GC_PARCEL_T][LAYER],
             'rnomenclatura': self.gdb_paths['R_NOMENCLATURA_DOMICILIARIA'],
             'unomenclatura': self.gdb_paths['U_NOMENCLATURA_DOMICILIARIA']},
-            feedback=self.feedback)
+                       feedback=self.custom_feedback)
         self.logger.info(__name__, "ETL-Cobol model finished.")
 
     def validate_inputs(self):

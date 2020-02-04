@@ -23,7 +23,6 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsFeatureRequest,
                        QgsExpression)
 
-from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.utils import get_ui_class
 
@@ -35,7 +34,6 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.utils = utils
-        self.names = Names()
         self.parcels_t_ids = parcels_t_ids
         self.parent = parent
         self.parcel_t_id = None
@@ -46,8 +44,8 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.tbl_changes_parcels.itemSelectionChanged.connect(self.react_after_new_selection)
 
         # Remove selection in plot layers
-        self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.names.GC_PLOT_T][LAYER].removeSelection()
+        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
 
         self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
         self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all listed parcels")
@@ -64,22 +62,22 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.tbl_changes_parcels.clearContents()
         self.tbl_changes_parcels.setRowCount(len(self.parcels_t_ids))
 
-        request = QgsFeatureRequest(QgsExpression('"{}" in ({})'.format(self.names.T_ID_F, ",".join(str(t_id) for t_id in self.parcels_t_ids))))
+        request = QgsFeatureRequest(QgsExpression('"{}" in ({})'.format(self.utils._db.names.T_ID_F, ",".join(str(t_id) for t_id in self.parcels_t_ids))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
-        request.setSubsetOfAttributes([self.names.T_ID_F,
-                                       self.names.OP_PARCEL_T_NUPRE_F,
-                                       self.names.OP_PARCEL_T_FMI_F,
-                                       self.names.OP_PARCEL_T_PARCEL_NUMBER_F],
-                                      self.utils._layers[self.names.OP_PARCEL_T][LAYER].fields())  # NOTE: this adds a new flag
-        parcels = self.utils._layers[self.names.OP_PARCEL_T][LAYER].getFeatures(request)
+        request.setSubsetOfAttributes([self.utils._db.names.T_ID_F,
+                                       self.utils._db.names.OP_PARCEL_T_NUPRE_F,
+                                       self.utils._db.names.OP_PARCEL_T_FMI_F,
+                                       self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F],
+                                      self.utils._layers[self.utils._db.names.OP_PARCEL_T][LAYER].fields())  # NOTE: this adds a new flag
+        parcels = self.utils._layers[self.utils._db.names.OP_PARCEL_T][LAYER].getFeatures(request)
 
         if parcels:
             row = 0
             for parcel in parcels:
-                self.tbl_changes_parcels.setItem(row, 0, QTableWidgetItem(str(parcel[self.names.T_ID_F])))
-                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.names.OP_PARCEL_T_NUPRE_F])))
-                self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[self.names.OP_PARCEL_T_FMI_F])))
-                self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[self.names.OP_PARCEL_T_PARCEL_NUMBER_F])))
+                self.tbl_changes_parcels.setItem(row, 0, QTableWidgetItem(str(parcel[self.utils._db.names.T_ID_F])))
+                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_NUPRE_F])))
+                self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_FMI_F])))
+                self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F])))
                 row += 1
 
     def react_after_new_selection(self):
@@ -95,14 +93,14 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.set_controls_enabled()
 
     def zoom_to_parcels(self, parcels_t_ids):
-        self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                      parcels_t_ids,
                                                                      field_name=None,
-                                                                     plot_layer=self.utils._layers[self.names.OP_PLOT_T][LAYER],
-                                                                     uebaunit_table=self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                                                                     plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
+                                                                     uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
 
-        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.names.OP_PLOT_T][LAYER], plot_ids, list(), 500)
+        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], plot_ids, dict(), 500)
 
     def set_controls_enabled(self):
         for button in self.buttonBox.buttons():

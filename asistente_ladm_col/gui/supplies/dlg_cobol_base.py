@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
                                  QDialogButtonBox,
@@ -25,21 +23,17 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
-from qgis.PyQt.QtGui import  QValidator
+from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsWkbTypes,
-                       QgsVectorLayer,
-                       QgsProcessingFeedback,
-                       QgsVectorLayerJoinInfo)
+                       QgsVectorLayer)
 from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
-
-from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      BLO_LIS_FILE_PATH)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -47,6 +41,7 @@ from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                make_file_selector,
                                                make_folder_selector)
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 
@@ -64,8 +59,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self._dialog_mode = None
         self._running_tool = False
         self.tool_name = ""
-
-        self.names = Names()
+        self.names = self._db.names
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self.validators = Validators()
         self.initialize_feedback()
@@ -139,7 +133,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def progress_changed(self):
         QCoreApplication.processEvents()  # Listen to cancel from the user
-        self.progress.setValue(self.progress_base + self.feedback.progress())
+        self.progress.setValue(self.progress_base + self.custom_feedback.progress())
 
     def initialize_layers(self):
         self._layers = {
@@ -169,7 +163,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
-                self.feedback.cancel()
+                self.custom_feedback.cancel()
                 self._running_tool = False
                 msg = QCoreApplication.translate("CobolBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
@@ -202,8 +196,8 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
-        self.feedback = QgsProcessingFeedback()         
-        self.feedback.progressChanged.connect(self.progress_changed)
+        self.custom_feedback = CustomFeedback()
+        self.custom_feedback.progressChanged.connect(self.progress_changed)
         self.set_gui_controls_enabled(True)
 
     def set_gui_controls_enabled(self, enable):

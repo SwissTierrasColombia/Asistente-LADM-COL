@@ -61,40 +61,34 @@ from qgis.core import (Qgis,
 import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
-from .decorators import _activate_processing_plugin
+from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from .qgis_model_baker_utils import QgisModelBakerUtils
-from .qt_utils import (OverrideCursor,
-                       ProcessWithStatus)
-from .symbology import SymbologyUtils
-from ..config.general_config import (DEFAULT_EPSG,
-                                     LAYER,
-                                     FIELD_MAPPING_PATH,
-                                     MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
-                                     MODULE_HELP_MAPPING,
-                                     TEST_SERVER,
-                                     HELP_URL,
-                                     PLUGIN_VERSION,
-                                     REFERENCING_LAYER,
-                                     REFERENCING_FIELD,
-                                     RELATION_NAME,
-                                     REFERENCED_LAYER,
-                                     REFERENCED_FIELD,
-                                     ERROR_LAYER_GROUP,
-                                     SUFFIX_LAYER_MODIFIERS,
-                                     PREFIX_LAYER_MODIFIERS,
-                                     VISIBLE_LAYER_MODIFIERS,
-                                     HELP_DIR_NAME,
-                                     TranslatableConfigStrings,
-                                     ST_DOMAIN,
-                                     DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                     TRANSITION_SYSTEM_EXPECTED_RESPONSE,
-                                     SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings, Logger
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            FORM_GROUPS)
+from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
+from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
+                                               ProcessWithStatus)
+from asistente_ladm_col.utils.symbology import SymbologyUtils
+from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
+                                                      LAYER,
+                                                      FIELD_MAPPING_PATH,
+                                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
+                                                      MODULE_HELP_MAPPING,
+                                                      TEST_SERVER,
+                                                      HELP_URL,
+                                                      PLUGIN_VERSION,
+                                                      HELP_DIR_NAME,
+                                                      ST_DOMAIN,
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                                      TRANSITION_SYSTEM_EXPECTED_RESPONSE,
+                                                      SOURCE_SERVICE_EXPECTED_ID)
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
+from asistente_ladm_col.config.mapping_config import (LADMNames,
+                                                      QueryNames)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_LAYER_GROUP)
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   PLUGIN_DIR)
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
@@ -115,7 +109,6 @@ class QGISUtils(QObject):
         QObject.__init__(self)
         self.layer_tree_view = layer_tree_view
         self.logger = Logger()
-        self.names = Names()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
@@ -155,9 +148,9 @@ class QGISUtils(QObject):
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
-                if relation[REFERENCING_LAYER] == layer_name:
-                    if relation[REFERENCED_LAYER] not in already_loaded and relation[REFERENCED_LAYER] not in layer_names:
-                        related_layers.append(relation[REFERENCED_LAYER])
+                if relation[QueryNames.REFERENCING_LAYER] == layer_name:
+                    if relation[QueryNames.REFERENCED_LAYER] not in already_loaded and relation[QueryNames.REFERENCED_LAYER] not in layer_names:
+                        related_layers.append(relation[QueryNames.REFERENCED_LAYER])
 
         related_layers_bags_of_enum = list()
         for layer_name in layer_names:
@@ -174,11 +167,10 @@ class QGISUtils(QObject):
     def get_related_domains(self, layer_names, already_loaded):
         related_domains = list()
         for relation in self._relations:
-            # if relation[RELATION_TYPE] == DOMAIN_CLASS_RELATION:
             for layer_name in layer_names:
-                if relation[REFERENCING_LAYER] == layer_name:
-                    if relation[REFERENCED_LAYER] not in already_loaded:
-                        related_domains.append(relation[REFERENCED_LAYER])
+                if relation[QueryNames.REFERENCING_LAYER] == layer_name:
+                    if relation[QueryNames.REFERENCED_LAYER] not in already_loaded:
+                        related_domains.append(relation[QueryNames.REFERENCED_LAYER])
 
         return related_domains
 
@@ -319,13 +311,13 @@ class QGISUtils(QObject):
                                     break
 
                             # Turn off layers loaded as related layers
-                            layer_modifiers[VISIBLE_LAYER_MODIFIERS] = layer_name in requested_layer_names
+                            layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS] = layer_name in requested_layer_names
                             self.post_load_configurations(db, layer, layer_modifiers=layer_modifiers)
 
                     profiler.end()
                     self.logger.debug(__name__, "Post load... {}".format(profiler.totalTime()))
                     profiler.clear()
-                    self.logger.status(None)
+                    self.logger.clear_status()
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)
@@ -425,9 +417,9 @@ class QGISUtils(QObject):
             self.symbology.set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
 
             visible = False
-            if VISIBLE_LAYER_MODIFIERS in layer_modifiers:
-                if layer_modifiers[VISIBLE_LAYER_MODIFIERS]:
-                    visible = layer_modifiers[VISIBLE_LAYER_MODIFIERS]
+            if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
+                if layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]:
+                    visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
             self.set_layer_visibility(layer, visible)
 
     def set_custom_layer_name(self, db, layer, layer_modifiers=dict()):
@@ -437,15 +429,15 @@ class QGISUtils(QObject):
         full_layer_name = ''
         layer_name = layer.name()
 
-        if PREFIX_LAYER_MODIFIERS in layer_modifiers:
-            if layer_modifiers[PREFIX_LAYER_MODIFIERS]:
-                full_layer_name = layer_modifiers[PREFIX_LAYER_MODIFIERS]
+        if LayerConfig.PREFIX_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[LayerConfig.PREFIX_LAYER_MODIFIERS]:
+                full_layer_name = layer_modifiers[LayerConfig.PREFIX_LAYER_MODIFIERS]
 
         full_layer_name += layer_name
 
-        if SUFFIX_LAYER_MODIFIERS in layer_modifiers:
-            if layer_modifiers[SUFFIX_LAYER_MODIFIERS]:
-                full_layer_name += layer_modifiers[SUFFIX_LAYER_MODIFIERS]
+        if LayerConfig.SUFFIX_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[LayerConfig.SUFFIX_LAYER_MODIFIERS]:
+                full_layer_name += layer_modifiers[LayerConfig.SUFFIX_LAYER_MODIFIERS]
 
         if full_layer_name and full_layer_name != layer_name:
             layer.setName(full_layer_name)
@@ -460,7 +452,7 @@ class QGISUtils(QObject):
 
         db_relations = list()
         for relation in self._relations:
-            if relation[REFERENCING_LAYER] == layer_name:
+            if relation[QueryNames.REFERENCING_LAYER] == layer_name:
                 db_relations.append(relation)
 
         qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
@@ -468,9 +460,9 @@ class QGISUtils(QObject):
         for qgis_relation in qgis_relations:
             qgis_rel = dict()
             referenced_layer = qgis_relation.referencedLayer()
-            qgis_rel[REFERENCED_LAYER] = db.get_ladm_layer_name(referenced_layer)
-            qgis_rel[REFERENCED_FIELD] = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
-            qgis_rel[REFERENCING_FIELD] = layer.fields()[qgis_relation.referencingFields()[0]].name()
+            qgis_rel[QueryNames.REFERENCED_LAYER] = db.get_ladm_layer_name(referenced_layer)
+            qgis_rel[QueryNames.REFERENCED_FIELD] = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
+            qgis_rel[QueryNames.REFERENCING_FIELD] = layer.fields()[qgis_relation.referencingFields()[0]].name()
             qgis_rels.append(qgis_rel)
 
         new_relations = list()
@@ -479,9 +471,9 @@ class QGISUtils(QObject):
             found = False
             for qgis_rel in qgis_rels:
                 # We known that referencing_layer already matches, so don't check
-                if qgis_rel[REFERENCED_LAYER] == db_relation[REFERENCED_LAYER] and \
-                    qgis_rel[REFERENCING_FIELD] == db_relation[REFERENCING_FIELD] and \
-                    qgis_rel[REFERENCED_FIELD] == db_relation[REFERENCED_FIELD]:
+                if qgis_rel[QueryNames.REFERENCED_LAYER] == db_relation[QueryNames.REFERENCED_LAYER] and \
+                    qgis_rel[QueryNames.REFERENCING_FIELD] == db_relation[QueryNames.REFERENCING_FIELD] and \
+                    qgis_rel[QueryNames.REFERENCED_FIELD] == db_relation[QueryNames.REFERENCED_FIELD]:
 
                     found = True
                     break
@@ -490,15 +482,15 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db, db_relation[REFERENCED_LAYER])
+                referenced_layer = self.get_layer_from_layer_tree(db, db_relation[QueryNames.REFERENCED_LAYER])
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
                 new_rel.setReferencedLayer(referenced_layer.id())
-                new_rel.addFieldPair(db_relation[REFERENCING_FIELD],
-                    db_relation[REFERENCED_FIELD])
-                new_rel.setId(db_relation[RELATION_NAME]) #generateId()
-                new_rel.setName(db_relation[RELATION_NAME])
+                new_rel.addFieldPair(db_relation[QueryNames.REFERENCING_FIELD],
+                    db_relation[QueryNames.REFERENCED_FIELD])
+                new_rel.setId(db_relation[QueryNames.RELATION_NAME_MODEL_BAKER])
+                new_rel.setName(db_relation[QueryNames.RELATION_NAME_MODEL_BAKER])
 
                 new_relations.append(new_rel)
 
@@ -549,14 +541,14 @@ class QGISUtils(QObject):
     def set_display_expressions(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        dict_display_expressions = self.names.get_dict_display_expressions()
+        dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names)
         if layer_name in dict_display_expressions:
             layer.setDisplayExpression(dict_display_expressions[layer_name])
 
     def set_layer_variables(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        layer_variables = self.names.get_layer_variables()
+        layer_variables = LayerConfig.get_layer_variables(db.names)
         if layer_name in layer_variables:
             for variable, value in layer_variables[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
@@ -564,21 +556,21 @@ class QGISUtils(QObject):
     def set_custom_widgets(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        custom_widget_configuration = self.names.get_custom_widget_configuration()
+        custom_widget_configuration = LayerConfig.get_custom_widget_configuration(db.names)
         if layer_name in custom_widget_configuration:
             editor_widget_setup = QgsEditorWidgetSetup(custom_widget_configuration[layer_name]['type'],
                                                        custom_widget_configuration[layer_name]['config'])
-            if layer_name == self.names.EXT_ARCHIVE_S:
-                index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
-            elif layer_name == self.names.OP_BUILDING_UNIT_T:
-                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
+            if layer_name == db.names.EXT_ARCHIVE_S:
+                index = layer.fields().indexFromName(db.names.EXT_ARCHIVE_S_DATA_F)
+            elif layer_name == db.names.OP_BUILDING_UNIT_T:
+                index = layer.fields().indexFromName(db.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
     def set_custom_read_only_fiels(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        custom_read_only_fields = self.names.get_custom_read_only_fields()
+        custom_read_only_fields = LayerConfig.get_custom_read_only_fields(db.names)
         if layer_name in custom_read_only_fields:
             for field in custom_read_only_fields[layer_name]:
                 self.set_read_only_field(layer, field)
@@ -594,14 +586,14 @@ class QGISUtils(QObject):
     def set_custom_events(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name == self.names.EXT_ARCHIVE_S:
+        if layer_name == db.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
-            self._source_handler.handle_source_upload(db, layer, self.names.EXT_ARCHIVE_S_DATA_F)
+            self._source_handler.handle_source_upload(db, layer, db.names.EXT_ARCHIVE_S_DATA_F)
 
     def set_layer_constraints(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        layer_constraints = self.names.get_layer_constraints()
+        layer_constraints = LayerConfig.get_layer_constraints(db.names)
         if layer_name in layer_constraints:
             for field_name, value in layer_constraints[layer_name].items():
                 idx = layer.fields().indexOf(field_name)
@@ -624,7 +616,7 @@ class QGISUtils(QObject):
     def set_form_groups(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in FORM_GROUPS:
+        if layer_name in LADMNames.FORM_GROUPS:
             # Preserve children, clear irc
             irc = layer.editFormConfig().invisibleRootContainer()
             children = list()
@@ -644,7 +636,7 @@ class QGISUtils(QObject):
 
             # Iterate group definitions
             elements_used = list()
-            for group_name, group_def in FORM_GROUPS[layer_name].items():
+            for group_name, group_def in LADMNames.FORM_GROUPS[layer_name].items():
                 container = QgsAttributeEditorContainer(group_name, new_general_tab)
                 container.setIsGroupBox(True)
                 container.setShowLabel(group_def['show_label'])
@@ -667,7 +659,7 @@ class QGISUtils(QObject):
             for e in elements:
                 if e not in elements_used:
                     element_added = False
-                    for group_name, group_def in FORM_GROUPS[layer_name].items():
+                    for group_name, group_def in LADMNames.FORM_GROUPS[layer_name].items():
                         if e.name() == group_def['before_attr']:
                             new_general_tab.addChildElement(group_def['container'])
                             new_general_tab.addChildElement(e)
@@ -680,7 +672,7 @@ class QGISUtils(QObject):
                         new_general_tab.addChildElement(e)
 
             containers = [ele.name() for ele in new_general_tab.findElements(QgsAttributeEditorElement.AeTypeContainer)]
-            for group_name, group_def in FORM_GROUPS[layer_name].items():
+            for group_name, group_def in LADMNames.FORM_GROUPS[layer_name].items():
                 if group_name not in containers: # Still not added (no before/after attrs)
                     new_general_tab.addChildElement(group_def['container'])
 
@@ -706,18 +698,18 @@ class QGISUtils(QObject):
 
         self.set_automatic_fields_namespace_local_id(db, layer)
 
-        if layer.fields().indexFromName(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
-            self.configure_automatic_fields(db, layer, [{self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
+        if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
+            self.configure_automatic_fields(db, layer, [{db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
 
-        dict_automatic_values = self.names.get_dict_automatic_values()
+        dict_automatic_values = LayerConfig.get_dict_automatic_values(db.names)
         if layer_name in dict_automatic_values:
             self.configure_automatic_fields(db, layer, dict_automatic_values[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(layer_name)
-        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)
+        ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(db.names, layer_name)
+        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(db.names, layer_name)
 
         if ns_enabled and ns_field:
             self.configure_automatic_fields(db, layer, [{ns_field: ns_value}])
@@ -729,9 +721,9 @@ class QGISUtils(QObject):
         elif not lid_enabled and lid_field:
             self.reset_automatic_field(db, layer, lid_field)
 
-    def get_namespace_field_and_value(self, layer_name):
+    def get_namespace_field_and_value(self, names, layer_name):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-        namespace_field = self.names.OID_T_NAMESPACE_F
+        namespace_field = names.OID_T_NAMESPACE_F
 
         if namespace_field is not None:
             namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
@@ -741,9 +733,9 @@ class QGISUtils(QObject):
 
         return (namespace_enabled, namespace_field, namespace_value)
 
-    def get_local_id_field_and_value(self, layer_name):
+    def get_local_id_field_and_value(self, names, layer_name):
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-        local_id_field = self.names.OID_T_LOCAL_ID_F
+        local_id_field = names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
             # TODO: Update expression to update local_id incrementally
@@ -860,7 +852,7 @@ class QGISUtils(QObject):
             return
 
         # Skip checking point overlaps if layer is Survey points
-        if target_layer_name != self.names.OP_SURVEY_POINT_T:
+        if target_layer_name != db.names.OP_SURVEY_POINT_T:
             overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
@@ -942,7 +934,7 @@ class QGISUtils(QObject):
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
-            field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(ladm_col_layer_name, self)
+            field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(db.names, ladm_col_layer_name, self)
             self.activate_layer_requested.emit(input_layer)
 
             res = processing.run("model:ETL-model", {'INPUT': input_layer, 'mapping': field_mapping, 'output': output_layer})
@@ -980,7 +972,7 @@ class QGISUtils(QObject):
                     self.logger.warning(__name__, "Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping))
 
             if mapping is None:
-                mapping = self.refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, self)
+                mapping = self.refactor_fields.get_refactor_fields_mapping(db.names, ladm_col_layer_name, self)
 
             self.activate_layer_requested.emit(input_layer)
             params = {
@@ -1161,11 +1153,11 @@ class QGISUtils(QObject):
         return (res, msg)
 
     def upload_source_files(self, db):
-        extfile_layer = self.get_layer(db, self.names.EXT_ARCHIVE_S, None, True)
+        extfile_layer = self.get_layer(db, db.names.EXT_ARCHIVE_S, None, True)
         if not extfile_layer:
             return
 
-        field_index = extfile_layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
+        field_index = extfile_layer.fields().indexFromName(db.names.EXT_ARCHIVE_S_DATA_F)
         features = list()
 
         if extfile_layer.selectedFeatureCount():
@@ -1180,7 +1172,8 @@ class QGISUtils(QObject):
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
-    def is_connected(self, hostname):
+    @staticmethod
+    def is_connected(hostname):
         try:
             host = socket.gethostbyname(hostname)
             s = socket.create_connection((host, 80), 2)
@@ -1278,7 +1271,7 @@ class QGISUtils(QObject):
         # Enable Topological Editing
         QgsProject.instance().setTopologicalEditing(True)
 
-        dlg = LayersForTopologicalEditionDialog()
+        dlg = LayersForTopologicalEditionDialog(db.names)
         if dlg.exec_() == QDialog.Accepted:
             # Load layers selected in the dialog
 

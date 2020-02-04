@@ -24,7 +24,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QPushButton)
 
-from ...config.general_config import LAYER
+from asistente_ladm_col.config.general_config import LAYER
 
 
 class MapInteractionExpansion:

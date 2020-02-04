@@ -19,7 +19,6 @@
  ***************************************************************************/
 """
 import os
-import re
 
 from QgisModelBaker.libili2db import iliexporter
 from QgisModelBaker.libili2db.ili2dbconfig import (ExportConfiguration,
@@ -42,13 +41,13 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_HIDDEN_MODELS,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      JAVA_REQUIRED_VERSION,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
@@ -75,6 +74,11 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.db_source = db_source
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
+
+        self.java_utils = JavaUtils()
+        self.java_utils.download_java_completed.connect(self.download_java_complete)
+        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -140,7 +144,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         if model_names:
             for model_name in model_names:
-                if model_name not in DEFAULT_HIDDEN_MODELS:
+                if model_name not in LADMNames.DEFAULT_HIDDEN_MODELS:
                     item = QStandardItem(model_name)
                     item.setCheckable(False)
                     item.setEditable(False)
@@ -184,6 +188,16 @@ class DialogExportData(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
+            message_java = QCoreApplication.translate("DialogExportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.clear()
+            self.txtStdout.setText(message_java)
+            self.java_utils.get_java_on_demand()
+            self.disable()
+            return
+
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
@@ -221,7 +235,6 @@ class DialogExportData(QDialog, DIALOG_UI):
             
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
-            self.progress_bar.setValue(0)
 
             self.disable()
             self.txtStdout.setTextColor(QColor('#000000'))
@@ -245,26 +258,14 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             try:
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
-                    self.enable()
-                    self.progress_bar.hide()
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                # Set JAVA PATH
-                get_java_path_dlg = GetJavaPathDialog()
-                get_java_path_dlg.setModal(True)
-                if get_java_path_dlg.exec_():
-                    configuration = self.update_configuration()
-
-                if not get_java_path_from_qgis_model_baker():
-                    message_error_java = QCoreApplication.translate("DialogExportData",
-                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
-                    self.txtStdout.setTextColor(QColor('#000000'))
-                    self.txtStdout.clear()
-                    self.txtStdout.setText(message_error_java)
-                    self.show_message(message_error_java, Qgis.Warning)
-                self.enable()
-                self.progress_bar.hide()
+                message_error_java = QCoreApplication.translate("DialogExportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                self.txtStdout.setTextColor(QColor('#000000'))
+                self.txtStdout.clear()
+                self.txtStdout.setText(message_error_java)
+                self.show_message(message_error_java, Qgis.Warning)
                 return
 
             self.buttonBox.clear()
@@ -272,6 +273,14 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
+
+    def download_java_complete(self):
+        self.accepted()
+
+    def download_java_progress_change(self, progress):
+        self.progress_bar.setValue(progress/2)
+        if (progress % 20) == 0:
+            self.txtStdout.append('...')
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -303,9 +312,9 @@ class DialogExportData(QDialog, DIALOG_UI):
         item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
-        java_path = get_java_path_from_qgis_model_baker()
-        if java_path:
-            self.base_configuration.java_path = java_path
+        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        if full_java_exe_path:
+            self.base_configuration.java_path = full_java_exe_path
 
         # Check custom model directories
         if QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool):
@@ -383,6 +392,9 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        if level == Qgis.Warning:
+            self.enable()
+
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
 

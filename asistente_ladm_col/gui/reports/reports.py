@@ -21,7 +21,6 @@ import json
 import locale
 import os
 import stat
-import shutil
 import tempfile
 import time
 import zipfile
@@ -37,25 +36,21 @@ from qgis.PyQt.QtCore import (Qt,
                               QIODevice,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QMessageBox,
                                  QProgressBar)
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
-                       Qgis,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
+                                                      DEPENDENCIES_BASE_PATH,
+                                                      DEPENDENCY_REPORTS_DIR_NAME,
                                                       TEST_SERVER,
-                                                      PLUGIN_NAME,
                                                       REPORTS_REQUIRED_VERSION,
                                                       URL_REPORTS_LIBRARIES)
-from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import (remove_readonly,
-                                               normalize_local_url)
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
+from asistente_ladm_col.utils.java_utils import JavaUtils
 
 
 class ReportGenerator(QObject):
@@ -67,8 +62,10 @@ class ReportGenerator(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.names = Names()
         self.logger = Logger()
+        self.java_utils = JavaUtils()
+        self.java_utils.download_java_completed.connect(self.download_java_complete)
+
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
@@ -164,7 +161,7 @@ class ReportGenerator(QObject):
     def generate_report(self, db, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
-        base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
+        base_path = os.path.join(DEPENDENCIES_BASE_PATH, DEPENDENCY_REPORTS_DIR_NAME)
         bin_path = os.path.join(base_path, 'bin')
         if not os.path.exists(bin_path):
             self.logger.message_with_button_download_report_dependency_emitted.emit(
@@ -190,23 +187,14 @@ class ReportGenerator(QObject):
                     "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
             return
 
-        # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        if not Utils.set_java_home():
-            get_java_path_dlg = GetJavaPathDialog()
-            get_java_path_dlg.setModal(True)
-            get_java_path_dlg.exec_()
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
+            self.java_utils.get_java_on_demand()
+            self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "Java is a prerequisite. Since it was not found, it is being configured..."))
+            return
 
-            if not Utils.set_java_home():
-                self.msg = QMessageBox()
-                self.msg.setIcon(QMessageBox.Information)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator",
-                                                            "JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17."))
-                self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
-                self.msg.setStandardButtons(QMessageBox.Close)
-                self.msg.exec_()
-                return
-
-        plot_layer = self.qgis_utils.get_layer(db, self.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
+        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
         if not plot_layer:
             return
 
@@ -269,19 +257,19 @@ class ReportGenerator(QObject):
         multi_polygons = []
 
         for selected_plot in selected_plots:
-            plot_id = selected_plot[self.names.T_ID_F]
+            plot_id = selected_plot[db.names.T_ID_F]
 
             geometry = selected_plot.geometry()
             abstract_geometry = geometry.get()
             if abstract_geometry.ringCount() > 1:
                 polygons_with_holes.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
             if abstract_geometry.numGeometries() > 1:
                 multi_polygons.append(str(plot_id))
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(self.names.T_ID_F, plot_id))
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
 
             # Generate data file
@@ -295,7 +283,7 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], self.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
             current_report_path = os.path.join(save_into_folder, file_name)
@@ -354,6 +342,10 @@ class ReportGenerator(QObject):
 
             self.logger.warning_msg(__name__, msg)
 
+    def download_java_complete(self):
+        self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                  "Java was successfully configured!"), 5)
+
     def save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
             # Write response to tmp file
@@ -363,19 +355,18 @@ class ReportGenerator(QObject):
             out_file.write(fetcher_task.reply().readAll())
             out_file.close()
 
-            dependency_base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL')
-            if not os.path.exists(dependency_base_path):
-                os.makedirs(dependency_base_path)
+            if not os.path.exists(DEPENDENCIES_BASE_PATH):
+                os.makedirs(DEPENDENCIES_BASE_PATH)
 
             try:
                 with zipfile.ZipFile(tmp_file, "r") as zip_ref:
-                    zip_ref.extractall(dependency_base_path)
+                    zip_ref.extractall(DEPENDENCIES_BASE_PATH)
             except zipfile.BadZipFile as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                     "There was an error with the download. The downloaded file is invalid."))
             except PermissionError as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(dependency_base_path), 'impresion')))
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH), DEPENDENCY_REPORTS_DIR_NAME)))
             else:
                 self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
 
@@ -399,18 +390,3 @@ class ReportGenerator(QObject):
                                         "There was a problem connecting to Internet."))
                 self._downloading = False
 
-    def remove_report_dependency(self):
-        """
-        We need to get rid of dependencies when they don't match the version
-        that should be installed for this version of the plugin.
-        """
-        base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
-
-        # Since folders might contain read only files, we need to delete them
-        # using a callback (see https://docs.python.org/3/library/shutil.html#rmtree-example)
-        shutil.rmtree(base_path, onerror=remove_readonly)
-        self.logger.clear_message_bar()
-
-        if os.path.exists(base_path):
-            self.logger.warning_msg(__name__,  QCoreApplication.translate("ReportGenerator",
-                "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))

@@ -16,21 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
 import qgis
 from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication,
-                              QSettings)
-from qgis.core import (QgsProject,
-                       Qgis,
-                       QgsApplication)
+                              QCoreApplication)
+from qgis.core import QgsProject
 
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
-                                                      TranslatableConfigStrings,
-                                                      ERROR_LAYER_GROUP,
-                                                      REFERENCING_FIELD)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_LAYER_GROUP)
+from asistente_ladm_col.config.mapping_config import QueryNames
 
 
 class QgisModelBakerUtils(QObject):
@@ -119,7 +113,7 @@ class QgisModelBakerUtils(QObject):
         """
         to_delete = list()
         for relation in relations:
-            if relation[REFERENCING_FIELD].startswith('uej2_') or relation[REFERENCING_FIELD].startswith('ue_'):
+            if relation[QueryNames.REFERENCING_FIELD].startswith('uej2_') or relation[QueryNames.REFERENCING_FIELD].startswith('ue_'):
                 to_delete.append(relation)
 
         for idx in to_delete:
@@ -144,13 +138,3 @@ class QgisModelBakerUtils(QObject):
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
         return None
-
-def get_java_path_dir_from_qgis_model_baker():
-    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath')
-    java_path_dir = os.path.dirname(os.path.dirname(java_path or ''))
-    return java_path_dir
-
-def get_java_path_from_qgis_model_baker():
-    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath', '', str)
-    return java_path
-

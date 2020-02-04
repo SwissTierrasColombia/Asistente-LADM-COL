@@ -107,7 +107,7 @@ def get_plugin_metadata(plugin_name, key):
 
 
 def remove_readonly(func, path, _):
-    "Clear the readonly bit and reattempt the removal"
+    """Clear the readonly bit and reattempt the removal"""
     try:
         os.chmod(path, stat.S_IWRITE)
         func(path)
@@ -237,7 +237,7 @@ class DirValidator(QValidator):
         if self.allow_empty and not text.strip():
             return QValidator.Acceptable, text, pos
 
-        if self.pattern != None:
+        if self.pattern is not None:
             pattern_matches = False
             if type(self.pattern) is str:
                 pattern_matches = fnmatch.fnmatch(text, self.pattern)
@@ -290,4 +290,4 @@ class ProcessWithStatus():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
-        Logger().status(None)
+        Logger().clear_status()

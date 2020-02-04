@@ -40,18 +40,14 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_INHERITANCE,
-                                                      DEFAULT_MODEL_NAMES_CHECKED,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
+                                                      JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR,
-                                                      CREATE_BASKET_COL,
-                                                      CREATE_IMPORT_TID,
-                                                      STROKE_ARCS,
                                                       SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
@@ -75,6 +71,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.conn_manager = conn_manager
         self.selected_models = selected_models
         self.logger = Logger()
+
+        self.java_utils = JavaUtils()
+        self.java_utils.download_java_completed.connect(self.download_java_complete)
+        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+
         self.db_source = db_source
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
@@ -142,7 +143,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        for modelname, checked in DEFAULT_MODEL_NAMES_CHECKED.items():
+        for modelname, checked in LADMNames.DEFAULT_MODEL_NAMES_CHECKED.items():
             item = QListWidgetItem(modelname)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Checked if modelname in self.selected_models or checked == Qt.Checked else Qt.Unchecked)  # From parameter or by default
@@ -200,6 +201,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def accepted(self):
         self.bar.clearWidgets()
 
+        java_home_set = self.java_utils.set_java_home()
+        if not java_home_set:
+            message_java = QCoreApplication.translate("DialogImportSchema", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.clear()
+            self.txtStdout.setText(message_java)
+            self.java_utils.get_java_on_demand()
+            self.disable()
+            return
+
         configuration = self.update_configuration()
 
         if not self.get_checked_models():
@@ -213,8 +224,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
-            self.progress_bar.setValue(0)
-
             self.disable()
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
@@ -232,25 +241,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             try:
                 if importer.run() != iliimporter.Importer.SUCCESS:
-                    self.enable()
-                    self.progress_bar.hide()
                     self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                # Set JAVA PATH
-                get_java_path_dlg = GetJavaPathDialog()
-                get_java_path_dlg.setModal(True)
-                if get_java_path_dlg.exec_():
-                    configuration = self.update_configuration()
-                if not get_java_path_from_qgis_model_baker():
-                    message_error_java = QCoreApplication.translate("DialogImportSchema",
-                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
-                    self.txtStdout.setTextColor(QColor('#000000'))
-                    self.txtStdout.clear()
-                    self.txtStdout.setText(message_error_java)
-                    self.show_message(message_error_java, Qgis.Warning)
-                self.enable()
-                self.progress_bar.hide()
+                message_error_java = QCoreApplication.translate("DialogImportSchema", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                self.txtStdout.setTextColor(QColor('#000000'))
+                self.txtStdout.clear()
+                self.txtStdout.setText(message_error_java)
+                self.show_message(message_error_java, Qgis.Warning)
                 return
 
             self.buttonBox.clear()
@@ -264,6 +262,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
             self._db_was_changed = True  # Schema could become LADM compliant after a schema import
+
+    def download_java_complete(self):
+        self.accepted()
+
+    def download_java_progress_change(self, progress):
+        self.progress_bar.setValue(progress/2)
+        if (progress % 20) == 0:
+            self.txtStdout.append('...')
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -308,14 +314,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
         configuration.epsg = self.epsg
-        configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = CREATE_BASKET_COL
-        configuration.create_import_tid = CREATE_IMPORT_TID
-        configuration.stroke_arcs = STROKE_ARCS
+        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
+        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = LADMNames.STROKE_ARCS
 
-        java_path = get_java_path_from_qgis_model_baker()
-        if java_path:
-            self.base_configuration.java_path = java_path
+        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        if full_java_exe_path:
+            self.base_configuration.java_path = full_java_exe_path
 
         # Check custom model directories
         if self.use_local_models:
@@ -381,5 +387,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        if level == Qgis.Warning:
+            self.enable()
+
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
