@@ -48,3 +48,25 @@ DICT_ALIAS_KEYS_CHANGE_DETECTION = {
     DICT_KEY_PLOT_T_AREA_F: QCoreApplication.translate("TranslatableConfigStrings", "Plot area"),
     DICT_KEY_PARTIES: QCoreApplication.translate("TranslatableConfigStrings", "Parties")
 }
+
+
+# Search criteria
+PARCEL_NUMBER_SEARCH_KEY = "Parcel Number"
+PREVIOUS_PARCEL_NUMBER_SEARCH_KEY = "Previous Parcel Number"
+FMI_PARCEL_SEARCH_KEY = "Folio de Matrícula Inmobiliaria"
+
+
+def get_supplies_search_options(names):
+    return {
+        PARCEL_NUMBER_SEARCH_KEY: names.GC_PARCEL_T_PARCEL_NUMBER_F,
+        PREVIOUS_PARCEL_NUMBER_SEARCH_KEY: names.GC_PARCEL_T_PARCEL_NUMBER_BEFORE_F,
+        FMI_PARCEL_SEARCH_KEY: names.GC_PARCEL_T_FMI_F
+    }
+
+
+def get_collected_search_options(names):
+    return {
+        PARCEL_NUMBER_SEARCH_KEY: names.OP_PARCEL_T_PARCEL_NUMBER_F,
+        PREVIOUS_PARCEL_NUMBER_SEARCH_KEY: names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
+        FMI_PARCEL_SEARCH_KEY: names.OP_PARCEL_T_FMI_F
+    }

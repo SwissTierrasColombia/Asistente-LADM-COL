@@ -52,7 +52,7 @@ WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     changes_per_parcel_panel_requested = pyqtSignal(str, str)  # parcel_number, parcel t_id
 
-    def __init__(self, parent, utils, filter_parcels=dict()):
+    def __init__(self, parent, utils, dict_parcels, types_change_detection):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
         self.parent = parent
@@ -74,72 +74,88 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
         self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
 
-        self.fill_table(filter_parcels)
+        self.fill_table(dict_parcels, types_change_detection)
 
-    def fill_table(self, filter_parcels=dict()):
-        if not filter_parcels or (filter_parcels and filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE):
-            inverse = False
-        else:
-            inverse = True  # Take the supplies db as base db
+    def fill_table(self, dict_parcels, types_change_detection):
 
-        base_db = self.utils._supplies_db if inverse else self.utils._db
-        self.compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
+        num_rows = 0
+        for type in types_change_detection:
+            num_rows += len(dict_parcels[type][DICT_KEY_PARCEL_T_PARCEL_NUMBER_F])
 
         self.tbl_changes_all_parcels.clearContents()
-        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]) if filter_parcels else len(self.compared_parcels_data))
+        self.tbl_changes_all_parcels.setRowCount(num_rows)
         self.tbl_changes_all_parcels.setSortingEnabled(False)
 
         row = 0
-        for parcel_number, parcel_attrs in self.compared_parcels_data.items():
-            if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]):
-                item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
-                item.setData(Qt.UserRole, {base_db.names.T_ID_F: parcel_attrs[base_db.names.T_ID_F], 'inverse': inverse})
-                self.tbl_changes_all_parcels.setItem(row, 0, item)
+        filter_parcels = None
+        ids_plots_supplies = list()
+        ids_plots_collected = list()
+        for type in types_change_detection:
+            filter_parcels = dict_parcels[type]
 
-                status = parcel_attrs[PARCEL_STATUS]
-                status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
-                if filter_parcels:
-                    # If we are on the supplies DB, "new" parcels are "missing" parcels from the collected db perspective
-                    if filter_parcels[SOURCE_DB] == SUPPLIES_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
-                        status_display = CHANGE_DETECTION_MISSING_PARCEL
-                        status = CHANGE_DETECTION_MISSING_PARCEL
-                    
-                item = QTableWidgetItem(status_display)
-                item.setData(Qt.UserRole, {base_db.names.T_ID_F: parcel_attrs[base_db.names.T_ID_F], 'inverse': inverse})
-                self.tbl_changes_all_parcels.setItem(row, 1, item)
-                color = STATUS_COLORS[status]
-                self.tbl_changes_all_parcels.item(row, 1).setBackground(color)
+            if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                inverse = False
+            else:
+                inverse = True  # Take the supplies db as base db
 
-                row += 1
+            base_db = self.utils._supplies_db if inverse else self.utils._db
+            self.compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
-        self.tbl_changes_all_parcels.setSortingEnabled(True)
+            for parcel_number, parcel_attrs in self.compared_parcels_data.items():
+                if filter_parcels and parcel_number in filter_parcels[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]:
+                    item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
+                    item.setData(Qt.UserRole, {base_db.names.T_ID_F: parcel_attrs[base_db.names.T_ID_F], 'inverse': inverse})
+                    self.tbl_changes_all_parcels.setItem(row, 0, item)
+
+                    status = parcel_attrs[PARCEL_STATUS]
+                    status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
+                    if filter_parcels:
+                        # If we are on the supplies DB, "new" parcels are "missing" parcels from the collected db perspective
+                        if filter_parcels[SOURCE_DB] == SUPPLIES_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
+                            status_display = CHANGE_DETECTION_MISSING_PARCEL
+                            status = CHANGE_DETECTION_MISSING_PARCEL
+
+                    item = QTableWidgetItem(status_display)
+                    item.setData(Qt.UserRole, {base_db.names.T_ID_F: parcel_attrs[base_db.names.T_ID_F], 'inverse': inverse})
+                    self.tbl_changes_all_parcels.setItem(row, 1, item)
+                    color = STATUS_COLORS[status]
+                    self.tbl_changes_all_parcels.item(row, 1).setBackground(color)
+
+                    row += 1
+
+            self.tbl_changes_all_parcels.setSortingEnabled(True)
+
+
+            if filter_parcels:
+                plot_layer = None
+                if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                    plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
+                else:
+                    plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
+
+                if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                    plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
+                                                                                 filter_parcels[self.utils._db.names.T_ID_F],
+                                                                                 None,  # Get QGIS plot ids
+                                                                                 plot_layer,
+                                                                                 self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
+                else:
+                    plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
+                                                                                          filter_parcels[self.utils._supplies_db.names.T_ID_F],
+                                                                                          None,  # Get QGIS plot ids
+                                                                                          plot_layer)
+
+                if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                    ids_plots_collected.extend(plot_ids)
+                else:
+                    ids_plots_supplies.extend(plot_ids)
 
         # Zoom and flash features
-        if filter_parcels:
-            plot_layer = None
-            if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
-            else:
-                plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
+        if ids_plots_collected:
+            self.parent.request_zoom_to_features(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], ids=ids_plots_collected, duration=3000)
 
-            if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                             filter_parcels[self.utils._db.names.T_ID_F],
-                                                                             None,  # Get QGIS plot ids
-                                                                             plot_layer,
-                                                                             self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
-            else:
-                plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
-                                                                                      filter_parcels[self.utils._supplies_db.names.T_ID_F],
-                                                                                      None,  # Get QGIS plot ids
-                                                                                      plot_layer)
-
-            self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
-
-            # plot_layer.select(plot_ids)
-        else:
-            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER])
-            self.utils.iface.zoomToActiveLayer()
+        if ids_plots_supplies:
+            self.parent.request_zoom_to_features(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], ids=ids_plots_supplies, duration=3000)
 
         self.select_related_plots_listed(False)
 

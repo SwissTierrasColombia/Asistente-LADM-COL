@@ -735,7 +735,7 @@ class TableAndFieldNames:
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos": "GC_PARCEL_T_DATE_OF_DATA_F",
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro": "GC_PARCEL_T_FMI_F",
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial": "GC_PARCEL_T_PARCEL_NUMBER_F",
-            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior": "GC_PARCEL_T__PARCEL_NUMBER_BEFORE_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior": "GC_PARCEL_T_PARCEL_NUMBER_BEFORE_F",
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos": "GC_PARCEL_T_DATA_SOURCE_F",
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro": "GC_PARCEL_T_CADASTRAL_TYPE_F",
             "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio": "GC_PARCEL_T_PARCEL_TYPE_F"

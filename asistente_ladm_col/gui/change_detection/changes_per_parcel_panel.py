@@ -31,6 +31,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsRectangle,
                        QgsGeometry,
+                       QgsProject,
                        NULL)
 
 from qgis.gui import (QgsPanelWidget,
@@ -43,6 +44,11 @@ from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       LAYER)
 from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY_KEY,
                                                                    DICT_KEY_PARTIES,
+                                                                   PARCEL_NUMBER_SEARCH_KEY,
+                                                                   PREVIOUS_PARCEL_NUMBER_SEARCH_KEY,
+                                                                   FMI_PARCEL_SEARCH_KEY,
+                                                                   get_collected_search_options,
+                                                                   get_supplies_search_options,
                                                                    DICT_ALIAS_KEYS_CHANGE_DETECTION)
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.lib.logger import Logger
@@ -176,15 +182,16 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def initialize_field_values_line_edit(self):
         self.txt_alphanumeric_query.setLayer(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PARCEL_T][LAYER])
-        idx = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
+        search_option = self.cbo_parcel_fields.currentData()
+        search_field_supplies = get_supplies_search_options(self.utils._supplies_db.names)[search_option]
+        idx = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PARCEL_T][LAYER].fields().indexOf(search_field_supplies)
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
-
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), self.utils._supplies_db.names.OP_PARCEL_T_PARCEL_NUMBER_F)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), self.utils._supplies_db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), self.utils._supplies_db.names.OP_PARCEL_T_FMI_F)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_SEARCH_KEY)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PREVIOUS_PARCEL_NUMBER_SEARCH_KEY)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_PARCEL_SEARCH_KEY)
 
     @_with_override_cursor
     def search_data(self, **kwargs):
@@ -205,12 +212,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.clear_result_table()
 
-        search_field = self.cbo_parcel_fields.currentData()
+        search_option = self.cbo_parcel_fields.currentData()
+        search_field_supplies = get_supplies_search_options(self.utils._supplies_db.names)[search_option]
+        search_field_collected = get_collected_search_options(self.utils._db.names)[search_option]
         search_value = list(kwargs.values())[0]
 
         # Get supplies parcel's t_id and get related plot(s)
-        expression = QgsExpression("{}='{}'".format(search_field, search_value))
-        request = QgsFeatureRequest(expression)
+        expression_supplies = QgsExpression("{}='{}'".format(search_field_supplies, search_value))
+        request = QgsFeatureRequest(expression_supplies)
         field_idx = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PARCEL_T][LAYER].fields().indexFromName(self.utils._supplies_db.names.T_ID_F)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
@@ -220,7 +229,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             # We do not expect duplicates in the supplies source!
             pass  # We'll choose the first one anyways
         elif len(supplies_parcels) == 0:
-            self.logger.info(__name__, "No supplies parcel found! Search: {}={}".format(search_field, search_value))
+            self.logger.info(__name__, "No supplies parcel found! Search: {}={}".format(search_field_supplies, search_value))
 
         supplies_plot_t_ids = []
         if supplies_parcels:
@@ -247,9 +256,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             #   + Either this panel was called and we know the parcel number is not duplicated, or
             #   + This panel was shown without knowing about duplicates (e.g., individual parcel search) and we still
             #     need to discover whether we have duplicates for this search criterion
-            search_criterion_collected = {search_field: search_value}
+            search_criterion_collected = {search_field_collected: search_value}
 
-            request = QgsFeatureRequest(expression)
+            expression_collected = QgsExpression("{}='{}'".format(search_field_collected, search_value))
+            request = QgsFeatureRequest(expression_collected)
             request.setFlags(QgsFeatureRequest.NoGeometry)
             request.setSubsetOfAttributes([self.utils._db.names.T_ID_F],
                                           self.utils._layers[self.utils._db.names.OP_PARCEL_T][LAYER].fields())  # Note this adds a new flag
@@ -270,7 +280,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                     else:
                         return  # User just cancelled the dialog, there is nothing more to do
 
-        search_criterion_supplies = {search_field: search_value}
+        search_criterion_supplies = {search_field_supplies: search_value}
 
         self.fill_table(search_criterion_supplies, search_criterion_collected)
 
@@ -293,11 +303,14 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 if supplies_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
                     self.parent.activate_map_swipe_tool()
 
-                    plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], self.utils._db.names.T_ID_F, plot_t_ids, True)
+                    plots_collected = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], self.utils._db.names.T_ID_F, plot_t_ids, True)
+                    plots_supplies = self.utils.ladm_data.get_features_from_t_ids(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], self.utils._supplies_db.names.T_ID_F, supplies_plot_t_ids, True)
+                    plots = plots_collected + plots_supplies
                     plots_extent = QgsRectangle()
                     for plot in plots:
                         plots_extent.combineExtentWith(plot.geometry().boundingBox())
 
+                    self.utils.iface.mapCanvas().zoomToFeatureExtent(plots_extent)
                     coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
                     coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
 
@@ -435,9 +448,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.value()
         if query:
-            if option == self.utils._supplies_db.names.OP_PARCEL_T_FMI_F:
+            if option == FMI_PARCEL_SEARCH_KEY:
                 self.search_data(parcel_fmi=query)
-            elif option == self.utils._supplies_db.names.OP_PARCEL_T_PARCEL_NUMBER_F:
+            elif option == PARCEL_NUMBER_SEARCH_KEY:
                 self.search_data(parcel_number=query)
             else: # previous_parcel_number
                 self.search_data(previous_parcel_number=query)
@@ -447,8 +460,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
+        try:
+            self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
+        except:# If the layer was previously removed
+            pass
+
+        try:
+            self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
+        except: # If the layer was previously removed
+            pass
 
     def initialize_tools_and_layers(self, panel=None):
         self.parent.deactivate_map_swipe_tool()
@@ -468,6 +488,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             pass
 
     def close_panel(self):
+        self.show_all_plots(True)  # Remove filter in plots layers if it was activate and panel is closed
         # custom identify was deactivated
         try:
             self.utils.canvas.mapToolSet.disconnect(self.initialize_maptool)

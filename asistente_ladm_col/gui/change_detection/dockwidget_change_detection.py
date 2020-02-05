@@ -45,6 +45,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECT
                                                                    CHANGE_DETECTION_PARCEL_REMAINS,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NULL_PARCEL,
+                                                                   CHANGE_DETECTION_MISSING_PARCEL,
                                                                    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                                                    PARCEL_STATUS,
                                                                    PARCEL_STATUS_DISPLAY,
@@ -105,7 +106,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                                             Qgis.Info)
         self.close_dock_widget()
 
-    def show_all_parcels_panel(self, filter_parcels=dict()):
+    def show_all_parcels_panel(self, dict_parcels, types_change_detection):
         with OverrideCursor(Qt.WaitCursor):
             if self.lst_all_parcels_panels:
                 for panel in self.lst_all_parcels_panels:
@@ -117,7 +118,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                 self.lst_all_parcels_panels = list()
                 self.all_parcels_panel = None
 
-            self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, filter_parcels=filter_parcels)
+            self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, dict_parcels, types_change_detection)
             self.all_parcels_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
             self.widget.showPanel(self.all_parcels_panel)
             self.lst_all_parcels_panels.append(self.all_parcels_panel)

@@ -33,6 +33,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECT
                                                                    CHANGE_DETECTION_PARCEL_REMAINS,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NULL_PARCEL,
+                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                                                    PARCEL_STATUS)
 from asistente_ladm_col.utils import get_ui_class
 
@@ -57,20 +58,20 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         inverse_compared_parcels_data = self.utils.get_compared_parcels_data(inverse=True)
 
         # Summarize and show in its proper control
-        summary = {CHANGE_DETECTION_NEW_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_MISSING_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_CHANGED: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_PARCEL_REMAINS: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_SEVERAL_PARCELS: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
-                   CHANGE_DETECTION_NULL_PARCEL: {self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
+        summary = {CHANGE_DETECTION_NEW_PARCEL: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_MISSING_PARCEL: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._supplies_db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: SUPPLIES_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_CHANGED: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_REMAINS: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_SEVERAL_PARCELS: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_NULL_PARCEL: {DICT_KEY_PARCEL_T_PARCEL_NUMBER_F: list(), self.utils._db.names.T_ID_F: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
 
         total_count = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
             count = len(parcel_attrs[self.utils._db.names.T_ID_F])
             total_count += count
             summary[parcel_attrs[PARCEL_STATUS]][COUNT_KEY] += count
-            summary[parcel_attrs[PARCEL_STATUS]][self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+            summary[parcel_attrs[PARCEL_STATUS]][DICT_KEY_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
             summary[parcel_attrs[PARCEL_STATUS]][self.utils._db.names.T_ID_F].extend(parcel_attrs[self.utils._db.names.T_ID_F])
 
         # Fill missing parcel data
@@ -79,7 +80,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                 count = len(parcel_attrs[self.utils._supplies_db.names.T_ID_F])
                 total_count += count
                 summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY] += count
-                summary[CHANGE_DETECTION_MISSING_PARCEL][self.utils._supplies_db.names.OP_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
+                summary[CHANGE_DETECTION_MISSING_PARCEL][DICT_KEY_PARCEL_T_PARCEL_NUMBER_F].append(parcel_number)
                 summary[CHANGE_DETECTION_MISSING_PARCEL][self.utils._supplies_db.names.T_ID_F].extend(parcel_attrs[self.utils._supplies_db.names.T_ID_F])
                 summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = SUPPLIES_DB_SOURCE
 
@@ -112,21 +113,27 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                 pass
 
         self.btn_new_parcels.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_NEW_PARCEL]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_NEW_PARCEL]))
         self.btn_missing_parcels.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_MISSING_PARCEL]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_MISSING_PARCEL]))
         self.btn_parcels_with_alphanumeric_changes.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_CHANGED]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_PARCEL_CHANGED]))
         self.btn_parcels_with_only_geometry_changes.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED]))
         self.btn_parcels_with_no_changes.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_REMAINS]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_PARCEL_REMAINS]))
         self.btn_duplicated_parcels.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_SEVERAL_PARCELS]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_SEVERAL_PARCELS]))
         self.btn_null_parcel_numbers.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_NULL_PARCEL]))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_NULL_PARCEL]))
         self.btn_total_parcels.clicked.connect(
-            partial(self.parent.show_all_parcels_panel, dict()))
+            partial(self.parent.show_all_parcels_panel, summary, [CHANGE_DETECTION_NEW_PARCEL,
+                                                                  CHANGE_DETECTION_MISSING_PARCEL,
+                                                                  CHANGE_DETECTION_PARCEL_CHANGED,
+                                                                  CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                                  CHANGE_DETECTION_PARCEL_REMAINS,
+                                                                  CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                                  CHANGE_DETECTION_NULL_PARCEL]))
 
         # Zoom to plot layer, remove selections
         self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
