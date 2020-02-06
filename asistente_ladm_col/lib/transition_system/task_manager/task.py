@@ -19,7 +19,7 @@ from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.task_manager.task_steps import STTaskSteps
-
+from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
 
 class STTask(QObject):
     """
@@ -34,7 +34,8 @@ class STTask(QObject):
     TASK_STATE_KEY = 'taskState'
     MEMBERS_KEY = 'members'
     CATEGORIES_KEY = 'categories'
-    METADATA_KEY = 'metadata'
+    DATA_KEY = 'data'
+    CONNECTION_KEY = 'connection'
 
     def __init__(self, task_data):
         QObject.__init__(self)
@@ -49,12 +50,13 @@ class STTask(QObject):
         self.__task_status = None
         self.__members = None
         self.__categories = None
-        self.__metadata = None
+        self.__data = None
         self.__task_steps = None
 
         self.__task_data = task_data
 
         self._initialize_task(task_data)
+        self.encrypter_decrypter = EncrypterDecrypter()
 
     def __get_mandatory_attributes(self):
             return {self.ID_KEY: self.__id,
@@ -83,8 +85,8 @@ class STTask(QObject):
             self.__members = task_data[self.MEMBERS_KEY]
         if self.CATEGORIES_KEY in task_data:
             self.__categories = task_data[self.CATEGORIES_KEY]
-        if self.METADATA_KEY in task_data:
-            self.__metadata = task_data[self.METADATA_KEY]
+        if self.DATA_KEY in task_data:
+            self.__data = self.parse_data(task_data[self.DATA_KEY])
 
         for k, attribute in self.__get_mandatory_attributes().items():
             if attribute is None:
@@ -156,3 +158,13 @@ class STTask(QObject):
 
     def get_as_dict(self):
         return self.__task_data
+    
+    def get_data(self):
+        return self.__data
+
+    def parse_data(self, data):
+        if self.CONNECTION_KEY in data:
+            self.logger.info(__name__, "Parsing/decrypting connection parameters for the task.")
+            for k,v in data.items():
+                data[self.CONNECTION_KEY][k] = self.encrypter_decrypter.decrypt_with_AES(v)
+        return data

@@ -24,7 +24,7 @@ from asistente_ladm_col.lib.Crypto.Cipher import AES
 
 class EncrypterDecrypter:
     """Adapted from: https://medium.com/@nipun.357/aes-encryption-decryption-java-python-6e9f261c24d6 """
-    def __init__(self, json_object):
+    def __init__(self):
         self._secret_key = "secret123"
         self._salt = "salt123"
         self._cipher = ''
@@ -33,8 +33,6 @@ class EncrypterDecrypter:
         self._iv = Random.new().read(AES.block_size)  # Random IV
         self._pad = lambda  s: s + (self._block_size - len(s) % self._block_size) * chr(self._block_size - len(s) %
                                                                                     self._block_size)
-        self._json_object = json_object
-        self.decrypt_with_AES(self._json_object)
 
     def get_private_key(self):
         return hashlib.pbkdf2_hmac('SHA256', self._secret_key.encode(), self._salt.encode(), 65536, 32)
@@ -48,8 +46,11 @@ class EncrypterDecrypter:
 
     def decrypt_with_AES(self, encoded):
         private_key = self.get_private_key()
-        cipher_text = base64.b64decode(encoded)
-        iv = cipher_text[:AES.block_size]
-        cipher = AES.new(private_key, AES.MODE_CBC, iv)
-        plain_bytes = self._un_pad(cipher.decrypt(cipher_text[self._block_size:]))
+        try:
+            cipher_text = base64.b64decode(encoded)
+            iv = cipher_text[:AES.block_size]
+            cipher = AES.new(private_key, AES.MODE_CBC, iv)
+            plain_bytes = self._un_pad(cipher.decrypt(cipher_text[self._block_size:]))
+        except ValueError as e:
+            return ''
         return bytes.decode(plain_bytes)
