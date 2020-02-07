@@ -378,7 +378,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
         configuration = ImportDataConfiguration()
-        db_factory.set_db_configuration_params(self.db.dict_conn_params, configuration)
+        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False

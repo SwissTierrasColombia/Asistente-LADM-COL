@@ -312,7 +312,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
         configuration = ExportConfiguration()
-        db_factory.set_db_configuration_params(self.db.dict_conn_params, configuration)
+        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         full_java_exe_path = JavaUtils.get_full_java_exe_path()

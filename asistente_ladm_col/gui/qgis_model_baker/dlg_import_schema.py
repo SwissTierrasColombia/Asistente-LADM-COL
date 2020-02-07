@@ -315,7 +315,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
         configuration = SchemaImportConfiguration()
-        db_factory.set_db_configuration_params(self.db.dict_conn_params, configuration)
+        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
