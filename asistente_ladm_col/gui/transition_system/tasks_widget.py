@@ -43,7 +43,7 @@ class TasksWidget(QWidget, WIDGET_UI):
         self._user = user
 
         self.lvw_tasks.itemSelectionChanged.connect(self.update_controls)
-        self.btn_start_task.clicked.connect(self.start_task)
+        self.btn_view_task.clicked.connect(self.view_task)
         self.btn_close_task.clicked.connect(self.close_task)
 
         self.show_tasks()
@@ -64,18 +64,12 @@ class TasksWidget(QWidget, WIDGET_UI):
     def update_controls(self):
         selected_items = self.lvw_tasks.selectedItems()
         enable = len(selected_items) == 1
-        self.btn_start_task.setEnabled(enable)
+        self.btn_view_task.setEnabled(enable)
 
         if enable:
             # Enable Close Task button?
             task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
             enable = task.steps_complete()
-
-            # Start or continue task?
-            if task.task_started():
-                self.btn_start_task.setText(QCoreApplication.translate("TasksWidget", "Continue task"))
-            else:
-                self.btn_start_task.setText(QCoreApplication.translate("TasksWidget", "Start task"))
 
         self.btn_close_task.setEnabled(enable)
 
@@ -83,17 +77,17 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.lbl_task_count.setText(QCoreApplication.translate("TasksWidget",
                "{} pending task{}").format(count, "s" if count>1 else ""))
 
-    def start_task(self):
+    def view_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
             task_id = items[0].data(Qt.UserRole)
-            print("TASK id:{} STARTED!".format(task_id))
+            self.logger.info(__name__, "View task (id:{})".format(task_id))
             self.task_panel_requested.emit(task_id)
 
     def close_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
-            print("TASK id:{} CLOSED!".format(items[0].data(Qt.UserRole)))
+            self.logger.info(__name__, "Close task (id:{})".format(items[0].data(Qt.UserRole)))
 
     def add_task_widget_item_to_view(self, task):
         widget_item = loadUi(get_ui_file_path('transition_system/task_widget_item.ui'), QWidget())

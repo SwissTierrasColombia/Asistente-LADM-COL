@@ -4,7 +4,7 @@ from asistente_ladm_col.utils.singleton import Singleton
 
 
 class TransitionSystemConfig(metaclass=Singleton):
-    ST_DEFAULT_DOMAIN = "http://apist.proadmintierra.info"  # "http://192.168.98.61:8090"
+    ST_DEFAULT_DOMAIN = "http://apist.proadmintierra.info"  # "http://192.168.98.61:8090"    .42
     ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
     encoded = b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'  # b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
@@ -20,5 +20,9 @@ class TransitionSystemConfig(metaclass=Singleton):
     @property
     def ST_GET_TASKS_SERVICE_URL(self):
         return "{}/api/workspaces/v1/tasks/pending".format(self.get_domain())
+
+    @property
+    def ST_START_TASK_SERVICE_URL(self):
+        return "{}/api/workspaces/v1/tasks/{{}}/start".format(self.get_domain())
 
 

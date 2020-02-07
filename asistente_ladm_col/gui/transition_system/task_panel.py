@@ -57,6 +57,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.trw_task_steps.itemChanged.connect(self.update_controls)
         self.panelAccepted.connect(self.call_parent_update_controls)
 
+        self.btn_start_task.clicked.connect(self.start_task)
+        self.btn_cancel_task.clicked.connect(self.cancel_task)
+        self.btn_close_task.clicked.connect(self.close_task)
+
         self.initialize_gui()
 
     def initialize_gui(self):
@@ -143,3 +147,12 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         status = QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(self._task.id()), "{}")
         if status != json.dumps(steps_status):
             self._task.save_steps_status(steps_status)
+
+    def start_task(self):
+        self.session.task_manager.start_task(self.session.get_logged_st_user(), self._task.id())
+
+    def cancel_task(self):
+        pass
+
+    def close_task(self):
+        pass

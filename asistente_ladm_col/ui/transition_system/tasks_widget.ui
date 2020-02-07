@@ -79,9 +79,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_start_task">
+      <widget class="QPushButton" name="btn_view_task">
        <property name="text">
-        <string>Start Task</string>
+        <string>View Task</string>
        </property>
       </widget>
      </item>
