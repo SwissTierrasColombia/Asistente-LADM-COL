@@ -2,6 +2,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFeatureRequest,
                        QgsExpression)
 
+from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
+
 LEVEL_TABLE = 'level_table'
 LEVEL_TABLE_NAME = 'level_table_name'
 LEVEL_TABLE_ALIAS = 'level_table_alias'
@@ -16,6 +18,8 @@ TABLE_FIELD_NAME = 'direct_table_field_name'
 TABLE_FIELD_ALIAS = 'direct_table_field_alias'
 TYPE_FIELD = "type_field"
 TYPE_FIELD_DIRECT = "type_field_direct"
+TYPE_FIELD_DOMAIN = "type_field_domain"
+DOMAIN_TABLE = "domain_table"
 
 ATTRIBUTES_RESPONSE = "attributes"
 ID_FEATURE_RESPONSE = "id"
@@ -26,6 +30,7 @@ class GenericQueryManager:
         self._db = db
         self.names = self._db.names
         self.qgis_utils = qgis_utils
+        self.ladm_data = LADM_DATA(self.qgis_utils)
 
     def _get_structure_basic_query(self):
         query = {
@@ -85,6 +90,12 @@ class GenericQueryManager:
                                 TABLE_FIELD_NAME: self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
                                 TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Previous parcel number"),
                                 TYPE_FIELD: TYPE_FIELD_DIRECT
+                            },
+                            {
+                                DOMAIN_TABLE: self.names.OP_PARCEL_TYPE_D,
+                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_TYPE_F,
+                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Type"),
+                                TYPE_FIELD: TYPE_FIELD_DOMAIN
                             }
                         ]
                     },
@@ -132,6 +143,26 @@ class GenericQueryManager:
                                         TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Total locals"),
                                         TYPE_FIELD: TYPE_FIELD_DIRECT
                                     },{
+                                        DOMAIN_TABLE: self.names.OP_BUILDING_TYPE_D,
+                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F,
+                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building type"),
+                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
+                                    },{
+                                        DOMAIN_TABLE: self.names.OP_BUILDING_UNIT_TYPE_D,
+                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F,
+                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building unit type"),
+                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
+                                    },{
+                                        DOMAIN_TABLE: self.names.OP_BUILDING_FLOOR_TYPE_D,
+                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F,
+                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Floor type"),
+                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
+                                    },{
+                                        DOMAIN_TABLE: self.names.OP_DOMAIN_BUILDING_TYPE_D,
+                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F,
+                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Domain type"),
+                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
+                                    },{
                                         TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_FLOOR_F,
                                         TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Floor"),
                                         TYPE_FIELD: TYPE_FIELD_DIRECT
@@ -139,6 +170,11 @@ class GenericQueryManager:
                                         TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F,
                                         TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Built area"),
                                         TYPE_FIELD: TYPE_FIELD_DIRECT
+                                    },{
+                                        DOMAIN_TABLE: self.names.OP_BUILDING_UNIT_USE_D,
+                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_USE_F,
+                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Use"),
+                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
                                     }
                                 ]
                             }
@@ -168,15 +204,18 @@ class GenericQueryManager:
 
         response[table_name] = list()
 
-        ##########################################################################
-        # Get direct fields
-        ##########################################################################
-        dic_direct_fields_and_alias = dict()
+        dict_fields_and_alias = dict()
+        dict_fields_and_type = dict()
+        dict_field_domain_table = dict()
         for table_field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
-            if table_field[TYPE_FIELD] == TYPE_FIELD_DIRECT:
-                dic_direct_fields_and_alias[table_field[TABLE_FIELD_NAME]] = table_field[TABLE_FIELD_ALIAS]
+            if table_field[TYPE_FIELD] in (TYPE_FIELD_DIRECT, TYPE_FIELD_DOMAIN):
+                dict_fields_and_alias[table_field[TABLE_FIELD_NAME]] = table_field[TABLE_FIELD_ALIAS]
+                dict_fields_and_type[table_field[TABLE_FIELD_NAME]] = table_field[TYPE_FIELD]
+                if table_field[TYPE_FIELD] == TYPE_FIELD_DOMAIN:
+                    dict_field_domain_table[table_field[TABLE_FIELD_NAME]] = table_field[DOMAIN_TABLE]
 
-        direct_fields_names = list(dic_direct_fields_and_alias.keys())
+
+        direct_fields_names = list(dict_fields_and_alias.keys())
         select_features = self.get_features(layer, direct_fields_names, t_id_features)
 
         for select_features in select_features:
@@ -186,7 +225,13 @@ class GenericQueryManager:
 
             direct_fields_response = dict()
             for direct_field_name in direct_fields_names:
-                direct_fields_response[dic_direct_fields_and_alias[direct_field_name]] = select_features[direct_field_name]
+                if dict_fields_and_type[direct_field_name] == TYPE_FIELD_DIRECT:
+                    direct_fields_response[dict_fields_and_alias[direct_field_name]] = select_features[direct_field_name]
+                elif dict_fields_and_type[direct_field_name] == TYPE_FIELD_DOMAIN:
+                    domain_table = dict_field_domain_table[direct_field_name]
+                    domain_code = select_features[direct_field_name]
+                    domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
+                    direct_fields_response[dict_fields_and_alias[direct_field_name]] = domain_value
 
             if LEVEL_TABLE in level_dict:
                 self.execute_query(direct_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
