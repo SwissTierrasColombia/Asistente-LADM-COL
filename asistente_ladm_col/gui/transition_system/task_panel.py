@@ -29,6 +29,8 @@ from qgis.gui import QgsPanelWidget
 from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
+from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
+                                                         SLOT_PARAMS)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.utils import get_ui_class
@@ -80,12 +82,12 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             children = []
             step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}").format(i + 1)])
             step_item.setData(0, Qt.BackgroundRole, QBrush(GRAY_COLOR))
-            step_item.setToolTip(0, step.get_description())
+            step_item.setToolTip(0, step.get_name())
             step_item.setCheckState(0, Qt.Checked if step.get_status() else Qt.Unchecked)
 
-            action = step.get_action()
             action_item = QTreeWidgetItem([step.get_name()])
-            action_item.setData(0, Qt.UserRole, action)
+            action_item.setData(0, Qt.UserRole, step.get_id())
+            action_item.setToolTip(0, step.get_description())
             step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             children.append(action_item)
 
@@ -97,9 +99,16 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.trw_task_steps.topLevelItem(i).setExpanded(True)
 
     def trigger_action(self, item, column):
-        action = item.data(column, Qt.UserRole)
-        if action:
-            self.trigger_action_emitted.emit(action)
+        step_id = item.data(column, Qt.UserRole)
+        step = self._task.get_step(step_id)
+        if step:
+            slot = step.get_custom_action_slot()
+            if slot:  # Custom action call
+                self.logger.info(__name__, "Executing step action with custom parameters...")
+                slot[SLOT_NAME](slot[SLOT_PARAMS])
+            else:  # Default action call
+                self.logger.info(__name__, "Executing default action...")
+                self.trigger_action_emitted.emit(step.get_action_tag())
 
     def set_item_style(self, item, column):
         color = CHECKED_COLOR if item.checkState(column) == Qt.Checked else UNCHECKED_COLOR

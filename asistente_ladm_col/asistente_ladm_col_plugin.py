@@ -68,6 +68,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
+from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
                                                            TOOLBAR_MOVE_NODES,
@@ -142,6 +143,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.set_mode(DEFAULT_LOG_MODE)
         self.gui_builder = GUI_Builder(self.iface)
         self.session = STSession()
+        task_steps_config = TaskStepsConfig()
+        task_steps_config.set_slot_caller(self)
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
@@ -215,7 +218,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
-        self.session.login_status_changed.connect(self.set_login_controls_enabled)
+        self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
     def uninstall_custom_expression_functions():
@@ -291,7 +294,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._st_login_action.triggered.connect(self.show_st_login_dialog)
         self._st_logout_action.triggered.connect(self.session_logout_from_action)
-        self._st_logout_action.setEnabled(False)
+        self._st_logout_action.setVisible(False)
 
         self.gui_builder.register_actions({
             ACTION_ST_LOGIN: self._st_login_action,
@@ -1276,14 +1279,14 @@ class AsistenteLADMCOLPlugin(QObject):
             if show_message:
                 self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
 
-    def set_login_controls_enabled(self, login_activated):
+    def set_login_controls_visibility(self, login_activated):
         """
-        React upon changes in ST login. If a user is logged in or logged out, we want to activate only certain controls.
+        React upon changes in ST login. If a user is logged in or logged out, we want to show only certain controls.
 
         :param login_activated: Boolean, True if a user is logged in
         """
-        self._st_login_action.setEnabled(not login_activated)
-        self._st_logout_action.setEnabled(login_activated)
+        self._st_login_action.setVisible(not login_activated)
+        self._st_logout_action.setVisible(login_activated)
 
     def trigger_action_emitted(self, action_tag):
         action = self.gui_builder.get_action(action_tag)

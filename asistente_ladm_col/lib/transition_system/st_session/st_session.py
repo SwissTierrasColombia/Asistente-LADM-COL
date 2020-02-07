@@ -25,12 +25,11 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               pyqtSignal)
 
-from asistente_ladm_col.config.general_config import (ST_LOGIN_SERVICE_URL,
-                                                      ST_LOGIN_SERVICE_PAYLOAD,
-                                                      ST_LOGIN_AUTHORIZATION_CLIENT)
+from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
+
 
 class STSession(QObject, metaclass=SingletonQObject):
     TOKEN_KEY = "Asistente-LADM_COL/transition_system/token"
@@ -46,10 +45,11 @@ class STSession(QObject, metaclass=SingletonQObject):
 
     def login(self, user, password):
         msg = ""
-        payload = ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
+        st_config = TransitionSystemConfig()
+        payload = st_config.ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
         headers = {
             'Content-Type': "application/x-www-form-urlencoded",
-            'Authorization': ST_LOGIN_AUTHORIZATION_CLIENT,
+            'Authorization': st_config.ST_LOGIN_AUTHORIZATION_CLIENT,
             'Accept': "*/*",
             'Cache-Control': "no-cache",
             'Accept-Encoding': "gzip, deflate",
@@ -57,10 +57,10 @@ class STSession(QObject, metaclass=SingletonQObject):
             'cache-control': "no-cache"
         }
         s = requests.Session()
-        s.mount(ST_LOGIN_SERVICE_URL, HTTPAdapter(max_retries=0))
+        s.mount(st_config.ST_LOGIN_SERVICE_URL, HTTPAdapter(max_retries=0))
 
         try:
-            response = s.request("POST", ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
+            response = s.request("POST", st_config.ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}").format(e)
             self.logger.warning(__name__, msg)
@@ -85,6 +85,8 @@ class STSession(QObject, metaclass=SingletonQObject):
                                                  "Wrong user name or password, change credentials and try again.")
             elif response.status_code == 500:
                 msg = QCoreApplication.translate("STSession", "There is an error in the login server!")
+            elif response.status_code == 401:
+                msg = QCoreApplication.translate("STSession", "Unauthorized client! The server won't allow requests from this client.")
             self.logger.warning(__name__, msg)
 
         return status_OK, msg
