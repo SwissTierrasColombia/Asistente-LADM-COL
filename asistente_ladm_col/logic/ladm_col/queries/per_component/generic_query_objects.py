@@ -19,12 +19,23 @@ class DomainOwnField(OwnField):
         self.domain_table = domain_table
 
 
-class RelateField(AbsFieldGenericQuery):
-    def __init__(self, field_alias, relate_table, relate_table_fields, relate_table_filter_field):
-        super(RelateField, self).__init__(field_alias)
+class AbsRelateFields(AbsFieldGenericQuery):
+    def __init__(self, field_alias, relate_table, relate_table_filter_field):
+        super(AbsRelateFields, self).__init__(field_alias)
         self.relate_table = relate_table
-        self.relate_table_fields = relate_table_fields
         self.relate_table_filter_field = relate_table_filter_field
+
+
+class RelateFields(AbsRelateFields):
+    def __init__(self, field_alias, relate_table, relate_table_fields, relate_table_filter_field):
+        super(RelateFields, self).__init__(field_alias, relate_table, relate_table_filter_field)
+        self.relate_table_fields = relate_table_fields
+
+
+class RelateFieldValue(AbsRelateFields):
+    def __init__(self, field_alias, relate_table, relate_table_field, relate_table_filter_field):
+        super(RelateFieldValue, self).__init__(field_alias, relate_table, relate_table_filter_field)
+        self.relate_table_fields = relate_table_field
 
 
 class FilterSubLevel:

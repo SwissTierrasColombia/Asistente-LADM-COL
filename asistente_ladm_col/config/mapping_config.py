@@ -448,6 +448,7 @@ class TableAndFieldNames:
     EXT_ADDRESS_S_CITY_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad"
     EXT_ADDRESS_S_POSTAL_CODE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal"
     EXT_ADDRESS_S_COMPLEMENT_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento"
+    EXT_ADDRESS_TYPE_D = None  # 'LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion'
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Firma"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Fotografia"
@@ -789,6 +790,7 @@ class TableAndFieldNames:
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
         }},
+        "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": {VARIABLE_NAME: "EXT_ADDRESS_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",

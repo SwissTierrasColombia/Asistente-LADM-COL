@@ -3,6 +3,7 @@ from qgis.core import (QgsFeatureRequest,
 
 from asistente_ladm_col.logic.ladm_col.queries.per_component.generic_query_objects import (OwnField,
                                                                                            DomainOwnField,
+                                                                                           RelateFields,
                                                                                            FilterSubLevel)
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
@@ -32,7 +33,12 @@ class GenericQueryManager:
                 LEVEL_TABLE_ALIAS: "Terrenos",
                 FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
                 ATTRIBUTES_TABLE: {
-                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]")]
+                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]"),
+                                   RelateFields("Direcciones",
+                                               self.names.EXT_ADDRESS_S, [
+                                                   DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
+                                               ],
+                                               self.names.EXT_ADDRESS_S_OP_PLOT_F)]
                 },
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
@@ -44,6 +50,7 @@ class GenericQueryManager:
                             OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
                             OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
                             OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                            OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
                             OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
                             OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
                             DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
@@ -55,7 +62,12 @@ class GenericQueryManager:
                         FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_PARCEL_F),
                         ATTRIBUTES_TABLE: {
                             TABLE_FIELDS: [
-                                OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción")
+                                OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
+                                RelateFields("Direcciones",
+                                            self.names.EXT_ADDRESS_S, [
+                                                DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
+                                            ],
+                                            self.names.EXT_ADDRESS_S_OP_BUILDING_F)
                             ]
                         },
                         LEVEL_TABLE: {
@@ -74,7 +86,12 @@ class GenericQueryManager:
                                     DomainOwnField(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F, "Tipo dominio", self.names.OP_DOMAIN_BUILDING_TYPE_D),
                                     OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
                                     OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D)
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
+                                    RelateFields("Direcciones",
+                                                self.names.EXT_ADDRESS_S, [
+                                                    DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
+                                                ],
+                                                self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
                                 ]
                             }
                         }
@@ -110,12 +127,11 @@ class GenericQueryManager:
                 dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
 
         fields_names = list(dict_fields_and_alias.keys())
-        select_features = self.get_features(layer, fields_names, t_id_features)
+        select_features = self.get_features(layer, self.names.T_ID_F, fields_names, t_id_features)
 
         for select_features in select_features:
             node_response = dict()
             node_response[ID_FEATURE_RESPONSE] = select_features[self.names.T_ID_F]
-            node_response[ATTRIBUTES_RESPONSE] = list()
 
             node_fields_response = dict()
             for field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
@@ -126,12 +142,47 @@ class GenericQueryManager:
                     node_fields_response[field.field_alias] = domain_value
                 elif isinstance(field, OwnField):
                     node_fields_response[field.field_alias] = select_features[field.field_name]
+                elif isinstance(field, RelateFields):
+                    node_fields_response[field.field_alias] = self.get_relate_field(field, select_features[self.names.T_ID_F])
 
             if LEVEL_TABLE in level_dict:
                 self.execute_query(node_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
 
-            node_response[ATTRIBUTES_RESPONSE].append(node_fields_response)
+            node_response[ATTRIBUTES_RESPONSE] = node_fields_response
             response[table_name].append(node_response)
+
+    def get_relate_field(self, field, filter_field_value):
+        relate_layer = self.qgis_utils.get_layer(self._db, field.relate_table, None, True)
+        dict_fields_and_alias =  self.get_dict_fields_and_alias(field.relate_table_fields)
+        fields_names = list(dict_fields_and_alias.keys())
+        fields_names += [self.names.T_ID_F]
+
+        features = self.get_features(relate_layer, field.relate_table_filter_field, fields_names, [str(filter_field_value)])
+
+        list_relate_result = list()
+        for feature in features:
+            dict_relate_field = dict()
+            dict_relate_field[ID_FEATURE_RESPONSE] = feature[self.names.T_ID_F]
+            dict_attributes = dict()
+            for field_relation in field.relate_table_fields:
+                if isinstance(field_relation, DomainOwnField):
+                    domain_table = field_relation.domain_table
+                    domain_code = feature[field_relation.field_name]
+                    domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
+                    dict_attributes[field_relation.field_alias] = domain_value
+                elif isinstance(field_relation, OwnField):
+                    dict_attributes[field_relation.field_alias] = feature[field_relation.field_name]
+            dict_relate_field[ATTRIBUTES_RESPONSE] = dict_attributes
+            list_relate_result.append(dict_relate_field)
+
+        return list_relate_result
+
+    @staticmethod
+    def get_dict_fields_and_alias(table_fields):
+        dict_fields_and_alias = dict()
+        for required_table_field in table_fields:
+            dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
+        return dict_fields_and_alias
 
     @staticmethod
     def get_features_ids(layer, requered_field, filter_field, filter_field_value):
@@ -143,13 +194,13 @@ class GenericQueryManager:
         features_ids = [str(feature[requered_field]) for feature in layer.getFeatures(request)]
         return features_ids
 
-    def get_features(self, layer, fields, t_id_features):
+    def get_features(self, layer, filter_field, fields_names, t_id_features):
         fields_idx = list()
-        for field in fields:
+        for field in fields_names:
             field_idx = layer.fields().indexFromName(field)
             fields_idx.append(field_idx)
 
-        expression = QgsExpression('{} in ({})'.format(self.names.T_ID_F, ', '.join(t_id_features)))
+        expression = QgsExpression('{} in ({})'.format(filter_field, ', '.join(t_id_features)))
         request = QgsFeatureRequest(expression)
 
         request.setFlags(QgsFeatureRequest.NoGeometry)
