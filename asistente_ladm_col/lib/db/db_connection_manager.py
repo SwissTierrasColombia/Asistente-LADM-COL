@@ -57,11 +57,9 @@ class ConnectionManager(QObject):
             db = db_factory.get_db_connector(dict_conn)
             db.open_connection()  # Open db connection
         else:
-            # By default, we use PostgreSQL
-            # when the connection parameters are not filled we use empty values
-            db_connection_source = "pg"
-            db_factory = self.dbs_supported.get_db_factory(db_connection_source)
-            db = db_factory.get_db_connector()
+            # Use the default connector
+            db_factory = self.dbs_supported.get_db_factory(self.dbs_supported.id_default_db)
+            db = db_factory.get_db_connector()  # When the connection parameters are not filled we use empty values
 
         self.set_db_connector_for_source(db, db_source)
 

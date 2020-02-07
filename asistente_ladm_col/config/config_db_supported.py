@@ -32,7 +32,7 @@ class ConfigDbSupported(QObject):
     def _init_db_factories(self):
         db_factory = PgFactory()
         self._db_factories[db_factory.get_id()] = db_factory
-        self.id_default_db = db_factory.get_id()
+        self.id_default_db = db_factory.get_id()  # Make PostgreSQL the default DB engine
 
         db_factory = GpkgFactory()
         self._db_factories[db_factory.get_id()] = db_factory
