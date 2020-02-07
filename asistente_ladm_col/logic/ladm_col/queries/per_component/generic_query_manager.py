@@ -1,28 +1,21 @@
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFeatureRequest,
                        QgsExpression)
 
+from asistente_ladm_col.logic.ladm_col.queries.per_component.generic_query_objects import (OwnField,
+                                                                                           DomainOwnField,
+                                                                                           FilterSubLevel)
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
 LEVEL_TABLE = 'level_table'
 LEVEL_TABLE_NAME = 'level_table_name'
 LEVEL_TABLE_ALIAS = 'level_table_alias'
-FILTER_ITEMS_TABLE = 'filter_items_table'
-REQUIRED_FIELD_SUB_LEVEL_TABLE = "field_sub_level"
-SUB_LEVEL_TABLE = 'sub_level_table'
-FILTER_FIELD_IN_SUB_LEVEL_TABLE = 'id_field_table_in_sub_level'
+FILTER_SUB_LEVEL_TABLE = 'filter_items_table'
 ATTRIBUTES_TABLE = 'attributes_table'
-
 TABLE_FIELDS = 'direct_table_fields'
-TABLE_FIELD_NAME = 'direct_table_field_name'
-TABLE_FIELD_ALIAS = 'direct_table_field_alias'
-TYPE_FIELD = "type_field"
-TYPE_FIELD_DIRECT = "type_field_direct"
-TYPE_FIELD_DOMAIN = "type_field_domain"
-DOMAIN_TABLE = "domain_table"
 
 ATTRIBUTES_RESPONSE = "attributes"
 ID_FEATURE_RESPONSE = "id"
+
 
 class GenericQueryManager:
 
@@ -34,148 +27,54 @@ class GenericQueryManager:
 
     def _get_structure_basic_query(self):
         query = {
-            LEVEL_TABLE:{
+            LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
-                LEVEL_TABLE_ALIAS: QCoreApplication.translate("GenericQueryManager", "Plot"),
-                FILTER_ITEMS_TABLE: {
-                    REQUIRED_FIELD_SUB_LEVEL_TABLE: self.names.T_ID_F,
-                    SUB_LEVEL_TABLE: self.names.OP_PLOT_T,
-                    FILTER_FIELD_IN_SUB_LEVEL_TABLE: self.names.T_ID_F
-                },
-                ATTRIBUTES_TABLE:{
-                    TABLE_FIELDS: [
-                        {
-                            TABLE_FIELD_NAME: self.names.OP_PLOT_T_PLOT_AREA_F,
-                            TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Plot area"),
-                            TYPE_FIELD: TYPE_FIELD_DIRECT
-                        }
-                    ]
+                LEVEL_TABLE_ALIAS: "Terrenos",
+                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                ATTRIBUTES_TABLE: {
+                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]")]
                 },
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
-                    LEVEL_TABLE_ALIAS: QCoreApplication.translate("GenericQueryManager", "Parcel"),
-                    FILTER_ITEMS_TABLE: {
-                        REQUIRED_FIELD_SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T_PARCEL_F,
-                        SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T,
-                        FILTER_FIELD_IN_SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T_OP_PLOT_F
-                    },
+                    LEVEL_TABLE_ALIAS: "Predio",
+                    FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
                     ATTRIBUTES_TABLE: {
                         TABLE_FIELDS: [
-                            {
-                                TABLE_FIELD_NAME: self.names.COL_BAUNIT_T_NAME_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Name"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_DEPARTMENT_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Department"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_MUNICIPALITY_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Municipality"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_NUPRE_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "NUPRE"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_PARCEL_NUMBER_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Parcel number"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Previous parcel number"),
-                                TYPE_FIELD: TYPE_FIELD_DIRECT
-                            },
-                            {
-                                DOMAIN_TABLE: self.names.OP_PARCEL_TYPE_D,
-                                TABLE_FIELD_NAME: self.names.OP_PARCEL_T_TYPE_F,
-                                TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Type"),
-                                TYPE_FIELD: TYPE_FIELD_DOMAIN
-                            }
+                            OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                            OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
+                            OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
+                            OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                            OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                            OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
+                            DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
                         ]
                     },
                     LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_BUILDING_T,
-                        LEVEL_TABLE_ALIAS: QCoreApplication.translate("GenericQueryManager", "Buildings"),
-                        FILTER_ITEMS_TABLE: {
-                            REQUIRED_FIELD_SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-                            SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T,
-                            FILTER_FIELD_IN_SUB_LEVEL_TABLE: self.names.COL_UE_BAUNIT_T_PARCEL_F
-                        },
+                        LEVEL_TABLE_ALIAS: "Construcciones",
+                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_PARCEL_F),
                         ATTRIBUTES_TABLE: {
                             TABLE_FIELDS: [
-                                {
-                                    TABLE_FIELD_NAME: self.names.OP_BUILDING_T_BUILDING_AREA_F,
-                                    TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building area"),
-                                    TYPE_FIELD: TYPE_FIELD_DIRECT
-                                }
+                                OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción")
                             ]
                         },
                         LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_BUILDING_UNIT_T,
-                            LEVEL_TABLE_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building unit"),
-                            FILTER_ITEMS_TABLE: {
-                                REQUIRED_FIELD_SUB_LEVEL_TABLE: self.names.T_ID_F,
-                                SUB_LEVEL_TABLE: self.names.OP_BUILDING_UNIT_T,
-                                FILTER_FIELD_IN_SUB_LEVEL_TABLE: self.names.OP_BUILDING_UNIT_T_BUILDING_F
-                            },
+                            LEVEL_TABLE_ALIAS: "Unidades de construcción",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T, self.names.OP_BUILDING_UNIT_T_BUILDING_F),
                             ATTRIBUTES_TABLE: {
                                 TABLE_FIELDS: [
-                                    {
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Total floors"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Total rooms"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Total bathrooms"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Total locals"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        DOMAIN_TABLE: self.names.OP_BUILDING_TYPE_D,
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building type"),
-                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
-                                    },{
-                                        DOMAIN_TABLE: self.names.OP_BUILDING_UNIT_TYPE_D,
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Building unit type"),
-                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
-                                    },{
-                                        DOMAIN_TABLE: self.names.OP_BUILDING_FLOOR_TYPE_D,
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Floor type"),
-                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
-                                    },{
-                                        DOMAIN_TABLE: self.names.OP_DOMAIN_BUILDING_TYPE_D,
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Domain type"),
-                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
-                                    },{
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_FLOOR_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Floor"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Built area"),
-                                        TYPE_FIELD: TYPE_FIELD_DIRECT
-                                    },{
-                                        DOMAIN_TABLE: self.names.OP_BUILDING_UNIT_USE_D,
-                                        TABLE_FIELD_NAME: self.names.OP_BUILDING_UNIT_T_USE_F,
-                                        TABLE_FIELD_ALIAS: QCoreApplication.translate("GenericQueryManager", "Use"),
-                                        TYPE_FIELD: TYPE_FIELD_DOMAIN
-                                    }
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F, "Número de habitaciones"),
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F, "Número de baños"),
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F, "Número de locales"),
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F, "Tipo construcción", self.names.OP_BUILDING_TYPE_D),
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F, "Tipo unidad de construcción", self.names.OP_BUILDING_UNIT_TYPE_D),
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F, "Tipo de planta", self.names.OP_BUILDING_FLOOR_TYPE_D),
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F, "Tipo dominio", self.names.OP_DOMAIN_BUILDING_TYPE_D),
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
+                                    OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
+                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D)
                                 ]
                             }
                         }
@@ -194,9 +93,10 @@ class GenericQueryManager:
 
     def execute_query(self, response, level_dict, filter_field_value):
         table_name = level_dict[LEVEL_TABLE_NAME]
-        filter_field = level_dict[FILTER_ITEMS_TABLE][FILTER_FIELD_IN_SUB_LEVEL_TABLE]
-        sub_level_table = level_dict[FILTER_ITEMS_TABLE][SUB_LEVEL_TABLE]
-        required_field = level_dict[FILTER_ITEMS_TABLE][REQUIRED_FIELD_SUB_LEVEL_TABLE]
+        filter_sub_level =  level_dict[FILTER_SUB_LEVEL_TABLE]
+        filter_field = filter_sub_level.filter_field_in_sub_level_table
+        sub_level_table = filter_sub_level.sub_level_table
+        required_field = filter_sub_level.required_field_sub_level_table
 
         layer = self.qgis_utils.get_layer(self._db, table_name, None, True)
         sub_level_layer = self.qgis_utils.get_layer(self._db, sub_level_table, None, True)
@@ -205,41 +105,36 @@ class GenericQueryManager:
         response[table_name] = list()
 
         dict_fields_and_alias = dict()
-        dict_fields_and_type = dict()
-        dict_field_domain_table = dict()
-        for table_field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
-            if table_field[TYPE_FIELD] in (TYPE_FIELD_DIRECT, TYPE_FIELD_DOMAIN):
-                dict_fields_and_alias[table_field[TABLE_FIELD_NAME]] = table_field[TABLE_FIELD_ALIAS]
-                dict_fields_and_type[table_field[TABLE_FIELD_NAME]] = table_field[TYPE_FIELD]
-                if table_field[TYPE_FIELD] == TYPE_FIELD_DOMAIN:
-                    dict_field_domain_table[table_field[TABLE_FIELD_NAME]] = table_field[DOMAIN_TABLE]
+        for required_table_field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
+            if isinstance(required_table_field, OwnField):
+                dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
 
-
-        direct_fields_names = list(dict_fields_and_alias.keys())
-        select_features = self.get_features(layer, direct_fields_names, t_id_features)
+        fields_names = list(dict_fields_and_alias.keys())
+        select_features = self.get_features(layer, fields_names, t_id_features)
 
         for select_features in select_features:
-            direct_response = dict()
-            direct_response[ID_FEATURE_RESPONSE] = select_features[self.names.T_ID_F]
-            direct_response[ATTRIBUTES_RESPONSE] = list()
+            node_response = dict()
+            node_response[ID_FEATURE_RESPONSE] = select_features[self.names.T_ID_F]
+            node_response[ATTRIBUTES_RESPONSE] = list()
 
-            direct_fields_response = dict()
-            for direct_field_name in direct_fields_names:
-                if dict_fields_and_type[direct_field_name] == TYPE_FIELD_DIRECT:
-                    direct_fields_response[dict_fields_and_alias[direct_field_name]] = select_features[direct_field_name]
-                elif dict_fields_and_type[direct_field_name] == TYPE_FIELD_DOMAIN:
-                    domain_table = dict_field_domain_table[direct_field_name]
-                    domain_code = select_features[direct_field_name]
+            node_fields_response = dict()
+            for field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
+                if isinstance(field, DomainOwnField):
+                    domain_table = field.domain_table
+                    domain_code = select_features[field.field_name]
                     domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
-                    direct_fields_response[dict_fields_and_alias[direct_field_name]] = domain_value
+                    node_fields_response[field.field_alias] = domain_value
+                elif isinstance(field, OwnField):
+                    node_fields_response[field.field_alias] = select_features[field.field_name]
 
             if LEVEL_TABLE in level_dict:
-                self.execute_query(direct_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
+                self.execute_query(node_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
 
-            direct_response[ATTRIBUTES_RESPONSE].append(direct_fields_response)
-            response[table_name].append(direct_response)
+            node_response[ATTRIBUTES_RESPONSE].append(node_fields_response)
+            response[table_name].append(node_response)
 
-    def get_features_ids(self, layer, requered_field, filter_field, filter_field_value):
+    @staticmethod
+    def get_features_ids(layer, requered_field, filter_field, filter_field_value):
         expression = QgsExpression("{} in ({}) and {} is not null".format(filter_field, ', '.join(filter_field_value), requered_field))
         request = QgsFeatureRequest(expression)
         field_idx = layer.fields().indexFromName(requered_field)

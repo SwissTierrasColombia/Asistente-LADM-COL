@@ -186,7 +186,7 @@ class TableAndFieldNames:
     OP_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoTipo"
     OP_GENRE_D = None  # "Operacion_V2_9_5.OP_SexoTipo"
     OP_LOCATION_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
-    # "Operacion_V2_9_5.OP_UsoUConsTipo"
+    OP_BUILDING_UNIT_USE_D = None  # "Operacion_V2_9_5.OP_UsoUConsTipo"
     # "Operacion_V2_9_5.OP_ViaTipo"
 
     OP_BUILDING_FLOOR_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionPlantaTipo"
@@ -862,6 +862,7 @@ class TableAndFieldNames:
         }},
         "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UsoUConsTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_USE_D", FIELDS_DICT: {}},
         "Operacion.OP_ConstruccionPlantaTipo": {VARIABLE_NAME: "OP_BUILDING_FLOOR_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
