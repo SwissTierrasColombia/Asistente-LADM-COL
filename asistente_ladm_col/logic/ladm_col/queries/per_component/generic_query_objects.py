@@ -19,6 +19,12 @@ class DomainOwnField(OwnField):
         self.domain_table = domain_table
 
 
+class EvalExprOwnField(AbsFieldGenericQuery):
+    def __init__(self, field_alias, expression):
+        super(EvalExprOwnField, self).__init__(field_alias)
+        self.expression = expression
+
+
 class AbsRelateFields(AbsFieldGenericQuery):
     def __init__(self, field_alias, relate_table, relate_table_filter_field):
         super(AbsRelateFields, self).__init__(field_alias)
@@ -26,9 +32,9 @@ class AbsRelateFields(AbsFieldGenericQuery):
         self.relate_table_filter_field = relate_table_filter_field
 
 
-class RelateFields(AbsRelateFields):
+class RelateFieldObject(AbsRelateFields):
     def __init__(self, field_alias, relate_table, relate_table_fields, relate_table_filter_field):
-        super(RelateFields, self).__init__(field_alias, relate_table, relate_table_filter_field)
+        super(RelateFieldObject, self).__init__(field_alias, relate_table, relate_table_filter_field)
         self.relate_table_fields = relate_table_fields
 
 

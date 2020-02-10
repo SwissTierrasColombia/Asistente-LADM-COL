@@ -1,9 +1,13 @@
 from qgis.core import (QgsFeatureRequest,
+                       QgsExpressionContext,
+                       QgsExpressionContextScope,
+                       NULL,
                        QgsExpression)
 
 from asistente_ladm_col.logic.ladm_col.queries.per_component.generic_query_objects import (OwnField,
                                                                                            DomainOwnField,
-                                                                                           RelateFields,
+                                                                                           EvalExprOwnField,
+                                                                                           RelateFieldObject,
                                                                                            FilterSubLevel)
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
@@ -27,6 +31,36 @@ class GenericQueryManager:
         self.ladm_data = LADM_DATA(self.qgis_utils)
 
     def _get_structure_basic_query(self):
+        required_address_fields = [
+            DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D),
+            OwnField(self.names.EXT_ADDRESS_S_POSTAL_CODE_F, 'Código postal'),
+            EvalExprOwnField("Dirección",
+                             QgsExpression("""trim(
+                                    coalesce(get_domain_value_from_code( '{dominio_clase_via_principal}',  "{clase_via_principal}" , False, False)||' ', '') ||
+                                    coalesce({valor_via_principal} || ' ', '') ||
+                                    coalesce({letra_via_principal} || ' ', '') ||
+                                    coalesce(get_domain_value_from_code( '{dominio_sector_ciudad}',  "{sector_ciudad}", False, False)||' ', '') ||
+                                    coalesce({valor_via_generadora} || ' ', '') ||
+                                    coalesce({letra_via_generadora} || ' ', '') ||
+                                    coalesce({numero_predio} || ' ', '') ||
+                                    coalesce(get_domain_value_from_code( '{dominio_sector_predio}',  "{sector_predio}", False, False)||' ', '') ||
+                                    coalesce({complemento} || ' ', '') ||
+                                    coalesce({nombre_predio}, '')
+                                )""".format(
+                                 dominio_clase_via_principal=self.names.EXT_ADDRESS_TYPE_MAIN_ROAD_CLASS_D,
+                                 clase_via_principal=self.names.EXT_ADDRESS_S_MAIN_ROAD_CLASS_F,
+                                 valor_via_principal=self.names.EXT_ADDRESS_S_VALUE_MAIN_ROAD_F,
+                                 letra_via_principal=self.names.EXT_ADDRESS_S_LETTER_MAIN_ROAD_F,
+                                 dominio_sector_ciudad=self.names.EXT_ADDRESS_TYPE_CITY_SECTOR_D,
+                                 sector_ciudad=self.names.EXT_ADDRESS_S_CITY_SECTOR_F,
+                                 valor_via_generadora=self.names.EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F,
+                                 letra_via_generadora=self.names.EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F,
+                                 numero_predio=self.names.EXT_ADDRESS_S_PARCEL_NUMBER_F,
+                                 dominio_sector_predio=self.names.EXT_ADDRESS_TYPE_PARCEL_SECTOR_D,
+                                 sector_predio=self.names.EXT_ADDRESS_S_PARCEL_SECTOR_F,
+                                 complemento=self.names.EXT_ADDRESS_S_COMPLEMENT_F,
+                                 nombre_predio=self.names.EXT_ADDRESS_S_PARCEL_NAME_F)))]
+
         query = {
             LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
@@ -34,11 +68,10 @@ class GenericQueryManager:
                 FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
                 ATTRIBUTES_TABLE: {
                     TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]"),
-                                   RelateFields("Direcciones",
-                                               self.names.EXT_ADDRESS_S, [
-                                                   DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
-                                               ],
-                                               self.names.EXT_ADDRESS_S_OP_PLOT_F)]
+                                   RelateFieldObject(self.names.EXT_ADDRESS_S,
+                                                     self.names.EXT_ADDRESS_S,
+                                                     required_address_fields,
+                                                     self.names.EXT_ADDRESS_S_OP_PLOT_F)]
                 },
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
@@ -63,11 +96,10 @@ class GenericQueryManager:
                         ATTRIBUTES_TABLE: {
                             TABLE_FIELDS: [
                                 OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
-                                RelateFields("Direcciones",
-                                            self.names.EXT_ADDRESS_S, [
-                                                DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
-                                            ],
-                                            self.names.EXT_ADDRESS_S_OP_BUILDING_F)
+                                RelateFieldObject(self.names.EXT_ADDRESS_S,
+                                                  self.names.EXT_ADDRESS_S,
+                                                  required_address_fields,
+                                                  self.names.EXT_ADDRESS_S_OP_BUILDING_F)
                             ]
                         },
                         LEVEL_TABLE: {
@@ -87,11 +119,10 @@ class GenericQueryManager:
                                     OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
                                     OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
                                     DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
-                                    RelateFields("Direcciones",
-                                                self.names.EXT_ADDRESS_S, [
-                                                    DomainOwnField(self.names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", self.names.EXT_ADDRESS_TYPE_D)
-                                                ],
-                                                self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
+                                    RelateFieldObject(self.names.EXT_ADDRESS_S,
+                                                      self.names.EXT_ADDRESS_S,
+                                                      required_address_fields,
+                                                      self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
                                 ]
                             }
                         }
@@ -141,9 +172,11 @@ class GenericQueryManager:
                     domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
                     node_fields_response[field.field_alias] = domain_value
                 elif isinstance(field, OwnField):
-                    node_fields_response[field.field_alias] = select_features[field.field_name]
-                elif isinstance(field, RelateFields):
+                    node_fields_response[field.field_alias] = select_features[field.field_name] if select_features[field.field_name] != NULL else None
+                elif isinstance(field, RelateFieldObject):
                     node_fields_response[field.field_alias] = self.get_relate_field(field, select_features[self.names.T_ID_F])
+                elif isinstance(field, EvalExprOwnField):
+                    node_fields_response[field.field_alias] = self.get_eval_expr_value(layer, select_features, field.expression)
 
             if LEVEL_TABLE in level_dict:
                 self.execute_query(node_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
@@ -171,17 +204,33 @@ class GenericQueryManager:
                     domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
                     dict_attributes[field_relation.field_alias] = domain_value
                 elif isinstance(field_relation, OwnField):
-                    dict_attributes[field_relation.field_alias] = feature[field_relation.field_name]
+                    dict_attributes[field_relation.field_alias] = feature[field_relation.field_name] if feature[field_relation.field_name] != NULL else None
+                elif isinstance(field_relation, EvalExprOwnField):
+                    dict_attributes[field_relation.field_alias] = self.get_eval_expr_value(relate_layer, feature, field_relation.expression)
+
             dict_relate_field[ATTRIBUTES_RESPONSE] = dict_attributes
             list_relate_result.append(dict_relate_field)
 
         return list_relate_result
 
     @staticmethod
+    def get_eval_expr_value(layer, feature, expression):
+        eval_feature = layer.getFeature(feature.id())  # this is necessary because the feature is filtered and may not have all the necessary fields
+        context = QgsExpressionContext()
+        scope = QgsExpressionContextScope()
+        scope.setFeature(eval_feature)
+        context.appendScope(scope)
+        expression.prepare(context)
+        display_value = expression.evaluate(context)
+
+        return display_value
+
+    @staticmethod
     def get_dict_fields_and_alias(table_fields):
         dict_fields_and_alias = dict()
         for required_table_field in table_fields:
-            dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
+            if isinstance(required_table_field, OwnField):
+                dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
         return dict_fields_and_alias
 
     @staticmethod
