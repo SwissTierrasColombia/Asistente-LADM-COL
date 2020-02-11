@@ -109,7 +109,6 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
-                                                 _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required,
@@ -247,31 +246,31 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._build_boundary_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/build_boundaries.svg"),
                                               TOOLBAR_BUILD_BOUNDARY, self.main_window)
-        self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
+        self._build_boundary_action.triggered.connect(partial(self.call_explode_boundaries, [COLLECTED_DB_SOURCE]))
 
         self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
             TOOLBAR_MOVE_NODES, self.main_window)
-        self._topological_editing_action.triggered.connect(self.call_topological_editing)
+        self._topological_editing_action.triggered.connect(partial(self.call_topological_editing, [COLLECTED_DB_SOURCE]))
 
         self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                               TOOLBAR_FILL_POINT_BFS,
                                               self.main_window)
-        self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
+        self._fill_point_BFS_action.triggered.connect(partial(self.call_fill_topology_table_pointbfs, [COLLECTED_DB_SOURCE]))
 
         self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                                   TOOLBAR_FILL_MORE_BFS_LESS,
                                                   self.main_window)
-        self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._fill_more_BFS_less_action.triggered.connect(partial(self.call_fill_topology_tables_morebfs_less, [COLLECTED_DB_SOURCE]))
 
         self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
-        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
+        self._fill_right_of_way_relations_action.triggered.connect(partial(self.call_fill_right_of_way_relations, [COLLECTED_DB_SOURCE]))
 
         self._import_from_intermediate_structure_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/excel.svg"),
             TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
             self.main_window)
-        self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
+        self._import_from_intermediate_structure_action.triggered.connect(partial(self.call_import_from_intermediate_structure, [COLLECTED_DB_SOURCE]))
 
         self.gui_builder.register_actions({
             ACTION_FINALIZE_GEOMETRY_CREATION: self._finalize_geometry_creation_action,
@@ -312,7 +311,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
+        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_etl_cobol_dialog, [SUPPLIES_DB_SOURCE]))
         self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
@@ -389,22 +388,22 @@ class AsistenteLADMCOLPlugin(QObject):
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
 
         # Set connections
-        self._point_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_point_cad)
-        self._boundary_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_boundaries_cad)
-        self._plot_spatial_unit_operation_action.triggered.connect(self.show_wiz_plot_cad)
-        self._parcel_baunit_operation_action.triggered.connect(self.show_wiz_parcel_cad)
-        self._building_spatial_unit_operation_action.triggered.connect(self.show_wiz_building_cad)
-        self._building_unit_spatial_unit_operation_action.triggered.connect(self.show_wiz_building_unit_cad)
-        self._right_of_way_operation_action.triggered.connect(self.show_wiz_right_of_way_cad)
-        self._extaddress_operation_action.triggered.connect(self.show_wiz_extaddress_cad)
-        self._col_party_operation_action.triggered.connect(self.show_wiz_col_party_cad)
-        self._group_party_operation_action.triggered.connect(self.show_dlg_group_party)
-        self._right_rrr_operation_action.triggered.connect(self.show_wiz_right_rrr_cad)
-        self._restriction_rrr_operation_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
-        self._administrative_source_operation_action.triggered.connect(self.show_wiz_administrative_source_cad)
-        self._spatial_source_operation_action.triggered.connect(self.show_wiz_spatial_source_cad)
-        self._upload_source_files_operation_action.triggered.connect(self.upload_source_files)
-        self._quality_operation_action.triggered.connect(self.show_dlg_quality)
+        self._point_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_point_cad, [COLLECTED_DB_SOURCE]))
+        self._boundary_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_boundaries_cad, [COLLECTED_DB_SOURCE]))
+        self._plot_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_plot_cad, [COLLECTED_DB_SOURCE]))
+        self._parcel_baunit_operation_action.triggered.connect(partial(self.show_wiz_parcel_cad, [COLLECTED_DB_SOURCE]))
+        self._building_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_cad, [COLLECTED_DB_SOURCE]))
+        self._building_unit_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_unit_cad, [COLLECTED_DB_SOURCE]))
+        self._right_of_way_operation_action.triggered.connect(partial(self.show_wiz_right_of_way_cad, [COLLECTED_DB_SOURCE]))
+        self._extaddress_operation_action.triggered.connect(partial(self.show_wiz_extaddress_cad, [COLLECTED_DB_SOURCE]))
+        self._col_party_operation_action.triggered.connect(partial(self.show_wiz_col_party_cad, [COLLECTED_DB_SOURCE]))
+        self._group_party_operation_action.triggered.connect(partial(self.show_dlg_group_party, [COLLECTED_DB_SOURCE]))
+        self._right_rrr_operation_action.triggered.connect(partial(self.show_wiz_right_rrr_cad, [COLLECTED_DB_SOURCE]))
+        self._restriction_rrr_operation_action.triggered.connect(partial(self.show_wiz_restriction_rrr_cad, [COLLECTED_DB_SOURCE]))
+        self._administrative_source_operation_action.triggered.connect(partial(self.show_wiz_administrative_source_cad, [COLLECTED_DB_SOURCE]))
+        self._spatial_source_operation_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, [COLLECTED_DB_SOURCE]))
+        self._upload_source_files_operation_action.triggered.connect(partial(self.upload_source_files, [COLLECTED_DB_SOURCE]))
+        self._quality_operation_action.triggered.connect(partial(self.show_dlg_quality, [COLLECTED_DB_SOURCE]))
 
         self.gui_builder.register_actions({
             ACTION_CREATE_POINT: self._point_surveying_and_representation_operation_action,
@@ -457,11 +456,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Connections
         self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
-        self._building_unit_valuation_action.triggered.connect(self.show_wiz_building_unit_valuation)
-        self._building_unit_qualification_valuation_action.triggered.connect(
-            self.show_wiz_building_unit_qualification_valuation)
-        self._geoeconomic_zone_valuation_action.triggered.connect(self.show_wiz_geoeconomic_zone_valuation)
-        self._physical_zone_valuation_action.triggered.connect(self.show_wiz_physical_zone_valuation_action)
+        self._building_unit_valuation_action.triggered.connect(partial(self.show_wiz_building_unit_valuation, [COLLECTED_DB_SOURCE]))
+        self._building_unit_qualification_valuation_action.triggered.connect(partial(
+            self.show_wiz_building_unit_qualification_valuation, [COLLECTED_DB_SOURCE]))
+        self._geoeconomic_zone_valuation_action.triggered.connect(partial(self.show_wiz_geoeconomic_zone_valuation, [COLLECTED_DB_SOURCE]))
+        self._physical_zone_valuation_action.triggered.connect(partial(self.show_wiz_physical_zone_valuation_action, [COLLECTED_DB_SOURCE]))
 
     def create_change_detection_actions(self):
         self._query_changes_per_parcel_action = QAction(
@@ -472,8 +471,8 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies data settings"), self.main_window)
 
         # Set connections
-        self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
-        self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
+        self._query_changes_per_parcel_action.triggered.connect(partial(self.query_changes_per_parcel, [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]))
+        self._query_changes_all_parcels_action.triggered.connect(partial(self.query_changes_all_parcels, [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]))
         self._settings_changes_action.triggered.connect(self.show_supplies_data_settings)
 
         self.gui_builder.register_actions({
@@ -490,11 +489,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)
-        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        self._annex_17_action.triggered.connect(partial(self.call_annex_17_report_generation, [COLLECTED_DB_SOURCE]))
         self._ant_map_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_ant.svg"),
                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
-        self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+        self._ant_map_action.triggered.connect(partial(self.call_ant_map_report_generation, [COLLECTED_DB_SOURCE]))
         self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
 
@@ -534,8 +533,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_data_action_supplies.triggered.connect(partial(self.show_dlg_import_data, {'db_source': SUPPLIES_DB_SOURCE}))
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
         self._export_data_action_supplies.triggered.connect(partial(self.show_dlg_export_data, {'db_source': SUPPLIES_DB_SOURCE}))
-        self._queries_action.triggered.connect(self.show_queries)
-        self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
+        self._queries_action.triggered.connect(partial(self.show_queries, [COLLECTED_DB_SOURCE]))
+        self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, [COLLECTED_DB_SOURCE]))
         self._settings_action.triggered.connect(self.show_settings)
         self._supplies_settings_action.triggered.connect(self.show_supplies_data_settings_clear_message_bar)
         self._help_action.triggered.connect(self.show_help)
@@ -1132,7 +1131,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_supplies_db_connection_required
     @_different_db_connections_required
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
@@ -1144,7 +1142,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_supplies_db_connection_required
     @_different_db_connections_required
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
@@ -1211,7 +1208,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_activate_processing_plugin
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
