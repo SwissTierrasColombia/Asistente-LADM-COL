@@ -124,11 +124,78 @@ class STTaskManager(QObject):
             elif response.status_code == 401:
                 msg = QCoreApplication.translate("STSession", "Unauthorized client!")
                 self.logger.warning(__name__, msg)
+            else:
+                self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
 
-    def cancel_task(self):
-        pass
 
-    def close_task(self):
+    def cancel_task(self, st_user, task_id, reason="Está muy difícil esa tarea!"):
+        payload = json.dumps({"reason": reason})
+        headers = {
+            'Authorization': "Bearer {}".format(st_user.get_token()),
+            'Content-Type': 'application/json'
+        }
+
+        try:
+            self.logger.debug(__name__, "Telling the server to cancel a task...")
+            response = requests.request("PUT", TransitionSystemConfig().ST_CANCEL_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
+        except requests.ConnectionError as e:
+            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            self.logger.warning(__name__, msg)
+            return False, msg
+
+        status_OK = response.status_code == 200
+        response_data = json.loads(response.text)
+        if status_OK:
+            # Parse response
+            self.logger.info(__name__, "Task id '{}' canceled in server!...".format(task_id))
+        else:
+            if response.status_code == 500:
+                msg = QCoreApplication.translate("STSession",
+                                                 "There is an error in the task server! Message from server: '{}'".format(
+                                                     response_data))
+                self.logger.warning(__name__, msg)
+            elif response.status_code == 401:
+                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                self.logger.warning(__name__, msg)
+            else:
+                self.logger.warning(__name__, "Status code not handled: {}, payload: {}".format(response.status_code, payload))
+
+    def close_task(self, st_user, task_id):
+        payload = {}
+        headers = {
+            'Authorization': "Bearer {}".format(st_user.get_token()),
+        }
+
+        try:
+            self.logger.debug(__name__, "Telling the server to close a task...")
+            response = requests.request("PUT", TransitionSystemConfig().ST_CLOSE_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
+        except requests.ConnectionError as e:
+            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            self.logger.warning(__name__, msg)
+            return False, msg
+
+        status_OK = response.status_code == 200
+        response_data = json.loads(response.text)
+        if status_OK:
+            # Parse response
+            self.logger.info(__name__, "Task id '{}' started in server!...".format(task_id))
+        else:
+            if response.status_code == 500:
+                msg = QCoreApplication.translate("STSession",
+                                                 "There is an error in the task server! Message from server: '{}'".format(
+                                                     response_data))
+                self.logger.warning(__name__, msg)
+            elif response.status_code == 401:
+                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                self.logger.warning(__name__, msg)
+            elif response.status_code == 422:
+                msg = QCoreApplication.translate("STSession", QCoreApplication.translate("TaskManager",
+                    "Task not closed! Details: {}").format(response_data['message'] if 'message' in response_data else "Unreadable response from server."))
+                self.logger.warning_msg(__name__, msg)
+            else:
+                self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
+
+    def update_task_info(self, task_id, task_data):
         pass
 

@@ -26,6 +26,7 @@ from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.config.enums import STTaskStatusEnum
 from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
@@ -54,7 +55,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setPanelTitle(QCoreApplication.translate("TaskPanelWidget", "Task details"))
 
         self.trw_task_steps.itemDoubleClicked.connect(self.trigger_action)
-        self.trw_task_steps.itemChanged.connect(self.update_controls)
+        self.trw_task_steps.itemChanged.connect(self.update_step_controls)
         self.panelAccepted.connect(self.call_parent_update_controls)
 
         self.btn_start_task.clicked.connect(self.start_task)
@@ -66,6 +67,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
     def initialize_gui(self):
         self.show_task_description()
         self.show_task_steps()
+        self.update_controls()
 
     def show_task_description(self):
         if self._task is not None:
@@ -122,15 +124,36 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             color = GRAY_COLOR if item.checkState(column) == Qt.Checked else Qt.black
             item.child(index).setData(column, Qt.ForegroundRole, QBrush(color))
 
-    def update_controls(self, item, column):
+    def update_step_controls(self, item, column):
         if item.childCount():  # Only do this for parents
             self.trw_task_steps.blockSignals(True)
             self.set_item_style(item, column)
             self.save_task_steps_status(column)
             self.trw_task_steps.blockSignals(False)
 
+        self.update_close_control()
+
+    def update_controls(self):
+        print(self._task.get_status())
+        # Steps panel
+        self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+
+        # Start task button
+        self.btn_start_task.setEnabled(self._task.get_status() == STTaskStatusEnum.ASSIGNED.value)
+
+        # Cancel task button
+        self.btn_cancel_task.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+
+        self.update_close_control()
+
+    def update_close_control(self):
         # Can we close the task?
         self.btn_close_task.setEnabled(self.steps_complete())
+        if self.steps_complete():
+            self.btn_close_task.setToolTip("")
+        else:
+            self.btn_close_task.setToolTip(
+                QCoreApplication.translate("TaskPanelWidget", "You should complete task steps before closing it."))
 
     def steps_complete(self):
         """
@@ -150,9 +173,14 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def start_task(self):
         self.session.task_manager.start_task(self.session.get_logged_st_user(), self._task.id())
+        self._reload_task()
+        self.update_controls()
 
     def cancel_task(self):
-        pass
+        self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.id())
 
     def close_task(self):
-        pass
+        self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.id())
+
+    def reload_task(self):
+        self._task = self.session.task_manager.get_task(self._task.id())

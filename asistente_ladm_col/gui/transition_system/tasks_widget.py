@@ -87,7 +87,8 @@ class TasksWidget(QWidget, WIDGET_UI):
     def close_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
-            self.logger.info(__name__, "Close task (id:{})".format(items[0].data(Qt.UserRole)))
+            task_id = items[0].data(Qt.UserRole)
+            self.session.task_manager.close_task(self._user, task_id)
 
     def add_task_widget_item_to_view(self, task):
         widget_item = loadUi(get_ui_file_path('transition_system/task_widget_item.ui'), QWidget())

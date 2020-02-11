@@ -64,3 +64,10 @@ class LogHandlerEnum(Enum):
 class LogModeEnum(Enum):
     USER = 1
     DEV = 2
+
+
+class STTaskStatusEnum(Enum):
+    ASSIGNED = "ASIGNADA"
+    STARTED = "INICIADA"
+    CANCELED = "CANCELADA"
+    CLOSED = "TERMINADA"
