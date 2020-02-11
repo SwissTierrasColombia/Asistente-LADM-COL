@@ -111,7 +111,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             slot = step.get_custom_action_slot()
             if slot:  # Custom action call
                 self.logger.info(__name__, "Executing step action with custom parameters...")
-                slot[SLOT_NAME](slot[SLOT_PARAMS])
+                slot[SLOT_NAME](**slot[SLOT_PARAMS])
             else:  # Default action call
                 self.logger.info(__name__, "Executing default action...")
                 self.trigger_action_emitted.emit(step.get_action_tag())
@@ -134,9 +134,8 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.update_close_control()
 
     def update_controls(self):
-        print(self._task.get_status())
         # Steps panel
-        self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+        # self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
 
         # Start task button
         self.btn_start_task.setEnabled(self._task.get_status() == STTaskStatusEnum.ASSIGNED.value)

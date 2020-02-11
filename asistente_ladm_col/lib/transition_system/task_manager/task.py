@@ -34,9 +34,9 @@ class STTask(QObject):
     TASK_STATE_KEY = 'taskState'
     MEMBERS_KEY = 'members'
     CATEGORIES_KEY = 'categories'
-    METADATA_KEY = 'metadata'
+    DATA_KEY = 'data'
 
-    def __init__(self, task_data):
+    def __init__(self, task_server_data):
         QObject.__init__(self)
         self.logger = Logger()
         self.__is_valid = True
@@ -49,12 +49,12 @@ class STTask(QObject):
         self.__task_status = None
         self.__members = None
         self.__categories = None
-        self.__metadata = None
+        self.__data = None
         self.__task_steps = None
 
-        self.__task_data = task_data
+        self.__task_server_data = task_server_data
 
-        self._initialize_task(task_data)
+        self._initialize_task(task_server_data)
 
     def __get_mandatory_attributes(self):
             return {self.ID_KEY: self.__id,
@@ -63,28 +63,28 @@ class STTask(QObject):
                     self.TASK_STATE_KEY: self.__task_status,
                     self.CREATED_AT_KEY: self.__created_at}
 
-    def _initialize_task(self, task_data):
+    def _initialize_task(self, task_server_data):
         self.logger.info(__name__, "Creating task...")
-        if self.ID_KEY in task_data:
-            self.__id = task_data[self.ID_KEY]
-        if self.NAME_KEY in task_data:
-            self.__name = task_data[self.NAME_KEY]
-        if self.DESCRIPTION_KEY in task_data:
-            self.__description = task_data[self.DESCRIPTION_KEY]
-        if self.DEADLINE_KEY in task_data:
-            self.__deadline = task_data[self.DEADLINE_KEY]
-        if self.CREATED_AT_KEY in task_data:
-            self.__created_at = task_data[self.CREATED_AT_KEY]
-        if self.CLOSING_DATE_KEY in task_data:
-            self.__closing_date = task_data[self.CLOSING_DATE_KEY]
-        if self.TASK_STATE_KEY in task_data:
-            self.__task_status = task_data[self.TASK_STATE_KEY]
-        if self.MEMBERS_KEY in task_data:
-            self.__members = task_data[self.MEMBERS_KEY]
-        if self.CATEGORIES_KEY in task_data:
-            self.__categories = task_data[self.CATEGORIES_KEY]
-        if self.METADATA_KEY in task_data:
-            self.__metadata = task_data[self.METADATA_KEY]
+        if self.ID_KEY in task_server_data:
+            self.__id = task_server_data[self.ID_KEY]
+        if self.NAME_KEY in task_server_data:
+            self.__name = task_server_data[self.NAME_KEY]
+        if self.DESCRIPTION_KEY in task_server_data:
+            self.__description = task_server_data[self.DESCRIPTION_KEY]
+        if self.DEADLINE_KEY in task_server_data:
+            self.__deadline = task_server_data[self.DEADLINE_KEY]
+        if self.CREATED_AT_KEY in task_server_data:
+            self.__created_at = task_server_data[self.CREATED_AT_KEY]
+        if self.CLOSING_DATE_KEY in task_server_data:
+            self.__closing_date = task_server_data[self.CLOSING_DATE_KEY]
+        if self.TASK_STATE_KEY in task_server_data:
+            self.__task_status = task_server_data[self.TASK_STATE_KEY]
+        if self.MEMBERS_KEY in task_server_data:
+            self.__members = task_server_data[self.MEMBERS_KEY]
+        if self.CATEGORIES_KEY in task_server_data:
+            self.__categories = task_server_data[self.CATEGORIES_KEY]
+        if self.DATA_KEY in task_server_data:
+            self.__data = task_server_data[self.DATA_KEY]
 
         for k, attribute in self.__get_mandatory_attributes().items():
             if attribute is None:
@@ -92,7 +92,7 @@ class STTask(QObject):
                 self.__is_valid = False
 
         if self.__is_valid:
-            self.__task_steps = STTaskSteps(self.id(), self.get_type())
+            self.__task_steps = STTaskSteps(self)
 
         self.logger.debug(__name__, "Task is valid? {}".format(self.is_valid()))
 
@@ -154,5 +154,5 @@ class STTask(QObject):
     def save_task_status(self):
         pass
 
-    def get_as_dict(self):
-        return self.__task_data
+    def get_data(self):
+        return self.__data

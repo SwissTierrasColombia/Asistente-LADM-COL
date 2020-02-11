@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import (QObject,
 from asistente_ladm_col.config.task_steps_config import (TaskStepsConfig,
                                                          STEP_NUMBER,
                                                          STEP_NAME,
+                                                         STEP_TYPE,
                                                          STEP_DESCRIPTION,
                                                          STEP_ACTION,
                                                          STEP_CUSTOM_ACTION_SLOT)
@@ -33,10 +34,11 @@ class STTaskSteps(QObject):
     """
     Manage task steps
     """
-    def __init__(self, task_id, task_type):
+    def __init__(self, task):
         QObject.__init__(self)
-        self.task_id = task_id
-        self.task_type = task_type
+        self.task = task
+        self.task_id = task.id()
+        self.task_type = task.get_type()
         self.logger = Logger()
 
         self.__steps = list()
@@ -49,7 +51,7 @@ class STTaskSteps(QObject):
         Get actions from task step config and create STTaskStep objects for the task
         :return: List of steps ready to use
         """
-        steps_data = self.task_steps_config.get_steps_data(self.task_type)
+        steps_data = self.task_steps_config.get_steps_data(self.task)
         self.logger.info(__name__, "{} steps found for task id {}!".format(len(steps_data), self.task_id))
 
         for step_data in steps_data:
@@ -135,6 +137,7 @@ class STTaskStep(QObject):
 
         self.__id = None
         self.__name = ""
+        self.__type = ""
         self.__description = ""
         self.__action_tag = ""
         self.__custom_action_slot = None
@@ -145,6 +148,7 @@ class STTaskStep(QObject):
     def __initialize_task_step(self, step_data):
         self.__id = step_data[STEP_NUMBER]
         self.__name = step_data[STEP_NAME]
+        self.__type = step_data[STEP_TYPE]
         self.__action_tag = step_data[STEP_ACTION]
         self.__description = step_data[STEP_DESCRIPTION]
         if STEP_CUSTOM_ACTION_SLOT in step_data:
@@ -155,6 +159,9 @@ class STTaskStep(QObject):
 
     def get_name(self):
         return self.__name
+
+    def get_type(self):
+        return self.__type
 
     def get_description(self):
         return self.__description

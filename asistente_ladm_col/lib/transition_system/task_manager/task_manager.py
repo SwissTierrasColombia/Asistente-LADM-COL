@@ -148,7 +148,7 @@ class STTaskManager(QObject):
         response_data = json.loads(response.text)
         if status_OK:
             # Parse response
-            self.logger.info(__name__, "Task id '{}' canceled in server!...".format(task_id))
+            self.logger.info(__name__, "Task id '{}' canceled in server!".format(task_id))
         else:
             if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession",
@@ -179,7 +179,7 @@ class STTaskManager(QObject):
         response_data = json.loads(response.text)
         if status_OK:
             # Parse response
-            self.logger.info(__name__, "Task id '{}' started in server!...".format(task_id))
+            self.logger.info(__name__, "Task id '{}' closed in server!".format(task_id))
         else:
             if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession",

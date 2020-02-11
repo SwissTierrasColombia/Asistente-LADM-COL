@@ -32,3 +32,7 @@ class TransitionSystemConfig(metaclass=Singleton):
     @property
     def ST_CLOSE_TASK_SERVICE_URL(self):
         return "{}/api/workspaces/v1/tasks/{{}}/finish".format(self.get_domain())
+
+    @property
+    def ST_UPLOAD_FILE_SERVICE_URL(self):
+        return "{}/api/workspaces/v1/providers/requests/{{}}".format(self.get_domain())

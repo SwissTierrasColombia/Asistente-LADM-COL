@@ -71,3 +71,11 @@ class STTaskStatusEnum(Enum):
     STARTED = "INICIADA"
     CANCELED = "CANCELADA"
     CLOSED = "TERMINADA"
+
+class STStepTypeEnum(Enum):
+    UPLOAD_FILE = 1
+    CONNECT_TO_DB = 2
+    SCHEMA_IMPORT = 3
+    IMPORT_DATA = 4
+    EXPORT_DATA = 5
+    RUN_ETL_COBOL = 6

@@ -99,6 +99,7 @@ from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
+from asistente_ladm_col.gui.transition_system.dlg_upload_file import STUploadFileDialog
 from asistente_ladm_col.gui.wizards.operation.dlg_create_group_party_operation import CreateGroupPartyOperation
 from asistente_ladm_col.gui.wizards.operation.wiz_create_points_operation import CreatePointsOperationWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
@@ -528,8 +529,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
-        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, {'selected_models':list()}))
-        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, {'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
+        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list()}))
+        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._import_data_action_supplies.triggered.connect(partial(self.show_dlg_import_data, {'db_source': SUPPLIES_DB_SOURCE}))
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
@@ -923,7 +924,14 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    def show_dlg_import_schema(self, *args):
+    def show_dlg_import_schema(self, *args, **kwargs):
+        """
+        Can be called from 1) an action, 2) from a signal or 3) directly.
+
+        In 1) args has a False argument from QAction.triggered.
+        In 2) either args comes with a dict inside (hence the "if args" below), or **{} is send (hence the "if kwargs" below).
+        In 3) **{} is passed, hence the "if kwargs" below.
+        """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 
         selected_models_import_schema = list()
@@ -935,6 +943,12 @@ class AsistenteLADMCOLPlugin(QObject):
                     db_source = param['db_source']
                 if 'selected_models' in param:
                     selected_models_import_schema = param['selected_models']
+
+        if kwargs:
+            if 'db_source' in kwargs:
+                db_source = kwargs['db_source']
+            if 'selected_models' in kwargs:
+                selected_models_import_schema = kwargs['selected_models']
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema, db_source)
         dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
@@ -1292,3 +1306,7 @@ class AsistenteLADMCOLPlugin(QObject):
         action = self.gui_builder.get_action(action_tag)
         if action is not None:
             action.trigger()
+
+    def show_dlg_st_upload_file(self, request_id, supply_type):
+        dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
+        dlg.exec_()
