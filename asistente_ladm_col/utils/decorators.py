@@ -172,27 +172,6 @@ def _log_quality_checks(func_to_decorate):
 
     return add_format_to_text
 
-def _supplies_db_connection_required(func_to_decorate):
-    @wraps(func_to_decorate)
-    def decorated_function(*args, **kwargs):
-        inst = args[0]
-        # Check if current connection is valid and disable access if not
-        db = inst.get_supplies_db_connection()
-        res, code, msg = db.test_connection()
-        if res:
-            func_to_decorate(*args)
-        else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", "The supplies DB is not valid. Details: {}".format(msg))
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Supplies Data Settings"))
-            button.pressed.connect(inst.show_supplies_data_settings_clear_message_bar)
-            widget.layout().addWidget(button)
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "A dialog/tool couldn't be opened/executed, connection to supplies DB was not valid."))
-
-    return decorated_function
-
 def _operation_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
@@ -221,7 +200,6 @@ def _operation_model_required(func_to_decorate):
 
     return decorated_function
 
-
 def _supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -247,7 +225,6 @@ def _supplies_model_required(func_to_decorate):
         func_to_decorate(*args, **kwargs)
 
     return decorated_function
-
 
 def _valuation_model_required(func_to_decorate):
     @wraps(func_to_decorate)
@@ -275,7 +252,6 @@ def _valuation_model_required(func_to_decorate):
         func_to_decorate(*args, **kwargs)
 
     return decorated_function
-
 
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
