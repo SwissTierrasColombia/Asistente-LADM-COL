@@ -32,16 +32,28 @@ class AbsRelateFields(AbsFieldGenericQuery):
         self.relate_table_filter_field = relate_table_filter_field
 
 
-class RelateFieldObject(AbsRelateFields):
+class RelateOwnFieldObject(AbsRelateFields):
     def __init__(self, field_alias, relate_table, relate_table_fields, relate_table_filter_field):
-        super(RelateFieldObject, self).__init__(field_alias, relate_table, relate_table_filter_field)
+        super(RelateOwnFieldObject, self).__init__(field_alias, relate_table, relate_table_filter_field)
         self.relate_table_fields = relate_table_fields
 
 
-class RelateFieldValue(AbsRelateFields):
+class RelateOwnFieldValue(AbsRelateFields):
     def __init__(self, field_alias, relate_table, relate_table_field, relate_table_filter_field):
-        super(RelateFieldValue, self).__init__(field_alias, relate_table, relate_table_filter_field)
-        self.relate_table_fields = relate_table_field
+        super(RelateOwnFieldValue, self).__init__(field_alias, relate_table, relate_table_filter_field)
+        self.relate_table_field = relate_table_field
+
+
+class RelateRemoteFieldObject(RelateOwnFieldObject):
+    def __init__(self, field_alias, relate_table, relate_table_fields, relate_table_filter_field, filter_sub_level):
+        super(RelateRemoteFieldObject, self).__init__(field_alias, relate_table, relate_table_fields, relate_table_filter_field)
+        self.filter_sub_level = filter_sub_level
+
+
+class RelateRemoteFieldValue(RelateOwnFieldValue):
+    def __init__(self, field_alias, relate_table, relate_table_field, relate_table_filter_field, filter_sub_level):
+        super(RelateRemoteFieldValue, self).__init__(field_alias, relate_table, relate_table_field, relate_table_filter_field)
+        self.filter_sub_level = filter_sub_level
 
 
 class FilterSubLevel:

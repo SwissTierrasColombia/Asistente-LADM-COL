@@ -7,7 +7,11 @@ from qgis.core import (QgsFeatureRequest,
 from asistente_ladm_col.logic.ladm_col.queries.per_component.generic_query_objects import (OwnField,
                                                                                            DomainOwnField,
                                                                                            EvalExprOwnField,
-                                                                                           RelateFieldObject,
+                                                                                           AbsRelateFields,
+                                                                                           RelateOwnFieldObject,
+                                                                                           RelateOwnFieldValue,
+                                                                                           RelateRemoteFieldValue,
+                                                                                           RelateRemoteFieldObject,
                                                                                            FilterSubLevel)
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
@@ -29,6 +33,184 @@ class GenericQueryManager:
         self.names = self._db.names
         self.qgis_utils = qgis_utils
         self.ladm_data = LADM_DATA(self.qgis_utils)
+
+    def _get_structure_legal_query(self):
+        op_party_contact_fields = [
+            OwnField(self.names.OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F, 'Teléfono 1'),
+            OwnField(self.names.OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F, 'Teléfono 2'),
+            OwnField(self.names.OP_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F, 'Domicilio notificación'),
+            OwnField(self.names.OP_PARTY_CONTACT_T_EMAIL_F, 'Correo electrónico'),
+            DomainOwnField(self.names.OP_PARTY_CONTACT_T_DATA_SOURCE_F, 'Origen de datos', self.names.OP_INSTITUTION_TYPE_D)
+        ]
+
+        op_administrative_source_fields = [
+            DomainOwnField(self.names.OP_ADMINISTRATIVE_SOURCE_T_TYPE_F, "Tipo de fuente administrativa", self.names.OP_ADMINISTRATIVE_SOURCE_TYPE_D),
+            OwnField(self.names.OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F, "Ente emisor"),
+            DomainOwnField(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F, "Estado disponibilidad", self.names.COL_AVAILABILITY_TYPE_D),
+            RelateOwnFieldValue('Archivo fuente', self.names.EXT_ARCHIVE_S, OwnField(self.names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'), self.names.EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F)
+        ]
+
+        op_party_fields = [
+            DomainOwnField(self.names.OP_PARTY_T_TYPE_F, "Tipo", self.names.OP_PARTY_TYPE_D),
+            OwnField(self.names.OP_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
+            OwnField(self.names.COL_PARTY_T_NAME_F, 'Nombre'),
+            OwnField(self.names.OP_PARTY_T_GENRE_F, 'Género'),
+            RelateOwnFieldObject(self.names.OP_PARTY_CONTACT_T, self.names.OP_PARTY_CONTACT_T, op_party_contact_fields, self.names.OP_PARTY_CONTACT_T_OP_PARTY_F)
+        ]
+
+        op_group_party_party_fields = [
+            DomainOwnField(self.names.OP_PARTY_T_TYPE_F, "Tipo", self.names.OP_PARTY_TYPE_D),
+            OwnField(self.names.OP_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
+            OwnField(self.names.COL_PARTY_T_NAME_F, 'Nombre'),
+            OwnField(self.names.OP_PARTY_T_GENRE_F, 'Género'),
+            RelateOwnFieldObject(self.names.OP_PARTY_CONTACT_T, self.names.OP_PARTY_CONTACT_T, op_party_contact_fields, self.names.OP_PARTY_CONTACT_T_OP_PARTY_F),
+            RelateRemoteFieldValue(self.names.FRACTION_S,
+                                   self.names.FRACTION_S,
+                                   EvalExprOwnField("fracción",
+                                                    QgsExpression(
+                                                        "round({numerador}/{denominador} * 100, 3)".format(
+                                                            denominador=self.names.FRACTION_S_DENOMINATOR_F,
+                                                            numerador=self.names.FRACTION_S_NUMERATOR_F
+                                                        ))),
+                                   self.names.FRACTION_S_MEMBER_F,
+                                   FilterSubLevel(self.names.T_ID_F, self.names.MEMBERS_T, self.names.MEMBERS_T_PARTY_F))
+        ]
+
+        op_group_party_fields = [
+            DomainOwnField(self.names.COL_GROUP_PARTY_T_TYPE_F, "Tipo de agrupación de interesados", self.names.COL_GROUP_PARTY_TYPE_D),
+            OwnField(self.names.COL_PARTY_T_NAME_F, "Nombre")
+        ]
+
+        query = {
+            LEVEL_TABLE: {
+                LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
+                LEVEL_TABLE_ALIAS: "Terrenos",
+                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                ATTRIBUTES_TABLE: {
+                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]")]
+                },
+                LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
+                    LEVEL_TABLE_ALIAS: "Predio",
+                    FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F,
+                                                           self.names.COL_UE_BAUNIT_T,
+                                                           self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    ATTRIBUTES_TABLE: {
+                        TABLE_FIELDS: [
+                            OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                            OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                            OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                            OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                            OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior")
+                        ]
+                    },
+                    '1'+LEVEL_TABLE: {
+                        LEVEL_TABLE_NAME: self.names.OP_RIGHT_T,
+                        LEVEL_TABLE_ALIAS: "Derechos",
+                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_RIGHT_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
+                        ATTRIBUTES_TABLE: {
+                            TABLE_FIELDS: [
+                                DomainOwnField(self.names.OP_RIGHT_T_TYPE_F, "Tipo de derecho", self.names.OP_RIGHT_TYPE_D),
+                                OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
+                            ]
+                        },
+                        '1' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
+                            LEVEL_TABLE_ALIAS: "Fuentes Administrativas",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
+                                                                   self.names.COL_RRR_SOURCE_T,
+                                                                   self.names.COL_RRR_SOURCE_T_OP_RIGHT_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_administrative_source_fields
+                            }
+                        },
+                        '2' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
+                            LEVEL_TABLE_ALIAS: "Interesados",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
+                                                                   self.names.OP_RIGHT_T,
+                                                                   self.names.T_ID_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_party_fields
+                            }
+                        },
+                        '3' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
+                            LEVEL_TABLE_ALIAS: "Agrupación de interesados",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                                                                   self.names.OP_RIGHT_T,
+                                                                   self.names.T_ID_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_group_party_fields
+                            },
+                            LEVEL_TABLE: {
+                                LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
+                                LEVEL_TABLE_ALIAS: "Interesados",
+                                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
+                                                                       self.names.MEMBERS_T,
+                                                                       self.names.MEMBERS_T_GROUP_PARTY_F),
+                                ATTRIBUTES_TABLE: {
+                                    TABLE_FIELDS: op_group_party_party_fields
+                                }
+                            },
+                        }
+                    },
+                    '2'+LEVEL_TABLE: {
+                        LEVEL_TABLE_NAME: self.names.OP_RESTRICTION_T,
+                        LEVEL_TABLE_ALIAS: "Restricciones",
+                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_RESTRICTION_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
+                        ATTRIBUTES_TABLE: {
+                            TABLE_FIELDS: [
+                                DomainOwnField(self.names.OP_RESTRICTION_T_TYPE_F, "Tipo de restricción", self.names.OP_RESTRICTION_TYPE_D),
+                                OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
+                            ]
+                        },
+                        '1' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
+                            LEVEL_TABLE_ALIAS: "Fuentes Administrativas",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
+                                                                   self.names.COL_RRR_SOURCE_T,
+                                                                   self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_administrative_source_fields
+                            }
+                        },
+                        '2' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
+                            LEVEL_TABLE_ALIAS: "Interesados",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
+                                                                   self.names.OP_RESTRICTION_T,
+                                                                   self.names.T_ID_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_party_fields
+                            }
+                        },
+                        '3' + LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
+                            LEVEL_TABLE_ALIAS: "Agrupación de interesados",
+                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                                                                   self.names.OP_RESTRICTION_T,
+                                                                   self.names.T_ID_F),
+                            ATTRIBUTES_TABLE: {
+                                TABLE_FIELDS: op_group_party_fields
+                            },
+                            LEVEL_TABLE: {
+                                LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
+                                LEVEL_TABLE_ALIAS: "Interesados",
+                                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
+                                                                       self.names.MEMBERS_T,
+                                                                       self.names.MEMBERS_T_GROUP_PARTY_F),
+                                ATTRIBUTES_TABLE: {
+                                    TABLE_FIELDS: op_group_party_party_fields
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+        }
+
+        return query
 
     def _get_structure_basic_query(self):
         required_address_fields = [
@@ -68,10 +250,10 @@ class GenericQueryManager:
                 FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
                 ATTRIBUTES_TABLE: {
                     TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]"),
-                                   RelateFieldObject(self.names.EXT_ADDRESS_S,
-                                                     self.names.EXT_ADDRESS_S,
-                                                     required_address_fields,
-                                                     self.names.EXT_ADDRESS_S_OP_PLOT_F)]
+                                   RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
+                                                        self.names.EXT_ADDRESS_S,
+                                                        required_address_fields,
+                                                        self.names.EXT_ADDRESS_S_OP_PLOT_F)]
                 },
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
@@ -96,10 +278,10 @@ class GenericQueryManager:
                         ATTRIBUTES_TABLE: {
                             TABLE_FIELDS: [
                                 OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
-                                RelateFieldObject(self.names.EXT_ADDRESS_S,
-                                                  self.names.EXT_ADDRESS_S,
-                                                  required_address_fields,
-                                                  self.names.EXT_ADDRESS_S_OP_BUILDING_F)
+                                RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
+                                                     self.names.EXT_ADDRESS_S,
+                                                     required_address_fields,
+                                                     self.names.EXT_ADDRESS_S_OP_BUILDING_F)
                             ]
                         },
                         LEVEL_TABLE: {
@@ -119,10 +301,10 @@ class GenericQueryManager:
                                     OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
                                     OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
                                     DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
-                                    RelateFieldObject(self.names.EXT_ADDRESS_S,
-                                                      self.names.EXT_ADDRESS_S,
-                                                      required_address_fields,
-                                                      self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
+                                    RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
+                                                         self.names.EXT_ADDRESS_S,
+                                                         required_address_fields,
+                                                         self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
                                 ]
                             }
                         }
@@ -133,6 +315,12 @@ class GenericQueryManager:
 
         return query
 
+    def execute_legal_query(self, filter_field_value):
+        response = dict()
+        query = self._get_structure_legal_query()
+        self.execute_query(response, query[LEVEL_TABLE], filter_field_value)
+        return response
+
     def execute_basic_query(self, filter_field_value):
         response = dict()
         query = self._get_structure_basic_query()
@@ -141,14 +329,9 @@ class GenericQueryManager:
 
     def execute_query(self, response, level_dict, filter_field_value):
         table_name = level_dict[LEVEL_TABLE_NAME]
-        filter_sub_level =  level_dict[FILTER_SUB_LEVEL_TABLE]
-        filter_field = filter_sub_level.filter_field_in_sub_level_table
-        sub_level_table = filter_sub_level.sub_level_table
-        required_field = filter_sub_level.required_field_sub_level_table
-
         layer = self.qgis_utils.get_layer(self._db, table_name, None, True)
-        sub_level_layer = self.qgis_utils.get_layer(self._db, sub_level_table, None, True)
-        t_id_features = self.get_features_ids(sub_level_layer, required_field, filter_field, filter_field_value)
+        filter_sub_level =  level_dict[FILTER_SUB_LEVEL_TABLE]
+        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_value)
 
         response[table_name] = list()
 
@@ -160,37 +343,55 @@ class GenericQueryManager:
         fields_names = list(dict_fields_and_alias.keys())
         select_features = self.get_features(layer, self.names.T_ID_F, fields_names, t_id_features)
 
-        for select_features in select_features:
+        for select_feature in select_features:
             node_response = dict()
-            node_response[ID_FEATURE_RESPONSE] = select_features[self.names.T_ID_F]
+            node_response[ID_FEATURE_RESPONSE] = select_feature[self.names.T_ID_F]
 
             node_fields_response = dict()
             for field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
                 if isinstance(field, DomainOwnField):
                     domain_table = field.domain_table
-                    domain_code = select_features[field.field_name]
+                    domain_code = select_feature[field.field_name]
                     domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
                     node_fields_response[field.field_alias] = domain_value
                 elif isinstance(field, OwnField):
-                    node_fields_response[field.field_alias] = select_features[field.field_name] if select_features[field.field_name] != NULL else None
-                elif isinstance(field, RelateFieldObject):
-                    node_fields_response[field.field_alias] = self.get_relate_field(field, select_features[self.names.T_ID_F])
+                    node_fields_response[field.field_alias] = select_feature[field.field_name] if select_feature[field.field_name] != NULL else None
                 elif isinstance(field, EvalExprOwnField):
-                    node_fields_response[field.field_alias] = self.get_eval_expr_value(layer, select_features, field.expression)
+                    node_fields_response[field.field_alias] = self.get_eval_expr_value(layer, select_feature, field.expression)
+                elif isinstance(field, AbsRelateFields):
+                    if isinstance(field, RelateRemoteFieldObject):
+                        node_fields_response[field.field_alias] = self.get_relate_remote_field_object(field, [str(select_feature[self.names.T_ID_F])])
+                    elif isinstance(field, RelateRemoteFieldValue):
+                        node_fields_response[field.field_alias] = self.get_relate_remote_field_value(field, [str(select_feature[self.names.T_ID_F])])
+                    elif isinstance(field, RelateOwnFieldObject):
+                        node_fields_response[field.field_alias] = self.get_relate_own_field_object(field, [str(select_feature[self.names.T_ID_F])])
+                    elif isinstance(field, RelateOwnFieldValue):
+                        node_fields_response[field.field_alias] = self.get_relate_own_field_value(field, [str(select_feature[self.names.T_ID_F])])
 
-            if LEVEL_TABLE in level_dict:
-                self.execute_query(node_fields_response, level_dict[LEVEL_TABLE], [str(select_features[self.names.T_ID_F])])
+            for dict_key in level_dict:
+                if dict_key.endswith(LEVEL_TABLE):
+                    self.execute_query(node_fields_response, level_dict[dict_key], [str(select_feature[self.names.T_ID_F])])
 
             node_response[ATTRIBUTES_RESPONSE] = node_fields_response
             response[table_name].append(node_response)
 
-    def get_relate_field(self, field, filter_field_value):
+    def get_relate_remote_field_object(self, field, filter_field_value):
+        filter_sub_level = field.filter_sub_level
+        t_id_features = self.get_relate_own_field_object(filter_sub_level, filter_field_value)
+        return self.get_relate_own_field_value(field, t_id_features)
+
+    def get_relate_remote_field_value(self, field, filter_field_value):
+        filter_sub_level = field.filter_sub_level
+        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_value)
+        return self.get_relate_own_field_value(field, t_id_features)
+
+    def get_relate_own_field_object(self, field, filter_field_values):
         relate_layer = self.qgis_utils.get_layer(self._db, field.relate_table, None, True)
         dict_fields_and_alias =  self.get_dict_fields_and_alias(field.relate_table_fields)
         fields_names = list(dict_fields_and_alias.keys())
-        fields_names += [self.names.T_ID_F]
+        fields_names.append(self.names.T_ID_F)
 
-        features = self.get_features(relate_layer, field.relate_table_filter_field, fields_names, [str(filter_field_value)])
+        features = self.get_features(relate_layer, field.relate_table_filter_field, fields_names, filter_field_values)
 
         list_relate_result = list()
         for feature in features:
@@ -212,6 +413,29 @@ class GenericQueryManager:
             list_relate_result.append(dict_relate_field)
 
         return list_relate_result
+
+    def get_relate_own_field_value(self, field, filter_field_values):
+        relate_layer = self.qgis_utils.get_layer(self._db, field.relate_table, None, True)
+        required_field = field.relate_table_field
+        dict_fields_and_alias = self.get_dict_fields_and_alias([required_field])
+        fields_names = list(dict_fields_and_alias.keys())
+        fields_names.append(self.names.T_ID_F)
+
+        features = self.get_features(relate_layer, field.relate_table_filter_field, fields_names, filter_field_values)
+
+        field_value = None
+        for feature in features:
+            if isinstance(required_field, DomainOwnField):
+                domain_table = required_field.domain_table
+                domain_code = feature[required_field.field_name]
+                domain_value = self.ladm_data.get_domain_value_from_code(self._db, domain_table, domain_code, False)
+                field_value = domain_value
+            elif isinstance(required_field, OwnField):
+                field_value = feature[required_field.field_name] if feature[required_field.field_name] != NULL else None
+            elif isinstance(required_field, EvalExprOwnField):
+                field_value = self.get_eval_expr_value(relate_layer, feature, required_field.expression)
+
+        return field_value
 
     @staticmethod
     def get_eval_expr_value(layer, feature, expression):
@@ -242,6 +466,14 @@ class GenericQueryManager:
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
         features_ids = [str(feature[requered_field]) for feature in layer.getFeatures(request)]
         return features_ids
+
+    def get_features_ids_sub_level(self, filter_sub_level, filter_field_value):
+        filter_field = filter_sub_level.filter_field_in_sub_level_table
+        sub_level_table = filter_sub_level.sub_level_table
+        required_field = filter_sub_level.required_field_sub_level_table
+        sub_level_layer = self.qgis_utils.get_layer(self._db, sub_level_table, None, True)
+        t_id_features = self.get_features_ids(sub_level_layer, required_field, filter_field, filter_field_value)
+        return t_id_features
 
     def get_features(self, layer, filter_field, fields_names, t_id_features):
         fields_idx = list()
