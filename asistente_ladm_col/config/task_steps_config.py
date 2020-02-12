@@ -70,8 +70,13 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
             steps_config = {
                 1: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Connect to remote DB"),
                     STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
-                    STEP_ACTION: ACTION_SCHEMA_IMPORT_SUPPLIES,
-                    STEP_DESCRIPTION: ""},
+                    STEP_ACTION: None,
+                    STEP_DESCRIPTION: "",
+                    STEP_CUSTOM_ACTION_SLOT: {
+                        SLOT_NAME: self._slot_caller.open_encrypted_db_connection,
+                        SLOT_PARAMS: {'conn_dict': task_data['connection'] if 'connection' in task_data else {}}
+                    },
+                    },
                 2: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig",
                                                           "Explore data from Cadastre and Land Registry"),
                     STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,

@@ -1313,3 +1313,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_st_upload_file(self, request_id, supply_type):
         dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
         dlg.exec_()
+
+    def open_encrypted_db_connection(self, conn_dict):
+        # TODO decrypt
+        self.conn_manager.get_encrypted_db_connector('pg', conn_dict)

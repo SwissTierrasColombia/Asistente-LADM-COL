@@ -84,11 +84,23 @@ class ConnectionManager(QObject):
 
     def get_db_connector_for_tests(self, scope, parameters):
         """
-        This function is implemented for tests
+        This function is implemented for tests. Connection to non-LADM databases.
         """
         db_connection_source = scope
         db_factory = self.dbs_supported.get_db_factory(db_connection_source)
         db = db_factory.get_db_connector(parameters)
         db.open_connection()
+
+        return db
+
+    def get_encrypted_db_connector(self, scope, parameters):
+        """
+        This function is implemented for tests
+        """
+        db_connection_source = scope
+        db_factory = self.dbs_supported.get_db_factory(db_connection_source)
+        db = db_factory.get_db_connector(parameters)
+        res, code, msg = db.test_connection()
+        self.logger.info_msg(__name__, msg)
 
         return db
