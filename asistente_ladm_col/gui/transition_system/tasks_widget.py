@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QListWidgetItem)
 
+from asistente_ladm_col.config.enums import STTaskStatusEnum
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
 from asistente_ladm_col.lib.transition_system.task_manager.tasks_model import TasksModel
@@ -67,7 +68,7 @@ class TasksWidget(QWidget, WIDGET_UI):
         if enable:
             # Enable Close Task button?
             task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
-            enable = task.steps_complete()
+            enable = task.get_status() == STTaskStatusEnum.STARTED.value and task.steps_complete()
 
         self.btn_close_task.setEnabled(enable)
 

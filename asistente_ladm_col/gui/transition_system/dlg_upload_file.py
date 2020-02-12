@@ -25,7 +25,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.utils import get_ui_class
-from asistente_ladm_col.utils.qt_utils import make_file_selector
+from asistente_ladm_col.utils.qt_utils import (make_file_selector,
+                                               ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
 
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transition_system/dlg_upload_file.ui')
@@ -58,8 +59,10 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def upload_file(self):
-        res, msg = self.st_utils.upload_file(self.request_id, self.supply_type, self.txt_file_path.text().strip(), self.txt_comments.toPlainText())
-        self.show_message(msg, Qgis.Success if res else Qgis.Warning)
+        with ProcessWithStatus(QCoreApplication.translate("STUploadFileDialog", "Uploading file to ST server...")):
+            res, res_msg = self.st_utils.upload_file(self.request_id, self.supply_type, self.txt_file_path.text().strip(), self.txt_comments.toPlainText())
+
+        self.show_message(res_msg, Qgis.Success if res else Qgis.Warning)
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

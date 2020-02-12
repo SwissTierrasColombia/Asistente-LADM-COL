@@ -70,7 +70,7 @@ class STTaskStatusEnum(Enum):
     ASSIGNED = "ASIGNADA"
     STARTED = "INICIADA"
     CANCELED = "CANCELADA"
-    CLOSED = "TERMINADA"
+    CLOSED = "CERRADA"
 
 class STStepTypeEnum(Enum):
     UPLOAD_FILE = 1

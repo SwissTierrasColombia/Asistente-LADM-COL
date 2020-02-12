@@ -137,7 +137,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def update_controls(self):
         # Steps panel
-        # self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+        self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
 
         # Start task button
         self.btn_start_task.setEnabled(self._task.get_status() == STTaskStatusEnum.ASSIGNED.value)
@@ -149,12 +149,15 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def update_close_control(self):
         # Can we close the task?
-        self.btn_close_task.setEnabled(self.steps_complete())
-        if self.steps_complete():
+        self.btn_close_task.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value and self.steps_complete())
+        if self._task.get_status() == STTaskStatusEnum.STARTED.value and self.steps_complete():
             self.btn_close_task.setToolTip("")
-        else:
+        elif self._task.get_status() != STTaskStatusEnum.STARTED.value and self.steps_complete():
             self.btn_close_task.setToolTip(
-                QCoreApplication.translate("TaskPanelWidget", "You should complete task steps before closing it."))
+                QCoreApplication.translate("TaskPanelWidget", "The task is not started yet, hence, it cannot be closed."))
+        else:  # The remaining 2 cases: steps incomplete (whether the task is started or not)
+            self.btn_close_task.setToolTip(
+                QCoreApplication.translate("TaskPanelWidget", "You should complete the steps before closing the task."))
 
     def steps_complete(self):
         """

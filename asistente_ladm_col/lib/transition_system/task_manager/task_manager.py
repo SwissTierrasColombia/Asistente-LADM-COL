@@ -107,7 +107,7 @@ class STTaskManager(QObject):
         self.__registered_tasks[task.id()] = task
 
     def __unregister_task(self, task_id):
-        self.logger.debug(__name__, "Task {} unregistered!".format(task.id()))
+        self.logger.debug(__name__, "Task {} unregistered!".format(task_id))
         self.__registered_tasks[task_id] = None
         del self.__registered_tasks[task_id]
 
