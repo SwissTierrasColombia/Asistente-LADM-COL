@@ -35,6 +35,7 @@ class GenericQueryType(Enum):
     IGAC_PHYSICAL_QUERY = 2
     IGAC_LEGAL_QUERY = 3
     IGAC_ECONOMIC_QUERY = 4
+    IGAC_PROPERTY_RECORD_CARD = 5
 
 
 class GenericQueryManager:
@@ -44,6 +45,91 @@ class GenericQueryManager:
         self.names = self._db.names
         self.qgis_utils = qgis_utils
         self.ladm_data = LADM_DATA(self.qgis_utils)
+
+    def _get_structure_property_record_card_query(self):
+
+        query = {
+            LEVEL_TABLE: {
+                LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
+                LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
+                FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]")],
+                LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
+                    LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T,
+                                                     self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    TABLE_FIELDS: [
+                        OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                        OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
+                        OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
+                        OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                        OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                        OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                        OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
+                        DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
+                    ]
+                }
+            }
+        }
+
+        return query
+
+    def _get_structure_economic_query(self):
+        query = {
+            LEVEL_TABLE: {
+                LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
+                LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
+                FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_VALUATION_F, "Avalúo terreno [COP]"),
+                               OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]")],
+                LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
+                    LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T,
+                                                     self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    TABLE_FIELDS: [
+                        OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                        OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
+                        OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
+                        OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                        OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                        OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                        OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
+                        OwnField(self.names.OP_PARCEL_T_VALUATION_F, "Ávaluo predio"),
+                        DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
+                    ],
+                    LEVEL_TABLE: {
+                        LEVEL_TABLE_NAME: self.names.OP_BUILDING_T,
+                        LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_T,
+                        FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F,
+                                                         self.names.COL_UE_BAUNIT_T,
+                                                         self.names.COL_UE_BAUNIT_T_PARCEL_F),
+                        TABLE_FIELDS: [
+                            OwnField(self.names.OP_BUILDING_T_BUILDING_VALUATION_F, "Avalúo [COP]"),
+                            OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción")
+                        ],
+                        LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_BUILDING_UNIT_T,
+                            LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_UNIT_T,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T,
+                                                             self.names.OP_BUILDING_UNIT_T_BUILDING_F),
+                            TABLE_FIELDS: [
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F, "Avalúo"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F, "Área privada construida [m2]"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F, "Año construcción")
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+        return query
 
     def _get_structure_physical_query(self):
 
@@ -118,7 +204,7 @@ class GenericQueryManager:
                 },
                 '2' + LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_T,
-                    LEVEL_TABLE_ALIAS: "Linderos externos",
+                    LEVEL_TABLE_ALIAS: self.names.OP_BOUNDARY_T + " externos",
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.MORE_BFS_T_OP_BOUNDARY_F,
                                                            self.names.MORE_BFS_T,
                                                            self.names.MORE_BFS_T_OP_PLOT_F),
@@ -126,7 +212,7 @@ class GenericQueryManager:
                 },
                 '3' + LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_POINT_T,
-                    LEVEL_TABLE_ALIAS: "Puntos de Lindero externos",
+                    LEVEL_TABLE_ALIAS: self.names.OP_BOUNDARY_POINT_T + " externos",
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.MORE_BFS_T_OP_BOUNDARY_F,
                                                      self.names.MORE_BFS_T,
                                                      self.names.MORE_BFS_T_OP_PLOT_F,
@@ -138,7 +224,7 @@ class GenericQueryManager:
                 },
                 '4' + LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_T,
-                    LEVEL_TABLE_ALIAS: "Linderos internos",
+                    LEVEL_TABLE_ALIAS: self.names.OP_BOUNDARY_T + " internos",
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.LESS_BFS_T_OP_BOUNDARY_F,
                                                      self.names.LESS_BFS_T,
                                                      self.names.LESS_BFS_T_OP_PLOT_F),
@@ -146,7 +232,7 @@ class GenericQueryManager:
                 },
                 '5' + LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_POINT_T,
-                    LEVEL_TABLE_ALIAS: "Puntos de Lindero internos",
+                    LEVEL_TABLE_ALIAS: self.names.OP_BOUNDARY_POINT_T + " internos",
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.LESS_BFS_T_OP_BOUNDARY_F,
                                                      self.names.LESS_BFS_T,
                                                      self.names.LESS_BFS_T_OP_PLOT_F,
@@ -428,10 +514,18 @@ class GenericQueryManager:
         elif GenericQueryType.IGAC_LEGAL_QUERY == enum_generic_query:
             query = self._get_structure_legal_query()
         elif GenericQueryType.IGAC_ECONOMIC_QUERY == enum_generic_query:
-            pass
+            query = self._get_structure_economic_query()
+        elif GenericQueryType.IGAC_PROPERTY_RECORD_CARD == enum_generic_query:
+            query = self._get_structure_property_record_card_query()
 
         self.execute_query(response, query[LEVEL_TABLE], filter_field_values)
         return response
+
+    def execute_property_record_card_query(self, filter_field_values):
+        return self.execute_generic_query(GenericQueryType.IGAC_PROPERTY_RECORD_CARD, filter_field_values)
+
+    def execute_economic_query(self, filter_field_values):
+        return self.execute_generic_query(GenericQueryType.IGAC_ECONOMIC_QUERY, filter_field_values)
 
     def execute_physical_query(self, filter_field_values):
         return self.execute_generic_query(GenericQueryType.IGAC_PHYSICAL_QUERY, filter_field_values)
