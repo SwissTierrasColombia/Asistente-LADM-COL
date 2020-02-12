@@ -87,4 +87,5 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
             self.widget.showPanel(self.task_panel)
 
     def update_task_controls(self, panel):
+        """Called when the task panel is accepted."""
         self.main_panel.tasks_widget.update_controls()  # If task panel is accepted, update "Close Task" button

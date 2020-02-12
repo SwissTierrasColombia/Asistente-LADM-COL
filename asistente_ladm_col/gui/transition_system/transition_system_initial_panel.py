@@ -79,10 +79,11 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     def show_tasks_widget(self):
         if self._current_widget != self.TASKS_WIDGET:
             self.clear_content_widget()
-
             self.content_layout.addWidget(self.tasks_widget)
             self.tasks_widget.setVisible(True)
             self._current_widget = self.TASKS_WIDGET
+
+        self.tasks_widget.show_tasks()  # Retrieve tasks from server
 
     def clear_content_widget(self):
         while self.content_layout.count():
@@ -92,4 +93,9 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
             #    child.widget().deleteLater()
 
     def show_task_panel(self, task_id):
+        """
+        Slot called from the initial panel to show the task panel based on a selected task.
+
+        :param task_id: Id of the task that will be used to show the task panel.
+        """
         self.parent.show_task_panel(task_id)

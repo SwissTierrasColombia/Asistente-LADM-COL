@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+from datetime import datetime
+
 from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.lib.logger import Logger
@@ -72,11 +74,11 @@ class STTask(QObject):
         if self.DESCRIPTION_KEY in task_server_data:
             self.__description = task_server_data[self.DESCRIPTION_KEY]
         if self.DEADLINE_KEY in task_server_data:
-            self.__deadline = task_server_data[self.DEADLINE_KEY]
+            self.__deadline = self.normalize_date(task_server_data[self.DEADLINE_KEY])
         if self.CREATED_AT_KEY in task_server_data:
-            self.__created_at = task_server_data[self.CREATED_AT_KEY]
+            self.__created_at = self.normalize_date(task_server_data[self.CREATED_AT_KEY])
         if self.CLOSING_DATE_KEY in task_server_data:
-            self.__closing_date = task_server_data[self.CLOSING_DATE_KEY]
+            self.__closing_date = self.normalize_date(task_server_data[self.CLOSING_DATE_KEY])
         if self.TASK_STATE_KEY in task_server_data:
             self.__task_status = task_server_data[self.TASK_STATE_KEY]
         if self.MEMBERS_KEY in task_server_data:
@@ -156,3 +158,10 @@ class STTask(QObject):
 
     def get_data(self):
         return self.__data
+
+    def normalize_date(self, date_str):
+        if date_str:
+            date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%f%z')  # e.g., '2019-02-01T08:01:31.664+0000'
+            return date.strftime("%Y-%m-%d %H:%M")
+
+        return ''

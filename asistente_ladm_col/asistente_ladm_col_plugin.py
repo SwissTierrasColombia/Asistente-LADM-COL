@@ -868,11 +868,20 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
+        self.close_dock_widgets([self._dock_widget_transition_system,
+                                 self._dock_widget_change_detection,
+                                 self._dock_widget_queries])
         self.gui_builder.unload_gui()
 
         # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
+
+    def close_dock_widgets(self, dock_widgets):
+        for dock_widget in dock_widgets:
+            if dock_widget is not None:
+                dock_widget.close()
+                dock_widget = None
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
@@ -904,9 +913,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_queries(self, *args):
-        if self._dock_widget_queries is not None:
-            self._dock_widget_queries.close()
-            self._dock_widget_queries = None
+        self.close_dock_widgets([self._dock_widget_queries])
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
@@ -1166,9 +1173,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
-        if self._dock_widget_change_detection is not None:
-            self._dock_widget_change_detection.close()
-            self._dock_widget_change_detection = None
+        self.close_dock_widgets([self._dock_widget_change_detection])
 
         self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
                                                                        self.get_db_connection(),
@@ -1254,11 +1259,9 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
-            # Show Transition System dock widget
-            if self._dock_widget_transition_system is not None:
-                self._dock_widget_transition_system.close()
-                self._dock_widget_transition_system = None
+            self.close_dock_widgets([self._dock_widget_transition_system])
 
+            # Show Transition System dock widget
             user = self.session.get_logged_st_user()
             self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
             self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)

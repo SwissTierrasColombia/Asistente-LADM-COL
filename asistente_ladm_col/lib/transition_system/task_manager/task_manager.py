@@ -73,8 +73,16 @@ class STTaskManager(QObject):
                 self.logger.warning(__name__, msg)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
-        if not self.__registered_tasks:
-            self.__retrieve_tasks(st_user, task_type, task_status)
+        """
+        Go to server for current tasks per user
+        :param st_user:
+        :param task_type: To filter task types. Still unused.
+        :param task_status: To filter task statuses. Still unused.
+        :return: dict of task ids with the corresponding task object
+        """
+        # Each call refreshes the registered tasks.
+        self.unregister_tasks()
+        self.__retrieve_tasks(st_user, task_type, task_status)
 
         return self.__registered_tasks
 
@@ -95,6 +103,7 @@ class STTaskManager(QObject):
             self.__registered_tasks[k] = None
 
         self.__registered_tasks = dict()
+        self.logger.info(__name__, "All tasks have been unregistered!")
 
     def start_task(self, st_user, task_id):
         payload = {}

@@ -69,7 +69,7 @@ class STSession(QObject, metaclass=SingletonQObject):
         status_OK = response.status_code == 200
         self.logger.info(__name__, "Login response status code: {}".format(response.status_code))
         if status_OK:
-            msg = QCoreApplication.translate("STSession", "User logged in successfully!")
+            msg = QCoreApplication.translate("STSession", "User logged in successfully in the Transition System!")
             logged_data = json.loads(response.text)
             self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'],
                                                              logged_data['last_name']),

@@ -43,13 +43,14 @@ class TasksWidget(QWidget, WIDGET_UI):
         self._user = user
 
         self.lvw_tasks.itemSelectionChanged.connect(self.update_controls)
+        self.lvw_tasks.itemDoubleClicked.connect(self.call_task_panel)
         self.btn_view_task.clicked.connect(self.view_task)
         self.btn_close_task.clicked.connect(self.close_task)
 
-        self.show_tasks()
         self.update_controls()  # Initialize controls
 
     def show_tasks(self):
+        self.clear_task_widget()
         tasks = self._get_user_tasks()
         self.update_task_count_label(len(tasks))
         # tasks_list = [task.get_name() for k, task in tasks.items()]
@@ -80,9 +81,12 @@ class TasksWidget(QWidget, WIDGET_UI):
     def view_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
-            task_id = items[0].data(Qt.UserRole)
-            self.logger.info(__name__, "View task (id:{})".format(task_id))
-            self.task_panel_requested.emit(task_id)
+            self.call_task_panel(items[0])
+
+    def call_task_panel(self, item):
+        task_id = item.data(Qt.UserRole)
+        self.logger.info(__name__, "View task (id:{})".format(task_id))
+        self.task_panel_requested.emit(task_id)
 
     def close_task(self):
         items = self.lvw_tasks.selectedItems()
@@ -102,3 +106,6 @@ class TasksWidget(QWidget, WIDGET_UI):
         item.setSizeHint(QSize(widget_item.width(), widget_item.height()))
         item.setData(Qt.UserRole, task.id())
         self.lvw_tasks.addItem(item)
+
+    def clear_task_widget(self):
+        self.lvw_tasks.clear()
