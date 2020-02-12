@@ -31,39 +31,43 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
     def set_slot_caller(self, slot_caller):
         self._slot_caller = slot_caller
 
-    def _get_config(self, task_data):
-        return {
-            TASK_GENERATE_CADASTRAL_SUPPLIES: {
-                1: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Create supplies structure in DB"),
-                    STEP_ACTION: ACTION_SCHEMA_IMPORT_SUPPLIES,
-                    STEP_TYPE: STStepTypeEnum.SCHEMA_IMPORT,
-                    STEP_DESCRIPTION: "",
-                    STEP_CUSTOM_ACTION_SLOT: {
-                        SLOT_NAME: self._slot_caller.show_dlg_import_schema,
-                        SLOT_PARAMS: {'db_source': SUPPLIES_DB_SOURCE,
-                                      'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}}
-                    },
-                2: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),
-                    STEP_TYPE: STStepTypeEnum.RUN_ETL_COBOL,
-                    STEP_ACTION: ACTION_RUN_ETL_COBOL,
-                    STEP_DESCRIPTION: ""
-                    },
-                3: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate XTF"),
-                    STEP_TYPE: STStepTypeEnum.EXPORT_DATA,
-                    STEP_ACTION: ACTION_EXPORT_DATA_SUPPLIES,
-                    STEP_DESCRIPTION: ""
-                    },
-                4: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
-                    STEP_TYPE: STStepTypeEnum.UPLOAD_FILE,
-                    STEP_ACTION: None,
-                    STEP_DESCRIPTION: "Upload an XTF file to the Transition System.",
-                    STEP_CUSTOM_ACTION_SLOT: {
-                        SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
-                        SLOT_PARAMS: {'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
-                                      'supply_type': task_data['request']['typeSupplyId'] if 'request' in task_data else None}}
-                    },
-                },
-            TASK_INTEGRATE_SUPPLIES: {
+    def _get_config(self, task_type, task_data):
+        steps_config = {}
+        if task_type == TASK_GENERATE_CADASTRAL_SUPPLIES:
+            steps_config = {
+               1: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Create supplies structure in DB"),
+                   STEP_ACTION: None,
+                   STEP_TYPE: STStepTypeEnum.SCHEMA_IMPORT,
+                   STEP_DESCRIPTION: "",
+                   STEP_CUSTOM_ACTION_SLOT: {
+                       SLOT_NAME: self._slot_caller.show_dlg_import_schema,
+                       SLOT_PARAMS: {'db_source': SUPPLIES_DB_SOURCE,
+                                     'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}}
+                   },
+               2: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),
+                   STEP_TYPE: STStepTypeEnum.RUN_ETL_COBOL,
+                   STEP_ACTION: ACTION_RUN_ETL_COBOL,
+                   STEP_DESCRIPTION: ""
+                   },
+               3: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate XTF"),
+                   STEP_TYPE: STStepTypeEnum.EXPORT_DATA,
+                   STEP_ACTION: ACTION_EXPORT_DATA_SUPPLIES,
+                   STEP_DESCRIPTION: ""
+                   },
+               4: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
+                   STEP_TYPE: STStepTypeEnum.UPLOAD_FILE,
+                   STEP_ACTION: None,
+                   STEP_DESCRIPTION: "Upload an XTF file to the Transition System.",
+                   STEP_CUSTOM_ACTION_SLOT: {
+                       SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
+                       SLOT_PARAMS: {
+                           'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
+                           'supply_type': task_data['request'][
+                               'typeSupplyId'] if 'request' in task_data else None}}
+                   }
+           }
+        elif task_type == TASK_INTEGRATE_SUPPLIES:
+            steps_config = {
                 1: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Connect to remote DB"),
                     STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
                     STEP_ACTION: ACTION_SCHEMA_IMPORT_SUPPLIES,
@@ -80,13 +84,14 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                     STEP_DESCRIPTION: ""
                     }
             }
-        }
+
+        return steps_config
 
     def get_steps_data(self, task):
         steps_data = list()
-        steps_config = self._get_config(task.get_data())
-        if task.get_type() in steps_config:
-            for id, data in steps_config[task.get_type()].items():
+        steps_config = self._get_config(task.get_type(), task.get_data())  # TODO, adjust the config to make it ready to return
+        if steps_config:
+            for id, data in steps_config.items():
                 step_data = dict()
                 step_data[STEP_NUMBER] = id
                 step_data[STEP_NAME] = data[STEP_NAME]

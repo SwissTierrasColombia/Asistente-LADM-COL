@@ -65,19 +65,19 @@ class STTaskManager(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
-        response_data = json.loads(response.text)
         if status_OK:
             # Parse, create and register tasks
+            response_data = json.loads(response.text)
             for task_data in response_data:
                 task = STTask(task_data)
                 if task.is_valid():
                     self.__register_task(task)
         else:
              if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession", "There is an error in the task server! Message from server: '{}'".format(response_data["message"]))
+                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
                 self.logger.warning(__name__, msg)
              elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
                 self.logger.warning(__name__, msg)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
@@ -134,9 +134,9 @@ class STTaskManager(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
-        response_data = json.loads(response.text)
         if status_OK:
             # Parse response
+            response_data = json.loads(response.text)
             self.logger.info(__name__, "Task id '{}' started in server!...".format(task_id))
             self.logger.info_msg(__name__, QCoreApplication.translate("TaskManager",
                                                                       "The task '{}' was successfully started!".format(
@@ -145,12 +145,10 @@ class STTaskManager(QObject):
             self.task_started.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession",
-                                                 "There is an error in the task server! Message from server: '{}'".format(
-                                                     response_data))
+                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
                 self.logger.warning(__name__, msg)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
                 self.logger.warning(__name__, msg)
             else:
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
@@ -172,20 +170,17 @@ class STTaskManager(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
-        response_data = json.loads(response.text)
         if status_OK:
-            # Parse response
+            # No need to parse response this time, we'll ask tasks from server again anyways
             self.logger.info(__name__, "Task id '{}' canceled in server!".format(task_id))
             self.logger.info_msg(__name__, QCoreApplication.translate("TaskManager", "The task '{}' was successfully canceled!".format(self.get_task(task_id).get_name())))
             self.task_canceled.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession",
-                                                 "There is an error in the task server! Message from server: '{}'".format(
-                                                     response_data))
+                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
                 self.logger.warning(__name__, msg)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
                 self.logger.warning(__name__, msg)
             else:
                 self.logger.warning(__name__, "Status code not handled: {}, payload: {}".format(response.status_code, payload))
@@ -206,9 +201,8 @@ class STTaskManager(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
-        response_data = json.loads(response.text)
         if status_OK:
-            # Parse response
+            # No need to parse response this time, we'll ask tasks from server again anyways
             self.logger.success(__name__, "Task id '{}' closed in server!".format(task_id))
             self.logger.success_msg(__name__, QCoreApplication.translate("TaskManager",
                                                                       "The task '{}' was successfully closed!".format(
@@ -216,14 +210,13 @@ class STTaskManager(QObject):
             self.task_closed.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession",
-                                                 "There is an error in the task server! Message from server: '{}'".format(
-                                                     response_data))
+                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
                 self.logger.warning(__name__, msg)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client!")
+                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
                 self.logger.warning(__name__, msg)
             elif response.status_code == 422:
+                response_data = json.loads(response.text)
                 msg = QCoreApplication.translate("STSession", QCoreApplication.translate("TaskManager",
                     "Task not closed! Details: {}").format(response_data['message'] if 'message' in response_data else "Unreadable response from server."))
                 self.logger.warning_msg(__name__, msg)

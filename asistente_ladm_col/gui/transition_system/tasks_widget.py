@@ -22,7 +22,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QSize,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QWidget,
-                                 QListWidgetItem)
+                                 QListWidgetItem,
+                                 QMessageBox)
 
 from asistente_ladm_col.config.enums import STTaskStatusEnum
 from asistente_ladm_col.lib.logger import Logger
@@ -89,8 +90,15 @@ class TasksWidget(QWidget, WIDGET_UI):
     def close_task(self):
         items = self.lvw_tasks.selectedItems()
         if items:
-            task_id = items[0].data(Qt.UserRole)
-            self.session.task_manager.close_task(self._user, task_id)
+            reply = QMessageBox.question(self,
+                                         QCoreApplication.translate("TaskPanelWidget", "Confirm"),
+                                         QCoreApplication.translate("TaskPanelWidget",
+                                                                    "Are you sure you want to close the task '{}'?").format(
+                                             self._task.get_name()),
+                                         QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                task_id = items[0].data(Qt.UserRole)
+                self.session.task_manager.close_task(self._user, task_id)
 
     def add_task_widget_item_to_view(self, task):
         widget_item = loadUi(get_ui_file_path('transition_system/task_widget_item.ui'), QWidget())

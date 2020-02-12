@@ -38,13 +38,12 @@ class STUtils(QObject):
             return False, msg
 
         status_OK = response.status_code == 200
-        response_data = json.loads(response.text)
         if status_OK:
             msg = QCoreApplication.translate("STUtils", "The file was successfully uploaded to the Transition System!")
             self.logger.success(__name__, msg)
         else:
              if response.status_code == 500:
-                msg = QCoreApplication.translate("STUtils", "There is an error in the Transition System server! Message from server: '{}'".format(response_data["message"]))
+                msg = QCoreApplication.translate("STUtils", "There is an error in the Transition System server!")
                 self.logger.warning(__name__, msg)
              elif response.status_code == 401:
                 msg = QCoreApplication.translate("STUtils", "Unauthorized client!")

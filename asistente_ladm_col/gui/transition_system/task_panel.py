@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtGui import QBrush
-from qgis.PyQt.QtWidgets import QTreeWidgetItem
+from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
+                                 QMessageBox)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.enums import STTaskStatusEnum
@@ -180,10 +181,24 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.update_controls()
 
     def cancel_task(self):
-        self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.id())
+        reply = QMessageBox.question(self,
+                                     QCoreApplication.translate("TaskPanelWidget", "Confirm"),
+                                     QCoreApplication.translate("TaskPanelWidget",
+                                                                "Are you sure you want to cancel the task '{}'?").format(
+                                         self._task.get_name()),
+                                     QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.id())
 
     def close_task(self):
-        self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.id())
+        reply = QMessageBox.question(self,
+                                     QCoreApplication.translate("TaskPanelWidget", "Confirm"),
+                                     QCoreApplication.translate("TaskPanelWidget",
+                                                                "Are you sure you want to close the task '{}'?").format(
+                                         self._task.get_name()),
+                                     QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.id())
 
     def update_task(self, task_id):
         """A task changed in the Task Manager, so, update the base task for the panel and update the panel itself"""
