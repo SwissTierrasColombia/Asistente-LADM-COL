@@ -120,7 +120,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
-
+from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
 
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
@@ -146,6 +146,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session = STSession()
         task_steps_config = TaskStepsConfig()
         task_steps_config.set_slot_caller(self)
+        self.encrypter_decrypter = EncrypterDecrypter()
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
@@ -1315,5 +1316,10 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     def open_encrypted_db_connection(self, conn_dict):
-        # TODO decrypt
-        self.conn_manager.get_encrypted_db_connector('pg', conn_dict)
+        print("antes de desencriptar: ", conn_dict)
+        if conn_dict:
+            self.logger.info(__name__, "Parsing/decrypting connection parameters for the task.")
+            for k,v in conn_dict.items():
+                conn_dict[k] = self.encrypter_decrypter.decrypt_with_AES(v)
+            print("después de desencriptar: ", conn_dict)
+            self.conn_manager.get_encrypted_db_connector('pg', conn_dict)
