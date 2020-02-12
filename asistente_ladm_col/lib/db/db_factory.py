@@ -43,7 +43,7 @@ class DbFactory(ABC):
     def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
-    def set_db_configuration_params(self, params, configuration):
+    def set_ili2db_configuration_params(self, params, configuration):
         raise NotImplementedError
 
     def save_parameters_conn(self, dict_conn, db_source):

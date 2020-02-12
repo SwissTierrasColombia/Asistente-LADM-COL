@@ -42,7 +42,7 @@ class PgFactory(DbFactory):
     def get_db_connector(self, parameters=dict()):
         return PGConnector(None, parameters)
 
-    def set_db_configuration_params(self, params, configuration):
+    def set_ili2db_configuration_params(self, params, configuration):
         """
         ili2db parameters
 

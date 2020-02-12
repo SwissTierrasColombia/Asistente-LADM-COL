@@ -81,7 +81,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
-        self._conf_db = ConfigDbSupported()
+        self._dbs_supported = ConfigDbSupported()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
 
         self.setupUi(self)
@@ -236,9 +236,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             importer = iliimporter.Importer()
 
-            item_db = self._conf_db.get_db_items()[self.db.mode]
+            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
-            importer.tool = item_db.get_mbaker_db_ili_mode()
+            importer.tool = db_factory.get_mbaker_db_ili_mode()
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)
@@ -312,10 +312,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.epsg = int(authid[5:])
 
     def update_configuration(self):
-        item_db = self._conf_db.get_db_items()[self.db.mode]
+        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
         configuration = SchemaImportConfiguration()
-        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
+        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR

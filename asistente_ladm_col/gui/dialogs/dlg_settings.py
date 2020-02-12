@@ -57,7 +57,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_source = db_source
 
         self._action_type = None
-        self.conf_db = ConfigDbSupported()
+        self.dbs_supported = ConfigDbSupported()
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -88,7 +88,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.cbo_db_source.clear()
 
-        self._lst_db = self.conf_db.get_db_items()
+        self._lst_db = self.dbs_supported.get_db_factories()
         self._lst_panel = dict()
 
         for key, value in self._lst_db.items():
@@ -311,7 +311,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
-        default_db = self.conf_db.id_default_db
+        default_db = self.dbs_supported.id_default_db
 
         index_db = self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), default_db))
 
