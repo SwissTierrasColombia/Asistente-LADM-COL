@@ -53,9 +53,6 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.clear_task_widget()
         tasks = self._get_user_tasks()
         self.update_task_count_label(len(tasks))
-        # tasks_list = [task.get_name() for k, task in tasks.items()]
-        #tasks_list = [task["name"] for task in tasks]
-        #self.lvw_tasks.setModel(model)
         for k, task in tasks.items():
             self.add_task_widget_item_to_view(task)
 

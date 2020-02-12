@@ -94,7 +94,7 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def show_task_panel(self, task_id):
         """
-        Slot called from the initial panel to show the task panel based on a selected task.
+        Slot called to show the task panel based on a selected task.
 
         :param task_id: Id of the task that will be used to show the task panel.
         """

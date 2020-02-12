@@ -41,7 +41,6 @@ WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.
 
 class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
     trigger_action_emitted = pyqtSignal(str)  # action tag
-    call_parent_update_controls = pyqtSignal(QgsPanelWidget)
 
     def __init__(self, task_id, parent):
         QgsPanelWidget.__init__(self, parent)
@@ -56,7 +55,9 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.trw_task_steps.itemDoubleClicked.connect(self.trigger_action)
         self.trw_task_steps.itemChanged.connect(self.update_step_controls)
-        self.panelAccepted.connect(self.call_parent_update_controls)
+        self.session.task_manager.task_started.connect(self.update_task)
+        self.session.task_manager.task_canceled.connect(self.acceptPanel)
+        self.session.task_manager.task_closed.connect(self.acceptPanel)
 
         self.btn_start_task.clicked.connect(self.start_task)
         self.btn_cancel_task.clicked.connect(self.cancel_task)
@@ -80,6 +81,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.lbl_status.setText(self._task.get_status())
 
     def show_task_steps(self):
+        self.trw_task_steps.clear()
         steps = self._task.get_steps()
         self.logger.debug(__name__, "Showing task steps in Task Panel. {} task steps found: {}.".format(
             len(steps), ", ".join([s.get_name() for s in steps])))
@@ -172,7 +174,6 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def start_task(self):
         self.session.task_manager.start_task(self.session.get_logged_st_user(), self._task.id())
-        self._reload_task()
         self.update_controls()
 
     def cancel_task(self):
@@ -181,5 +182,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
     def close_task(self):
         self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.id())
 
-    def reload_task(self):
-        self._task = self.session.task_manager.get_task(self._task.id())
+    def update_task(self, task_id):
+        """A task changed in the Task Manager, so, update the base task for the panel and update the panel itself"""
+        self._task = self.session.task_manager.get_task(task_id)
+        self.initialize_gui()

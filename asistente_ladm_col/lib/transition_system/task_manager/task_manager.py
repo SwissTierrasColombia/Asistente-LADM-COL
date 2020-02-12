@@ -20,21 +20,29 @@ import requests
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
-                              QObject)
+                              QObject,
+                              pyqtSignal)
 
 from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transition_system.task_manager.task import STTask
+from asistente_ladm_col.utils.decorators import _with_override_cursor
 
 
 class STTaskManager(QObject):
     """
     Retrieve tasks for a user from the Transition System's Task Service and store them during the session.
     """
+    task_started = pyqtSignal(int)  # task_id
+    task_canceled = pyqtSignal(int)  # task_id
+    task_closed = pyqtSignal(int)  # task_id
+
     def __init__(self):
+        QObject.__init__(self)
         self.logger = Logger()
         self.__registered_tasks = dict()
 
+    @_with_override_cursor
     def __retrieve_tasks(self, st_user, task_type=None, task_status=None):
         headers = {
             'Authorization': "Bearer {}".format(st_user.get_token()),
@@ -98,6 +106,11 @@ class STTaskManager(QObject):
         self.logger.debug(__name__, "Task {} registered!".format(task.id()))
         self.__registered_tasks[task.id()] = task
 
+    def __unregister_task(self, task_id):
+        self.logger.debug(__name__, "Task {} unregistered!".format(task.id()))
+        self.__registered_tasks[task_id] = None
+        del self.__registered_tasks[task_id]
+
     def unregister_tasks(self):
         for k,v in self.__registered_tasks.items():
             self.__registered_tasks[k] = None
@@ -105,6 +118,7 @@ class STTaskManager(QObject):
         self.__registered_tasks = dict()
         self.logger.info(__name__, "All tasks have been unregistered!")
 
+    @_with_override_cursor
     def start_task(self, st_user, task_id):
         payload = {}
         headers = {
@@ -124,6 +138,11 @@ class STTaskManager(QObject):
         if status_OK:
             # Parse response
             self.logger.info(__name__, "Task id '{}' started in server!...".format(task_id))
+            self.logger.info_msg(__name__, QCoreApplication.translate("TaskManager",
+                                                                      "The task '{}' was successfully started!".format(
+                                                                          self.get_task(task_id).get_name())))
+            self.update_task_info(task_id, response_data)
+            self.task_started.emit(task_id)
         else:
             if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession",
@@ -136,8 +155,7 @@ class STTaskManager(QObject):
             else:
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
-
-
+    @_with_override_cursor
     def cancel_task(self, st_user, task_id, reason="Está muy difícil esa tarea!"):
         payload = json.dumps({"reason": reason})
         headers = {
@@ -158,6 +176,8 @@ class STTaskManager(QObject):
         if status_OK:
             # Parse response
             self.logger.info(__name__, "Task id '{}' canceled in server!".format(task_id))
+            self.logger.info_msg(__name__, QCoreApplication.translate("TaskManager", "The task '{}' was successfully canceled!".format(self.get_task(task_id).get_name())))
+            self.task_canceled.emit(task_id)
         else:
             if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession",
@@ -170,6 +190,7 @@ class STTaskManager(QObject):
             else:
                 self.logger.warning(__name__, "Status code not handled: {}, payload: {}".format(response.status_code, payload))
 
+    @_with_override_cursor
     def close_task(self, st_user, task_id):
         payload = {}
         headers = {
@@ -188,7 +209,11 @@ class STTaskManager(QObject):
         response_data = json.loads(response.text)
         if status_OK:
             # Parse response
-            self.logger.info(__name__, "Task id '{}' closed in server!".format(task_id))
+            self.logger.success(__name__, "Task id '{}' closed in server!".format(task_id))
+            self.logger.success_msg(__name__, QCoreApplication.translate("TaskManager",
+                                                                      "The task '{}' was successfully closed!".format(
+                                                                          self.get_task(task_id).get_name())))
+            self.task_closed.emit(task_id)
         else:
             if response.status_code == 500:
                 msg = QCoreApplication.translate("STSession",
@@ -206,5 +231,8 @@ class STTaskManager(QObject):
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
     def update_task_info(self, task_id, task_data):
-        pass
+        task = STTask(task_data)
+        if task.is_valid():
+            self.__unregister_task(task_id)
+            self.__register_task(task)
 
