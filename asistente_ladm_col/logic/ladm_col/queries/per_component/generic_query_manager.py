@@ -1,5 +1,6 @@
 from enum import Enum
 
+import processing
 from qgis.core import (QgsFeatureRequest,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
@@ -14,13 +15,14 @@ from asistente_ladm_col.logic.ladm_col.queries.per_component.generic_query_objec
                                                                                            RelateOwnFieldValue,
                                                                                            RelateRemoteFieldValue,
                                                                                            RelateRemoteFieldObject,
+                                                                                           SpatialFilterSubLevel,
+                                                                                           SpatialOperationType,
                                                                                            FilterSubLevel)
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
 LEVEL_TABLE = 'level_table'
 LEVEL_TABLE_NAME = 'level_table_name'
 LEVEL_TABLE_ALIAS = 'level_table_alias'
-LEVEL_SELECT_TABLE_FIELD = 'level_select_table_field'
 FILTER_SUB_LEVEL = 'filter_sub_level'
 TABLE_FIELDS = 'table_fields'
 
@@ -42,6 +44,138 @@ class GenericQueryManager:
         self.names = self._db.names
         self.qgis_utils = qgis_utils
         self.ladm_data = LADM_DATA(self.qgis_utils)
+
+    def _get_structure_physical_query(self):
+
+        op_spatial_source_fields = [
+            DomainOwnField(self.names.COL_SPATIAL_SOURCE_T_TYPE_F, "Tipo de fuente espacial", self.names.COL_SPATIAL_SOURCE_TYPE_D),
+            DomainOwnField(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F, "Estado disponibilidad", self.names.COL_AVAILABILITY_TYPE_D),
+            DomainOwnField(self.names.COL_SOURCE_T_MAIN_TYPE_F, "Tipo principal", self.names.CI_CODE_PRESENTATION_FORM_D),
+            OwnField(self.names.COL_SOURCE_T_DATE_DOCUMENT_F, "Fecha documento"),
+            RelateOwnFieldValue('Archivo fuente', self.names.EXT_ARCHIVE_S, OwnField(self.names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'), self.names.EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F)
+        ]
+
+        query = {
+            LEVEL_TABLE: {
+                LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
+                LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
+                FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]")],
+                '1' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
+                    LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F,
+                                                           self.names.COL_UE_BAUNIT_T,
+                                                           self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    TABLE_FIELDS: [
+                        OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                        OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                        OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                        OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                        OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior")
+                    ],
+                    LEVEL_TABLE: {
+                        LEVEL_TABLE_NAME: self.names.OP_BUILDING_T,
+                        LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_T,
+                        FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F,
+                                                               self.names.COL_UE_BAUNIT_T,
+                                                               self.names.COL_UE_BAUNIT_T_PARCEL_F),
+                        TABLE_FIELDS: [
+                            OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
+                            OwnField(self.names.OP_BUILDING_T_NUMBER_OF_FLOORS_F, "Número de pisos")
+                        ],
+                        '1'+LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_BUILDING_UNIT_T,
+                            LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_UNIT_T,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T,
+                                                                   self.names.OP_BUILDING_UNIT_T_BUILDING_F),
+                            TABLE_FIELDS: [
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F, "Tipo construcción", self.names.OP_BUILDING_TYPE_D),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F, "Tipo unidad de construcción", self.names.OP_BUILDING_UNIT_TYPE_D),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F, "Área privada construida [m2]"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]")
+                            ],
+                            LEVEL_TABLE: {
+                                LEVEL_TABLE_NAME: self.names.OP_SPATIAL_SOURCE_T,
+                                LEVEL_TABLE_ALIAS: self.names.OP_SPATIAL_SOURCE_T,
+                                FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_SOURCE_T_SOURCE_F,
+                                                                       self.names.COL_UE_SOURCE_T,
+                                                                       self.names.COL_UE_SOURCE_T_OP_BUILDING_UNIT_F),
+                                TABLE_FIELDS: op_spatial_source_fields
+                            }
+                        },
+                        '2'+LEVEL_TABLE: {
+                            LEVEL_TABLE_NAME: self.names.OP_SPATIAL_SOURCE_T,
+                            LEVEL_TABLE_ALIAS: self.names.OP_SPATIAL_SOURCE_T,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_SOURCE_T_SOURCE_F,
+                                                                   self.names.COL_UE_SOURCE_T,
+                                                                   self.names.COL_UE_SOURCE_T_OP_BUILDING_F),
+                            TABLE_FIELDS: op_spatial_source_fields
+                        }
+                    }
+                },
+                '2' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_T,
+                    LEVEL_TABLE_ALIAS: "Linderos externos",
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.MORE_BFS_T_OP_BOUNDARY_F,
+                                                           self.names.MORE_BFS_T,
+                                                           self.names.MORE_BFS_T_OP_PLOT_F),
+                    TABLE_FIELDS: [OwnField(self.names.OP_BOUNDARY_T_LENGTH_F, "Longitud [m]")]
+                },
+                '3' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_POINT_T,
+                    LEVEL_TABLE_ALIAS: "Puntos de Lindero externos",
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.MORE_BFS_T_OP_BOUNDARY_F,
+                                                     self.names.MORE_BFS_T,
+                                                     self.names.MORE_BFS_T_OP_PLOT_F,
+                                                     FilterSubLevel(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F,
+                                                                    self.names.POINT_BFS_T,
+                                                                    self.names.POINT_BFS_T_OP_BOUNDARY_F)
+                                                     ),
+                    TABLE_FIELDS: [EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                },
+                '4' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_T,
+                    LEVEL_TABLE_ALIAS: "Linderos internos",
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.LESS_BFS_T_OP_BOUNDARY_F,
+                                                     self.names.LESS_BFS_T,
+                                                     self.names.LESS_BFS_T_OP_PLOT_F),
+                    TABLE_FIELDS: [OwnField(self.names.OP_BOUNDARY_T_LENGTH_F, "Longitud [m]")]
+                },
+                '5' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_BOUNDARY_POINT_T,
+                    LEVEL_TABLE_ALIAS: "Puntos de Lindero internos",
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.LESS_BFS_T_OP_BOUNDARY_F,
+                                                     self.names.LESS_BFS_T,
+                                                     self.names.LESS_BFS_T_OP_PLOT_F,
+                                                     FilterSubLevel(self.names.POINT_BFS_T_OP_BOUNDARY_POINT_F,
+                                                                    self.names.POINT_BFS_T,
+                                                                    self.names.POINT_BFS_T_OP_BOUNDARY_F)
+                                                     ),
+                    TABLE_FIELDS: [
+                        EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                },
+                '6' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_SURVEY_POINT_T,
+                    LEVEL_TABLE_ALIAS: self.names.OP_SURVEY_POINT_T,
+                    FILTER_SUB_LEVEL: SpatialFilterSubLevel(self.names.T_ID_F, self.names.OP_SURVEY_POINT_T, self.names.OP_PLOT_T, SpatialOperationType.INTERSECTS_SPATIAL_OPERATION),
+                    TABLE_FIELDS: [
+                        EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                },
+                '7' + LEVEL_TABLE: {
+                    LEVEL_TABLE_NAME: self.names.OP_SPATIAL_SOURCE_T,
+                    LEVEL_TABLE_ALIAS: self.names.OP_SPATIAL_SOURCE_T,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_SOURCE_T_SOURCE_F,
+                                                     self.names.COL_UE_SOURCE_T,
+                                                     self.names.COL_UE_SOURCE_T_OP_PLOT_F),
+                    TABLE_FIELDS: op_spatial_source_fields
+                }
+            }
+        }
+
+        return query
 
     def _get_structure_legal_query(self):
         op_party_contact_fields = [
@@ -94,13 +228,11 @@ class GenericQueryManager:
             LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
                 LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
-                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                 FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
                 TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]")],
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
                     LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
-                    LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                      self.names.COL_UE_BAUNIT_T,
                                                      self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
@@ -114,7 +246,6 @@ class GenericQueryManager:
                     '1'+LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_RIGHT_T,
                         LEVEL_TABLE_ALIAS: self.names.OP_RIGHT_T,
-                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                         FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_RIGHT_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
                         TABLE_FIELDS: [
                             DomainOwnField(self.names.OP_RIGHT_T_TYPE_F, "Tipo de derecho", self.names.OP_RIGHT_TYPE_D),
@@ -123,7 +254,6 @@ class GenericQueryManager:
                         '1' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_ADMINISTRATIVE_SOURCE_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
                                                              self.names.COL_RRR_SOURCE_T,
                                                              self.names.COL_RRR_SOURCE_T_OP_RIGHT_F),
@@ -132,7 +262,6 @@ class GenericQueryManager:
                         '2' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
                                                              self.names.OP_RIGHT_T,
                                                              self.names.T_ID_F),
@@ -141,7 +270,6 @@ class GenericQueryManager:
                         '3' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_GROUP_PARTY_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
                                                              self.names.OP_RIGHT_T,
                                                              self.names.T_ID_F),
@@ -149,7 +277,6 @@ class GenericQueryManager:
                             LEVEL_TABLE: {
                                 LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
                                 LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
-                                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                                 FILTER_SUB_LEVEL: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
                                                                  self.names.MEMBERS_T,
                                                                  self.names.MEMBERS_T_GROUP_PARTY_F),
@@ -160,7 +287,6 @@ class GenericQueryManager:
                     '2'+LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_RESTRICTION_T,
                         LEVEL_TABLE_ALIAS: self.names.OP_RESTRICTION_T,
-                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                         FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_RESTRICTION_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
                         TABLE_FIELDS: [
                             DomainOwnField(self.names.OP_RESTRICTION_T_TYPE_F, "Tipo de restricción", self.names.OP_RESTRICTION_TYPE_D),
@@ -169,7 +295,6 @@ class GenericQueryManager:
                         '1' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_ADMINISTRATIVE_SOURCE_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
                                                              self.names.COL_RRR_SOURCE_T,
                                                              self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F),
@@ -178,7 +303,6 @@ class GenericQueryManager:
                         '2' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
                                                              self.names.OP_RESTRICTION_T,
                                                              self.names.T_ID_F),
@@ -187,7 +311,6 @@ class GenericQueryManager:
                         '3' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_GROUP_PARTY_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
                                                              self.names.OP_RESTRICTION_T,
                                                              self.names.T_ID_F),
@@ -195,7 +318,6 @@ class GenericQueryManager:
                             LEVEL_TABLE: {
                                 LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
                                 LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
-                                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                                 FILTER_SUB_LEVEL: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
                                                                  self.names.MEMBERS_T,
                                                                  self.names.MEMBERS_T_GROUP_PARTY_F),
@@ -244,14 +366,12 @@ class GenericQueryManager:
             LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
                 LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
-                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                 FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
                 TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]"),
                                RelateOwnFieldObject(self.names.EXT_ADDRESS_S, self.names.EXT_ADDRESS_S, required_address_fields, self.names.EXT_ADDRESS_S_OP_PLOT_F)],
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
                     LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
-                    LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                     FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
                     TABLE_FIELDS: [
                         OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
@@ -266,7 +386,6 @@ class GenericQueryManager:
                     LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_BUILDING_T,
                         LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_T,
-                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                         FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_PARCEL_F),
                         TABLE_FIELDS: [
                             OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
@@ -275,7 +394,6 @@ class GenericQueryManager:
                         LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_BUILDING_UNIT_T,
                             LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_UNIT_T,
-                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
                             FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T, self.names.OP_BUILDING_UNIT_T_BUILDING_F),
                             TABLE_FIELDS: [
                                 OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
@@ -299,45 +417,46 @@ class GenericQueryManager:
 
         return query
 
-    def execute_generic_query(self, enum_generic_query, filter_field_value):
+    def execute_generic_query(self, enum_generic_query, filter_field_values):
         response = dict()
         query = dict()
 
         if GenericQueryType.IGAC_BASIC_QUERY == enum_generic_query:
             query = self._get_structure_basic_query()
         elif GenericQueryType.IGAC_PHYSICAL_QUERY == enum_generic_query:
-            pass
+            query = self._get_structure_physical_query()
         elif GenericQueryType.IGAC_LEGAL_QUERY == enum_generic_query:
             query = self._get_structure_legal_query()
         elif GenericQueryType.IGAC_ECONOMIC_QUERY == enum_generic_query:
             pass
 
-        self.execute_query(response, query[LEVEL_TABLE], filter_field_value)
+        self.execute_query(response, query[LEVEL_TABLE], filter_field_values)
         return response
 
-    def execute_legal_query(self, filter_field_value):
-        return self.execute_generic_query(GenericQueryType.IGAC_LEGAL_QUERY, filter_field_value)
+    def execute_physical_query(self, filter_field_values):
+        return self.execute_generic_query(GenericQueryType.IGAC_PHYSICAL_QUERY, filter_field_values)
 
-    def execute_basic_query(self, filter_field_value):
-        return self.execute_generic_query(GenericQueryType.IGAC_BASIC_QUERY, filter_field_value)
+    def execute_legal_query(self, filter_field_values):
+        return self.execute_generic_query(GenericQueryType.IGAC_LEGAL_QUERY, filter_field_values)
 
-    def execute_query(self, response, level_dict, filter_field_value):
+    def execute_basic_query(self, filter_field_values):
+        return self.execute_generic_query(GenericQueryType.IGAC_BASIC_QUERY, filter_field_values)
+
+    def execute_query(self, response, level_dict, filter_field_values):
         table_name = level_dict[LEVEL_TABLE_NAME]
         level_alias = level_dict[LEVEL_TABLE_ALIAS]
-        select_table_field = level_dict[LEVEL_SELECT_TABLE_FIELD]
         layer = self.qgis_utils.get_layer(self._db, table_name, None, True)
-        filter_sub_level =  level_dict[FILTER_SUB_LEVEL]
-        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_value)
+        filter_sub_level = level_dict[FILTER_SUB_LEVEL]
+        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_values)
 
         response[level_alias] = list()
-
         dict_fields_and_alias = dict()
         for required_table_field in level_dict[TABLE_FIELDS]:
             if isinstance(required_table_field, OwnField):
                 dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
 
         fields_names = list(dict_fields_and_alias.keys())
-        select_features = self.get_features(layer, select_table_field, fields_names, t_id_features)
+        select_features = self.get_features(layer, self.names.T_ID_F, fields_names, t_id_features)
 
         for select_feature in select_features:
             node_response = dict()
@@ -356,29 +475,29 @@ class GenericQueryManager:
                     node_fields_response[field.field_alias] = self.get_eval_expr_value(layer, select_feature, field.expression)
                 elif isinstance(field, AbsRelateFields):
                     if isinstance(field, RelateRemoteFieldObject):
-                        node_fields_response[field.field_alias] = self.get_relate_remote_field_object(field, [str(select_feature[self.names.T_ID_F])])
+                        node_fields_response[field.field_alias] = self.get_relate_remote_field_object(field, [select_feature[self.names.T_ID_F]])
                     elif isinstance(field, RelateRemoteFieldValue):
-                        node_fields_response[field.field_alias] = self.get_relate_remote_field_value(field, [str(select_feature[self.names.T_ID_F])])
+                        node_fields_response[field.field_alias] = self.get_relate_remote_field_value(field, [select_feature[self.names.T_ID_F]])
                     elif isinstance(field, RelateOwnFieldObject):
-                        node_fields_response[field.field_alias] = self.get_relate_own_field_object(field, [str(select_feature[self.names.T_ID_F])])
+                        node_fields_response[field.field_alias] = self.get_relate_own_field_object(field, [select_feature[self.names.T_ID_F]])
                     elif isinstance(field, RelateOwnFieldValue):
-                        node_fields_response[field.field_alias] = self.get_relate_own_field_value(field, [str(select_feature[self.names.T_ID_F])])
+                        node_fields_response[field.field_alias] = self.get_relate_own_field_value(field, [select_feature[self.names.T_ID_F]])
 
             for dict_key in level_dict:
                 if dict_key.endswith(LEVEL_TABLE):
-                    self.execute_query(node_fields_response, level_dict[dict_key], [str(select_feature[self.names.T_ID_F])])
+                    self.execute_query(node_fields_response, level_dict[dict_key], [select_feature[self.names.T_ID_F]])
 
             node_response[ATTRIBUTES_RESPONSE] = node_fields_response
             response[level_alias].append(node_response)
 
-    def get_relate_remote_field_object(self, field, filter_field_value):
+    def get_relate_remote_field_object(self, field, filter_field_values):
         filter_sub_level = field.filter_sub_level
-        t_id_features = self.get_relate_own_field_object(filter_sub_level, filter_field_value)
+        t_id_features = self.get_relate_own_field_object(filter_sub_level, filter_field_values)
         return self.get_relate_own_field_value(field, t_id_features)
 
-    def get_relate_remote_field_value(self, field, filter_field_value):
+    def get_relate_remote_field_value(self, field, filter_field_values):
         filter_sub_level = field.filter_sub_level
-        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_value)
+        t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_values)
         return self.get_relate_own_field_value(field, t_id_features)
 
     def get_relate_own_field_object(self, field, filter_field_values):
@@ -453,31 +572,62 @@ class GenericQueryManager:
                 dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
         return dict_fields_and_alias
 
-    @staticmethod
-    def get_features_ids(layer, requered_field, filter_field, filter_field_value):
-        expression = QgsExpression("{} in ({}) and {} is not null".format(filter_field, ', '.join(filter_field_value), requered_field))
-        request = QgsFeatureRequest(expression)
-        field_idx = layer.fields().indexFromName(requered_field)
-        request.setFlags(QgsFeatureRequest.NoGeometry)
-        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-        features_ids = [str(feature[requered_field]) for feature in layer.getFeatures(request)]
-        return features_ids
-
-    def get_features_ids_sub_level(self, filter_sub_level, filter_field_value):
-        filter_field = filter_sub_level.filter_field_in_sub_level_table
+    def get_features_ids_by_filter(self, filter_sub_level, filter_field_values):  # filter_field_values it is a list with only one item
         sub_level_table = filter_sub_level.sub_level_table
         required_field = filter_sub_level.required_field_sub_level_table
         sub_level_layer = self.qgis_utils.get_layer(self._db, sub_level_table, None, True)
-        t_id_features = self.get_features_ids(sub_level_layer, required_field, filter_field, filter_field_value)
-        return t_id_features
 
-    def get_features(self, layer, filter_field, fields_names, t_id_features):
+        if isinstance(filter_sub_level, FilterSubLevel):
+            filter_field = filter_sub_level.filter_field_in_sub_level_table
+            expression = QgsExpression("{} in ({}) and {} is not null".format(filter_field, ', '.join(str(filter_field_value) for filter_field_value in filter_field_values), required_field))
+            request = QgsFeatureRequest(expression)
+            field_idx = sub_level_layer.fields().indexFromName(required_field)
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+            request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
+            features_ids = [feature[required_field] for feature in sub_level_layer.getFeatures(request)]
+            return features_ids
+
+        elif isinstance(filter_sub_level, SpatialFilterSubLevel):
+            level_table = filter_sub_level.level_table
+            spatial_operation = filter_sub_level.spatial_operation
+            level_layer = self.qgis_utils.get_layer(self._db, level_table, None, True)
+            filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': self.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+            parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'}
+            if spatial_operation == SpatialOperationType.INTERSECTS_SPATIAL_OPERATION:
+                parameters['PREDICATE'] = [0]  # Intersects
+            elif spatial_operation == SpatialOperationType.OVERLAPS_SPATIAL_OPERATION:
+                parameters['PREDICATE'] = [5]  # Overlaps
+            elif spatial_operation == SpatialOperationType.CONTAINS_SPATIAL_OPERATION:
+                parameters['PREDICATE'] = [1]  # Contains
+
+            filter_sub_level_layer = processing.run("native:extractbylocation", parameters)['OUTPUT']
+
+            features_ids = [feature[required_field] for feature in filter_sub_level_layer.getFeatures()]
+            return features_ids
+
+    def get_features_ids_sub_level(self, filter_sub_level, filter_field_values):
+        t_id_features = list()
+        for filter_field_value in filter_field_values:
+            t_id_features.extend(self.get_features_ids_by_filter(filter_sub_level, [filter_field_value]))
+
+        sub_filter_sub_level = filter_sub_level.filter_sub_level  # Recursivity to get features t_ids associate to the first filter
+        if sub_filter_sub_level:
+             return self.get_features_ids_sub_level(sub_filter_sub_level, t_id_features)
+        else:
+            return t_id_features
+
+    @staticmethod
+    def get_features(layer, filter_field, fields_names, t_id_features):
+        if not t_id_features:
+            return list()
+
         fields_idx = list()
         for field in fields_names:
             field_idx = layer.fields().indexFromName(field)
             fields_idx.append(field_idx)
 
-        expression = QgsExpression('{} in ({})'.format(filter_field, ', '.join(t_id_features)))
+        expression = QgsExpression('{} in ({})'.format(filter_field, ', '.join( str(t_id_feature) for t_id_feature in t_id_features)))
         request = QgsFeatureRequest(expression)
 
         request.setFlags(QgsFeatureRequest.NoGeometry)
