@@ -1,3 +1,5 @@
+from enum import Enum
+
 from qgis.core import (QgsFeatureRequest,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
@@ -18,12 +20,19 @@ from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 LEVEL_TABLE = 'level_table'
 LEVEL_TABLE_NAME = 'level_table_name'
 LEVEL_TABLE_ALIAS = 'level_table_alias'
-FILTER_SUB_LEVEL_TABLE = 'filter_items_table'
-ATTRIBUTES_TABLE = 'attributes_table'
-TABLE_FIELDS = 'direct_table_fields'
+LEVEL_SELECT_TABLE_FIELD = 'level_select_table_field'
+FILTER_SUB_LEVEL = 'filter_sub_level'
+TABLE_FIELDS = 'table_fields'
 
 ATTRIBUTES_RESPONSE = "attributes"
 ID_FEATURE_RESPONSE = "id"
+
+
+class GenericQueryType(Enum):
+    IGAC_BASIC_QUERY = 1
+    IGAC_PHYSICAL_QUERY = 2
+    IGAC_LEGAL_QUERY = 3
+    IGAC_ECONOMIC_QUERY = 4
 
 
 class GenericQueryManager:
@@ -84,126 +93,114 @@ class GenericQueryManager:
         query = {
             LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
-                LEVEL_TABLE_ALIAS: "Terrenos",
-                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
-                ATTRIBUTES_TABLE: {
-                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]")]
-                },
+                LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
+                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]")],
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
-                    LEVEL_TABLE_ALIAS: "Predio",
-                    FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F,
-                                                           self.names.COL_UE_BAUNIT_T,
-                                                           self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
-                    ATTRIBUTES_TABLE: {
-                        TABLE_FIELDS: [
-                            OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
-                            OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
-                            OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
-                            OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
-                            OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior")
-                        ]
-                    },
+                    LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
+                    LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F,
+                                                     self.names.COL_UE_BAUNIT_T,
+                                                     self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    TABLE_FIELDS: [
+                        OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                        OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                        OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                        OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                        OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior")
+                    ],
                     '1'+LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_RIGHT_T,
-                        LEVEL_TABLE_ALIAS: "Derechos",
-                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_RIGHT_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
-                        ATTRIBUTES_TABLE: {
-                            TABLE_FIELDS: [
-                                DomainOwnField(self.names.OP_RIGHT_T_TYPE_F, "Tipo de derecho", self.names.OP_RIGHT_TYPE_D),
-                                OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
-                            ]
-                        },
+                        LEVEL_TABLE_ALIAS: self.names.OP_RIGHT_T,
+                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                        FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_RIGHT_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
+                        TABLE_FIELDS: [
+                            DomainOwnField(self.names.OP_RIGHT_T_TYPE_F, "Tipo de derecho", self.names.OP_RIGHT_TYPE_D),
+                            OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
+                        ],
                         '1' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
-                            LEVEL_TABLE_ALIAS: "Fuentes Administrativas",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
-                                                                   self.names.COL_RRR_SOURCE_T,
-                                                                   self.names.COL_RRR_SOURCE_T_OP_RIGHT_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_administrative_source_fields
-                            }
+                            LEVEL_TABLE_ALIAS: self.names.OP_ADMINISTRATIVE_SOURCE_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
+                                                             self.names.COL_RRR_SOURCE_T,
+                                                             self.names.COL_RRR_SOURCE_T_OP_RIGHT_F),
+                            TABLE_FIELDS: op_administrative_source_fields
                         },
                         '2' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
-                            LEVEL_TABLE_ALIAS: "Interesados",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
-                                                                   self.names.OP_RIGHT_T,
-                                                                   self.names.T_ID_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_party_fields
-                            }
+                            LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
+                                                             self.names.OP_RIGHT_T,
+                                                             self.names.T_ID_F),
+                            TABLE_FIELDS: op_party_fields
                         },
                         '3' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
-                            LEVEL_TABLE_ALIAS: "Agrupación de interesados",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
-                                                                   self.names.OP_RIGHT_T,
-                                                                   self.names.T_ID_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_group_party_fields
-                            },
+                            LEVEL_TABLE_ALIAS: self.names.OP_GROUP_PARTY_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                                                             self.names.OP_RIGHT_T,
+                                                             self.names.T_ID_F),
+                            TABLE_FIELDS: op_group_party_fields,
                             LEVEL_TABLE: {
                                 LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
-                                LEVEL_TABLE_ALIAS: "Interesados",
-                                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
-                                                                       self.names.MEMBERS_T,
-                                                                       self.names.MEMBERS_T_GROUP_PARTY_F),
-                                ATTRIBUTES_TABLE: {
-                                    TABLE_FIELDS: op_group_party_party_fields
-                                }
+                                LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
+                                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                                FILTER_SUB_LEVEL: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
+                                                                 self.names.MEMBERS_T,
+                                                                 self.names.MEMBERS_T_GROUP_PARTY_F),
+                                TABLE_FIELDS: op_group_party_party_fields
                             },
                         }
                     },
                     '2'+LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_RESTRICTION_T,
-                        LEVEL_TABLE_ALIAS: "Restricciones",
-                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_RESTRICTION_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
-                        ATTRIBUTES_TABLE: {
-                            TABLE_FIELDS: [
-                                DomainOwnField(self.names.OP_RESTRICTION_T_TYPE_F, "Tipo de restricción", self.names.OP_RESTRICTION_TYPE_D),
-                                OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
-                            ]
-                        },
+                        LEVEL_TABLE_ALIAS: self.names.OP_RESTRICTION_T,
+                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                        FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_RESTRICTION_T, self.names.COL_BAUNIT_RRR_T_UNIT_F),
+                        TABLE_FIELDS: [
+                            DomainOwnField(self.names.OP_RESTRICTION_T_TYPE_F, "Tipo de restricción", self.names.OP_RESTRICTION_TYPE_D),
+                            OwnField(self.names.COL_RRR_T_DESCRIPTION_F, "Descripción")
+                        ],
                         '1' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T,
-                            LEVEL_TABLE_ALIAS: "Fuentes Administrativas",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
-                                                                   self.names.COL_RRR_SOURCE_T,
-                                                                   self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_administrative_source_fields
-                            }
+                            LEVEL_TABLE_ALIAS: self.names.OP_ADMINISTRATIVE_SOURCE_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_SOURCE_T_SOURCE_F,
+                                                             self.names.COL_RRR_SOURCE_T,
+                                                             self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F),
+                            TABLE_FIELDS: op_administrative_source_fields
                         },
                         '2' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
-                            LEVEL_TABLE_ALIAS: "Interesados",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
-                                                                   self.names.OP_RESTRICTION_T,
-                                                                   self.names.T_ID_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_party_fields
-                            }
+                            LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_PARTY_F,
+                                                             self.names.OP_RESTRICTION_T,
+                                                             self.names.T_ID_F),
+                            TABLE_FIELDS: op_party_fields
                         },
                         '3' + LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_GROUP_PARTY_T,
-                            LEVEL_TABLE_ALIAS: "Agrupación de interesados",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
-                                                                   self.names.OP_RESTRICTION_T,
-                                                                   self.names.T_ID_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: op_group_party_fields
-                            },
+                            LEVEL_TABLE_ALIAS: self.names.OP_GROUP_PARTY_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
+                                                             self.names.OP_RESTRICTION_T,
+                                                             self.names.T_ID_F),
+                            TABLE_FIELDS: op_group_party_fields,
                             LEVEL_TABLE: {
                                 LEVEL_TABLE_NAME: self.names.OP_PARTY_T,
-                                LEVEL_TABLE_ALIAS: "Interesados",
-                                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
-                                                                       self.names.MEMBERS_T,
-                                                                       self.names.MEMBERS_T_GROUP_PARTY_F),
-                                ATTRIBUTES_TABLE: {
-                                    TABLE_FIELDS: op_group_party_party_fields
-                                }
-                            },
+                                LEVEL_TABLE_ALIAS: self.names.OP_PARTY_T,
+                                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                                FILTER_SUB_LEVEL: FilterSubLevel(self.names.MEMBERS_T_PARTY_F,
+                                                                 self.names.MEMBERS_T,
+                                                                 self.names.MEMBERS_T_GROUP_PARTY_F),
+                                TABLE_FIELDS: op_group_party_party_fields
+                            }
                         }
                     }
                 }
@@ -246,67 +243,54 @@ class GenericQueryManager:
         query = {
             LEVEL_TABLE: {
                 LEVEL_TABLE_NAME: self.names.OP_PLOT_T,
-                LEVEL_TABLE_ALIAS: "Terrenos",
-                FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
-                ATTRIBUTES_TABLE: {
-                    TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área de terreno [m2]"),
-                                   RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
-                                                        self.names.EXT_ADDRESS_S,
-                                                        required_address_fields,
-                                                        self.names.EXT_ADDRESS_S_OP_PLOT_F)]
-                },
+                LEVEL_TABLE_ALIAS: self.names.OP_PLOT_T,
+                LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_PLOT_T, self.names.T_ID_F),
+                TABLE_FIELDS: [OwnField(self.names.OP_PLOT_T_PLOT_AREA_F, "Área terreno [m2]"),
+                               RelateOwnFieldObject(self.names.EXT_ADDRESS_S, self.names.EXT_ADDRESS_S, required_address_fields, self.names.EXT_ADDRESS_S_OP_PLOT_F)],
                 LEVEL_TABLE: {
                     LEVEL_TABLE_NAME: self.names.OP_PARCEL_T,
-                    LEVEL_TABLE_ALIAS: "Predio",
-                    FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
-                    ATTRIBUTES_TABLE: {
-                        TABLE_FIELDS: [
-                            OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
-                            OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
-                            OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
-                            OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
-                            OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
-                            OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
-                            OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
-                            DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
-                        ]
-                    },
+                    LEVEL_TABLE_ALIAS: self.names.OP_PARCEL_T,
+                    LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                    FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_PARCEL_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_OP_PLOT_F),
+                    TABLE_FIELDS: [
+                        OwnField(self.names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                        OwnField(self.names.OP_PARCEL_T_DEPARTMENT_F, "Departamento"),
+                        OwnField(self.names.OP_PARCEL_T_MUNICIPALITY_F, "Municipio"),
+                        OwnField(self.names.OP_PARCEL_T_NUPRE_F, "NUPRE"),
+                        OwnField(self.names.OP_PARCEL_T_FMI_F, "FMI"),
+                        OwnField(self.names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
+                        OwnField(self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
+                        DomainOwnField(self.names.OP_PARCEL_T_TYPE_F, "Tipo", self.names.OP_PARCEL_TYPE_D)
+                    ],
                     LEVEL_TABLE: {
                         LEVEL_TABLE_NAME: self.names.OP_BUILDING_T,
-                        LEVEL_TABLE_ALIAS: "Construcciones",
-                        FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_PARCEL_F),
-                        ATTRIBUTES_TABLE: {
-                            TABLE_FIELDS: [
-                                OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
-                                RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
-                                                     self.names.EXT_ADDRESS_S,
-                                                     required_address_fields,
-                                                     self.names.EXT_ADDRESS_S_OP_BUILDING_F)
-                            ]
-                        },
+                        LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_T,
+                        LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                        FILTER_SUB_LEVEL: FilterSubLevel(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, self.names.COL_UE_BAUNIT_T, self.names.COL_UE_BAUNIT_T_PARCEL_F),
+                        TABLE_FIELDS: [
+                            OwnField(self.names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
+                            RelateOwnFieldObject(self.names.EXT_ADDRESS_S, self.names.EXT_ADDRESS_S, required_address_fields, self.names.EXT_ADDRESS_S_OP_BUILDING_F)
+                        ],
                         LEVEL_TABLE: {
                             LEVEL_TABLE_NAME: self.names.OP_BUILDING_UNIT_T,
-                            LEVEL_TABLE_ALIAS: "Unidades de construcción",
-                            FILTER_SUB_LEVEL_TABLE: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T, self.names.OP_BUILDING_UNIT_T_BUILDING_F),
-                            ATTRIBUTES_TABLE: {
-                                TABLE_FIELDS: [
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F, "Número de habitaciones"),
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F, "Número de baños"),
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F, "Número de locales"),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F, "Tipo construcción", self.names.OP_BUILDING_TYPE_D),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F, "Tipo unidad de construcción", self.names.OP_BUILDING_UNIT_TYPE_D),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F, "Tipo de planta", self.names.OP_BUILDING_FLOOR_TYPE_D),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F, "Tipo dominio", self.names.OP_DOMAIN_BUILDING_TYPE_D),
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
-                                    OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
-                                    DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
-                                    RelateOwnFieldObject(self.names.EXT_ADDRESS_S,
-                                                         self.names.EXT_ADDRESS_S,
-                                                         required_address_fields,
-                                                         self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
-                                ]
-                            }
+                            LEVEL_TABLE_ALIAS: self.names.OP_BUILDING_UNIT_T,
+                            LEVEL_SELECT_TABLE_FIELD: self.names.T_ID_F,
+                            FILTER_SUB_LEVEL: FilterSubLevel(self.names.T_ID_F, self.names.OP_BUILDING_UNIT_T, self.names.OP_BUILDING_UNIT_T_BUILDING_F),
+                            TABLE_FIELDS: [
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F, "Número de pisos"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F, "Número de habitaciones"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F, "Número de baños"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F, "Número de locales"),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F, "Tipo construcción", self.names.OP_BUILDING_TYPE_D),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F, "Tipo unidad de construcción", self.names.OP_BUILDING_UNIT_TYPE_D),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F, "Tipo de planta", self.names.OP_BUILDING_FLOOR_TYPE_D),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F, "Tipo dominio", self.names.OP_DOMAIN_BUILDING_TYPE_D),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_FLOOR_F, "Ubicación en el piso"),
+                                OwnField(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F, "Área construida [m2]"),
+                                DomainOwnField(self.names.OP_BUILDING_UNIT_T_USE_F, "Uso", self.names.OP_BUILDING_UNIT_USE_D),
+                                RelateOwnFieldObject(self.names.EXT_ADDRESS_S, self.names.EXT_ADDRESS_S, required_address_fields, self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
+                            ]
                         }
                     }
                 }
@@ -315,40 +299,52 @@ class GenericQueryManager:
 
         return query
 
-    def execute_legal_query(self, filter_field_value):
+    def execute_generic_query(self, enum_generic_query, filter_field_value):
         response = dict()
-        query = self._get_structure_legal_query()
+        query = dict()
+
+        if GenericQueryType.IGAC_BASIC_QUERY == enum_generic_query:
+            query = self._get_structure_basic_query()
+        elif GenericQueryType.IGAC_PHYSICAL_QUERY == enum_generic_query:
+            pass
+        elif GenericQueryType.IGAC_LEGAL_QUERY == enum_generic_query:
+            query = self._get_structure_legal_query()
+        elif GenericQueryType.IGAC_ECONOMIC_QUERY == enum_generic_query:
+            pass
+
         self.execute_query(response, query[LEVEL_TABLE], filter_field_value)
         return response
 
+    def execute_legal_query(self, filter_field_value):
+        return self.execute_generic_query(GenericQueryType.IGAC_LEGAL_QUERY, filter_field_value)
+
     def execute_basic_query(self, filter_field_value):
-        response = dict()
-        query = self._get_structure_basic_query()
-        self.execute_query(response, query[LEVEL_TABLE], filter_field_value)
-        return response
+        return self.execute_generic_query(GenericQueryType.IGAC_BASIC_QUERY, filter_field_value)
 
     def execute_query(self, response, level_dict, filter_field_value):
         table_name = level_dict[LEVEL_TABLE_NAME]
+        level_alias = level_dict[LEVEL_TABLE_ALIAS]
+        select_table_field = level_dict[LEVEL_SELECT_TABLE_FIELD]
         layer = self.qgis_utils.get_layer(self._db, table_name, None, True)
-        filter_sub_level =  level_dict[FILTER_SUB_LEVEL_TABLE]
+        filter_sub_level =  level_dict[FILTER_SUB_LEVEL]
         t_id_features = self.get_features_ids_sub_level(filter_sub_level, filter_field_value)
 
-        response[table_name] = list()
+        response[level_alias] = list()
 
         dict_fields_and_alias = dict()
-        for required_table_field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
+        for required_table_field in level_dict[TABLE_FIELDS]:
             if isinstance(required_table_field, OwnField):
                 dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
 
         fields_names = list(dict_fields_and_alias.keys())
-        select_features = self.get_features(layer, self.names.T_ID_F, fields_names, t_id_features)
+        select_features = self.get_features(layer, select_table_field, fields_names, t_id_features)
 
         for select_feature in select_features:
             node_response = dict()
             node_response[ID_FEATURE_RESPONSE] = select_feature[self.names.T_ID_F]
 
             node_fields_response = dict()
-            for field in level_dict[ATTRIBUTES_TABLE][TABLE_FIELDS]:
+            for field in level_dict[TABLE_FIELDS]:
                 if isinstance(field, DomainOwnField):
                     domain_table = field.domain_table
                     domain_code = select_feature[field.field_name]
@@ -373,7 +369,7 @@ class GenericQueryManager:
                     self.execute_query(node_fields_response, level_dict[dict_key], [str(select_feature[self.names.T_ID_F])])
 
             node_response[ATTRIBUTES_RESPONSE] = node_fields_response
-            response[table_name].append(node_response)
+            response[level_alias].append(node_response)
 
     def get_relate_remote_field_object(self, field, filter_field_value):
         filter_sub_level = field.filter_sub_level

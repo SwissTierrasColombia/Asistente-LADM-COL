@@ -77,7 +77,7 @@ class TableAndFieldNames:
     #
     # "LADM_COL_V1_2.LADM_Nucleo.CI_CodigoTarea"
     # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto"
-    # "LADM_COL_V1_2.LADM_Nucleo.CI_Forma_Presentacion_Codigo"
+    CI_CODE_PRESENTATION_FORM_D = None  # "LADM_COL_V1_2.LADM_Nucleo.CI_Forma_Presentacion_Codigo"
     # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable"
     #
     # "LADM_COL_V1_2.LADM_Nucleo.col_clFuente"
@@ -756,6 +756,7 @@ class TableAndFieldNames:
         "Datos_SNR.SNR_FuenteTipo": {VARIABLE_NAME: "SNR_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "Datos_SNR.SNR_PersonaTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_EstadoDisponibilidadTipo": {VARIABLE_NAME: "COL_AVAILABILITY_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.CI_Forma_Presentacion_Codigo": {VARIABLE_NAME: "CI_CODE_PRESENTATION_FORM_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativaTipo": {VARIABLE_NAME: "COL_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
