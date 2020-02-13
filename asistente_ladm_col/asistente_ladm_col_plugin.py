@@ -1322,14 +1322,19 @@ class AsistenteLADMCOLPlugin(QObject):
                 db = self.conn_manager.get_encrypted_db_connector(db_engine, conn_dict)
 
             res, code, msg = db.test_connection(user_level=user_level)
-            self.logger.info_msg(__name__, "{} Models: {}".format(msg, db.get_models()))
+            if res:
+                self.logger.success_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "{} Models: {}".format(msg, db.get_models())))
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "The connection could not be established! Details: {}".format(msg)))
 
             return db if res else None
 
         return None
 
-    def task_step_explore_data_cadastre_registry(self, db_engine, conn_dict):
-        db = self.open_encrypted_db_connection(db_engine, conn_dict)
+    def task_step_explore_data_cadastre_registry(self, db_engine, conn_dict, user_level):
+        db = self.open_encrypted_db_connection(db_engine, conn_dict, user_level)
         if db:
             layers = {
                 db.names.INI_PARCEL_SUPPLIES_T: {'name': db.names.INI_PARCEL_SUPPLIES_T, 'geometry': None, 'layer': None},
@@ -1337,5 +1342,3 @@ class AsistenteLADMCOLPlugin(QObject):
                 db.names.SNR_PARCEL_REGISTRY_T: {'name': db.names.SNR_PARCEL_REGISTRY_T, 'geometry': None, 'layer': None},
             }
             self.qgis_utils.get_layers(db, layers, load=True)
-        else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "The remote DB connection could not be established."))

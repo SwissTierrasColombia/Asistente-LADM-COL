@@ -87,7 +87,8 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                     STEP_CUSTOM_ACTION_SLOT: {
                         SLOT_NAME: self._slot_caller.task_step_explore_data_cadastre_registry,
                         SLOT_PARAMS: {'db_engine': 'pg',
-                                      'conn_dict': task_data['connection'] if 'connection' in task_data else {}}
+                                      'conn_dict': task_data['connection'] if 'connection' in task_data else {},
+                                      'user_level': EnumUserLevel.CONNECT}
                     },
                     },
                 3: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Start assisted integration"),
