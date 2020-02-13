@@ -22,6 +22,11 @@ class EnumTestLevel(IntFlag):
     SCHEMA_IMPORT = 128
 
 
+class EnumUserLevel(IntFlag):
+    CREATE = 1
+    CONNECT = 2
+
+
 class EnumTestConnectionMsg(IntFlag):
     CONNECTION_TO_SERVER_FAILED = 0
     CONNECTION_COULD_NOT_BE_OPEN = 1

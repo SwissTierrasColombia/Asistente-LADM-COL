@@ -21,7 +21,6 @@ from PyQt5.QtCore import QProcess
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.utils.java_utils import JavaUtils
-from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 
 class EncrypterDecrypter():
     """Adapted from: https://github.com/opengisch/QgisModelBaker/blob/master/QgisModelBaker/libili2db/iliexporter.py#L65 """
@@ -35,15 +34,18 @@ class EncrypterDecrypter():
         java_home_set = self.java_utils.set_java_home()
         if not java_home_set:
             self.java_utils.get_java_on_demand()
+
         java_path = self.java_utils.get_full_java_exe_path()
         args = ["-jar", os.path.join(PLUGIN_DIR, 'lib/crypto_utils/CryptoUtils.jar')]
         args += [mode, self._secret_key, self._salt, value]
+
         proc = QProcess()
         proc.setProcessChannelMode(QProcess.MergedChannels)
         proc.start(java_path, args)
         proc.waitForReadyRead()
         output = bytearray(proc.readAllStandardOutput())
         output = output.decode("ascii")
+
         return output.strip()   
 
     def encrypt_with_AES(self, value):

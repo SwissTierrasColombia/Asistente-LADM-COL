@@ -69,7 +69,8 @@ class TasksWidget(QWidget, WIDGET_UI):
         if enable:
             # Enable Close Task button?
             task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
-            enable = task.get_status() == STTaskStatusEnum.STARTED.value and task.steps_complete()
+            if task:
+                enable = task.get_status() == STTaskStatusEnum.STARTED.value and task.steps_complete()
 
         self.btn_close_task.setEnabled(enable)
 

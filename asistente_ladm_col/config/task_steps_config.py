@@ -7,7 +7,8 @@ from asistente_ladm_col.config.gui.common_keys import (ACTION_SCHEMA_IMPORT_SUPP
                                                        ACTION_EXPORT_DATA_SUPPLIES,
                                                        ACTION_ST_UPLOAD_XTF)
 from asistente_ladm_col.config.mapping_config import LADMNames
-from asistente_ladm_col.config.enums import STStepTypeEnum
+from asistente_ladm_col.config.enums import (STStepTypeEnum,
+                                             EnumUserLevel)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 TASK_INTEGRATE_SUPPLIES = 1
@@ -62,8 +63,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                        SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
                        SLOT_PARAMS: {
                            'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
-                           'supply_type': task_data['request'][
-                               'typeSupplyId'] if 'request' in task_data else None}}
+                           'supply_type': task_data['request']['typeSupplyId'] if 'request' in task_data else None}}
                    }
            }
         elif task_type == TASK_INTEGRATE_SUPPLIES:
@@ -74,14 +74,21 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                     STEP_DESCRIPTION: "",
                     STEP_CUSTOM_ACTION_SLOT: {
                         SLOT_NAME: self._slot_caller.open_encrypted_db_connection,
-                        SLOT_PARAMS: {'conn_dict': task_data['connection'] if 'connection' in task_data else {}}
+                        SLOT_PARAMS: {'db_engine': 'pg',
+                                      'conn_dict': task_data['connection'] if 'connection' in task_data else {},
+                                      'user_level': EnumUserLevel.CONNECT}
                     },
                     },
                 2: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig",
                                                           "Explore data from Cadastre and Land Registry"),
                     STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
-                    STEP_ACTION: ACTION_RUN_ETL_COBOL,
-                    STEP_DESCRIPTION: ""
+                    STEP_ACTION: None,
+                    STEP_DESCRIPTION: "",
+                    STEP_CUSTOM_ACTION_SLOT: {
+                        SLOT_NAME: self._slot_caller.task_step_explore_data_cadastre_registry,
+                        SLOT_PARAMS: {'db_engine': 'pg',
+                                      'conn_dict': task_data['connection'] if 'connection' in task_data else {}}
+                    },
                     },
                 3: {STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Start assisted integration"),
                     STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,

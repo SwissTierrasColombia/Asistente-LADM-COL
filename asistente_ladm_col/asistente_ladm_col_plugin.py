@@ -39,7 +39,9 @@ from qgis.core import (Qgis,
                        QgsExpression)
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum, LogHandlerEnum)
+                                             WizardTypeEnum,
+                                             LogHandlerEnum,
+                                             EnumUserLevel)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
@@ -120,7 +122,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
-from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
+
 
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
@@ -146,7 +148,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session = STSession()
         task_steps_config = TaskStepsConfig()
         task_steps_config.set_slot_caller(self)
-        self.encrypter_decrypter = EncrypterDecrypter()
 
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
@@ -1315,11 +1316,26 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
         dlg.exec_()
 
-    def open_encrypted_db_connection(self, conn_dict):
-        print("antes de desencriptar: ", conn_dict)
+    def open_encrypted_db_connection(self, db_engine, conn_dict, user_level=EnumUserLevel.CREATE):
         if conn_dict:
-            self.logger.info(__name__, "Parsing/decrypting connection parameters for the task.")
-            for k,v in conn_dict.items():
-                conn_dict[k] = self.encrypter_decrypter.decrypt_with_AES(v)
-            print("después de desencriptar: ", conn_dict)
-            self.conn_manager.get_encrypted_db_connector('pg', conn_dict)
+            with ProcessWithStatus(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Connecting to remote db...")):
+                db = self.conn_manager.get_encrypted_db_connector(db_engine, conn_dict)
+
+            res, code, msg = db.test_connection(user_level=user_level)
+            self.logger.info_msg(__name__, "{} Models: {}".format(msg, db.get_models()))
+
+            return db if res else None
+
+        return None
+
+    def task_step_explore_data_cadastre_registry(self, db_engine, conn_dict):
+        db = self.open_encrypted_db_connection(db_engine, conn_dict)
+        if db:
+            layers = {
+                db.names.INI_PARCEL_SUPPLIES_T: {'name': db.names.INI_PARCEL_SUPPLIES_T, 'geometry': None, 'layer': None},
+                db.names.GC_PARCEL_T: {'name': db.names.GC_PARCEL_T, 'geometry': None, 'layer': None},
+                db.names.SNR_PARCEL_REGISTRY_T: {'name': db.names.SNR_PARCEL_REGISTRY_T, 'geometry': None, 'layer': None},
+            }
+            self.qgis_utils.get_layers(db, layers, load=True)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "The remote DB connection could not be established."))

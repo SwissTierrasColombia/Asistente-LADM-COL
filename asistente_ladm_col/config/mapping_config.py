@@ -245,7 +245,7 @@ class TableAndFieldNames:
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Direcciones"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial"
+    GC_PARCEL_T_PARCEL_NUMBER_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro"
@@ -353,7 +353,7 @@ class TableAndFieldNames:
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria_Matriz"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Anterior_en_FMI"
-    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI"
+    SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.NUPRE_en_FMI"
     # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion"
     # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.snr_derecho"
@@ -727,7 +727,9 @@ class TableAndFieldNames:
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio": {VARIABLE_NAME: "GC_HP_CONDOMINIUM_DATA_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Manzana": {VARIABLE_NAME: "GC_BLOCK_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Perimetro": {VARIABLE_NAME: "GC_PERIMETER_T", FIELDS_DICT: {}},
-        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": {VARIABLE_NAME: "GC_PARCEL_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": {VARIABLE_NAME: "GC_PARCEL_T", FIELDS_DICT: {
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial": "GC_PARCEL_T_PARCEL_NUMBER_F"
+        }},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario": {VARIABLE_NAME: "GC_OWNER_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Rural": {VARIABLE_NAME: "GC_RURAL_SECTOR_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Urbano": {VARIABLE_NAME: "GC_URBAN_SECTOR_T", FIELDS_DICT: {}},
@@ -744,7 +746,9 @@ class TableAndFieldNames:
         "Datos_SNR.Datos_SNR.SNR_Derecho": {VARIABLE_NAME: "SNR_RIGHT_T", FIELDS_DICT: {}},
         "Datos_SNR.Datos_SNR.SNR_Fuente_CabidaLinderos": {VARIABLE_NAME: "SNR_SOURCE_BOUNDARIES_T", FIELDS_DICT: {}},
         "Datos_SNR.Datos_SNR.SNR_Fuente_Derecho": {VARIABLE_NAME: "SNR_SOURCE_RIGHT_T", FIELDS_DICT: {}},
-        "Datos_SNR.Datos_SNR.SNR_Predio_Registro": {VARIABLE_NAME: "SNR_PARCEL_REGISTRY_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Predio_Registro": {VARIABLE_NAME: "SNR_PARCEL_REGISTRY_T", FIELDS_DICT: {
+            "Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI": "SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F"
+        }},
         "Datos_SNR.Datos_SNR.SNR_Titular": {VARIABLE_NAME: "SNR_TITLE_HOLDER_T", FIELDS_DICT: {}},
         "Datos_SNR.SNR_CalidadDerechoTipo": {VARIABLE_NAME: "SNR_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Datos_SNR.SNR_DocumentoTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_DOCUMENT_T", FIELDS_DICT: {}},
