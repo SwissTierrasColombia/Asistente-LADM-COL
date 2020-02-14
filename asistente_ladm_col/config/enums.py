@@ -64,3 +64,17 @@ class LogHandlerEnum(Enum):
 class LogModeEnum(Enum):
     USER = 1
     DEV = 2
+
+
+class GenericQueryType(Enum):
+    IGAC_BASIC_QUERY = 1
+    IGAC_PHYSICAL_QUERY = 2
+    IGAC_LEGAL_QUERY = 3
+    IGAC_ECONOMIC_QUERY = 4
+    IGAC_PROPERTY_RECORD_CARD = 5
+
+
+class SpatialOperationType(Enum):
+    INTERSECTS_SPATIAL_OPERATION = 1
+    OVERLAPS_SPATIAL_OPERATION = 2
+    CONTAINS_SPATIAL_OPERATION = 3

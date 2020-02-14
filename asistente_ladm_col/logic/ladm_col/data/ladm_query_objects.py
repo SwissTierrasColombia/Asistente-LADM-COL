@@ -1,13 +1,5 @@
 from abc import ABC
 
-from enum import Enum
-
-
-class SpatialOperationType(Enum):
-    INTERSECTS_SPATIAL_OPERATION = 1
-    OVERLAPS_SPATIAL_OPERATION = 2
-    CONTAINS_SPATIAL_OPERATION = 3
-
 
 class AbsFieldGenericQuery(ABC):
     def __init__(self, field_alias):
