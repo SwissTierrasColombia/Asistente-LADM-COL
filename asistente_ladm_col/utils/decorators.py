@@ -51,7 +51,7 @@ def _db_connection_required(func_to_decorate):
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                     "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
-
+                return
             
             if db_source == COLLECTED_DB_SOURCE:
                 if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
