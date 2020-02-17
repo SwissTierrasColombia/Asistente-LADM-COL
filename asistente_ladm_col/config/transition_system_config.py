@@ -1,14 +1,23 @@
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import (QObject,
+                              QSettings,
+                              QCoreApplication)
 
-from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
-class TransitionSystemConfig(metaclass=Singleton):
+class TransitionSystemConfig(QObject, metaclass=SingletonQObject):
     ST_DEFAULT_DOMAIN = "http://apist.proadmintierra.info"  # "http://192.168.98.61:8090"    .42
     ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
     encoded = b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='  # b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
     ST_EXPECTED_RESPONSE = "unauthorized"
+
+    ST_CONNECTION_ERROR_MSG = QCoreApplication.translate("TransitionSystemConfig", "There was an error accessing the task service. Details: {}")
+    ST_STATUS_500_MSG = QCoreApplication.translate("TransitionSystemConfig", "There is an error in the task server! (Status: 500)")
+    ST_STATUS_401_MSG = QCoreApplication.translate("TransitionSystemConfig", "Unauthorized client! (Status: 401)")
+
+    def __init__(self):
+        QObject.__init__(self)
 
     def get_domain(self):
         return QSettings().value('Asistente-LADM_COL/sources/service_transition_system', self.ST_DEFAULT_DOMAIN)

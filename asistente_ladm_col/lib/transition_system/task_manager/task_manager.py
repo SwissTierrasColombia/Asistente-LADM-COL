@@ -41,6 +41,7 @@ class STTaskManager(QObject):
         QObject.__init__(self)
         self.logger = Logger()
         self.__registered_tasks = dict()
+        self.st_config = TransitionSystemConfig()
 
     @_with_override_cursor
     def __retrieve_tasks(self, st_user, task_type=None, task_status=None):
@@ -58,9 +59,9 @@ class STTaskManager(QObject):
 
         try:
             self.logger.debug(__name__, "Retrieving tasks from server...")
-            response = requests.request("GET", TransitionSystemConfig().ST_GET_TASKS_SERVICE_URL, headers=headers)
+            response = requests.request("GET", self.st_config.ST_GET_TASKS_SERVICE_URL, headers=headers)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
@@ -74,11 +75,9 @@ class STTaskManager(QObject):
                     self.__register_task(task)
         else:
              if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
              elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
         """
@@ -127,9 +126,9 @@ class STTaskManager(QObject):
 
         try:
             self.logger.debug(__name__, "Telling the server to start a task...")
-            response = requests.request("PUT", TransitionSystemConfig().ST_START_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
+            response = requests.request("PUT", self.st_config.ST_START_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
@@ -145,11 +144,9 @@ class STTaskManager(QObject):
             self.task_started.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             else:
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
@@ -163,9 +160,9 @@ class STTaskManager(QObject):
 
         try:
             self.logger.debug(__name__, "Telling the server to cancel a task...")
-            response = requests.request("PUT", TransitionSystemConfig().ST_CANCEL_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
+            response = requests.request("PUT", self.st_config.ST_CANCEL_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
@@ -177,11 +174,9 @@ class STTaskManager(QObject):
             self.task_canceled.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             else:
                 self.logger.warning(__name__, "Status code not handled: {}, payload: {}".format(response.status_code, payload))
 
@@ -194,9 +189,9 @@ class STTaskManager(QObject):
 
         try:
             self.logger.debug(__name__, "Telling the server to close a task...")
-            response = requests.request("PUT", TransitionSystemConfig().ST_CLOSE_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
+            response = requests.request("PUT", self.st_config.ST_CLOSE_TASK_SERVICE_URL.format(task_id), headers=headers, data=payload)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("TaskManager", "There was an error accessing the task service. Details: {}".format(e))
+            msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
@@ -210,11 +205,9 @@ class STTaskManager(QObject):
             self.task_closed.emit(task_id)
         else:
             if response.status_code == 500:
-                msg = QCoreApplication.translate("STSession", "There is an error in the task server! (Status: 500)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
             elif response.status_code == 401:
-                msg = QCoreApplication.translate("STSession", "Unauthorized client! (Status: 401)")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             elif response.status_code == 422:
                 response_data = json.loads(response.text)
                 msg = QCoreApplication.translate("STSession", QCoreApplication.translate("TaskManager",

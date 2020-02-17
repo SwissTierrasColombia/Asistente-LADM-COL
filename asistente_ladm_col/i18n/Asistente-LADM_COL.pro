@@ -57,6 +57,7 @@ SOURCES = ../__init__.py \
           ../config/general_config.py \
           ../config/help_strings.py \
           ../config/gui/gui_config.py \
+          ../config/transition_system_config.py
           ../config/wizard_config.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
           ../gui/change_detection/changes_parties_panel.py \
@@ -132,6 +133,7 @@ SOURCES = ../__init__.py \
           ../utils/qt_utils.py \
           ../utils/model_parser.py \
           ../utils/qgis_model_baker_utils.py \
+          ../utils/st_utils.py \
           ../utils/utils.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

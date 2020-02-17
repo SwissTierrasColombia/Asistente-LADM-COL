@@ -1,4 +1,3 @@
-import json
 import requests
 
 from qgis.PyQt.QtCore import (QObject,
@@ -33,7 +32,7 @@ class STUtils(QObject):
             self.logger.debug(__name__, "Uploading file to transition system...")
             response = requests.request("PUT", url, headers=headers, data=payload, files=files)
         except requests.ConnectionError as e:
-            msg = QCoreApplication.translate("STUtils", "There was an error accessing the upload file service. Details: {}".format(e))
+            msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
@@ -43,10 +42,8 @@ class STUtils(QObject):
             self.logger.success(__name__, msg)
         else:
              if response.status_code == 500:
-                msg = QCoreApplication.translate("STUtils", "There is an error in the Transition System server!")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
              elif response.status_code == 401:
-                msg = QCoreApplication.translate("STUtils", "Unauthorized client!")
-                self.logger.warning(__name__, msg)
+                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
 
         return status_OK, msg
