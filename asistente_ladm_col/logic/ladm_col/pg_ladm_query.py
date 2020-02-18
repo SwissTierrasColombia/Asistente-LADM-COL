@@ -1,5 +1,5 @@
 from asistente_ladm_col.config.mapping_config import QueryNames
-from asistente_ladm_col.logic.ladm_col.ladm_query import LADMQuery
+from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 from asistente_ladm_col.logic.ladm_col.config.queries.pg import (basic_query,
                                                                  economic_query,
                                                                  physical_query,
@@ -7,23 +7,22 @@ from asistente_ladm_col.logic.ladm_col.config.queries.pg import (basic_query,
                                                                  property_record_card_query)
 
 
-class PGLADMQuery(LADMQuery):
+class PgLADMQuery(QGISLADMQuery):
     def __init__(self, qgis_utils):
-        super(PGLADMQuery, self).__init__()
-        self.qgis_utils = qgis_utils
+        super(PgLADMQuery, self).__init__(qgis_utils)
 
     @staticmethod
     def get_igac_basic_info(db, **kwargs):
         """
         Query by component: Basic info
         :param kwargs: dict with one of the following key-value param
-               plot_t_id
+               plot_t_ids
                parcel_fmi
                parcel_number
                previous_parcel_number
         :return:
         """
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         query = basic_query.get_igac_basic_query(schema=db.schema,
                                                  plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
@@ -31,7 +30,7 @@ class PGLADMQuery(LADMQuery):
                                                  previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                  cadastral_form_model=db.cadastral_form_model_exists())
 
-        res = PGLADMQuery._get_query_results(db, query)
+        res = PgLADMQuery._get_query_results(db, query)
         return res
 
     @staticmethod
@@ -39,19 +38,19 @@ class PGLADMQuery(LADMQuery):
         """
         Query by component: Legal info
         :param kwargs: dict with one of the following key-value param
-               plot_t_id
+               plot_t_ids
                parcel_fmi
                parcel_number
                previous_parcel_number
         :return:
         """
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         query = legal_query.get_igac_legal_query(schema=db.schema,
                                                  plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                  previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
-        res = PGLADMQuery._get_query_results(db, query)
+        res = PgLADMQuery._get_query_results(db, query)
         return res
 
     @staticmethod
@@ -59,20 +58,20 @@ class PGLADMQuery(LADMQuery):
         """
         Query by component: Legal info
         :param kwargs: dict with one of the following key-value param
-               plot_t_id
+               plot_t_ids
                parcel_fmi
                parcel_number
                previous_parcel_number
         :return:
         """
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         query = property_record_card_query.get_igac_property_record_card_query(schema=db.schema,
                                                                                plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                                                parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                                                parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                                                previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                                                cadastral_form_model=db.cadastral_form_model_exists())
-        res = PGLADMQuery._get_query_results(db, query)
+        res = PgLADMQuery._get_query_results(db, query)
         return res
 
     @staticmethod
@@ -80,19 +79,19 @@ class PGLADMQuery(LADMQuery):
         """
         Query by component: Physical info
         :param kwargs: dict with one of the following key-value param
-               plot_t_id
+               plot_t_ids
                parcel_fmi
                parcel_number
                previous_parcel_number
         :return:
         """
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         query = physical_query.get_igac_physical_query(schema=db.schema,
                                                        plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                        previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
-        res = PGLADMQuery._get_query_results(db, query)
+        res = PgLADMQuery._get_query_results(db, query)
         return res
 
     @staticmethod
@@ -100,20 +99,20 @@ class PGLADMQuery(LADMQuery):
         """
         Query by component: Economic info
         :param kwargs: dict with one of the following key-value param
-               plot_t_id
+               plot_t_ids
                parcel_fmi
                parcel_number
                previous_parcel_number
         :return:
         """
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         query = economic_query.get_igac_economic_query(schema=db.schema,
                                                        plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                        previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                        cadastral_form_model=db.cadastral_form_model_exists())
-        res = PGLADMQuery._get_query_results(db, query)
+        res = PgLADMQuery._get_query_results(db, query)
         return res
 
 

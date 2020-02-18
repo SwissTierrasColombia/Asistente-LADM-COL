@@ -23,14 +23,13 @@ from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   SpatialFilterSubLevel,
                                                                   FilterSubLevel)
 
-from asistente_ladm_col.logic.ladm_col.ladm_query import LADMQuery
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.config.enums import (SpatialOperationType,
                                              GenericQueryType)
 
 
-class QGISLADMQuery(LADMQuery):
+class QGISLADMQuery:
 
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
@@ -52,7 +51,7 @@ class QGISLADMQuery(LADMQuery):
         return self._execute_generic_query(db, GenericQueryType.IGAC_BASIC_QUERY, kwargs)
 
     def _execute_generic_query(self, db, enum_generic_query, kwargs):
-        params = LADMQuery._get_parameters(kwargs)
+        params = QGISLADMQuery._get_parameters(kwargs)
         filter_field_values = self._get_plots_ids_from_params(db, params)
 
         response = dict()
@@ -316,3 +315,15 @@ class QGISLADMQuery(LADMQuery):
         request.setSubsetOfAttributes(fields_idx)  # Note: this adds a new flag
         select_features = [feature for feature in layer.getFeatures(request)]
         return select_features
+
+    @staticmethod
+    def _get_parameters(kwargs):
+        params = {
+            QueryNames.SEARCH_KEY_PLOT_T_IDS: 'NULL',
+            QueryNames.SEARCH_KEY_PARCEL_FMI: 'NULL',
+            QueryNames.SEARCH_KEY_PARCEL_NUMBER: 'NULL',
+            QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER: 'NULL'
+        }
+
+        params.update(kwargs)
+        return params

@@ -19,7 +19,7 @@
 from asistente_ladm_col.lib.db.db_factory import DbFactory
 from asistente_ladm_col.gui.db_panel.pg_config_panel import PgConfigPanel
 from asistente_ladm_col.lib.db.pg_connector import PGConnector
-from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
+from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PgLADMQuery
 
 
 class PgFactory(DbFactory):
@@ -44,7 +44,7 @@ class PgFactory(DbFactory):
         return PGConnector(None, parameters)
 
     def get_query_manager(self, qgis_utils):
-        return PGLADMQuery(qgis_utils)
+        return PgLADMQuery(qgis_utils)
 
     def set_ili2db_configuration_params(self, params, configuration):
         """

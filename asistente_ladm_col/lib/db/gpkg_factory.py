@@ -19,7 +19,7 @@
 from asistente_ladm_col.lib.db.db_factory import DbFactory
 from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GpkgConfigPanel
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
+from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GpkgLADMQuery
 
 
 class GpkgFactory(DbFactory):
@@ -44,7 +44,7 @@ class GpkgFactory(DbFactory):
         return GPKGConnector(None, conn_dict=parameters)
 
     def get_query_manager(self, qgis_utils):
-        return QGISLADMQuery(qgis_utils)
+        return GpkgLADMQuery(qgis_utils)
 
     def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'
