@@ -55,6 +55,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = db_source
+        self.init_select_db = None
 
         self._action_type = None
         self.dbs_supported = ConfigDbSupported()
@@ -172,7 +173,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         current_db = self.cbo_db_source.currentData()
-        if self._lst_panel[current_db].state_changed():
+        if self._lst_panel[current_db].state_changed() or self.init_select_db != current_db:
             valid_connection = True
             ladm_col_schema = False
 
@@ -313,7 +314,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings = QSettings()
         default_db = self.dbs_supported.id_default_db
 
-        index_db = self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), default_db))
+        self.init_select_db = settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), default_db)
+        index_db = self.cbo_db_source.findData(self.init_select_db)
 
         if index_db == -1:
             index_db = self.cbo_db_source.findData(default_db)

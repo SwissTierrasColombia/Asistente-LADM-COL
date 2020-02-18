@@ -166,15 +166,26 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_plot_toggled()
 
     def update_db_connection(self, db, ladm_col_db, db_source):
-        self._db = db
-        self.initialize_tool()
+        self.close_dock_widget()
 
-        if not ladm_col_db:
-            self.setVisible(False)
+    def close_dock_widget(self):
+
+        try:
+            self._layers[self.names.OP_PLOT_T][LAYER].willBeDeleted.disconnect(self.layer_removed)
+        except:
+            pass
+
+        try:
+            self._layers[self.names.OP_PARCEL_T][LAYER].willBeDeleted.disconnect(self.parcel_layer_removed)
+        except:
+            pass
+
+        self.initialize_tool()
+        self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def layer_removed(self):
-        # The required layer was removed, deactivate custom tool
-        self.initialize_tool()
+        # The required layer was removed, deactivate custom tool and close dockwidget
+        self.close_dock_widget()
 
     def parcel_layer_removed(self):
         self._layers[self.names.OP_PARCEL_T][LAYER] = None
