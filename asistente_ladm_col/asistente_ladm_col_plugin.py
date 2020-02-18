@@ -77,13 +77,14 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                                            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
+                                                            get_domain_value_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.transition_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
 from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
@@ -135,7 +136,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_transition_system = None
         self.toolbar = None
         self.wiz_address = None
-        self.conn_manager = ConnectionManager()
+        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
+        self.conn_manager = ConnectionManager(self.qgis_utils)
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
         self.wizard_config = WizardConfig()
@@ -147,7 +149,6 @@ class AsistenteLADMCOLPlugin(QObject):
         task_steps_config.set_slot_caller(self)
 
     def initGui(self):
-        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
@@ -222,7 +223,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @staticmethod
     def uninstall_custom_expression_functions():
-        res = QgsExpression.unregisterFunction('get_domain_code_from_value')
+        QgsExpression.unregisterFunction('get_domain_code_from_value')
+        QgsExpression.unregisterFunction('get_domain_value_from_code')
 
     def call_refresh_gui(self):
         """
@@ -909,6 +911,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
+                                                      self.get_query_manager(),
                                                       self.qgis_utils,
                                                       self.ladm_data)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
@@ -917,6 +920,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def get_db_connection(self):
         return self.conn_manager.get_db_connector_from_source()
+
+    def get_query_manager(self):
+        return self.conn_manager.get_query_manager()
 
     def get_supplies_db_connection(self):
         return self.conn_manager.get_db_connector_from_source(db_source=SUPPLIES_DB_SOURCE)

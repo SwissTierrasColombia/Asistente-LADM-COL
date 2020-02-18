@@ -293,11 +293,7 @@ class TreeModel(QAbstractItemModel):
         if parent is None:
             parent = self.rootItem
 
-        if data is None:
-            return
-
-        for record in data:
-            self.fill_model(record, parent)
+        self.fill_model(data, parent)
 
     def fill_model(self, record, parent):
         """

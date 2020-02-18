@@ -38,15 +38,29 @@ class ConnectionManager(QObject):
     """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, db_source
 
-    def __init__(self):
+    def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.logger = Logger()
+        self.qgis_utils = qgis_utils
         self.dbs_supported = ConfigDbSupported()
 
         self._db_sources = {  # Values are DB Connectors
             COLLECTED_DB_SOURCE: None,
             SUPPLIES_DB_SOURCE: None
         }
+
+    def get_query_manager(self):
+        db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=COLLECTED_DB_SOURCE))
+
+        if db_connection_source:
+            db_factory = self.dbs_supported.get_db_factory(db_connection_source)
+            query_manager = db_factory.get_query_manager(self.qgis_utils)
+        else:
+            # Use the default connector
+            db_factory = self.dbs_supported.get_db_factory(self.dbs_supported.id_default_db)
+            query_manager = db_factory.get_query_manager(self.qgis_utils)
+
+        return query_manager
 
     def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
         db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))

@@ -259,6 +259,16 @@ class GPKGConnector(DBConnector):
                 table=layer_name.lower()
             ))
 
+    def get_ladm_units(self):
+        cursor = self.conn.cursor()
+        result = cursor.execute("""SELECT DISTINCT tablename || '..' || columnname AS unit_key, ' [' || setting || ']' AS unit_value FROM t_ili2db_column_prop WHERE tag LIKE 'ch.ehi.ili2db.unit'""")
+        dict_units = dict()
+        if result is not None:
+            for unit in result:
+                dict_units[unit['unit_key']] = unit['unit_value']
+        #self.logger.debug(__name__, "Units found: {}".format(dict_units))
+        return dict_units
+
     def get_models(self):
         cursor = self.conn.cursor()
         result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 

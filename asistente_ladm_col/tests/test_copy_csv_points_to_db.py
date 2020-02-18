@@ -21,7 +21,7 @@ from asistente_ladm_col.utils.qgis_utils import (QGISUtils,
                                                  GeometryUtils)
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
 
 import_qgis_model_baker()
 import_processing()
