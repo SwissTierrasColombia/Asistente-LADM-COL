@@ -30,7 +30,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.mapping_config import (LADMNames,
                                                       QueryNames)
@@ -147,7 +148,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_layer_tree(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], geometry_type) is not None:
+                if self.qgis_utils.get_layer_from_layer_tree(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER]) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
@@ -237,8 +238,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
             layers_dict = {}
             for item_text, data in self.selected_items_dict.items():
                 layers_dict[item_text] = {
-                    'name': data[QueryNames.TABLE_NAME_MODEL_BAKER],
-                    'geometry': QgsWkbTypes().geometryType(QgsWkbTypes().parseType(data[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])) if data[QueryNames.GEOMETRY_TYPE_MODEL_BAKER] else None,
+                    LAYER_NAME: data[QueryNames.TABLE_NAME_MODEL_BAKER],
                     LAYER: None
                 }
 

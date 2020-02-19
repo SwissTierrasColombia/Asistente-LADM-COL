@@ -253,7 +253,7 @@ class GPKGConnector(DBConnector):
 
         return bool(cursor.fetchall())
 
-    def get_uri_for_layer(self, layer_name, geometry_type=None):
+    def get_uri_for_layer(self, layer_name):
         return (True, '{uri}|layername={table}'.format(
                 uri=self._uri,
                 table=layer_name.lower()

@@ -1,6 +1,6 @@
 import nose2
 
-from qgis.core import QgsWkbTypes, NULL
+from qgis.core import NULL
 from qgis.testing import (start_app,
                           unittest)
 
@@ -8,7 +8,8 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
@@ -57,8 +58,8 @@ class TestLADMData(unittest.TestCase):
 
         print("\nINFO: Validating get plots related to parcels (Case: t_id) with preloaded tables...")
 
-        layers = {self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                  self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
+        layers = {self.names.OP_PLOT_T: {LAYER_NAME: self.names.OP_PLOT_T, LAYER: None},
+                  self.names.COL_UE_BAUNIT_T: {LAYER_NAME: self.names.COL_UE_BAUNIT_T, LAYER: None}}
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
@@ -103,8 +104,8 @@ class TestLADMData(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots (Case: t_id) with preloaded tables...")
 
         layers = {
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.OP_PARCEL_T: {LAYER_NAME: self.names.OP_PARCEL_T, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {LAYER_NAME: self.names.COL_UE_BAUNIT_T, LAYER: None}
         }
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')

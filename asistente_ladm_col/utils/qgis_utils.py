@@ -69,6 +69,7 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       LAYER,
+                                                      LAYER_NAME,
                                                       FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                                       MODULE_HELP_MAPPING,
@@ -173,9 +174,9 @@ class QGISUtils(QObject):
 
         return related_domains
 
-    def get_layer(self, db, layer_name, geometry_type=None, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+    def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
-        layer = {layer_name: {'name': layer_name, 'geometry': geometry_type, LAYER: None}}
+        layer = {layer_name: {LAYER_NAME: layer_name, LAYER: None}}
         self.get_layers(db, layer, load, emit_map_freeze, layer_modifiers=layer_modifiers)
         if not layer:
             return None
@@ -215,10 +216,7 @@ class QGISUtils(QObject):
 
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
-                    if layer_info['name'] == db.get_ladm_layer_name(ladm_layer):
-                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.geometryType():
-                            continue
-
+                    if layer_info[LAYER_NAME] == db.get_ladm_layer_name(ladm_layer):
                         layer_obj = ladm_layer
 
                 response_layers[layer_id] = layer_obj
@@ -250,7 +248,7 @@ class QGISUtils(QObject):
 
                     # Now that all layers are loaded, update response dict
                     # and apply post_load_configurations to new layers
-                    new_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                    new_layers = {layer_id: {'name': layers[layer_id]['name']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
 
                     # Remove layers in two steps:
                     # 1) Remove those spatial layers with more than one geometry
@@ -262,16 +260,9 @@ class QGISUtils(QObject):
                         if layer_name in all_layers_to_load and layer.isSpatial():
                             remove_layer = True
                             for layer_id, layer_info in new_layers.items():
-                                if layer_info['name'] == layer_name:
-                                    if layer_info['geometry'] == layer.geometryType():
-                                        remove_layer = False
-                                        break
-                                    if layer_info['geometry'] is None:
-                                        # We allow loading layers that only have
-                                        # one geometry column by not specifying
-                                        # its geometry (i.e., by using None)
-                                        remove_layer = False
-                                        break
+                                if layer_info[LAYER_NAME] == layer_name:
+                                    remove_layer = False
+                                    break
                             if remove_layer:
                                 QgsProject.instance().removeMapLayer(layer)
                                 ladm_layers.remove(layer)
@@ -290,7 +281,7 @@ class QGISUtils(QObject):
 
                     profiler.start("post_load")
                     # Apply post-load configs to all just loaded layers
-                    requested_layer_names = [v['name'] for k,v in layers.items()]
+                    requested_layer_names = [v[LAYER_NAME] for k,v in layers.items()]
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
                         layer_geometry = layer.geometryType()
@@ -301,10 +292,7 @@ class QGISUtils(QObject):
                             for layer_id, layer_info in new_layers.items():
                                 # This should update response_layers dict with
                                 # newly added layer objects
-                                if layer_info['name'] == layer_name:
-                                    if layer_info['geometry'] is not None and layer_info['geometry'] != layer_geometry:
-                                        continue
-
+                                if layer_info[LAYER_NAME] == layer_name:
                                     response_layers[layer_id] = layer
                                     del new_layers[layer_id] # Don't look for this layer anymore
                                     break
@@ -340,16 +328,12 @@ class QGISUtils(QObject):
             if LAYER in layers[layer_name]:
                 layers[layer_name][LAYER] = response_layers[layer_name]
 
-    def get_layer_from_layer_tree(self, db, layer_name, geometry_type=None):
+    def get_layer_from_layer_tree(self, db, layer_name):
         for k, layer in QgsProject.instance().mapLayers().items():
             result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
             if result:
                 if result == layer_name:
-                    if geometry_type is not None:
-                        if layer.geometryType() == geometry_type:
-                            return layer
-                    else:
-                        return layer
+                    return layer
         return None
 
     def get_ladm_layers_from_layer_tree(self, db):
@@ -745,7 +729,7 @@ class QGISUtils(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
-    def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+    def check_if_and_disable_automatic_fields(self, db, layer_name):
         """
         Check settings to see if the user wants to calculate automatic values
         when in batch mode. If not, disable automatic fields and return
@@ -754,12 +738,12 @@ class QGISUtils(QObject):
         settings = QSettings()
         automatic_fields_definition = {}
         if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-            automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
+            automatic_fields_definition = self.disable_automatic_fields(db, layer_name)
 
         return automatic_fields_definition
 
-    def disable_automatic_fields(self, db, layer_name, geometry_type=None):
-        layer = self.get_layer(db, layer_name, geometry_type, True)
+    def disable_automatic_fields(self, db, layer_name):
+        layer = self.get_layer(db, layer_name, True)
         automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
 
         for field in layer.fields():
@@ -767,7 +751,7 @@ class QGISUtils(QObject):
 
         return automatic_fields_definition
 
-    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
         """
         Once the batch load is done, check whether the user wanted to calculate
         automatic values in batch mode or not. If not, restore the expressions
@@ -778,11 +762,10 @@ class QGISUtils(QObject):
             if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 self.enable_automatic_fields(db,
                                              automatic_fields_definition,
-                                             layer_name,
-                                             geometry_type)
+                                             layer_name)
 
-    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
-        layer = self.get_layer(db, layer_name, geometry_type, True)
+    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
+        layer = self.get_layer(db, layer_name, True)
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
@@ -909,8 +892,8 @@ class QGISUtils(QObject):
         return root.findGroup(translated_strings[ERROR_LAYER_GROUP]) is not None
 
     @_activate_processing_plugin
-    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
-        output_layer = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
+        output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
 
         if not output_layer:
@@ -939,8 +922,8 @@ class QGISUtils(QObject):
             return False
 
     @_activate_processing_plugin
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
-        output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, field_mapping=''):
+        output = self.get_layer(db, ladm_col_layer_name, load=True)
         if not output:
             return False
 
@@ -1144,7 +1127,7 @@ class QGISUtils(QObject):
         return (res, msg)
 
     def upload_source_files(self, db):
-        extfile_layer = self.get_layer(db, db.names.EXT_ARCHIVE_S, None, True)
+        extfile_layer = self.get_layer(db, db.names.EXT_ARCHIVE_S, True)
         if not extfile_layer:
             return
 

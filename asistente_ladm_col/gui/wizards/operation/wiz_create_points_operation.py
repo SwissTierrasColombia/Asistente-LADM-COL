@@ -34,6 +34,7 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME,
                                                       DEFAULT_EPSG)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
@@ -62,9 +63,9 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-            self.names.OP_CONTROL_POINT_T: {'name': self.names.OP_CONTROL_POINT_T, 'geometry': None, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: self.names.OP_BOUNDARY_POINT_T, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {LAYER_NAME: self.names.OP_SURVEY_POINT_T, LAYER: None},
+            self.names.OP_CONTROL_POINT_T: {LAYER_NAME: self.names.OP_CONTROL_POINT_T, LAYER: None}
         }
 
         self.target_layer = None

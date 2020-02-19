@@ -713,7 +713,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def load_layer(self, layer):
         self.clear_message_bar()
-        self.qgis_utils.get_layer(self.get_db_connection(), layer, None, load=True)
+        self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)

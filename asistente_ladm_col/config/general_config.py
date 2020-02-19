@@ -35,6 +35,7 @@ TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 
 LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
+LAYER_NAME = 'name'
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0

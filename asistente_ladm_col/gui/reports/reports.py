@@ -37,8 +37,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QProgressBar)
-from qgis.core import (QgsWkbTypes,
-                       QgsDataSourceUri,
+from qgis.core import (QgsDataSourceUri,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
@@ -194,7 +193,7 @@ class ReportGenerator(QObject):
                                                                          "Java is a prerequisite. Since it was not found, it is being configured..."))
             return
 
-        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, load=True)
+        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, load=True)
         if not plot_layer:
             return
 

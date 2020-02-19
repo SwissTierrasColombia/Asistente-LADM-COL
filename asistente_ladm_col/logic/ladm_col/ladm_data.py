@@ -19,10 +19,10 @@
 from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsWkbTypes,
                        QgsFeature)
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME)
 from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.lib.logger import Logger
 
@@ -51,8 +51,8 @@ class LADM_DATA():
         :return: list of plot ids related to the parcel
         """
         layers = {
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.COL_UE_BAUNIT_T: {LAYER_NAME: db.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
         if plot_layer is not None:
@@ -112,8 +112,8 @@ class LADM_DATA():
         :return: list of parcel ids related to the parcel
         """
         layers = {
-            db.names.OP_PARCEL_T: {'name': db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            db.names.OP_PARCEL_T: {LAYER_NAME: db.names.OP_PARCEL_T, LAYER: None},
+            db.names.COL_UE_BAUNIT_T: {LAYER_NAME: db.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
         if parcel_table is not None:
@@ -175,18 +175,18 @@ class LADM_DATA():
         party_fields_to_compare = self.get_party_fields_to_compare(db.names)
         plot_fields_to_compare = self.get_plot_fields_to_compare(db.names)
         layers = {
-            db.names.OP_PARCEL_T: {'name': db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_RIGHT_T: {'name': db.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
-            db.names.OP_PARTY_T: {'name': db.names.OP_PARTY_T, 'geometry': None, LAYER: None},
-            db.names.OP_GROUP_PARTY_T: {'name': db.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
-            db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
-            db.names.MEMBERS_T: {'name': db.names.MEMBERS_T, 'geometry': None, LAYER: None},
+            db.names.OP_PARCEL_T: {LAYER_NAME: db.names.OP_PARCEL_T, LAYER: None},
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.OP_RIGHT_T: {LAYER_NAME: db.names.OP_RIGHT_T, LAYER: None},
+            db.names.OP_PARTY_T: {LAYER_NAME: db.names.OP_PARTY_T, LAYER: None},
+            db.names.OP_GROUP_PARTY_T: {LAYER_NAME: db.names.OP_GROUP_PARTY_T, LAYER: None},
+            db.names.COL_UE_BAUNIT_T: {LAYER_NAME: db.names.COL_UE_BAUNIT_T, LAYER: None},
+            db.names.MEMBERS_T: {LAYER_NAME: db.names.MEMBERS_T, LAYER: None},
         }
 
         if db.cadastral_form_model_exists():
             # TODO: Replace property record card for correct table model
-            # layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
+            # layers[PROPERTY_RECORD_CARD_TABLE] = {LAYER_NAME: PROPERTY_RECORD_CARD_TABLE, LAYER: None}
             pass
 
         self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
@@ -472,7 +472,7 @@ class LADM_DATA():
             return cached_res
 
         if type(domain_table_name) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
+            domain_table = self.qgis_utils.get_layer(db, domain_table, True, emit_map_freeze=False)
 
         if domain_table is not None:
             domain_table_name = domain_table.name()
@@ -519,7 +519,7 @@ class LADM_DATA():
             return cached_res
 
         if type(domain_table) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
+            domain_table = self.qgis_utils.get_layer(db, domain_table, True, emit_map_freeze=False)
 
         if domain_table is not None:
             features = self.get_features_from_t_ids(domain_table, db.names.T_ID_F, [code], no_attributes=False, no_geometry=True)

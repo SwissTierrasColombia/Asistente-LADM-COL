@@ -41,6 +41,7 @@ from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME,
                                                       DEFAULT_USE_ROADS_VALUE,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
@@ -131,9 +132,9 @@ class QualityUtils(QObject):
     def check_boundary_points_covered_by_boundary_nodes(self, db, rule_name, translated_strings):
 
         layers = {
-            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-            db.names.POINT_BFS_T: {'name': db.names.POINT_BFS_T, 'geometry': None, LAYER: None},
-            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
+            db.names.OP_BOUNDARY_T: {LAYER_NAME: db.names.OP_BOUNDARY_T, LAYER: None},
+            db.names.POINT_BFS_T: {LAYER_NAME: db.names.POINT_BFS_T, LAYER: None},
+            db.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: db.names.OP_BOUNDARY_POINT_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -275,9 +276,9 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_boundary_nodes_covered_by_boundary_points(self, db, rule_name, translated_strings):
         layers = {
-            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-            db.names.POINT_BFS_T: {'name': db.names.POINT_BFS_T, 'geometry': None, LAYER: None},
-            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
+            db.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: db.names.OP_BOUNDARY_POINT_T, LAYER: None},
+            db.names.POINT_BFS_T: {LAYER_NAME: db.names.POINT_BFS_T, LAYER: None},
+            db.names.OP_BOUNDARY_T: {LAYER_NAME: db.names.OP_BOUNDARY_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -427,8 +428,8 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_plot_nodes_covered_by_boundary_points(self, db, rule_name, translated_strings):
         layers = {
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: db.names.OP_BOUNDARY_POINT_T, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
@@ -464,8 +465,8 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_boundary_points_covered_by_plot_nodes(self, db, rule_name, translated_strings):
         layers = {
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: db.names.OP_BOUNDARY_POINT_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -611,10 +612,10 @@ class QualityUtils(QObject):
     def check_plots_covered_by_boundaries(self, db, rule_name, translated_strings):
         # read data
         layers = {
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-            db.names.LESS_BFS_T: {'name': db.names.LESS_BFS_T, 'geometry': None, LAYER: None},
-            db.names.MORE_BFS_T: {'name': db.names.MORE_BFS_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.OP_BOUNDARY_T: {LAYER_NAME: db.names.OP_BOUNDARY_T, LAYER: None},
+            db.names.LESS_BFS_T: {LAYER_NAME: db.names.LESS_BFS_T, LAYER: None},
+            db.names.MORE_BFS_T: {LAYER_NAME: db.names.MORE_BFS_T, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
@@ -907,10 +908,10 @@ class QualityUtils(QObject):
     def check_boundaries_covered_by_plots(self, db, rule_name, translated_strings):
         # read data
         layers = {
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-            db.names.LESS_BFS_T: {'name': db.names.LESS_BFS_T, 'geometry': None, LAYER: None},
-            db.names.MORE_BFS_T: {'name': db.names.MORE_BFS_T, 'geometry': None, LAYER: None}
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None},
+            db.names.OP_BOUNDARY_T: {LAYER_NAME: db.names.OP_BOUNDARY_T, LAYER: None},
+            db.names.LESS_BFS_T: {LAYER_NAME: db.names.LESS_BFS_T, LAYER: None},
+            db.names.MORE_BFS_T: {LAYER_NAME: db.names.MORE_BFS_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -1223,7 +1224,7 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_overlapping_polygons(self, db, polygon_layer_name, rule_name, translated_strings):
-        polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
+        polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, load=True)
         if not polygon_layer:
             return
 
@@ -1391,9 +1392,9 @@ class QualityUtils(QObject):
         Not used anymore but kept for reference
         """
         layers = {
-            db.names.OP_BOUNDARY_POINT_T: {'name': db.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-            db.names.POINT_BFS_T: {'name': db.names.POINT_BFS_T, 'geometry': None, LAYER: None},
-            db.names.OP_BOUNDARY_T: {'name': db.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
+            db.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: db.names.OP_BOUNDARY_POINT_T, LAYER: None},
+            db.names.POINT_BFS_T: {LAYER_NAME: db.names.POINT_BFS_T, LAYER: None},
+            db.names.OP_BOUNDARY_T: {LAYER_NAME: db.names.OP_BOUNDARY_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -1473,8 +1474,8 @@ class QualityUtils(QObject):
         Not used anymore but kept for reference.
         """
         layers = {
-            db.names.OP_SURVEY_POINT_T: {'name': db.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-            db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            db.names.OP_SURVEY_POINT_T: {LAYER_NAME: db.names.OP_SURVEY_POINT_T, LAYER: None},
+            db.names.OP_BUILDING_T: {LAYER_NAME: db.names.OP_BUILDING_T, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
@@ -1608,8 +1609,8 @@ class QualityUtils(QObject):
     def check_right_of_way_overlaps_buildings(self, db, rule_name, translated_strings):
 
         layers = {
-            db.names.OP_RIGHT_OF_WAY_T: {'name': db.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            db.names.OP_RIGHT_OF_WAY_T: {LAYER_NAME: db.names.OP_RIGHT_OF_WAY_T, LAYER: None},
+            db.names.OP_BUILDING_T: {LAYER_NAME: db.names.OP_BUILDING_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)
@@ -1656,7 +1657,7 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_gaps_in_plots(self, db, rule_name, translated_strings):
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, QgsWkbTypes.PolygonGeometry, True)
+        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, True)
         if not plot_layer:
             return
 
@@ -1694,7 +1695,7 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_multiparts_in_right_of_way(self, db, rule_name, translated_strings):
-        right_of_way_layer = self.qgis_utils.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, QgsWkbTypes.PolygonGeometry, True)
+        right_of_way_layer = self.qgis_utils.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
         if not right_of_way_layer:
             return
 
@@ -1934,8 +1935,8 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_building_within_plots(self, db, rule_name, translated_strings):
         layers = {
-            db.names.OP_BUILDING_T: {'name': db.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            db.names.OP_BUILDING_T: {LAYER_NAME: db.names.OP_BUILDING_T, LAYER: None},
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None}
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
@@ -1989,8 +1990,8 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_building_unit_within_plots(self, db, rule_name, translated_strings):
         layers = {
-            db.names.OP_BUILDING_UNIT_T: {'name': db.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            db.names.OP_BUILDING_UNIT_T: {LAYER_NAME: db.names.OP_BUILDING_UNIT_T, LAYER: None},
+            db.names.OP_PLOT_T: {LAYER_NAME: db.names.OP_PLOT_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True)

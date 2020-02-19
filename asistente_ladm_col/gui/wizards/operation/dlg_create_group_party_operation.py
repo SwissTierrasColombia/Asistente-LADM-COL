@@ -33,7 +33,8 @@ from qgis.core import (QgsVectorLayerUtils,
                        edit)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -60,15 +61,15 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         self.parties_to_group = {} # {t_id: [denominator, numerator]}
 
         self._layers = {
-            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
-            self.names.FRACTION_S: {'name': self.names.FRACTION_S, 'geometry': None, LAYER: None},
-            self.names.COL_GROUP_PARTY_TYPE_D: {'name': self.names.COL_GROUP_PARTY_TYPE_D, 'geometry': None, LAYER: None}
+            self.names.OP_GROUP_PARTY_T: {LAYER_NAME: self.names.OP_GROUP_PARTY_T, LAYER: None},
+            self.names.OP_PARTY_T: {LAYER_NAME: self.names.OP_PARTY_T, LAYER: None},
+            self.names.MEMBERS_T: {LAYER_NAME: self.names.MEMBERS_T, LAYER: None},
+            self.names.FRACTION_S: {LAYER_NAME: self.names.FRACTION_S, LAYER: None},
+            self.names.COL_GROUP_PARTY_TYPE_D: {LAYER_NAME: self.names.COL_GROUP_PARTY_TYPE_D, LAYER: None}
         }
 
         # Fill combo of types
-        col_group_party_type_table = self.qgis_utils.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, None, True)
+        col_group_party_type_table = self.qgis_utils.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, True)
         if not col_group_party_type_table:
             return
 

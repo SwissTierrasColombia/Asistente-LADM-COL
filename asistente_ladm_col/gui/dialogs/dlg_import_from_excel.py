@@ -43,6 +43,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME,
                                                       LOG_QUALITY_LIST_CONTAINER_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
@@ -207,14 +208,14 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         # GET LADM LAYERS
         layers = {
-            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.OP_RIGHT_T: {'name': self.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
-            self.names.EXT_ARCHIVE_S: {'name': self.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
-            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
-            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
-            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None}
+            self.names.OP_PARTY_T: {LAYER_NAME: self.names.OP_PARTY_T, LAYER: None},
+            self.names.OP_PARCEL_T: {LAYER_NAME: self.names.OP_PARCEL_T, LAYER: None},
+            self.names.OP_RIGHT_T: {LAYER_NAME: self.names.OP_RIGHT_T, LAYER: None},
+            self.names.EXT_ARCHIVE_S: {LAYER_NAME: self.names.EXT_ARCHIVE_S, LAYER: None},
+            self.names.COL_RRR_SOURCE_T: {LAYER_NAME: self.names.COL_RRR_SOURCE_T, LAYER: None},
+            self.names.OP_GROUP_PARTY_T: {LAYER_NAME: self.names.OP_GROUP_PARTY_T, LAYER: None},
+            self.names.MEMBERS_T: {LAYER_NAME: self.names.MEMBERS_T, LAYER: None},
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: {LAYER_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T, LAYER: None}
         }
 
         self.qgis_utils.get_layers(self._db, layers, load=True)

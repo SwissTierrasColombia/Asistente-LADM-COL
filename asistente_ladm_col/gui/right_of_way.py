@@ -21,11 +21,11 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 from qgis.core import (Qgis,
                        QgsProcessingFeatureSourceDefinition,
-                       QgsWkbTypes,
                        QgsVectorLayerUtils)
 
 import processing
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME)
 from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 
@@ -39,9 +39,9 @@ class RightOfWay(QObject):
         self.names = names
 
         self._layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {LAYER_NAME: self.names.OP_PLOT_T, LAYER: None},
+            self.names.OP_RIGHT_OF_WAY_T: {LAYER_NAME: self.names.OP_RIGHT_OF_WAY_T, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {LAYER_NAME: self.names.OP_SURVEY_POINT_T, LAYER: None}
         }
 
         self._right_of_way_line_layer = None
@@ -49,15 +49,15 @@ class RightOfWay(QObject):
 
     def fill_right_of_way_relations(self, db):
         layers = {
-            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_RESTRICTION_T: {'name': self.names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
-            self.names.OP_RESTRICTION_TYPE_D: {'name': self.names.OP_RESTRICTION_TYPE_D, 'geometry': None, LAYER: None},
-            self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
-            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: {LAYER_NAME: self.names.OP_ADMINISTRATIVE_SOURCE_T, LAYER: None},
+            self.names.OP_PARCEL_T: {LAYER_NAME: self.names.OP_PARCEL_T, LAYER: None},
+            self.names.OP_PLOT_T: {LAYER_NAME: self.names.OP_PLOT_T, LAYER: None},
+            self.names.OP_RESTRICTION_T: {LAYER_NAME: self.names.OP_RESTRICTION_T, LAYER: None},
+            self.names.OP_RESTRICTION_TYPE_D: {LAYER_NAME: self.names.OP_RESTRICTION_TYPE_D, LAYER: None},
+            self.names.OP_RIGHT_OF_WAY_T: {LAYER_NAME: self.names.OP_RIGHT_OF_WAY_T, LAYER: None},
+            self.names.COL_RRR_SOURCE_T: {LAYER_NAME: self.names.COL_RRR_SOURCE_T, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {LAYER_NAME: self.names.OP_SURVEY_POINT_T, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {LAYER_NAME: self.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
         # Load layers
@@ -69,7 +69,7 @@ class RightOfWay(QObject):
         restriction_right_of_way_t_id = [feature for feature in layers[self.names.OP_RESTRICTION_TYPE_D][LAYER].getFeatures(exp)][0][self.names.T_ID_F]
 
         if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount() == 0:
-            if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+            if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T) is None:
                 self.logger.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                                "First load the layer {} into QGIS and select at least one plot!").format(self.names.OP_PLOT_T),

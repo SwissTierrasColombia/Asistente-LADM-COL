@@ -22,7 +22,6 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QObject)
 from qgis.core import (QgsVectorLayer,
-                       QgsWkbTypes,
                        Qgis,
                        NULL,
                        QgsGeometry)
@@ -37,6 +36,7 @@ from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      LAYER_NAME,
                                                       LAYER)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
@@ -215,15 +215,15 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            self._db.names.OP_PLOT_T: {'name': self._db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self._db.names.OP_PARCEL_T: {'name': self._db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self._db.names.COL_UE_BAUNIT_T: {'name': self._db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self._db.names.OP_PLOT_T: {LAYER_NAME: self._db.names.OP_PLOT_T, LAYER: None},
+            self._db.names.OP_PARCEL_T: {LAYER_NAME: self._db.names.OP_PARCEL_T, LAYER: None},
+            self._db.names.COL_UE_BAUNIT_T: {LAYER_NAME: self._db.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
         self._supplies_layers = {
-            self._supplies_db.names.OP_PLOT_T: {'name': self._supplies_db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self._supplies_db.names.OP_PARCEL_T: {'name': self._supplies_db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self._supplies_db.names.COL_UE_BAUNIT_T: {'name': self._supplies_db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self._supplies_db.names.OP_PLOT_T: {LAYER_NAME: self._supplies_db.names.OP_PLOT_T, LAYER: None},
+            self._supplies_db.names.OP_PARCEL_T: {LAYER_NAME: self._supplies_db.names.OP_PARCEL_T, LAYER: None},
+            self._supplies_db.names.COL_UE_BAUNIT_T: {LAYER_NAME: self._supplies_db.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
     def initialize_data(self):

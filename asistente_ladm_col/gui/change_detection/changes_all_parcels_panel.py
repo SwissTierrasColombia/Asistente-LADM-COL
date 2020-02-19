@@ -24,13 +24,13 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QTableWidgetItem,
                                  QMenu,
                                  QAction)
-from qgis.core import (QgsWkbTypes,
-                       NULL,
+from qgis.core import (NULL,
                        QgsRectangle,
                        QgsApplication)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LAYER_NAME,
                                                       SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
@@ -150,9 +150,9 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             return
 
         layers = {
-            base_db.names.OP_PLOT_T: {'name': base_db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            base_db.names.OP_PARCEL_T: {'name': base_db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            base_db.names.COL_UE_BAUNIT_T: {'name': base_db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
+            base_db.names.OP_PLOT_T: {LAYER_NAME: base_db.names.OP_PLOT_T, LAYER: None},
+            base_db.names.OP_PARCEL_T: {LAYER_NAME: base_db.names.OP_PARCEL_T, LAYER: None},
+            base_db.names.COL_UE_BAUNIT_T: {LAYER_NAME: base_db.names.COL_UE_BAUNIT_T, LAYER: None}}
 
         self.utils.qgis_utils.get_layers(base_db, layers, load=True)
         if not layers:

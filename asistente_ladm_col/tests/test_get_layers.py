@@ -1,6 +1,6 @@
 import nose2
 import itertools
-from qgis.core import QgsProject, QgsWkbTypes
+from qgis.core import QgsProject
 from qgis.testing import (unittest,
                           start_app)
 
@@ -84,7 +84,7 @@ class TestGetLayers(unittest.TestCase):
         for pre_load in [self.db_pg.names.COL_SURFACE_RELATION_TYPE_D]: # preload some layers
             self.qgis_utils.get_layer(self.db_pg, pre_load, load=True)
 
-        self.qgis_utils.get_layer(self.db_pg, self.db_pg.names.OP_PLOT_T, geometry_type=QgsWkbTypes.PolygonGeometry, load=True)
+        self.qgis_utils.get_layer(self.db_pg, self.db_pg.names.OP_PLOT_T, load=True)
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[self.db_pg.names.OP_PLOT_T])

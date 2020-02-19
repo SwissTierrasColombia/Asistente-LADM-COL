@@ -34,8 +34,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QAction, 
                                  QApplication, 
                                  QLabel)
-from qgis.core import (QgsWkbTypes,
-                       Qgis,
+from qgis.core import (Qgis,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -47,8 +46,8 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (TEST_SERVER,
                                                       LAYER,
+                                                      LAYER_NAME,
                                                       SUFFIX_GET_THUMBNAIL)
-from asistente_ladm_col.config.mapping_config import LADMNames
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus,
@@ -128,9 +127,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def restart_dict_of_layers(self):
         self._layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {LAYER_NAME: self.names.OP_PLOT_T, LAYER: None},
+            self.names.OP_PARCEL_T: {LAYER_NAME: self.names.OP_PARCEL_T, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {LAYER_NAME: self.names.COL_UE_BAUNIT_T, LAYER: None}
         }
 
     def add_layers(self):
@@ -377,10 +376,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             table_name = index_data["type"]
             table_package = LayerConfig.get_dict_table_package(self.names)
             t_id = index_data["id"]
-            geometry_type = None
-            if table_name in table_package and table_package[table_name] == LADMNames.SPATIAL_UNIT_PACKAGE:
-                # Layers in Spatial Unit package have double geometry, we need the polygon one
-                geometry_type=QgsWkbTypes.PolygonGeometry
 
             if table_name == self.names.OP_PARCEL_T:
                 if self._layers[self.names.OP_PARCEL_T][LAYER] is None or self._layers[self.names.OP_PLOT_T][LAYER] is None or self._layers[self.names.COL_UE_BAUNIT_T][LAYER] is None:
@@ -388,7 +383,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 layer = self._layers[self.names.OP_PARCEL_T][LAYER]
                 self.iface.layerTreeView().setCurrentLayer(layer)
             else:
-                layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
+                layer = self.qgis_utils.get_layer(self._db, table_name, True)
 
             if layer is not None:
                 if layer.isSpatial():
