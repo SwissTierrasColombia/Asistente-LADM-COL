@@ -210,22 +210,42 @@ class QGISUtils(QObject):
         profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
-            ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+
+            ladm_layers = self.get_ladm_layers_from_project(db)
+            dict_ladm_layers = {db.get_ladm_layer_name(ladm_layer):ladm_layer for ladm_layer in ladm_layers}
+            ladm_layers_names = dict_ladm_layers.keys()
+
             for layer_id, layer_info in layers.items():
                 layer_obj = None
-
-                # If layer is in LayerTree, return it
-                for ladm_layer in ladm_layers:
-                    if layer_info[LAYER_NAME] == db.get_ladm_layer_name(ladm_layer):
-                        layer_obj = ladm_layer
+                if layer_info[LAYER_NAME] in ladm_layers_names:  # layer is in the register
+                    ladm_layer_in_register = dict_ladm_layers[layer_info[LAYER_NAME]]
+                    if load:
+                        if not QgsProject.instance().layerTreeRoot().findLayer(ladm_layer_in_register): # Check if layer is in map canvas
+                            layer_obj = self.add_layer_to_canvas(ladm_layer_in_register)
+                    else:
+                        layer_obj = ladm_layer_in_register
+                else:
+                    if not load:  # layer is registered but not added to the map canvas
+                        layer_obj = self.register_layer_in_project(db, layer_info[LAYER_NAME])
 
                 response_layers[layer_id] = layer_obj
-            profiler.end()
-            self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
-            profiler.clear()
 
             if load:
-                layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+                ladm_layers = self.get_ladm_layers_from_project(db)
+                for layer_id, layer_info in layers.items():
+                    layer_obj = None
+
+                    # If layer is in LayerTree, return it
+                    for ladm_layer in ladm_layers:
+                        if layer_info[LAYER_NAME] == db.get_ladm_layer_name(ladm_layer):
+                            layer_obj = ladm_layer
+
+                    response_layers[layer_id] = layer_obj
+                profiler.end()
+                self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
+                profiler.clear()
+
+                layers_to_load = [layers[layer_id][LAYER_NAME] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
 
                 if layers_to_load:
                     # Get related layers from cached relations and add them to
@@ -248,12 +268,12 @@ class QGISUtils(QObject):
 
                     # Now that all layers are loaded, update response dict
                     # and apply post_load_configurations to new layers
-                    new_layers = {layer_id: {'name': layers[layer_id]['name']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                    new_layers = {layer_id: {LAYER_NAME: layers[layer_id][LAYER_NAME]} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
 
                     # Remove layers in two steps:
                     # 1) Remove those spatial layers with more than one geometry
                     #    column loaded because one geometry was requested.
-                    ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+                    ladm_layers = self.get_ladm_layers_from_project(db)
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
 
@@ -284,7 +304,6 @@ class QGISUtils(QObject):
                     requested_layer_names = [v[LAYER_NAME] for k,v in layers.items()]
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
-                        layer_geometry = layer.geometryType()
 
                         if layer_name in all_layers_to_load:
                             # Discard already loaded layers
@@ -309,8 +328,9 @@ class QGISUtils(QObject):
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)
 
-        self.map_refresh_requested.emit()
-        self.activate_layer_requested.emit(list(response_layers.values())[0])
+        if load:
+            self.map_refresh_requested.emit()
+            self.activate_layer_requested.emit(list(response_layers.values())[0])
 
         # Verifies that the layers have been successfully loaded
         for layer_name in layers:
@@ -328,7 +348,18 @@ class QGISUtils(QObject):
             if LAYER in layers[layer_name]:
                 layers[layer_name][LAYER] = response_layers[layer_name]
 
-    def get_layer_from_layer_tree(self, db, layer_name):
+    @staticmethod
+    def add_layer_to_canvas(register_layer):
+        layer = QgsProject.instance().takeMapLayer(register_layer)
+        QgsProject.instance().addMapLayer(layer, True)
+        return layer
+
+    def register_layer_in_project(self, db, layer_name):
+        layers = self.qgis_model_baker_utils.get_required_layers_without_load([layer_name], db)
+        return layers[0]
+
+    @staticmethod
+    def get_layer_from_project(db, layer_name):
         for k, layer in QgsProject.instance().mapLayers().items():
             result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
             if result:
@@ -336,10 +367,10 @@ class QGISUtils(QObject):
                     return layer
         return None
 
-    def get_ladm_layers_from_layer_tree(self, db):
+    def get_ladm_layers_from_project(self, db):
         ladm_layers = list()
 
-        for k,layer in QgsProject.instance().mapLayers().items():
+        for k, layer in QgsProject.instance().mapLayers().items():
             if db.is_ladm_layer(layer):
                 ladm_layers.append(layer)
 
@@ -376,7 +407,7 @@ class QGISUtils(QObject):
         return True
 
     def automatic_namespace_local_id_configuration_changed(self, db):
-        layers = self.get_ladm_layers_from_layer_tree(db)
+        layers = self.get_ladm_layers_from_project(db)
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
@@ -465,7 +496,7 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db, db_relation[QueryNames.REFERENCED_LAYER])
+                referenced_layer = self.get_layer_from_project(db, db_relation[QueryNames.REFERENCED_LAYER])
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
@@ -497,7 +528,7 @@ class QGISUtils(QObject):
                 if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
                     continue
 
-                domain = self.get_layer_from_layer_tree(db, v[2])
+                domain = self.get_layer_from_project(db, v[2])
                 if domain is not None:
                     cardinality = v[1]
                     domain_table = v[2]

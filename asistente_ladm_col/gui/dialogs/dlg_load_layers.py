@@ -148,7 +148,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_layer_tree(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER]) is not None:
+                if self.qgis_utils.get_layer_from_project(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER]) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))

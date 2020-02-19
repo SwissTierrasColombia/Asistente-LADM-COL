@@ -40,7 +40,7 @@ class ToolBar(QObject):
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
-        layer = self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_BOUNDARY_T)
+        layer = self.qgis_utils.get_layer_from_project(db, db.names.OP_BOUNDARY_T)
         use_selection = True
 
         if layer is None:
@@ -108,7 +108,7 @@ class ToolBar(QObject):
 
         if use_selection:
             if layers[db.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_BOUNDARY_T) is None:
+                if self.qgis_utils.get_layer_from_project(db, db.names.OP_BOUNDARY_T) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
@@ -193,7 +193,7 @@ class ToolBar(QObject):
 
         if use_selection:
             if layers[db.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_layer_from_layer_tree(db, db.names.OP_PLOT_T) is None:
+                if self.qgis_utils.get_layer_from_project(db, db.names.OP_PLOT_T) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(

@@ -56,6 +56,23 @@ class QgisModelBakerUtils(QObject):
 
         return None
 
+    def get_required_layers_without_load(self, layer_list, db):
+        layers = None
+        if 'QgisModelBaker' in qgis.utils.plugins:
+            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
+
+            tool = self._dbs_supported.get_db_factory(db.mode).get_mbaker_db_ili_mode()
+            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            qmb_layers = generator.layers(layer_list)
+
+            layers = [qmb_layer.create() for qmb_layer in qmb_layers]  # Convert QMB layers to QGIS layers
+        else:
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+
+        return layers
+
+
     def load_layers(self, layer_list, db):
         """
         Load a selected list of layers from qgis model baker.

@@ -472,7 +472,7 @@ class LADM_DATA():
             return cached_res
 
         if type(domain_table_name) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, True, emit_map_freeze=False)
+            domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
             domain_table_name = domain_table.name()
@@ -519,7 +519,7 @@ class LADM_DATA():
             return cached_res
 
         if type(domain_table) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, True, emit_map_freeze=False)
+            domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
             features = self.get_features_from_t_ids(domain_table, db.names.T_ID_F, [code], no_attributes=False, no_geometry=True)

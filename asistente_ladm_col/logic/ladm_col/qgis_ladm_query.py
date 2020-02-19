@@ -80,8 +80,8 @@ class QGISLADMQuery:
 
         if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL' or params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL' or params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
 
-            parcel_layer = self.qgis_utils.get_layer(db, db.names.OP_PARCEL_T, True)
-            ue_baunit_layer = self.qgis_utils.get_layer(db, db.names.COL_UE_BAUNIT_T, True)
+            parcel_layer = self.qgis_utils.get_layer(db, db.names.OP_PARCEL_T, False)
+            ue_baunit_layer = self.qgis_utils.get_layer(db, db.names.COL_UE_BAUNIT_T, False)
 
             if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL':
                 expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_FMI_F, params[QueryNames.SEARCH_KEY_PARCEL_FMI]))
@@ -126,7 +126,7 @@ class QGISLADMQuery:
     def _execute_query(self, db, response, level_dict, filter_field_values):
         table_name = level_dict[QueryNames.LEVEL_TABLE_NAME]
         level_alias = level_dict[QueryNames.LEVEL_TABLE_ALIAS]
-        layer = self.qgis_utils.get_layer(db, table_name, True)
+        layer = self.qgis_utils.get_layer(db, table_name, False)
         filter_sub_level = level_dict[QueryNames.FILTER_SUB_LEVEL]
         t_id_features = self._get_features_ids_sub_level(db, filter_sub_level, filter_field_values)
 
@@ -182,7 +182,7 @@ class QGISLADMQuery:
         return self._get_relate_own_field_value(db, field, t_id_features)
 
     def _get_relate_own_field_object(self, db, field, filter_field_values):
-        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, True)
+        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
         dict_fields_and_alias =  self._get_dict_fields_and_alias(field.relate_table_fields)
         fields_names = list(dict_fields_and_alias.keys())
         fields_names.append(db.names.T_ID_F)
@@ -211,7 +211,7 @@ class QGISLADMQuery:
         return list_relate_result
 
     def _get_relate_own_field_value(self, db, field, filter_field_values):
-        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, True)
+        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
         required_field = field.relate_table_field
         dict_fields_and_alias = self._get_dict_fields_and_alias([required_field])
         fields_names = list(dict_fields_and_alias.keys())
@@ -236,7 +236,7 @@ class QGISLADMQuery:
     def _get_features_ids_by_filter(self, db, filter_sub_level, filter_field_values):  # filter_field_values it is a list with only one item
         sub_level_table = filter_sub_level.sub_level_table
         required_field = filter_sub_level.required_field_sub_level_table
-        sub_level_layer = self.qgis_utils.get_layer(db, sub_level_table, True)
+        sub_level_layer = self.qgis_utils.get_layer(db, sub_level_table, False)
 
         if isinstance(filter_sub_level, FilterSubLevel):
             filter_field = filter_sub_level.filter_field_in_sub_level_table
@@ -251,7 +251,7 @@ class QGISLADMQuery:
         elif isinstance(filter_sub_level, SpatialFilterSubLevel):
             level_table = filter_sub_level.level_table
             spatial_operation = filter_sub_level.spatial_operation
-            level_layer = self.qgis_utils.get_layer(db, level_table, True)
+            level_layer = self.qgis_utils.get_layer(db, level_table, False)
             filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'memory:'})['OUTPUT']
 
             parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'memory:'}

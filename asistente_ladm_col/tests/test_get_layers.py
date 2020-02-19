@@ -53,7 +53,7 @@ class TestGetLayers(unittest.TestCase):
         for layer in [self.db_pg.names.OP_BOUNDARY_POINT_T, self.db_pg.names.OP_PLOT_T]:
             loaded_table = self.qgis_utils.get_layer(self.db_pg, layer, load=True)
             self.assertEqual(self.db_pg.get_ladm_layer_name(loaded_table), layer)
-            loaded_layers_tree_names = [self.db_pg.get_ladm_layer_name(layer) for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)]
+            loaded_layers_tree_names = [self.db_pg.get_ladm_layer_name(layer) for layer in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)]
             for layer_related in RELATED_TABLES[layer]:
                 print("Check if {} exists in loaded layers {}".format(layer_related, loaded_layers_tree_names))
                 self.assertIn(layer_related, loaded_layers_tree_names)
@@ -70,13 +70,13 @@ class TestGetLayers(unittest.TestCase):
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[self.db_pg.names.OP_BOUNDARY_POINT_T])
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)])
+        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading PuntoLindero is not what we expect...")
 
         # Load again preloaded layer to check not duplicate layers in load
         for pre_load in [self.db_pg.names.OP_AGREEMENT_TYPE_D, self.db_pg.names.COL_MONUMENTATION_TYPE_D]:
             self.qgis_utils.get_layer(self.db_pg, pre_load, load=True)
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)])
+        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
         QgsProject.instance().clear()
 
@@ -88,20 +88,20 @@ class TestGetLayers(unittest.TestCase):
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[self.db_pg.names.OP_PLOT_T])
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)])
+        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading Terreno is not what we expect...")
 
         # Check duplicate layers...
         for pre_load in [self.db_pg.names.COL_SURFACE_RELATION_TYPE_D]:
             self.qgis_utils.get_layer(self.db_pg, pre_load, load=True)
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)])
+        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
         QgsProject.instance().clear()
 
         print("\nINFO: Validating when loaded layers have the same name...")
         # Load terreno without geometry parameter load point and polygon layer with different geometries (10 layers)
         self.qgis_utils.get_layer(self.db_pg, self.db_pg.names.OP_PLOT_T, load=True)
-        toc_layers = [l for l in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_pg)]
+        toc_layers = [l for l in self.qgis_utils.get_ladm_layers_from_project(self.db_pg)]
         toc_names = [l.name() for l in toc_layers]
         same_name_layers = [layer for layer in toc_layers if toc_names.count(layer.name()) > 1]
         for layer_1, layer_2 in itertools.combinations(same_name_layers, 2):
