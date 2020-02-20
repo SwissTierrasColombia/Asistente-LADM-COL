@@ -27,10 +27,11 @@ from qgis.PyQt.QtCore import (Qt,
                               QSettings)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
+from asistente_ladm_col.utils.ui import get_ui_class
+from asistente_ladm_col.utils.utils import Utils
 
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_upload_file.ui')
 
@@ -67,12 +68,17 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.start_progress()
         self.enable_controls(False)
 
-        if os.path.isfile(self.txt_file_path.text().strip()):
+        file_path = self.txt_file_path.text().strip()
+        if not self.txt_comments.toPlainText():
+            res = False
+            res_msg = QCoreApplication.translate("STUploadFileDialog", "File was not uploaded! Details: Comments are required.")
+        elif os.path.isfile(file_path):
+            zip_file_path = Utils.compress_file(file_path)
             with ProcessWithStatus(QCoreApplication.translate("STUploadFileDialog", "Uploading file to ST server...")):
-                res, res_msg = self.st_utils.upload_file(self.request_id, self.supply_type, self.txt_file_path.text().strip(), self.txt_comments.toPlainText())
+                res, res_msg = self.st_utils.upload_file(self.request_id, self.supply_type, zip_file_path, self.txt_comments.toPlainText())
         else:
             res = False
-            res_msg = QCoreApplication.translate("STUploadFileDialog", "The file '{}' does not exist!").format(self.txt_file_path.text().strip())
+            res_msg = QCoreApplication.translate("STUploadFileDialog", "The file '{}' does not exist!").format(file_path)
 
         self.show_message(res_msg, Qgis.Success if res else Qgis.Warning)
 
