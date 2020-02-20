@@ -2,6 +2,11 @@ from enum import (Enum,
                   IntFlag)
 
 
+class LayerRegisterType(Enum):
+    IN_REGISTER = 1
+    IN_CANVAS = 2
+    NOT_IN_CANVAS = 3
+
 class EnumDbActionType(Enum):
     SCHEMA_IMPORT = 1
     IMPORT = 2

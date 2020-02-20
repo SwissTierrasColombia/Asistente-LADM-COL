@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
+from asistente_ladm_col.config.enums import LayerRegisterType
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -92,18 +93,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                     self.models_tree[record[QueryNames.MODEL]] = {
                         record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]: record}
                 else:
-                    if (record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]) in self.models_tree[record[QueryNames.MODEL]]: # Multiple geometry columns
-                        # First geometry
-                        tmp_record = self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]]
-                        del self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]]
-                        tmp_name = "{} ({})".format((tmp_record[QueryNames.TABLE_ALIAS] or tmp_record[QueryNames.TABLE_NAME_MODEL_BAKER]), tmp_record[QueryNames.GEOMETRY_COLUMN_MODEL_BAKER])
-                        self.models_tree[record[QueryNames.MODEL]][tmp_name] = tmp_record
-
-                        # Second geometry
-                        tmp_name = "{} ({})".format((record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]), record[QueryNames.GEOMETRY_COLUMN_MODEL_BAKER])
-                        self.models_tree[record[QueryNames.MODEL]][tmp_name] = record
-                    else:
-                        self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
+                    self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
 
         self.update_available_layers()
 
@@ -147,8 +137,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])) if current_table_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER] else None
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
-                # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_project(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER]) is not None:
+                # Is the layer already loaded in canvas?
+                if self.qgis_utils.get_ladm_layer_by_register_type(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], LayerRegisterType.IN_CANVAS) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))

@@ -79,6 +79,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       HELP_DIR_NAME,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
+from asistente_ladm_col.config.enums import LayerRegisterType
 from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
@@ -211,7 +212,7 @@ class QGISUtils(QObject):
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
 
-            ladm_layers = self.get_ladm_layers_from_project(db)
+            ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_REGISTER)
             dict_ladm_layers = {db.get_ladm_layer_name(ladm_layer):ladm_layer for ladm_layer in ladm_layers}
             ladm_layers_names = dict_ladm_layers.keys()
 
@@ -219,10 +220,7 @@ class QGISUtils(QObject):
                 layer_obj = None
                 if layer_info[LAYER_NAME] in ladm_layers_names:  # layer is in the register
                     ladm_layer_in_register = dict_ladm_layers[layer_info[LAYER_NAME]]
-                    if load:
-                        if not QgsProject.instance().layerTreeRoot().findLayer(ladm_layer_in_register): # Check if layer is in map canvas
-                            layer_obj = self.add_layer_to_canvas(ladm_layer_in_register)
-                    else:
+                    if not load:
                         layer_obj = ladm_layer_in_register
                 else:
                     if not load:  # layer is registered but not added to the map canvas
@@ -230,8 +228,12 @@ class QGISUtils(QObject):
 
                 response_layers[layer_id] = layer_obj
 
+            profiler.end()
+            self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
+            profiler.clear()
+
             if load:
-                ladm_layers = self.get_ladm_layers_from_project(db)
+                ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_CANVAS)
                 for layer_id, layer_info in layers.items():
                     layer_obj = None
 
@@ -258,6 +260,10 @@ class QGISUtils(QObject):
                     profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
+                    #  required layers that are in the register but not in the canvas are removed
+                    #  QMB better reload them so that the project TOC is configured correctly
+                    self.remove_layer_from_no_in_canvas(db, all_layers_to_load)
+
                     self.logger.status(QCoreApplication.translate("QGISUtils",
                         "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
                     profiler.start("load_layers")
@@ -273,7 +279,7 @@ class QGISUtils(QObject):
                     # Remove layers in two steps:
                     # 1) Remove those spatial layers with more than one geometry
                     #    column loaded because one geometry was requested.
-                    ladm_layers = self.get_ladm_layers_from_project(db)
+                    ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_CANVAS)
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
 
@@ -348,10 +354,16 @@ class QGISUtils(QObject):
             if LAYER in layers[layer_name]:
                 layers[layer_name][LAYER] = response_layers[layer_name]
 
+    def remove_layer_from_no_in_canvas(self, db, layers_names):
+        layers_no_canvas = self.get_ladm_layers_by_register_type(db, LayerRegisterType.NOT_IN_CANVAS)
+        for layer_no_canvas in layers_no_canvas:
+            if layer_no_canvas.name() in layers_names:
+                self.remove_layer_not_in_canvas(layer_no_canvas)
+
     @staticmethod
-    def add_layer_to_canvas(register_layer):
-        layer = QgsProject.instance().takeMapLayer(register_layer)
-        QgsProject.instance().addMapLayer(layer, True)
+    def remove_layer_not_in_canvas(layer_in_register):
+        layer = QgsProject.instance().takeMapLayer(layer_in_register)
+        QgsProject.instance().removeMapLayer(layer)
         return layer
 
     def register_layer_in_project(self, db, layer_name):
@@ -359,21 +371,39 @@ class QGISUtils(QObject):
         return layers[0]
 
     @staticmethod
-    def get_layer_from_project(db, layer_name):
+    def get_ladm_layer_by_register_type(db, layer_name, register_type):
         for k, layer in QgsProject.instance().mapLayers().items():
-            result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
-            if result:
-                if result == layer_name:
+            if register_type == LayerRegisterType.IN_CANVAS:
+                if QgsProject.instance().layerTreeRoot().findLayer(layer):
+                    result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
+                    if result and result == layer_name:
+                        return layer
+            elif register_type == LayerRegisterType.NOT_IN_CANVAS:
+                if not QgsProject.instance().layerTreeRoot().findLayer(layer):
+                    result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
+                    if result and result == layer_name:
+                        return layer
+            elif register_type == LayerRegisterType.IN_REGISTER:
+                result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
+                if result and result == layer_name:
                     return layer
         return None
 
-    def get_ladm_layers_from_project(self, db):
+    @staticmethod
+    def get_ladm_layers_by_register_type(db, register_type):
         ladm_layers = list()
-
         for k, layer in QgsProject.instance().mapLayers().items():
-            if db.is_ladm_layer(layer):
-                ladm_layers.append(layer)
-
+            if register_type == LayerRegisterType.IN_CANVAS:
+                if QgsProject.instance().layerTreeRoot().findLayer(layer):
+                    if db.is_ladm_layer(layer):
+                        ladm_layers.append(layer)
+            elif register_type == LayerRegisterType.NOT_IN_CANVAS:
+                if not QgsProject.instance().layerTreeRoot().findLayer(layer):
+                    if db.is_ladm_layer(layer):
+                        ladm_layers.append(layer)
+            elif register_type == LayerRegisterType.IN_REGISTER:
+                if db.is_ladm_layer(layer):
+                    ladm_layers.append(layer)
         return ladm_layers
 
     def required_layers_are_available(self, db, layers, tool_name):
@@ -407,7 +437,7 @@ class QGISUtils(QObject):
         return True
 
     def automatic_namespace_local_id_configuration_changed(self, db):
-        layers = self.get_ladm_layers_from_project(db)
+        layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_REGISTER)
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
@@ -496,7 +526,7 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_project(db, db_relation[QueryNames.REFERENCED_LAYER])
+                referenced_layer = self.get_ladm_layer_by_register_type(db, db_relation[QueryNames.REFERENCED_LAYER], LayerRegisterType.IN_REGISTER)
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
@@ -528,7 +558,7 @@ class QGISUtils(QObject):
                 if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
                     continue
 
-                domain = self.get_layer_from_project(db, v[2])
+                domain = self.get_ladm_layer_by_register_type(db, v[2], LayerRegisterType.IN_REGISTER)
                 if domain is not None:
                     cardinality = v[1]
                     domain_table = v[2]
