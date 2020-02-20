@@ -16,9 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings)
@@ -41,6 +44,7 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.supply_type = supply_type
         self.st_utils = STUtils()
 
+        self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.upload_file)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_browse_file.clicked.connect(
@@ -50,7 +54,7 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
                                QCoreApplication.translate("STUploadFileDialog",
                                                           'INTERLIS 2 transfer format (*.xtf)')))
 
-        self.progress.setVisible(False)
+        self.initialize_progress()
 
         self.restore_settings()
 
@@ -59,18 +63,50 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def upload_file(self):
-        with ProcessWithStatus(QCoreApplication.translate("STUploadFileDialog", "Uploading file to ST server...")):
-            res, res_msg = self.st_utils.upload_file(self.request_id, self.supply_type, self.txt_file_path.text().strip(), self.txt_comments.toPlainText())
+        self.bar.clearWidgets()
+        self.start_progress()
+        self.enable_controls(False)
+
+        if os.path.isfile(self.txt_file_path.text().strip()):
+            with ProcessWithStatus(QCoreApplication.translate("STUploadFileDialog", "Uploading file to ST server...")):
+                res, res_msg = self.st_utils.upload_file(self.request_id, self.supply_type, self.txt_file_path.text().strip(), self.txt_comments.toPlainText())
+        else:
+            res = False
+            res_msg = QCoreApplication.translate("STUploadFileDialog", "The file '{}' does not exist!").format(self.txt_file_path.text().strip())
 
         self.show_message(res_msg, Qgis.Success if res else Qgis.Warning)
+
+        self.initialize_progress()
+
+        if res:
+            self.store_settings()
+        else:
+            self.enable_controls(True)  # Prepare next run
+
+        return  # Do not close dialog
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 0)
 
+    def store_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', self.txt_file_path.text().strip())
+
     def restore_settings(self):
         settings = QSettings()
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export'))
+
+    def start_progress(self):
+        self.progress.setVisible(True)
+        self.progress.setRange(0, 0)
+
+    def initialize_progress(self):
+        self.progress.setVisible(False)
+
+    def enable_controls(self, enable):
+        self.gbx_page_1.setEnabled(enable)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 
     def show_help(self):
         # self.qgis_utils.show_help("settings")
