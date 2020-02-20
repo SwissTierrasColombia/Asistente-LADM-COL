@@ -172,12 +172,12 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             steps_status[i+1] = self.trw_task_steps.topLevelItem(i).checkState(column) == Qt.Checked
 
         # Don't save if not necessary
-        status = QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(self._task.id()), "{}")
+        status = QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(self._task.get_id()), "{}")
         if status != json.dumps(steps_status):
             self._task.save_steps_status(steps_status)
 
     def start_task(self):
-        self.session.task_manager.start_task(self.session.get_logged_st_user(), self._task.id())
+        self.session.task_manager.start_task(self.session.get_logged_st_user(), self._task.get_id())
         self.update_controls()
 
     def cancel_task(self):
@@ -188,7 +188,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
                                          self._task.get_name()),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.id())
+            self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.get_id())
 
     def close_task(self):
         reply = QMessageBox.question(self,
@@ -198,7 +198,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
                                          self._task.get_name()),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.id())
+            self.session.task_manager.close_task(self.session.get_logged_st_user(), self._task.get_id())
 
     def update_task(self, task_id):
         """A task changed in the Task Manager, so, update the base task for the panel and update the panel itself"""

@@ -111,7 +111,7 @@ class TasksWidget(QWidget, WIDGET_UI):
         item = QListWidgetItem(self.lvw_tasks)
         self.lvw_tasks.setItemWidget(item, widget_item)
         item.setSizeHint(QSize(widget_item.width(), widget_item.height()))
-        item.setData(Qt.UserRole, task.id())
+        item.setData(Qt.UserRole, task.get_id())
         self.lvw_tasks.addItem(item)
 
     def clear_task_widget(self):

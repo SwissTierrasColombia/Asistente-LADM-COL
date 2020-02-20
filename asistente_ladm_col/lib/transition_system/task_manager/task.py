@@ -101,7 +101,7 @@ class STTask(QObject):
     def is_valid(self):
         return self.__is_valid
 
-    def id(self):
+    def get_id(self):
         return self.__id
 
     def get_name(self):
@@ -142,7 +142,7 @@ class STTask(QObject):
 
     def save_steps_status(self, steps_status):
         if self.__task_steps is not None:
-            self.__task_steps.save_status(self.id(), steps_status)
+            self.__task_steps.save_status(self.get_id(), steps_status)
 
     def close_task(self):
         pass

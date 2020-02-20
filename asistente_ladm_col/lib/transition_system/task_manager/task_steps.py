@@ -18,7 +18,8 @@
 import json
 
 from qgis.PyQt.QtCore import (QObject,
-                              QSettings)
+                              QSettings,
+                              QCoreApplication)
 
 from asistente_ladm_col.config.task_steps_config import (TaskStepsConfig,
                                                          STEP_NUMBER,
@@ -37,7 +38,7 @@ class STTaskSteps(QObject):
     def __init__(self, task):
         QObject.__init__(self)
         self.task = task
-        self.task_id = task.id()
+        self.task_id = task.get_id()
         self.task_type = task.get_type()
         self.logger = Logger()
 
@@ -51,11 +52,17 @@ class STTaskSteps(QObject):
         Get actions from task step config and create STTaskStep objects for the task
         :return: List of steps ready to use
         """
-        steps_data = self.task_steps_config.get_steps_data(self.task)
+        steps_data = self.task_steps_config.get_steps_config(self.task)
         self.logger.info(__name__, "{} steps found for task id {}!".format(len(steps_data), self.task_id))
 
         for step_data in steps_data:
-            self.__steps.append(STTaskStep(step_data))
+            step = STTaskStep(step_data)
+            if step.is_valid():
+                self.__steps.append(step)
+            else:
+                self.logger.error_msg(__name__, QCoreApplication.translate("STTaskSteps",
+                                                                           "The step '{} ({})' for the task '{} ({})' is invalid!").format(
+                    step.get_name(), step.get_id(), self.task.get_name(), self.task.get_id()))
 
         self.load_status(self.task_id)  # Update status if found in QSettings
 
@@ -146,13 +153,22 @@ class STTaskStep(QObject):
         self.__initialize_task_step(step_data)
 
     def __initialize_task_step(self, step_data):
-        self.__id = step_data[STEP_NUMBER]
-        self.__name = step_data[STEP_NAME]
-        self.__type = step_data[STEP_TYPE]
-        self.__action_tag = step_data[STEP_ACTION]
-        self.__description = step_data[STEP_DESCRIPTION]
-        if STEP_CUSTOM_ACTION_SLOT in step_data:
-            self.__custom_action_slot = step_data[STEP_CUSTOM_ACTION_SLOT]
+        self.__id = step_data[STEP_NUMBER] if STEP_NUMBER in step_data else None
+        self.__name = step_data[STEP_NAME] if STEP_NAME in step_data else ""
+        self.__type = step_data[STEP_TYPE] if STEP_TYPE in step_data else ""
+        self.__action_tag = step_data[STEP_ACTION] if STEP_ACTION in step_data else ""
+        self.__description = step_data[STEP_DESCRIPTION] if STEP_DESCRIPTION in step_data else ""
+        self.__custom_action_slot = step_data[STEP_CUSTOM_ACTION_SLOT] if STEP_CUSTOM_ACTION_SLOT in step_data else None
+
+    def is_valid(self):
+        """
+        Check if mandatory step data is set. Concerning the actions, either action_tag or custom action slot should be
+        set
+
+        :return: Whether the mandatory step data is set or not.
+        """
+        return self.__id is not None and self.__name and self.__type and \
+               (self.__action_tag or self.__custom_action_slot is not None)
 
     def get_id(self):
         return self.__id
