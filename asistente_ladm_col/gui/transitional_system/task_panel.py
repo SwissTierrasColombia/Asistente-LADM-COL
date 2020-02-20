@@ -24,7 +24,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QSettings)
 from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QDialog)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.enums import STTaskStatusEnum
@@ -33,6 +34,7 @@ from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       GRAY_COLOR)
 from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
                                                          SLOT_PARAMS)
+from asistente_ladm_col.gui.transitional_system.dlg_cancel_task import STCancelTaskDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils import get_ui_class
@@ -188,7 +190,16 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
                                          self._task.get_name()),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            self.session.task_manager.cancel_task(self.session.get_logged_st_user(), self._task.get_id())
+            dlg = STCancelTaskDialog()
+            res = dlg.exec_()
+            if res == QDialog.Accepted:
+                if dlg.comments:
+                    self.session.task_manager.cancel_task(self.session.get_logged_st_user(),
+                                                          self._task.get_id(),
+                                                          dlg.comments)
+            else:
+                self.logger.warning_msg(__name__,
+                                        QCoreApplication.translate("TaskPanelWidget", "The task was not canceled."))
 
     def close_task(self):
         reply = QMessageBox.question(self,

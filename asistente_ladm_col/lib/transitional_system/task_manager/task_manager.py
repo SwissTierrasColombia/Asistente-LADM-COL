@@ -151,7 +151,7 @@ class STTaskManager(QObject):
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
     @_with_override_cursor
-    def cancel_task(self, st_user, task_id, reason="Está muy difícil esa tarea!"):
+    def cancel_task(self, st_user, task_id, reason):
         payload = json.dumps({"reason": reason})
         headers = {
             'Authorization': "Bearer {}".format(st_user.get_token()),
