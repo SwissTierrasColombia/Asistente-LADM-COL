@@ -81,10 +81,10 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
-from asistente_ladm_col.gui.transition_system.dlg_login_st import LoginSTDialog
+from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
-from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -101,7 +101,7 @@ from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
-from asistente_ladm_col.gui.transition_system.dlg_upload_file import STUploadFileDialog
+from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
 from asistente_ladm_col.gui.wizards.operation.dlg_create_group_party_operation import CreateGroupPartyOperation
 from asistente_ladm_col.gui.wizards.operation.wiz_create_points_operation import CreatePointsOperationWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
@@ -135,7 +135,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
-        self._dock_widget_transition_system = None
+        self._dock_widget_transitional_system = None
         self.toolbar = None
         self.wiz_address = None
         self.conn_manager = ConnectionManager()
@@ -186,7 +186,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_valuation_actions()
         self.create_change_detection_actions()
         self.create_toolbar_actions()
-        self.create_transition_system_actions()
+        self.create_transitional_system_actions()
         self.create_generic_actions()
 
     def set_connections(self):
@@ -285,7 +285,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
 
-    def create_transition_system_actions(self):
+    def create_transitional_system_actions(self):
         self._st_login_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/login.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
@@ -870,7 +870,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
-        self.close_dock_widgets([self._dock_widget_transition_system,
+        self.close_dock_widgets([self._dock_widget_transitional_system,
                                  self._dock_widget_change_detection,
                                  self._dock_widget_queries])
         self.gui_builder.unload_gui()
@@ -1261,16 +1261,16 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
-            self.close_dock_widgets([self._dock_widget_transition_system])
+            self.close_dock_widgets([self._dock_widget_transitional_system])
 
-            # Show Transition System dock widget
+            # Show Transitional System dock widget
             user = self.session.get_logged_st_user()
-            self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
-            self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
-            self._dock_widget_transition_system.logout_requested.connect(self.session_logout)
-            self._dock_widget_transition_system.trigger_action_emitted.connect(self.trigger_action_emitted)
-            self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
+            self._dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
+            self.conn_manager.db_connection_changed.connect(self._dock_widget_transitional_system.update_db_connection)
+            self._dock_widget_transitional_system.logout_requested.connect(self.session_logout)
+            self._dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
+            self.session.logout_finished.connect(self._dock_widget_transitional_system.after_logout)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
 
     def session_logout_from_action(self):
         """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
@@ -1288,7 +1288,7 @@ class AsistenteLADMCOLPlugin(QObject):
             reply = QMessageBox.question(None,
                                  QCoreApplication.translate("AsistenteLADMCOLPlugin", "Continue?"),
                                  QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                            "Are you sure you want to log out from the Transition System?"),
+                                                            "Are you sure you want to log out from the Transitional System?"),
                                  QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 logout = False

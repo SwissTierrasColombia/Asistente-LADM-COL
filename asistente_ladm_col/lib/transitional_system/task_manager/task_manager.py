@@ -23,15 +23,15 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal)
 
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.task_manager.task import STTask
+from asistente_ladm_col.lib.transitional_system.task_manager.task import STTask
 from asistente_ladm_col.utils.decorators import _with_override_cursor
 
 
 class STTaskManager(QObject):
     """
-    Retrieve tasks for a user from the Transition System's Task Service and store them during the session.
+    Retrieve tasks for a user from the Transitional System's Task Service and store them during the session.
     """
     task_started = pyqtSignal(int)  # task_id
     task_canceled = pyqtSignal(int)  # task_id
@@ -41,7 +41,7 @@ class STTaskManager(QObject):
         QObject.__init__(self)
         self.logger = Logger()
         self.__registered_tasks = dict()
-        self.st_config = TransitionSystemConfig()
+        self.st_config = TransitionalSystemConfig()
 
     @_with_override_cursor
     def __retrieve_tasks(self, st_user, task_type=None, task_status=None):

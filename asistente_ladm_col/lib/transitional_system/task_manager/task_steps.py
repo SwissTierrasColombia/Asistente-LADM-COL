@@ -107,7 +107,7 @@ class STTaskSteps(QObject):
         """
         if steps_status:
             self.logger.debug(__name__, "Saving step status for task ({}): {}".format(task_id, steps_status))
-            QSettings().setValue("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id),
+            QSettings().setValue("Asistente-LADM_COL/transitional_system/tasks/{}/step_status".format(task_id),
                                  json.dumps(steps_status))
 
             for i, step in enumerate(self.__steps):
@@ -120,10 +120,10 @@ class STTaskSteps(QObject):
         Load status from QSettings
         """
         try:
-            status = json.loads(QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id), "{}"))
+            status = json.loads(QSettings().value("Asistente-LADM_COL/transitional_system/tasks/{}/step_status".format(task_id), "{}"))
         except TypeError as e:
             # The QSettings value is not in the format we expect, just reset it
-            QSettings().setValue("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(task_id), "{}")
+            QSettings().setValue("Asistente-LADM_COL/transitional_system/tasks/{}/step_status".format(task_id), "{}")
             return
 
         if status:

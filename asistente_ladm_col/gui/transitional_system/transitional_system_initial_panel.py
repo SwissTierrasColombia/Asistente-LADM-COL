@@ -22,16 +22,16 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.gui.transition_system.tasks_widget import TasksWidget
+from asistente_ladm_col.gui.transitional_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.ui import (get_ui_class,
                                          get_ui_file_path)
 
-WIDGET_UI = get_ui_class('transition_system/transition_system_initial_panel_widget.ui')
+WIDGET_UI = get_ui_class('transitional_system/transitional_system_initial_panel_widget.ui')
 
 
-class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
+class TransitionalSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     HOME_WIDGET = "home_widget"
     TASKS_WIDGET = "tasks_widget"
     logout_requested = pyqtSignal()
@@ -45,12 +45,12 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.session = STSession()
         self._current_widget = None
 
-        self.home_widget = loadUi(get_ui_file_path('transition_system/home_widget.ui'), QWidget())
+        self.home_widget = loadUi(get_ui_file_path('transitional_system/home_widget.ui'), QWidget())
         self.tasks_widget = TasksWidget(user)  # No need to use parent, as the layout will call setParent automatically
         self.tasks_widget.task_panel_requested.connect(self.show_task_panel)
 
         self.setDockMode(True)
-        self.setPanelTitle(QCoreApplication.translate("TransitionSystemInitialPanelWidget", "Transition System"))
+        self.setPanelTitle(QCoreApplication.translate("TransitionalSystemInitialPanelWidget", "Transitional System"))
 
         self.btn_home.clicked.connect(self.show_home_widget)
         self.btn_view_tasks.clicked.connect(self.show_tasks_widget)
@@ -62,7 +62,7 @@ class TransitionSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def _update_user_info(self):
         self.lbl_user_info.setText(
-            QCoreApplication.translate("TransitionSystemInitialPanelWidget",
+            QCoreApplication.translate("TransitionalSystemInitialPanelWidget",
                                        "User: {}\nRole: {}".format(self._user.get_name(), self._user.get_role())))
 
     def fill_data(self):

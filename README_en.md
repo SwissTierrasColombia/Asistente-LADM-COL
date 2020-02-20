@@ -20,7 +20,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 The current version ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.3.1.2](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip) and allows users to:
 
- - Integration with the Transition System. Authentication and task management.
+ - Integration with the transitional System. Authentication and task management.
  - Roles support and GUI for each role.
  - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Create database structures for the aforementioned model.

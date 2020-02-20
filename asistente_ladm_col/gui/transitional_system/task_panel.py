@@ -34,10 +34,10 @@ from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
 from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
                                                          SLOT_PARAMS)
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils import get_ui_class
 
-WIDGET_UI = get_ui_class('transition_system/transition_system_task_panel_widget.ui')
+WIDGET_UI = get_ui_class('transitional_system/transitional_system_task_panel_widget.ui')
 
 
 class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
@@ -172,7 +172,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             steps_status[i+1] = self.trw_task_steps.topLevelItem(i).checkState(column) == Qt.Checked
 
         # Don't save if not necessary
-        status = QSettings().value("Asistente-LADM_COL/transition_system/tasks/{}/step_status".format(self._task.get_id()), "{}")
+        status = QSettings().value("Asistente-LADM_COL/transitional_system/tasks/{}/step_status".format(self._task.get_id()), "{}")
         if status != json.dumps(steps_status):
             self._task.save_steps_status(steps_status)
 

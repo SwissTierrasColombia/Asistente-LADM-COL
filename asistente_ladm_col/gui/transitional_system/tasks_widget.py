@@ -27,11 +27,11 @@ from qgis.PyQt.QtWidgets import (QWidget,
 
 from asistente_ladm_col.config.enums import STTaskStatusEnum
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
-from asistente_ladm_col.lib.transition_system.task_manager.tasks_model import TasksModel
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transitional_system.task_manager.tasks_model import TasksModel
 from asistente_ladm_col.utils.ui import get_ui_class, get_ui_file_path
 
-WIDGET_UI = get_ui_class('transition_system/tasks_widget.ui')
+WIDGET_UI = get_ui_class('transitional_system/tasks_widget.ui')
 
 
 class TasksWidget(QWidget, WIDGET_UI):
@@ -102,7 +102,7 @@ class TasksWidget(QWidget, WIDGET_UI):
                 self.session.task_manager.close_task(self._user, task_id)
 
     def add_task_widget_item_to_view(self, task):
-        widget_item = loadUi(get_ui_file_path('transition_system/task_widget_item.ui'), QWidget())
+        widget_item = loadUi(get_ui_file_path('transitional_system/task_widget_item.ui'), QWidget())
         widget_item.lbl_name.setText(task.get_name())
         widget_item.lbl_description.setText(task.get_description())
         widget_item.lbl_status.setText(task.get_status())

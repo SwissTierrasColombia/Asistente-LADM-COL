@@ -17,7 +17,7 @@
    <set>Qt::AllDockWidgetAreas</set>
   </property>
   <property name="windowTitle">
-   <string>Transition System</string>
+   <string>Transitional System</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">

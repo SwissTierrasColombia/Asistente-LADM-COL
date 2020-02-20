@@ -27,12 +27,12 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.enums import LogHandlerEnum
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 from asistente_ladm_col.utils import get_ui_class
 
-DIALOG_UI = get_ui_class('transition_system/dlg_login_st.ui')
+DIALOG_UI = get_ui_class('transitional_system/dlg_login_st.ui')
 
 
 class LoginSTDialog(QDialog, DIALOG_UI):

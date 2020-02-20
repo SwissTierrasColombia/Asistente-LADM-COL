@@ -20,23 +20,23 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.transition_system.task_panel import TaskPanelWidget
-from asistente_ladm_col.gui.transition_system.transition_system_initial_panel import TransitionSystemInitialPanelWidget
+from asistente_ladm_col.gui.transitional_system.task_panel import TaskPanelWidget
+from asistente_ladm_col.gui.transitional_system.transitional_system_initial_panel import TransitionalSystemInitialPanelWidget
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
-DOCKWIDGET_UI = get_ui_class('transition_system/dockwidget_transition_system.ui')
+DOCKWIDGET_UI = get_ui_class('transitional_system/dockwidget_transitional_system.ui')
 
 
-class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
+class DockWidgetTransitionalSystem(QgsDockWidget, DOCKWIDGET_UI):
     """
-    Main UI for the Transition System in the LADM_COL Assistant. It holds other panels.
+    Main UI for the Transitional System in the LADM_COL Assistant. It holds other panels.
     """
     logout_requested = pyqtSignal()
     trigger_action_emitted = pyqtSignal(str)  # action tag
 
     def __init__(self, user, parent):
-        super(DockWidgetTransitionSystem, self).__init__(parent)
+        super(DockWidgetTransitionalSystem, self).__init__(parent)
         self.setupUi(self)
         self._user = user
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
@@ -44,7 +44,7 @@ class DockWidgetTransitionSystem(QgsDockWidget, DOCKWIDGET_UI):
         # Configure panels
         self.task_panel = None
 
-        self.main_panel = TransitionSystemInitialPanelWidget(user, self)
+        self.main_panel = TransitionalSystemInitialPanelWidget(user, self)
         self.main_panel.logout_requested.connect(self.logout_requested)
         self.widget.setMainPanel(self.main_panel)
         # self.main_panel.fill_data()

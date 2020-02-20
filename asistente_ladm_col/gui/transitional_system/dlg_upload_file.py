@@ -29,7 +29,7 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
 
-DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transition_system/dlg_upload_file.ui')
+DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_upload_file.ui')
 
 
 class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
@@ -46,7 +46,7 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
                                QCoreApplication.translate("STUploadFileDialog",
-                                                          "Select the file you want to upload to the transition system"),
+                                                          "Select the file you want to upload to the transitional system"),
                                QCoreApplication.translate("STUploadFileDialog",
                                                           'INTERLIS 2 transfer format (*.xtf)')))
 

@@ -3,9 +3,9 @@ import requests
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 
 
 class STUtils(QObject):
@@ -14,7 +14,7 @@ class STUtils(QObject):
         QObject.__init__(self)
         self.logger = Logger()
         self.st_session = STSession()
-        self.st_config = TransitionSystemConfig()
+        self.st_config = TransitionalSystemConfig()
 
     def upload_file(self, request_id, supply_type, file_path, comments):
         url = self.st_config.ST_UPLOAD_FILE_SERVICE_URL.format(request_id)
@@ -29,7 +29,7 @@ class STUtils(QObject):
         }
 
         try:
-            self.logger.debug(__name__, "Uploading file to transition system...")
+            self.logger.debug(__name__, "Uploading file to transitional system...")
             response = requests.request("PUT", url, headers=headers, data=payload, files=files)
         except requests.ConnectionError as e:
             msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
@@ -38,7 +38,7 @@ class STUtils(QObject):
 
         status_OK = response.status_code == 200
         if status_OK:
-            msg = QCoreApplication.translate("STUtils", "The file was successfully uploaded to the Transition System!")
+            msg = QCoreApplication.translate("STUtils", "The file was successfully uploaded to the Transitional System!")
             self.logger.success(__name__, msg)
         else:
              if response.status_code == 500:

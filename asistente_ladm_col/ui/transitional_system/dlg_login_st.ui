@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Transition System</string>
+   <string>Transitional System</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -44,7 +44,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Access to Transition System</string>
+          <string>Access to Transitional System</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">

@@ -25,14 +25,14 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               pyqtSignal)
 
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transition_system.task_manager.task_manager import STTaskManager
+from asistente_ladm_col.lib.transitional_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
 class STSession(QObject, metaclass=SingletonQObject):
-    TOKEN_KEY = "Asistente-LADM_COL/transition_system/token"
+    TOKEN_KEY = "Asistente-LADM_COL/transitional_system/token"
 
     login_status_changed = pyqtSignal(bool)  # Status of the login: True if a user is logged in, False otherwise
     logout_finished = pyqtSignal()
@@ -45,7 +45,7 @@ class STSession(QObject, metaclass=SingletonQObject):
 
     def login(self, user, password):
         msg = ""
-        st_config = TransitionSystemConfig()
+        st_config = TransitionalSystemConfig()
         payload = st_config.ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
         headers = {
             'Content-Type': "application/x-www-form-urlencoded",
@@ -69,7 +69,7 @@ class STSession(QObject, metaclass=SingletonQObject):
         status_OK = response.status_code == 200
         self.logger.info(__name__, "Login response status code: {}".format(response.status_code))
         if status_OK:
-            msg = QCoreApplication.translate("STSession", "User logged in successfully in the Transition System!")
+            msg = QCoreApplication.translate("STSession", "User logged in successfully in the Transitional System!")
             logged_data = json.loads(response.text)
             self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'],
                                                              logged_data['last_name']),
