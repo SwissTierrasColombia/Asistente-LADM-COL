@@ -357,18 +357,18 @@ class QGISUtils(QObject):
     def remove_layer_from_no_in_canvas(self, db, layers_names):
         layers_no_canvas = self.get_ladm_layers_by_register_type(db, LayerRegisterType.NOT_IN_CANVAS)
         for layer_no_canvas in layers_no_canvas:
-            if layer_no_canvas.name() in layers_names:
+            if db.get_ladm_layer_name(layer_no_canvas) in layers_names:
                 self.remove_layer_not_in_canvas(layer_no_canvas)
 
     @staticmethod
     def remove_layer_not_in_canvas(layer_in_register):
-        layer = QgsProject.instance().takeMapLayer(layer_in_register)
-        QgsProject.instance().removeMapLayer(layer)
-        return layer
+        QgsProject.instance().removeMapLayer(layer_in_register)
 
     def register_layer_in_project(self, db, layer_name):
         layers = self.qgis_model_baker_utils.get_required_layers_without_load([layer_name], db)
-        return layers[0]
+        if layers:
+            return layers[0]
+        return None
 
     @staticmethod
     def get_ladm_layer_by_register_type(db, layer_name, register_type):

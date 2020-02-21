@@ -27,6 +27,7 @@ TEST_SCHEMAS_MAPPING = {
     'test_ladm_cadastral_manager_data_gpkg': 'test_ladm_cadastral_manager_model_v2_9_6.gpkg',
     'test_ladm_integration_gpkg': 'test_ladm_integration_model_v2_9_6.gpkg',
     'test_ladm_reference_cartography_gpkg': 'test_ladm_reference_cartography_model_v2_9_6.gpkg',
+    'test_ladm_col_queries_qpkg': 'test_ladm_col_queries_v2_9_6.gpkg',
     'test_ladm_ant_gpkg': 'test_ladm_ant_model_v2_9_6.gpkg',
     'test_ladm_all_models_gpkg': 'test_ladm_all_models_v2_9_6.gpkg',
     'tests_data_gpkg': 'tests_data.gpkg',
