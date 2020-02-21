@@ -114,6 +114,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
         self.rejected.connect(self.close_dialog)
 
+        self.import_models_list_widget.setDisabled(bool(selected_models))  # If we got models from params, disable panel
+
         self.update_connection_info()
         self.restore_configuration()
 

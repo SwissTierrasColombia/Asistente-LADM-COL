@@ -22,6 +22,11 @@ class EnumTestLevel(IntFlag):
     SCHEMA_IMPORT = 128
 
 
+class EnumUserLevel(IntFlag):
+    CREATE = 1
+    CONNECT = 2
+
+
 class EnumTestConnectionMsg(IntFlag):
     CONNECTION_TO_SERVER_FAILED = 0
     CONNECTION_COULD_NOT_BE_OPEN = 1
@@ -64,3 +69,18 @@ class LogHandlerEnum(Enum):
 class LogModeEnum(Enum):
     USER = 1
     DEV = 2
+
+
+class STTaskStatusEnum(Enum):
+    ASSIGNED = "ASIGNADA"
+    STARTED = "INICIADA"
+    CANCELED = "CANCELADA"
+    CLOSED = "CERRADA"
+
+class STStepTypeEnum(Enum):
+    UPLOAD_FILE = 1
+    CONNECT_TO_DB = 2
+    SCHEMA_IMPORT = 3
+    IMPORT_DATA = 4
+    EXPORT_DATA = 5
+    RUN_ETL_COBOL = 6

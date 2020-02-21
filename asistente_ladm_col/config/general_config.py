@@ -136,7 +136,7 @@ CSS_COLOR_ERROR_LABEL = "color:#FF0000"
 CSS_COLOR_OKAY_LABEL = "color:#478046"
 CSS_COLOR_INACTIVE_LABEL = "color:#646464"
 
-# Colors for Transition System task steps
+# Colors for Transitional System task steps
 CHECKED_COLOR = QColor(166, 255, 152, 255)
 UNCHECKED_COLOR = QColor(255, 245, 152, 255)
 GRAY_COLOR = QColor(219, 219, 219, 255)
