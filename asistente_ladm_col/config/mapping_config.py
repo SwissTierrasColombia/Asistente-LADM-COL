@@ -354,7 +354,7 @@ class TableAndFieldNames:
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Matricula_Inmobiliaria_Matriz"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Anterior_en_FMI"
-    # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI"
+    SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F = None  # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI"
     # "Datos_SNR_V2_9_5.Datos_SNR.SNR_Predio_Registro.NUPRE_en_FMI"
     # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion"
     # "Datos_SNR_V2_9_5.Datos_SNR.snr_titular_derecho.snr_derecho"
@@ -770,7 +770,9 @@ class TableAndFieldNames:
         "Datos_SNR.Datos_SNR.SNR_Derecho": {VARIABLE_NAME: "SNR_RIGHT_T", FIELDS_DICT: {}},
         "Datos_SNR.Datos_SNR.SNR_Fuente_CabidaLinderos": {VARIABLE_NAME: "SNR_SOURCE_BOUNDARIES_T", FIELDS_DICT: {}},
         "Datos_SNR.Datos_SNR.SNR_Fuente_Derecho": {VARIABLE_NAME: "SNR_SOURCE_RIGHT_T", FIELDS_DICT: {}},
-        "Datos_SNR.Datos_SNR.SNR_Predio_Registro": {VARIABLE_NAME: "SNR_PARCEL_REGISTRY_T", FIELDS_DICT: {}},
+        "Datos_SNR.Datos_SNR.SNR_Predio_Registro": {VARIABLE_NAME: "SNR_PARCEL_REGISTRY_T", FIELDS_DICT: {
+            "Datos_SNR.Datos_SNR.SNR_Predio_Registro.Numero_Predial_Nuevo_en_FMI": "SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F"
+        }},
         "Datos_SNR.Datos_SNR.SNR_Titular": {VARIABLE_NAME: "SNR_TITLE_HOLDER_T", FIELDS_DICT: {}},
         "Datos_SNR.SNR_CalidadDerechoTipo": {VARIABLE_NAME: "SNR_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Datos_SNR.SNR_DocumentoTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_DOCUMENT_T", FIELDS_DICT: {}},

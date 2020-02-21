@@ -227,7 +227,7 @@
         <location filename="../gui/gui_builder/role_registry.py" line="154"/>
         <location filename="../gui/gui_builder/role_registry.py" line="231"/>
         <location filename="../gui/gui_builder/role_registry.py" line="294"/>
-        <source>Transition System</source>
+        <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
     <message>
@@ -542,7 +542,7 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1268"/>
-        <source>Are you sure you want to log out from the Transition System?</source>
+        <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás seguro que quieres salir del Sistema de Transición?</translation>
     </message>
     <message>
@@ -2564,7 +2564,7 @@
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="464"/>
-        <source>Transition system</source>
+        <source>Transitional system</source>
         <translation>Sistema de Transición</translation>
     </message>
     <message>
@@ -2580,7 +2580,7 @@
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="524"/>
-        <source>You can set here the URL of the Transition System service.</source>
+        <source>You can set here the URL of the Transitional System service.</source>
         <translation>Aquí puedes definir la URL del servicio del Sistema de Transición.</translation>
     </message>
     <message>
@@ -3527,22 +3527,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DialogLoginST</name>
     <message>
-        <location filename="../ui/transition_system/dlg_login_st.ui" line="14"/>
-        <source>Transition System</source>
+        <location filename="../ui/transitional_system/dlg_login_st.ui" line="14"/>
+        <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/dlg_login_st.ui" line="47"/>
-        <source>Access to Transition System</source>
+        <location filename="../ui/transitional_system/dlg_login_st.ui" line="47"/>
+        <source>Access to Transitional System</source>
         <translation>Acceso al Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/dlg_login_st.ui" line="68"/>
+        <location filename="../ui/transitional_system/dlg_login_st.ui" line="68"/>
         <source>User:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/dlg_login_st.ui" line="78"/>
+        <location filename="../ui/transitional_system/dlg_login_st.ui" line="78"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
@@ -3684,8 +3684,8 @@ p, li { white-space: pre-wrap; }
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/dockwidget_transition_system.ui" line="20"/>
-        <source>Transition System</source>
+        <location filename="../ui/transitional_system/dockwidget_transitional_system.ui" line="20"/>
+        <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
 </context>
@@ -4129,29 +4129,29 @@ p, li { white-space: pre-wrap; }
         <translation>Refrescar bases de datos y esquemas</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_initial_panel_widget.ui" line="14"/>
-        <source>Initial Panel Widget Transition System</source>
+        <location filename="../ui/transitional_system/transitional_system_initial_panel_widget.ui" line="14"/>
+        <source>Initial Panel Widget Transitional System</source>
         <translation>Panel inicial del Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_initial_panel_widget.ui" line="35"/>
+        <location filename="../ui/transitional_system/transitional_system_initial_panel_widget.ui" line="35"/>
         <source>User:
 Role:</source>
         <translation>Usuario:
 Rol:</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_initial_panel_widget.ui" line="50"/>
+        <location filename="../ui/transitional_system/transitional_system_initial_panel_widget.ui" line="50"/>
         <source> Home</source>
         <translation> Inicio</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_initial_panel_widget.ui" line="61"/>
+        <location filename="../ui/transitional_system/transitional_system_initial_panel_widget.ui" line="61"/>
         <source> View tasks</source>
         <translation> Ver tareas</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_initial_panel_widget.ui" line="72"/>
+        <location filename="../ui/transitional_system/transitional_system_initial_panel_widget.ui" line="72"/>
         <source> Logout</source>
         <translation> Salir</translation>
     </message>
@@ -5670,7 +5670,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LoginSTDialog</name>
     <message>
-        <location filename="../gui/transition_system/dlg_login_st.py" line="59"/>
+        <location filename="../gui/transitional_system/dlg_login_st.py" line="59"/>
         <source>Connecting to login service...</source>
         <translation>Conectando al servicio de autenticación...</translation>
     </message>
@@ -7019,32 +7019,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>STSession</name>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="65"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="65"/>
         <source>There was an error accessing the login service. Details: {}</source>
         <translation>Hubo un error accediendo al servicio de autenticación. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="72"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="72"/>
         <source>User logged in successfully!</source>
         <translation>¡Usuario autenticado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="84"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="84"/>
         <source>Wrong user name or password, change credentials and try again.</source>
         <translation>Usuario o contraseña inválidos. Cambia los datos de acceso e intenta de nuevo.</translation>
     </message>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="87"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="87"/>
         <source>There is an error in the login server!</source>
         <translation>¡Hubo un error en el servidor de autenticación!</translation>
     </message>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="102"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="102"/>
         <source>User was logged out successfully!</source>
         <translation>¡El usuario salió del Sistema de Transición exitósamente!</translation>
     </message>
     <message>
-        <location filename="../lib/transition_system/st_session/st_session.py" line="104"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="104"/>
         <source>There was not logged in user! Therefore, no logout.</source>
         <translation>¡No había usuario autenticado! Por lo tanto, no hubo logout.</translation>
     </message>
@@ -7098,7 +7098,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="1079"/>
-        <source>The tested service is valid to connect with Transition System!</source>
+        <source>The tested service is valid to connect with Transitional System!</source>
         <translation>¡El servicio del Sistema de Transición es válido!</translation>
     </message>
     <message>
@@ -7238,22 +7238,22 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>TaskPanelWidget</name>
     <message>
-        <location filename="../gui/transition_system/task_panel.py" line="55"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="55"/>
         <source>Task details</source>
         <translation>Detalles de la tarea</translation>
     </message>
     <message>
-        <location filename="../gui/transition_system/task_panel.py" line="72"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="72"/>
         <source>Created at: {}</source>
         <translation>Creada el: {}</translation>
     </message>
     <message>
-        <location filename="../gui/transition_system/task_panel.py" line="73"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="73"/>
         <source>Started at: {}</source>
         <translation>Inició el: {}</translation>
     </message>
     <message>
-        <location filename="../gui/transition_system/task_panel.py" line="74"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="74"/>
         <source>Deadline: {}</source>
         <translation>Entrega hasta: {}</translation>
     </message>
@@ -7261,17 +7261,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>TasksWidget</name>
     <message>
-        <location filename="../gui/transition_system/tasks_widget.py" line="76"/>
+        <location filename="../gui/transitional_system/tasks_widget.py" line="76"/>
         <source>Continue task</source>
         <translation>Continuar tarea</translation>
     </message>
     <message>
-        <location filename="../gui/transition_system/tasks_widget.py" line="78"/>
+        <location filename="../gui/transitional_system/tasks_widget.py" line="78"/>
         <source>Start task</source>
         <translation>Iniciar tarea</translation>
     </message>
     <message>
-        <location filename="../gui/transition_system/tasks_widget.py" line="83"/>
+        <location filename="../gui/transitional_system/tasks_widget.py" line="83"/>
         <source>{} pending task{}</source>
         <translation>{} tarea{} pendiente(s)</translation>
     </message>
@@ -7419,10 +7419,10 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
 </context>
 <context>
-    <name>TransitionSystemInitialPanelWidget</name>
+    <name>TransitionalSystemInitialPanelWidget</name>
     <message>
-        <location filename="../gui/transition_system/transition_system_initial_panel.py" line="57"/>
-        <source>Transition System</source>
+        <location filename="../gui/transitional_system/transitional_system_initial_panel.py" line="57"/>
+        <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
 </context>
@@ -8504,12 +8504,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>wdg_home</name>
     <message>
-        <location filename="../ui/transition_system/home_widget.ui" line="20"/>
+        <location filename="../ui/transitional_system/home_widget.ui" line="20"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/home_widget.ui" line="53"/>
+        <location filename="../ui/transitional_system/home_widget.ui" line="53"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -8537,42 +8537,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>wdg_task</name>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="14"/>
-        <source>Initial Panel Widget Transition System</source>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="14"/>
+        <source>Initial Panel Widget Transitional System</source>
         <translation>Panel inicial del Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="25"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="25"/>
         <source>Description lkjñlsajdñaldjñalsdjñaslkdjañsldjñalsdjkñalsdjna lkjd 3</source>
         <translation>Description lkjñlsajdñaldjñalsdjñaslkdjañsldjñalsdjkñalsdjna lkjd 3</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="53"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="53"/>
         <source>Created at: 2019/12/02</source>
         <translation>Created at: 2019/12/02</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="69"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="69"/>
         <source>Started at: 2019/12/03</source>
         <translation>Started at: 2019/12/03</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="85"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="85"/>
         <source>Deadline: 2019/12/19</source>
         <translation>Deadline: 2019/12/19</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="103"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="103"/>
         <source>ASSIGNED</source>
         <translation>ASIGNADA</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="175"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="175"/>
         <source>Task Name</source>
         <translation>Nombre de la tarea</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/transition_system_task_panel_widget.ui" line="199"/>
+        <location filename="../ui/transitional_system/transitional_system_task_panel_widget.ui" line="199"/>
         <source>Close Task</source>
         <translation>Cerrar tarea</translation>
     </message>
@@ -8580,32 +8580,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>wdg_task_item</name>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="14"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="52"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="52"/>
         <source>Task Name</source>
         <translation>Nombre de la tarea</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="75"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="75"/>
         <source>Created at: 2019/12/02</source>
         <translation>Created at: 2019/12/02</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="91"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="91"/>
         <source>Deadline: 2019/12/19</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="109"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="109"/>
         <source>ASSIGNED</source>
         <translation>ASIGNADA</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/task_widget_item.ui" line="126"/>
+        <location filename="../ui/transitional_system/task_widget_item.ui" line="126"/>
         <source>Description lkjñlsajdñaldjñalsdjñaslkdjañsldjñalsdjkñalsdjna lkjd 3</source>
         <translation>Description lkjñlsajdñaldjñalsdjñaslkdjañsldjñalsdjkñalsdjna lkjd 3</translation>
     </message>
@@ -8613,27 +8613,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>wdg_tasks</name>
     <message>
-        <location filename="../ui/transition_system/tasks_widget.ui" line="14"/>
+        <location filename="../ui/transitional_system/tasks_widget.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/tasks_widget.ui" line="37"/>
+        <location filename="../ui/transitional_system/tasks_widget.ui" line="37"/>
         <source>Sort by:</source>
         <translation>Ordenar por:</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/tasks_widget.ui" line="60"/>
+        <location filename="../ui/transitional_system/tasks_widget.ui" line="60"/>
         <source>0 pending tasks</source>
         <translation>0 tareas pendientes</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/tasks_widget.ui" line="84"/>
+        <location filename="../ui/transitional_system/tasks_widget.ui" line="84"/>
         <source>Start Task</source>
         <translation>Iniciar tarea</translation>
     </message>
     <message>
-        <location filename="../ui/transition_system/tasks_widget.ui" line="91"/>
+        <location filename="../ui/transitional_system/tasks_widget.ui" line="91"/>
         <source>Close Task</source>
         <translation>Cerrar tarea</translation>
     </message>

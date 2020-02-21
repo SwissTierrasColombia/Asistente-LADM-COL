@@ -22,7 +22,8 @@ from PyQt5.QtCore import QCoreApplication
 from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.utils.model_parser import ModelParser
-from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumUserLevel)
 from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
                                                       QueryNames,
                                                       LADMNames,
@@ -90,7 +91,7 @@ class DBConnector(QObject):
     def equals(self, db):
         return self.dict_conn_params == db.dict_conn_params
 
-    def test_connection(self, test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE):
         raise NotImplementedError
 
     def close_connection(self):

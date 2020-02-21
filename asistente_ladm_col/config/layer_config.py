@@ -430,7 +430,9 @@ class LayerConfig:
                 names.OP_PARTY_T_BUSINESS_NAME_F),
             names.OP_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(names.T_ID_F, names.OP_PARCEL_T_PARCEL_NUMBER_F, names.OP_PARCEL_T_FMI_F),
             names.OP_GROUP_PARTY_T: "concat({}, ' - ', {})".format(names.T_ID_F, names.COL_PARTY_T_NAME_F),
-            names.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(names.OID_T_NAMESPACE_F, names.T_ID_F)
+            names.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(names.OID_T_NAMESPACE_F, names.T_ID_F),
+            names.GC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.GC_PARCEL_T_PARCEL_NUMBER_F),
+            names.SNR_PARCEL_REGISTRY_T:  "concat('(', {}, ') ', {})".format(names.T_ID_F, names.SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F)
         }
 
     @staticmethod

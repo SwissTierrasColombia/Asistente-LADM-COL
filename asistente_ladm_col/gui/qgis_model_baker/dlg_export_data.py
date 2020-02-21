@@ -83,7 +83,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
         
-        self._conf_db = ConfigDbSupported()
+        self._dbs_supported = ConfigDbSupported()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
 
         self.xtf_file_browse_button.clicked.connect(
@@ -242,9 +242,9 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             exporter = iliexporter.Exporter()
 
-            item_db = self._conf_db.get_db_items()[self.db.mode]
+            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
-            exporter.tool = item_db.get_mbaker_db_ili_mode()
+            exporter.tool = db_factory.get_mbaker_db_ili_mode()
             exporter.configuration = configuration
 
             self.save_configuration(configuration)
@@ -306,10 +306,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        item_db = self._conf_db.get_db_items()[self.db.mode]
+        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
 
         configuration = ExportConfiguration()
-        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
+        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         full_java_exe_path = JavaUtils.get_full_java_exe_path()

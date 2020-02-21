@@ -63,14 +63,14 @@ def get_pg_conn(schema):
     dict_conn['schema'] = schema
     dict_conn['username'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
-    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('pg', dict_conn)
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('pg', dict_conn)
 
     return db
 
 def get_gpkg_conn_from_path(path):
     dict_conn = dict()
     dict_conn['dbfile'] = path
-    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
     return db
 
@@ -82,7 +82,7 @@ def get_gpkg_conn(gpkg_schema_name):
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
         gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
-        db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+        db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
     return db
 
