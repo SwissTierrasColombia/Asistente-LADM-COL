@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsDataSourceUri
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
@@ -127,7 +128,7 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self, test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE):
         """
         WARNING: We check several levels in order:
             1. SERVER
@@ -138,6 +139,7 @@ class PGConnector(DBConnector):
           If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
+        :param user_level: (EnumUserLevel) level of permissions a user has
         :return Triple: boolean result, message code, message text
         """
         uri = self._uri
@@ -153,8 +155,8 @@ class PGConnector(DBConnector):
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
-                return (False, EnumTestConnectionMsg.DATABASE_NOT_FOUND, QCoreApplication.translate("PGConnector",
-                                                          "You should first select a database."))
+                return False, EnumTestConnectionMsg.DATABASE_NOT_FOUND, QCoreApplication.translate("PGConnector",
+                                                          "You should first select a database.")
 
         # Client side check
         if self.conn is None or self.conn.closed:
@@ -190,7 +192,7 @@ class PGConnector(DBConnector):
                         "The schema '{}' does not exist in the database!").format(
                         self.schema)
 
-            res, msg = self.get_schema_privileges(uri, self.schema)
+            res, msg = self.has_schema_privileges(uri, self.schema, user_level)
             if not res:
                 return False, EnumTestConnectionMsg.USER_HAS_NO_PERMISSION, QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
@@ -617,7 +619,7 @@ class PGConnector(DBConnector):
                 e))
         return (True, schemas_list)
 
-    def get_schema_privileges(self, uri, schema):
+    def has_schema_privileges(self, uri, schema, user_level=EnumUserLevel.CREATE):
         try:
             conn = psycopg2.connect(uri)
             cur = conn.cursor()
@@ -633,21 +635,22 @@ class PGConnector(DBConnector):
                 privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
                               'usage': bool(int(schema_privileges[1]))}  # 'usage'
             else:
-                return (
-                False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema))
+                return False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema)
             cur.close()
             conn.close()
         except Exception as e:
-            return (False, QCoreApplication.translate("PGConnector",
+            return False, QCoreApplication.translate("PGConnector",
                                                       "There was an error when obtaining privileges for schema '{}'. Details: {}").format(
-                schema, e))
+                schema, e)
 
-        if privileges['create'] and privileges['usage']:
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "The user has both Create and Usage priviledges over the schema."))
+        if user_level == EnumUserLevel.CREATE and privileges['create'] and privileges['usage']:
+            return True, QCoreApplication.translate("PGConnector",
+                                                     "The user has both Create and Usage privileges over the schema.")
+        elif user_level == EnumUserLevel.CONNECT and privileges['usage']:
+            return True, QCoreApplication.translate("PGConnector",
+                                                    "The user has Usage privileges over the schema.")
         else:
-            return (
-            False, QCoreApplication.translate("PGConnector", "The user has not enough priviledges over the schema."))
+            return False, QCoreApplication.translate("PGConnector", "The user has not enough privileges over the schema.")
 
     def is_ladm_layer(self, layer):
         result = False

@@ -23,6 +23,7 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
@@ -51,7 +52,7 @@ class GPKGConnector(DBConnector):
         self._dict_conn_params = {'dbfile': value}
         self._uri = value
 
-    def test_connection(self, test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE):
         """
         WARNING: We check several levels in order:
             1. SERVER
@@ -62,6 +63,7 @@ class GPKGConnector(DBConnector):
           If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
+        :param user_level: (EnumUserLevel) level of permissions a user has
         :return Triple: boolean result, message code, message text
         """
         uri = self._uri

@@ -80,7 +80,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
 from asistente_ladm_col.config.enums import LayerRegisterType
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.config.mapping_config import (LADMNames,
@@ -1084,15 +1084,15 @@ class QGISUtils(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def is_transition_system_service_valid(self, url=None):
+    def is_transitional_system_service_valid(self, url=None):
         res = False
         msg = {'text': '', 'level': Qgis.Warning}
-        st_config = TransitionSystemConfig()
+        st_config = TransitionalSystemConfig()
         if url is None:
             url = st_config.get_domain()
 
         if url:
-            with ProcessWithStatus("Checking Transition System service availability (this might take a while)..."):
+            with ProcessWithStatus("Checking Transitional System service availability (this might take a while)..."):
                 if self.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -1112,7 +1112,7 @@ class QGISUtils(QObject):
                             if 'error' in data and data['error'] == st_config.ST_EXPECTED_RESPONSE:
                                 res = True
                                 msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                    "The tested service is valid to connect with Transition System!")
+                                    "The tested service is valid to connect with Transitional System!")
                                 msg['level'] = Qgis.Info
                             else:
                                 res = False

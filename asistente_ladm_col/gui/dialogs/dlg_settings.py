@@ -32,7 +32,7 @@ from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE)
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
@@ -76,10 +76,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.btn_test_ladm_col_structure.clicked.connect(self.test_ladm_col_structure)
 
         self.btn_test_service.clicked.connect(self.test_service)
-        self.btn_test_service_transition_system.clicked.connect(self.test_service_transition_system)
+        self.btn_test_service_transitional_system.clicked.connect(self.test_service_transitional_system)
 
         self.btn_default_value_sources.clicked.connect(self.set_default_value_source_service)
-        self.btn_default_value_transition_system.clicked.connect(self.set_default_value_transition_system_service)
+        self.btn_default_value_transitional_system.clicked.connect(self.set_default_value_transitional_system_service)
 
         self.chk_use_roads.toggled.connect(self.update_images_state)
 
@@ -286,8 +286,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
-        endpoint_transition_system = self.txt_service_transition_system.text().strip()
-        settings.setValue('Asistente-LADM_COL/sources/service_transition_system', (endpoint_transition_system[:-1] if endpoint_transition_system.endswith('/') else endpoint_transition_system) or TransitionSystemConfig().ST_DEFAULT_DOMAIN)
+        endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
+        settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -353,7 +353,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
 
-        self.txt_service_transition_system.setText(settings.value('Asistente-LADM_COL/sources/service_transition_system', TransitionSystemConfig().ST_DEFAULT_DOMAIN))
+        self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
@@ -403,18 +403,18 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 
-    def test_service_transition_system(self):
+    def test_service_transitional_system(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.qgis_utils.is_transition_system_service_valid(self.txt_service_transition_system.text().strip())
+        res, msg = self.qgis_utils.is_transitional_system_service_valid(self.txt_service_transitional_system.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 
     def set_default_value_source_service(self):
         self.txt_service_endpoint.setText(DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
-    def set_default_value_transition_system_service(self):
-        self.txt_service_transition_system.setText(TransitionSystemConfig().ST_DEFAULT_DOMAIN)
+    def set_default_value_transitional_system_service(self):
+        self.txt_service_transitional_system.setText(TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

@@ -19,7 +19,6 @@
  ***************************************************************************/
 """
 import os
-import re
 
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (ImportDataConfiguration,
@@ -49,6 +48,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -164,7 +164,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 color = '#fff'  # White
 
                 self.import_models_qmodel = QStandardItemModel()
-                models_name = self.find_models_xtf(self.xtf_file_line_edit.text().strip())
+                models_name = get_models_from_xtf(self.xtf_file_line_edit.text().strip())
 
                 for model_name in models_name:
                     if not model_name in LADMNames.DEFAULT_HIDDEN_MODELS:
@@ -193,16 +193,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
-
-    def find_models_xtf(self, xtf_path):
-        models_name = list()
-        pattern = re.compile(r'<MODEL[^>]*>(?P<text>[^<]*)</MODEL>')
-        with open(xtf_path, 'r') as f:
-            for txt in pattern.finditer(f.read()):
-                model_tag = str(txt.group(0))
-                name = re.findall('NAME="(.*?)"', model_tag, re.IGNORECASE)
-                models_name.extend(name)
-        return sorted(models_name)
 
     def get_ili_models(self):
         ili_models = list()

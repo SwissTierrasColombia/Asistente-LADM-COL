@@ -26,13 +26,13 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/supplies/dlg_etl_cobol.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
-        ../ui/transition_system/dlg_login_st.ui \
-        ../ui/transition_system/dockwidget_transition_system.ui \
-        ../ui/transition_system/home_widget.ui \
-        ../ui/transition_system/task_widget_item.ui \
-        ../ui/transition_system/tasks_widget.ui \
-        ../ui/transition_system/transition_system_initial_panel_widget.ui \
-        ../ui/transition_system/transition_system_task_panel_widget.ui \
+        ../ui/transitional_system/dlg_login_st.ui \
+        ../ui/transitional_system/dockwidget_transitional_system.ui \
+        ../ui/transitional_system/home_widget.ui \
+        ../ui/transitional_system/task_widget_item.ui \
+        ../ui/transitional_system/tasks_widget.ui \
+        ../ui/transitional_system/transitional_system_initial_panel_widget.ui \
+        ../ui/transitional_system/transitional_system_task_panel_widget.ui \
         ../ui/wizards/operation/dlg_group_party.ui \
 	    ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
         ../ui/wizards/operation/wiz_create_administrative_source_operation.ui \
@@ -57,6 +57,7 @@ SOURCES = ../__init__.py \
           ../config/general_config.py \
           ../config/help_strings.py \
           ../config/gui/gui_config.py \
+          ../config/transitional_system_config.py
           ../config/wizard_config.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
           ../gui/change_detection/changes_parties_panel.py \
@@ -89,11 +90,11 @@ SOURCES = ../__init__.py \
           ../gui/supplies/dlg_cobol_base.py \
           ../gui/supplies/dlg_etl_cobol.py \
           ../gui/supplies/dlg_missing_cobol_supplies.py \
-          ../gui/transition_system/dlg_login_st.py \
-          ../gui/transition_system/dockwidget_transition_system.py \
-          ../gui/transition_system/task_panel.py \
-          ../gui/transition_system/tasks_widget.py \
-          ../gui/transition_system/transition_system_initial_panel.py \
+          ../gui/transitional_system/dlg_login_st.py \
+          ../gui/transitional_system/dockwidget_transitional_system.py \
+          ../gui/transitional_system/task_panel.py \
+          ../gui/transitional_system/tasks_widget.py \
+          ../gui/transitional_system/transitional_system_initial_panel.py \
           ../gui/wizards/operation/dlg_create_group_party_operation.py \
           ../gui/wizards/operation/wiz_create_ext_address_operation.py \
           ../gui/wizards/operation/wiz_create_parcel_operation.py \
@@ -121,8 +122,8 @@ SOURCES = ../__init__.py \
           ../lib/db/pg_connector.py \
           ../lib/processing/algs/InsertFeaturesToLayer.py \
           ../lib/processing/algs/PolygonsToLines.py \
-          ../lib/transition_system/st_session/st_session.py \
-          ../lib/transition_system/task_manager/task_manager.py \
+          ../lib/transitional_system/st_session/st_session.py \
+          ../lib/transitional_system/task_manager/task_manager.py \
           ../lib/source_handler.py \
           ../logic/ladm_col/queries/per_component/pg/logic_validation_queries.py \
           ../logic/quality/logic_checks.py \
@@ -132,6 +133,7 @@ SOURCES = ../__init__.py \
           ../utils/qt_utils.py \
           ../utils/model_parser.py \
           ../utils/qgis_model_baker_utils.py \
+          ../utils/st_utils.py \
           ../utils/utils.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts
