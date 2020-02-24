@@ -24,10 +24,7 @@ from ...lib.db.gpkg_connector import GPKGConnector
 class GpkgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
-        self._mode = "gpkg"
-
-    def get_id(self):
-        return 'gpkg'
+        self._engine = "gpkg"
 
     def get_name(self):
         return 'GeoPackage'

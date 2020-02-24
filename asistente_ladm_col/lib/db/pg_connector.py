@@ -63,7 +63,7 @@ class PGConnector(DBConnector):
 
     def __init__(self, uri, conn_dict=dict()):
         DBConnector.__init__(self, uri, conn_dict)
-        self.mode = 'pg'
+        self.engine = 'pg'
         self.conn = None
         self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
         self.provider = 'postgres'

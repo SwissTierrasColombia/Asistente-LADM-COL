@@ -46,7 +46,7 @@ class GPKGConnector(DBConnector):
 
     def __init__(self, uri, conn_dict={}):
         DBConnector.__init__(self, uri, conn_dict)
-        self.mode = 'gpkg'
+        self.engine = 'gpkg'
         self.conn = None
         self.provider = 'ogr'
 

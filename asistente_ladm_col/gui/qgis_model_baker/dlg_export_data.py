@@ -245,7 +245,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             exporter = iliexporter.Exporter()
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
             exporter.tool = db_factory.get_mbaker_db_ili_mode()
             exporter.configuration = configuration
@@ -309,7 +309,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
