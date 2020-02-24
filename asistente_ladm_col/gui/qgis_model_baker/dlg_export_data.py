@@ -89,6 +89,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
                                     file_filter=QCoreApplication.translate("DialogExportData", "XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
@@ -110,10 +114,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogExportData", "Show log"))
         self.log_config.setFlat(True)
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
@@ -195,6 +195,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
+        self.clear_message()
 
     def accepted(self):
         self._running_tool = True
@@ -401,6 +402,11 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.progress_bar.setValue(85)
             QCoreApplication.processEvents()
 
+    def clear_message(self):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.txtStdout.clear()  # Clear previous messages
+        self.progress_bar.setValue(0)  # Init progress bar
+
     def show_help(self):
         self.qgis_utils.show_help("export_data")
 
@@ -432,3 +438,4 @@ class DialogExportData(QDialog, DIALOG_UI):
         Slot. Sets a flag to false to eventually ask a user whether to overwrite a file.
         """
         self.xtf_browser_was_opened = False
+        self.clear_message()

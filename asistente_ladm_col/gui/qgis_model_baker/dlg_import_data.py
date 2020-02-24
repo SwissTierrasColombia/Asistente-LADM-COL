@@ -95,6 +95,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
         self.xtf_file_browse_button.clicked.connect(
             make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData", "Open Transfer or Catalog File"),
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
@@ -108,15 +112,10 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # db
         self.connection_setting_button.clicked.connect(self.show_settings)
-
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportData", "Connection Settings"))
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportData", "Show log"))
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.clicked.connect(self.accepted_import_data)
@@ -161,6 +160,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
+        self.clear_message()
         message_error = None
 
         if not self.xtf_file_line_edit.text().strip():
@@ -231,6 +231,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
+        self.clear_message()
 
     def accepted(self):
         self._running_tool = True
@@ -464,6 +465,11 @@ class DialogImportData(QDialog, DIALOG_UI):
         elif text.strip() == 'Info: second validation pass...':
             self.progress_bar.setValue(80)
             QCoreApplication.processEvents()
+
+    def clear_message(self):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.txtStdout.clear()  # Clear previous messages
+        self.progress_bar.setValue(0)  # Init progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("import_data")

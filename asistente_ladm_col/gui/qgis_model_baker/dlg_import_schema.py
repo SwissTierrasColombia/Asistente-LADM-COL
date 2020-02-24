@@ -86,6 +86,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
         self.setupUi(self)
 
         self.validators = Validators()
@@ -102,10 +106,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportSchema", "Show log"))
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.clicked.connect(self.accepted_import_schema)
@@ -211,6 +211,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the import schema dialog
         self._db_was_changed = True
+        self.clear_message()  # Clean message if db connection changed
 
     def accepted(self):
         self._running_tool = True
@@ -393,6 +394,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         elif text.strip() == 'Info: create table structure…':
             self.progress_bar.setValue(70)
             QCoreApplication.processEvents()
+
+    def clear_message(self):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.txtStdout.clear()  # Clear previous messages
+        self.progress_bar.setValue(0)  # Init progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("import_schema")
