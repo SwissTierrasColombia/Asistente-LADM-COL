@@ -72,6 +72,11 @@ class GPKGConnector(DBConnector):
         uri = self._uri
         database = os.path.basename(self._dict_conn_params['dbfile'])
 
+        # The most basic check first :)
+        if not os.path.splitext(uri)[1] == ".gpkg":
+            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
+                                                                                                 "The file should have the '.gpkg' extension!")
+
         # First we do a very basic check, looking that the directory or file exists
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
             # file does not exist, but directory must exist
@@ -79,7 +84,7 @@ class GPKGConnector(DBConnector):
 
             if not os.path.exists(directory):
                 return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                              "GeoPackage directory file not found.")
+                                                                                              "GeoPackage directory not found.")
         else:
             if not os.path.exists(uri):
                 return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
