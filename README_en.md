@@ -201,3 +201,7 @@ docker-compose down --rmi local && docker-compose build
 + Change detection:
 
   ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+
++ Integration with Transitional System
+
+![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)
