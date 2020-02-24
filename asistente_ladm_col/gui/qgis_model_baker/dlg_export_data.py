@@ -47,6 +47,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -74,6 +75,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.db_source = db_source
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
 
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
@@ -85,6 +87,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         
         self._dbs_supported = ConfigDbSupported()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
+        self._running_tool = False
 
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
@@ -119,7 +122,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
-        self.rejected.connect(self.close_dialog)
 
         self.update_connection_info()
         self.update_model_names()
@@ -152,11 +154,17 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
-    def close_dialog(self):
-        if self._db_was_changed:
-            # If the db was changed, it implies it complies with ladm_col, hence the second parameter
-            self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
-        self.close()
+    def reject(self):
+        if self._running_tool:
+            QMessageBox.information(self,
+                                    QCoreApplication.translate("DialogExportData", "Warning"),
+                                    QCoreApplication.translate("DialogExportData", "The Import Schema tool is still running. Please wait until processing is complete."))
+        else:
+            if self._db_was_changed:
+                # If the db was changed, it implies it complies with ladm_col, hence the second parameter
+                self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
+            self.logger.info(__name__, "Dialog closed.")
+            self.done(1)
 
     def get_ili_models(self):
         ili_models = list()
@@ -189,6 +197,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._db_was_changed = True
 
     def accepted(self):
+        self._running_tool = True
         self.bar.clearWidgets()
 
         java_home_set = self.java_utils.set_java_home()
@@ -204,6 +213,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid XTF file before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -211,6 +221,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             return
 
         if not self.get_ili_models():
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid schema to export. This schema does not have information to export.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -218,6 +229,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             return
         
         if not configuration.iliexportmodels:
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a model before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -234,6 +246,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msg_box = self.msg.exec_()
             if msg_box == QMessageBox.No:
+                self._running_tool = False
                 return
             
         with OverrideCursor(Qt.WaitCursor):
@@ -261,9 +274,11 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             try:
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
+                    self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
+                self._running_tool = False
                 message_error_java = QCoreApplication.translate("DialogExportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
@@ -271,6 +286,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 self.show_message(message_error_java, Qgis.Warning)
                 return
 
+            self._running_tool = False
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
@@ -319,8 +335,12 @@ class DialogExportData(QDialog, DIALOG_UI):
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
+        # User could have changed the default values
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+
         # Check custom model directories
-        if QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool):
+        if self.use_local_models:
             if self.custom_model_directories is None:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
