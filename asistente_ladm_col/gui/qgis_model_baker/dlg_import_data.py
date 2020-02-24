@@ -296,7 +296,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             dataImporter = iliimporter.Importer(dataImport=True)
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
             dataImporter.tool = db_factory.get_mbaker_db_ili_mode()
             dataImporter.configuration = configuration
@@ -365,7 +365,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)

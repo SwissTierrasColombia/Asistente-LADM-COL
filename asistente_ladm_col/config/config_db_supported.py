@@ -40,5 +40,5 @@ class ConfigDbSupported(QObject):
     def get_db_factories(self):
         return self._db_factories
 
-    def get_db_factory(self, id):
-        return self._db_factories[id] if id in self._db_factories else None
+    def get_db_factory(self, engine):
+        return self._db_factories[engine] if engine in self._db_factories else None

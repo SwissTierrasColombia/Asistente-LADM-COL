@@ -238,7 +238,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             importer = iliimporter.Importer()
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
             importer.tool = db_factory.get_mbaker_db_ili_mode()
             importer.configuration = configuration
@@ -314,7 +314,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.epsg = int(authid[5:])
 
     def update_configuration(self):
-        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
         configuration = SchemaImportConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)

@@ -73,6 +73,22 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
 
+    def test_gpkg_test_connection_wrong_extension(self):
+        print("\nINFO: Validate test_connection() for GeoPackage (wrong extension)...")
+
+        db = get_gpkg_conn_from_path('/tmp/a.gpkgs')
+        res, code, msg = db.test_connection()
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.WRONG_FILE_EXTENSION)
+
+    def test_gpkg_test_connection_dir_not_found(self):
+        print("\nINFO: Validate test_connection() for GeoPackage (dir not found)...")
+
+        db = get_gpkg_conn_from_path('/tmpa/a.gpkg')
+        res, code, msg = db.test_connection(EnumTestLevel.SCHEMA_IMPORT)
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.DIR_NOT_FOUND)
+
     def test_gpkg_test_connection_file_not_found(self):
         print("\nINFO: Validate test_connection() for GeoPackage (file not found)...")
 

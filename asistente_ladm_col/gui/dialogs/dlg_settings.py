@@ -55,7 +55,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = db_source
-        self.init_select_db = None
+        self.init_db_engine = None
 
         self._action_type = None
         self.dbs_supported = ConfigDbSupported()
@@ -87,18 +87,18 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-        self.cbo_db_source.clear()
+        self.cbo_db_engine.clear()
 
         self._lst_db = self.dbs_supported.get_db_factories()
         self._lst_panel = dict()
 
         for key, value in self._lst_db.items():
-            self.cbo_db_source.addItem(value.get_name(), key)
+            self.cbo_db_engine.addItem(value.get_name(), key)
             self._lst_panel[key] = value.get_config_panel(self)
             self._lst_panel[key].notify_message_requested.connect(self.show_message)
             self.db_layout.addWidget(self._lst_panel[key])
 
-        self.db_source_changed()
+        self.db_engine_changed()
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -106,7 +106,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.roles = Role_Registry()
         self.load_roles()
 
-        self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
+        self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)
         self.rejected.connect(self.close_dialog)
 
     def load_roles(self):
@@ -152,9 +152,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_model_directories_line_edit.setText("")
 
     def _get_db_connector_from_gui(self):
-        current_db = self.cbo_db_source.currentData()
-        params = self._lst_panel[current_db].read_connection_parameters()
-        db = self._lst_db[current_db].get_db_connector(params)
+        current_db_engine = self.cbo_db_engine.currentData()
+        params = self._lst_panel[current_db_engine].read_connection_parameters()
+        db = self._lst_db[current_db_engine].get_db_connector(params)
         return db
 
     def get_db_connection(self):
@@ -172,8 +172,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg.exec_()
 
     def accepted(self):
-        current_db = self.cbo_db_source.currentData()
-        if self._lst_panel[current_db].state_changed() or self.init_select_db != current_db:
+        current_db_engine = self.cbo_db_engine.currentData()
+        if self._lst_panel[current_db_engine].state_changed() or self.init_db_engine != current_db_engine:
             valid_connection = True
             ladm_col_schema = False
 
@@ -254,26 +254,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def finished_slot(self, result):
         self.bar.clearWidgets()
 
-    def set_db_connection(self, mode, dict_conn):
-        """
-        To be used by external scripts and unit tests
-        """
-        self.cbo_db_source.setCurrentIndex(self.cbo_db_source.findData(mode))
-        self.db_source_changed()
-
-        current_db = self.cbo_db_source.currentData()
-
-        self._lst_panel[current_db].write_connection_parameters(dict_conn)
-
-        self.accepted() # Create/update the db object
-
     def save_settings(self):
         settings = QSettings()
-        current_db = self.cbo_db_source.currentData()
-        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), current_db)
-        dict_conn = self._lst_panel[current_db].read_connection_parameters()
+        current_db_engine = self.cbo_db_engine.currentData()
+        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
+        dict_conn = self._lst_panel[current_db_engine].read_connection_parameters()
 
-        self._lst_db[current_db].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
+        self._lst_db[current_db_engine].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
         settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
@@ -312,16 +299,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
-        default_db = self.dbs_supported.id_default_db
+        default_db_engine = self.dbs_supported.id_default_db
 
-        self.init_select_db = settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), default_db)
-        index_db = self.cbo_db_source.findData(self.init_select_db)
+        self.init_db_engine = settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), default_db_engine)
+        index_db_engine = self.cbo_db_engine.findData(self.init_db_engine)
 
-        if index_db == -1:
-            index_db = self.cbo_db_source.findData(default_db)
+        if index_db_engine == -1:
+            index_db_engine = self.cbo_db_engine.findData(default_db_engine)
 
-        self.cbo_db_source.setCurrentIndex(index_db)
-        self.db_source_changed()
+        self.cbo_db_engine.setCurrentIndex(index_db_engine)
+        self.db_engine_changed()
 
         # restore db settings for all panels
         for id_db, db_factory in self._lst_db.items():
@@ -356,18 +343,18 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
-    def db_source_changed(self):
+    def db_engine_changed(self):
         if self._db is not None:
             self._db.close_connection()
 
-        self._db = None # Reset db connection
+        self._db = None  # Reset db connection
 
         for key, value in self._lst_panel.items():
             value.setVisible(False)
 
-        current_db = self.cbo_db_source.currentData()
+        current_db_engine = self.cbo_db_engine.currentData()
 
-        self._lst_panel[current_db].setVisible(True)
+        self._lst_panel[current_db_engine].setVisible(True)
 
     def test_connection(self):
         db = self._get_db_connector_from_gui()

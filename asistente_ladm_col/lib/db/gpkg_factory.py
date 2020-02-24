@@ -25,10 +25,7 @@ from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GpkgLADMQuery
 class GpkgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
-        self._mode = "gpkg"
-
-    def get_id(self):
-        return 'gpkg'
+        self._engine = "gpkg"
 
     def get_name(self):
         return 'GeoPackage'

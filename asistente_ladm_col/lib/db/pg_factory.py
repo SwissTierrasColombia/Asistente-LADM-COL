@@ -25,13 +25,10 @@ from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PgLADMQuery
 class PgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
-        self._mode = "pg"
+        self._engine = "pg"
 
     def get_name(self):
         return "PostgreSQL / PostGIS"
-
-    def get_id(self):
-        return "pg"
 
     def get_mbaker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode

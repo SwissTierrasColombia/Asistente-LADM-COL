@@ -40,12 +40,12 @@ class DBConnector(QObject):
     """
     Superclass for all DB connectors.
     """
-    _DEFAULT_VALUES = dict()
+    _DEFAULT_VALUES = dict()  # You should set it, so that testing empty parameters can be handled easily.
 
     def __init__(self, uri, conn_dict=dict()):
         QObject.__init__(self)
         self.logger = Logger()
-        self.mode = ''
+        self.engine = ''
         self.provider = '' # QGIS provider name. e.g., postgres
         self._uri = None
         self.schema = None
@@ -91,7 +91,7 @@ class DBConnector(QObject):
 
     def get_description(self):
         return "Current connection details: '{}' -> {} {}".format(
-            self.mode,
+            self.engine,
             self._uri,
             'schema:{}'.format(self.schema) if self.schema else '')
 

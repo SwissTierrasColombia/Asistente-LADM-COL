@@ -31,7 +31,6 @@ class PgConfigPanel(DbSchemaDbPanel, WIDGET_UI):
     def __init__(self, parent):
         DbSchemaDbPanel.__init__(self, parent)
         self.setupUi(self)
-        self.mode = "pg"
         self.init_schema()
 
     def showEvent(self, event):

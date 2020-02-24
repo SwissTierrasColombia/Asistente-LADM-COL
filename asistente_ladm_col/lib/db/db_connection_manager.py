@@ -65,10 +65,10 @@ class ConnectionManager(QObject):
         return query_manager
 
     def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
-        db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))
+        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source))
 
-        if db_connection_source:
-            db_factory = self.dbs_supported.get_db_factory(db_connection_source)
+        if db_connection_engine:
+            db_factory = self.dbs_supported.get_db_factory(db_connection_engine)
             dict_conn = db_factory.get_parameters_conn(db_source)
             db = db_factory.get_db_connector(dict_conn)
             db.open_connection()  # Open db connection
@@ -81,7 +81,7 @@ class ConnectionManager(QObject):
 
     def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):
         if self._db_sources[db_source] is None:
-            # obtain the connection of the database on demand
+            # Obtain the connection of the database on demand
             self.update_db_connector_for_source(db_source)
         return self._db_sources[db_source]
 
