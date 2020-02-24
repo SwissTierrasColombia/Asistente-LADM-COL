@@ -40,6 +40,9 @@ from asistente_ladm_col.utils.utils import normalize_iliname
 class GPKGConnector(DBConnector):
 
     _PROVIDER_NAME = 'ogr'
+    _DEFAULT_VALUES = {
+        'dbfile': ''
+    }
 
     def __init__(self, uri, conn_dict={}):
         DBConnector.__init__(self, uri, conn_dict)

@@ -40,7 +40,7 @@ class DBConnector(QObject):
     """
     Superclass for all DB connectors.
     """
-    _DEFAULT_VALUES = dict()
+    _DEFAULT_VALUES = dict()  # You should set it, so that testing empty parameters can be handled easily.
 
     def __init__(self, uri, conn_dict=dict()):
         QObject.__init__(self)
