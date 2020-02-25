@@ -116,7 +116,7 @@ class Logger(QObject, metaclass=SingletonQObject):
         if msg is None:
             self.clear_status_bar_emitted.emit()
         else:
-            self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+            self.log_message("status_bar", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
         QCoreApplication.processEvents()
 
     def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):

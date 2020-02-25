@@ -212,6 +212,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
                 # Emmit signal when db source changes
                 self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
+                self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
                 self.save_settings()
                 QDialog.accept(self)
