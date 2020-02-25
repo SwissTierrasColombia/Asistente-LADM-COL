@@ -26,10 +26,10 @@ class DbFactory(ABC):
     """
 
     def __init__(self):
-        self._mode = None
+        self._engine = None
 
     def get_id(self):
-        raise NotImplementedError
+        return self._engine
 
     def get_name(self):
         raise NotImplementedError
@@ -50,14 +50,14 @@ class DbFactory(ABC):
         settings = QSettings()
         for parameter, value in dict_conn.items():
                 settings.setValue(
-                    'Asistente-LADM_COL/db/{db_source}/{scope}/{parameter}'.format(db_source=db_source,
-                                                                                   scope=self._mode,
+                    'Asistente-LADM_COL/db/{db_source}/{engine}/{parameter}'.format(db_source=db_source,
+                                                                                   engine=self._engine,
                                                                                    parameter=parameter), value)
 
     def get_parameters_conn(self, db_source):
         dict_conn = dict()
         settings = QSettings()
-        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{scope}/'.format(db_source=db_source, scope=self._mode))
+        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{engine}/'.format(db_source=db_source, engine=self._engine))
         for key in settings.allKeys():
             dict_conn[key] = settings.value(key)
 

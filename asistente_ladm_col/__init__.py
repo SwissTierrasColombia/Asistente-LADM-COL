@@ -27,11 +27,13 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       QGIS_REQUIRED_VERSION,
                                                       QGIS_REQUIRED_VERSION_INT)
+from asistente_ladm_col.tests.gui_tests import gui_tests_model_baker
 
 
 def classFactory(iface):
     if Qgis.QGIS_VERSION_INT >= QGIS_REQUIRED_VERSION_INT:
         try:
+            Logger().info(__name__, "STARTING LADM-COL ASSISTANT...")
             from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
         except ImportError as e:
             iface.messageBar().clearWidgets()
@@ -48,6 +50,12 @@ def classFactory(iface):
 
             from mock import Mock
             return Mock()
+
+        try:
+            from qgistester.tests import addTestModule
+            addTestModule(gui_tests_model_baker, PLUGIN_NAME)
+        except:
+            Logger().warning(__name__, "QGIS Tester plugin was not found. Therefore, no GUI tests could be registered!")
 
         return AsistenteLADMCOLPlugin(iface)
     else:

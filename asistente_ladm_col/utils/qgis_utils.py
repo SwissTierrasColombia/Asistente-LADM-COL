@@ -125,6 +125,7 @@ class QGISUtils(QObject):
         return self._source_handler
 
     def cache_layers_and_relations(self, db, ladm_col_db, db_source):
+        self.logger.debug(__name__, "Cache layers and relations called (LADM-COL DB: {})".format(ladm_col_db))
         if ladm_col_db:
             msg = QCoreApplication.translate("QGISUtils",
                 "Extracting relations and domains from the database... This is done only once per session!")

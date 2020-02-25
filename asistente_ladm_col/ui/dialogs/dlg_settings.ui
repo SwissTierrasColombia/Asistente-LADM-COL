@@ -93,7 +93,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cbo_db_source">
+          <widget class="QComboBox" name="cbo_db_engine">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -753,7 +753,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cbo_db_source</tabstop>
+  <tabstop>cbo_db_engine</tabstop>
   <tabstop>btn_test_connection</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>online_models_radio_button</tabstop>

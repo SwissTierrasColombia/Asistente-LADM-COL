@@ -27,7 +27,6 @@ class DbConfigPanel(QWidget):
 
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
-        self._mode = None
         self.state = None
 
     def read_connection_parameters(self):
