@@ -64,7 +64,7 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
-    
+
     def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self)
         self.setupUi(self)
@@ -84,21 +84,17 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
-        
+
         self._dbs_supported = ConfigDbSupported()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
                                     file_filter=QCoreApplication.translate("DialogExportData", "XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
         self.xtf_file_browse_button.clicked.connect(self.xtf_browser_opened_to_true)
         self.xtf_browser_was_opened = False
-        
+
         self.validators = Validators()
         fileValidator = FileValidator(pattern=['*.' + ext for ext in self.ValidExtensions], allow_non_existing=True)
         self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the XTF to be created]"))
@@ -126,6 +122,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.update_connection_info()
         self.update_model_names()
         self.restore_configuration()
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -158,13 +158,16 @@ class DialogExportData(QDialog, DIALOG_UI):
         if self._running_tool:
             QMessageBox.information(self,
                                     QCoreApplication.translate("DialogExportData", "Warning"),
-                                    QCoreApplication.translate("DialogExportData", "The Import Schema tool is still running. Please wait until processing is complete."))
+                                    QCoreApplication.translate("DialogExportData", "The Export Data tool is still running. Please wait until it finishes."))
         else:
-            if self._db_was_changed:
-                # If the db was changed, it implies it complies with ladm_col, hence the second parameter
-                self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
-            self.logger.info(__name__, "Dialog closed.")
-            self.done(1)
+            self.close_dialog()
+
+    def close_dialog(self):
+        if self._db_was_changed:
+            # If the db was changed, it implies it complies with ladm_col, hence the second parameter
+            self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
+        self.logger.info(__name__, "Dialog closed.")
+        self.close()
 
     def get_ili_models(self):
         ili_models = list()
@@ -195,7 +198,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
-        self.clear_message()
+        self.clear_messages()
 
     def accepted(self):
         self._running_tool = True
@@ -228,7 +231,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
             return
-        
+
         if not configuration.iliexportmodels:
             self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a model before exporting data.")
@@ -249,7 +252,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             if msg_box == QMessageBox.No:
                 self._running_tool = False
                 return
-            
+
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
 
@@ -259,7 +262,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             exporter = iliexporter.Exporter()
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
             exporter.tool = db_factory.get_mbaker_db_ili_mode()
             exporter.configuration = configuration
@@ -326,7 +329,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
@@ -383,7 +386,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.enable()
-            
+
             # Open log
             if self.log_config.isCollapsed():
                 self.log_config.setCollapsed(False)
@@ -402,10 +405,10 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.progress_bar.setValue(85)
             QCoreApplication.processEvents()
 
-    def clear_message(self):
+    def clear_messages(self):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.txtStdout.clear()  # Clear previous messages
-        self.progress_bar.setValue(0)  # Init progress bar
+        self.txtStdout.clear()  # Clear previous log messages
+        self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("export_data")
@@ -438,4 +441,4 @@ class DialogExportData(QDialog, DIALOG_UI):
         Slot. Sets a flag to false to eventually ask a user whether to overwrite a file.
         """
         self.xtf_browser_was_opened = False
-        self.clear_message()
+        self.clear_messages()

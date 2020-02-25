@@ -95,10 +95,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
-
         self.xtf_file_browse_button.clicked.connect(
             make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData", "Open Transfer or Catalog File"),
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
@@ -128,6 +124,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.update_connection_info()
         self.restore_configuration()
 
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
     def accepted_import_data(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
             if button.text() == self.BUTTON_NAME_IMPORT_DATA:
@@ -140,13 +140,17 @@ class DialogImportData(QDialog, DIALOG_UI):
         if self._running_tool:
             QMessageBox.information(self,
                                     QCoreApplication.translate("DialogImportData", "Warning"),
-                                    QCoreApplication.translate("DialogImportData", "The Import Schema tool is still running. Please wait until processing is complete."))
+                                    QCoreApplication.translate("DialogImportData", "The Import Data tool is still running. Please wait until it finishes."))
         else:
-            if self._db_was_changed:
-                # If the db was changed, it implies it complies with ladm_col, hence the second parameter
-                self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
-            self.logger.info(__name__, "Dialog closed.")
-            self.done(1)
+            self.close_dialog()
+
+    def close_dialog(self):
+        if self._db_was_changed:
+            # If the db was changed, it implies it complies with ladm_col, hence the second parameter
+            self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
+
+        self.logger.info(__name__, "Dialog closed.")
+        self.close()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -160,7 +164,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        self.clear_message()
+        self.clear_messages()
         message_error = None
 
         if not self.xtf_file_line_edit.text().strip():
@@ -231,7 +235,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
-        self.clear_message()
+        self.clear_messages()
 
     def accepted(self):
         self._running_tool = True
@@ -311,7 +315,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             dataImporter = iliimporter.Importer(dataImport=True)
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
             dataImporter.tool = db_factory.get_mbaker_db_ili_mode()
             dataImporter.configuration = configuration
@@ -383,7 +387,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.mode)
+        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
@@ -466,10 +470,10 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.progress_bar.setValue(80)
             QCoreApplication.processEvents()
 
-    def clear_message(self):
+    def clear_messages(self):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.txtStdout.clear()  # Clear previous messages
-        self.progress_bar.setValue(0)  # Init progress bar
+        self.txtStdout.clear()  # Clear previous log messages
+        self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("import_data")
