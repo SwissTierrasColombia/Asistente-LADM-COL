@@ -163,7 +163,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
-        self.close()
+        self.done(QDialog.Accepted)
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()

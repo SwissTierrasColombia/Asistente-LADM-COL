@@ -89,6 +89,11 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
+        # We need bar definition above calling clear_messages
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
                                     file_filter=QCoreApplication.translate("DialogExportData", "XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
@@ -122,10 +127,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.update_connection_info()
         self.update_model_names()
         self.restore_configuration()
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -167,7 +168,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
         self.logger.info(__name__, "Dialog closed.")
-        self.close()
+        self.done(QDialog.Accepted)
 
     def get_ili_models(self):
         ili_models = list()

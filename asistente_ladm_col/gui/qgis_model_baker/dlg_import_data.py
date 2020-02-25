@@ -95,6 +95,11 @@ class DialogImportData(QDialog, DIALOG_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
 
+        # We need bar definition above calling clear_messages
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
         self.xtf_file_browse_button.clicked.connect(
             make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData", "Open Transfer or Catalog File"),
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
@@ -124,10 +129,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.update_connection_info()
         self.restore_configuration()
 
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
-
     def accepted_import_data(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
             if button.text() == self.BUTTON_NAME_IMPORT_DATA:
@@ -150,7 +151,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
 
         self.logger.info(__name__, "Dialog closed.")
-        self.close()
+        self.done(QDialog.Accepted)
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
