@@ -47,6 +47,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -63,7 +64,7 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
-    
+
     def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
         QDialog.__init__(self)
         self.setupUi(self)
@@ -74,6 +75,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.db_source = db_source
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
+        self.logger = Logger()
 
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
@@ -82,16 +84,22 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
-        
+
         self._dbs_supported = ConfigDbSupported()
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
+        self._running_tool = False
+
+        # We need bar definition above calling clear_messages
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
                                     file_filter=QCoreApplication.translate("DialogExportData", "XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
         self.xtf_file_browse_button.clicked.connect(self.xtf_browser_opened_to_true)
         self.xtf_browser_was_opened = False
-        
+
         self.validators = Validators()
         fileValidator = FileValidator(pattern=['*.' + ext for ext in self.ValidExtensions], allow_non_existing=True)
         self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the XTF to be created]"))
@@ -108,10 +116,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.log_config.setTitle(QCoreApplication.translate("DialogExportData", "Show log"))
         self.log_config.setFlat(True)
 
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
-
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
@@ -119,7 +123,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
-        self.rejected.connect(self.close_dialog)
 
         self.update_connection_info()
         self.update_model_names()
@@ -152,11 +155,20 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
+    def reject(self):
+        if self._running_tool:
+            QMessageBox.information(self,
+                                    QCoreApplication.translate("DialogExportData", "Warning"),
+                                    QCoreApplication.translate("DialogExportData", "The Export Data tool is still running. Please wait until it finishes."))
+        else:
+            self.close_dialog()
+
     def close_dialog(self):
         if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
-        self.close()
+        self.logger.info(__name__, "Dialog closed.")
+        self.done(QDialog.Accepted)
 
     def get_ili_models(self):
         ili_models = list()
@@ -187,8 +199,10 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         self._db_was_changed = True
+        self.clear_messages()
 
     def accepted(self):
+        self._running_tool = True
         self.bar.clearWidgets()
 
         java_home_set = self.java_utils.set_java_home()
@@ -204,6 +218,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid XTF file before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -211,13 +226,15 @@ class DialogExportData(QDialog, DIALOG_UI):
             return
 
         if not self.get_ili_models():
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid schema to export. This schema does not have information to export.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
             return
-        
+
         if not configuration.iliexportmodels:
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogExportData", "Please set a model before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -234,8 +251,9 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msg_box = self.msg.exec_()
             if msg_box == QMessageBox.No:
+                self._running_tool = False
                 return
-            
+
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
 
@@ -261,9 +279,11 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             try:
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
+                    self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
+                self._running_tool = False
                 message_error_java = QCoreApplication.translate("DialogExportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
@@ -271,6 +291,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 self.show_message(message_error_java, Qgis.Warning)
                 return
 
+            self._running_tool = False
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
@@ -319,8 +340,12 @@ class DialogExportData(QDialog, DIALOG_UI):
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
+        # User could have changed the default values
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+
         # Check custom model directories
-        if QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool):
+        if self.use_local_models:
             if self.custom_model_directories is None:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
@@ -362,7 +387,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.enable()
-            
+
             # Open log
             if self.log_config.isCollapsed():
                 self.log_config.setCollapsed(False)
@@ -380,6 +405,11 @@ class DialogExportData(QDialog, DIALOG_UI):
         elif text.strip() == 'Info: second validation pass...':
             self.progress_bar.setValue(85)
             QCoreApplication.processEvents()
+
+    def clear_messages(self):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.txtStdout.clear()  # Clear previous log messages
+        self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("export_data")
@@ -412,3 +442,4 @@ class DialogExportData(QDialog, DIALOG_UI):
         Slot. Sets a flag to false to eventually ask a user whether to overwrite a file.
         """
         self.xtf_browser_was_opened = False
+        self.clear_messages()

@@ -31,6 +31,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QMessageBox,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
@@ -82,6 +83,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self._dbs_supported = ConfigDbSupported()
+        self._running_tool = False
 
         # There may be two cases where we need to emit a db_connection_changed from the Schema Import dialog:
         #   1) Connection Settings was opened and the DB conn was changed.
@@ -113,10 +115,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportSchema", "Show log"))
 
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
-
         self.buttonBox.accepted.disconnect()
         self.buttonBox.clicked.connect(self.accepted_import_schema)
         self.buttonBox.clear()
@@ -124,12 +122,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_CREATE_STRUCTURE, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
-        self.rejected.connect(self.close_dialog)
 
         self.import_models_list_widget.setDisabled(bool(selected_models))  # If we got models from params, disable panel
 
         self.update_connection_info()
         self.restore_configuration()
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def accepted_import_schema(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
@@ -138,6 +139,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             elif button.text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
                 self.close()  # Close import schema dialog and open import open dialog
                 self.open_dlg_import_data.emit({"db_source": self.db_source})
+
+    def reject(self):
+        if self._running_tool:
+            QMessageBox.information(self,
+                                    QCoreApplication.translate("DialogImportSchema", "Warning"),
+                                    QCoreApplication.translate("DialogImportSchema", "The Import Schema tool is still running. Please wait until it finishes."))
+        else:
+            self.close_dialog()
 
     def close_dialog(self):
         """
@@ -154,7 +163,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
-        self.close()
+        self.done(QDialog.Accepted)
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -228,8 +237,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db may change from this moment
         # until we close the import schema dialog
         self._db_was_changed = True
+        self.clear_messages()  # Clean GUI messages if db connection changed
 
     def accepted(self):
+        self._running_tool = True
         self.bar.clearWidgets()
 
         java_home_set = self.java_utils.set_java_home()
@@ -245,6 +256,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not self.get_checked_models():
+            self._running_tool = False
             message_error = QCoreApplication.translate("DialogImportSchema", "You should select a valid model(s) before creating the LADM-COL structure.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
@@ -272,9 +284,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             try:
                 if importer.run() != iliimporter.Importer.SUCCESS:
+                    self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
+                self._running_tool = False
                 message_error_java = QCoreApplication.translate("DialogImportSchema", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
@@ -282,11 +296,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 self.show_message(message_error_java, Qgis.Warning)
                 return
 
+            self._running_tool = False
             self.buttonBox.clear()
-
             self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
                                      QDialogButtonBox.AcceptRole).setStyleSheet("color: #007208;")
-
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
@@ -358,6 +371,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
+        # User could have changed the default values
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+
         # Check custom model directories
         if self.use_local_models:
             if self.custom_model_directories is None:
@@ -407,6 +424,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         elif text.strip() == 'Info: create table structure…':
             self.progress_bar.setValue(70)
             QCoreApplication.processEvents()
+
+    def clear_messages(self):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
+        self.txtStdout.clear()  # Clear previous log messages
+        self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
         self.qgis_utils.show_help("import_schema")
