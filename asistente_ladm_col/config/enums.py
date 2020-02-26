@@ -36,7 +36,7 @@ class EnumTestConnectionMsg(IntFlag):
     INTERLIS_META_ATTRIBUTES_NOT_FOUND = 5
     INVALID_ILI2DB_VERSION = 6
     NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION = 7  # No single model is in the supported version
-    REQUIRED_LADM_MODELS_NOT_FOUND = 8 # At least one required model was not found
+    REQUIRED_LADM_MODELS_NOT_FOUND = 8  # At least one required model was not found
     DB_NAMES_INCOMPLETE = 9
     UNKNOWN_CONNECTION_ERROR = 10
     DIR_NOT_FOUND = 11

@@ -258,7 +258,7 @@ class DBConnector(QObject):
         if required_models:
             res, msg = self.check_required_models(required_models)
             if not res:
-                return res, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND, msg
+                code = EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND
         else:
             res = self.at_least_one_ladm_col_model_exists()
             if not res:

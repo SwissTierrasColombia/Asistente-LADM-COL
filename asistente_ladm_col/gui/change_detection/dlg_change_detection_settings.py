@@ -3,9 +3,9 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-11-20
+        begin                : 2019-12-20
         git sha              : :%H$
-        copyright            : (C) 219 by Leo Cardona (BSF Swissphoto)
+        copyright            : (C) 2019 by Leo Cardona (BSF Swissphoto)
         email                : leo.cardona.p@gmail.com
  ***************************************************************************/
 /***************************************************************************
@@ -60,7 +60,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self._db_supplies_was_changed = False
 
         # The database configuration is saved if it becomes necessary
-        # to restore the configuration because the user rejects the dialog
+        # to restore the configuration when the user rejects the dialog
         self._init_db_collected_active_mode = None
         self._init_db_supplies_active_mode = None
         self._init_db_collected_dict_config = dict()
@@ -97,8 +97,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         dlg_collected_config = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=COLLECTED_DB_SOURCE)
         dlg_supplies_config = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE)
 
-        self._init_db_collected_active_mode = dlg_collected_config.cbo_db_source.itemData(dlg_collected_config.cbo_db_source.currentIndex())
-        self._init_db_supplies_active_mode = dlg_supplies_config.cbo_db_source.itemData(dlg_supplies_config.cbo_db_source.currentIndex())
+        self._init_db_collected_active_mode = dlg_collected_config.cbo_db_engine.itemData(dlg_collected_config.cbo_db_engine.currentIndex())
+        self._init_db_supplies_active_mode = dlg_supplies_config.cbo_db_engine.itemData(dlg_supplies_config.cbo_db_engine.currentIndex())
 
         for id_db, db_factory in dlg_collected_config._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(COLLECTED_DB_SOURCE)
@@ -214,7 +214,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         if self.radio_button_same_db.isChecked():
             # Get collected db dict config
             dlg_collected_setting = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
-            db_collected_active_mode = dlg_collected_setting.cbo_db_source.itemData(dlg_collected_setting.cbo_db_source.currentIndex())
+            db_collected_active_mode = dlg_collected_setting.cbo_db_engine.itemData(dlg_collected_setting.cbo_db_engine.currentIndex())
             db_collected_dict_conn = dict()
 
             for id_db, db_factory in dlg_collected_setting._lst_db.items():

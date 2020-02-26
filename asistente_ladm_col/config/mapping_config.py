@@ -1,6 +1,5 @@
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
-from qgis.core import NULL
 
 from asistente_ladm_col.utils.singleton import Singleton
 from asistente_ladm_col.lib.logger import Logger

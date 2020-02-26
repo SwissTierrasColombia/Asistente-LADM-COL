@@ -1,7 +1,6 @@
 import os.path
 import platform
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
@@ -44,28 +43,6 @@ SETTINGS_QUALITY_TAB_INDEX = 2
 SETTINGS_AUTOMATIC_VALUES_TAB_INDEX = 3
 SETTINGS_SOURCES_TAB_INDEX = 4
 SETTINGS_ADVANCED_TAB_INDEX = 5
-
-
-# DB MODELS
-SUPPLIES_DB_MODEL = "SUPPLIES_DB_MODEL"
-SNR_DATA_DB_MODEL = "SNR_DATA_DB_MODEL"
-SUPPLIES_INTEGRATION_DB_MODEL = "SUPPLIES_INTEGRATION_DB_MODEL"
-OPERATION_DB_MODEL = "OPERATION_DB_MODEL"
-VALUATION_DB_MODEL = "VALUATION_DB_MODEL"
-CADASTRAL_FORM_DB_MODEL = "CADASTRAL_FORM_DB_MODEL"
-ANT_DB_MODEL = "ANT_DB_MODEL"
-REFERENCE_CARTOGRAPHY_DB_MODEL = "REFERENCE_CARTOGRAPHY_DB_MODEL"
-
-DICT_NAMES_DB_MODELS = {
-    SUPPLIES_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
-    SNR_DATA_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "SNR Data"),
-    SUPPLIES_INTEGRATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Supplies Integration"),
-    OPERATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Operation"),
-    VALUATION_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Valuation"),
-    CADASTRAL_FORM_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Cadastral Form"),
-    ANT_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
-    REFERENCE_CARTOGRAPHY_DB_MODEL: QCoreApplication.translate("TranslatableConfigStrings", "Reference Cartography"),
-}
 
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
