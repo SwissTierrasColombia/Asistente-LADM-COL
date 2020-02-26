@@ -86,8 +86,16 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self._dbs_supported = ConfigDbSupported()
-        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._running_tool = False
+
+        # There may be 1 case where we need to emit a db_connection_changed from the Export Data dialog:
+        #   1) Connection Settings was opened and the DB conn was changed.
+        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
+
+        # Similarly, we could call a refresh on layers and relations cache in 1 case:
+        #   1) If the ED dialog was called for the COLLECTED source: opening Connection Settings and changing the DB
+        #      connection.
+        self._schedule_layers_and_relations_refresh = False
 
         # We need bar definition above calling clear_messages
         self.bar = QgsMessageBar()
@@ -164,9 +172,20 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.close_dialog()
 
     def close_dialog(self):
+        """
+        We use this method to be safe when emitting the db_connection_changed, otherwise we could trigger slots that
+        unload the plugin, destroying dialogs and thus, leading to crashes.
+        """
+        if self._schedule_layers_and_relations_refresh:
+            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
         if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
+
+        if self._schedule_layers_and_relations_refresh:
+            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+
         self.logger.info(__name__, "Dialog closed.")
         self.done(QDialog.Accepted)
 
@@ -183,7 +202,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
-            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            self._schedule_layers_and_relations_refresh = True
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):

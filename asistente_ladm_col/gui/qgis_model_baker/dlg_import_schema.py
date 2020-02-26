@@ -150,7 +150,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def close_dialog(self):
         """
-        We use this slot to be safe when emitting the db_connection_changed, otherwise we could trigger slots that
+        We use this method to be safe when emitting the db_connection_changed, otherwise we could trigger slots that
         unload the plugin, destroying dialogs and thus, leading to crashes.
         """
         if self._schedule_layers_and_relations_refresh:
