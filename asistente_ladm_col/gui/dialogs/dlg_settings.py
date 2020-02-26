@@ -203,7 +203,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     # Only check LADM-schema if we are not in an SCHEMA IMPORT.
                     # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
-                    ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM)
+                    ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM, required_models=self._required_models)
 
                 if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     self.show_message(msg, Qgis.Warning)
@@ -212,20 +212,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
-
-            # To validate the required models there must be at least one defined model.
-            if self._required_models:
-                result_required_models = db.required_models_exist(self._required_models)
-
-                missing_required_models = list()
-                for model in result_required_models:
-                    if not result_required_models[model]:
-                        missing_required_models.append(DICT_NAMES_DB_MODELS[model])
-
-                if missing_required_models:
-                    msg = QCoreApplication.translate("SettingsDialog", "The required {} model(s) do(es) not exist").format(', '.join(missing_required_models))
-                    self.show_message(msg, Qgis.Warning)
-                    return  # Do not close the dialog
 
             if valid_connection:
                 if self._db is not None:

@@ -28,10 +28,9 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
-                                                      OPERATION_DB_MODEL,
-                                                      SUPPLIES_DB_MODEL,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -119,7 +118,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
     def show_settings_collected_db(self):
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list)
-        dlg.set_required_models([OPERATION_DB_MODEL])
+        dlg.set_required_models([LADMNames.OPERATION_MODEL_PREFIX])
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
@@ -132,7 +131,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
     def show_settings_supplies_db(self):
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE, tab_pages_list=tab_pages_list)
-        dlg.set_required_models([SUPPLIES_DB_MODEL])
+        dlg.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])
         dlg.db_connection_changed.connect(self.db_connection_changed)
 
         if dlg.exec_():

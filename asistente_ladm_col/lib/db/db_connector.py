@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.utils.model_parser import ModelParser
 from asistente_ladm_col.config.enums import (EnumTestLevel,
-                                             EnumUserLevel)
+                                             EnumUserLevel,
+                                             EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
                                                       QueryNames,
                                                       LADMNames,
@@ -32,14 +33,6 @@ from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.general_config import (SUPPLIES_DB_MODEL,
-                                                      SNR_DATA_DB_MODEL,
-                                                      SUPPLIES_INTEGRATION_DB_MODEL,
-                                                      OPERATION_DB_MODEL,
-                                                      VALUATION_DB_MODEL,
-                                                      CADASTRAL_FORM_DB_MODEL,
-                                                      ANT_DB_MODEL,
-                                                      REFERENCE_CARTOGRAPHY_DB_MODEL)
 
 COMPOSED_KEY_SEPARATOR = ".."
 
@@ -91,7 +84,7 @@ class DBConnector(QObject):
     def equals(self, db):
         return self.dict_conn_params == db.dict_conn_params
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
         raise NotImplementedError
 
     def close_connection(self):
@@ -184,27 +177,17 @@ class DBConnector(QObject):
 
         return False
 
-    def required_models_exist(self, models):
-        dict_required_models = dict()
-        for model in models:
-            if model == SUPPLIES_DB_MODEL:
-                dict_required_models[SUPPLIES_DB_MODEL] = self.supplies_model_exists()
-            if model == SNR_DATA_DB_MODEL:
-                dict_required_models[SNR_DATA_DB_MODEL] = self.snr_data_model_exists()
-            if model == SUPPLIES_INTEGRATION_DB_MODEL:
-                dict_required_models[SUPPLIES_INTEGRATION_DB_MODEL] = self.supplies_integration_model_exists()
-            if model == OPERATION_DB_MODEL:
-                dict_required_models[OPERATION_DB_MODEL] = self.operation_model_exists()
-            if model == VALUATION_DB_MODEL:
-                dict_required_models[VALUATION_DB_MODEL] = self.valuation_model_exists()
-            if model == CADASTRAL_FORM_DB_MODEL:
-                dict_required_models[CADASTRAL_FORM_DB_MODEL] = self.cadastral_form_model_exists()
-            if model == ANT_DB_MODEL:
-                dict_required_models[ANT_DB_MODEL] = self.ant_model_exists()
-            if model == REFERENCE_CARTOGRAPHY_DB_MODEL:
-                dict_required_models[REFERENCE_CARTOGRAPHY_DB_MODEL] = self.reference_cartography_model_exists()
+    def ladm_col_model_exists(self, model_prefix):
+        if self.read_model_parser():
+            return self.model_parser.ladm_col_model_exists(model_prefix)
 
-        return dict_required_models
+        return False
+
+    def at_least_one_ladm_col_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.at_least_one_ladm_col_model_exists()
+
+        return False
 
     def read_model_parser(self):
         if self.model_parser is None:
@@ -267,16 +250,35 @@ class DBConnector(QObject):
                     if k1 != QueryNames.TABLE_NAME:
                         self._table_and_field_names.append(k1)  # Field names
 
-    def check_at_least_one_ladm_model_exists(self):
-        result = True
-        msg = QCoreApplication.translate("DBConnector", "The version of all models is valid.")
-        models = self.get_models()
-        if len(set(models) & set(LADMNames.ASSISTANT_SUPPORTED_MODELS)) == 0:
-            result = False
-            msg = QCoreApplication.translate("DBConnector",
-                                             "At least one LADM_COL model should exist! Supported models are '{}' but you have '{}'.").format(
-                ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(models))
-        return result, msg
+    def check_db_models(self, required_models):
+        res = True
+        code = EnumTestConnectionMsg.DB_MODELS_ARE_CORRECT
+        msg = ""
+
+        if required_models:
+            res, msg = self.check_required_models(required_models)
+            if not res:
+                return res, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND, msg
+        else:
+            res = self.at_least_one_ladm_col_model_exists()
+            if not res:
+                code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
+                msg = QCoreApplication.translate("DBConnector",
+                            "At least one LADM_COL model should exist in the required version! Supported models are: '{}', but you have '{}'").format(
+                                ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(self.get_models()))
+
+        return res, code, msg
+
+    def check_required_models(self, models):
+        msg = QCoreApplication.translate("DBConnector", "All required models are in the DB!")
+
+        not_found = [model for model in models if not self.ladm_col_model_exists(model)]
+
+        if not_found:
+            msg = QCoreApplication.translate("SettingsDialog",
+                                             "The following required model(s) could not be found in the DB: {}.").format(', '.join(not_found))
+
+        return not bool(not_found), msg
 
     def open_connection(self):
         """
