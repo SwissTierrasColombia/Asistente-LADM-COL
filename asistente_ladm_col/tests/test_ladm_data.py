@@ -12,7 +12,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            normalize_responce,
+                                            normalize_response,
                                             restore_schema)
 
 
@@ -1086,7 +1086,7 @@ class TestLADMData(unittest.TestCase):
         }
 
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg)
-        normalize_responce(features)
+        normalize_response(features)
         self.assertEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")
@@ -1116,7 +1116,7 @@ class TestLADMData(unittest.TestCase):
 
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
-        normalize_responce(features)
+        normalize_response(features)
         self.assertEqual(features, features_test)
 
         features_test = {
@@ -1366,7 +1366,7 @@ class TestLADMData(unittest.TestCase):
 
         search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230241000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
-        normalize_responce(features)
+        normalize_response(features)
         self.assertEqual(features, features_test)
 
     @classmethod

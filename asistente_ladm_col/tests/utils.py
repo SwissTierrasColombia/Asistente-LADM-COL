@@ -231,7 +231,13 @@ def testdata_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, 'resources', path)
 
-def normalize_responce(dict_response):
+def normalize_response(dict_response):
+    """
+    Converts geometry values to WKT, so that we can compare them with expected plain values.
+
+    :param dict_response: Response dict to normalize.
+    :return: Normalized response dict.
+    """
     for key_parcel in dict_response:
         features = dict_response[key_parcel]
         for feature in features:

@@ -453,6 +453,7 @@ class LADM_DATA():
 
                     key_value_parcel = mapping_parcels_field[field.name()]
                     dict_attrs[key_value_parcel] = value
+
             dict_attrs[db.names.T_ID_F] = feature[db.names.T_ID_F]
 
             # Group dictionary by parcel number common key
