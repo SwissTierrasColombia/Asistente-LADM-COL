@@ -266,6 +266,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def finished_slot(self, result):
         self.bar.clearWidgets()
 
+    def set_db_connection(self, mode, dict_conn):
+        self.cbo_db_engine.setCurrentIndex(self.cbo_db_engine.findData(mode))
+        self.db_engine_changed()
+        current_db_engine = self.cbo_db_engine.currentData()
+
+        self._lst_panel[current_db_engine].write_connection_parameters(dict_conn)
+
+        self.accepted() # Create/update the db object
+
     def save_settings(self):
         settings = QSettings()
         current_db_engine = self.cbo_db_engine.currentData()

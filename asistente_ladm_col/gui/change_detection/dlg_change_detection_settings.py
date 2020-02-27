@@ -55,9 +55,15 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self._db_collected = self.conn_manager.get_db_connector_from_source()
         self._db_supplies = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
-        # To postpone calling refresh gui until we close this dialog instead of settings
-        self._db_collected_was_changed = False
+        # There may be 1 case where we need to emit a db_connection_changed from the Export Data dialog:
+        #   1) Connection Settings was opened and the DB conn was changed.
+        self._db_collected_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._db_supplies_was_changed = False
+
+        # Similarly, we could call a refresh on layers and relations cache in 1 case:
+        #   1) If the ED dialog was called for the COLLECTED source: opening Connection Settings and changing the DB
+        #      connection.
+        self._schedule_layers_and_relations_refresh = False
 
         # The database configuration is saved if it becomes necessary
         # to restore the configuration when the user rejects the dialog
@@ -122,7 +128,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
 
         if dlg.exec_():
             self._db_collected = dlg.get_db_connection()
@@ -143,15 +149,26 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         # may change from this moment until we close the import schema dialog
         if db_source == COLLECTED_DB_SOURCE:
             self._db_collected_was_changed = True
+            self._schedule_layers_and_relations_refresh = True
         else:
             self._db_supplies_was_changed = True
 
     def close_dialog(self):
+        """
+        We use this method to be safe when emitting the db_connection_changed, otherwise we could trigger slots that
+        unload the plugin, destroying dialogs and thus, leading to crashes.
+        """
+        if self._schedule_layers_and_relations_refresh:
+            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
         if self._db_collected_was_changed:
             self.conn_manager.db_connection_changed.emit(self._db_collected, self._db_collected.test_connection()[0], COLLECTED_DB_SOURCE)
 
         if self._db_supplies_was_changed:
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
+
+        if self._schedule_layers_and_relations_refresh:
+            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
         self.done(0)
