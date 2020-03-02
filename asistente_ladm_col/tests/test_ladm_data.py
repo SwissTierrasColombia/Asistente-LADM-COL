@@ -1,5 +1,3 @@
-from builtins import print
-
 import nose2
 
 from qgis.core import QgsWkbTypes, NULL

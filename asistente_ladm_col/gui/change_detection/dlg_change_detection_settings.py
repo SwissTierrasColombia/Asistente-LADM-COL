@@ -55,14 +55,14 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self._db_collected = self.conn_manager.get_db_connector_from_source()
         self._db_supplies = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
-        # There may be 1 case where we need to emit a db_connection_changed from the Export Data dialog:
+        # There may be 1 case where we need to emit a db_connection_changed from the change detection settings dialog:
         #   1) Connection Settings was opened and the DB conn was changed.
         self._db_collected_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self._db_supplies_was_changed = False
 
         # Similarly, we could call a refresh on layers and relations cache in 1 case:
-        #   1) If the ED dialog was called for the COLLECTED source: opening Connection Settings and changing the DB
-        #      connection.
+        #   1) If the change detection settings dialog was called for the COLLECTED source: opening Connection Settings
+        #      and changing the DB connection.
         self._schedule_layers_and_relations_refresh = False
 
         # The database configuration is saved if it becomes necessary
@@ -176,18 +176,18 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         if self._db_collected.test_connection()[0] and self.radio_button_same_db.isChecked():
             if not self._db_collected.operation_model_exists():
-                self.lb_msg_collected.setText("Warning: DB connection is not valid")
+                self.lb_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         if self._db_collected.test_connection()[0] and self._db_supplies.test_connection()[0]:
             if not self._db_supplies.supplies_model_exists() or not self._db_collected.operation_model_exists():
                 if not self._db_collected.operation_model_exists():
-                    self.lb_msg_collected.setText("Warning: DB connection is not valid")
+                    self.lb_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
                 if not self._db_supplies.supplies_model_exists():
-                    self.lb_msg_supplies.setText("Warning: DB connection is not valid")
+                    self.lb_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
@@ -208,7 +208,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                 self.db_collected_connect_label.setText(db_description)
                 self.db_collected_connect_label.setToolTip(self._db_collected.get_display_conn_string())
             else:
-                self.db_collected_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+                self.db_collected_connect_label.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "The database is not defined!"))
                 self.db_collected_connect_label.setToolTip('')
         elif db_source == SUPPLIES_DB_SOURCE:
             if self.radio_button_same_db.isChecked():
@@ -219,7 +219,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                     self.db_supplies_connect_label.setText(db_description)
                     self.db_supplies_connect_label.setToolTip(self._db_supplies.get_display_conn_string())
                 else:
-                    self.db_supplies_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+                    self.db_supplies_connect_label.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "The database is not defined!"))
                     self.db_supplies_connect_label.setToolTip('')
 
     def accepted(self):
@@ -244,13 +244,13 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             if list(QgsProject.instance().mapLayers().values()):
                 message = None
                 if self._db_collected_was_changed and self._db_supplies_was_changed:
-                    message = "The connection of the collected and supplies database has changed,"
+                    message = "The connection of the collected and supplies databases has changed,"
                 elif self._db_collected_was_changed:
                     message = "The collected database connection has changed,"
                 elif self._db_supplies_was_changed:
                     message = "The supplies database connection has changed,"
 
-                message = message + " do you want to remove the layers that are loaded in the workspace?"
+                message = message + " do you want to remove the layers that are currently loaded in QGIS?"
                 self.show_message_clean_workspace(message)
             else:
                 self.close_dialog()
@@ -264,7 +264,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         msg.setText(message)
         msg.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Remove layers?"))
         msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, remove layers")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No")), QMessageBox.NoRole)
+        msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, don't remove")), QMessageBox.NoRole)
         msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Cancel")), QMessageBox.RejectRole)
         reply = msg.exec_()
 

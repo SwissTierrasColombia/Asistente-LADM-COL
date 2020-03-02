@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>682</width>
-    <height>310</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
        <item row="0" column="0">
         <widget class="QGroupBox" name="gbx_page1">
          <property name="title">
-          <string>How would you like make change detection?</string>
+          <string>Configure connections for detecting changes</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0">
@@ -71,7 +71,7 @@
                  </font>
                 </property>
                 <property name="title">
-                 <string>Collected DB</string>
+                 <string>Collected source</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
@@ -151,20 +151,20 @@
               <item row="0" column="0">
                <widget class="QGroupBox" name="groupBox">
                 <property name="title">
-                 <string>Supplies DB</string>
+                 <string>Supplies source</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout">
                  <item>
                   <widget class="QRadioButton" name="radio_button_same_db">
                    <property name="text">
-                    <string>Collected db</string>
+                    <string>Use the same DB</string>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QRadioButton" name="radio_button_other_db">
                    <property name="text">
-                    <string>Other db</string>
+                    <string>Use another DB</string>
                    </property>
                   </widget>
                  </item>
