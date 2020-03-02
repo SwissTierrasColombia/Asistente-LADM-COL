@@ -45,8 +45,6 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
         count = 0
         for parcel_ids_test in parcel_ids_tests:
             plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_pg, parcel_ids_test, self.db_pg.names.T_ID_F)
-            # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
-            # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertEqual(sorted(plot_ids), sorted(plot_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -83,8 +81,6 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
         count = 0
         for plot_ids_test in plot_ids_tests:
             parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_pg, plot_ids_test, self.db_pg.names.T_ID_F)
-            # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
-            # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertEqual(sorted(parcel_ids), sorted(parcel_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 

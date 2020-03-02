@@ -47,9 +47,9 @@ class TesQualityValidations(unittest.TestCase):
         print("INFO: Restoring databases to be used")
         test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
 
+        print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-            cls.db_pg = get_pg_conn(test_connection_db)
 
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'

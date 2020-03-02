@@ -125,4 +125,4 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
                 self.tbl_changes_parcels.clearSelection()
 
     def reject(self):
-        self.done(0)
+        self.done(QDialog.Accepted)

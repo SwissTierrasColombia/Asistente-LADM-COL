@@ -123,12 +123,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
     def show_settings_collected_db(self):
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list)
-        dlg.set_required_models([LADMNames.OPERATION_MODEL_PREFIX])
-
-        # Connect signals (DBUtils, QgisUtils)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, tab_pages_list=tab_pages_list, required_models=[LADMNames.OPERATION_MODEL_PREFIX])
         dlg.db_connection_changed.connect(self.db_connection_changed)
-
 
         if dlg.exec_():
             self._db_collected = dlg.get_db_connection()
@@ -136,8 +132,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
     def show_settings_supplies_db(self):
         tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE, tab_pages_list=tab_pages_list)
-        dlg.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE, tab_pages_list=tab_pages_list, required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
         dlg.db_connection_changed.connect(self.db_connection_changed)
 
         if dlg.exec_():
@@ -171,7 +166,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
-        self.done(0)
+        self.done(QDialog.Accepted)
 
     def update_connection_info(self, db_source):
         # Validate db connections
@@ -273,12 +268,12 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Cancel")), QMessageBox.RejectRole)
         reply = msg.exec_()
 
-        if reply == 0:  # 0 YES
+        if reply == QMessageBox.Yes:
             QgsProject.instance().layerTreeRoot().removeAllChildren()
             self.close_dialog()
-        elif reply == 1:  # 1 NO
+        elif reply == QMessageBox.No:
             self.close_dialog()
-        elif reply == 2:  # 2 CANCEL
+        elif reply == QMessageBox.Cancel:
             pass  # Continue config db connections
 
     def reject(self):
@@ -295,7 +290,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
             self._db_supplies = dlg_supplies_config.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
-        self.done(0)
+        self.done(QDialog.Accepted)
 
     def show_help(self):
         self.qgis_utils.show_help("change_detection_settings")

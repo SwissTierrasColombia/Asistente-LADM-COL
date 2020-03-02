@@ -47,7 +47,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE, tab_pages_list=list()):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE, tab_pages_list=list(), required_models=list()):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
@@ -55,7 +55,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = db_source
-        self._required_models = list()
+        self._required_models = required_models
         self.init_db_engine = None
 
         self._action_type = None
@@ -445,6 +445,3 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
-
-    def set_required_models(self, required_models):
-        self._required_models = required_models
