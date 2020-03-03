@@ -126,7 +126,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="lb_msg_collected">
+                  <widget class="QLabel" name="lbl_msg_collected">
                    <property name="font">
                     <font>
                      <weight>50</weight>
@@ -207,7 +207,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="lb_msg_supplies">
+                  <widget class="QLabel" name="lbl_msg_supplies">
                    <property name="font">
                     <font>
                      <weight>50</weight>

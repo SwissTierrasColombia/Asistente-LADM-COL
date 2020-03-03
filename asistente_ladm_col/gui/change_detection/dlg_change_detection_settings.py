@@ -52,8 +52,16 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         self.conn_manager = conn_manager
         self.qgis_utils = qgis_utils
+
         # we will use a unique instance of setting dialog
-        self.setting_dialog = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        self.settings_dialog = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        # The database configuration is saved if it becomes necessary
+        # to restore the configuration when the user rejects the dialog
+        self._init_db_collected_active_mode = None
+        self._init_db_supplies_active_mode = None
+        self._init_db_collected_dict_config = dict()
+        self._init_db_supplies_dict_config = dict()
+        self.set_init_db_config()  # Always call after the settings_dialog variable is set
 
         self._db_collected = self.conn_manager.get_db_connector_from_source()
         self._db_supplies = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
@@ -67,14 +75,6 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         #   1) If the change detection settings dialog was called for the COLLECTED source: opening Connection Settings
         #      and changing the DB connection.
         self._schedule_layers_and_relations_refresh = False
-
-        # The database configuration is saved if it becomes necessary
-        # to restore the configuration when the user rejects the dialog
-        self._init_db_collected_active_mode = None
-        self._init_db_supplies_active_mode = None
-        self._init_db_collected_dict_config = dict()
-        self._init_db_supplies_dict_config = dict()
-        self.set_init_db_config()  # This method use self.setting_dialog This should have been created before
 
         for mode, label_mode in self.CHANGE_DETECTIONS_MODES.items():
             self.cbo_change_detection_modes.addItem(label_mode, mode)
@@ -91,8 +91,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.btn_supplies_db.clicked.connect(self.show_settings_supplies_db)
 
         # Default color error labels
-        self.lb_msg_collected.setStyleSheet('color: orange')
-        self.lb_msg_supplies.setStyleSheet('color: orange')
+        self.lbl_msg_collected.setStyleSheet('color: orange')
+        self.lbl_msg_supplies.setStyleSheet('color: orange')
 
         # Set connections
         self.buttonBox.accepted.disconnect()
@@ -107,19 +107,19 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.update_connection_info(SUPPLIES_DB_SOURCE)
 
     def set_init_db_config(self):
-        # get db init for collect db source
-        self.setting_dialog.set_db_source(COLLECTED_DB_SOURCE)
-        self._init_db_collected_active_mode = self.setting_dialog.cbo_db_engine.itemData(self.setting_dialog.cbo_db_engine.currentIndex())
+        # get init db for collected db source
+        self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
+        self._init_db_collected_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
 
-        for id_db, db_factory in self.setting_dialog._lst_db.items():
+        for id_db, db_factory in self.settings_dialog._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(COLLECTED_DB_SOURCE)
             self._init_db_collected_dict_config[id_db] = dict_conn
 
-        # get db init for supplies db source
-        self.setting_dialog.set_db_source(SUPPLIES_DB_SOURCE)
-        self._init_db_supplies_active_mode = self.setting_dialog.cbo_db_engine.itemData(self.setting_dialog.cbo_db_engine.currentIndex())
+        # get init db for supplies db source
+        self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
+        self._init_db_supplies_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
 
-        for id_db, db_factory in self.setting_dialog._lst_db.items():
+        for id_db, db_factory in self.settings_dialog._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(SUPPLIES_DB_SOURCE)
             self._init_db_supplies_dict_config[id_db] = dict_conn
 
@@ -131,26 +131,26 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.update_connection_info(SUPPLIES_DB_SOURCE)
 
     def show_settings_collected_db(self):
-        self.setting_dialog.set_db_source(COLLECTED_DB_SOURCE)
-        self.setting_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
-        self.setting_dialog.set_required_models([LADMNames.OPERATION_MODEL_PREFIX])
-        self.setting_dialog.db_connection_changed.connect(self.db_connection_changed)
+        self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
+        self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
+        self.settings_dialog.set_required_models([LADMNames.OPERATION_MODEL_PREFIX])
+        self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
-        if self.setting_dialog.exec_():
-            self._db_collected = self.setting_dialog.get_db_connection()
+        if self.settings_dialog.exec_():
+            self._db_collected = self.settings_dialog.get_db_connection()
             self.update_connection_info(COLLECTED_DB_SOURCE)
-        self.setting_dialog.db_connection_changed.disconnect(self.db_connection_changed)
+        self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def show_settings_supplies_db(self):
-        self.setting_dialog.set_db_source(SUPPLIES_DB_SOURCE)
-        self.setting_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
-        self.setting_dialog.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])
-        self.setting_dialog.db_connection_changed.connect(self.db_connection_changed)
+        self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
+        self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
+        self.settings_dialog.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])
+        self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
-        if self.setting_dialog.exec_():
-            self._db_supplies = self.setting_dialog.get_db_connection()
+        if self.settings_dialog.exec_():
+            self._db_supplies = self.settings_dialog.get_db_connection()
             self.update_connection_info(SUPPLIES_DB_SOURCE)
-        self.setting_dialog.db_connection_changed.disconnect(self.db_connection_changed)
+        self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db
@@ -183,24 +183,24 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
     def update_connection_info(self, db_source):
         # Validate db connections
-        self.lb_msg_collected.setText("")
-        self.lb_msg_supplies.setText("")
+        self.lbl_msg_collected.setText("")
+        self.lbl_msg_supplies.setText("")
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         if self._db_collected.test_connection()[0] and self.radio_button_same_db.isChecked():
             if not self._db_collected.operation_model_exists():
-                self.lb_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+                self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         if self._db_collected.test_connection()[0] and self._db_supplies.test_connection()[0]:
             if not self._db_supplies.supplies_model_exists() or not self._db_collected.operation_model_exists():
                 if not self._db_collected.operation_model_exists():
-                    self.lb_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+                    self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
                 if not self._db_supplies.supplies_model_exists():
-                    self.lb_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+                    self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
@@ -238,24 +238,24 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
     def accepted(self):
         if self.radio_button_same_db.isChecked():
             # Get collected db dict config
-            self.setting_dialog.set_db_source(COLLECTED_DB_SOURCE)
-            db_collected_active_mode = self.setting_dialog.cbo_db_engine.itemData(self.setting_dialog.cbo_db_engine.currentIndex())
+            self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
+            db_collected_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
             db_collected_dict_conn = dict()
 
-            for id_db, db_factory in self.setting_dialog._lst_db.items():
+            for id_db, db_factory in self.settings_dialog._lst_db.items():
                 if id_db == db_collected_active_mode:
                     dict_conn = db_factory.get_parameters_conn(COLLECTED_DB_SOURCE)
                     db_collected_dict_conn[id_db] = dict_conn
 
-            self.setting_dialog.set_db_source(SUPPLIES_DB_SOURCE)
-            self.setting_dialog.set_db_connection(db_collected_active_mode, db_collected_dict_conn[db_collected_active_mode])
+            self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
+            self.settings_dialog.set_db_connection(db_collected_active_mode, db_collected_dict_conn[db_collected_active_mode])
 
-            self._db_supplies = self.setting_dialog.get_db_connection()
+            self._db_supplies = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
         if self._db_collected_was_changed or self._db_supplies_was_changed:
             if list(QgsProject.instance().mapLayers().values()):
-                message = None
+                message = ""
                 if self._db_collected_was_changed and self._db_supplies_was_changed:
                     message = "The connection of the collected and supplies databases has changed,"
                 elif self._db_collected_was_changed:
@@ -263,15 +263,15 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                 elif self._db_supplies_was_changed:
                     message = "The supplies database connection has changed,"
 
-                message = message + " do you want to remove the layers that are currently loaded in QGIS?"
-                self.show_message_clean_workspace(message)
+                message += " do you want to remove the layers that are currently loaded in QGIS?"
+                self.show_message_clean_layers_panel(message)
             else:
                 self.close_dialog()
         else:
             # Connections have not changed
             self.close_dialog()
 
-    def show_message_clean_workspace(self, message):
+    def show_message_clean_layers_panel(self, message):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Question)
         msg.setText(message)
@@ -294,17 +294,21 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             pass  # Continue config db connections
 
     def reject(self):
+        """
+        The user discarded changes, so go back to initial state.
+        """
         if self._db_collected_was_changed:
-            self.setting_dialog.set_db_source(COLLECTED_DB_SOURCE)
-            self.setting_dialog.set_db_connection(self._init_db_collected_active_mode, self._init_db_collected_dict_config[self._init_db_collected_active_mode])
-            self._db_collected = self.setting_dialog.get_db_connection()
+            self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
+            self.settings_dialog.set_db_connection(self._init_db_collected_active_mode, self._init_db_collected_dict_config[self._init_db_collected_active_mode])
+            self._db_collected = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_collected, self._db_collected.test_connection()[0], COLLECTED_DB_SOURCE)
 
         if self._db_supplies_was_changed:
-            self.setting_dialog.set_db_source(SUPPLIES_DB_SOURCE)
-            self.setting_dialog.set_db_connection(self._init_db_supplies_active_mode, self._init_db_supplies_dict_config[self._init_db_supplies_active_mode])
-            self._db_supplies = self.setting_dialog.get_db_connection()
+            self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
+            self.settings_dialog.set_db_connection(self._init_db_supplies_active_mode, self._init_db_supplies_dict_config[self._init_db_supplies_active_mode])
+            self._db_supplies = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
+
         self.done(QDialog.Accepted)
 
     def show_help(self):

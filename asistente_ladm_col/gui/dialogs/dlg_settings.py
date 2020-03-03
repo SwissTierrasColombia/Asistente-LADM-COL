@@ -55,8 +55,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE  # default db source
-        self._required_models = []
-        self._tab_pages_list = []
+        self._required_models = list()
+        self._tab_pages_list = list()
         self.init_db_engine = None
 
         self._action_type = None
@@ -208,7 +208,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-            res, code, msg = db.test_connection(test_level, required_models=self._required_models)
+            res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
@@ -399,7 +399,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level, required_models=self._required_models)
+        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
 
         if db is not None:
             db.close_connection()

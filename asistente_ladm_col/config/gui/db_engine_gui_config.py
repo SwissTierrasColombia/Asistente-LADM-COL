@@ -54,7 +54,7 @@ class DB_Engine_GUI_Config(QObject):
                       # ACTION_CHECK_QUALITY_RULES
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,
-                      ACTION_SUPPLIES_SETTINGS]
+                      ACTION_CHANGE_DETECTION_SETTINGS]
 
     GPKG_ACTIONS = COMMON_ACTIONS + []
 
