@@ -10,10 +10,10 @@ class HelpStrings(QObject):
 
         self.CHANGE_DETECTION_SETTING_DIALOG_HELP = QCoreApplication.translate(
             "HelpStrings",
-            """Setup the collected and supplies database connections to detect changes.
+            """Setup the collected and supplies connections to detect changes.
                 <ul>
-                  <li><b>Collected database: </b> is the database associated to field survey, which should comply with the operation model.</li>
-                  <li><b>Supplies database: </b> is the database delivered by the cadastral manager, which should comply with the cadastral supplies model.</li>
+                  <li><b>Collected source: </b> database associated to field survey, which should comply with the operation model.</li>
+                  <li><b>Supplies source: </b> database delivered by the cadastral manager, which should comply with the cadastral supplies model.</li>
                 </ul>""")
 
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP = QCoreApplication.translate("HelpStrings", "\

@@ -217,10 +217,7 @@ class LADM_DATA():
                         plot_feature = dict_plot_features[dict_parcel_plot[item[db.names.T_ID_F]]]
                         for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
                             if plot_field in plot_fields:
-                                if plot_feature[plot_field] != NULL:
-                                    item[common_key_value_plot] = plot_feature[plot_field]
-                                else:
-                                    item[common_key_value_plot] = NULL
+                                item[common_key_value_plot] = plot_feature[plot_field]
 
                         item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
@@ -480,11 +477,7 @@ class LADM_DATA():
                     if dict_parcel_plot[item[db.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[db.names.T_ID_F]]]
                         for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
-                            if plot_feature[plot_field] != NULL:
-                                item[common_key_value_plot] = plot_feature[plot_field]
-                            else:
-                                item[common_key_value_plot] = NULL
-
+                            item[common_key_value_plot] = plot_feature[plot_field]
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
                     item[PLOT_GEOMETRY_KEY] = None  # No associated plot

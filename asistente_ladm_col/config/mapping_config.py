@@ -1492,6 +1492,8 @@ class LADMNames(metaclass=Singleton):
 
 
 class QueryNames:
+    COUNT_KEY = 'count_key'
+
     TABLE_NAME = 'table_name'
     TABLE_ILINAME = 'table_iliname'
     FIELD_ILINAME = 'field_iliname'

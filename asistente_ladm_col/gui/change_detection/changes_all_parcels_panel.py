@@ -41,6 +41,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (STATUS_COLORS
                                                                    CHANGE_DETECTION_MISSING_PARCEL,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NEW_PARCEL)
+from asistente_ladm_col.config.mapping_config import QueryNames
 
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.utils import get_ui_class
@@ -77,10 +78,9 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_table(dict_parcels, types_change_detection)
 
     def fill_table(self, dict_parcels, types_change_detection):
-
         num_rows = 0
         for type in types_change_detection:
-            num_rows += len(dict_parcels[type][DICT_KEY_PARCEL_T_PARCEL_NUMBER_F])
+            num_rows += dict_parcels[type][QueryNames.COUNT_KEY]
 
         self.tbl_changes_all_parcels.clearContents()
         self.tbl_changes_all_parcels.setRowCount(num_rows)
@@ -125,29 +125,24 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             self.tbl_changes_all_parcels.setSortingEnabled(True)
 
-
+            # TODO: List of parcel ids and after the for, call select and zoom to compound bounding box once
             if filter_parcels:
                 plot_layer = None
-                if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                    plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
-                else:
-                    plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
 
                 if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                    plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
                     plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                                  filter_parcels[self.utils._db.names.T_ID_F],
                                                                                  None,  # Get QGIS plot ids
                                                                                  plot_layer,
                                                                                  self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
+                    ids_plots_collected.extend(plot_ids)
                 else:
+                    plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
                     plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
                                                                                           filter_parcels[self.utils._supplies_db.names.T_ID_F],
                                                                                           None,  # Get QGIS plot ids
                                                                                           plot_layer)
-
-                if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                    ids_plots_collected.extend(plot_ids)
-                else:
                     ids_plots_supplies.extend(plot_ids)
 
         # Zoom and flash features

@@ -76,7 +76,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         for mode, label_mode in self.CHANGE_DETECTIONS_MODES.items():
             self.cbo_change_detection_modes.addItem(label_mode, mode)
 
-        self.radio_button_other_db.setChecked(True)
+        self.radio_button_other_db.setChecked(True)  # Default option
         self.radio_button_same_db.setEnabled(True)
         if not self._db_collected.supplies_model_exists():
             self.radio_button_same_db.setEnabled(False)
