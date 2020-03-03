@@ -41,7 +41,6 @@ from asistente_ladm_col.config.gui.change_detection_config import (STATUS_COLORS
                                                                    CHANGE_DETECTION_MISSING_PARCEL,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NEW_PARCEL)
-from asistente_ladm_col.config.mapping_config import QueryNames
 
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.utils import get_ui_class
@@ -71,16 +70,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_all_parcels.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tbl_changes_all_parcels.customContextMenuRequested.connect(self.show_context_menu)
 
-        # Remove selection in plot layers
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
+        self.panelAccepted.connect(self.remove_plots_selections)
+        self.remove_plots_selections()
 
         self.fill_table(dict_parcels, types_change_detection)
+
+    def remove_plots_selections(self):
+        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
 
     def fill_table(self, dict_parcels, types_change_detection):
         num_rows = 0
         for type in types_change_detection:
-            num_rows += dict_parcels[type][QueryNames.COUNT_KEY]
+            # We didn't use COUNT_KEY because for duplicate parcels the count (t_ids) differs from number of parcels
+            num_rows += len(dict_parcels[type][DICT_KEY_PARCEL_T_PARCEL_NUMBER_F])
 
         self.tbl_changes_all_parcels.clearContents()
         self.tbl_changes_all_parcels.setRowCount(num_rows)
@@ -88,8 +91,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         row = 0
         filter_parcels = None
-        ids_plots_supplies = list()
-        ids_plots_collected = list()
+        plots_ids_supplies = list()
+        plots_ids_collected = list()
         for type in types_change_detection:
             filter_parcels = dict_parcels[type]
 
@@ -125,34 +128,52 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             self.tbl_changes_all_parcels.setSortingEnabled(True)
 
-            # TODO: List of parcel ids and after the for, call select and zoom to compound bounding box once
+        parcels_ids_collected = list()
+        parcels_ids_supplies = list()
+        for type in types_change_detection:
+            filter_parcels = dict_parcels[type]
             if filter_parcels:
-                plot_layer = None
-
                 if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                    plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
-                    plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                                 filter_parcels[self.utils._db.names.T_ID_F],
-                                                                                 None,  # Get QGIS plot ids
-                                                                                 plot_layer,
-                                                                                 self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
-                    ids_plots_collected.extend(plot_ids)
+                    parcels_ids_collected.extend(filter_parcels[self.utils._db.names.T_ID_F])
                 else:
-                    plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
-                    plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
-                                                                                          filter_parcels[self.utils._supplies_db.names.T_ID_F],
-                                                                                          None,  # Get QGIS plot ids
-                                                                                          plot_layer)
-                    ids_plots_supplies.extend(plot_ids)
+                    parcels_ids_supplies.extend(filter_parcels[self.utils._supplies_db.names.T_ID_F])
 
-        # Zoom and flash features
-        if ids_plots_collected:
-            self.parent.request_zoom_to_features(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], ids=ids_plots_collected, duration=3000)
+        if parcels_ids_collected:
+            plots_ids_collected = self.utils.ladm_data.get_plots_related_to_parcels(
+                self.utils._db,
+                parcels_ids_collected,
+                None,  # Get QGIS plot ids
+                self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
+                self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
 
-        if ids_plots_supplies:
-            self.parent.request_zoom_to_features(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], ids=ids_plots_supplies, duration=3000)
+        if parcels_ids_supplies:
+            plots_ids_supplies = self.utils.ladm_data.get_plots_related_to_parcels_supplies(
+                self.utils._supplies_db,
+                filter_parcels[self.utils._supplies_db.names.T_ID_F],
+                None,  # Get QGIS plot ids
+                self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER])
 
-        self.select_related_plots_listed(False)
+        if plots_ids_collected:
+            self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].selectByIds(plots_ids_collected)
+
+        if plots_ids_supplies:
+            self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].selectByIds(plots_ids_supplies)
+
+        self.zoom_to_selected_plots()
+
+    def zoom_to_selected_plots(self):
+        plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
+        supplies_plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
+        bbox_selected_features = QgsRectangle()
+
+        if plot_layer.selectedFeatureCount() or supplies_plot_layer.selectedFeatureCount():
+            if plot_layer.selectedFeatureCount():
+                bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
+
+            if supplies_plot_layer.selectedFeatureCount():
+                bbox_selected_features.combineExtentWith(supplies_plot_layer.boundingBoxOfSelected())
+
+            self.utils.iface.mapCanvas().zoomToFeatureExtent(bbox_selected_features)
 
     def show_context_menu(self, point):
         table_widget = self.sender()

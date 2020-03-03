@@ -47,20 +47,20 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE, tab_pages_list=list(), required_models=list()):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
-        self.db_source = db_source
-        self._required_models = required_models
+        self.db_source = COLLECTED_DB_SOURCE  # default db source
+        self._required_models = []
+        self._tab_pages_list = []
         self.init_db_engine = None
 
         self._action_type = None
         self.dbs_supported = ConfigDbSupported()
-        self.show_tabs(tab_pages_list)
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -103,6 +103,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_engine_changed()
 
         # Trigger some default behaviours
+        self.restore_db_source_settings()  # restore settings with default db source
         self.restore_settings()
 
         self.roles = Role_Registry()
@@ -110,6 +111,17 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)
         self.rejected.connect(self.close_dialog)
+
+    def set_db_source(self, db_source):
+        self.db_source = db_source
+        self.restore_db_source_settings()
+
+    def set_tab_pages_list(self, tab_pages_list):
+        self._tab_pages_list = tab_pages_list
+        self.show_tabs(tab_pages_list)
+
+    def set_required_models(self, required_models):
+        self._required_models = required_models
 
     def show_tabs(self, tab_pages_list):
         """
@@ -196,7 +208,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-            res, code, msg = db.test_connection(test_level)
+            res, code, msg = db.test_connection(test_level, required_models=self._required_models)
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
@@ -317,8 +329,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             if self._db is not None:
                 self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
-    def restore_settings(self):
-        # Restore QSettings
+    def restore_db_source_settings(self):
         settings = QSettings()
         default_db_engine = self.dbs_supported.id_default_db
 
@@ -336,6 +347,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
             dict_conn = db_factory.get_parameters_conn(self.db_source)
             self._lst_panel[id_db].write_connection_parameters(dict_conn)
             self._lst_panel[id_db].save_state()
+
+    def restore_settings(self):
+        # Restore QSettings
+        settings = QSettings()
 
         custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if custom_model_directories_is_checked:
@@ -384,7 +399,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)
+        res, code, msg = db.test_connection(test_level, required_models=self._required_models)
 
         if db is not None:
             db.close_connection()
@@ -395,7 +410,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self._required_models)
 
         if db is not None:
             db.close_connection()

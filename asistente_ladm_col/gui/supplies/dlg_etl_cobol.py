@@ -177,7 +177,8 @@ class ETLCobolDialog(CobolBaseDialog):
             return False
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=self.db_source)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg.set_db_source(self.db_source)
 
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
