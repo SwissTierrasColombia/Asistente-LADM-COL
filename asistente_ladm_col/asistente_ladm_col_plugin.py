@@ -230,15 +230,16 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def call_refresh_gui(self):
         """
-        SLOT. Intermediate step to call refresh gui with proper parameters.
+        SLOT. Intermediate step to call refresh gui adding proper parameters.
         """
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
-        if db_source == COLLECTED_DB_SOURCE:
+        if db_source == COLLECTED_DB_SOURCE:  # Only refresh GUI for changes in COLLECTED DB SOURCE
             msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
             with ProcessWithStatus(msg):
-                self.gui_builder.build_gui(db, res)
+                self.gui_builder.set_db_connection(db, res)
+                self.gui_builder.build_gui()
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
