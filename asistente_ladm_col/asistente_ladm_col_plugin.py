@@ -523,7 +523,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
         self._supplies_settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
-                                                 QCoreApplication.translate("AsistenteLADMColPlugin", "Supplies Settings"),
+                                                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Settings"),
                                                  self.main_window)
         self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
