@@ -83,11 +83,12 @@ class MapInteractionExpansion:
         msg.setIcon(QMessageBox.Question)
         msg.setText(message)
         msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "Continue editing?"))
-        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "Yes")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "No, close the wizard")), QMessageBox.NoRole)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes"))
+        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, close the wizard"))
         reply = msg.exec_()
 
-        if reply == 1: # 1 close wizard, 0 yes
+        if reply == QMessageBox.No:
             # stop edition in close_wizard crash qgis
             if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
                 self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
