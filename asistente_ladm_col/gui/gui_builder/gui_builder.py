@@ -73,6 +73,8 @@ class GUI_Builder(QObject):
             if component == MAIN_MENU:
                 for menu_def in values:
                     menu = self._build_menu(menu_def)
+
+                    # Try to add the menu in the second to last position of the QGIS menus
                     existent_actions = self.iface.mainWindow().menuBar().actions()
                     if len(existent_actions) > 0:
                         last_action = existent_actions[-1]
@@ -93,7 +95,7 @@ class GUI_Builder(QObject):
         :param db: DB Connector
         :param test_conn_result: True if the DB is LADM; False if not; None if test_connection has not been called yet.
                                  This is mainly to avoid recalling test_connection if we already know its result.
-        :return: Dictionary in the form of a gui_config dict, but with only allowed actions for the role_key passed.
+        :return: Dictionary in the form of a gui_config dict, but only with allowed actions for the role_key passed.
         """
         role_key = Role_Registry().get_active_role()
         self.logger.info(__name__, "Active role: {}".format(Role_Registry().get_role_name(role_key)))

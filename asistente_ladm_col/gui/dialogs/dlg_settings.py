@@ -223,7 +223,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.save_settings()
             QDialog.accept(self)
 
-        # If active role changed, refresh theg GUI
+        # If active role changed, refresh the GUI
         selected_role = self.get_selected_role()
         if self.roles.get_active_role() != selected_role:
             self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
