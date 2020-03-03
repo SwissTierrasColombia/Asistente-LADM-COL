@@ -29,6 +29,8 @@ from asistente_ladm_col.lib.logger import Logger
 class Role_Registry(metaclass=Singleton):
     """
     Manage all role information. Current role can also be got/set from this class.
+
+    Roles can set their own GUI configuration even using and overwriting the template gui config.
     """
     COMMON_ACTIONS = [  # Common actions for all roles
         ACTION_LOAD_LAYERS,
@@ -140,7 +142,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
             ],
-            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 
@@ -177,7 +179,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT
             ],
-            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 
@@ -217,7 +219,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
             ],
-            ROLE_GUI_CONFIG: {}
+            ROLE_GUI_CONFIG: {}  # Let the gui builder use the template GUI config.
         }
         self.register_role(role, role_dict)
 
