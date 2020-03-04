@@ -107,6 +107,11 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.update_connection_info(SUPPLIES_DB_SOURCE)
 
     def set_init_db_config(self):
+        """
+         A copy of the initial connections to the database is made,
+         User can change the initial connections and then cancel the changes.
+         Initial connections need to be re-established
+        """
         # get init db for collected db source
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
         self._init_db_collected_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
@@ -179,6 +184,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
+        self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
         self.done(QDialog.Accepted)
 
     def update_connection_info(self, db_source):
@@ -236,6 +242,15 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                     self.db_supplies_connect_label.setToolTip('')
 
     def accepted(self):
+        """
+        Confirm changes in db connections.
+        If user select collected db as supplies db we update supplies db connection with collected db connection
+
+        If there are layers load in canvas from a previous connection that changed, we ask to user
+        if he want clean the canvas or preserving layers.
+
+        if neither of the connections changed, the dialog is closed and a info message is displayed
+        """
         if self.radio_button_same_db.isChecked():
             # Get collected db dict config
             self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
@@ -265,32 +280,48 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
                 message += " do you want to remove the layers that are currently loaded in QGIS?"
                 self.show_message_clean_layers_panel(message)
+                self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
             else:
                 self.close_dialog()
         else:
             # Connections have not changed
             self.close_dialog()
 
+    def show_message_change_detection_settings(self):
+        if not self._db_collected.operation_model_exists() and not self._db_supplies.supplies_model_exists():
+            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured both Collected and Supplies database connections, you must first configure them before proceeding to detect changes.")
+            self.logger.warning_msg(__name__, message)
+        elif not self._db_collected.operation_model_exists() or not self._db_supplies.supplies_model_exists():
+
+            if not self._db_collected.operation_model_exists():
+                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured Collected database connections, you must first configure it before proceeding to detect changes.")
+                self.logger.warning_msg(__name__, message)
+
+            if not self._db_supplies.supplies_model_exists():
+                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured Supplies database connections, you must first configure it before proceeding to detect changes.")
+                self.logger.warning_msg(__name__, message)
+        else:
+            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You have configured both Collected and Supplies database connections, now you can proceed to detect changes.")
+            self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.emit(message)
+
+
     def show_message_clean_layers_panel(self, message):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Question)
         msg.setText(message)
         msg.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Remove layers?"))
-        msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, remove layers")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, don't remove")), QMessageBox.NoRole)
-        msg.addButton(QPushButton(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Cancel")), QMessageBox.RejectRole)
-        msg.exec_()
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, remove layers"))
+        msg.button(QMessageBox.No).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, don't remove"))
+        msg.button(QMessageBox.Cancel).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Cancel"))
+        reply = msg.exec_()
 
-        # Get reply when use custom buttons
-        # https://stackoverflow.com/questions/25101171/what-do-the-different-qmessagebox-roles-mean
-        reply = msg.buttonRole(msg.clickedButton())
-
-        if reply == QMessageBox.YesRole:
+        if reply == QMessageBox.Yes:
             QgsProject.instance().layerTreeRoot().removeAllChildren()
             self.close_dialog()
-        elif reply == QMessageBox.NoRole:
+        elif reply == QMessageBox.No:
             self.close_dialog()
-        elif reply == QMessageBox.RejectRole:
+        elif reply == QMessageBox.Cancel:
             pass  # Continue config db connections
 
     def reject(self):
@@ -309,7 +340,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self._db_supplies = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
-        self.done(QDialog.Accepted)
+        self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
+        self.done(QDialog.Rejected)
 
     def show_help(self):
         self.qgis_utils.show_help("change_detection_settings")

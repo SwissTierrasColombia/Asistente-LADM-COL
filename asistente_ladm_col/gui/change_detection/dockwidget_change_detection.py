@@ -39,6 +39,7 @@ from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       LAYER)
 from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
                                                                    CHANGE_DETECTION_PARCEL_CHANGED,
                                                                    CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
@@ -67,6 +68,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.utils.change_detection_layer_removed.connect(self.layer_removed)
 
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
+        Logger().clear_message_bar()  # Clear message bar if you clicked on query parcels change detections
 
         # Configure panels
         self.all_parcels_panel = None

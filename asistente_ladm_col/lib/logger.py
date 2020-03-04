@@ -55,6 +55,7 @@ class Logger(QObject, metaclass=SingletonQObject):
     message_with_button_open_table_attributes_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button_text, level, layer, filter
     message_with_button_download_report_dependency_emitted = pyqtSignal(str)  # Message
     message_with_button_remove_report_dependency_emitted = pyqtSignal(str)  # Message
+    message_with_buttons_change_detection_all_and_per_parcel_emitted = pyqtSignal(str)  # Message
 
     def __init__(self):
         QObject.__init__(self)
@@ -66,6 +67,8 @@ class Logger(QObject, metaclass=SingletonQObject):
         self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
         self.message_with_button_download_report_dependency_emitted.connect(self._log_download_report_dependency_emitted)
         self.message_with_button_remove_report_dependency_emitted.connect(self._log_remove_report_emitted)
+        self.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(self._log_change_detection_all_and_per_parcel_emitted)
+
 
     def set_mode(self, mode):
         self.mode = mode
@@ -159,3 +162,6 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def _log_remove_report_emitted(self, message):
         self.debug("", "A message with button remove_report was shown!")
+
+    def _log_change_detection_all_and_per_parcel_emitted(self):
+        self.debug("", "A message with buttons change_detection all and per parcel was shown!")

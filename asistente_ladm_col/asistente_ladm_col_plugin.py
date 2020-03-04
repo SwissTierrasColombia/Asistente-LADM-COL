@@ -204,6 +204,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_to_download_report_dependency)
         self.logger.message_with_button_remove_report_dependency_emitted.connect(
             self.show_message_to_remove_report_dependency)
+        self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
+            self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
@@ -687,6 +689,22 @@ class AsistenteLADMCOLPlugin(QObject):
         button.pressed.connect(self.remove_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
+    def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+
+        btn_query_per_parcel = QPushButton(widget)
+        btn_query_per_parcel.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"))
+        btn_query_per_parcel.pressed.connect(self.query_changes_per_parcel)
+        widget.layout().addWidget(btn_query_per_parcel)
+
+        btn_query_all_parcels = QPushButton(widget)
+        btn_query_all_parcels.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"))
+        btn_query_all_parcels.pressed.connect(self.query_changes_all_parcels)
+        widget.layout().addWidget(btn_query_all_parcels)
+
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 25)
 
     def show_message_with_settings_button(self, msg, button_text, level):
         self.clear_message_bar()  # Remove previous messages before showing a new one
