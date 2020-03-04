@@ -278,8 +278,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def finished_slot(self, result):
         self.bar.clearWidgets()
 
-    def set_db_connection(self, mode, dict_conn):
-        self.cbo_db_engine.setCurrentIndex(self.cbo_db_engine.findData(mode))
+    def set_db_connection(self, engine, dict_conn):
+        self.cbo_db_engine.setCurrentIndex(self.cbo_db_engine.findData(engine))
         self.db_engine_changed()
         current_db_engine = self.cbo_db_engine.currentData()
 
@@ -343,10 +343,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_engine_changed()
 
         # restore db settings for all panels
-        for id_db, db_factory in self._lst_db.items():
+        for db_engine, db_factory in self._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(self.db_source)
-            self._lst_panel[id_db].write_connection_parameters(dict_conn)
-            self._lst_panel[id_db].save_state()
+            self._lst_panel[db_engine].write_connection_parameters(dict_conn)
+            self._lst_panel[db_engine].save_state()
 
     def restore_settings(self):
         # Restore QSettings

@@ -84,7 +84,6 @@ class MapInteractionExpansion:
         msg.setText(message)
         msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "Continue editing?"))
         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes"))
         msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, close the wizard"))
         reply = msg.exec_()
 

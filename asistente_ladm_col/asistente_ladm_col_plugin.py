@@ -704,7 +704,7 @@ class AsistenteLADMCOLPlugin(QObject):
         btn_query_all_parcels.pressed.connect(self.query_changes_all_parcels)
         widget.layout().addWidget(btn_query_all_parcels)
 
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 25)
+        self.iface.messageBar().pushWidget(widget, Qgis.Success, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
         self.clear_message_bar()  # Remove previous messages before showing a new one

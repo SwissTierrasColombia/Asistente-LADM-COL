@@ -163,5 +163,5 @@ class Logger(QObject, metaclass=SingletonQObject):
     def _log_remove_report_emitted(self, message):
         self.debug("", "A message with button remove_report was shown!")
 
-    def _log_change_detection_all_and_per_parcel_emitted(self):
-        self.debug("", "A message with buttons change_detection all and per parcel was shown!")
+    def _log_change_detection_all_and_per_parcel_emitted(self, message):
+        self.debug("", "A message with buttons for change detection all and per parcel was shown!")

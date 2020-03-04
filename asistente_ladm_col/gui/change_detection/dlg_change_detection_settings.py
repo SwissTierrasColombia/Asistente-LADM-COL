@@ -57,7 +57,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.settings_dialog = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
         # The database configuration is saved if it becomes necessary
         # to restore the configuration when the user rejects the dialog
-        self._init_db_collected_active_mode = None
+        self._init_db_collected_active_engine = None
         self._init_db_supplies_active_mode = None
         self._init_db_collected_dict_config = dict()
         self._init_db_supplies_dict_config = dict()
@@ -114,7 +114,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         """
         # get init db for collected db source
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
-        self._init_db_collected_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
+        self._init_db_collected_active_engine = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
 
         for id_db, db_factory in self.settings_dialog._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(COLLECTED_DB_SOURCE)
@@ -184,7 +184,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
-        self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
+        self.show_message_change_detection_settings_status()  # Show information message indicating whether setting is OK
         self.done(QDialog.Accepted)
 
     def update_connection_info(self, db_source):
@@ -194,21 +194,22 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         if self._db_collected.test_connection()[0] and self.radio_button_same_db.isChecked():
-            if not self._db_collected.operation_model_exists():
+            if not self.collected_db_is_valid():
                 self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        if self._db_collected.test_connection()[0] and self._db_supplies.test_connection()[0]:
-            if not self._db_supplies.supplies_model_exists() or not self._db_collected.operation_model_exists():
-                if not self._db_collected.operation_model_exists():
-                    self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-                    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
-                if not self._db_supplies.supplies_model_exists():
-                    self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-                    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-            else:
+        if self._db_collected.test_connection()[0] and self._db_supplies.test_connection()[0]:
+            if not self.collected_db_is_valid():
+                self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+
+            if not self.supplies_db_is_valid():
+                self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+
+            if self.collected_db_is_valid() and self.supplies_db_is_valid():
                 self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
         # validate selected db
@@ -244,30 +245,21 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
     def accepted(self):
         """
         Confirm changes in db connections.
-        If user select collected db as supplies db we update supplies db connection with collected db connection
+        If user select collected db as supplies db we update supplies db connection with collected db connection.
 
-        If there are layers load in canvas from a previous connection that changed, we ask to user
-        if he want clean the canvas or preserving layers.
+        If there are layers loaded in canvas from a previous connection that changed, we ask users
+        if they want to clean the canvas or preserve the layers.
 
-        if neither of the connections changed, the dialog is closed and a info message is displayed
+        If none of the connections changed, the dialog is closed without asking anything to users, and an info message
+        is displayed.
         """
         if self.radio_button_same_db.isChecked():
-            # Get collected db dict config
-            self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
-            db_collected_active_mode = self.settings_dialog.cbo_db_engine.itemData(self.settings_dialog.cbo_db_engine.currentIndex())
-            db_collected_dict_conn = dict()
-
-            for id_db, db_factory in self.settings_dialog._lst_db.items():
-                if id_db == db_collected_active_mode:
-                    dict_conn = db_factory.get_parameters_conn(COLLECTED_DB_SOURCE)
-                    db_collected_dict_conn[id_db] = dict_conn
-
-            self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
-            self.settings_dialog.set_db_connection(db_collected_active_mode, db_collected_dict_conn[db_collected_active_mode])
-
-            self._db_supplies = self.settings_dialog.get_db_connection()
+            # Set supplies db connector from collected db connector
+            self.conn_manager.save_parameters_conn(self._db_collected, SUPPLIES_DB_SOURCE)
+            self._db_supplies = self._db_collected
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
+        # Show messages when closing dialog
         if self._db_collected_was_changed or self._db_supplies_was_changed:
             if list(QgsProject.instance().mapLayers().values()):
                 message = ""
@@ -280,30 +272,29 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
                 message += " do you want to remove the layers that are currently loaded in QGIS?"
                 self.show_message_clean_layers_panel(message)
-                self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
+                self.show_message_change_detection_settings_status()  # Show information message indicating if setting is OK
             else:
                 self.close_dialog()
         else:
             # Connections have not changed
             self.close_dialog()
 
-    def show_message_change_detection_settings(self):
-        if not self._db_collected.operation_model_exists() and not self._db_supplies.supplies_model_exists():
-            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured both Collected and Supplies database connections, you must first configure them before proceeding to detect changes.")
-            self.logger.warning_msg(__name__, message)
-        elif not self._db_collected.operation_model_exists() or not self._db_supplies.supplies_model_exists():
+    def show_message_change_detection_settings_status(self):
+        if not self.collected_db_is_valid() and not self.supplies_db_is_valid():
+            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "Neither Collected nor Supplies database connections is valid, you should first configure them before proceeding to detect changes.")
+            self.logger.warning_msg(__name__, message, 10)
+        elif not self.collected_db_is_valid() or not self.supplies_db_is_valid():
 
-            if not self._db_collected.operation_model_exists():
-                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured Collected database connections, you must first configure it before proceeding to detect changes.")
-                self.logger.warning_msg(__name__, message)
+            if not self.collected_db_is_valid():
+                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "Collected database connection is not valid, you should first configure it before proceeding to detect changes.")
+                self.logger.warning_msg(__name__, message, 10)
 
-            if not self._db_supplies.supplies_model_exists():
-                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You don't have configured Supplies database connections, you must first configure it before proceeding to detect changes.")
-                self.logger.warning_msg(__name__, message)
+            if not self.supplies_db_is_valid():
+                message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "Supplies database connection is not valid, you should first configure it before proceeding to detect changes.")
+                self.logger.warning_msg(__name__, message, 10)
         else:
-            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "You have configured both Collected and Supplies database connections, now you can proceed to detect changes.")
+            message = QCoreApplication.translate("ChangeDetectionSettingsDialog", "Both Collected and Supplies database connections are valid, now you can proceed to detect changes.")
             self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.emit(message)
-
 
     def show_message_clean_layers_panel(self, message):
         msg = QMessageBox(self)
@@ -313,7 +304,6 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
         msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, remove layers"))
         msg.button(QMessageBox.No).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, don't remove"))
-        msg.button(QMessageBox.Cancel).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Cancel"))
         reply = msg.exec_()
 
         if reply == QMessageBox.Yes:
@@ -324,13 +314,19 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         elif reply == QMessageBox.Cancel:
             pass  # Continue config db connections
 
+    def collected_db_is_valid(self):
+        return self._db_collected.operation_model_exists()
+
+    def supplies_db_is_valid(self):
+        return self._db_supplies.supplies_model_exists()
+
     def reject(self):
         """
         The user discarded changes, so go back to initial state.
         """
         if self._db_collected_was_changed:
             self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
-            self.settings_dialog.set_db_connection(self._init_db_collected_active_mode, self._init_db_collected_dict_config[self._init_db_collected_active_mode])
+            self.settings_dialog.set_db_connection(self._init_db_collected_active_engine, self._init_db_collected_dict_config[self._init_db_collected_active_engine])
             self._db_collected = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_collected, self._db_collected.test_connection()[0], COLLECTED_DB_SOURCE)
 
@@ -340,7 +336,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self._db_supplies = self.settings_dialog.get_db_connection()
             self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
 
-        self.show_message_change_detection_settings()  # Show information message indicating whether setting is OK
+        self.show_message_change_detection_settings_status()  # Show information message indicating whether setting is OK
         self.done(QDialog.Rejected)
 
     def show_help(self):
