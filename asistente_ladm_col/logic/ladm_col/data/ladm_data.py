@@ -99,7 +99,6 @@ class LADM_DATA():
         :param gc_parcel_table: Parcel QGIS layer, in case it exists already in the caller
         :return: list of parcel ids related to the plot
         """
-
         if not t_ids:
             return []
 
@@ -158,7 +157,6 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-
         mapping_parcels_field = self.mapping_parcel_fields_for_supplies(db.names)
         mapping_party_field = self.mapping_party_fields_for_supplies(db.names)
         mapping_plot_field = self.mapping_plot_fields_for_supplies(db.names)
@@ -191,9 +189,10 @@ class LADM_DATA():
                 elif parcel_field == DICT_KEY_PARCEL_T_DEPARTMENT_F:
                     value = feature.attribute(db.names.GC_PARCEL_T_PARCEL_NUMBER_F)[:2]
                 elif parcel_field == DICT_KEY_PARCEL_T_NAME_F:
-                    value = NULL
+                    value = NULL  # There is no parcel name in supplies model
                 dict_attrs[common_key_value_parcel] = value
-            dict_attrs[db.names.T_ID_F] = feature[db.names.T_ID_F]
+
+            dict_attrs[db.names.T_ID_F] = feature[db.names.T_ID_F]  # Finally store t_id
 
             # Group dictionary by parcel number common key
             if dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
@@ -281,7 +280,6 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of plot ids related to the parcel
         """
-
         if not t_ids:
             return []
 
@@ -346,7 +344,6 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of parcel ids related to the parcel
         """
-
         if not t_ids:
             return []
 
@@ -410,7 +407,6 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-
         mapping_parcels_field = self.mapping_parcel_fields(db.names)
         mapping_party_field = self.mapping_party_fields(db.names)
         mapping_plot_field = self.mapping_plot_fields(db.names)
@@ -665,6 +661,10 @@ class LADM_DATA():
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
+
+
+    # Two different models (supplies and operation), different field names
+    # in each model, so we need to map them to a common key for each field
 
     @staticmethod
     def mapping_parcel_fields_for_supplies(names):
