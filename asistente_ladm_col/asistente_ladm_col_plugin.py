@@ -27,7 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings,
-                              pyqtSignal)
+                              pyqtSignal,
+                              pyqtSlot)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
@@ -617,6 +618,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
 
+    @pyqtSlot()
     def clear_message_bar(self):
         self.iface.messageBar().clearWidgets()
 
@@ -1171,7 +1173,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
-    @_operation_model_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
@@ -1184,7 +1185,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
-    @_operation_model_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
@@ -1203,10 +1203,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
-
-    def show_change_detection_settings_clear_message_bar(self):
-        self.clear_message_bar()
-        self.show_change_detection_settings()
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):

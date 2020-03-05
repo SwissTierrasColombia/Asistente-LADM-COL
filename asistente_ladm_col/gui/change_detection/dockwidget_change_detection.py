@@ -68,7 +68,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.utils.change_detection_layer_removed.connect(self.layer_removed)
 
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
-        Logger().clear_message_bar()  # Clear message bar if you clicked on query parcels change detections
+        Logger().clear_message_bar()  # Clear QGIS message bar
 
         # Configure panels
         self.all_parcels_panel = None

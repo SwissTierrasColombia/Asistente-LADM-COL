@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QMessageBox,
-                                 QPushButton,
                                  QSizePolicy)
 from qgis.gui import QgsMessageBar
 
@@ -277,10 +276,12 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             pass  # Continue config db connections
 
     def collected_db_is_valid(self):
-        return self._db_collected.operation_model_exists()
+        res, foo, bar = self._db_collected.test_connection(required_models=[LADMNames.OPERATION_MODEL_PREFIX])
+        return res
 
     def supplies_db_is_valid(self):
-        return self._db_supplies.supplies_model_exists()
+        res, foo, bar = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
+        return res
 
     def reject(self):
         self.close_dialog(QDialog.Rejected)
@@ -290,7 +291,6 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         We use this slot to be safe when emitting the db_connection_changed (should be done at the end), otherwise we
         could trigger slots that unload the plugin, destroying dialogs and thus, leading to crashes.
         """
-        print(result)
         if result == QDialog.Accepted:
             if self._schedule_layers_and_relations_refresh:
                 self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)

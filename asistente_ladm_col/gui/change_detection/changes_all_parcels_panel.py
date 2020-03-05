@@ -27,7 +27,8 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem,
 from qgis.core import (QgsWkbTypes,
                        NULL,
                        QgsRectangle,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsVectorLayer)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import (LAYER,
@@ -71,7 +72,6 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_all_parcels.customContextMenuRequested.connect(self.show_context_menu)
 
         self.panelAccepted.connect(self.deselect_plots)
-        self.deselect_plots()
 
         self.fill_table(dict_parcels, types_change_detection)
 
@@ -150,7 +150,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcel_ids_supplies:
             plot_ids_supplies = self.utils.ladm_data.get_plots_related_to_parcels_supplies(
                 self.utils._supplies_db,
-                filter_parcels[self.utils._supplies_db.names.T_ID_F],
+                parcel_ids_supplies,
                 None,  # Get QGIS plot ids
                 self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER])
 
@@ -262,7 +262,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
 
         if parcels_t_ids_supplies:
-            self.select_related_plots(parcels_t_ids_supplies, True)
+            self.select_related_plots(parcels_t_ids_supplies, True, True)
 
             if zoom_to_selected: # Bajas
                 plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
@@ -271,7 +271,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if zoom_to_selected:
             self.utils.iface.mapCanvas().zoomToFeatureExtent(bbox_selected_features)
 
-    def select_related_plots(self, parcels_t_ids, inverse):
+    def select_related_plots(self, parcels_t_ids, inverse, add_to_selection=False):
         base_db = self.utils._supplies_db if inverse else self.utils._db
 
         plot_layer = self.utils._supplies_layers[base_db.names.GC_PLOT_T][LAYER] if inverse else self.utils._layers[base_db.names.OP_PLOT_T][LAYER]
@@ -288,5 +288,5 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                          plot_layer=plot_layer,
                                                                          uebaunit_table=uebaunit_table)
 
-        #self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
-        plot_layer.select(plot_ids)
+        select_behavior = QgsVectorLayer.AddToSelection if add_to_selection else QgsVectorLayer.SetSelection
+        plot_layer.selectByIds(plot_ids, select_behavior)

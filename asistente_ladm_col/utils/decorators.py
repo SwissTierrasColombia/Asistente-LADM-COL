@@ -148,7 +148,7 @@ def _supplies_db_connection_required(func_to_decorate):
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", "The supplies DB is not valid. Details: {}".format(msg))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Data Settings"))
-            button.pressed.connect(inst.show_change_detection_settings_clear_message_bar)
+            button.pressed.connect(inst.show_change_detection_settings)
             widget.layout().addWidget(button)
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
             inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
