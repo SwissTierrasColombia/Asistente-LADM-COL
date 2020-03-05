@@ -728,6 +728,11 @@ class LADM_DATA():
         res = None
         domain_table_name = ''
 
+        # Is code is None or NULL it's not necessary search the value
+        # resolves infinite loop, for some reason when code is NULL it locks QGIS
+        if value == NULL or not value:
+            return res
+
         if type(domain_table) is str:
             domain_table_name = domain_table
         else:  # QgsVectorLayer
@@ -774,6 +779,11 @@ class LADM_DATA():
         """
         res = None
         domain_table_name = ''
+
+        # Is code is None or NULL it's not necessary search the value
+        # resolves infinite loop, for some reason when code is NULL it locks QGIS
+        if code == NULL or code is None:
+            return res
 
         if type(domain_table) is str:
             domain_table_name = domain_table
