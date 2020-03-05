@@ -118,3 +118,4 @@ class ConnectionManager(QObject):
         :param db_source:
         """
         self.dbs_supported.get_db_factory(db.engine).save_parameters_conn(db.dict_conn_params, db_source)
+        self.update_db_connector_for_source(db_source)  # Update db connection with new parameters
