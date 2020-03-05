@@ -101,8 +101,9 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-        self.update_connection_info(COLLECTED_DB_SOURCE)
-        self.update_connection_info(SUPPLIES_DB_SOURCE)
+        self.update_connection_info()
+
+        self.logger.clear_message_bar()  # Close any existing message in QGIS message bar
 
     def set_init_db_config(self):
         """
@@ -118,7 +119,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.btn_supplies_db.setEnabled(False)
         else:
             self.btn_supplies_db.setEnabled(True)
-        self.update_connection_info(SUPPLIES_DB_SOURCE)
+        self.update_connection_info()
 
     def show_settings_collected_db(self):
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
@@ -128,7 +129,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         if self.settings_dialog.exec_():
             self._db_collected = self.settings_dialog.get_db_connection()
-            self.update_connection_info(COLLECTED_DB_SOURCE)
+            self.update_connection_info()
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def show_settings_supplies_db(self):
@@ -139,7 +140,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         if self.settings_dialog.exec_():
             self._db_supplies = self.settings_dialog.get_db_connection()
-            self.update_connection_info(SUPPLIES_DB_SOURCE)
+            self.update_connection_info()
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
@@ -151,33 +152,13 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         else:
             self._db_supplies_was_changed = True
 
-    def close_dialog(self):
-        """
-        We use this method to be safe when emitting the db_connection_changed, otherwise we could trigger slots that
-        unload the plugin, destroying dialogs and thus, leading to crashes.
-        """
-        if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-
-        if self._db_collected_was_changed:
-            self.conn_manager.db_connection_changed.emit(self._db_collected, self._db_collected.test_connection()[0], COLLECTED_DB_SOURCE)
-
-        if self._db_supplies_was_changed:
-            self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
-
-        if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
-
-        self.logger.info(__name__, "Dialog closed.")
-        self.show_message_change_detection_settings_status()  # Show information message indicating whether setting is OK
-        self.done(QDialog.Accepted)
-
-    def update_connection_info(self, db_source):
+    def update_connection_info(self):
         # Validate db connections
         self.lbl_msg_collected.setText("")
         self.lbl_msg_supplies.setText("")
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
+        # First, update status of same_db button according to collected db connection
         res_collected, code_collected, msg_collected = self._db_collected.test_connection(required_models=[LADMNames.OPERATION_MODEL_PREFIX])
         res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
 
@@ -212,15 +193,15 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                 self.db_supplies_connect_label.setToolTip('')
 
         # Update error message labels
-        if not res_collected or not res_supplies:
-            if not res_collected:
-                self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-                self.lbl_msg_collected.setToolTip(msg_collected)
+        if not res_collected:
+            self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+            self.lbl_msg_collected.setToolTip(msg_collected)
 
-            if not res_supplies:
-                self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-                self.lbl_msg_supplies.setToolTip(msg_supplies)
-        else:
+        if not res_supplies:
+            self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
+            self.lbl_msg_supplies.setToolTip(msg_supplies)
+
+        if res_collected and res_supplies:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     def accepted(self):
@@ -255,10 +236,10 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                 self.show_message_clean_layers_panel(message)
                 self.show_message_change_detection_settings_status()  # Show information message indicating if setting is OK
             else:
-                self.close_dialog()
+                self.close_dialog(QDialog.Accepted)
         else:
             # Connections have not changed
-            self.close_dialog()
+            self.close_dialog(QDialog.Accepted)
 
     def show_message_change_detection_settings_status(self):
         if not self.collected_db_is_valid() and not self.supplies_db_is_valid():
@@ -289,9 +270,9 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         if reply == QMessageBox.Yes:
             QgsProject.instance().layerTreeRoot().removeAllChildren()
-            self.close_dialog()
+            self.close_dialog(QDialog.Accepted)
         elif reply == QMessageBox.No:
-            self.close_dialog()
+            self.close_dialog(QDialog.Accepted)
         elif reply == QMessageBox.Cancel:
             pass  # Continue config db connections
 
@@ -302,21 +283,42 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         return self._db_supplies.supplies_model_exists()
 
     def reject(self):
-        """
-        The user discarded changes, so go back to initial state.
-        """
-        if self._db_collected_was_changed:
-            self.conn_manager.save_parameters_conn(self.init_db_collected, COLLECTED_DB_SOURCE)
-            self._db_collected = self.conn_manager.get_db_connector_from_source()
-            self.conn_manager.db_connection_changed.emit(self._db_collected, self._db_collected.test_connection()[0], COLLECTED_DB_SOURCE)
+        self.close_dialog(QDialog.Rejected)
 
-        if self._db_supplies_was_changed:
-            self.conn_manager.save_parameters_conn(self.init_db_supplies, SUPPLIES_DB_SOURCE)
-            self._db_supplies = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
-            self.conn_manager.db_connection_changed.emit(self._db_supplies, self._db_supplies.test_connection()[0], SUPPLIES_DB_SOURCE)
+    def close_dialog(self, result):
+        """
+        We use this slot to be safe when emitting the db_connection_changed (should be done at the end), otherwise we
+        could trigger slots that unload the plugin, destroying dialogs and thus, leading to crashes.
+        """
+        print(result)
+        if result == QDialog.Accepted:
+            if self._schedule_layers_and_relations_refresh:
+                self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+
+            if self._db_collected_was_changed:
+                self.conn_manager.db_connection_changed.emit(self._db_collected,
+                                                             self._db_collected.test_connection()[0],
+                                                             COLLECTED_DB_SOURCE)
+
+            if self._db_supplies_was_changed:
+                self.conn_manager.db_connection_changed.emit(self._db_supplies,
+                                                             self._db_supplies.test_connection()[0],
+                                                             SUPPLIES_DB_SOURCE)
+
+            if self._schedule_layers_and_relations_refresh:
+                self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+
+        elif result == QDialog.Rejected:
+            # Go back to initial connections and don't emit db_connection_changed
+            if self._db_collected_was_changed:
+                self.conn_manager.save_parameters_conn(self.init_db_collected, COLLECTED_DB_SOURCE)
+
+            if self._db_supplies_was_changed:
+                self.conn_manager.save_parameters_conn(self.init_db_supplies, SUPPLIES_DB_SOURCE)
 
         self.show_message_change_detection_settings_status()  # Show information message indicating whether setting is OK
-        self.done(QDialog.Rejected)
+        self.logger.info(__name__, "Dialog closed.")
+        self.done(result)
 
     def show_help(self):
         self.qgis_utils.show_help("change_detection_settings")
