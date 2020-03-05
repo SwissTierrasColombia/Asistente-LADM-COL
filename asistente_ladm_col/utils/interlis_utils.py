@@ -25,7 +25,6 @@ def get_models_from_xtf(xtf_path):
             lines += line
             res = re.search(pattern, lines)
             if res:
-                print("res", res.groups()[0])
                 text_found = str(res.groups()[0])
                 break
 

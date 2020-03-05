@@ -27,7 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings,
-                              pyqtSignal)
+                              pyqtSignal,
+                              pyqtSlot)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
@@ -94,6 +95,7 @@ from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.supplies.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
+from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
@@ -112,11 +114,11 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
+                                                 _validate_if_layers_in_editing_mode_with_changes,
                                                  _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _operation_model_required,
-                                                 _different_db_connections_required)
+                                                 _operation_model_required)
 from asistente_ladm_col.utils.utils import Utils
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
@@ -203,6 +205,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_to_download_report_dependency)
         self.logger.message_with_button_remove_report_dependency_emitted.connect(
             self.show_message_to_remove_report_dependency)
+        self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
+            self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
@@ -472,18 +476,18 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self.main_window)
         self._query_changes_all_parcels_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self.main_window)
-        self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies data settings"), self.main_window)
+        self._change_detections_settings_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection settings"), self.main_window)
 
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
-        self._settings_changes_action.triggered.connect(self.show_supplies_data_settings)
+        self._change_detections_settings_action.triggered.connect(self.show_change_detection_settings)
 
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
             ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
-            ACTION_SUPPLIES_SETTINGS: self._settings_changes_action
+            ACTION_CHANGE_DETECTION_SETTINGS: self._change_detections_settings_action
         })
 
     def create_generic_actions(self):
@@ -523,9 +527,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._supplies_settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
-                                                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Settings"),
-                                                 self.main_window)
         self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
@@ -541,7 +542,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action.triggered.connect(self.show_queries)
         self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
-        self._supplies_settings_action.triggered.connect(self.show_supplies_data_settings_clear_message_bar)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -558,7 +558,6 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_EXPORT_DATA: self._export_data_action,
             ACTION_EXPORT_DATA_SUPPLIES: self._export_data_action_supplies,
             ACTION_SETTINGS: self._settings_action,
-            ACTION_SUPPLIES_SETTINGS: self._supplies_settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
         })
@@ -619,6 +618,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
 
+    @pyqtSlot()
     def clear_message_bar(self):
         self.iface.messageBar().clearWidgets()
 
@@ -691,6 +691,22 @@ class AsistenteLADMCOLPlugin(QObject):
         button.pressed.connect(self.remove_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
+    def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+
+        btn_query_per_parcel = QPushButton(widget)
+        btn_query_per_parcel.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"))
+        btn_query_per_parcel.pressed.connect(self.query_changes_per_parcel)
+        widget.layout().addWidget(btn_query_per_parcel)
+
+        btn_query_all_parcels = QPushButton(widget)
+        btn_query_all_parcels.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"))
+        btn_query_all_parcels.pressed.connect(self.query_changes_all_parcels)
+        widget.layout().addWidget(btn_query_all_parcels)
+
+        self.iface.messageBar().pushWidget(widget, Qgis.Success, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
         self.clear_message_bar()  # Remove previous messages before showing a new one
@@ -1157,7 +1173,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
-    @_different_db_connections_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
         with ProcessWithStatus(msg):
@@ -1169,7 +1185,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     @_supplies_db_connection_required
-    @_different_db_connections_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
         with ProcessWithStatus(msg):
@@ -1188,14 +1204,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
-    def show_supplies_data_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE)
-        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+    @_validate_if_layers_in_editing_mode_with_changes
+    def show_change_detection_settings(self, *args, **kwargs):
+        dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
         dlg.exec_()
-
-    def show_supplies_data_settings_clear_message_bar(self):
-        self.clear_message_bar()
-        self.show_supplies_data_settings()
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)

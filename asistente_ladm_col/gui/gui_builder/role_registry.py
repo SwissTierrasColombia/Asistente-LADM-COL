@@ -211,9 +211,9 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_FILL_BFS,
                 ACTION_FILL_MORE_BFS_AND_LESS,
                 ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_PARCEL_QUERY,
@@ -248,10 +248,10 @@ class Role_Registry(metaclass=Singleton):
                     OBJECT_NAME: 'ladm_col_change_detection_toolbar',
                     ICON: CHANGE_DETECTION_ICON,
                     ACTIONS: [
-                        ACTION_CHANGE_DETECTION_PER_PARCEL,
-                        ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                        ACTION_CHANGE_DETECTION_SETTINGS,
                         SEPARATOR,
-                        ACTION_SUPPLIES_SETTINGS
+                        ACTION_CHANGE_DETECTION_PER_PARCEL,
+                        ACTION_CHANGE_DETECTION_ALL_PARCELS
                     ]
                 },
                 SEPARATOR,
@@ -271,9 +271,9 @@ class Role_Registry(metaclass=Singleton):
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The manager is in charge of preparing supplies for operators as well as validating and managing the data provided by operators."),
             ROLE_ACTIONS: [
+                ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_REPORT_ANNEX_17,

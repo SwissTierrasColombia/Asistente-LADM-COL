@@ -29,10 +29,11 @@ from asistente_ladm_col.tests.utils import (testdata_path,
 class TestQgisModelBaker(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
-        self.qgis_utils = QGISUtils()
-        self.base_test_path = tempfile.mkdtemp()
+        print("INFO: Restoring databases to be used")
+        cls.qgis_utils = QGISUtils()
+        cls.base_test_path = tempfile.mkdtemp()
 
     def test_export_data_in_pg(self):
         print("\nINFO: Validate Export Data in PG...")

@@ -886,6 +886,15 @@ class QGISUtils(QObject):
 
         return True
 
+    def get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(self, db):
+        layers = list()
+        for layer in QgsProject.instance().mapLayers().values():
+            if db.is_ladm_layer(layer):
+                if layer.isEditable():
+                    if layer.editBuffer().isModified():
+                        layers.append(layer)
+        return layers
+
     def get_error_layers_group(self):
         """
         Get the topology errors group. If it exists but is placed in another

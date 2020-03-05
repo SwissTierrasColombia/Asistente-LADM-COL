@@ -52,7 +52,7 @@ class Symbology:
 
     def get_supplies_style_group(self, names):
         return {
-            names.OP_PLOT_T: {
+            names.GC_PLOT_T: {
                 QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
             }
         }

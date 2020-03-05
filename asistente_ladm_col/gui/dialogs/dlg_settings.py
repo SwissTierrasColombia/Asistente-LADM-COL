@@ -47,14 +47,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
-        self.db_source = db_source
+        self.db_source = COLLECTED_DB_SOURCE  # default db source
+        self._required_models = list()
+        self._tab_pages_list = list()
         self.init_db_engine = None
 
         self._action_type = None
@@ -101,6 +103,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_engine_changed()
 
         # Trigger some default behaviours
+        self.restore_db_source_settings()  # restore settings with default db source
         self.restore_settings()
 
         self.roles = Role_Registry()
@@ -108,6 +111,26 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)
         self.rejected.connect(self.close_dialog)
+
+    def set_db_source(self, db_source):
+        self.db_source = db_source
+        self.restore_db_source_settings()
+
+    def set_tab_pages_list(self, tab_pages_list):
+        self._tab_pages_list = tab_pages_list
+        self.show_tabs(tab_pages_list)
+
+    def set_required_models(self, required_models):
+        self._required_models = required_models
+
+    def show_tabs(self, tab_pages_list):
+        """
+        Show only those tabs that are listed in tab_pages_list, if any. If it's an empty list, show all tabs.
+        """
+        if tab_pages_list:
+            for i in reversed(range(self.tabWidget.count())):
+                if i not in tab_pages_list:
+                    self.tabWidget.removeTab(i)
 
     def load_roles(self):
         """
@@ -172,56 +195,57 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg.exec_()
 
     def accepted(self):
+        """
+        First check if connection to DB/schema is valid, if not, block the dialog.
+        If valid, check it complies with LADM. If not, block the dialog. If it complies, we have two options: To emit
+        db_connection changed or not. Finally, we store options in QSettings.
+        """
+        ladm_col_schema = False
+
+        db = self._get_db_connector_from_gui()
+
+        test_level = EnumTestLevel.DB_SCHEMA
+
+        if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
+            # Limit the validation (used in GeoPackage)
+            test_level |= EnumTestLevel.SCHEMA_IMPORT
+
+        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
+
+        if res:
+            if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
+                # Only check LADM-schema if we are not in an SCHEMA IMPORT.
+                # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
+                ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM,
+                                                                required_models=self._required_models)
+
+            if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
+                self.show_message(msg, Qgis.Warning)
+                return  # Do not close the dialog
+
+        else:
+            self.show_message(msg, Qgis.Warning)
+            return  # Do not close the dialog
+
+        # Connection is valid and complies with LADM
         current_db_engine = self.cbo_db_engine.currentData()
         if self._lst_panel[current_db_engine].state_changed() or self.init_db_engine != current_db_engine:
-            valid_connection = True
-            ladm_col_schema = False
+            # Emit db_connection_changed
+            if self._db is not None:
+                self._db.close_connection()
 
-            db = self._get_db_connector_from_gui()
+            self._db = db
 
-            test_level = EnumTestLevel.DB_SCHEMA
+            # Update db connect with new db conn
+            self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
-            if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
-                # Limit the validation (used in GeoPackage)
-                test_level |= EnumTestLevel.SCHEMA_IMPORT
+            # Emmit signal when db source changes
+            self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
+            self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
-            res, code, msg = db.test_connection(test_level)
-
-            if res:
-                if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    # Only check LADM-schema if we are not in an SCHEMA IMPORT.
-                    # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
-                    ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM)
-
-                if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    self.show_message(msg, Qgis.Warning)
-                    return  # Do not close the dialog
-
-            else:
-                self.show_message(msg, Qgis.Warning)
-                valid_connection = False
-
-            if valid_connection:
-                if self._db is not None:
-                    self._db.close_connection()
-
-                self._db = db
-
-                # Update db connect with new db conn
-                self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
-
-                # Emmit signal when db source changes
-                self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
-                self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
-
-                self.save_settings()
-                QDialog.accept(self)
-            else:
-                return  # Do not close the dialog
-        else:
-            # Save settings from tabs other than database connection
-            self.save_settings()
-            QDialog.accept(self)
+        # Save settings from tabs other than database connection
+        self.save_settings()
+        QDialog.accept(self)
 
         # If active role changed, refresh the GUI
         selected_role = self.get_selected_role()
@@ -297,8 +321,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             if self._db is not None:
                 self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
-    def restore_settings(self):
-        # Restore QSettings
+    def restore_db_source_settings(self):
         settings = QSettings()
         default_db_engine = self.dbs_supported.id_default_db
 
@@ -312,10 +335,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_engine_changed()
 
         # restore db settings for all panels
-        for id_db, db_factory in self._lst_db.items():
+        for db_engine, db_factory in self._lst_db.items():
             dict_conn = db_factory.get_parameters_conn(self.db_source)
-            self._lst_panel[id_db].write_connection_parameters(dict_conn)
-            self._lst_panel[id_db].save_state()
+            self._lst_panel[db_engine].write_connection_parameters(dict_conn)
+            self._lst_panel[db_engine].save_state()
+
+    def restore_settings(self):
+        # Restore QSettings
+        settings = QSettings()
 
         custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if custom_model_directories_is_checked:
@@ -364,7 +391,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)
+        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
 
         if db is not None:
             db.close_connection()
@@ -375,7 +402,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self._required_models)
 
         if db is not None:
             db.close_connection()

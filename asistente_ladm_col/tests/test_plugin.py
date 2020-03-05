@@ -41,7 +41,7 @@ class TestPlugin(unittest.TestCase):
         pass
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
         global asistente_ladm_col
         #asistente_ladm_col.unload()
         pass

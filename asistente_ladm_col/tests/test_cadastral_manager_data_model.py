@@ -11,16 +11,18 @@ from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
                                                       T_ID_KEY,
                                                       DESCRIPTION_KEY,
                                                       DISPLAY_NAME_KEY)
-from asistente_ladm_col.tests.utils import (get_pg_conn, get_gpkg_conn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
+                                            get_gpkg_conn,
                                             restore_schema)
 
 
 class TestCadastralManagerDataModel(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_cadastral_manager_data')
-        self.db_pg = get_pg_conn('test_ladm_cadastral_manager_data')
-        self.db_gpkg = get_gpkg_conn('test_ladm_cadastral_manager_data_gpkg')
+        cls.db_pg = get_pg_conn('test_ladm_cadastral_manager_data')
+        cls.db_gpkg = get_gpkg_conn('test_ladm_cadastral_manager_data_gpkg')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for cadastral manager data model in PG...")
@@ -151,9 +153,10 @@ class TestCadastralManagerDataModel(unittest.TestCase):
             self.assertIn(test_required_field, required_fields)
 
     @classmethod
-    def tearDownClass(self):
-        self.db_pg.conn.close()
-        self.db_gpkg.conn.close()
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
+        cls.db_gpkg.conn.close()
 
 
 if __name__ == '__main__':
