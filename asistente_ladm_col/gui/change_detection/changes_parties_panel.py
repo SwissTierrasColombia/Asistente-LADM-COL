@@ -54,14 +54,13 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self):
         self.tbl_changes_parties.clearContents()
-        # Get max num of columns for tbl_changes_parties
+
+        # Get max num of columns for tbl_changes_parties (equals to the number of different documents in both db sources)
         list_documents = list()
-        for key in self.data:
-            if self.data[key] != NULL:
-                for party in self.data[key]:
-                    for key_party in party:
-                        if key_party == DICT_KEY_PARTY_T_DOCUMENT_ID_F:
-                            list_documents.append(party[key_party])
+        for db_source in self.data:
+            if self.data[db_source] != NULL:
+                for party in self.data[db_source]:
+                    list_documents.append(party[DICT_KEY_PARTY_T_DOCUMENT_ID_F])
 
         number_of_supplies_rows = len(self.data[SUPPLIES_DB_SOURCE]) if self.data[SUPPLIES_DB_SOURCE] != NULL else 0
         max_num_rows = len(set(list_documents))
@@ -75,14 +74,14 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         if self.data[COLLECTED_DB_SOURCE] != NULL:
             sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[DICT_KEY_PARTY_T_DOCUMENT_ID_F])
 
+        # Iterate supplies parties looking for its corresponding collected party. If none found, pair it with empty dict
         for row, supplies_party in enumerate(sorted_supplies_parties):
             collected_party_pair = {}
             for collected_party in sorted_collected_parties:
-                if supplies_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F] == supplies_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F]:
-                    collected_party_pair = supplies_party
-                    if collected_party_pair in sorted_collected_parties:
-                        sorted_collected_parties.remove(collected_party_pair)
-                        break
+                if supplies_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F] == collected_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F]:
+                    collected_party_pair = collected_party
+                    sorted_collected_parties.remove(collected_party_pair)  # Don't search again this party
+                    break
 
             self.fill_item(supplies_party, collected_party_pair, row)
 
@@ -92,16 +91,15 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_parties.setSortingEnabled(True)
 
     def fill_item(self, supplies_party, collected_party, row):
-        self.tbl_changes_parties.setCellWidget(row, 0, self.get_widget_with_party_info_formatted(supplies_party, SUPPLIES_DB_SOURCE))
+        self.tbl_changes_parties.setCellWidget(row, 0, self.get_widget_with_party_info_formatted(supplies_party))
         self.tbl_changes_parties.setCellWidget(row, 1, self.get_widget_with_party_info_formatted(collected_party))
 
         type_item = QTableWidgetItem()
         type_item.setBackground(Qt.green if supplies_party == collected_party else Qt.red)
         self.tbl_changes_parties.setItem(row, 2, type_item)
 
-    def get_widget_with_party_info_formatted(self, party_info, db_source=COLLECTED_DB_SOURCE):
+    def get_widget_with_party_info_formatted(self, party_info):
         widget = QTextEdit()
-        base_db = self.utils._db if db_source==COLLECTED_DB_SOURCE else self.utils._supplies_db
 
         if party_info:
             html = list()

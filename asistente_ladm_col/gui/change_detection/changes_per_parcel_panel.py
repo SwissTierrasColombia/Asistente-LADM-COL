@@ -181,6 +181,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
+        # We search for alphanumeric data in supplies data source
         self.txt_alphanumeric_query.setLayer(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PARCEL_T][LAYER])
         search_option = self.cbo_parcel_fields.currentData()
         search_field_supplies = get_supplies_search_options(self.utils._supplies_db.names)[search_option]
@@ -196,8 +197,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     @_with_override_cursor
     def search_data(self, **kwargs):
         """
-        Get plot geometries associated with parcels, both collected and supplies, zoom to them, activate map swipe tool
-            and fill comparison table.
+        Get plot geometries associated with parcels, both collected and supplies, zoom to them, fill comparison table
+        and activate map swipe tool.
+
+        To fill the comparison table we build two search dicts, one for supplies (already given because the alphanumeric
+        search is on supplies db source), and another one for collected. For the latter, we have 3 cases. We specify
+        them below (inline).
 
         :param kwargs: key-value (field name-field value) to search in parcel tables, both collected and supplies
                        Normally, keys are parcel_number, old_parcel_number or FMI, but if duplicates are found, an
@@ -208,14 +213,19 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.setEnabled(False)
         self.chk_show_all_plots.setChecked(True)
         self.initialize_tools_and_layers()  # Reset any filter on layers
-        already_zoomed_in = False
 
+        plots_supplies = list()
+        plots_collected = list()
         self.clear_result_table()
 
         search_option = self.cbo_parcel_fields.currentData()
         search_field_supplies = get_supplies_search_options(self.utils._supplies_db.names)[search_option]
         search_field_collected = get_collected_search_options(self.utils._db.names)[search_option]
         search_value = list(kwargs.values())[0]
+
+
+        # Build search criterion for both supplies and collected
+        search_criterion_supplies = {search_field_supplies: search_value}
 
         # Get supplies parcel's t_id and get related plot(s)
         expression_supplies = QgsExpression("{}='{}'".format(search_field_supplies, search_value))
@@ -240,12 +250,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             if supplies_plot_t_ids:
                 self._current_supplies_substring = "\"{}\" IN ('{}')".format(self.utils._supplies_db.names.T_ID_F, "','".join([str(t_id) for t_id in supplies_plot_t_ids]))
-                dict_supplies_plot_t_ids = {self.utils._supplies_db.names.T_ID_F: supplies_plot_t_ids}
-                self.parent.request_zoom_to_features(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], list(), dict_supplies_plot_t_ids)
-                already_zoomed_in = True
+                plots_supplies = self.utils.ladm_data.get_features_from_t_ids(
+                    self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER],
+                    self.utils._supplies_db.names.T_ID_F, supplies_plot_t_ids, True)
 
 
-        # Now get COLLECTED parcel's t_id and get related plot(s)
+        # Now get COLLECTED parcel's t_id to build the search dict for collected
         collected_parcel_t_id = None
         if 'collected_parcel_t_id' in kwargs:
             # This is the case when this panel is called and we already know the parcel number is duplicated
@@ -280,48 +290,50 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                     else:
                         return  # User just cancelled the dialog, there is nothing more to do
 
-        search_criterion_supplies = {search_field_supplies: search_value}
 
         self.fill_table(search_criterion_supplies, search_criterion_collected)
 
+        # Now get related plot(s) for both collected and supplies,
         if collected_parcel_t_id is not None:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                            [collected_parcel_t_id],
                                                                            self.utils._db.names.T_ID_F,
                                                                            plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
                                                                            uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
+
             if plot_t_ids:
                 self._current_substring = "{} IN ('{}')".format(self.utils._db.names.T_ID_F, "','".join([str(t_id) for t_id in plot_t_ids]))
-                if not already_zoomed_in:
-                    dict_plot_t_ids = {self.utils._db.names.T_ID_F:plot_t_ids}
-                    self.parent.request_zoom_to_features(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], list(), dict_plot_t_ids)
+                plots_collected = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
+                                                                               self.utils._db.names.T_ID_F,
+                                                                               plot_t_ids,
+                                                                               True)
 
-                # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
+        # Zoom to combined extent
+        plot_features = plots_supplies + plots_collected  # Feature list
+        plots_extent = QgsRectangle()
+        for plot in plot_features:
+            plots_extent.combineExtentWith(plot.geometry().boundingBox())
 
+        if not plots_extent.isEmpty():
+            self.utils.iface.mapCanvas().zoomToFeatureExtent(plots_extent)
+
+            if plots_supplies and plots_collected:  # Otherwise the map swipe tool doesn't add any value :)
                 # Activate Swipe Tool
                 self.utils.qgis_utils.activate_layer_requested.emit(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER])
-                if supplies_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
-                    self.parent.activate_map_swipe_tool()
+                self.parent.activate_map_swipe_tool()
 
-                    plots_collected = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], self.utils._db.names.T_ID_F, plot_t_ids, True)
-                    plots_supplies = self.utils.ladm_data.get_features_from_t_ids(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], self.utils._supplies_db.names.T_ID_F, supplies_plot_t_ids, True)
-                    plots = plots_collected + plots_supplies
-                    plots_extent = QgsRectangle()
-                    for plot in plots:
-                        plots_extent.combineExtentWith(plot.geometry().boundingBox())
+                # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
+                coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
+                coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
 
-                    self.utils.iface.mapCanvas().zoomToFeatureExtent(plots_extent)
-                    coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
-                    coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
+                coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
+                map_point = coord_transform.transform(coord_x, coord_y)
+                widget_point = map_point.toQPointF().toPoint()
+                global_point = self.utils.canvas.mapToGlobal(widget_point)
 
-                    coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
-                    map_point = coord_transform.transform(coord_x, coord_y)
-                    widget_point = map_point.toQPointF().toPoint()
-                    global_point = self.utils.canvas.mapToGlobal(widget_point)
-
-                    self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                    self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                    self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
 
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
@@ -462,12 +474,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def show_all_plots(self, state):
         try:
             self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].setSubsetString(self._current_supplies_substring if not state else "")
-        except:# If the layer was previously removed
+        except RuntimeError:  # If the layer was previously removed
             pass
 
         try:
             self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].setSubsetString(self._current_substring if not state else "")
-        except: # If the layer was previously removed
+        except RuntimeError:  # If the layer was previously removed
             pass
 
     def initialize_tools_and_layers(self, panel=None):
