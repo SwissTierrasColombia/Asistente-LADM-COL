@@ -40,8 +40,9 @@ class Utils(QObject):
     """
     def __init__(self):
         QObject.__init__(self)
- 
-    def set_time_format(self, time):
+
+    @staticmethod
+    def set_time_format(time):
         time_format = '.1f'
         unit_millisecond = "ms"
         unit_second = "seg"

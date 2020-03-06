@@ -1,10 +1,7 @@
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
-                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
+from asistente_ladm_col.config.enums import QualityRuleEnum
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 
 
 class Symbology:
@@ -61,19 +58,19 @@ class Symbology:
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
         return {
-            translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS]: {
+            translated_strings[QualityRuleEnum.Line.BOUNDARIES_COVERED_BY_PLOTS]: {
                 'es': 'style_boundary_should_be_covered_by_plot_es',
                 'en': 'style_boundary_should_be_covered_by_plot_en'
             },
-            translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES]: {
+            translated_strings[QualityRuleEnum.Polygon.PLOTS_COVERED_BY_BOUNDARIES]: {
                 'es': 'style_plot_should_be_covered_by_boundary_es',
                 'en': 'style_plot_should_be_covered_by_boundary_en'
             },
-            translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES]: {
+            translated_strings[QualityRuleEnum.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES]: {
                 'es': 'style_boundary_points_should_be_covered_by_boundary_nodes_es',
                 'en': 'style_boundary_points_should_be_covered_by_boundary_nodes_en'
             },
-            translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]: {
+            translated_strings[QualityRuleEnum.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]: {
                 'es': 'style_boundary_nodes_should_be_covered_by_boundary_points_es',
                 'en': 'style_boundary_nodes_should_be_covered_by_boundary_points_en'
              }

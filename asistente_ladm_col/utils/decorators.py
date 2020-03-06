@@ -140,7 +140,7 @@ def _different_db_connections_required(func_to_decorate):
 
     return decorated_function
 
-def _log_quality_checks(func_to_decorate):
+def _log_quality_rules(func_to_decorate):
     @wraps(func_to_decorate)
     def add_format_to_text(self, db, **args):
         rule_name = args['rule_name']

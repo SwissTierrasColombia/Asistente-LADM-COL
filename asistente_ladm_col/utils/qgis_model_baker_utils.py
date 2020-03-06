@@ -160,7 +160,8 @@ class QgisModelBakerUtils(QObject):
             return QgisModelBaker.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
         return None
 
-    def get_suggested_index_for_layer(self, layer, group):
+    @staticmethod
+    def get_suggested_index_for_layer(layer, group):
         if 'QgisModelBaker' in qgis.utils.plugins:
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)

@@ -101,9 +101,6 @@ class DBConnector(QObject):
     def get_models(self, schema=None):
         raise NotImplementedError
 
-    def get_logic_validation_queries(self):
-        raise NotImplementedError
-
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
         tmp_dict_conn_params = self._dict_conn_params.copy()

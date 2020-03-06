@@ -52,10 +52,10 @@ class ConnectionManager(QObject):
         self.encrypter_decrypter = EncrypterDecrypter()
 
     def get_query_manager(self):
-        db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=COLLECTED_DB_SOURCE))
+        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=COLLECTED_DB_SOURCE))
 
-        if db_connection_source:
-            db_factory = self.dbs_supported.get_db_factory(db_connection_source)
+        if db_connection_engine:
+            db_factory = self.dbs_supported.get_db_factory(db_connection_engine)
             query_manager = db_factory.get_query_manager(self.qgis_utils)
         else:
             # Use the default connector

@@ -273,7 +273,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
+        self.logger.success_msg(__name__, QCoreApplication.translate("ImportFromExcelDialog",
             "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
         self._running_tool = False
 

@@ -1,6 +1,8 @@
 from enum import (Enum,
                   IntFlag)
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class LayerRegisterType(Enum):
     IN_REGISTER = 1
@@ -104,3 +106,52 @@ class STStepTypeEnum(Enum):
     IMPORT_DATA = 4
     EXPORT_DATA = 5
     RUN_ETL_COBOL = 6
+
+
+# https://www.notinventedhere.org/articles/python/how-to-use-strings-as-name-aliases-in-python-enums.html
+class QualityRuleEnum(Enum):
+    class Point(Enum):
+        OVERLAPS_IN_BOUNDARY_POINTS = 1001
+        OVERLAPS_IN_CONTROL_POINTS = 1002
+        BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = 1003
+        BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = 1004
+
+    class Line(Enum):
+        OVERLAPS_IN_BOUNDARIES = 2001
+        BOUNDARIES_ARE_NOT_SPLIT = 2002
+        BOUNDARIES_COVERED_BY_PLOTS = 2003
+        BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS = 2004
+        DANGLES_IN_BOUNDARIES = 2005
+
+    class Polygon(Enum):
+        OVERLAPS_IN_PLOTS = 3001
+        OVERLAPS_IN_BUILDINGS = 3002
+        OVERLAPS_IN_RIGHTS_OF_WAY = 3003
+        PLOTS_COVERED_BY_BOUNDARIES = 3004
+        RIGHT_OF_WAY_OVERLAPS_BUILDINGS = 3005
+        GAPS_IN_PLOTS = 3006
+        MULTIPART_IN_RIGHT_OF_WAY = 3007
+        PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = 3008
+        BUILDINGS_SHOULD_BE_WITHIN_PLOTS = 3009
+        BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS = 3010
+
+    class Logic(Enum):
+        PARCEL_RIGHT_RELATIONSHIP = 4001
+        DUPLICATE_RECORDS_IN_A_TABLE = 4002
+        FRACTION_SUM_FOR_PARTY_GROUPS = 4003
+        DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = 4004
+        MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = 4005
+        PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = 4006
+        PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = 4007
+        COL_PARTY_NATURAL_TYPE = 4008
+        COL_PARTY_NOT_NATURAL_TYPE = 4009
+        PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER = 4010
+        UEBAUNIT_PARCEL = 4011
+
+
+    # Avoid using "value" property when I want to access a Enum within another Enum
+    # https://stackoverflow.com/a/50261702/9802768
+    def __getattr__(self, item):
+        if item != '_value_':
+            return getattr(self.value, item).value
+        raise AttributeError
