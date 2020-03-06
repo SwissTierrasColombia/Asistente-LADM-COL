@@ -239,36 +239,36 @@ class TableAndFieldNames:
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Nombre_Geografico"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro.Tipo_Avaluo"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_ph_predio.gc_predio"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica"
+    GC_PARCEL_T_REGISTRY_OFFICE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral"
+    GC_PARCEL_T_CONDITION_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio"
+    GC_PARCEL_T_ECONOMIC_DESTINATION_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Direcciones"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro"
+    GC_PARCEL_T_DATE_OF_DATA_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos"
+    GC_PARCEL_T_FMI_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro"
     GC_PARCEL_T_PARCEL_NUMBER_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Numero_Documento"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_propietario_predio.gc_predio_catastro"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Apellido"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Nombre"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Razon_Social"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Apellido"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Nombre"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Tipo_Documento"
+    GC_PARCEL_T_PARCEL_NUMBER_BEFORE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior"
+    GC_PARCEL_T_DATA_SOURCE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos"
+    GC_PARCEL_T_CADASTRAL_TYPE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro"
+    GC_PARCEL_T_PARCEL_TYPE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio"
+    GC_OWNER_T_VERIFICATION_DIGIT = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion"
+    GC_OWNER_T_DOCUMENT_ID_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Numero_Documento"
+    GC_OWNER_T_PARCEL_ID_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_propietario_predio.gc_predio_catastro"
+    GC_OWNER_T_SURNAME_1_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Apellido"
+    GC_OWNER_T_FIRST_NAME_1_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Primer_Nombre"
+    GC_OWNER_T_BUSINESS_NAME_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Razon_Social"
+    GC_OWNER_T_SURNAME_2_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Apellido"
+    GC_OWNER_T_FIRST_NAME_2_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Segundo_Nombre"
+    GC_OWNER_T_DOCUMENT_TYPE_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Propietario.Tipo_Documento"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Rural.Codigo"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Rural.Geometria"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Urbano.Codigo"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Sector_Urbano.Geometria"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital"
+    GC_PLOT_T_ALPHANUMERIC_AREA_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica"
+    GC_PLOT_T_DIGITAL_PLOT_AREA_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Geometria"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos"
-    # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio"
+    GC_PLOT_T_GC_PARCEL_F = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Anio"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Area_Construida"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Unidad_Construccion.Area_Privada"
@@ -733,12 +733,35 @@ class TableAndFieldNames:
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Manzana": {VARIABLE_NAME: "GC_BLOCK_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Perimetro": {VARIABLE_NAME: "GC_PERIMETER_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": {VARIABLE_NAME: "GC_PARCEL_T", FIELDS_DICT: {
-            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial": "GC_PARCEL_T_PARCEL_NUMBER_F"
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Circulo_Registral": "GC_PARCEL_T_REGISTRY_OFFICE_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Condicion_Predio": "GC_PARCEL_T_CONDITION_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Destinacion_Economica": "GC_PARCEL_T_ECONOMIC_DESTINATION_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Fecha_Datos": "GC_PARCEL_T_DATE_OF_DATA_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Matricula_Inmobiliaria_Catastro": "GC_PARCEL_T_FMI_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial": "GC_PARCEL_T_PARCEL_NUMBER_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Numero_Predial_Anterior": "GC_PARCEL_T_PARCEL_NUMBER_BEFORE_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Sistema_Procedencia_Datos": "GC_PARCEL_T_DATA_SOURCE_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Catastro": "GC_PARCEL_T_CADASTRAL_TYPE_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro.Tipo_Predio": "GC_PARCEL_T_PARCEL_TYPE_F"
         }},
-        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario": {VARIABLE_NAME: "GC_OWNER_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario": {VARIABLE_NAME: "GC_OWNER_T", FIELDS_DICT: {
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion": "GC_OWNER_T_VERIFICATION_DIGIT",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Numero_Documento": "GC_OWNER_T_DOCUMENT_ID_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.gc_propietario_predio.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": "GC_OWNER_T_PARCEL_ID_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Primer_Apellido": "GC_OWNER_T_SURNAME_1_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Primer_Nombre": "GC_OWNER_T_FIRST_NAME_1_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Razon_Social": "GC_OWNER_T_BUSINESS_NAME_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Segundo_Apellido": "GC_OWNER_T_SURNAME_2_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Segundo_Nombre": "GC_OWNER_T_FIRST_NAME_2_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Propietario.Tipo_Documento": "GC_OWNER_T_DOCUMENT_TYPE_F",
+        }},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Rural": {VARIABLE_NAME: "GC_RURAL_SECTOR_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Sector_Urbano": {VARIABLE_NAME: "GC_URBAN_SECTOR_T", FIELDS_DICT: {}},
-        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {VARIABLE_NAME: "GC_PLOT_T", FIELDS_DICT: {}},
+        "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {VARIABLE_NAME: "GC_PLOT_T", FIELDS_DICT: {
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro": "GC_PLOT_T_GC_PARCEL_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital": "GC_PLOT_T_DIGITAL_PLOT_AREA_F",
+            "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica": "GC_PLOT_T_ALPHANUMERIC_AREA"
+        }},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Unidad_Construccion": {VARIABLE_NAME: "GC_BUILDING_UNIT_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Vereda": {VARIABLE_NAME: "GC_RURAL_DIVISION_T", FIELDS_DICT: {}},
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Comisiones_Construccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_T", FIELDS_DICT: {}},
@@ -1333,6 +1356,18 @@ class LADMNames(metaclass=Singleton):
     SUPPORTED_ISO_CARTESIAN_COORDINATES = 'ISO19107_PLANAS_V1'
     SUPPORTED_MAGNA_BOG_COORDINATES = 'ISO19107_V1_MAGNABOG'
 
+    SUPPORTED_MODEL_VERSIONS = {
+        OPERATION_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        CADASTRAL_FORM_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        VALUATION_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        LADM_MODEL_PREFIX: LATEST_LADM_MODEL_VERSION_SUPPORTED,
+        ANT_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        REFERENCE_CARTOGRAPHY_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        SNR_DATA_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        SUPPLIES_INTEGRATION_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED,
+        SUPPLIES_MODEL_PREFIX: LATEST_OPERATION_MODEL_VERSION_SUPPORTED
+    }
+
     SUPPORTED_LADM_MODEL= "{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL)
     SUPPORTED_SNR_DATA_MODEL= "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
     SUPPORTED_SUPPLIES_MODEL= "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
@@ -1478,6 +1513,8 @@ class LADMNames(metaclass=Singleton):
 
 
 class QueryNames:
+    COUNT_KEY = 'count_key'
+
     TABLE_NAME = 'table_name'
     TABLE_ILINAME = 'table_iliname'
     FIELD_ILINAME = 'field_iliname'

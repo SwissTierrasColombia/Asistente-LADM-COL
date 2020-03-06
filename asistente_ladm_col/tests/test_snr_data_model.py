@@ -18,10 +18,11 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
 
 class TestSNRDataModel(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_snr_data')
-        self.db_pg = get_pg_conn('test_ladm_snr_data')
-        self.db_gpkg = get_gpkg_conn('test_ladm_snr_gpkg')
+        cls.db_pg = get_pg_conn('test_ladm_snr_data')
+        cls.db_gpkg = get_gpkg_conn('test_ladm_snr_gpkg')
 
     def test_required_models_gpkg(self):
         print("\nINFO: Validate if the schema for snr data model in GPKG...")
@@ -127,9 +128,10 @@ class TestSNRDataModel(unittest.TestCase):
             self.assertIn(test_required_field, required_fields)
 
     @classmethod
-    def tearDownClass(self):
-        self.db_pg.conn.close()
-        self.db_gpkg.conn.close()
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
+        cls.db_gpkg.conn.close()
 
 
 if __name__ == '__main__':

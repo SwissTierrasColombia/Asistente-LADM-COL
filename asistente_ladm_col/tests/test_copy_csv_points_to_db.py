@@ -14,6 +14,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_asistente_ladm_col,
                                             import_processing,
                                             get_pg_conn,
+                                            delete_features,
                                             get_test_path,
                                             restore_schema,
                                             clean_table)
@@ -32,20 +33,21 @@ SCHEMA_LADM_COL_EMPTY = 'test_ladm_col_empty'
 class TestCopy(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         print("\nINFO: Setting up copy CSV points to DB validation...")
-        self.qgis_utils = QGISUtils()
+        print("INFO: Restoring databases to be used")
+        cls.qgis_utils = QGISUtils()
         restore_schema(SCHEMA_LADM_COL_EMPTY)
-        self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
+        cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
-        self.names = self.db_pg.names
+        cls.names = cls.db_pg.names
         import_asistente_ladm_col()
-        self.ladm_data = LADM_DATA(self.qgis_utils)
-        self.geometry = GeometryUtils()
+        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.geometry = GeometryUtils()
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working for empty db')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        result = cls.db_pg.test_connection()
+        cls.assertTrue(result[0], 'The test connection is not working for empty db')
+        cls.assertIsNotNone(cls.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
@@ -61,7 +63,7 @@ class TestCopy(unittest.TestCase):
 
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY)
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
     def boundary_point_layer_resolve_domains_for_test(self, csv_layer):
@@ -103,7 +105,7 @@ class TestCopy(unittest.TestCase):
         self.validate_points_in_db_from_wgs84(SCHEMA_LADM_COL_EMPTY)
 
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
     def upload_points_from_csv_crs_wgs84(self, csv_layer, schema):
@@ -139,7 +141,7 @@ class TestCopy(unittest.TestCase):
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY, with_z=True)
 
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
     def upload_points_from_csv_with_elevation(self, csv_layer, schema):
@@ -196,7 +198,7 @@ class TestCopy(unittest.TestCase):
         self.validate_number_of_boundary_points_in_db(SCHEMA_LADM_COL_EMPTY, 0)
 
         test_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
     def upload_points_from_csv_overlapping(self, csv_layer, schema):
@@ -217,15 +219,10 @@ class TestCopy(unittest.TestCase):
         result = cur.fetchone()
         self.assertEqual(result[0], num)
 
-    @staticmethod
-    def delete_features(layer):
-        with edit(layer):
-            list_ids = [feat.id() for feat in layer.getFeatures()]
-            layer.deleteFeatures(list_ids)
-
     @classmethod
-    def tearDownClass(self):
-        self.db_pg.conn.close()
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
 
 
 if __name__ == '__main__':

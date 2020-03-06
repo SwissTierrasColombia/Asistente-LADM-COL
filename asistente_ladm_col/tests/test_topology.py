@@ -17,8 +17,8 @@ import_qgis_model_baker()
 class TestTopology(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
+    def setUpClass(cls):
+        cls.qgis_utils = QGISUtils()
 
     def test_pair_boundary_plot(self):
         print('\nValidating boundaries plots')
@@ -43,9 +43,6 @@ class TestTopology(unittest.TestCase):
         self.assertEqual(result1, [(1, 3), (3, 3)])
 
         self.assertEqual(result2, [(1, 4)])
-
-    def tearDownClass():
-        print('tearDown test_topology')
 
 
 if __name__ == '__main__':

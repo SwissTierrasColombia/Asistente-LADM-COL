@@ -8,6 +8,14 @@ from asistente_ladm_col.config.mapping_config import LADMNames
 class HelpStrings(QObject):
     def __init__(self):
 
+        self.CHANGE_DETECTION_SETTING_DIALOG_HELP = QCoreApplication.translate(
+            "HelpStrings",
+            """Setup the collected and supplies connections to detect changes.
+                <ul>
+                  <li><b>Collected source: </b> database associated to field survey, which should comply with the operation model.</li>
+                  <li><b>Supplies source: </b> database delivered by the cadastral manager, which should comply with the cadastral supplies model.</li>
+                </ul>""")
+
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP = QCoreApplication.translate("HelpStrings", "\
 Choose this option to load points to <b>Boundary Points</b> layer from <i>LADM_COL</i> model.\
 <br><br>\

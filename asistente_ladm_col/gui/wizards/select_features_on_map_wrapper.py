@@ -48,11 +48,12 @@ class SelectFeaturesOnMapWrapper:
         msg.setIcon(QMessageBox.Question)
         msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
         msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
-        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate("WizardTranslations", "No, continue editing")), QMessageBox.NoRole)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard"))
+        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, continue editing"))
         reply = msg.exec_()
 
-        if reply == 1: # 1 continue editing, 0 close wizard
+        if reply == QMessageBox.No:
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
         else:

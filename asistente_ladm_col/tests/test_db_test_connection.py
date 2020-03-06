@@ -3,6 +3,8 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
+from asistente_ladm_col.config.mapping_config import LADMNames
+
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
@@ -33,7 +35,7 @@ class TestDBTestConnection(unittest.TestCase):
         db_pg = get_pg_conn('interlis_no_ladm')
         res, code, msg = db_pg.test_connection()
         self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND)
+        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
         db_pg.conn.close()
 
     def test_pg_test_connection_no_interlis_no_ladm_col_models(self):
@@ -56,14 +58,14 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertEqual(EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, code)
         db_pg.conn.close()
 
-    def test_pg_test_connection_interlis_ladm_col_models_upper_version(self):
+    def test_pg_test_connection_interlis_ladm_col_models_higher_version(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, LADM-COL with higher models version)...")
 
         restore_schema('ladm_col_210')
         db_pg = get_pg_conn('ladm_col_210')
         res, code, msg = db_pg.test_connection()
         self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND)
+        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
         db_pg.conn.close()
 
     def test_gpkg_test_connection(self):
@@ -119,7 +121,22 @@ class TestDBTestConnection(unittest.TestCase):
         db = get_gpkg_conn('interlis_no_ladm_col_models_gpkg')
         res, code, msg = db.test_connection()
         self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND)
+        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
+
+    def test_gpkg_test_connection_required_models_success(self):
+        print("\nINFO: Validate test_connection() for GeoPackage (required models (success): operation and snr)...")
+        db = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        res, code, msg = db.test_connection(required_models=[LADMNames.OPERATION_MODEL_PREFIX,
+                                                             LADMNames.SNR_DATA_MODEL_PREFIX])
+        self.assertTrue(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
+
+    def test_gpkg_test_connection_required_models_error(self):
+        print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
+        db = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        res, code, msg = db.test_connection(required_models=[LADMNames.ANT_MODEL_PREFIX])
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
 
 if __name__ == '__main__':
     nose2.main()

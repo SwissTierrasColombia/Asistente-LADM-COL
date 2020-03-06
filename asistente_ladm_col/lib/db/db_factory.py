@@ -19,6 +19,8 @@
 from abc import ABC
 from qgis.PyQt.QtCore import QSettings
 
+from asistente_ladm_col.config.gui.db_engine_gui_config import DB_Engine_GUI_Config
+
 
 class DbFactory(ABC):
     """
@@ -45,6 +47,14 @@ class DbFactory(ABC):
 
     def set_ili2db_configuration_params(self, params, configuration):
         raise NotImplementedError
+
+    def get_db_engine_actions(self):
+        """
+        Get the actions supported by a db engine.
+
+        :return: List of actions implemented in the plugin for the DB engine.
+        """
+        return DB_Engine_GUI_Config().get_db_engine_actions(self._engine)  # Returns a default if cannot find the engine
 
     def save_parameters_conn(self, dict_conn, db_source):
         settings = QSettings()
