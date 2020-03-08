@@ -100,6 +100,7 @@ def is_plugin_version_valid(plugin_name, min_required_version, exact_required_ve
     if not plugin_found:
         return False
     current_version = get_plugin_metadata(plugin_name, 'version')
+    current_version = current_version[1:] if current_version.startswith("v") else current_version
     return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
