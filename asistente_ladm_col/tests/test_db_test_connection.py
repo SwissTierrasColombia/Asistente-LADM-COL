@@ -12,10 +12,17 @@ from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
-                                            get_gpkg_conn_from_path)
+                                            get_gpkg_conn_from_path,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 
 class TestDBTestConnection(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        print("\nINFO: Importing Model Baker...")
+        import_qgis_model_baker()
 
     def test_pg_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, no LADM-COL models)...")
@@ -66,7 +73,7 @@ class TestDBTestConnection(unittest.TestCase):
         db_pg = get_pg_conn('bad_interlis_ladm')
         res, code, msg = db_pg.test_connection()
         self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE)
+        self.assertEqual(code, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND)
         db_pg.conn.close()
 
     def test_pg_test_connection_interlis_ladm_col_models_higher_version(self):
@@ -148,6 +155,11 @@ class TestDBTestConnection(unittest.TestCase):
         res, code, msg = db.test_connection(required_models=[LADMNames.ANT_MODEL_PREFIX])
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
+
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()
