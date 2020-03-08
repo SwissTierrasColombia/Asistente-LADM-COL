@@ -140,8 +140,7 @@ To use the LADM_COL Assistant you need:
    - Java v1.8
    - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
    - PostGIS 2.4 or higher.
- - QGIS plugins:
-   - LADM_COL Assistant
+ - QGIS plugins (installing LADM_COL Assistant using QGIS Plugin Manager will also install these automatically):
    - QGIS Model Baker v4.3.1.2
    - MapSwipe Tool v1.2
 

@@ -141,8 +141,7 @@ Para usar el Asistente LADM_COL se requiere:
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
    - PostGIS 2.4 o superior.
- - Plugins de QGIS:
-   - Asistente LADM_COL
+ - Complementos de QGIS (al instalar el Asistente LADM_COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
    - QGIS Model Baker v4.3.1.2
    - MapSwipe Tool v1.2
  
