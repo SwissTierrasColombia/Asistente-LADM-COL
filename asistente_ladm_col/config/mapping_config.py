@@ -1202,9 +1202,9 @@ class TableAndFieldNames:
 
     def cache_domain_value(self, domain_table, t_id, value):
         if domain_table in self._cached_domain_values:
-            self._cached_domain_values[domain_table][t_id] = value
+            self._cached_domain_values[domain_table][value] = t_id
         else:
-            self._cached_domain_values[domain_table] = {t_id: value}
+            self._cached_domain_values[domain_table] = {value: t_id}
 
     def get_domain_value(self, domain_table, t_id):
         """
@@ -1215,22 +1215,27 @@ class TableAndFieldNames:
         :return: iliCode of the corresponding t_id.
         """
         if domain_table in self._cached_domain_values:
-            return self._cached_domain_values[domain_table][t_id] if t_id in self._cached_domain_values[domain_table] else None
+            for k,v in self._cached_domain_values[domain_table].items():
+                if v == t_id:
+                    return True, k
+
+        return False, None
 
     def get_domain_code(self, domain_table, ilicode):
         """
-        Get a domain value from the cache.
+        Get a domain code from the cache.
 
         :param domain_table: Domain table name.
         :param ilicode: iliCode to be searched.
-        :return: t_id of the corresponding ilicode.
+        :return: tuple (found, t_id)
+                        found: boolean, whether the value was found in cache or not
+                        t_id: t_id of the corresponding ilicode
         """
         if domain_table in self._cached_domain_values:
-            for k,v in self._cached_domain_values[domain_table].items():
-                if v == ilicode:
-                    return k
+            if ilicode in self._cached_domain_values[domain_table]:
+                return True, self._cached_domain_values[domain_table][ilicode]
 
-        return None
+        return  False, None
 
     def test_names(self, table_and_field_names):
         """
