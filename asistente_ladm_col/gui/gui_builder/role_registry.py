@@ -29,6 +29,8 @@ from asistente_ladm_col.lib.logger import Logger
 class Role_Registry(metaclass=Singleton):
     """
     Manage all role information. Current role can also be got/set from this class.
+
+    Roles can set their own GUI configuration even using and overwriting the template gui config.
     """
     COMMON_ACTIONS = [  # Common actions for all roles
         ACTION_LOAD_LAYERS,
@@ -140,7 +142,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
             ],
-            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 
@@ -177,7 +179,7 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT
             ],
-            ROLE_GUI_CONFIG: template_gui  # Empty to let other modules decide on a default gui_config dict
+            ROLE_GUI_CONFIG: template_gui
         }
         self.register_role(role, role_dict)
 
@@ -209,15 +211,15 @@ class Role_Registry(metaclass=Singleton):
                 ACTION_FILL_BFS,
                 ACTION_FILL_MORE_BFS_AND_LESS,
                 ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
+                ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES
             ],
-            ROLE_GUI_CONFIG: {}
+            ROLE_GUI_CONFIG: {}  # Let the gui builder use the template GUI config.
         }
         self.register_role(role, role_dict)
 
@@ -246,10 +248,10 @@ class Role_Registry(metaclass=Singleton):
                     OBJECT_NAME: 'ladm_col_change_detection_toolbar',
                     ICON: CHANGE_DETECTION_ICON,
                     ACTIONS: [
-                        ACTION_CHANGE_DETECTION_PER_PARCEL,
-                        ACTION_CHANGE_DETECTION_ALL_PARCELS,
+                        ACTION_CHANGE_DETECTION_SETTINGS,
                         SEPARATOR,
-                        ACTION_SUPPLIES_SETTINGS
+                        ACTION_CHANGE_DETECTION_PER_PARCEL,
+                        ACTION_CHANGE_DETECTION_ALL_PARCELS
                     ]
                 },
                 SEPARATOR,
@@ -269,9 +271,9 @@ class Role_Registry(metaclass=Singleton):
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The manager is in charge of preparing supplies for operators as well as validating and managing the data provided by operators."),
             ROLE_ACTIONS: [
+                ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
-                ACTION_SUPPLIES_SETTINGS,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT,
                 ACTION_REPORT_ANNEX_17,

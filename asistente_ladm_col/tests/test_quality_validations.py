@@ -38,17 +38,18 @@ import processing
 class TesQualityValidations(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
-        self.facade_quality_rules = FacadeQualityRules(self.qgis_utils)
-        self.translatable_config_strings = TranslatableConfigStrings()
-        self.translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+    def setUpClass(cls):
+        cls.qgis_utils = QGISUtils()
+        cls.facade_quality_rules = FacadeQualityRules(cls.qgis_utils)
+        cls.translatable_config_strings = TranslatableConfigStrings()
+        cls.translated_strings = cls.translatable_config_strings.get_translatable_config_strings()
 
+        print("INFO: Restoring databases to be used")
         test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
 
+        print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-            self.db_pg = get_pg_conn(test_connection_db)
 
     def test_split_by_selected_boundary(self):
         print('\nINFO: Validation of the definition of selected boundary ...')
@@ -1297,9 +1298,6 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_with_no_plot[0].geometry().asWkt(), expected_geometry_no_plot)
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
-
-    def tearDownClass():
-        print('tearDown test_boundaries_digitizing')
 
 
 if __name__ == '__main__':

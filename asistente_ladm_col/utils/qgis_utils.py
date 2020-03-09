@@ -127,6 +127,7 @@ class QGISUtils(QObject):
         return self._source_handler
 
     def cache_layers_and_relations(self, db, ladm_col_db, db_source):
+        self.logger.debug(__name__, "Cache layers and relations called (LADM-COL DB: {})".format(ladm_col_db))
         if ladm_col_db:
             msg = QCoreApplication.translate("QGISUtils",
                 "Extracting relations and domains from the database... This is done only once per session!")
@@ -190,9 +191,8 @@ class QGISUtils(QObject):
     def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         """
         :param db: db connection instance
-        :param layers: {layer_id : {name: ABC, geometry: DEF, 'layer': None}}
-        layer_id should match layer_name most of the times, but if the same layer has multiple geometries,
-        layer_id should contain the geometry type to make the layer_id unique
+        :param layers: {layer_id : {'name': ABC, 'layer': None}}
+        layer_id should match layer_name
         layer: key to store the QgsVectorLayer object.
         The whole dict will be None if any of the requested layers is not found. A message will inform which layer wasn't
         :param load: Load layer in the map canvas
@@ -928,6 +928,15 @@ class QGISUtils(QObject):
             return False
 
         return True
+
+    def get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(self, db):
+        layers = list()
+        for layer in QgsProject.instance().mapLayers().values():
+            if db.is_ladm_layer(layer):
+                if layer.isEditable():
+                    if layer.editBuffer().isModified():
+                        layers.append(layer)
+        return layers
 
     def get_error_layers_group(self):
         """

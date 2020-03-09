@@ -124,3 +124,12 @@ class ConnectionManager(QObject):
         db = db_factory.get_db_connector(decrypted_conn_dict)
 
         return db
+
+    def save_parameters_conn(self, db, db_source):
+        """
+        Save db connection parameters from a DB connector to QSettings
+        :param db: DB Connector
+        :param db_source:
+        """
+        self.dbs_supported.get_db_factory(db.engine).save_parameters_conn(db.dict_conn_params, db_source)
+        self.update_db_connector_for_source(db_source)  # Update db connection with new parameters

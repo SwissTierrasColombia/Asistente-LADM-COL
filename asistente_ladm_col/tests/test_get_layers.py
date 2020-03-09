@@ -21,12 +21,13 @@ import_qgis_model_baker()
 class TestGetLayers(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
-        self.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
+    def setUpClass(cls):
+        cls.qgis_utils = QGISUtils()
+        cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
 
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')
-        self.db_pg = get_pg_conn('test_ladm_col')
+        cls.db_pg = get_pg_conn('test_ladm_col')
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")

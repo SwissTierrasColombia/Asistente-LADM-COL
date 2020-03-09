@@ -42,10 +42,11 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.fill_table()
 
         self.tbl_changes_parcels.itemSelectionChanged.connect(self.react_after_new_selection)
+        self.setWindowTitle(QCoreApplication.translate("SelectParcelDialog", "Duplicate Parcels in collected DB"))
 
         # Remove selection in plot layers
         self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
 
         self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
         self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all listed parcels")
@@ -124,4 +125,4 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
                 self.tbl_changes_parcels.clearSelection()
 
     def reject(self):
-        self.done(0)
+        self.done(QDialog.Accepted)

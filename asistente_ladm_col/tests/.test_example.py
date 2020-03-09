@@ -17,7 +17,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 class TestExample(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         #self.qgis_utils = QGISUtils()
         pass
 
@@ -29,7 +29,8 @@ class TestExample(unittest.TestCase):
         # some tests here, this execute before 02_example
         pass
 
-    def tearDownClass():
+    @classmethod
+    def tearDownClass(cls):
         print('tearDown test_example')
 
 

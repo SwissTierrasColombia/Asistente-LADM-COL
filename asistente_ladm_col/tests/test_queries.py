@@ -20,6 +20,7 @@ class TestQueries(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col_queries')
         cls.db_pg = get_pg_conn('test_ladm_col_queries')
 
@@ -66,6 +67,7 @@ class TestQueries(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
 
 

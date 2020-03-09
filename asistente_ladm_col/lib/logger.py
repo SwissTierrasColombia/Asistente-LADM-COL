@@ -55,6 +55,7 @@ class Logger(QObject, metaclass=SingletonQObject):
     message_with_button_open_table_attributes_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button_text, level, layer, filter
     message_with_button_download_report_dependency_emitted = pyqtSignal(str)  # Message
     message_with_button_remove_report_dependency_emitted = pyqtSignal(str)  # Message
+    message_with_buttons_change_detection_all_and_per_parcel_emitted = pyqtSignal(str)  # Message
 
     def __init__(self):
         QObject.__init__(self)
@@ -66,6 +67,8 @@ class Logger(QObject, metaclass=SingletonQObject):
         self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
         self.message_with_button_download_report_dependency_emitted.connect(self._log_download_report_dependency_emitted)
         self.message_with_button_remove_report_dependency_emitted.connect(self._log_remove_report_emitted)
+        self.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(self._log_change_detection_all_and_per_parcel_emitted)
+
 
     def set_mode(self, mode):
         self.mode = mode
@@ -116,7 +119,7 @@ class Logger(QObject, metaclass=SingletonQObject):
         if msg is None:
             self.clear_status_bar_emitted.emit()
         else:
-            self.log_message("", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+            self.log_message("status_bar", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
         QCoreApplication.processEvents()
 
     def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
@@ -159,3 +162,6 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def _log_remove_report_emitted(self, message):
         self.debug("", "A message with button remove_report was shown!")
+
+    def _log_change_detection_all_and_per_parcel_emitted(self, message):
+        self.debug("", "A message with buttons for change detection all and per parcel was shown!")

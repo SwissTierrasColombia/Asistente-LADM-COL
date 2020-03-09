@@ -126,7 +126,7 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
         """
         WARNING: We check several levels in order:
             1. SERVER
@@ -138,6 +138,7 @@ class PGConnector(DBConnector):
 
         :param test_level: (EnumTestLevel) level of connection with postgres
         :param user_level: (EnumUserLevel) level of permissions a user has
+        :param required_models: A list of model prefixes that are mandatory for this DB connection
         :return Triple: boolean result, message code, message text
         """
         uri = self._uri
@@ -212,40 +213,16 @@ class PGConnector(DBConnector):
                                                           "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                     self.schema)
 
-
-            res, msg = self.check_at_least_one_ladm_model_exists()
-            if not res:
-                return res, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, msg  # Version of the models is not valid
-
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
+
+            res, code, msg = self.check_db_models(required_models)
+            if not res:
+                return res, code, msg
 
             # Validate table and field names
             if not self._table_and_field_names:
                 self._initialize_names()
-
-            models = list()
-            if self.ladm_model_exists():
-                models.append(LADMNames.LADM_MODEL_PREFIX)
-            if self.operation_model_exists():
-                models.append(LADMNames.OPERATION_MODEL_PREFIX)
-            if self.cadastral_form_model_exists():
-                models.append(LADMNames.CADASTRAL_FORM_MODEL_PREFIX)
-            if self.valuation_model_exists():
-                models.append(LADMNames.VALUATION_MODEL_PREFIX)
-            if self.ant_model_exists():
-                models.append(LADMNames.ANT_MODEL_PREFIX)
-            if self.reference_cartography_model_exists():
-                models.append(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX)
-            if self.snr_data_model_exists():
-                models.append(LADMNames.SNR_DATA_MODEL_PREFIX)
-            if self.supplies_integration_model_exists():
-                models.append(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX)
-            if self.supplies_model_exists():
-                models.append(LADMNames.SUPPLIES_MODEL_PREFIX)
-
-            if not models:
-                return False, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, QCoreApplication.translate("PGConnector", "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!")
 
             res, msg = self.names.test_names(self._table_and_field_names)
             if not res:

@@ -28,7 +28,7 @@ class PgFactory(DbFactory):
         self._engine = "pg"
 
     def get_name(self):
-        return "PostgreSQL / PostGIS"
+        return "PostgreSQL/PostGIS"
 
     def get_mbaker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode

@@ -23,8 +23,6 @@ from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.utils.java_utils import JavaUtils
 
 class EncrypterDecrypter():
-    """Adapted from: https://github.com/opengisch/QgisModelBaker/blob/master/QgisModelBaker/libili2db/iliexporter.py#L65 """
-
     def __init__(self):
         self._secret_key = 'c2VjcmV0MTIz'
         self._salt = 'c2FsdDEyMw=='

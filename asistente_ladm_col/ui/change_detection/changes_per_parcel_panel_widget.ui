@@ -226,7 +226,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Valor oficial</string>
+          <string>Valor insumos</string>
          </property>
         </column>
         <column>
