@@ -50,7 +50,7 @@ class ConnectionManager(QObject):
         }
         self.encrypter_decrypter = EncrypterDecrypter()
 
-    def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
+    def get_db_connection_from_qsettings(self, db_source=COLLECTED_DB_SOURCE):
         db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source))
 
         if db_connection_engine:
@@ -63,6 +63,10 @@ class ConnectionManager(QObject):
             db_factory = self.dbs_supported.get_db_factory(self.dbs_supported.id_default_db)
             db = db_factory.get_db_connector()  # When the connection parameters are not filled we use empty values
 
+        return db
+
+    def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
+        db = self.get_db_connection_from_qsettings(db_source)
         self.set_db_connector_for_source(db, db_source)
 
     def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):

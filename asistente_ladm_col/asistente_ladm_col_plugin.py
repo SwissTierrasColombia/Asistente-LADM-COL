@@ -918,6 +918,19 @@ class AsistenteLADMCOLPlugin(QObject):
         self.clear_message_bar()
         self.show_settings()
 
+    def use_current_db_connection(self):
+        self.clear_message_bar()
+        db = self.get_db_connection()
+        self.conn_manager.save_parameters_conn(db, COLLECTED_DB_SOURCE)  # Update QSettings
+        self.conn_manager.set_db_connector_for_source(db)
+
+    def update_db_connection(self):
+        self.clear_message_bar()
+        self.conn_manager.update_db_connector_for_source()
+        self.conn_manager.db_connection_changed.emit(self.get_db_connection(),
+                                                     self.get_db_connection().test_connection()[0],
+                                                     COLLECTED_DB_SOURCE)
+
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
