@@ -26,6 +26,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
 
 
 class ConnectionManager(QObject):
@@ -47,12 +48,13 @@ class ConnectionManager(QObject):
             COLLECTED_DB_SOURCE: None,
             SUPPLIES_DB_SOURCE: None
         }
+        self.encrypter_decrypter = EncrypterDecrypter()
 
     def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
-        db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))
+        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source))
 
-        if db_connection_source:
-            db_factory = self.dbs_supported.get_db_factory(db_connection_source)
+        if db_connection_engine:
+            db_factory = self.dbs_supported.get_db_factory(db_connection_engine)
             dict_conn = db_factory.get_parameters_conn(db_source)
             db = db_factory.get_db_connector(dict_conn)
             db.open_connection()  # Open db connection
@@ -65,7 +67,7 @@ class ConnectionManager(QObject):
 
     def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):
         if self._db_sources[db_source] is None:
-            # obtain the connection of the database on demand
+            # Obtain the connection of the database on demand
             self.update_db_connector_for_source(db_source)
         return self._db_sources[db_source]
 
@@ -82,13 +84,38 @@ class ConnectionManager(QObject):
             if self._db_sources[_db_source]:
                 self._db_sources[_db_source].close_connection()
 
-    def get_db_connector_for_tests(self, scope, parameters):
+    def get_opened_db_connector_for_tests(self, db_engine, conn_dict):
         """
-        This function is implemented for tests
+        This function is implemented for tests. Connection to non-LADM databases.
         """
-        db_connection_source = scope
-        db_factory = self.dbs_supported.get_db_factory(db_connection_source)
-        db = db_factory.get_db_connector(parameters)
+        db_factory = self.dbs_supported.get_db_factory(db_engine)
+        db = db_factory.get_db_connector(conn_dict)
         db.open_connection()
 
         return db
+
+    def get_encrypted_db_connector(self, db_engine, conn_dict):
+        """
+        Receives encrypted connection parameters and returns a DB connector from them.
+
+        :param db_engine: Example: 'pg' or 'gpkg'
+        :param conn_dict: Connection dict with Encrypted values.
+        :return: DB Connector object
+        """
+        decrypted_conn_dict = {}
+        for k, v in conn_dict.items():
+            decrypted_conn_dict[k] = self.encrypter_decrypter.decrypt_with_AES(v)
+
+        db_factory = self.dbs_supported.get_db_factory(db_engine)
+        db = db_factory.get_db_connector(decrypted_conn_dict)
+
+        return db
+
+    def save_parameters_conn(self, db, db_source):
+        """
+        Save db connection parameters from a DB connector to QSettings
+        :param db: DB Connector
+        :param db_source:
+        """
+        self.dbs_supported.get_db_factory(db.engine).save_parameters_conn(db.dict_conn_params, db_source)
+        self.update_db_connector_for_source(db_source)  # Update db connection with new parameters

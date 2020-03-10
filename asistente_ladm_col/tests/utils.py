@@ -23,9 +23,11 @@ from sys import platform
 
 import psycopg2
 import qgis.utils
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       edit)
 from qgis.analysis import QgsNativeAlgorithms
 
+from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
@@ -61,14 +63,14 @@ def get_pg_conn(schema):
     dict_conn['schema'] = schema
     dict_conn['username'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
-    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('pg', dict_conn)
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('pg', dict_conn)
 
     return db
 
 def get_gpkg_conn_from_path(path):
     dict_conn = dict()
     dict_conn['dbfile'] = path
-    db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
     return db
 
@@ -80,7 +82,7 @@ def get_gpkg_conn(gpkg_schema_name):
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
         gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
-        db = asistente_ladm_col_plugin.conn_manager.get_db_connector_for_tests('gpkg', dict_conn)
+        db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
     return db
 
@@ -228,3 +230,22 @@ def get_required_tables(db_connection):
 def testdata_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, 'resources', path)
+
+def normalize_response(dict_response):
+    """
+    Converts geometry values to WKT, so that we can compare them with expected plain values.
+
+    :param dict_response: Response dict to normalize.
+    :return: Normalized response dict.
+    """
+    for key_parcel in dict_response:
+        features = dict_response[key_parcel]
+        for feature in features:
+            if PLOT_GEOMETRY_KEY in feature:
+                if feature[PLOT_GEOMETRY_KEY]:
+                    feature[PLOT_GEOMETRY_KEY] = feature[PLOT_GEOMETRY_KEY].asWkt()
+
+def delete_features(layer):
+    with edit(layer):
+        list_ids = [feat.id() for feat in layer.getFeatures()]
+        layer.deleteFeatures(list_ids)

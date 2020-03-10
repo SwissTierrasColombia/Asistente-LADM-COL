@@ -19,6 +19,8 @@
 import os
 import hashlib
 import shutil
+import tempfile
+import zipfile
 from functools import partial
 
 import qgis.utils
@@ -29,7 +31,8 @@ from asistente_ladm_col.config.general_config import DEPENDENCIES_BASE_PATH
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
                                                remove_readonly,
-                                               normalize_local_url)
+                                               normalize_local_url,
+                                               ProcessWithStatus)
 
 class Utils(QObject):
     """
@@ -83,11 +86,21 @@ class Utils(QObject):
             Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
                                                                       "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))
 
+    @staticmethod
+    def compress_file(file_path):
+        zip_file_path = "{}.zip".format(tempfile.mktemp())
+        with ProcessWithStatus(QCoreApplication.translate("Utils", "Compressing file...")):
+            with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+                zip_file.write(file_path, os.path.basename(file_path))
+
+        return zip_file_path
+
 def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
     plugin_found = plugin_name in qgis.utils.plugins
     if not plugin_found:
         return False
     current_version = get_plugin_metadata(plugin_name, 'version')
+    current_version = current_version[1:] if current_version.startswith("v") else current_version
     return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):

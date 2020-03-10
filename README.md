@@ -141,12 +141,13 @@ Para usar el Asistente LADM_COL se requiere:
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
    - PostGIS 2.4 o superior.
- - Plugins de QGIS:
-   - Asistente LADM_COL
+ - Complementos de QGIS (al instalar el Asistente LADM_COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
    - QGIS Model Baker v4.3.1.2
    - MapSwipe Tool v1.2
  
-## Pruebas automatizadas al software
+## Pruebas automatizadas y asistidas al software
+
+### Pruebas unitarias
 
 Éstas se ejecutan automáticamente luego de cada commit realizado al repositorio y los resultados están disponibles en:
 
@@ -167,6 +168,22 @@ En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
 docker-compose down --rmi local && docker-compose build
 ```
+
+### Pruebas asistidas (para la interfaz de usuario)
+
+El plugin Asistente LADM_COL utiliza el plugin *QGIS Tester* para soportar pruebas asistidas para funcionalidades de Interfaz de Usuario. 
+
+Prerrequisitos:
+
+Para correr pruebas asistidas se requiere: 
+
+- Plugin *QGIS Tester* (disponible en: https://github.com/planetfederal/qgis-tester-plugin).
+- Librería *qgiscommons*: ```pip install qgiscommons```
+
+Revisa [la documentación](https://github.com/planetfederal/qgis-tester-plugin/blob/master/docs/source/usage.rst) para instrucciones de uso.
+
+Si los prerrequisitos no se cumplen, el plugin Asistente LADM_COL continuará su ejecución de forma normal y dejará un mensaje de advertencia en el log de QGIS.
+
 
 ## Pasos para traducir al español
 
@@ -215,3 +232,6 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
 
   ![Identificación de Novedades](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
       
++ Integración con Sistema de Transición
+
+![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)

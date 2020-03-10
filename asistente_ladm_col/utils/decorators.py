@@ -115,37 +115,6 @@ def _activate_processing_plugin(func_to_decorate):
 
     return decorated_function
 
-def _different_db_connections_required(func_to_decorate):
-    @wraps(func_to_decorate)
-    def decorated_function(*args, **kwargs):
-        inst = args[0]
-        db = inst.get_db_connection()
-        supplies_db = inst.get_supplies_db_connection()
-        res = db.equals(supplies_db)
-
-        if not res:
-            func_to_decorate(*args, **kwargs)
-        else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                         "Your 'official' database is the same 'collected' database!!! Click the proper button to change connection settings."))
-
-            button1 = QPushButton(widget)
-            button1.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change official settings"))
-            button1.pressed.connect(inst.show_supplies_data_settings_clear_message_bar)
-            widget.layout().addWidget(button1)
-
-            button2 = QPushButton(widget)
-            button2.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change collected settings"))
-            button2.pressed.connect(inst.show_settings_clear_message_bar)
-            widget.layout().addWidget(button2)
-
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
-            inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"))
-
-    return decorated_function
-
 def _log_quality_checks(func_to_decorate):
     @wraps(func_to_decorate)
     def add_format_to_text(self, db, **args):
@@ -298,6 +267,24 @@ def _validate_if_wizard_is_open(func_to_decorate):
              func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
+
+def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        layers_modified = inst.qgis_utils.get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(
+            inst.get_db_connection())
+        layers_names = [layer.name() for layer in layers_modified]
+        if layers_modified:
+            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.").format(', '.join(layers_names)),
+                              Qgis.Info)
+        else:
+            func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+
 
 def _with_override_cursor(func_to_decorate):
     @wraps(func_to_decorate)

@@ -25,12 +25,12 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_test_copy_path,
                                             get_pg_conn,
                                             get_gpkg_conn,
-                                            restore_schema)
+                                            restore_schema,
+                                            unload_qgis_model_baker)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 
-import_qgis_model_baker()
 import_processing()
 import processing
 
@@ -38,17 +38,19 @@ import processing
 class TesQualityValidations(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
-        self.quality = QualityUtils(self.qgis_utils)
-        self.logic_checks = LogicChecks()
-        self.translatable_config_strings = TranslatableConfigStrings()
+    def setUpClass(cls):
+        import_qgis_model_baker()
+        cls.qgis_utils = QGISUtils()
+        cls.quality = QualityUtils(cls.qgis_utils)
+        cls.logic_checks = LogicChecks()
+        cls.translatable_config_strings = TranslatableConfigStrings()
 
+        print("INFO: Restoring databases to be used")
         test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
 
+        print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-            self.db_pg = get_pg_conn(test_connection_db)
 
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
@@ -1331,9 +1333,10 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
 
-    def tearDownClass():
-        print('tearDown test_boundaries_digitizing')
-
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()

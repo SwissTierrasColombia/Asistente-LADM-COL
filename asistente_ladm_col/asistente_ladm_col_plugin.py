@@ -27,7 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings,
-                              pyqtSignal)
+                              pyqtSignal,
+                              pyqtSlot)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
@@ -39,7 +40,9 @@ from qgis.core import (Qgis,
                        QgsExpression)
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum, LogHandlerEnum)
+                                             WizardTypeEnum,
+                                             LogHandlerEnum,
+                                             EnumUserLevel)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
@@ -79,10 +82,10 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
-from asistente_ladm_col.gui.transition_system.dlg_login_st import LoginSTDialog
+from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
-from asistente_ladm_col.gui.transition_system.dockwidget_transition_system import DockWidgetTransitionSystem
-from asistente_ladm_col.lib.transition_system.st_session.st_session import STSession
+from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -92,6 +95,7 @@ from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.supplies.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
+from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
@@ -99,6 +103,7 @@ from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
+from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
 from asistente_ladm_col.gui.wizards.operation.dlg_create_group_party_operation import CreateGroupPartyOperation
 from asistente_ladm_col.gui.wizards.operation.wiz_create_points_operation import CreatePointsOperationWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
@@ -109,10 +114,11 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
+                                                 _validate_if_layers_in_editing_mode_with_changes,
+                                                 _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _operation_model_required,
-                                                 _different_db_connections_required)
+                                                 _operation_model_required)
 from asistente_ladm_col.utils.utils import Utils
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
@@ -131,7 +137,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
-        self._dock_widget_transition_system = None
+        self._dock_widget_transitional_system = None
         self.toolbar = None
         self.wiz_address = None
         self.conn_manager = ConnectionManager()
@@ -182,7 +188,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_valuation_actions()
         self.create_change_detection_actions()
         self.create_toolbar_actions()
-        self.create_transition_system_actions()
+        self.create_transitional_system_actions()
         self.create_generic_actions()
 
     def set_connections(self):
@@ -199,6 +205,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_to_download_report_dependency)
         self.logger.message_with_button_remove_report_dependency_emitted.connect(
             self.show_message_to_remove_report_dependency)
+        self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
+            self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
@@ -225,15 +233,16 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def call_refresh_gui(self):
         """
-        SLOT. Intermediate step to call refresh gui with proper parameters.
+        SLOT. Intermediate step to call refresh gui adding proper parameters.
         """
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
-        if db_source == COLLECTED_DB_SOURCE:
+        if db_source == COLLECTED_DB_SOURCE:  # Only refresh GUI for changes in COLLECTED DB SOURCE
             msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
             with ProcessWithStatus(msg):
-                self.gui_builder.build_gui(db, res)
+                self.gui_builder.set_db_connection(db, res)
+                self.gui_builder.build_gui()
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
@@ -281,7 +290,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
             ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
 
-    def create_transition_system_actions(self):
+    def create_transitional_system_actions(self):
         self._st_login_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/login.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
@@ -467,8 +476,8 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self.main_window)
         self._query_changes_all_parcels_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self.main_window)
-        self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies data settings"), self.main_window)
+        self._change_detections_settings_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection settings"), self.main_window)
 
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(partial(self.query_changes_per_parcel, [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]))
@@ -478,7 +487,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
             ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
-            ACTION_SUPPLIES_SETTINGS: self._settings_changes_action
+            ACTION_CHANGE_DETECTION_SETTINGS: self._change_detections_settings_action
         })
 
     def create_generic_actions(self):
@@ -518,17 +527,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._supplies_settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
-                                                 QCoreApplication.translate("AsistenteLADMColPlugin", "Supplies Settings"),
-                                                 self.main_window)
         self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
-        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, {'selected_models':list()}))
-        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, {'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
+        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list()}))
+        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._import_data_action_supplies.triggered.connect(partial(self.show_dlg_import_data, {'db_source': SUPPLIES_DB_SOURCE}))
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
@@ -536,7 +542,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action.triggered.connect(partial(self.show_queries, [COLLECTED_DB_SOURCE]))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, [COLLECTED_DB_SOURCE]))
         self._settings_action.triggered.connect(self.show_settings)
-        self._supplies_settings_action.triggered.connect(self.show_supplies_data_settings_clear_message_bar)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -553,7 +558,6 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_EXPORT_DATA: self._export_data_action,
             ACTION_EXPORT_DATA_SUPPLIES: self._export_data_action_supplies,
             ACTION_SETTINGS: self._settings_action,
-            ACTION_SUPPLIES_SETTINGS: self._supplies_settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
         })
@@ -614,6 +618,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
 
+    @pyqtSlot()
     def clear_message_bar(self):
         self.iface.messageBar().clearWidgets()
 
@@ -686,6 +691,22 @@ class AsistenteLADMCOLPlugin(QObject):
         button.pressed.connect(self.remove_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
+    def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+
+        btn_query_per_parcel = QPushButton(widget)
+        btn_query_per_parcel.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"))
+        btn_query_per_parcel.pressed.connect(self.query_changes_per_parcel)
+        widget.layout().addWidget(btn_query_per_parcel)
+
+        btn_query_all_parcels = QPushButton(widget)
+        btn_query_all_parcels.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"))
+        btn_query_all_parcels.pressed.connect(self.query_changes_all_parcels)
+        widget.layout().addWidget(btn_query_all_parcels)
+
+        self.iface.messageBar().pushWidget(widget, Qgis.Success, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
         self.clear_message_bar()  # Remove previous messages before showing a new one
@@ -866,11 +887,20 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
+        self.close_dock_widgets([self._dock_widget_transitional_system,
+                                 self._dock_widget_change_detection,
+                                 self._dock_widget_queries])
         self.gui_builder.unload_gui()
 
         # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
+
+    def close_dock_widgets(self, dock_widgets):
+        for dock_widget in dock_widgets:
+            if dock_widget is not None:
+                dock_widget.close()
+                dock_widget = None
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
@@ -902,9 +932,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_queries(self, *args):
-        if self._dock_widget_queries is not None:
-            self._dock_widget_queries.close()
-            self._dock_widget_queries = None
+        self.close_dock_widgets([self._dock_widget_queries])
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
@@ -922,7 +950,14 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    def show_dlg_import_schema(self, *args):
+    def show_dlg_import_schema(self, *args, **kwargs):
+        """
+        Can be called from 1) an action, 2) from a signal or 3) directly.
+
+        In 1) args has a False argument from QAction.triggered.
+        In 2) either args comes with a dict inside (hence the "if args" below), or **{} is send (hence the "if kwargs" below).
+        In 3) **{} is passed, hence the "if kwargs" below.
+        """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 
         selected_models_import_schema = list()
@@ -934,6 +969,12 @@ class AsistenteLADMCOLPlugin(QObject):
                     db_source = param['db_source']
                 if 'selected_models' in param:
                     selected_models_import_schema = param['selected_models']
+
+        if kwargs:
+            if 'db_source' in kwargs:
+                db_source = kwargs['db_source']
+            if 'selected_models' in kwargs:
+                selected_models_import_schema = kwargs['selected_models']
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema, db_source)
         dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
@@ -1131,7 +1172,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_different_db_connections_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
         with ProcessWithStatus(msg):
@@ -1142,16 +1183,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_different_db_connections_required
+    @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
         with ProcessWithStatus(msg):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
-        if self._dock_widget_change_detection is not None:
-            self._dock_widget_change_detection.close()
-            self._dock_widget_change_detection = None
+        self.close_dock_widgets([self._dock_widget_change_detection])
 
         self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
                                                                        self.get_db_connection(),
@@ -1163,14 +1202,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
-    def show_supplies_data_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager, db_source=SUPPLIES_DB_SOURCE)
-        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+    @_validate_if_layers_in_editing_mode_with_changes
+    def show_change_detection_settings(self, *args, **kwargs):
+        dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
         dlg.exec_()
-
-    def show_supplies_data_settings_clear_message_bar(self):
-        self.clear_message_bar()
-        self.show_supplies_data_settings()
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
@@ -1236,18 +1271,16 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
-            # Show Transition System dock widget
-            if self._dock_widget_transition_system is not None:
-                self._dock_widget_transition_system.close()
-                self._dock_widget_transition_system = None
+            self.close_dock_widgets([self._dock_widget_transitional_system])
 
+            # Show Transitional System dock widget
             user = self.session.get_logged_st_user()
-            self._dock_widget_transition_system = DockWidgetTransitionSystem(user, self.main_window)
-            self.conn_manager.db_connection_changed.connect(self._dock_widget_transition_system.update_db_connection)
-            self._dock_widget_transition_system.logout_requested.connect(self.session_logout)
-            self._dock_widget_transition_system.trigger_action_emitted.connect(self.trigger_action_emitted)
-            self.session.logout_finished.connect(self._dock_widget_transition_system.after_logout)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transition_system)
+            self._dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
+            self.conn_manager.db_connection_changed.connect(self._dock_widget_transitional_system.update_db_connection)
+            self._dock_widget_transitional_system.logout_requested.connect(self.session_logout)
+            self._dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
+            self.session.logout_finished.connect(self._dock_widget_transitional_system.after_logout)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
 
     def session_logout_from_action(self):
         """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
@@ -1265,7 +1298,7 @@ class AsistenteLADMCOLPlugin(QObject):
             reply = QMessageBox.question(None,
                                  QCoreApplication.translate("AsistenteLADMCOLPlugin", "Continue?"),
                                  QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                            "Are you sure you want to log out from the Transition System?"),
+                                                            "Are you sure you want to log out from the Transitional System?"),
                                  QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 logout = False
@@ -1288,3 +1321,34 @@ class AsistenteLADMCOLPlugin(QObject):
         action = self.gui_builder.get_action(action_tag)
         if action is not None:
             action.trigger()
+
+    def show_dlg_st_upload_file(self, request_id, supply_type):
+        dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
+        dlg.exec_()
+
+    def open_encrypted_db_connection(self, db_engine, conn_dict, user_level=EnumUserLevel.CREATE):
+        if conn_dict:
+            with ProcessWithStatus(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Connecting to remote db...")):
+                db = self.conn_manager.get_encrypted_db_connector(db_engine, conn_dict)
+
+            res, code, msg = db.test_connection(user_level=user_level)
+            if res:
+                self.logger.success_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "{} Models: {}".format(msg, db.get_models())))
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "The connection could not be established! Details: {}".format(msg)))
+
+            return db if res else None
+
+        return None
+
+    def task_step_explore_data_cadastre_registry(self, db_engine, conn_dict, user_level):
+        db = self.open_encrypted_db_connection(db_engine, conn_dict, user_level)
+        if db:
+            layers = {
+                db.names.INI_PARCEL_SUPPLIES_T: {'name': db.names.INI_PARCEL_SUPPLIES_T, 'geometry': None, 'layer': None},
+                db.names.GC_PARCEL_T: {'name': db.names.GC_PARCEL_T, 'geometry': None, 'layer': None},
+                db.names.SNR_PARCEL_REGISTRY_T: {'name': db.names.SNR_PARCEL_REGISTRY_T, 'geometry': None, 'layer': None},
+            }
+            self.qgis_utils.get_layers(db, layers, load=True)

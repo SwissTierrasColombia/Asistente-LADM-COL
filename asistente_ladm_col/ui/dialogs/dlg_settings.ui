@@ -93,7 +93,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cbo_db_source">
+          <widget class="QComboBox" name="cbo_db_engine">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -453,7 +453,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
-        <widget class="QGroupBox" name="transition_system_box">
+        <widget class="QGroupBox" name="transitional_system_box">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -461,7 +461,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Transition system</string>
+          <string>Transitional system</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="4" column="0">
@@ -480,14 +480,14 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_default_value_transition_system">
+             <widget class="QPushButton" name="btn_default_value_transitional_system">
               <property name="text">
                <string>Use default value</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_test_service_transition_system">
+             <widget class="QPushButton" name="btn_test_service_transitional_system">
               <property name="text">
                <string>Test Service</string>
               </property>
@@ -505,7 +505,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="txt_service_transition_system">
+             <widget class="QLineEdit" name="txt_service_transitional_system">
               <property name="text">
                <string>http://apist.proadmintierra.info/</string>
               </property>
@@ -521,7 +521,7 @@
              </font>
             </property>
             <property name="text">
-             <string>You can set here the URL of the Transition System service.</string>
+             <string>You can set here the URL of the Transitional System service.</string>
             </property>
            </widget>
           </item>
@@ -753,7 +753,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cbo_db_source</tabstop>
+  <tabstop>cbo_db_engine</tabstop>
   <tabstop>btn_test_connection</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>online_models_radio_button</tabstop>

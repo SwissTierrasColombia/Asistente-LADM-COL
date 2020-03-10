@@ -7,21 +7,23 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            unload_qgis_model_baker,
                                             get_pg_conn,
                                             restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-import_qgis_model_baker()
 
 
 class TestGetLayers(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
+    def setUpClass(cls):
+        import_qgis_model_baker(),
+        cls.qgis_utils = QGISUtils()
 
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')
-        self.db_pg = get_pg_conn('test_ladm_col')
+        cls.db_pg = get_pg_conn('test_ladm_col')
 
     def test_get_layer(self):
         print("\nINFO: Validating get_layer() method...")
@@ -108,6 +110,11 @@ class TestGetLayers(unittest.TestCase):
             if layer_1.name() == layer_2.name():
                 print("Testing {} ({}) against {} ({})".format(layer_1.name(), layer_1.geometryType(), layer_2.name(), layer_2.geometryType()))
                 self.assertNotEqual(layer_1.geometryType(), layer_2.geometryType(), "Function get_layer loads layers with same name and geometry... This is an error!!!")
+
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading model baker")
+        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

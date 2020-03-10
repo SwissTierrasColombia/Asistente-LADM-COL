@@ -78,7 +78,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       HELP_DIR_NAME,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.transition_system_config import TransitionSystemConfig
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.config.mapping_config import (LADMNames,
@@ -125,6 +125,7 @@ class QGISUtils(QObject):
         return self._source_handler
 
     def cache_layers_and_relations(self, db, ladm_col_db, db_source):
+        self.logger.debug(__name__, "Cache layers and relations called (LADM-COL DB: {})".format(ladm_col_db))
         if ladm_col_db:
             msg = QCoreApplication.translate("QGISUtils",
                 "Extracting relations and domains from the database... This is done only once per session!")
@@ -885,6 +886,15 @@ class QGISUtils(QObject):
 
         return True
 
+    def get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(self, db):
+        layers = list()
+        for layer in QgsProject.instance().mapLayers().values():
+            if db.is_ladm_layer(layer):
+                if layer.isEditable():
+                    if layer.editBuffer().isModified():
+                        layers.append(layer)
+        return layers
+
     def get_error_layers_group(self):
         """
         Get the topology errors group. If it exists but is placed in another
@@ -1040,15 +1050,15 @@ class QGISUtils(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def is_transition_system_service_valid(self, url=None):
+    def is_transitional_system_service_valid(self, url=None):
         res = False
         msg = {'text': '', 'level': Qgis.Warning}
-        st_config = TransitionSystemConfig()
+        st_config = TransitionalSystemConfig()
         if url is None:
             url = st_config.get_domain()
 
         if url:
-            with ProcessWithStatus("Checking Transition System service availability (this might take a while)..."):
+            with ProcessWithStatus("Checking Transitional System service availability (this might take a while)..."):
                 if self.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -1068,7 +1078,7 @@ class QGISUtils(QObject):
                             if 'error' in data and data['error'] == st_config.ST_EXPECTED_RESPONSE:
                                 res = True
                                 msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                    "The tested service is valid to connect with Transition System!")
+                                    "The tested service is valid to connect with Transitional System!")
                                 msg['level'] = Qgis.Info
                             else:
                                 res = False

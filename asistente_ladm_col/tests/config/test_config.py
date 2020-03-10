@@ -4,6 +4,7 @@ TEST_SCHEMAS_MAPPING = {
     'test_ladm_validations_topology_tables': 'test_ladm_validations_topology_tables_v2.9.6.backup',
     'test_ladm_col_logic_checks': 'ladm_col_v2.9.6_logic_checks.backup',
     'test_ladm_col_queries': 'ladm_col_v2.9.6_queries.backup',
+    'test_change_detections': 'test_change_detections_v2.9.6.backup',
     'test_distinct_geoms': 'test_distinct_geoms_v2.9.6.backup',
     'test_ladm_operation_model': 'test_ladm_operation_model_v2.9.6.backup',
     'test_ladm_valuation_model': 'test_ladm_valuation_model_v2.9.6.backup',

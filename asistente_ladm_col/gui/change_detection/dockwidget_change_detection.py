@@ -39,12 +39,15 @@ from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       LAYER)
 from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
                                                                    CHANGE_DETECTION_PARCEL_CHANGED,
                                                                    CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
                                                                    CHANGE_DETECTION_PARCEL_REMAINS,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NULL_PARCEL,
+                                                                   CHANGE_DETECTION_MISSING_PARCEL,
+                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                                                    PARCEL_STATUS,
                                                                    PARCEL_STATUS_DISPLAY,
                                                                    PLOT_GEOMETRY_KEY)
@@ -65,6 +68,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.utils.change_detection_layer_removed.connect(self.layer_removed)
 
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
+        Logger().clear_message_bar()  # Clear QGIS message bar
 
         # Configure panels
         self.all_parcels_panel = None
@@ -104,7 +108,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                                             Qgis.Info)
         self.close_dock_widget()
 
-    def show_all_parcels_panel(self, filter_parcels=dict()):
+    def show_all_parcels_panel(self, dict_parcels, types_change_detection):
         with OverrideCursor(Qt.WaitCursor):
             if self.lst_all_parcels_panels:
                 for panel in self.lst_all_parcels_panels:
@@ -116,7 +120,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                 self.lst_all_parcels_panels = list()
                 self.all_parcels_panel = None
 
-            self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, filter_parcels=filter_parcels)
+            self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, dict_parcels, types_change_detection)
             self.all_parcels_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
             self.widget.showPanel(self.all_parcels_panel)
             self.lst_all_parcels_panels.append(self.all_parcels_panel)
@@ -188,7 +192,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], True)
         self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], True)
 
 
@@ -221,9 +225,8 @@ class ChangeDetectionUtils(QObject):
         }
 
         self._supplies_layers = {
-            self._supplies_db.names.OP_PLOT_T: {'name': self._supplies_db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self._supplies_db.names.OP_PARCEL_T: {'name': self._supplies_db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self._supplies_db.names.COL_UE_BAUNIT_T: {'name': self._supplies_db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self._supplies_db.names.GC_PLOT_T: {'name': self._supplies_db.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self._supplies_db.names.GC_PARCEL_T: {'name': self._supplies_db.names.GC_PARCEL_T, 'geometry': None, LAYER: None}
         }
 
     def initialize_data(self):
@@ -255,7 +258,7 @@ class ChangeDetectionUtils(QObject):
                 return None
             else:
                 # In some occasions the supplies and collected plots might not overlap and have different extents
-                self.iface.setActiveLayer(self._supplies_layers[self._supplies_db.names.OP_PLOT_T][LAYER])
+                self.iface.setActiveLayer(self._supplies_layers[self._supplies_db.names.GC_PLOT_T][LAYER])
                 self.iface.zoomToActiveLayer()
 
             self.qgis_utils.map_freeze_requested.emit(False)
@@ -305,21 +308,26 @@ class ChangeDetectionUtils(QObject):
             LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
             LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
         }
-        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
-        dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None, layer_modifiers=layer_modifiers)
+
+        if inverse:
+            dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self._supplies_db, None)
+            dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None, layer_modifiers=layer_modifiers)
+        else:
+            dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None)
+            dict_supplies_parcels = self.ladm_data.get_parcel_data_to_compare_changes_supplies(self._supplies_db, None, layer_modifiers=layer_modifiers)
 
         dict_compared_parcel_data = dict()
         for collected_parcel_number, collected_features in dict_collected_parcels.items():
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[base_db.names.OP_PARCEL_T_PARCEL_NUMBER_F] = NULL
+                dict_attrs_comparison[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] = NULL
                 dict_attrs_comparison[base_db.names.T_ID_F] = [feature[base_db.names.T_ID_F] for feature in collected_features]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
             else:
                 # A parcel number has at least one dict of attributes (i.e., one feature)
-                dict_attrs_comparison[base_db.names.OP_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
+                dict_attrs_comparison[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] = collected_parcel_number
                 dict_attrs_comparison[base_db.names.T_ID_F] = [feature[base_db.names.T_ID_F] for feature in collected_features]
 
                 if len(collected_features) > 1:
@@ -363,10 +371,10 @@ class ChangeDetectionUtils(QObject):
         """
         Compare all alphanumeric attibutes for two custom feature dicts
 
-        :param collected: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
-                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
-        :param supplies: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
-                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param collected: Dict with parcel info defined in parcel_fields_to_compare, party_fields_to_compare,
+                          plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param supplies: Dict with parcel info defined in parcel_fields_to_compare, party_fields_to_compare,
+                          plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
         :return: True means equal, False unequal
         """
         if len(collected) != len(supplies):

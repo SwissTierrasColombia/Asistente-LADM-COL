@@ -39,6 +39,10 @@ LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
 SETTINGS_MODELS_TAB_INDEX = 1
+SETTINGS_QUALITY_TAB_INDEX = 2
+SETTINGS_AUTOMATIC_VALUES_TAB_INDEX = 3
+SETTINGS_SOURCES_TAB_INDEX = 4
+SETTINGS_ADVANCED_TAB_INDEX = 5
 
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
@@ -108,16 +112,16 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1.2"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.0.0"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'  # 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -136,7 +140,7 @@ CSS_COLOR_ERROR_LABEL = "color:#FF0000"
 CSS_COLOR_OKAY_LABEL = "color:#478046"
 CSS_COLOR_INACTIVE_LABEL = "color:#646464"
 
-# Colors for Transition System task steps
+# Colors for Transitional System task steps
 CHECKED_COLOR = QColor(166, 255, 152, 255)
 UNCHECKED_COLOR = QColor(255, 245, 152, 255)
 GRAY_COLOR = QColor(219, 219, 219, 255)

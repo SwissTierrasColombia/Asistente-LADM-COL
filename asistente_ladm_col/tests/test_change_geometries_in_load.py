@@ -1,7 +1,6 @@
 import nose2
 
 from qgis.core import (QgsVectorLayer,
-                       edit,
                        QgsWkbTypes)
 from qgis.testing import (unittest,
                           start_app)
@@ -9,13 +8,13 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            unload_qgis_model_baker,
                                             get_pg_conn,
+                                            delete_features,
                                             restore_schema,
                                             run_etl_model)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.tests.utils import get_test_copy_path
-
-import_qgis_model_baker()
 
 GPKG_PATH_DISTINCT_GEOMS = 'geopackage/test_distinct_geoms_v296.gpkg'
 SCHEMA_DISTINCT_GEOMS = 'test_distinct_geoms'
@@ -25,18 +24,21 @@ SCHEMA_LADM_COL_EMPTY = 'test_ladm_col_empty'
 class TestGeomsLoad(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
 
-        # resore schemas
+        import_qgis_model_baker()
+
+        # restore schemas
+        print("INFO: Restoring databases to be used")
         restore_schema(SCHEMA_DISTINCT_GEOMS)
         restore_schema(SCHEMA_LADM_COL_EMPTY)
-        self.gpkg_path = get_test_copy_path(GPKG_PATH_DISTINCT_GEOMS)
+        cls.gpkg_path = get_test_copy_path(GPKG_PATH_DISTINCT_GEOMS)
 
-        self.db_distinct_geoms = get_pg_conn(SCHEMA_DISTINCT_GEOMS)
-        self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
+        cls.db_distinct_geoms = get_pg_conn(SCHEMA_DISTINCT_GEOMS)
+        cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
-        self.qgis_utils = QGISUtils()
+        cls.qgis_utils = QGISUtils()
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
@@ -58,7 +60,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         print("Validating PointZ to Point")
@@ -71,7 +73,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         print("Validating PointM To Point")
@@ -84,7 +86,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         # PointZM To Point
@@ -98,7 +100,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
     def test_valid_import_geom_3d_to_db_postgres(self):
@@ -121,7 +123,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         print("Validating PointZ to PointZ")
@@ -133,7 +135,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         print("Validating PointM To PointZ")
@@ -145,7 +147,7 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
         print("Validating PointZM To PointZ")
@@ -157,18 +159,16 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(test_layer.featureCount(), 51)
 
-        self.delete_features(test_layer)
+        delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-    @staticmethod
-    def delete_features(layer):
-        with edit(layer):
-            list_ids = [feat.id() for feat in layer.getFeatures()]
-            layer.deleteFeatures(list_ids)
-
     @classmethod
-    def tearDownClass(self):
-        print('tearDown test_change_geometries_in_load')
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_distinct_geoms.conn.close()
+        cls.db_pg.conn.close()
+        unload_qgis_model_baker()
+
 
 if __name__ == '__main__':
     nose2.main()

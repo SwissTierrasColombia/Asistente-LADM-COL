@@ -33,10 +33,12 @@ from qgis.core import (QgsVectorLayerUtils,
                        edit)
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from qgis.core import NULL
 
 DIALOG_UI = get_ui_class('wizards/operation/dlg_group_party.ui')
 
@@ -109,14 +111,14 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         return layers_are_available
 
     def load_parties_data(self):
-        expression = QgsExpression(self._layers[self.names.OP_PARTY_T][LAYER].displayExpression())
+        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names)[self.names.OP_PARTY_T])
         context = QgsExpressionContext()
         data = dict()
         for feature in self._layers[self.names.OP_PARTY_T][LAYER].getFeatures():
             context.setFeature(feature)
             expression.prepare(context)
-            data[feature[self.names.T_ID_F]] = [expression.evaluate(context), 0, 0]
-
+            value = expression.evaluate(context)
+            data[feature[self.names.T_ID_F]] = [value if value != NULL else None, 0, 0]
         self.set_parties_data(data)
 
     def set_parties_data(self, parties_data):
@@ -183,7 +185,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         """
         Update left list widget and optionally the right one.
 
-        :param only_update_all_list: Only updat left list widget.
+        :param only_update_all_list: Only update left list widget.
         :type only_update_all_list: bool
         """
         # All parties

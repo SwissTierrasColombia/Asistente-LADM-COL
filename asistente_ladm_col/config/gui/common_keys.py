@@ -4,6 +4,8 @@ from asistente_ladm_col.config.mapping_config import LADMNames
 DEFAULT_GUI = 'DEFAULT_GUI'
 TEMPLATE_GUI = 'TEMPLATE_GUI'
 
+ACTION = 'action'
+DEFAULT_ACTION_TEXT = 'default_action_text'
 OBJECT_NAME = 'object_name'
 ICON = 'icon'
 ACTIONS = 'actions'
@@ -78,7 +80,7 @@ ACTION_REPORT_ANNEX_17 = 'action_report_annex_17'
 ACTION_REPORT_ANT = 'action_report_ant'
 ACTION_CHANGE_DETECTION_PER_PARCEL = 'action_change_detection_per_parcel'
 ACTION_CHANGE_DETECTION_ALL_PARCELS = 'action_change_detection_all_parcels'
-ACTION_SUPPLIES_SETTINGS = 'action_supplies_settings'
+ACTION_CHANGE_DETECTION_SETTINGS = "action_change_detection_settings"
 
 ALL_ACTIONS = 'all_actions'
 
@@ -103,6 +105,7 @@ MENU_LADM_COL_OBJECTNAME = "ladm_col_menu"
 MENU_REPORTS_OBJECTNAME = "ladm_col_reports_menu"
 
 
+# Nowadays just an example, it is not being used, although initially planned
 MODELS_GUI_DICT = {
     LADMNames.OPERATION_MODEL_PREFIX: [
         ACTION_CHECK_QUALITY_RULES

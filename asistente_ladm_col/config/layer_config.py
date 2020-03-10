@@ -412,7 +412,24 @@ class LayerConfig:
                     names.OP_PARTY_T_SURNAME_2_F,
                     names.OP_PARTY_T_FIRST_NAME_1_F,
                     names.OP_PARTY_T_FIRST_NAME_2_F,
-                    names.OP_PARTY_T_BUSINESS_NAME_F)}],
+                    names.OP_PARTY_T_BUSINESS_NAME_F)}, {
+                names.COL_PARTY_T_NAME_F: """
+                    CASE
+                        WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
+                            concat({surname_1}, ' ', {surname_2}, ' ', {first_name_1}, ' ', {first_name_2})
+                        WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
+                            {business_name}
+                    END
+                """.format(party_type=names.OP_PARTY_T_TYPE_F,
+                           domain_party_type=names.OP_PARTY_TYPE_D,
+                           surname_1=names.OP_PARTY_T_SURNAME_1_F,
+                           surname_2=names.OP_PARTY_T_SURNAME_2_F,
+                           first_name_1=names.OP_PARTY_T_FIRST_NAME_1_F,
+                           first_name_2=names.OP_PARTY_T_FIRST_NAME_2_F,
+                           business_name=names.OP_PARTY_T_BUSINESS_NAME_F,
+                           OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                           OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
+            }],
             names.OP_PARCEL_T: [
                 {names.OP_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F)},
                 {names.OP_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F)}]
@@ -421,16 +438,12 @@ class LayerConfig:
     @staticmethod
     def get_dict_display_expressions(names):
         return {
-            names.COL_PARTY_T_NAME_F: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
-                names.OP_PARTY_T_DOCUMENT_ID_F,
-                names.OP_PARTY_T_SURNAME_1_F,
-                names.OP_PARTY_T_SURNAME_2_F,
-                names.OP_PARTY_T_FIRST_NAME_1_F,
-                names.OP_PARTY_T_FIRST_NAME_2_F,
-                names.OP_PARTY_T_BUSINESS_NAME_F),
+            names.OP_PARTY_T: "concat({}, ' - ',  {})".format(names.OP_PARTY_T_DOCUMENT_ID_F, names.COL_PARTY_T_NAME_F),
             names.OP_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(names.T_ID_F, names.OP_PARCEL_T_PARCEL_NUMBER_F, names.OP_PARCEL_T_FMI_F),
             names.OP_GROUP_PARTY_T: "concat({}, ' - ', {})".format(names.T_ID_F, names.COL_PARTY_T_NAME_F),
-            names.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(names.OID_T_NAMESPACE_F, names.T_ID_F)
+            names.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(names.OID_T_NAMESPACE_F, names.T_ID_F),
+            names.GC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.GC_PARCEL_T_PARCEL_NUMBER_F),
+            names.SNR_PARCEL_REGISTRY_T:  "concat('(', {}, ') ', {})".format(names.T_ID_F, names.SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F)
         }
 
     @staticmethod

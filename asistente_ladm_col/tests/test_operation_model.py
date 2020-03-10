@@ -18,10 +18,11 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
 
 class TestOperationModel(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_operation_model')
-        self.db_pg = get_pg_conn('test_ladm_operation_model')
-        self.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        cls.db_pg = get_pg_conn('test_ladm_operation_model')
+        cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for operation model in PG...")
@@ -129,9 +130,10 @@ class TestOperationModel(unittest.TestCase):
             self.assertIn(test_required_field, required_fields)
 
     @classmethod
-    def tearDownClass(self):
-        self.db_pg.conn.close()
-        self.db_gpkg.conn.close()
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
+        cls.db_gpkg.conn.close()
 
 
 if __name__ == '__main__':

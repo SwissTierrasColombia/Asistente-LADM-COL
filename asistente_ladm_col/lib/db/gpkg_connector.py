@@ -23,6 +23,7 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
@@ -39,10 +40,13 @@ from asistente_ladm_col.utils.utils import normalize_iliname
 class GPKGConnector(DBConnector):
 
     _PROVIDER_NAME = 'ogr'
+    _DEFAULT_VALUES = {
+        'dbfile': ''
+    }
 
     def __init__(self, uri, conn_dict={}):
         DBConnector.__init__(self, uri, conn_dict)
-        self.mode = 'gpkg'
+        self.engine = 'gpkg'
         self.conn = None
         self.provider = 'ogr'
 
@@ -51,7 +55,7 @@ class GPKGConnector(DBConnector):
         self._dict_conn_params = {'dbfile': value}
         self._uri = value
 
-    def test_connection(self, test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
         """
         WARNING: We check several levels in order:
             1. SERVER
@@ -62,10 +66,17 @@ class GPKGConnector(DBConnector):
           If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
+        :param user_level: (EnumUserLevel) level of permissions a user has
+        :param required_models: A list of model prefixes that are mandatory for this DB connection
         :return Triple: boolean result, message code, message text
         """
         uri = self._uri
         database = os.path.basename(self._dict_conn_params['dbfile'])
+
+        # The most basic check first :)
+        if not os.path.splitext(uri)[1] == ".gpkg":
+            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
+                                                                                                 "The file should have the '.gpkg' extension!")
 
         # First we do a very basic check, looking that the directory or file exists
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
@@ -74,7 +85,7 @@ class GPKGConnector(DBConnector):
 
             if not os.path.exists(directory):
                 return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                              "GeoPackage directory file not found.")
+                                                                                              "GeoPackage directory not found.")
         else:
             if not os.path.exists(uri):
                 return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
@@ -122,41 +133,16 @@ class GPKGConnector(DBConnector):
                                                                                                        "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                     database)
 
-
-            res, msg = self.check_at_least_one_ladm_model_exists()
-            if not res:
-                return res, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, msg  # No LADM model found
-
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
+
+            res, code, msg = self.check_db_models(required_models)
+            if not res:
+                return res, code, msg
 
             # Validate table and field names
             if not self._table_and_field_names:
                 self._initialize_names()
-
-            models = list()
-            if self.ladm_model_exists():
-                models.append(LADMNames.LADM_MODEL_PREFIX)
-            if self.operation_model_exists():
-                models.append(LADMNames.OPERATION_MODEL_PREFIX)
-            if self.cadastral_form_model_exists():
-                models.append(LADMNames.CADASTRAL_FORM_MODEL_PREFIX)
-            if self.valuation_model_exists():
-                models.append(LADMNames.VALUATION_MODEL_PREFIX)
-            if self.ant_model_exists():
-                models.append(LADMNames.ANT_MODEL_PREFIX)
-            if self.reference_cartography_model_exists():
-                models.append(LADMNames.REFERENCE_CARTOGRAPHY_PREFIX)
-            if self.snr_data_model_exists():
-                models.append(LADMNames.SNR_DATA_MODEL_PREFIX)
-            if self.supplies_integration_model_exists():
-                models.append(LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX)
-            if self.supplies_model_exists():
-                models.append(LADMNames.SUPPLIES_MODEL_PREFIX)
-
-            if not models:
-                return False, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                                     "The database has no models from LADM_COL! As is, it cannot be used for LADM_COL Assistant!")
 
             res, msg = self.names.test_names(self._table_and_field_names)
             if not res:

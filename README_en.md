@@ -20,7 +20,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 The current version ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.3.1.2](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip) and allows users to:
 
- - Integration with the Transition System. Authentication and task management.
+ - Integration with the transitional System. Authentication and task management.
  - Roles support and GUI for each role.
  - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Create database structures for the aforementioned model.
@@ -140,17 +140,17 @@ To use the LADM_COL Assistant you need:
    - Java v1.8
    - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
    - PostGIS 2.4 or higher.
- - QGIS plugins:
-   - LADM_COL Assistant
+ - QGIS plugins (installing LADM_COL Assistant using QGIS Plugin Manager will also install these automatically):
    - QGIS Model Baker v4.3.1.2
    - MapSwipe Tool v1.2
 
 ## Testing
 
+### Unit tests
+
 Unit tests are automatically executed after every commit made to the repository. Results are available for:
 
 - GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
-- Windows: http://portal.proadmintierra.info:18000/
 
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
 - Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
@@ -165,6 +165,22 @@ If you need to recreate docker image, you can use:
 ```sh
 docker-compose down --rmi local && docker-compose build
 ```
+
+### Assisted tests (for the GUI)
+
+The LADM_COL Assistant uses *QGIS Tester* plugin to support assisted tests for GUI functionalities. 
+
+Prerrequisites:
+
+In order to run the assisted tests, you need to install:
+
+- *QGIS Tester* plugin (available at: https://github.com/planetfederal/qgis-tester-plugin).
+- *qgiscommons* library: ```pip install qgiscommons```
+
+See [the docs](https://github.com/planetfederal/qgis-tester-plugin/blob/master/docs/source/usage.rst) for usage instructions.
+
+If these prerrequisites are not met, the LADM_COL Assistant will continue running smoothly and will put a warning in the QGIS log. 
+
 
 ## How to be notified of new relases of the LADM_COL Assistant?
 
@@ -201,3 +217,7 @@ docker-compose down --rmi local && docker-compose build
 + Change detection:
 
   ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+
++ Integration with Transitional System
+
+![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)

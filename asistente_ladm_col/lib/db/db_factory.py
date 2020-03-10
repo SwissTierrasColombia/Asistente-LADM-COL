@@ -19,6 +19,8 @@
 from abc import ABC
 from qgis.PyQt.QtCore import QSettings
 
+from asistente_ladm_col.config.gui.db_engine_gui_config import DB_Engine_GUI_Config
+
 
 class DbFactory(ABC):
     """
@@ -26,10 +28,10 @@ class DbFactory(ABC):
     """
 
     def __init__(self):
-        self._mode = None
+        self._engine = None
 
     def get_id(self):
-        raise NotImplementedError
+        return self._engine
 
     def get_name(self):
         raise NotImplementedError
@@ -46,18 +48,26 @@ class DbFactory(ABC):
     def set_ili2db_configuration_params(self, params, configuration):
         raise NotImplementedError
 
+    def get_db_engine_actions(self):
+        """
+        Get the actions supported by a db engine.
+
+        :return: List of actions implemented in the plugin for the DB engine.
+        """
+        return DB_Engine_GUI_Config().get_db_engine_actions(self._engine)  # Returns a default if cannot find the engine
+
     def save_parameters_conn(self, dict_conn, db_source):
         settings = QSettings()
         for parameter, value in dict_conn.items():
                 settings.setValue(
-                    'Asistente-LADM_COL/db/{db_source}/{scope}/{parameter}'.format(db_source=db_source,
-                                                                                   scope=self._mode,
+                    'Asistente-LADM_COL/db/{db_source}/{engine}/{parameter}'.format(db_source=db_source,
+                                                                                   engine=self._engine,
                                                                                    parameter=parameter), value)
 
     def get_parameters_conn(self, db_source):
         dict_conn = dict()
         settings = QSettings()
-        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{scope}/'.format(db_source=db_source, scope=self._mode))
+        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{engine}/'.format(db_source=db_source, engine=self._engine))
         for key in settings.allKeys():
             dict_conn[key] = settings.value(key)
 

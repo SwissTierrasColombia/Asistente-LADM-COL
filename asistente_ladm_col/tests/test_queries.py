@@ -17,9 +17,10 @@ from asistente_ladm_col.tests.resources.expected_results.queries.property_record
 class TestQueries(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col_queries')
-        self.db_pg = get_pg_conn('test_ladm_col_queries')
+        cls.db_pg = get_pg_conn('test_ladm_col_queries')
 
     def test_igac_basic_info_query(self):
         print("\nINFO: Validating basic info query from IGAC...")
@@ -64,8 +65,10 @@ class TestQueries(unittest.TestCase):
         self.assertTrue(1 == len(records), 'The number of records obtained is not as expected')
         self.assertTrue(economic_query_test_results['query_by_plot_id'] == records[0]['op_terreno'], 'The result obtained is not as expected: {} {}'.format(economic_query_test_results['query_by_plot_id'], records[0]['op_terreno']))
 
-    def tearDownClass():
-        print('tearDown test_queries')
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Closing open connections to databases")
+        cls.db_pg.conn.close()
 
 
 if __name__ == '__main__':

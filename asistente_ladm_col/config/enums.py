@@ -22,6 +22,11 @@ class EnumTestLevel(IntFlag):
     SCHEMA_IMPORT = 128
 
 
+class EnumUserLevel(IntFlag):
+    CREATE = 1
+    CONNECT = 2
+
+
 class EnumTestConnectionMsg(IntFlag):
     CONNECTION_TO_SERVER_FAILED = 0
     CONNECTION_COULD_NOT_BE_OPEN = 1
@@ -30,11 +35,13 @@ class EnumTestConnectionMsg(IntFlag):
     USER_HAS_NO_PERMISSION = 4
     INTERLIS_META_ATTRIBUTES_NOT_FOUND = 5
     INVALID_ILI2DB_VERSION = 6
-    NO_LADM_MODELS_FOUND = 7
-    DB_NAMES_INCOMPLETE = 8
-    UNKNOWN_CONNECTION_ERROR = 9
-    DIR_NOT_FOUND = 10
-    GPKG_FILE_NOT_FOUND = 11
+    NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION = 7  # No single model is in the supported version
+    REQUIRED_LADM_MODELS_NOT_FOUND = 8  # At least one required model was not found
+    DB_NAMES_INCOMPLETE = 9
+    UNKNOWN_CONNECTION_ERROR = 10
+    DIR_NOT_FOUND = 11
+    GPKG_FILE_NOT_FOUND = 12
+    WRONG_FILE_EXTENSION = 13
 
     CONNECTION_OPENED = 100
     CONNECTION_TO_SERVER_SUCCESSFUL = 101
@@ -43,6 +50,7 @@ class EnumTestConnectionMsg(IntFlag):
     DB_WITH_VALID_LADM_COL_STRUCTURE = 104
     SCHEMA_WITH_VALID_LADM_COL_STRUCTURE = 105
     CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL = 106
+    DB_MODELS_ARE_CORRECT = 107
 
 
 class WizardTypeEnum(IntFlag):
@@ -64,3 +72,18 @@ class LogHandlerEnum(Enum):
 class LogModeEnum(Enum):
     USER = 1
     DEV = 2
+
+
+class STTaskStatusEnum(Enum):
+    ASSIGNED = "ASIGNADA"
+    STARTED = "INICIADA"
+    CANCELED = "CANCELADA"
+    CLOSED = "CERRADA"
+
+class STStepTypeEnum(Enum):
+    UPLOAD_FILE = 1
+    CONNECT_TO_DB = 2
+    SCHEMA_IMPORT = 3
+    IMPORT_DATA = 4
+    EXPORT_DATA = 5
+    RUN_ETL_COBOL = 6

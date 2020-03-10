@@ -21,9 +21,21 @@ from qgis.core import (NULL,
                        QgsExpression,
                        QgsWkbTypes,
                        QgsFeature)
-from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
+
+from asistente_ladm_col.config.enums import LogModeEnum
+from asistente_ladm_col.config.general_config import LAYER, DEFAULT_LOG_MODE
+from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY_KEY,
+                                                                   DICT_KEY_PARTIES,
+                                                                   DICT_KEY_PARCEL_T_DEPARTMENT_F,
+                                                                   DICT_KEY_PARCEL_T_FMI_F,
+                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                                   DICT_KEY_PARCEL_T_CONDITION_F,
+                                                                   DICT_KEY_PARCEL_T_NAME_F,
+                                                                   DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+                                                                   DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+                                                                   DICT_KEY_PARTY_T_NAME_F,
+                                                                   DICT_KEY_PARTY_T_RIGHT,
+                                                                   DICT_KEY_PLOT_T_AREA_F)
 from asistente_ladm_col.lib.logger import Logger
 
 # TODO: Update with correct field
@@ -41,6 +53,227 @@ class LADM_DATA():
         self.qgis_utils = qgis_utils
         self.logger = Logger()
 
+    def get_plots_related_to_parcels_supplies(self, db, t_ids, field_name, gc_plot_layer=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids in supplies model
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param gc_plot_layer: Plot QGIS layer, in case it exists already in the caller
+        :return: list of plot ids related to the parcel from supplies model
+        """
+        if not t_ids:
+            return []
+
+        layers = {
+            db.names.GC_PLOT_T: {'name': db.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+
+        if gc_plot_layer is not None:
+            del layers[db.names.GC_PLOT_T]
+
+        if layers:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            if db.names.GC_PLOT_T in layers:
+                gc_plot_layer = layers[db.names.GC_PLOT_T][LAYER]
+
+        expression = QgsExpression("{} IN ('{}') ".format(db.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(t_id) for t_id in t_ids])))
+        features = self.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+
+        plot_ids = list()
+        for feature in features:
+            if field_name is None:  # We are only interested in the QGIS internal id, no need to get other fields
+                plot_ids.append(feature.id())
+            else:
+                field_found = gc_plot_layer.fields().indexOf(field_name) != -1
+                if field_found:
+                    plot_ids.append(feature[field_name])
+
+        return plot_ids
+
+    def get_parcels_related_to_plots_supplies(self, db, t_ids, field_name, gc_parcel_table=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of plot t_ids
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param gc_parcel_table: Parcel QGIS layer, in case it exists already in the caller
+        :return: list of parcel ids related to the plot
+        """
+        if not t_ids:
+            return []
+
+        layers = {
+            db.names.GC_PARCEL_T: {'name': db.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            db.names.GC_PLOT_T: {'name': db.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+
+        if gc_parcel_table is not None:
+            del layers[db.names.GC_PARCEL_T]
+
+        if layers:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            if db.names.GC_PARCEL_T in layers:
+                gc_parcel_table = layers[db.names.GC_PARCEL_T][LAYER]
+
+            if db.names.GC_PLOT_T in layers:
+                gc_plot_layer = layers[db.names.GC_PLOT_T][LAYER]
+
+        expression = QgsExpression("{} IN ({})".format(db.names.T_ID_F,
+                                                       ",".join([str(t_id) for t_id in t_ids])))
+        features = self.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+
+        parcel_t_ids = list()
+        for feature in features:
+            parcel_t_ids.append(feature[db.names.GC_PLOT_T_GC_PARCEL_F])
+
+        if field_name == db.names.T_ID_F:
+            return parcel_t_ids
+
+        parcel_ids = list()
+        expression = QgsExpression("{} IN ({})".format(db.names.T_ID_F,
+                                                          ",".join([str(id) for id in parcel_t_ids])))
+
+        if field_name is None:
+            features = self.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression)
+        else:
+            features = self.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression, with_attributes=True)
+
+        for feature in features:
+            if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
+                parcel_ids.append(feature.id())
+            else:
+                field_found = gc_parcel_table.fields().indexOf(field_name) != -1
+                if field_found:
+                    parcel_ids.append(feature[field_name])
+
+        return parcel_ids
+
+    def get_parcel_data_to_compare_changes_supplies(self, db, search_criterion=None, layer_modifiers=dict()):
+        """
+        :param db: DB Connector object
+        :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
+        :return: dict with parcel info for comparisons
+        """
+        mapping_parcels_field = self.mapping_parcel_fields_for_supplies(db.names)
+        mapping_party_field = self.mapping_party_fields_for_supplies(db.names)
+        mapping_plot_field = self.mapping_plot_fields_for_supplies(db.names)
+
+        layers = {
+            db.names.GC_PARCEL_T: {'name': db.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            db.names.GC_PLOT_T: {'name': db.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            db.names.GC_OWNER_T: {'name': db.names.GC_OWNER_T, 'geometry': None, LAYER: None},
+            db.names.GC_PARCEL_TYPE_D: {'name': db.names.GC_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
+        }
+
+        self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        if not layers:
+            return None
+
+        # ===================== Start adding parcel info ==================================================
+        parcel_fields = [f.name() for f in layers[db.names.GC_PARCEL_T][LAYER].fields()]
+        parcel_features = self.get_features_by_search_criterion(layers[db.names.GC_PARCEL_T][LAYER], db.names.T_ID_F, search_criterion=search_criterion, with_attributes=True)
+
+        dict_features = dict()
+        for feature in parcel_features:
+            dict_attrs = dict()
+
+            for parcel_field, common_key_value_parcel in mapping_parcels_field.items():  # parcel fields to compare
+                if parcel_field in parcel_fields:
+                    if parcel_field == db.names.GC_PARCEL_T_CONDITION_F:
+                        # Go for domain value, instead of t_id
+                        value = self.get_domain_value_from_code(db, layers[db.names.GC_PARCEL_TYPE_D][LAYER], feature.attribute(parcel_field))
+                    else:
+                        value = feature.attribute(parcel_field)
+                elif parcel_field == DICT_KEY_PARCEL_T_DEPARTMENT_F:
+                    value = feature.attribute(db.names.GC_PARCEL_T_PARCEL_NUMBER_F)[:2]
+                elif parcel_field == DICT_KEY_PARCEL_T_NAME_F:
+                    value = NULL  # There is no parcel name in supplies model
+                dict_attrs[common_key_value_parcel] = value
+
+            dict_attrs[db.names.T_ID_F] = feature[db.names.T_ID_F]  # Finally store t_id
+
+            # Group dictionary by parcel number common key
+            if dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
+            else:
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
+
+        # =====================  Start adding plot info ==================================================
+        plot_fields = [f.name() for f in layers[db.names.GC_PLOT_T][LAYER].fields()]
+        parcel_t_ids = [parcel_feature[db.names.T_ID_F] for parcel_feature in parcel_features]
+
+        expression_plot_features = QgsExpression("{} IN ('{}')".format(db.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(parcel_t_id) for parcel_t_id in parcel_t_ids])))
+        plot_features = self.get_features_by_expression(layers[db.names.GC_PLOT_T][LAYER], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
+        dict_parcel_plot = {plot_feature[db.names.GC_PLOT_T_GC_PARCEL_F]: plot_feature[db.names.T_ID_F] for plot_feature in plot_features}
+        dict_plot_features = {plot_feature[db.names.T_ID_F]: plot_feature for plot_feature in plot_features}
+
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[db.names.T_ID_F] in dict_parcel_plot:
+                    if dict_parcel_plot[item[db.names.T_ID_F]] in dict_plot_features:
+                        plot_feature = dict_plot_features[dict_parcel_plot[item[db.names.T_ID_F]]]
+                        for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
+                            if plot_field in plot_fields:
+                                item[common_key_value_plot] = plot_feature[plot_field]
+
+                        item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
+                else:
+                    item[PLOT_GEOMETRY_KEY] = None  # No associated plot
+
+        # ===================== Start adding party info ==================================================
+        party_fields = [f.name() for f in layers[db.names.GC_OWNER_T][LAYER].fields()]
+        expression_parties_features = QgsExpression("{} IN ({})".format(db.names.GC_OWNER_T_PARCEL_ID_F, ",".join([str(id) for id in parcel_t_ids])))
+        party_features = self.get_features_by_expression(layers[db.names.GC_OWNER_T][LAYER], db.names.T_ID_F, expression_parties_features, with_attributes=True)
+
+        dict_parcel_parties = dict()
+        for party_feature in party_features:
+            if party_feature[db.names.GC_OWNER_T_PARCEL_ID_F] in dict_parcel_parties:
+                dict_parcel_parties[party_feature[db.names.GC_OWNER_T_PARCEL_ID_F]].append(party_feature[db.names.T_ID_F])
+            else:
+                dict_parcel_parties[party_feature[db.names.GC_OWNER_T_PARCEL_ID_F]] = [party_feature[db.names.T_ID_F]]
+
+        dict_parties = dict()
+        for party_feature in party_features:
+            dict_party = dict()
+            for party_field, common_key_value_party in mapping_party_field.items():  # Party fields to compare
+                if party_field in party_fields:
+                    dict_party[common_key_value_party] = party_feature[party_field]
+                elif party_field == DICT_KEY_PARTY_T_NAME_F:
+                    dict_party[common_key_value_party] = "{} {} {} {}".format(party_feature[db.names.GC_OWNER_T_FIRST_NAME_1_F],
+                                                                              party_feature[db.names.GC_OWNER_T_FIRST_NAME_2_F],
+                                                                              party_feature[db.names.GC_OWNER_T_SURNAME_1_F],
+                                                                              party_feature[db.names.GC_OWNER_T_SURNAME_2_F])
+                elif party_field == DICT_KEY_PARTY_T_RIGHT:
+                    dict_party[common_key_value_party] = NULL
+            dict_parties[party_feature[db.names.T_ID_F]] = dict_party
+
+        for id_parcel in dict_parcel_parties:
+            party_info = list()
+            for id_party in dict_parcel_parties[id_parcel]:
+                if id_party in dict_parties:
+                    party_info.append(dict_parties[id_party])
+
+            dict_parcel_parties[id_parcel] = party_info
+
+        # Append party info
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[db.names.T_ID_F] in dict_parcel_parties:
+                    # Make join
+                    if DICT_KEY_PARTIES in item:
+                        item[DICT_KEY_PARTIES].append(dict_parcel_parties[item[db.names.T_ID_F]])
+                    else:
+                        item[DICT_KEY_PARTIES] = dict_parcel_parties[item[db.names.T_ID_F]]
+                else:
+                    item[DICT_KEY_PARTIES] = NULL
+
+        return dict_features
+
     def get_plots_related_to_parcels(self, db, t_ids, field_name, plot_layer=None, uebaunit_table=None):
         """
         :param db: DB Connector object
@@ -50,6 +283,9 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of plot ids related to the parcel
         """
+        if not t_ids:
+            return []
+
         layers = {
             db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
@@ -111,6 +347,9 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of parcel ids related to the parcel
         """
+        if not t_ids:
+            return []
+
         layers = {
             db.names.OP_PARCEL_T: {'name': db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
@@ -171,9 +410,10 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-        parcel_fields_to_compare = self.get_parcel_fields_to_compare(db.names)
-        party_fields_to_compare = self.get_party_fields_to_compare(db.names)
-        plot_fields_to_compare = self.get_plot_fields_to_compare(db.names)
+        mapping_parcels_field = self.mapping_parcel_fields(db.names)
+        mapping_party_field = self.mapping_party_fields(db.names)
+        mapping_plot_field = self.mapping_plot_fields(db.names)
+
         layers = {
             db.names.OP_PARCEL_T: {'name': db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             db.names.OP_PLOT_T: {'name': db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -182,6 +422,10 @@ class LADM_DATA():
             db.names.OP_GROUP_PARTY_T: {'name': db.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
             db.names.COL_UE_BAUNIT_T: {'name': db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
             db.names.MEMBERS_T: {'name': db.names.MEMBERS_T, 'geometry': None, LAYER: None},
+            db.names.OP_CONDITION_PARCEL_TYPE_D: {'name': db.names.OP_CONDITION_PARCEL_TYPE_D, 'geometry': None, LAYER: None},
+            db.names.OP_PARTY_DOCUMENT_TYPE_D: {'name': db.names.OP_PARTY_DOCUMENT_TYPE_D, 'geometry': None, LAYER: None},
+            db.names.OP_RIGHT_TYPE_D: {'name': db.names.OP_RIGHT_TYPE_D, 'geometry': None, LAYER: None},
+            db.names.OP_PARTY_DOCUMENT_TYPE_D: {'name': db.names.OP_PARTY_DOCUMENT_TYPE_D, 'geometry': None, LAYER: None}
         }
 
         if db.cadastral_form_model_exists():
@@ -200,20 +444,23 @@ class LADM_DATA():
         for feature in parcel_features:
             dict_attrs = dict()
             for field in layers[db.names.OP_PARCEL_T][LAYER].fields():
-                if field.name() in parcel_fields_to_compare:
+                if field.name() in mapping_parcels_field.keys():  # parcel fields to compare
                     if field.name() == db.names.OP_PARCEL_T_PARCEL_TYPE_F:
                         # Go for domain value, instead of t_id
-                        value = self.get_domain_value_from_code(db, db.names.OP_CONDITION_PARCEL_TYPE_D, feature.attribute(field.name()))
+                        value = self.get_domain_value_from_code(db, layers[db.names.OP_CONDITION_PARCEL_TYPE_D][LAYER], feature.attribute(field.name()))
                     else:
                         value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value
+
+                    key_value_parcel = mapping_parcels_field[field.name()]
+                    dict_attrs[key_value_parcel] = value
 
             dict_attrs[db.names.T_ID_F] = feature[db.names.T_ID_F]
 
-            if dict_attrs[db.names.OP_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
-                dict_features[dict_attrs[db.names.OP_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
+            # Group dictionary by parcel number common key
+            if dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F] in dict_features:
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]].append(dict_attrs)
             else:
-                dict_features[dict_attrs[db.names.OP_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
+                dict_features[dict_attrs[DICT_KEY_PARCEL_T_PARCEL_NUMBER_F]] = [dict_attrs]
 
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[db.names.T_ID_F] for parcel_feature in parcel_features]
@@ -232,12 +479,8 @@ class LADM_DATA():
                 if item[db.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[db.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[db.names.T_ID_F]]]
-                        for plot_field in plot_fields_to_compare:
-                            if plot_feature[plot_field] != NULL:
-                                item[plot_field] = plot_feature[plot_field]
-                            else:
-                                item[plot_field] = NULL
-
+                        for plot_field, common_key_value_plot in mapping_plot_field.items():  # plot fields to compare
+                            item[common_key_value_plot] = plot_feature[plot_field]
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
                 else:
                     item[PLOT_GEOMETRY_KEY] = None  # No associated plot
@@ -263,14 +506,14 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for party_field in party_fields_to_compare:
+            for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[party_field] = self.get_domain_value_from_code(db, db.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D][LAYER], party_feature[party_field])
                 else:
-                    dict_party[party_field] = party_feature[party_field]
+                    dict_party[common_key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
             right_type_id = dict_party_right[party_feature[db.names.T_ID_F]][db.names.OP_RIGHT_T_TYPE_F]
-            dict_party['derecho'] = self.get_domain_value_from_code(db, db.names.OP_RIGHT_TYPE_D, right_type_id)
+            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D][LAYER], right_type_id)
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -282,17 +525,16 @@ class LADM_DATA():
             dict_parcel_parties[id_parcel] = party_info
 
         # Append party info
-        tag_party = LayerConfig.get_dict_plural(db.names)[db.names.OP_PARTY_T]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[db.names.T_ID_F] in dict_parcel_parties:
                     # Make join
-                    if tag_party in item:
-                        item[tag_party].append(dict_parcel_parties[item[db.names.T_ID_F]])
+                    if DICT_KEY_PARTIES in item:
+                        item[DICT_KEY_PARTIES].append(dict_parcel_parties[item[db.names.T_ID_F]])
                     else:
-                        item[tag_party] = dict_parcel_parties[item[db.names.T_ID_F]]
+                        item[DICT_KEY_PARTIES] = dict_parcel_parties[item[db.names.T_ID_F]]
                 else:
-                    item[tag_party] = NULL
+                    item[DICT_KEY_PARTIES] = NULL
 
         # =====================  Start add group party info ==================================================
         dict_parcel_group_parties = dict()  # {id_parcel: [id_group_party1, id_group_party2]}
@@ -327,11 +569,11 @@ class LADM_DATA():
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
-            for party_field in party_fields_to_compare:
+            for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[party_field] = self.get_domain_value_from_code(db, db.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D][LAYER], party_feature[party_field])
                 else:
-                    dict_party[party_field] = party_feature[party_field]
+                    dict_party[common_key_value_party] = party_feature[party_field]
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
 
         # Reuse the dict to replace id_group_party for party info:
@@ -342,7 +584,7 @@ class LADM_DATA():
                 if id_party in dict_parties:
                     # Add extra attribute from right table
                     right_type_id = dict_group_party_right[id_group_party][db.names.OP_RIGHT_T_TYPE_F]
-                    dict_parties[id_party]['derecho'] = self.get_domain_value_from_code(db, db.names.OP_RIGHT_TYPE_D, right_type_id)
+                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D][LAYER], right_type_id)
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -355,19 +597,18 @@ class LADM_DATA():
             dict_parcel_group_parties[id_parcel] = group_party_info
 
         # Append group party info
-        tag_group_party = LayerConfig.get_dict_plural(db.names)[db.names.OP_PARTY_T]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[db.names.T_ID_F] in dict_parcel_group_parties:
                     # Make join
-                    if tag_group_party in item:
-                        if item[tag_group_party]:
+                    if DICT_KEY_PARTIES in item:
+                        if item[DICT_KEY_PARTIES]:
                             for info in dict_parcel_group_parties[item[db.names.T_ID_F]]:
-                                item[tag_group_party].append(info)
+                                item[DICT_KEY_PARTIES].append(info)
                         else:
-                            item[tag_group_party] = dict_parcel_group_parties[item[db.names.T_ID_F]]
+                            item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
                     else:
-                        item[tag_group_party] = dict_parcel_group_parties[item[db.names.T_ID_F]]
+                        item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
 
         # =====================  Start add record card info ==================================================
         # TODO: Replace property record card for correct table model
@@ -428,23 +669,58 @@ class LADM_DATA():
 
         return [feature for feature in layer.getFeatures(request)]
 
-    @staticmethod
-    def get_parcel_fields_to_compare(names):
-        return [names.OP_PARCEL_T_PARCEL_NUMBER_F,
-                names.OP_PARCEL_T_FMI_F,
-                names.COL_BAUNIT_T_NAME_F,
-                names.OP_PARCEL_T_DEPARTMENT_F,
-                names.OP_PARCEL_T_PARCEL_TYPE_F]
+
+    # Two different models (supplies and operation), different field names
+    # in each model, so we need to map them to a common key for each field
 
     @staticmethod
-    def get_party_fields_to_compare(names):
-        return [names.OP_PARTY_T_DOCUMENT_TYPE_F,  # Right type will also be added to parties
-                names.OP_PARTY_T_DOCUMENT_ID_F,
-                names.COL_PARTY_T_NAME_F]
+    def mapping_parcel_fields_for_supplies(names):
+        return {
+            DICT_KEY_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            names.GC_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
+            names.GC_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            names.GC_PARCEL_T_CONDITION_F: DICT_KEY_PARCEL_T_CONDITION_F,
+            DICT_KEY_PARCEL_T_NAME_F: DICT_KEY_PARCEL_T_NAME_F
+        }
 
     @staticmethod
-    def get_plot_fields_to_compare(names):
-        return [names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differently
+    def mapping_party_fields_for_supplies(names):
+        return {
+            names.GC_OWNER_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            names.GC_OWNER_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            DICT_KEY_PARTY_T_NAME_F: DICT_KEY_PARTY_T_NAME_F,
+            DICT_KEY_PARTY_T_RIGHT: DICT_KEY_PARTY_T_RIGHT
+        }
+
+    @staticmethod
+    def mapping_plot_fields_for_supplies(names):
+        return {
+            names.GC_PLOT_T_ALPHANUMERIC_AREA: DICT_KEY_PLOT_T_AREA_F
+        }
+
+    @staticmethod
+    def mapping_parcel_fields(names):
+        return {
+            names.OP_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            names.OP_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
+            names.OP_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            names.OP_PARCEL_T_PARCEL_TYPE_F: DICT_KEY_PARCEL_T_CONDITION_F,
+            names.COL_BAUNIT_T_NAME_F: DICT_KEY_PARCEL_T_NAME_F
+        }
+
+    @staticmethod
+    def mapping_party_fields(names):
+        return {
+            names.OP_PARTY_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            names.OP_PARTY_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            names.COL_PARTY_T_NAME_F: DICT_KEY_PARTY_T_NAME_F
+        }
+
+    @staticmethod
+    def mapping_plot_fields(names):
+        return {
+            names.OP_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
+        }
 
     def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):
         """
@@ -457,6 +733,7 @@ class LADM_DATA():
         :return: The t_id corresponding to the given value or None.
         """
         res = None
+        value_not_found = False
         domain_table_name = ''
 
         if type(domain_table) is str:
@@ -465,13 +742,17 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        cached_res = db.names.get_domain_code(domain_table_name, value)
-        if cached_res is not None:
-            self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_res))
-            return cached_res
+        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value)
+        if found_in_cache:
+            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+                self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
+                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
+            return cached_value
 
-        if type(domain_table_name) is str:
+        # Not in cache, let's go for the value and cache it
+        # TODO: We could even cache all domain values from current table in the first call.
+
+        if type(domain_table) is str:
             domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
 
         if domain_table is not None:
@@ -487,9 +768,17 @@ class LADM_DATA():
                 res = feature[db.names.T_ID_F]
                 if res is not None:
                     db.names.cache_domain_value(domain_table_name, res, value)
+            else:
+                value_not_found = True
+        else:
+            value_not_found = True
 
-        self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
-            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
+        if value_not_found:
+            db.names.cache_domain_value(domain_table_name, None, value)
+
+        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
 
         return res
 
@@ -499,11 +788,12 @@ class LADM_DATA():
 
         :param db: DB Connector object.
         :param domain_table: Table name or QgsVectorLayer
-        :param value: t_id to search in the domain.
+        :param code: t_id to search in the domain.
         :param value_is_ilicode: Whether the result should be iliCode or display name.
         :return: The value corresponding to the given t_id or None.
         """
         res = None
+        value_not_found = False
         domain_table_name = ''
 
         if type(domain_table) is str:
@@ -512,11 +802,15 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        cached_res = db.names.get_domain_value(domain_table_name, code)
-        if cached_res is not None:
-            self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_res))
-            return cached_res
+        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code)
+        if found_in_cache:
+            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+                self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
+                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_value))
+            return cached_value
+
+        # Not in cache, let's go for the value and cache it
+        # TODO: We could even cache all domain values from current table in the first call.
 
         if type(domain_table) is str:
             domain_table = self.qgis_utils.get_layer(db, domain_table, None, True, emit_map_freeze=False)
@@ -527,8 +821,16 @@ class LADM_DATA():
                 res = features[0][db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F]
                 if res is not None:
                     db.names.cache_domain_value(domain_table_name, code, res)
+            else:
+                value_not_found = True
+        else:
+            value_not_found = True
 
-        self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
-            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
+        if value_not_found:
+            db.names.cache_domain_value(domain_table_name, code, None)
+
+        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
 
         return res
