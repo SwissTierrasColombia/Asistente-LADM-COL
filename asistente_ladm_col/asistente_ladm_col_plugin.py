@@ -115,7 +115,6 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
                                                  _validate_if_layers_in_editing_mode_with_changes,
-                                                 _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
@@ -482,7 +481,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(partial(self.query_changes_per_parcel, [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]))
         self._query_changes_all_parcels_action.triggered.connect(partial(self.query_changes_all_parcels, [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]))
-        self._settings_changes_action.triggered.connect(self.show_supplies_data_settings)
+        self._change_detections_settings_action.triggered.connect(self.show_change_detection_settings)
 
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
