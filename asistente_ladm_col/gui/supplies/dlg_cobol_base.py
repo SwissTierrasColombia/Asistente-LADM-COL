@@ -22,7 +22,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
-                              QCoreApplication)
+                              QCoreApplication,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
@@ -47,6 +48,8 @@ DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 
 
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -58,6 +61,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         self._dialog_mode = None
         self._running_tool = False
+        self._etl_result = False
         self.tool_name = ""
         self.names = self._db.names
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings

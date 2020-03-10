@@ -28,7 +28,8 @@ from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QStandardItemModel,
@@ -62,6 +63,8 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
@@ -298,6 +301,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
+                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -314,6 +318,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
+            self.on_result.emit(True)  # Inform other classes that the execution was successful
 
     def download_java_complete(self):
         self.accepted()
