@@ -30,14 +30,31 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
 from asistente_ladm_col.config.mapping_config import LADMNames
 
 
+"""
+Decorators to ensure requirements before calling a plugin method.
+
+****************************************  WARNING  *************************************************
+
+If you're adding a decorator to a method, make sure the call to the method complies with the
+required parameters of the decorator. For instance, if I add a decorator @_db_connection_required
+to my_method(), I need to be sure that ALL calls to my_method() are like this:
+
+   my_action.connect(partial(my_method, context_collected)
+
+If you don't do that, Python errors are likely to appear when the decorator @_db_connection_required
+for my_method() is called.
+****************************************************************************************************
+"""
+
+
 def _db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         # Check if current connection is valid and disable access if not
         inst = args[0]
-        db_source_list = args[1]
+        context = args[1]
 
-        for db_source in db_source_list:
+        for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             res, code, msg = db.test_connection()
             if not res:
@@ -146,9 +163,9 @@ def _operation_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         inst = args[0]
-        db_source_list = args[1]
+        context = args[1]
 
-        for db_source in db_source_list:
+        for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
         
@@ -173,9 +190,9 @@ def _supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         inst = args[0]
-        db_source_list = args[1]
+        context = args[1]
 
-        for db_source in db_source_list:
+        for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
             if not db.supplies_model_exists():
@@ -199,9 +216,9 @@ def _valuation_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         inst = args[0]
-        db_source_list = args[1]
+        context = args[1]
 
-        for db_source in db_source_list:
+        for db_source in context.get_db_sources():
             db = inst.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
 
