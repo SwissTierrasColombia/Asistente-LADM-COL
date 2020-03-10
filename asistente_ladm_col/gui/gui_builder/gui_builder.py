@@ -51,13 +51,15 @@ class GUI_Builder(QObject):
 
     def register_action(self, key, action):
         self._registered_actions[key] = {ACTION: action,
-                                         DEFAULT_ACTION_TEXT: action.text()}
+                                         DEFAULT_ACTION_TEXT: action.text(),
+                                         DEFAULT_ACTION_STATUS: action.isEnabled()}
 
     def register_actions(self, dict_key_action):
         new_dict = dict()
         for k,v in dict_key_action.items():
             new_dict[k] = {ACTION: v,
-                           DEFAULT_ACTION_TEXT: v.text()}
+                           DEFAULT_ACTION_TEXT: v.text(),
+                           DEFAULT_ACTION_STATUS: v.isEnabled()}
 
         self._registered_actions.update(new_dict)
 
@@ -356,7 +358,7 @@ class GUI_Builder(QObject):
 
         # Default properties
         action_text = self._registered_actions[action_key][DEFAULT_ACTION_TEXT]
-        action.setEnabled(True)
+        action.setEnabled(self._registered_actions[action_key][DEFAULT_ACTION_STATUS])
         action.setText(action_text)
         action.setToolTip(action_text)
 

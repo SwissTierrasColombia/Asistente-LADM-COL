@@ -6,6 +6,7 @@ TEMPLATE_GUI = 'TEMPLATE_GUI'
 
 ACTION = 'action'
 DEFAULT_ACTION_TEXT = 'default_action_text'
+DEFAULT_ACTION_STATUS = 'default_action_status'
 OBJECT_NAME = 'object_name'
 ICON = 'icon'
 ACTIONS = 'actions'
