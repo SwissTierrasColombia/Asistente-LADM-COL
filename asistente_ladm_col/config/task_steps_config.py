@@ -67,9 +67,12 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                 {STEP_NUMBER: 2,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),
                  STEP_TYPE: STStepTypeEnum.RUN_ETL_COBOL,
-                 STEP_ACTION: ACTION_RUN_ETL_COBOL,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
-                                                              "Migrate Cobol data (.lis files) and its corresponding GBD to the LADM-COL (supplies model).")
+                                                              "Migrate Cobol data (.lis files) and its corresponding GBD to the LADM-COL (supplies model)."),
+                 STEP_CUSTOM_ACTION_SLOT: {
+                     SLOT_NAME: self._slot_caller.show_etl_cobol_dialog,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
+                     SLOT_PARAMS: {}}
                  },
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate XTF"),
@@ -78,7 +81,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_export_data,
                      SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
-                     SLOT_PARAMS: {'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}
+                     SLOT_PARAMS: {}
                  }
                  },
                 {STEP_NUMBER: 4,
@@ -87,6 +90,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the XTF file to the Transitional System."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
                      SLOT_PARAMS: {
                          'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
                          'supply_type': task_data['request'][

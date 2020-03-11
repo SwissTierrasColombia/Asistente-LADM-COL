@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject
 
-from asistente_ladm_col.config.general_config import COLLECTED_DB_SOURCE
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE)
 
 
 class Context(QObject):
@@ -24,6 +25,8 @@ class TaskContext(Context):
     """
     def __init__(self, db_sources=[COLLECTED_DB_SOURCE]):
         Context.__init__(self, db_sources)
+
+        # A slot that will react upon getting the result of an actions slot. Mainly used to check a step checkbox.
         self._slot_on_result = None
 
     def get_slot_on_result(self):
@@ -36,9 +39,11 @@ class TaskContext(Context):
 if __name__== "__main__":
     a = Context()
     a.set_db_source("c")
-    print(a.get_db_source())
+    assert(a.get_db_source() == "c")
     t = TaskContext()
     t.set_db_source("d")
-    print(t.get_db_source())
+    assert(t.get_db_source() == "d")
     t.set_slot_on_result("S")
-    print(t.get_slot_on_result())
+    assert(t.get_slot_on_result() == "S")
+    t2 = TaskContext([SUPPLIES_DB_SOURCE])
+    assert(t2.get_db_sources()[0] == SUPPLIES_DB_SOURCE)

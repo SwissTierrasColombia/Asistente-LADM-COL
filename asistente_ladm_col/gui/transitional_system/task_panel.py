@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import json
+from functools import partial
 
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
@@ -110,6 +111,13 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.trw_task_steps.topLevelItem(i).setExpanded(True)
 
     def trigger_action(self, item, column):
+        """
+        Triggers an action linked to the task step. Action config comes from TaskStepsConfig, and it can be either a
+        default action slot or a customized action slot (even passing a task context).
+
+        :param item: QTreeWidgetItem that is linked to an action, (i.e., a child item)
+        :param column: 0
+        """
         step_id = item.data(column, Qt.UserRole)
         step = self._task.get_step(step_id)
         if step:
@@ -117,12 +125,22 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             if slot:  # Custom action call
                 self.logger.info(__name__, "Executing step action with custom parameters...")
                 if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
+                    slot[SLOT_CONTEXT].set_slot_on_result(partial(self.set_item_enabled, item.parent()))
                     slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
                 else:
                     slot[SLOT_NAME](**slot[SLOT_PARAMS])
             else:  # Default action call
                 self.logger.info(__name__, "Executing default action...")
                 self.trigger_action_emitted.emit(step.get_action_tag())
+
+    def set_item_enabled(self, item, enable):
+        """
+        Slot to react upon getting the result of an action (dialog) linked to a task step
+
+        :param item: Checkable QTreeWidgetItem (i.e., it's the parent, not the child that triggers the action)
+        :param enable: Whether the task step was successfully run or not
+        """
+        item.setCheckState(0, Qt.Checked if enable else Qt.Unchecked)
 
     def set_item_style(self, item, column):
         color = CHECKED_COLOR if item.checkState(column) == Qt.Checked else UNCHECKED_COLOR

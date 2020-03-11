@@ -805,7 +805,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_supplies_model_required
     def show_etl_cobol_dialog(self, *args):
         # TODO: Should use @_activate_processing_plugin
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
         dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
 
     def show_missing_cobol_supplies_dialog(self):
@@ -956,7 +964,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # parse parameters
         params = dict()
-        if args:
+        if len(args) > 1:
             args_params = args[1]
             if type(args_params) is dict:
                 params.update(args_params)
@@ -970,7 +978,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
 
         if isinstance(context, TaskContext):
-            dlg.on_result.connect(context.get_slot_on_result)
+            dlg.on_result.connect(context.get_slot_on_result())
 
         self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
@@ -989,7 +997,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.open_dlg_import_schema.connect(partial(self.show_dlg_import_schema, context))
 
         if isinstance(context, TaskContext):
-            dlg.on_result.connect(context.get_slot_on_result)
+            dlg.on_result.connect(context.get_slot_on_result())
 
         self.logger.info(__name__, "Import data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
@@ -1006,7 +1014,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, context)
         if isinstance(context, TaskContext):
-            dlg.on_result.connect(context.get_slot_on_result)
+            dlg.on_result.connect(context.get_slot_on_result())
 
         self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
@@ -1319,8 +1327,36 @@ class AsistenteLADMCOLPlugin(QObject):
         if action is not None:
             action.trigger()
 
-    def show_dlg_st_upload_file(self, request_id, supply_type):
+    def show_dlg_st_upload_file(self, *args, **kwargs):
+        if not args and not kwargs:
+            return
+
+        context = None
+
+        # Parse parameters
+        params = dict()
+
+        if isinstance(args[0], Context):
+            context = args[0]
+        elif type(args[0]) is dict:  # No context was given
+            params.update(args[0])
+
+        if len(args) > 1:  # Context was passed as args[0]
+            params.update(args[1])
+
+        if kwargs:
+            params.update(kwargs)
+
+        if 'request_id' not in params or 'supply_type' not in params:
+            return
+
+        request_id = params['request_id']
+        supply_type = params['supply_type']
+
         dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
         dlg.exec_()
 
     def open_encrypted_db_connection(self, db_engine, conn_dict, user_level=EnumUserLevel.CREATE):
