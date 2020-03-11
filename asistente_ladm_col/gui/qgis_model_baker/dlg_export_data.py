@@ -28,7 +28,8 @@ from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QStandardItemModel,
@@ -62,17 +63,19 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
-    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.logger = Logger()
@@ -298,6 +301,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
+                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -314,6 +318,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
+            self.on_result.emit(True)  # Inform other classes that the execution was successful
 
     def download_java_complete(self):
         self.accepted()

@@ -85,6 +85,7 @@ from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
+from asistente_ladm_col.lib.context import Context, TaskContext
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -115,7 +116,6 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
                                                  _validate_if_layers_in_editing_mode_with_changes,
-                                                 _supplies_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
@@ -151,6 +151,13 @@ class AsistenteLADMCOLPlugin(QObject):
         task_steps_config = TaskStepsConfig()
         task_steps_config.set_slot_caller(self)
 
+        # We need a couple of contexts when running tools, so, prepare them in advance
+        self._context_collected = Context()  # By default, only collected source is set
+        self._context_supplies = Context()
+        self._context_supplies.set_db_sources([SUPPLIES_DB_SOURCE])
+        self._context_collected_supplies = Context()
+        self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
+
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
@@ -160,7 +167,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         self.create_actions()
-        self.set_connections()
+        self.set_signal_slot_connections()
 
         if not self.unit_tests:
             # Ask for role name before building the GUI, only the first time the plugin is run
@@ -191,7 +198,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_transitional_system_actions()
         self.create_generic_actions()
 
-    def set_connections(self):
+    def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
 
         self.logger.message_with_duration_emitted.connect(self.show_message)
@@ -255,31 +262,31 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._build_boundary_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/build_boundaries.svg"),
                                               TOOLBAR_BUILD_BOUNDARY, self.main_window)
-        self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
+        self._build_boundary_action.triggered.connect(partial(self.call_explode_boundaries, self._context_collected))
 
         self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
             TOOLBAR_MOVE_NODES, self.main_window)
-        self._topological_editing_action.triggered.connect(self.call_topological_editing)
+        self._topological_editing_action.triggered.connect(partial(self.call_topological_editing, self._context_collected))
 
         self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                               TOOLBAR_FILL_POINT_BFS,
                                               self.main_window)
-        self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
+        self._fill_point_BFS_action.triggered.connect(partial(self.call_fill_topology_table_pointbfs, self._context_collected))
 
         self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                                   TOOLBAR_FILL_MORE_BFS_LESS,
                                                   self.main_window)
-        self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._fill_more_BFS_less_action.triggered.connect(partial(self.call_fill_topology_tables_morebfs_less, self._context_collected))
 
         self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
-        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
+        self._fill_right_of_way_relations_action.triggered.connect(partial(self.call_fill_right_of_way_relations, self._context_collected))
 
         self._import_from_intermediate_structure_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/excel.svg"),
             TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
             self.main_window)
-        self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
+        self._import_from_intermediate_structure_action.triggered.connect(partial(self.call_import_from_intermediate_structure, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_FINALIZE_GEOMETRY_CREATION: self._finalize_geometry_creation_action,
@@ -320,7 +327,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(self.show_etl_cobol_dialog)
+        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_etl_cobol_dialog, self._context_supplies))
         self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
@@ -397,22 +404,22 @@ class AsistenteLADMCOLPlugin(QObject):
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
 
         # Set connections
-        self._point_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_point_cad)
-        self._boundary_surveying_and_representation_operation_action.triggered.connect(self.show_wiz_boundaries_cad)
-        self._plot_spatial_unit_operation_action.triggered.connect(self.show_wiz_plot_cad)
-        self._parcel_baunit_operation_action.triggered.connect(self.show_wiz_parcel_cad)
-        self._building_spatial_unit_operation_action.triggered.connect(self.show_wiz_building_cad)
-        self._building_unit_spatial_unit_operation_action.triggered.connect(self.show_wiz_building_unit_cad)
-        self._right_of_way_operation_action.triggered.connect(self.show_wiz_right_of_way_cad)
-        self._extaddress_operation_action.triggered.connect(self.show_wiz_extaddress_cad)
-        self._col_party_operation_action.triggered.connect(self.show_wiz_col_party_cad)
-        self._group_party_operation_action.triggered.connect(self.show_dlg_group_party)
-        self._right_rrr_operation_action.triggered.connect(self.show_wiz_right_rrr_cad)
-        self._restriction_rrr_operation_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
-        self._administrative_source_operation_action.triggered.connect(self.show_wiz_administrative_source_cad)
-        self._spatial_source_operation_action.triggered.connect(self.show_wiz_spatial_source_cad)
-        self._upload_source_files_operation_action.triggered.connect(self.upload_source_files)
-        self._quality_operation_action.triggered.connect(self.show_dlg_quality)
+        self._point_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_point_cad, self._context_collected))
+        self._boundary_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_boundaries_cad, self._context_collected))
+        self._plot_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_plot_cad, self._context_collected))
+        self._parcel_baunit_operation_action.triggered.connect(partial(self.show_wiz_parcel_cad, self._context_collected))
+        self._building_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_cad, self._context_collected))
+        self._building_unit_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_unit_cad, self._context_collected))
+        self._right_of_way_operation_action.triggered.connect(partial(self.show_wiz_right_of_way_cad, self._context_collected))
+        self._extaddress_operation_action.triggered.connect(partial(self.show_wiz_extaddress_cad, self._context_collected))
+        self._col_party_operation_action.triggered.connect(partial(self.show_wiz_col_party_cad, self._context_collected))
+        self._group_party_operation_action.triggered.connect(partial(self.show_dlg_group_party, self._context_collected))
+        self._right_rrr_operation_action.triggered.connect(partial(self.show_wiz_right_rrr_cad, self._context_collected))
+        self._restriction_rrr_operation_action.triggered.connect(partial(self.show_wiz_restriction_rrr_cad, self._context_collected))
+        self._administrative_source_operation_action.triggered.connect(partial(self.show_wiz_administrative_source_cad, self._context_collected))
+        self._spatial_source_operation_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
+        self._upload_source_files_operation_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
+        self._quality_operation_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_CREATE_POINT: self._point_surveying_and_representation_operation_action,
@@ -465,11 +472,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Connections
         self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
-        self._building_unit_valuation_action.triggered.connect(self.show_wiz_building_unit_valuation)
-        self._building_unit_qualification_valuation_action.triggered.connect(
-            self.show_wiz_building_unit_qualification_valuation)
-        self._geoeconomic_zone_valuation_action.triggered.connect(self.show_wiz_geoeconomic_zone_valuation)
-        self._physical_zone_valuation_action.triggered.connect(self.show_wiz_physical_zone_valuation_action)
+        self._building_unit_valuation_action.triggered.connect(partial(self.show_wiz_building_unit_valuation, self._context_collected))
+        self._building_unit_qualification_valuation_action.triggered.connect(partial(
+            self.show_wiz_building_unit_qualification_valuation, self._context_collected))
+        self._geoeconomic_zone_valuation_action.triggered.connect(partial(self.show_wiz_geoeconomic_zone_valuation, self._context_collected))
+        self._physical_zone_valuation_action.triggered.connect(partial(self.show_wiz_physical_zone_valuation_action, self._context_collected))
 
     def create_change_detection_actions(self):
         self._query_changes_per_parcel_action = QAction(
@@ -480,8 +487,8 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection settings"), self.main_window)
 
         # Set connections
-        self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
-        self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
+        self._query_changes_per_parcel_action.triggered.connect(partial(self.query_changes_per_parcel, self._context_collected_supplies))
+        self._query_changes_all_parcels_action.triggered.connect(partial(self.query_changes_all_parcels, self._context_collected_supplies))
         self._change_detections_settings_action.triggered.connect(self.show_change_detection_settings)
 
         self.gui_builder.register_actions({
@@ -498,31 +505,19 @@ class AsistenteLADMCOLPlugin(QObject):
         self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)
-        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        self._annex_17_action.triggered.connect(partial(self.call_annex_17_report_generation, self._context_collected))
         self._ant_map_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_ant.svg"),
                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
-        self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+        self._ant_map_action.triggered.connect(partial(self.call_ant_map_report_generation, self._context_collected))
         self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
-
-        # Created to be called by the task manager, not necessarily to show it in a menu/toolbar.
-        self._import_schema_supplies_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
-                                                      QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                 "Create LADM-COL structure (Supplies)"),
-                                                      self.main_window)
 
         self._import_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
                                            self.main_window)
-        self._import_data_action_supplies = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data (Supplies)"),
-                                           self.main_window)
         self._export_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
-                                           self.main_window)
-        self._export_data_action_supplies = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data (Supplies)"),
                                            self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
@@ -533,14 +528,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
-        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list()}))
-        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
-        self._import_data_action.triggered.connect(self.show_dlg_import_data)
-        self._import_data_action_supplies.triggered.connect(partial(self.show_dlg_import_data, {'db_source': SUPPLIES_DB_SOURCE}))
-        self._export_data_action.triggered.connect(self.show_dlg_export_data)
-        self._export_data_action_supplies.triggered.connect(partial(self.show_dlg_export_data, {'db_source': SUPPLIES_DB_SOURCE}))
-        self._queries_action.triggered.connect(self.show_queries)
-        self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
+        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
+        self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
+        self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
+        self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
+        self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -552,11 +544,8 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_PARCEL_QUERY: self._queries_action,
             ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
-            ACTION_SCHEMA_IMPORT_SUPPLIES: self._import_schema_supplies_action,
             ACTION_IMPORT_DATA: self._import_data_action,
-            ACTION_IMPORT_DATA_SUPPLIES: self._import_data_action_supplies,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_EXPORT_DATA_SUPPLIES: self._export_data_action_supplies,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -698,12 +687,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         btn_query_per_parcel = QPushButton(widget)
         btn_query_per_parcel.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"))
-        btn_query_per_parcel.pressed.connect(self.query_changes_per_parcel)
+        btn_query_per_parcel.pressed.connect(partial(self.query_changes_per_parcel, self._context_collected_supplies))
         widget.layout().addWidget(btn_query_per_parcel)
 
         btn_query_all_parcels = QPushButton(widget)
         btn_query_all_parcels.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"))
-        btn_query_all_parcels.pressed.connect(self.query_changes_all_parcels)
+        btn_query_all_parcels.pressed.connect(partial(self.query_changes_all_parcels, self._context_collected_supplies))
         widget.layout().addWidget(btn_query_all_parcels)
 
         self.iface.messageBar().pushWidget(widget, Qgis.Success, 60)
@@ -816,7 +805,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_supplies_model_required
     def show_etl_cobol_dialog(self, *args):
         # TODO: Should use @_activate_processing_plugin
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
         dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
 
     def show_missing_cobol_supplies_dialog(self):
@@ -954,31 +951,36 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         Can be called from 1) an action, 2) from a signal or 3) directly.
 
-        In 1) args has a False argument from QAction.triggered.
-        In 2) either args comes with a dict inside (hence the "if args" below), or **{} is send (hence the "if kwargs" below).
+        In 1) args has a Context argument and then a False argument from QAction.triggered.
+        In 2) either args comes with a dict inside (hence the "if args" below) from import_data.
         In 3) **{} is passed, hence the "if kwargs" below.
         """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 
-        selected_models_import_schema = list()
-        db_source = COLLECTED_DB_SOURCE
-        if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
-                if 'selected_models' in param:
-                    selected_models_import_schema = param['selected_models']
+        if not args or not isinstance(args[0], Context):
+            return
 
+        context = args[0]
+
+        # parse parameters
+        params = dict()
+        if len(args) > 1:
+            args_params = args[1]
+            if type(args_params) is dict:
+                params.update(args_params)
         if kwargs:
-            if 'db_source' in kwargs:
-                db_source = kwargs['db_source']
-            if 'selected_models' in kwargs:
-                selected_models_import_schema = kwargs['selected_models']
+            params.update(kwargs)
 
-        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema, db_source)
-        dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
-        self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(db_source))
+        selected_models_import_schema = params['selected_models'] if 'selected_models' in params else list()
+        link_to_import_data = params['link_to_import_data'] if 'link_to_import_data' in params else True
+
+        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, context, selected_models_import_schema, link_to_import_data)
+        dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
+
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
+        self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -986,16 +988,18 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_import_data(self, *args):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
 
-        db_source = COLLECTED_DB_SOURCE
-        if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
+        if not args or not isinstance(args[0], Context):
+            return
 
-        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager, db_source)
-        dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
-        self.logger.info(__name__, "Import data dialog ({}) opened.".format(db_source))
+        context = args[0]
+
+        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        dlg.open_dlg_import_schema.connect(partial(self.show_dlg_import_schema, context))
+
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
+        self.logger.info(__name__, "Import data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -1003,15 +1007,16 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_export_data(self, *args):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
 
-        db_source = COLLECTED_DB_SOURCE
-        if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
+        if not args or not isinstance(args[0], Context):
+            return
 
-        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, db_source)
-        self.logger.info(__name__, "Export data dialog ({}) opened.".format(db_source))
+        context = args[0]
+
+        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
+        self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -1172,7 +1177,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_supplies_db_connection_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
@@ -1184,7 +1188,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_operation_model_required
-    @_supplies_db_connection_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")
@@ -1245,7 +1248,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_activate_processing_plugin
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
@@ -1325,8 +1327,36 @@ class AsistenteLADMCOLPlugin(QObject):
         if action is not None:
             action.trigger()
 
-    def show_dlg_st_upload_file(self, request_id, supply_type):
+    def show_dlg_st_upload_file(self, *args, **kwargs):
+        if not args and not kwargs:
+            return
+
+        context = None
+
+        # Parse parameters
+        params = dict()
+
+        if isinstance(args[0], Context):
+            context = args[0]
+        elif type(args[0]) is dict:  # No context was given
+            params.update(args[0])
+
+        if len(args) > 1:  # Context was passed as args[0]
+            params.update(args[1])
+
+        if kwargs:
+            params.update(kwargs)
+
+        if 'request_id' not in params or 'supply_type' not in params:
+            return
+
+        request_id = params['request_id']
+        supply_type = params['supply_type']
+
         dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
         dlg.exec_()
 
     def open_encrypted_db_connection(self, db_engine, conn_dict, user_level=EnumUserLevel.CREATE):

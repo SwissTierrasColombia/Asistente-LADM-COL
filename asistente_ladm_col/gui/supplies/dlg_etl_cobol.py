@@ -102,6 +102,7 @@ class ETLCobolDialog(CobolBaseDialog):
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
                                     self.logger.clear_status()
+                                    self._etl_result = True
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
                                     self.logger.clear_status()
@@ -122,6 +123,9 @@ class ETLCobolDialog(CobolBaseDialog):
                 msg = QCoreApplication.translate("ETLCobolDialog", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
+
+        self.on_result.emit(self._etl_result)  # Inform other classes if the execution was successful
+        self._etl_result = False  # Next run?
 
     def run_model_etl_cobol(self):
         self.progress.setVisible(True)

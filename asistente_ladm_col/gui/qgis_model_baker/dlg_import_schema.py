@@ -62,22 +62,24 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 class DialogImportSchema(QDialog, DIALOG_UI):
     open_dlg_import_data = pyqtSignal(dict)  # dict with key-value params
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, selected_models=list(), db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context, selected_models=list(), link_to_import_data=True):
         QDialog.__init__(self)
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
+        self.link_to_import_data = link_to_import_data
         self.logger = Logger()
 
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
         self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
 
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
@@ -284,6 +286,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if importer.run() != iliimporter.Importer.SUCCESS:
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
+                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -296,13 +299,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             self._running_tool = False
             self.buttonBox.clear()
-            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
-                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #007208;")
+            if self.link_to_import_data:
+                self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
+                                         QDialogButtonBox.AcceptRole).setStyleSheet("color: #007208;")
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
+            self.on_result.emit(True)  # Inform other classes that the execution was successful
             self._db_was_changed = True  # Schema could become LADM compliant after a schema import
 
             if self.db_source == COLLECTED_DB_SOURCE:

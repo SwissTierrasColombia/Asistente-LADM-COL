@@ -162,6 +162,13 @@ class GPKGConnector(DBConnector):
         Documented in super class
         """
         dict_names = dict()
+
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return dict()
+
         cursor = self.conn.cursor()
 
         # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
@@ -234,6 +241,12 @@ class GPKGConnector(DBConnector):
         return dict_names
 
     def _metadata_exists(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return False
+
         cursor = self.conn.cursor()
         cursor.execute("""SELECT * from pragma_table_info('{}');""".format(LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
@@ -246,6 +259,12 @@ class GPKGConnector(DBConnector):
             ))
 
     def get_models(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return list()
+
         cursor = self.conn.cursor()
         result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
                                     (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
@@ -300,6 +319,12 @@ class GPKGConnector(DBConnector):
             self.conn = None
 
     def get_ili2db_version(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return -1
+
         cur = self.conn.cursor()
         cur.execute("""SELECT * from pragma_table_info('t_ili2db_attrname') WHERE name='owner';""")
         if cur.fetchall():
