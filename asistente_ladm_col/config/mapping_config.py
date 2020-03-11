@@ -1200,11 +1200,13 @@ class TableAndFieldNames:
 
         self.logger.info(__name__, "Names (DB mapping) have been reset to prepare the next mapping.")
 
-    def cache_domain_value(self, domain_table, t_id, value):
+    def cache_domain_value(self, domain_table, t_id, value, value_is_ilicode):
+        key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value)
+
         if domain_table in self._cached_domain_values:
-            self._cached_domain_values[domain_table][value] = t_id
+            self._cached_domain_values[domain_table][key] = t_id
         else:
-            self._cached_domain_values[domain_table] = {value: t_id}
+            self._cached_domain_values[domain_table] = {key: t_id}
 
     def get_domain_value(self, domain_table, t_id):
         """
@@ -1217,23 +1219,25 @@ class TableAndFieldNames:
         if domain_table in self._cached_domain_values:
             for k,v in self._cached_domain_values[domain_table].items():
                 if v == t_id:
-                    return True, k
+                    return True, k.split("..")[1]  # Compound key: ilicode..value or dispname..value
 
         return False, None
 
-    def get_domain_code(self, domain_table, ilicode):
+    def get_domain_code(self, domain_table, value, value_is_ilicode):
         """
         Get a domain code from the cache.
 
         :param domain_table: Domain table name.
-        :param ilicode: iliCode to be searched.
+        :param value: value to be searched.
+        :param value_is_ilicode: Whether the value is iliCode (True) or dispName (False)
         :return: tuple (found, t_id)
                         found: boolean, whether the value was found in cache or not
                         t_id: t_id of the corresponding ilicode
         """
+        key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value)
         if domain_table in self._cached_domain_values:
-            if ilicode in self._cached_domain_values[domain_table]:
-                return True, self._cached_domain_values[domain_table][ilicode]
+            if key in self._cached_domain_values[domain_table]:
+                return True, self._cached_domain_values[domain_table][key]
 
         return  False, None
 

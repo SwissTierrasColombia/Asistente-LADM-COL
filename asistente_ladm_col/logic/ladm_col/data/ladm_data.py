@@ -20,7 +20,8 @@ from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsWkbTypes,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsVectorLayer)
 
 from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.config.general_config import LAYER, DEFAULT_LOG_MODE
@@ -36,6 +37,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY
                                                                    DICT_KEY_PARTY_T_NAME_F,
                                                                    DICT_KEY_PARTY_T_RIGHT,
                                                                    DICT_KEY_PLOT_T_AREA_F)
+from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
 # TODO: Update with correct field
@@ -736,13 +738,18 @@ class LADM_DATA():
         value_not_found = False
         domain_table_name = ''
 
+        if not isinstance(db, DBConnector) \
+                or not (isinstance(domain_table, str) or isinstance(domain_table, QgsVectorLayer)) \
+                or not isinstance(value_is_ilicode, bool):
+            return None
+
         if type(domain_table) is str:
             domain_table_name = domain_table
         else:  # QgsVectorLayer
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value)
+        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
         if found_in_cache:
             if DEFAULT_LOG_MODE == LogModeEnum.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
@@ -767,14 +774,14 @@ class LADM_DATA():
             if features.nextFeature(feature):
                 res = feature[db.names.T_ID_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, res, value)
+                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode)
             else:
                 value_not_found = True
         else:
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_domain_value(domain_table_name, None, value)
+            db.names.cache_domain_value(domain_table_name, None, value, value_is_ilicode)
 
         if DEFAULT_LOG_MODE == LogModeEnum.DEV:
             self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
@@ -795,6 +802,11 @@ class LADM_DATA():
         res = None
         value_not_found = False
         domain_table_name = ''
+
+        if not isinstance(db, DBConnector) \
+                or not (isinstance(domain_table, str) or isinstance(domain_table, QgsVectorLayer)) \
+                or not isinstance(value_is_ilicode, bool):
+            return None
 
         if type(domain_table) is str:
             domain_table_name = domain_table
@@ -820,14 +832,14 @@ class LADM_DATA():
             if features:
                 res = features[0][db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, code, res)
+                    db.names.cache_domain_value(domain_table_name, code, res, value_is_ilicode)
             else:
                 value_not_found = True
         else:
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_domain_value(domain_table_name, code, None)
+            db.names.cache_domain_value(domain_table_name, code, None, value_is_ilicode)
 
         if DEFAULT_LOG_MODE == LogModeEnum.DEV:
             self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
