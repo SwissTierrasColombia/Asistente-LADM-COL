@@ -814,7 +814,7 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code)
+        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code, value_is_ilicode)
         if found_in_cache:
             if DEFAULT_LOG_MODE == LogModeEnum.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(

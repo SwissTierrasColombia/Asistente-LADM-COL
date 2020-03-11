@@ -1208,18 +1208,22 @@ class TableAndFieldNames:
         else:
             self._cached_domain_values[domain_table] = {key: t_id}
 
-    def get_domain_value(self, domain_table, t_id):
+    def get_domain_value(self, domain_table, t_id, value_is_ilicode):
         """
         Get a domain value from the cache.
 
         :param domain_table: Domain table name.
         :param t_id: t_id to be searched.
+        :param value_is_ilicode: Whether the value is iliCode (True) or dispName (False)
         :return: iliCode of the corresponding t_id.
         """
+        field_name = 'ilicode' if value_is_ilicode else 'dispname'
         if domain_table in self._cached_domain_values:
             for k,v in self._cached_domain_values[domain_table].items():
                 if v == t_id:
-                    return True, k.split("..")[1]  # Compound key: ilicode..value or dispname..value
+                    key = k.split("..")
+                    if key[0] == field_name:
+                        return True, key[1]  # Compound key: ilicode..value or dispname..value
 
         return False, None
 
