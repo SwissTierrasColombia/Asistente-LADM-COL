@@ -2,18 +2,17 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
 from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
-from asistente_ladm_col.config.gui.common_keys import (ACTION_SCHEMA_IMPORT_SUPPLIES,
-                                                       ACTION_RUN_ETL_COBOL,
-                                                       ACTION_EXPORT_DATA_SUPPLIES,
-                                                       ACTION_ST_UPLOAD_XTF)
+from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_COBOL
 from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.config.enums import (STStepTypeEnum,
                                              EnumUserLevel)
+from asistente_ladm_col.lib.context import TaskContext
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 TASK_INTEGRATE_SUPPLIES = 1
 TASK_GENERATE_CADASTRAL_SUPPLIES = 2
 SLOT_NAME = "SLOT_NAME"
+SLOT_CONTEXT = "SLOT_CONTEXT"
 SLOT_PARAMS = "SLOT_PARAMS"
 STEP_NUMBER = "STEP_NUMBER"
 STEP_NAME = "STEP_NAME"
@@ -43,7 +42,8 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                     STEP_NUMBER,
                     STEP_NAME,
                     STEP_TYPE,
-                    either STEP_ACTION or STEP_CUSTOM_ACTION_SLOT (a dict with SLOT_NAME and SLOT_PARAMS keys)
+                    either STEP_ACTION or STEP_CUSTOM_ACTION_SLOT (a dict with SLOT_NAME and SLOT_PARAMS keys, and
+                    optionally SLOT_CONTEXT key)
                 and these optional keys:
                     STEP_DESCRIPTION
         """
@@ -60,7 +60,8 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                                                               "Choose a DB connection to create there the Supplies model structure."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_import_schema,
-                     SLOT_PARAMS: {'db_source': SUPPLIES_DB_SOURCE,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
+                     SLOT_PARAMS: {'link_to_import_data': False,
                                    'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}}
                  },
                 {STEP_NUMBER: 2,
@@ -73,8 +74,12 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate XTF"),
                  STEP_TYPE: STStepTypeEnum.EXPORT_DATA,
-                 STEP_ACTION: ACTION_EXPORT_DATA_SUPPLIES,
-                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Export the data from the DB to a transfer file (.xtf).")
+                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Export the data from the DB to a transfer file (.xtf)."),
+                 STEP_CUSTOM_ACTION_SLOT: {
+                     SLOT_NAME: self._slot_caller.show_dlg_export_data,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
+                     SLOT_PARAMS: {'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}
+                 }
                  },
                 {STEP_NUMBER: 4,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
@@ -114,7 +119,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Start assisted integration"),
                  STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
-                 STEP_ACTION: ACTION_EXPORT_DATA_SUPPLIES,  # TODO: functionality to integrate in assisted manner
+                 STEP_ACTION: ACTION_RUN_ETL_COBOL,  # TODO: functionality to integrate in assisted manner
                  STEP_DESCRIPTION: "Not implemented yet."
                 }]
 

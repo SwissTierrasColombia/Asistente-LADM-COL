@@ -7,9 +7,9 @@ class Context(QObject):
     """
     Store parameters that together represent a context for running a tool
     """
-    def __init__(self):
+    def __init__(self, db_sources=[COLLECTED_DB_SOURCE]):
         QObject.__init__(self)
-        self._db_sources = [COLLECTED_DB_SOURCE]
+        self._db_sources = db_sources
 
     def get_db_sources(self):
         return self._db_sources
@@ -22,8 +22,8 @@ class TaskContext(Context):
     """
     Store parameters that together represent a task context for running a tool
     """
-    def __init__(self):
-        Context.__init__(self)
+    def __init__(self, db_sources=[COLLECTED_DB_SOURCE]):
+        Context.__init__(self, db_sources)
         self._slot_on_result = None
 
     def get_slot_on_result(self):

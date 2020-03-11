@@ -49,6 +49,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.config.mapping_config import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.context import Context
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
@@ -70,14 +71,15 @@ class DialogImportData(QDialog, DIALOG_UI):
     BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
     BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context, link_to_import_schema=True):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
+        self.link_to_import_schema = link_to_import_schema
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
@@ -142,7 +144,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 self.accepted()
             elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
-                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models(), 'db_source': self.db_source})  # Emit signal to open import schema dialog
+                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models()})  # Emit signal to open import schema dialog
 
     def reject(self):
         if self._running_tool:
@@ -315,8 +317,9 @@ class DialogImportData(QDialog, DIALOG_UI):
             # Check if button was previously added
             self.remove_create_structure_button()
 
-            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
-                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
+            if self.link_to_import_schema:
+                self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
+                                         QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
             self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA,
                                      QDialogButtonBox.AcceptRole)
 

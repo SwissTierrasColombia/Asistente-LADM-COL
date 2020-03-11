@@ -33,7 +33,7 @@ from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
 from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
-                                                         SLOT_PARAMS)
+                                                         SLOT_PARAMS, SLOT_CONTEXT)
 from asistente_ladm_col.gui.transitional_system.dlg_cancel_task import STCancelTaskDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -116,7 +116,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             slot = step.get_custom_action_slot()
             if slot:  # Custom action call
                 self.logger.info(__name__, "Executing step action with custom parameters...")
-                slot[SLOT_NAME](**slot[SLOT_PARAMS])
+                if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
+                    slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
+                else:
+                    slot[SLOT_NAME](**slot[SLOT_PARAMS])
             else:  # Default action call
                 self.logger.info(__name__, "Executing default action...")
                 self.trigger_action_emitted.emit(step.get_action_tag())

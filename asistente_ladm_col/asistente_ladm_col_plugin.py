@@ -85,7 +85,7 @@ from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
-from asistente_ladm_col.lib.context import Context
+from asistente_ladm_col.lib.context import Context, TaskContext
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -513,23 +513,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
 
-        # Created to be called by the task manager, not necessarily to show it in a menu/toolbar.
-        self._import_schema_supplies_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
-                                                      QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                 "Create LADM-COL structure (Supplies)"),
-                                                      self.main_window)
-
         self._import_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
                                            self.main_window)
-        self._import_data_action_supplies = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data (Supplies)"),
-                                           self.main_window)
         self._export_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
-                                           self.main_window)
-        self._export_data_action_supplies = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data (Supplies)"),
                                            self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
@@ -540,12 +528,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
-        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list()}))
-        self._import_schema_supplies_action.triggered.connect(partial(self.show_dlg_import_schema, **{'selected_models':list(), 'db_source': SUPPLIES_DB_SOURCE}))
-        self._import_data_action.triggered.connect(self.show_dlg_import_data)
-        self._import_data_action_supplies.triggered.connect(partial(self.show_dlg_import_data, {'db_source': SUPPLIES_DB_SOURCE}))
-        self._export_data_action.triggered.connect(self.show_dlg_export_data)
-        self._export_data_action_supplies.triggered.connect(partial(self.show_dlg_export_data, {'db_source': SUPPLIES_DB_SOURCE}))
+        self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
+        self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
+        self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(self.show_settings)
@@ -559,11 +544,8 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_PARCEL_QUERY: self._queries_action,
             ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
-            ACTION_SCHEMA_IMPORT_SUPPLIES: self._import_schema_supplies_action,
             ACTION_IMPORT_DATA: self._import_data_action,
-            ACTION_IMPORT_DATA_SUPPLIES: self._import_data_action_supplies,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_EXPORT_DATA_SUPPLIES: self._export_data_action_supplies,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -961,31 +943,36 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         Can be called from 1) an action, 2) from a signal or 3) directly.
 
-        In 1) args has a False argument from QAction.triggered.
-        In 2) either args comes with a dict inside (hence the "if args" below), or **{} is send (hence the "if kwargs" below).
+        In 1) args has a Context argument and then a False argument from QAction.triggered.
+        In 2) either args comes with a dict inside (hence the "if args" below) from import_data.
         In 3) **{} is passed, hence the "if kwargs" below.
         """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 
-        selected_models_import_schema = list()
-        db_source = COLLECTED_DB_SOURCE
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        # parse parameters
+        params = dict()
         if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
-                if 'selected_models' in param:
-                    selected_models_import_schema = param['selected_models']
-
+            args_params = args[1]
+            if type(args_params) is dict:
+                params.update(args_params)
         if kwargs:
-            if 'db_source' in kwargs:
-                db_source = kwargs['db_source']
-            if 'selected_models' in kwargs:
-                selected_models_import_schema = kwargs['selected_models']
+            params.update(kwargs)
 
-        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema, db_source)
-        dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
-        self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(db_source))
+        selected_models_import_schema = params['selected_models'] if 'selected_models' in params else list()
+        link_to_import_data = params['link_to_import_data'] if 'link_to_import_data' in params else True
+
+        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, context, selected_models_import_schema, link_to_import_data)
+        dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
+
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result)
+
+        self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -993,16 +980,18 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_import_data(self, *args):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
 
-        db_source = COLLECTED_DB_SOURCE
-        if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
+        if not args or not isinstance(args[0], Context):
+            return
 
-        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager, db_source)
-        dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
-        self.logger.info(__name__, "Import data dialog ({}) opened.".format(db_source))
+        context = args[0]
+
+        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        dlg.open_dlg_import_schema.connect(partial(self.show_dlg_import_schema, context))
+
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result)
+
+        self.logger.info(__name__, "Import data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -1010,15 +999,16 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_export_data(self, *args):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
 
-        db_source = COLLECTED_DB_SOURCE
-        if args:
-            param = args[0]
-            if type(param) is dict:
-                if 'db_source' in param:
-                    db_source = param['db_source']
+        if not args or not isinstance(args[0], Context):
+            return
 
-        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, db_source)
-        self.logger.info(__name__, "Export data dialog ({}) opened.".format(db_source))
+        context = args[0]
+
+        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result)
+
+        self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @_validate_if_wizard_is_open

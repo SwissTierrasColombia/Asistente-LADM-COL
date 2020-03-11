@@ -68,14 +68,14 @@ class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
-    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.logger = Logger()
