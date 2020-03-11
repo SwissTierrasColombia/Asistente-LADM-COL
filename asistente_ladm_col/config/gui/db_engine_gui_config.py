@@ -26,7 +26,6 @@ class DB_Engine_GUI_Config(QObject):
                       ACTION_ST_LOGIN,
                       ACTION_ST_LOGOUT,
                       ACTION_ST_UPLOAD_XTF,
-                      ACTION_PARCEL_QUERY,
                       ACTION_CREATE_BOUNDARY,
                       ACTION_CREATE_POINT,
                       ACTION_CREATE_PLOT,
@@ -48,7 +47,8 @@ class DB_Engine_GUI_Config(QObject):
                       ACTION_LOAD_LAYERS,
                       ACTION_CHANGE_DETECTION_PER_PARCEL,
                       ACTION_CHANGE_DETECTION_ALL_PARCELS,
-                      # ACTION_CHECK_QUALITY_RULES
+                      # ACTION_PARCEL_QUERY,
+                      # ACTION_CHECK_QUALITY_RULES,
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,
                       ACTION_CHANGE_DETECTION_SETTINGS]
