@@ -1,13 +1,13 @@
 FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/change_detection/changes_parties_panel_widget.ui \
         ../ui/change_detection/changes_per_parcel_panel_widget.ui \
+        ../ui/change_detection/dlg_change_detection_settings.ui \
         ../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui \
         ../ui/change_detection/dockwidget_change_detection.ui \
         ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
         ../ui/dialogs/dlg_about.ui \
         ../ui/dialogs/dlg_custom_model_dir.ui \
         ../ui/dialogs/dlg_get_db_or_schema_name.ui \
-        ../ui/dialogs/dlg_get_java_path.ui \
         ../ui/dialogs/dlg_import_from_excel.ui \
         ../ui/dialogs/dlg_load_layers.ui \
         ../ui/dialogs/dlg_log_excel.ui \
@@ -26,7 +26,9 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/supplies/dlg_etl_cobol.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
+        ../ui/transitional_system/dlg_cancel_task.ui \
         ../ui/transitional_system/dlg_login_st.ui \
+        ../ui/transitional_system/dlg_upload_file.ui \
         ../ui/transitional_system/dockwidget_transitional_system.ui \
         ../ui/transitional_system/home_widget.ui \
         ../ui/transitional_system/task_widget_item.ui \
@@ -54,24 +56,25 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
-          ../config/general_config.py \
           ../config/help_strings.py \
+          ../config/mapping_config.py \
+          ../config/task_steps_config.py \
+          ../config/gui/change_detection_config.py \
           ../config/gui/gui_config.py \
-          ../config/transitional_system_config.py
+          ../config/transitional_system_config.py \
+          ../config/translation_strings.py \
           ../config/wizard_config.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
-          ../gui/change_detection/changes_parties_panel.py \
           ../gui/change_detection/changes_per_parcel_panel.py \
+          ../gui/change_detection/dlg_change_detection_settings.py \
           ../gui/change_detection/dockwidget_change_detection.py \
           ../gui/change_detection/parcels_changes_summary_panel.py \
           ../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py \
           ../gui/db_panel/db_schema_db_panel.py \
           ../gui/db_panel/gpkg_config_panel.py \
-          ../gui/db_panel/pg_config_panel.py \
           ../gui/dialogs/dlg_about.py \
           ../gui/dialogs/dlg_custom_model_dir.py \
           ../gui/dialogs/dlg_get_db_or_schema_name.py \
-          ../gui/dialogs/dlg_get_java_path.py \
           ../gui/dialogs/dlg_import_from_excel.py \
           ../gui/dialogs/dlg_load_layers.py \
           ../gui/dialogs/dlg_log_excel.py \
@@ -79,7 +82,6 @@ SOURCES = ../__init__.py \
           ../gui/dialogs/dlg_quality.py \
           ../gui/dialogs/dlg_settings.py \
           ../gui/dialogs/dlg_upload_progress.py \
-          ../gui/dialogs/dlg_welcome_screen.py \
           ../gui/gui_builder/gui_builder.py \
           ../gui/gui_builder/role_registry.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
@@ -90,8 +92,9 @@ SOURCES = ../__init__.py \
           ../gui/supplies/dlg_cobol_base.py \
           ../gui/supplies/dlg_etl_cobol.py \
           ../gui/supplies/dlg_missing_cobol_supplies.py \
+          ../gui/transitional_system/dlg_cancel_task.py \
           ../gui/transitional_system/dlg_login_st.py \
-          ../gui/transitional_system/dockwidget_transitional_system.py \
+          ../gui/transitional_system/dlg_upload_file.py \
           ../gui/transitional_system/task_panel.py \
           ../gui/transitional_system/tasks_widget.py \
           ../gui/transitional_system/transitional_system_initial_panel.py \
@@ -124,6 +127,7 @@ SOURCES = ../__init__.py \
           ../lib/processing/algs/PolygonsToLines.py \
           ../lib/transitional_system/st_session/st_session.py \
           ../lib/transitional_system/task_manager/task_manager.py \
+          ../lib/transitional_system/task_manager/task_steps.py \
           ../lib/source_handler.py \
           ../logic/ladm_col/queries/per_component/pg/logic_validation_queries.py \
           ../logic/quality/logic_checks.py \
@@ -131,6 +135,7 @@ SOURCES = ../__init__.py \
           ../utils/decorators.py \
           ../utils/qgis_utils.py \
           ../utils/qt_utils.py \
+          ../utils/java_utils.py \
           ../utils/model_parser.py \
           ../utils/qgis_model_baker_utils.py \
           ../utils/st_utils.py \
