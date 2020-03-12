@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/Asistente-LADM_COL">
     <file>resources/images/powered_by.png</file>
+    <file>resources/images/icon_about_transparency.png</file>
     <file>resources/images/st_black.png</file>
     <file>resources/images/st_white.png</file>
     <file>resources/html/Changelog.html</file>
