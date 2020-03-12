@@ -1,0 +1,892 @@
+INTERLIS 2.3;
+
+/** ISO 19152 LADM country profile COL modeled with INTERLIS 2.
+ * 
+ * -----------------------------------------------------------
+ * revision history
+ * -----------------------------------------------------------
+ * 
+ * 10.05.2016/mg: EJEMPLO INTERLIS POR OFERTAS
+ * 16.06.2016/mg: Taller IGAC/SNR
+ * 23.08.2016/mg: Relaciones
+ * 15.09.2016/mg: Comentarios Modelo
+ * 20.11.2016/aa: Topic Ficha
+ * 25.11.2016/aa: Ajustes FichaPredio
+ * 02.12.2016/ss: Nuevas clases, atributos y tipos
+ * 15.12.2016/lj: Ajuste tipos (IGAC/SNR), BAUnit GM_surface
+ * 31.03.2017/fm: Simplificación de herencia
+ * 25.05.2017/fm: Se elimina la relacion HipotecaDerecho, se elimina la clase InteresadoBAUnit, se elimina marca abstract en las clases derivadas de RRR
+ * 26.05.2017/fm: Se cambian las clases terreno servidumbre de paso y construccion al paquete de unidades espaciales. Se acorta el nombre del Modelo. ajuste al diseño del diagrama de clases. Se elimina InteresadoNacion
+ * 09.06.2017/vm: Referido al modelo LADM traducido al español
+ * 09.06.2017/vm: cambio de version a 2.1.1, incluye cambios por LADM en español y de  nombres de atributo por no seguir las convenciones adoptadas.
+ * 15.06.2017/fm: cambio de version a 2.1.2, se quita el atributo geometría de la clase predio. se reemplaza el atributo OID por los atributos atributos namespace y localId. Se añaden atributos folio matriz y segregados al predio. se elimina el dominio transaccion_registral_tipo
+ * 20.06.2017/fm: Ajuste a nombres de las clases y atributos LA_
+ * 04.07.2017/sr: Ajuste de nombres de clases y atributos, creacion de relaciones, ajuste subdominios
+ * 04.07.2017/fm: Se unifican los modelos LADM_ES y Catastro_COL, se eliminan las clases que extienden de responsabilidad, restriccion, derecho, hipoteca, fuente_administrativa y fuente espacial. eliminan atributos opcionales no usados de la clase hipoteca
+ * 11.07.2017/fm: se adiciona el atributo poligono_creado
+ * 12.07.2017/fm: se adiciona el atributo Estado_Nupre en la clase predio
+ * 17.07.2017/fm: poligono creado debe ser obligatorio para la clase terreno.
+ * 28.09.2017/fm : Cambio del nombre en la clase alerta por publicidad, Publicidad Extiende de objeto versionado, se elimita atributo fecha de vigencia. Ajuste al atributo plantacion comercial de la clase terreno. Se extraen los atributos de la clase predio e interesados a los modelos extendidos de ficha y registro. version 2.2.0
+ * 20.10.2017/ag : Ajustes a atributos de la clase terreno, cambio a dominio multivalorado, se crean dominios, col_servidumbre, col_afectacion, col_explotacion, col_territorioAgricula, col_cuerpoAgua, se elimina la obligatoriedad del rol responsable en las relaciones responsableFuente y topografoFuente
+ * 28.10.2017/gc : Soporte de geometrías multi-parte para LA_UnidadEspacial (y las clases que la extienden) y Terreno.
+ * 02.11.2017/ : Cambio del nombre del modelo de Catastro_COL_ES a Catastro_Registro_Nucleo
+ * 07.11.2017/fm: Cambio de nombre a la clase CadenaCarasLindero a CadenaCarasLimite 
+ * 14.11.2017/fm : taducción del dominio COL_BuildingUnitTipo
+ * 14.12.2017/fm : definicion de extends entre topics catastro registro nucleo y Ladm_nucleo
+ * 30.01.2018/fm : Cambio del tipo de dato del atributo Ext_Direccion de la clase Unidad Espacial a ExtDireccion; atributo ext_PID de la calse LA_Interesado cambia de OID a ExtInteresado; Cambio de cardinalidad en relacion miembros entre LA_Interesado y LA_Agrupacion_Interesados de 0..1 a 0..*
+ * 19.02.2018/fm : Cambio en longitud de atributo DocumentoIdentidad de 10 a 12 posiciones
+ * 17.07.2018/fm : cambio en cardinalidad asociación ConstruccionUnidadConstruccion de 1..* a 0..*; ampliación del tamaño para campo de nombre en Interesado Natural; se incluyen los valores nuip, cedula militar, registro civil, cedula militar, secuencial SRN y secuencial IGAC al dominio COL_InteresadoDocumentoTipo
+ * 30.07.2018/fm : Cambio obligatoriedad atributo area_registral de clase terreno de 1 a 0..1
+ * 31.07.2018/fm: Creación de la clase COL_Interesado integrando los atributos de interesado natural e interesado jurídico; se agrega area en la clase construcción; se adiciona valor Carta_Venta al dominio COL_FuenteAdministrativaTipo; inclusion de atributo nombre en la clase COL_FuenteAdministrativa
+ * 10.08.2018/fm: Eliminado clase Interesado Natural e Interesado Juridico
+ * 28.08.2018/fm: Ajuste a cardinalidad en la composición predio_copropiedad, se elimina el requerido.
+ * 28.08.2018/fm-at: Se incluye el tipo de predio conforme a la resolucion 070 de 2011; Se elimina el atributo tipo_construccion de la clase Unidad_Construcción ya que el dominio hace referencia a tipos de predios y no a tipos de construcciones
+ * 10.09.2018/fm-at: Ajuste a los tipos de Predio conforme a la resolucion 070
+ * 21.09.2018/at: Se agrega el valor "Hipoteca" al dominio COL_RestriccionTipo, se ajusta la longitud del atributo Codigo_Registral en las clases especializadas de LA_RRR de 3 a 4 caracteres
+ * 25.09.2018/at: Se ajusta la longitud del atributo Codigo_Registral en las clases especializadas de LA_RRR a 5 caracteres de acuerdo a la Resolución 3973 de 2018
+ * 18.10.2018/at: Se agregan los atributos p_Espacio_De_Nombres y p_Local_Id a la clase Publicidad
+ * 29.10.2018/fm: se amplia el tamaño de campo FMI en la clase predio para almacenar cadenas como 'LIBRO 2 TOMO 1/961 FOLIO 37/46 PARTIDA N 58'
+ * -----------------------------------------------------------
+ * 
+ * (c) IGAC y SNR con apoyo de la Cooperacion Suiza
+ * 
+ * -----------------------------------------------------------
+ */
+CONTRACTED MODEL Operacion_V2_9_6 (es)
+AT "http://www.proadmintierra.info/"
+VERSION "V2.2.1"  // 2018-02-19 // =
+  IMPORTS ISO19107_PLANAS_V1,LADM_COL_V1_3,Datos_Integracion_Insumos_V2_9_6;
+
+  DOMAIN
+
+    /** Valores para indicar el nivel de acuerdo
+     */
+    OP_AcuerdoTipo = (
+      /** Existe un acuerdo sobre la posición del punto
+       */
+      !!@ ili2db.dispName = "Acuerdo"
+      Acuerdo,
+      /** Existe un desacuerdo sobre la posición del punto
+       */
+      !!@ ili2db.dispName = "Desacuerdo"
+      Desacuerdo
+    );
+
+    /** Valores para indicar el tipo de condición de predio
+     */
+    OP_CondicionPredioTipo = (
+      !!@ ili2db.dispName = "No propiedad horizontal"
+      NPH,
+      !!@ ili2db.dispName = "Propiedad horizontal"
+      PH(
+        !!@ ili2db.dispName = "(Propiedad horizontal) Matriz"
+        Matriz,
+        !!@ ili2db.dispName = "(Propiedad horizontal) Unidad Predial"
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Condominio"
+      Condominio(
+        !!@ ili2db.dispName = "(Condominio) Matriz"
+        Matriz,
+        !!@ ili2db.dispName = "(Condominio) Unidad predial"
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Mejora"
+      Mejora(
+        !!@ ili2db.dispName = "(Mejora) Propiedad horizontal"
+        PH,
+        !!@ ili2db.dispName = "(Mejora) No propiedad horizontal"
+        NPH
+      ),
+      !!@ ili2db.dispName = "Parque cementerio"
+      Parque_Cementerio(
+        !!@ ili2db.dispName = "(Parque cementerio) Matriz"
+        Matriz,
+        !!@ ili2db.dispName = "(Parque Cementerio) Unidad predial"
+        Unidad_Predial
+      ),
+      !!@ ili2db.dispName = "Vía"
+      Via,
+      !!@ ili2db.dispName = "Bien de uso público"
+      Bien_Uso_Publico
+    );
+
+    OP_ConstruccionPlantaTipo = (
+      !!@ ili2db.dispName = "Piso"
+      Piso,
+      !!@ ili2db.dispName = "Mezanine"
+      Mezanine,
+      !!@ ili2db.dispName = "Sótano"
+      Sotano,
+      !!@ ili2db.dispName = "Semisótano"
+      Semisotano,
+      !!@ ili2db.dispName = "Subterráneo"
+      Subterraneo
+    );
+
+    OP_ConstruccionTipo = (
+      !!@ ili2db.dispName = "Convencional"
+      Convencional,
+      !!@ ili2db.dispName = "No convencional"
+      No_Convencional
+    );
+
+    OP_DerechoTipo = (
+      !!@ ili2db.dispName = "Derecho de propiedad colectiva"
+      Derecho_Propiedad_Colectiva,
+      !!@ ili2db.dispName = "Nuda propiedad"
+      Nuda_Propiedad,
+      !!@ ili2db.dispName = "Ocupación"
+      Ocupacion,
+      !!@ ili2db.dispName = "Posesión"
+      Posesion,
+      /** Derecho de dominio o propiedad
+       */
+      !!@ ili2db.dispName = "Dominio"
+      Dominio
+    );
+
+    OP_DominioConstruccionTipo = (
+      !!@ ili2db.dispName = "Común"
+      Comun,
+      !!@ ili2db.dispName = "Privado"
+      Privado
+    );
+
+    OP_FotoidentificacionTipo = (
+      !!@ ili2db.dispName = "Visible"
+      Visible,
+      !!@ ili2db.dispName = "Estimado"
+      Estimado
+    );
+
+    OP_FuenteAdministrativaTipo = (
+      !!@ ili2db.dispName = "Escritura pública"
+      Escritura_Publica,
+      !!@ ili2db.dispName = "Sentencia judicial"
+      Sentencia_Judicial,
+      !!@ ili2db.dispName = "Acto administrativo"
+      Acto_Administrativo,
+      !!@ ili2db.dispName = "Documento privado"
+      Documento_Privado,
+      !!@ ili2db.dispName = "Sin documento"
+      Sin_Documento
+    );
+
+    OP_GrupoEtnicoTipo = (
+      !!@ ili2db.dispName = "Indígena"
+      Indigena,
+      !!@ ili2db.dispName = "Rrom"
+      Rrom,
+      !!@ ili2db.dispName = "Raizal"
+      Raizal,
+      !!@ ili2db.dispName = "Palenquero"
+      Palenquero,
+      !!@ ili2db.dispName = "Negro"
+      Negro,
+      !!@ ili2db.dispName = "Afrocolombiano"
+      Afrocolombiano,
+      !!@ ili2db.dispName = "Ninguno"
+      Ninguno
+    );
+
+    OP_InteresadoDocumentoTipo = (
+      !!@ ili2db.dispName = "Cédula de ciudadanía"
+      Cedula_Ciudadania,
+      !!@ ili2db.dispName = "Cédula de estranjería"
+      Cedula_Extranjeria,
+      !!@ ili2db.dispName = "NIT"
+      NIT,
+      !!@ ili2db.dispName = "Pasaporte"
+      Pasaporte,
+      !!@ ili2db.dispName = "Tarjeta de identidad"
+      Tarjeta_Identidad,
+      !!@ ili2db.dispName = "Libreta militar"
+      Libreta_Militar,
+      !!@ ili2db.dispName = "Registro civil"
+      Registro_Civil,
+      !!@ ili2db.dispName = "Cédula militar"
+      Cedula_Militar,
+      !!@ ili2db.dispName = "NUIP"
+      NUIP
+    );
+
+    OP_InteresadoTipo = (
+      !!@ ili2db.dispName = "Persona natural"
+      Persona_Natural,
+      !!@ ili2db.dispName = "Persona jurídica"
+      Persona_Juridica
+    );
+
+    OP_PredioTipo = (
+      !!@ ili2db.dispName = "Público"
+      Publico,
+      !!@ ili2db.dispName = "Privado"
+      Privado,
+      !!@ ili2db.dispName = "Territorio colectivo"
+      Territorio_Colectivo
+    );
+
+    /** Conjunto de valores para indicar si se trata de un punto de control de referencia (un punto principal) o de apoyo (uso para levantamientos locales con estación total)
+     */
+    OP_PuntoControlTipo = (
+      !!@ ili2db.dispName = "Control"
+      Control,
+      !!@ ili2db.dispName = "Apoyo"
+      Apoyo
+    );
+
+    /** Punto de leventamiento planimetrico que se identifican en el marco de la identificación de las construcciones, los linderos o puntos auxiliares levantado para el apoyo en la mediciión
+     */
+    OP_PuntoLevTipo = (
+      !!@ ili2db.dispName = "Auxiliar"
+      Auxiliar,
+      !!@ ili2db.dispName = "Construcción"
+      Construccion,
+      !!@ ili2db.dispName = "Servidumbre"
+      Servidumbre
+    );
+
+    OP_PuntoTipo = (
+      !!@ ili2db.dispName = "Poste"
+      Poste,
+      !!@ ili2db.dispName = "Construcción"
+      Construccion,
+      /** Punto referido a los puntos limitantes con elementos hidrográficos
+       */
+      !!@ ili2db.dispName = "Punto dinámico"
+      Punto_Dinamico,
+      !!@ ili2db.dispName = "elemento natural"
+      Elemento_Natural,
+      !!@ ili2db.dispName = "Piedra"
+      Piedra,
+      !!@ ili2db.dispName = "Sin materialización"
+      Sin_Materializacion,
+      !!@ ili2db.dispName = "Mojón"
+      Mojon,
+      !!@ ili2db.dispName = "Incrustación"
+      Incrustacion,
+      !!@ ili2db.dispName = "Pilastra"
+      Pilastra
+    );
+
+    OP_RestriccionTipo = (
+      !!@ ili2db.dispName = "Servidumbre"
+      Servidumbre
+    );
+
+    OP_SexoTipo = (
+      !!@ ili2db.dispName = "Masculino"
+      Masculino,
+      !!@ ili2db.dispName = "Femenino"
+      Femenino,
+      !!@ ili2db.dispName = "Otro"
+      Otro
+    );
+
+    OP_UbicacionPuntoTipo = (
+      !!@ ili2db.dispName = "Esquinero"
+      Esquinero,
+      !!@ ili2db.dispName = "Medianero"
+      Medianero
+    );
+
+    /** Valores válidos para indicar el tipo de construcción empleada para levantar una unidad de construcción, con incidencia en su avalúo. REVISAR DOCUMENTACIÓN
+     */
+    OP_UnidadConstruccionTipo = (
+      !!@ ili2db.dispName = "Residencial"
+      Residencial,
+      !!@ ili2db.dispName = "Comercial"
+      Comercial,
+      !!@ ili2db.dispName = "Industrial"
+      Industrial,
+      !!@ ili2db.dispName = "Anexo"
+      Anexo
+    );
+
+    OP_UsoUConsTipo = (
+      !!@ ili2db.dispName = "Vivienda de hasta 3 pisos"
+      Vivienda_Hasta_3_Pisos,
+      !!@ ili2db.dispName = "Ramadas, cobertizos o caneyes"
+      Ramadas_Cobertizos_Caneyes,
+      !!@ ili2db.dispName = "Galpones o gallineros"
+      Galpones_Gallineros,
+      !!@ ili2db.dispName = "Establos, pesebreras o caballerizas"
+      Establos_Pesebreras_Caballerizas,
+      !!@ ili2db.dispName = "Cocheras, bañeras o porquerizas"
+      Cocheras_Banieras_Porquerizas,
+      !!@ ili2db.dispName = "Bodega casa bomba"
+      Bodega_Casa_Bomba,
+      !!@ ili2db.dispName = "Industrias"
+      Industrias,
+      !!@ ili2db.dispName = "Silos"
+      Silos,
+      !!@ ili2db.dispName = "Piscinas"
+      Piscinas,
+      !!@ ili2db.dispName = "Tanques"
+      Tanques,
+      !!@ ili2db.dispName = "Beneficiaderos"
+      Beneficiaderos,
+      !!@ ili2db.dispName = "Colegios y universidades"
+      Colegios_Y_Universidades,
+      !!@ ili2db.dispName = "Bibliotecas"
+      Bibliotecas,
+      !!@ ili2db.dispName = "Garajes cubiertos"
+      Garajes_Cubiertos,
+      !!@ ili2db.dispName = "Bodegas comerciales, grandes almacenes"
+      Bodegas_Comerciales_Grandes_Almacenes,
+      !!@ ili2db.dispName = "Secaderos"
+      Secaderos,
+      !!@ ili2db.dispName = "Centros hospitales, centros médicos"
+      Clinicas_Hospitales_Centros_Medicos,
+      !!@ ili2db.dispName = "Pozos"
+      Pozos,
+      !!@ ili2db.dispName = "Kioskos"
+      Kioskos,
+      !!@ ili2db.dispName = "Albercas o bañaderas"
+      Albercas_Baniaderas,
+      !!@ ili2db.dispName = "Hoteles en propiedad horizontal"
+      Hoteles_En_PH,
+      !!@ ili2db.dispName = "Corrales"
+      Corrales,
+      !!@ ili2db.dispName = "Casa de elbas"
+      Casa_Elbas,
+      !!@ ili2db.dispName = "Comercio"
+      Comercio,
+      !!@ ili2db.dispName = "Iglesias"
+      Iglesias,
+      !!@ ili2db.dispName = "Hoteles"
+      Hoteles,
+      !!@ ili2db.dispName = "Clubes o casinos"
+      Clubes_Casinos,
+      !!@ ili2db.dispName = "Oficinas o consultorios"
+      Oficinas_Consultorios,
+      !!@ ili2db.dispName = "Apartamentos de más de 4 pisos"
+      Apartamentos_Mas_De_4_Pisos,
+      !!@ ili2db.dispName = "Restaurante"
+      Restaurante,
+      !!@ ili2db.dispName = "Pensiones o residencias"
+      Pensiones_Residencias,
+      !!@ ili2db.dispName = "Puesto de salud"
+      Puesto_De_Salud,
+      !!@ ili2db.dispName = "Parqueaderos"
+      Parqueaderos,
+      !!@ ili2db.dispName = "Barracas"
+      Barracas,
+      !!@ ili2db.dispName = "Teatro o cinemas"
+      Teatro_Cinemas,
+      !!@ ili2db.dispName = "Aulas de clase"
+      Aulas_De_Clase,
+      !!@ ili2db.dispName = "Coliseos"
+      Coliseos,
+      !!@ ili2db.dispName = "Casas de culto"
+      Casas_De_Culto,
+      !!@ ili2db.dispName = "Talleres"
+      Talleres,
+      !!@ ili2db.dispName = "Jardín infantil en casa"
+      Jardin_Infantil_En_Casa,
+      !!@ ili2db.dispName = "Torres de enfriamiento"
+      Torres_De_Enfriamiento,
+      !!@ ili2db.dispName = "Muelles"
+      Muelles,
+      !!@ ili2db.dispName = "Estación de bombeo"
+      Estacion_De_Bombeo,
+      !!@ ili2db.dispName = "Estadio, plaza de toros"
+      Estadio_Plaza_De_Toros,
+      !!@ ili2db.dispName = "Cárceles"
+      Carceles,
+      !!@ ili2db.dispName = "Parque cementerio"
+      Parque_Cementerio,
+      !!@ ili2db.dispName = "Vivienda colonial"
+      Vivienda_Colonial,
+      !!@ ili2db.dispName = "Comercio colonial"
+      Comercio_Colonial,
+      !!@ ili2db.dispName = "Oficinas o consultorios colonial"
+      Oficinas_Consultorios_Colonial,
+      !!@ ili2db.dispName = "Apartamentos en edificios de 4 o 5 pisos"
+      Aptos_En_Edificios_4_5_Pisos,
+      !!@ ili2db.dispName = "Centros comerciales"
+      Centros_Comerciales,
+      !!@ ili2db.dispName = "Canchas de tenis"
+      Canchas_De_Tenis,
+      !!@ ili2db.dispName = "Toboganes"
+      Toboganes,
+      !!@ ili2db.dispName = "Vivienda recreacional"
+      Vivienda_Recreacional,
+      !!@ ili2db.dispName = "Camaroneras"
+      Camaroneras,
+      !!@ ili2db.dispName = "Fuertes y castillos"
+      Fuertes_Y_Castillos,
+      !!@ ili2db.dispName = "Murallas"
+      Murallas,
+      !!@ ili2db.dispName = "Vivienda de hasta 3 pisos"
+      Vivienda_Hasta_3_Pisos_En_PH,
+      !!@ ili2db.dispName = "Apartamentos de 4 y más pisos en propiedad horizontal"
+      Apartamentos_4_Y_Mas_Pisos_En_PH,
+      !!@ ili2db.dispName = "Vivienda recreacional en propiedad horizontal"
+      Vivienda_Recreacional_En_PH,
+      !!@ ili2db.dispName = "Bodega casa bomba en propiedad horizontal"
+      Bodega_Casa_Bomba_En_PH,
+      !!@ ili2db.dispName = "Bodega comercial en propiedad horizontal"
+      Bodega_Comercial_En_PH,
+      !!@ ili2db.dispName = "Comercio en propiedad horizontal"
+      Comercio_En_PH,
+      !!@ ili2db.dispName = "Centros comerciales en propiedad horizontal"
+      Centros_Comerciales_En_PH,
+      !!@ ili2db.dispName = "Oficinas o consultorios en propiedad horizontal"
+      Oficinas_Consultorios_En_PH,
+      !!@ ili2db.dispName = "Parqueaderos en propiedad horizontal"
+      Parqueaderos_En_PH,
+      !!@ ili2db.dispName = "Garajes en propiedad horizontal"
+      Garajes_En_PH,
+      !!@ ili2db.dispName = "Industria en propiedad horizontal"
+      Industria_En_PH,
+      !!@ ili2db.dispName = "Marquesinas, patios o cubiertos"
+      Marquesinas_Patios_Cubiertos,
+      !!@ ili2db.dispName = "Lagunas de oxidación"
+      Lagunas_De_Oxidacion,
+      !!@ ili2db.dispName = "Vía férrea"
+      Via_Ferrea,
+      !!@ ili2db.dispName = "Carretera"
+      Carretera,
+      !!@ ili2db.dispName = "Teatro o cinema en propiedad horizontal"
+      Teatro_Cinema_En_PH,
+      !!@ ili2db.dispName = "Iglesia en propiedad horizontal"
+      Iglesia_En_PH,
+      !!@ ili2db.dispName = "Restaurante en propiedad horizontal"
+      Restaurante_En_PH,
+      !!@ ili2db.dispName = "Hotel colonial"
+      Hotel_Colonial,
+      !!@ ili2db.dispName = "Restaurante colonial"
+      Restaurante_Colonial,
+      !!@ ili2db.dispName = "Entidad educativa colonial o colegio colonial"
+      Entidad_Educativa_Colonial_Colegio_Colonial,
+      !!@ ili2db.dispName = "Cimientos de estructura, muros y placa base"
+      Cimientos_Estructura_Muros_Y_Placa_Base
+    );
+
+    OP_ViaTipo = (
+      !!@ ili2db.dispName = "Arteria"
+      Arteria,
+      !!@ ili2db.dispName = "Autopista"
+      Autopista,
+      !!@ ili2db.dispName = "Carreteable"
+      Carreteable,
+      !!@ ili2db.dispName = "Ciclorruta"
+      Cicloruta,
+      !!@ ili2db.dispName = "Colectora"
+      Colectora,
+      !!@ ili2db.dispName = "Departamental"
+      Departamental,
+      !!@ ili2db.dispName = "Férrea"
+      Ferrea,
+      !!@ ili2db.dispName = "Local"
+      Local,
+      !!@ ili2db.dispName = "Metro o metrovía"
+      Metro_o_Metrovia,
+      !!@ ili2db.dispName = "Nacional"
+      Nacional,
+      !!@ ili2db.dispName = "Ordinaria"
+      Ordinaria,
+      !!@ ili2db.dispName = "Peatonal"
+      Peatonal,
+      !!@ ili2db.dispName = "Principal"
+      Principal,
+      !!@ ili2db.dispName = "Privada"
+      Privada,
+      !!@ ili2db.dispName = "Secundaria"
+      Secundaria,
+      !!@ ili2db.dispName = "Troncal"
+      Troncal
+    );
+
+    OP_InstitucionTipo = (
+      !!@ ili2db.dispName = "Registraduría nacional del estado civil"
+      Registraduria_Nacional,
+      !!@ ili2db.dispName = "Registro de la propiedad"
+      Registro_Propiedad,
+      !!@ ili2db.dispName = "Catastro IGAC"
+      Catastro_IGAC,
+      !!@ ili2db.dispName = "Catastro descentralizado"
+      Catastro_Descentralizado,
+      !!@ ili2db.dispName = "Unidad de restitución de tierras"
+      URT,
+      !!@ ili2db.dispName = "Agencia nacional de tierras"
+      ANT
+    );
+
+  TOPIC Operacion
+  EXTENDS LADM_COL_V1_3.LADM_Nucleo =
+    OID AS INTERLIS.UUIDOID;
+    DEPENDS ON LADM_COL_V1_3.LADM_Nucleo,Datos_Integracion_Insumos_V2_9_6.Datos_Integracion_Insumos;
+
+    !!@ ili2db.dispName = "Agrupación de Interesados"
+    CLASS OP_Agrupacion_Interesados
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_Agrupacion_Interesados =
+    END OP_Agrupacion_Interesados;
+
+    /** Es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.
+     */
+    !!@ ili2db.dispName = "Construcción"
+    CLASS OP_Construccion
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_UnidadEspacial =
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*2;
+      /** Cantidad de plantas que tiene la construcción
+       */
+      !!@ ili2db.dispName = "Número de pisos"
+      Numero_Pisos : MANDATORY 1 .. 100;
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Operacion_V2_9_6.OP_ConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : Operacion_V2_9_6.OP_DominioConstruccionTipo;
+      !!@ ili2db.dispName = "Número de mezanines"
+      Numero_Mezanines : 0 .. 99;
+      !!@ ili2db.dispName = "Número de sótanos"
+      Numero_Sotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Número de semisótanos"
+      Numero_Semisotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Código de edificación"
+      Codigo_Edificacion : 0 .. 10000000000000000000;
+      /** Rsultado del cálculo de su avalúo mediante la metodología legalmente establecida.
+       */
+      !!@ ili2db.dispName = "Ávaluo de construcción"
+      Avaluo_Construccion : LADM_COL_V1_3.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Área de construcción"
+      Area_Construccion : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V1_3.m2];
+    END OP_Construccion;
+
+    /** Clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
+     */
+    !!@ ili2db.dispName = "Derecho"
+    CLASS OP_Derecho
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_RRR =
+      /** Derecho que se ejerce.
+       */
+      !!@ ili2db.dispName = "Tipo"
+      Tipo : MANDATORY Operacion_V2_9_6.OP_DerechoTipo;
+    END OP_Derecho;
+
+    !!@ ili2db.dispName = "Fuente Administrativa"
+    CLASS OP_FuenteAdministrativa
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_FuenteAdministrativa =
+      !!@ ili2db.dispName = "Tipo"
+      Tipo (EXTENDED) : MANDATORY Operacion_V2_9_6.OP_FuenteAdministrativaTipo;
+      !!@ ili2db.dispName = "Ente emisor"
+      Ente_Emisor : TEXT*255;
+    END OP_FuenteAdministrativa;
+
+    !!@ ili2db.dispName = "Fuente Espacial"
+    CLASS OP_FuenteEspacial
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_FuenteEspacial =
+    END OP_FuenteEspacial;
+
+    !!@ ili2db.dispName = "Interesado"
+    CLASS OP_Interesado
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_Interesado =
+      /** Tipo de persona del que se trata
+       */
+      !!@ ili2db.dispName = "Tipo"
+      Tipo : MANDATORY Operacion_V2_9_6.OP_InteresadoTipo;
+      /** Tipo de documento del que se trata.
+       */
+      !!@ ili2db.dispName = "Tipo de documento"
+      Tipo_Documento : MANDATORY Operacion_V2_9_6.OP_InteresadoDocumentoTipo;
+      /** Documento de identidad del interesado.
+       */
+      !!@ ili2db.dispName = "Documento de identidad"
+      Documento_Identidad : MANDATORY TEXT*50;
+      /** Primer nombre de la persona física.
+       */
+      !!@ ili2db.dispName = "Primer nombre"
+      Primer_Nombre : TEXT*100;
+      /** Segundo nombre de la persona física.
+       */
+      !!@ ili2db.dispName = "Segundo nombre"
+      Segundo_Nombre : TEXT*100;
+      /** Primer apellido de la persona física.
+       */
+      !!@ ili2db.dispName = "Primer apellido"
+      Primer_Apellido : TEXT*100;
+      /** Segundo apellido de la persona física.
+       */
+      !!@ ili2db.dispName = "Segundo apellido"
+      Segundo_Apellido : TEXT*100;
+      !!@ ili2db.dispName = "Sexo"
+      Sexo : Operacion_V2_9_6.OP_SexoTipo;
+      !!@ ili2db.dispName = "Grupo étnico"
+      Grupo_Etnico : Operacion_V2_9_6.OP_GrupoEtnicoTipo;
+      /** Nombre con el que está inscrito.
+       */
+      !!@ ili2db.dispName = "Razón social"
+      Razon_Social : TEXT*255;
+    END OP_Interesado;
+
+    !!@ ili2db.dispName = "Interesado Contacto"
+    CLASS OP_Interesado_Contacto =
+      !!@ ili2db.dispName = "Teléfono 1"
+      Telefono1 : TEXT*20;
+      !!@ ili2db.dispName = "Teléfono 2"
+      Telefono2 : TEXT*20;
+      !!@ ili2db.dispName = "Domicilio notificación"
+      Domicilio_Notificacion : TEXT*500;
+      !!@ ili2db.dispName = "Correo electrónico"
+      Correo_Electronico : TEXT*100;
+      !!@ ili2db.dispName = "Origen de datos"
+      Origen_Datos : Operacion_V2_9_6.OP_InstitucionTipo;
+      /** Indica si el interesado autoriza notificación vía correo electrónico
+       */
+      !!@ ili2db.dispName = "Autoriza notificación correo"
+      Autoriza_Notificacion_Correo : BOOLEAN;
+    END OP_Interesado_Contacto;
+
+    /** Clase especializada de LA_CadenaCarasLindero que permite registrar los linderos.
+     * Dos linderos no pueden cruzarse ni superponerse.
+     */
+    !!@ ili2db.dispName = "Lindero"
+    CLASS OP_Lindero
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_CadenaCarasLimite =
+      /** Lóngitud en m del lindero.
+       */
+      !!@ ili2db.dispName = "Longitud"
+      Longitud : MANDATORY 0.0 .. 10000.0 [INTERLIS.m];
+    END OP_Lindero;
+
+    /** Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
+     * El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.
+     */
+    !!@ ili2db.dispName = "Predio"
+    CLASS OP_Predio
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_BAUnit =
+      /** Corresponde al codigo del departamento al cual pertenece el predio. Es asignado por DIVIPOLA y tiene 2 dígitos.
+       */
+      !!@ ili2db.dispName = "Departamento"
+      Departamento : MANDATORY TEXT*2;
+      /** Corresponde al codigo del municipio al cual pertenece el predio. Es asignado por DIVIPOLA y tiene 3 dígitos.
+       */
+      !!@ ili2db.dispName = "Municipio"
+      Municipio : MANDATORY TEXT*3;
+      /** Numero Unico de identificación Predial. Es el codigo definido en el proyecto de ley que será el codigo de identificación del predio tanto para catastratro como para Registro.
+       */
+      !!@ ili2db.dispName = "NUPRE"
+      NUPRE : TEXT*11;
+      /** Circulo registral
+       */
+      !!@ ili2db.dispName = "Código ORIP"
+      Codigo_ORIP : TEXT*3;
+      /** Matricula inmobiliaria
+       */
+      !!@ ili2db.dispName = "Matrícula inmobiliaria"
+      Matricula_Inmobiliaria : TEXT*80;
+      /** Nuevo código númerico de treinta (30) dígitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi.
+       */
+      !!@ ili2db.dispName = "Número predial"
+      Numero_Predial : MANDATORY TEXT*30;
+      /** Anterior código númerico de veinte (20) digitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi.
+       */
+      !!@ ili2db.dispName = "Número predial anterior"
+      Numero_Predial_Anterior : TEXT*20;
+      /** Valor de cada predio, obtenido mediante investigación y análisis estadistico del mercado inmobiliario y la metodología de aplicación  correspondiente. El avalúo  catastral de cada predio se determina a partir de la adición de los avalúos parciales practicados independientemente para los terrenos y para las edificaciones en el comprendidos.
+       */
+      !!@ ili2db.dispName = "Avalúo del predio"
+      Avaluo_Predio : LADM_COL_V1_3.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Condición del predio"
+      Condicion_Predio : MANDATORY Operacion_V2_9_6.OP_CondicionPredioTipo;
+      !!@ ili2db.dispName = "Tipo"
+      Tipo (EXTENDED) : MANDATORY Operacion_V2_9_6.OP_PredioTipo;
+      !!@ ili2db.dispName = "Dirección"
+      Direccion : MANDATORY TEXT*255;
+      UNIQUE NUPRE; 
+    END OP_Predio;
+
+    /** Clase especializada de LA_Punto que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales, como puntos de control.
+     */
+    !!@ ili2db.dispName = "Punto Control"
+    CLASS OP_PuntoControl
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_Punto =
+      /** Nombre que recibe el punto.
+       */
+      !!@ ili2db.dispName = "ID del punto de control"
+      ID_Punto_Control : MANDATORY TEXT*255;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo (EXTENDED) : MANDATORY Operacion_V2_9_6.OP_PuntoTipo;
+      /** Si se trata deun punto de control o de apoyo.
+       */
+      !!@ ili2db.dispName = "Tipo de punto de control"
+      Tipo_Punto_Control : Operacion_V2_9_6.OP_PuntoControlTipo;
+      /** Exactitud horizontal de la medición del punto.
+       */
+      !!@ ili2db.dispName = "Exactitud horizontal"
+      Exactitud_Horizontal : MANDATORY 0 .. 1000 [LADM_COL_V1_3.cm];
+      /** Exactitud vertical de la medición del punto.
+       */
+      !!@ ili2db.dispName = "Exactitud vertical"
+      Exactitud_Vertical : MANDATORY 0 .. 1000 [LADM_COL_V1_3.cm];
+    END OP_PuntoControl;
+
+    /** Clase especializada de LA_Punto que almacena puntos que definen un lindero, instancia de la clase LA_CadenaCarasLindero y sus especializaciones.
+     */
+    !!@ ili2db.dispName = "Punto Lindero"
+    CLASS OP_PuntoLindero
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_Punto =
+      /** Nombre o codigo del punto lindero
+       */
+      !!@ ili2db.dispName = "ID del punto de lindero"
+      ID_Punto_Lindero : TEXT*255;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo (EXTENDED) : MANDATORY Operacion_V2_9_6.OP_PuntoTipo;
+      /** Se Indica si existe acuerdo o no entre los colindantes en relación al punto lindero que se está midiendo.
+       */
+      !!@ ili2db.dispName = "Acuerdo"
+      Acuerdo : MANDATORY Operacion_V2_9_6.OP_AcuerdoTipo;
+      !!@ ili2db.dispName = "Fotoidentificación"
+      Fotoidentificacion : Operacion_V2_9_6.OP_FotoidentificacionTipo;
+      !!@ ili2db.dispName = "Ubicación del punto"
+      Ubicacion_Punto : Operacion_V2_9_6.OP_UbicacionPuntoTipo;
+      /** Corresponde a la exactitud horizontal del punto lindero
+       */
+      !!@ ili2db.dispName = "Exactitud horizontal"
+      Exactitud_Horizontal : MANDATORY 0 .. 1000 [LADM_COL_V1_3.cm];
+      /** Corresponde a la exactitud vertical del punto lindero
+       */
+      !!@ ili2db.dispName = "Exactitud vertical"
+      Exactitud_Vertical : 0 .. 1000 [LADM_COL_V1_3.cm];
+    END OP_PuntoLindero;
+
+    /** Porción de tierra con una extensión geográfica definida.
+     */
+    !!@ ili2db.dispName = "Terreno"
+    CLASS OP_Terreno
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_UnidadEspacial =
+      /** Área de predio resultado de los calculos realizados en el proceso de levantamiento planimetrico
+       */
+      !!@ ili2db.dispName = "Área de terreno"
+      Area_Terreno : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V1_3.m2];
+      /** Valor asignado en el proceso de valoración economica masiva al terreno del predio
+       */
+      !!@ ili2db.dispName = "Avalúo de terreno"
+      Avaluo_Terreno : LADM_COL_V1_3.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Código de manzana vereda"
+      Manzana_Vereda_Codigo : TEXT*17;
+      !!@ ili2db.dispName = "Número de subterráneos"
+      Numero_Subterraneos : 0 .. 999;
+      /** Corresponde a la figura geometrica vectorial poligonal, generada a partir de los linderos del predio.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria (EXTENDED) : MANDATORY ISO19107_PLANAS_V1.GM_MultiSurface3D;
+    END OP_Terreno;
+
+    /** Clase especializada de LA_Punto que representa puntos demarcados que representan la posición horizontal de un vértice de construcción, servidumbre o auxiliare.
+     */
+    !!@ ili2db.dispName = "Punto Levantamiento"
+    CLASS OP_PuntoLevantamiento
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_Punto =
+      /** Se caracterizan los diferentes tipos de punto levantamiento, estos son punto de construccción, punto de servidumbre o punto auxiliar
+       */
+      !!@ ili2db.dispName = "ID del punto de levantamiento"
+      ID_Punto_Levantamiento : TEXT*255;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo (EXTENDED) : MANDATORY Operacion_V2_9_6.OP_PuntoTipo;
+      !!@ ili2db.dispName = "Tipo de punto de levantamiento"
+      Tipo_Punto_Levantamiento : Operacion_V2_9_6.OP_PuntoLevTipo;
+      !!@ ili2db.dispName = "Fotoidentificación"
+      Fotoidentificacion : Operacion_V2_9_6.OP_FotoidentificacionTipo;
+      /** Corresponde a la exactitud horizontal del punto levantamiento
+       */
+      !!@ ili2db.dispName = "Exactitud horizontal"
+      Exactitud_Horizontal : MANDATORY 0 .. 1000 [LADM_COL_V1_3.cm];
+      /** Corresponde a la exactitud vertical del punto levantamiento
+       */
+      !!@ ili2db.dispName = "Exactitud vertical"
+      Exactitud_Vertical : 0 .. 1000 [LADM_COL_V1_3.cm];
+    END OP_PuntoLevantamiento;
+
+    /** Restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
+     */
+    !!@ ili2db.dispName = "Restricción"
+    CLASS OP_Restriccion
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_RRR =
+      /** Define el tipo de restricción.
+       */
+      !!@ ili2db.dispName = "Tipo"
+      Tipo : MANDATORY Operacion_V2_9_6.OP_RestriccionTipo;
+    END OP_Restriccion;
+
+    ASSOCIATION op_interesado_contacto =
+      op_contacto -- {0..*} OP_Interesado_Contacto;
+      op_interesado -- {1} OP_Interesado;
+    END op_interesado_contacto;
+
+    ASSOCIATION op_predio_copropiedad =
+      predio -- {0..*} OP_Predio;
+      copropiedad -<> {0..1} OP_Predio;
+      coeficiente : LADM_COL_V1_3.LADM_Nucleo.Fraccion;
+    END op_predio_copropiedad;
+
+    ASSOCIATION op_predio_insumos_operacion =
+      ini_predio_insumos (EXTERNAL) -- {0..*} Datos_Integracion_Insumos_V2_9_6.Datos_Integracion_Insumos.INI_Predio_Insumos;
+      op_predio -- {0..*} OP_Predio;
+    END op_predio_insumos_operacion;
+
+    /** Tipo de unidad espacial que permite la representación de una servidumbre de paso asociada a una LA_BAUnit.
+     */
+    !!@ ili2db.dispName = "Servidumbre de Paso"
+    CLASS OP_ServidumbrePaso
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_UnidadEspacial =
+      /** Fecha de inscripción de la servidumbre en el Catastro.
+       */
+      !!@ ili2db.dispName = "Área de la servidumbre"
+      Area_Servidumbre : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V1_3.m2];
+    END OP_ServidumbrePaso;
+
+    /** Es cada conjunto de materiales consolidados dentro de un predio que tiene una caracteristicas especificas en cuanto a elementos constitutivos físicos y usos de los mismos.
+     */
+    !!@ ili2db.dispName = "Unidad de Construcción"
+    CLASS OP_UnidadConstruccion
+    EXTENDS LADM_COL_V1_3.LADM_Nucleo.COL_UnidadEspacial =
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*3;
+      !!@ ili2db.dispName = "Tipo de unidad de construcción"
+      Tipo_Unidad_Construccion : Operacion_V2_9_6.OP_UnidadConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : Operacion_V2_9_6.OP_DominioConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Operacion_V2_9_6.OP_ConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de planta"
+      Tipo_Planta : Operacion_V2_9_6.OP_ConstruccionPlantaTipo;
+      !!@ ili2db.dispName = "Planta ubicación"
+      Planta_Ubicacion : 0 .. 500;
+      !!@ ili2db.dispName = "Total de habitaciones"
+      Total_Habitaciones : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de baños"
+      Total_Banios : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de locales"
+      Total_Locales : 0 .. 999999;
+      !!@ ili2db.dispName = "Total de pisos"
+      Total_Pisos : 0 .. 150;
+      !!@ ili2db.dispName = "Uso"
+      Uso : MANDATORY Operacion_V2_9_6.OP_UsoUConsTipo;
+      !!@ ili2db.dispName = "Año de construcción"
+      Anio_Construccion : 1512 .. 2500;
+      !!@ ili2db.dispName = "Avalúo de la construcción"
+      Avaluo_Construccion : LADM_COL_V1_3.LADM_Nucleo.Peso;
+      /** Area de la unidad de contrucción.
+       */
+      !!@ ili2db.dispName = "Área construida"
+      Area_Construida : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V1_3.m2];
+      /** Área privada de la unidad de construcción para el caso en que las construcciones tienen regimen de propiedad horizontal.
+       */
+      !!@ ili2db.dispName = "Área privada construida"
+      Area_Privada_Construida : 0.0 .. 99999999999999.9 [LADM_COL_V1_3.m2];
+      !!@ ili2db.dispName = "Observaciones"
+      Observaciones : TEXT;
+    END OP_UnidadConstruccion;
+
+    ASSOCIATION op_construccion_unidadconstruccion =
+      op_unidadconstruccion -- {0..*} OP_UnidadConstruccion;
+      op_construccion -<> {1} OP_Construccion;
+    END op_construccion_unidadconstruccion;
+
+  END Operacion;
+
+END Operacion_V2_9_6.

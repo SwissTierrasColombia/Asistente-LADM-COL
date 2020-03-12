@@ -1,6 +1,7 @@
 import os.path
 import platform
 
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
@@ -28,9 +29,10 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 # PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
+DEFAULT_USE_CUSTOM_MODELS = True
+DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
-
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 
