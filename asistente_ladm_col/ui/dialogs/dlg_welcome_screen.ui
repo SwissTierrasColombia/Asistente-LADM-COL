@@ -55,6 +55,9 @@
       <property name="accessibleName">
        <string/>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;padding:1px;background-position:right bottom;background-repeat:no-repeat;background-image:url(':/Asistente-LADM_COL/resources/images/icon_about_transparency.png');</string>
+      </property>
       <property name="openLinks">
        <bool>false</bool>
       </property>
