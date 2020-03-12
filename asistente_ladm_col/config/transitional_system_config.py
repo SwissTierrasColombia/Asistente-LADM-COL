@@ -14,6 +14,7 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
 
     ST_CONNECTION_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was an error accessing the task service. Details: {}")
     ST_STATUS_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There is an error in the task server! (Status: 500)")
+    ST_STATUS_GT_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "A connection could not be established with the server, it is possible that the server is not running.")
     ST_STATUS_401_MSG = QCoreApplication.translate("TransitionalSystemConfig", "Unauthorized client! (Status: 401)")
 
     def __init__(self):
