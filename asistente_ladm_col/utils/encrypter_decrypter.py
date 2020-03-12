@@ -24,8 +24,8 @@ from asistente_ladm_col.utils.java_utils import JavaUtils
 
 class EncrypterDecrypter():
     def __init__(self):
-        self._secret_key = 'c2VjcmV0MTIz'
-        self._salt = 'c2FsdDEyMw=='
+        self._secret_key = 'dnREVzd3Y1NMaA=='  # 'c2VjcmV0MTIz'
+        self._salt = 'bGpEVzM2dU8='  # 'c2FsdDEyMw=='
         self.java_utils = JavaUtils()
 
     def run(self, mode, value):

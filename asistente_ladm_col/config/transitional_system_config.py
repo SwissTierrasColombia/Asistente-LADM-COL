@@ -6,9 +6,9 @@ from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
 class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
-    ST_DEFAULT_DOMAIN = "http://apist.proadmintierra.info"  # "http://192.168.98.61:8090"    .42
+    ST_DEFAULT_DOMAIN = "http://192.168.98.200:8091"  # "http://apist.proadmintierra.info"
     ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
-    encoded = b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='  # b'c3Qtd2ViLXNkVmExTlh3OmhLYmNlTjg5'
+    encoded = b'c3Qtd2ViLWpqOHNmUUVVOm5FSmVzR3ZF'  # b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
     ST_EXPECTED_RESPONSE = "unauthorized"
 
