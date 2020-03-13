@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>2.99.0</b></p>
+<p>Cambios en la version <b>2.99.1</b></p>
 <ul>
-    <li>Integración con el Sistema de Transición. Autenticación y gestión de tareas.</li>
-    <li>Soporte de roles y generación de interfaz de usuario para cada rol.</li>
-    <li>Actualización de modelos para el catastro multipropósito. Esta versión del Asistente LADM_COL soporta los <a href="https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip" target="blank">modelos versión 2.9.6.</a></li>
-    <li>ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).</li>
-    <li>Nuevo reporte de Omisiones y Comisiones.</li>
-    <li>Soporte de ili2db4 (llaves foráneas para relaciones dominio-clase, soporte de relaciones 1:m con atributos, entre otras novedades).</li>
+    <li>Integración con el Sistema de Transición:
+        <ul>
+            <li>Iniciar, cancelar y finalizar tarea desde el Asistente LADM_COL.</li>
+            <li>Tareas de generación de insumos catastrales e Integración asistida (soporte parcial).</li>
+        </ul>
+    </li>
+    <li>Identificación de novedades entre datos del barrido predial y datos de insumos.</li>
+    <li>Soporte de GeoPackage como base de datos para manejar datos LADM-COL (exceptuando validaciones de calidad, consultas y  reportes).</li>
+    <li>Usabilidad: Instalación automática de prerrequisitos: incluye los complementos Model Baker y Map Swipe Tool, modelos LADM-COL v2.9.6 y Java v1.8.</li>
+    <li>Mejoras en pruebas:
+        <ul>
+            <li>1 prueba de interfaz semi-asistida (nueva).</li>
+            <li>150 pruebas unitarias automáticas.</li>
+        </ul>
+    </li>
 </ul>
 </body>
 </html>
