@@ -6,7 +6,7 @@ T_ID_KEY = 't_id'
 DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'
-    
+
 
 class TableAndFieldNames:
     """
@@ -1135,7 +1135,11 @@ class TableAndFieldNames:
 
     def __init__(self):
         self.logger = Logger()
-        self._cached_domain_values = dict()
+        self._cached_domain_values = dict()  # Right cache: queries that actually return a domain value/code
+        self._cached_wrong_domain_queries = {  # Wrong cache: queries that do not return anything from the domain
+            QueryNames.VALUE_KEY: dict(),
+            QueryNames.CODE_KEY: dict()
+        }
 
     def initialize_table_and_field_names(self, dict_names):
         """
@@ -1205,24 +1209,51 @@ class TableAndFieldNames:
         else:
             self._cached_domain_values[domain_table] = {key: t_id}
 
-    def get_domain_value(self, domain_table, t_id):
+    def cache_wrong_query(self, query_type, domain_table, code, value, value_is_ilicode):
         """
-        Get a domain value from the cache.
+        If query was by value, then use value in key and code in the corresponding value pair, and viceversa
+
+        :param query_type: QueryNames.VALUE_KEY (search by value) or QueryNames.CODE_KEY (search by code)
+        :param domain_table: name of the table being searched
+        :param code: t_id
+        :param value: iliCode or dispName value
+        :param value_is_ilicode: whether the value to be searched is iliCode or not
+        """
+        key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value if query_type == QueryNames.VALUE_KEY else code)
+        if domain_table in self._cached_wrong_domain_queries[query_type]:
+            self._cached_wrong_domain_queries[query_type][domain_table][key] = code if query_type == QueryNames.VALUE_KEY else value
+        else:
+            self._cached_wrong_domain_queries[query_type][domain_table] = {key: code if query_type == QueryNames.VALUE_KEY else value}
+
+    def get_domain_value(self, domain_table, t_id, value_is_ilicode):
+        """
+        Get a domain value from the cache. First, attempt to get it from the 'right' cache, then from the 'wrong' cache.
 
         :param domain_table: Domain table name.
         :param t_id: t_id to be searched.
+        :param value_is_ilicode: Whether the value is iliCode (True) or dispName (False)
         :return: iliCode of the corresponding t_id.
         """
+        # Search in 'right' cache
+        field_name = 'ilicode' if value_is_ilicode else 'dispname'
         if domain_table in self._cached_domain_values:
             for k,v in self._cached_domain_values[domain_table].items():
                 if v == t_id:
-                    return True, k.split("..")[1]  # Compound key: ilicode..value or dispname..value
+                    key = k.split("..")
+                    if key[0] == field_name:
+                        return True, key[1]  # Compound key: ilicode..value or dispname..value
+
+        # Search in 'wrong' cache
+        if domain_table in self._cached_wrong_domain_queries[QueryNames.CODE_KEY]:
+            key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', t_id)
+            if key in self._cached_wrong_domain_queries[QueryNames.CODE_KEY][domain_table]:
+                return True, self._cached_wrong_domain_queries[QueryNames.CODE_KEY][domain_table][key]
 
         return False, None
 
     def get_domain_code(self, domain_table, value, value_is_ilicode):
         """
-        Get a domain code from the cache.
+        Get a domain code from the cache. First, attempt to get it from the 'right' cache, then from the 'wrong' cache.
 
         :param domain_table: Domain table name.
         :param value: value to be searched.
@@ -1231,12 +1262,18 @@ class TableAndFieldNames:
                         found: boolean, whether the value was found in cache or not
                         t_id: t_id of the corresponding ilicode
         """
+        # Search in 'right' cache
         key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value)
         if domain_table in self._cached_domain_values:
             if key in self._cached_domain_values[domain_table]:
                 return True, self._cached_domain_values[domain_table][key]
 
-        return  False, None
+        # Search in 'wrong' cache
+        if domain_table in self._cached_wrong_domain_queries[QueryNames.VALUE_KEY]:
+            if key in self._cached_wrong_domain_queries[QueryNames.VALUE_KEY][domain_table]:
+                return True, self._cached_wrong_domain_queries[QueryNames.VALUE_KEY][domain_table][key]
+
+        return False, None
 
     def test_names(self, table_and_field_names):
         """
@@ -1274,3 +1311,4 @@ class TableAndFieldNames:
             return (False, "Name '{}' was not found!".format(names_not_found[0]))
 
         return (True, "")
+

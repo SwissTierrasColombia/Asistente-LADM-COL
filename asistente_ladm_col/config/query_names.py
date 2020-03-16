@@ -23,3 +23,6 @@ class QueryNames:
     GEOMETRY_TYPE_MODEL_BAKER = 'type'
     TABLE_ALIAS = 'table_alias'
     RELATION_NAME_MODEL_BAKER = 'constraint_name'
+
+    VALUE_KEY = 'VALUE'
+    CODE_KEY = 'CODE'

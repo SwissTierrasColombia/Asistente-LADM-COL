@@ -37,6 +37,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY
                                                                    DICT_KEY_PARTY_T_NAME_F,
                                                                    DICT_KEY_PARTY_T_RIGHT,
                                                                    DICT_KEY_PLOT_T_AREA_F)
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
@@ -750,6 +751,7 @@ class LADM_DATA():
 
         # Try to get it from cache
         found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
+
         if found_in_cache:
             if DEFAULT_LOG_MODE == LogModeEnum.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
@@ -781,7 +783,7 @@ class LADM_DATA():
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_domain_value(domain_table_name, None, value, value_is_ilicode)
+            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode)
 
         if DEFAULT_LOG_MODE == LogModeEnum.DEV:
             self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
@@ -814,7 +816,7 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code)
+        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code, value_is_ilicode)
         if found_in_cache:
             if DEFAULT_LOG_MODE == LogModeEnum.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
@@ -839,7 +841,7 @@ class LADM_DATA():
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_domain_value(domain_table_name, code, None, value_is_ilicode)
+            db.names.cache_wrong_query(QueryNames.CODE_KEY, domain_table_name, res, None, value_is_ilicode)
 
         if DEFAULT_LOG_MODE == LogModeEnum.DEV:
             self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
