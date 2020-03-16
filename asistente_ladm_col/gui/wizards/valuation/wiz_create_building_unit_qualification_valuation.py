@@ -32,7 +32,7 @@ from qgis.core import QgsMapLayerProxyModel
 from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_QSETTINGS, \
     WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, \
     WIZARD_HELP4, WIZARD_HELP5, WIZARD_MAP_LAYER_PROXY_MODEL
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.utils.qt_utils import enable_next_wizard
 

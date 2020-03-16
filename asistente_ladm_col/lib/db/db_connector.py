@@ -26,12 +26,12 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
-                                                      QueryNames,
-                                                      LADMNames,
                                                       T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 
 COMPOSED_KEY_SEPARATOR = ".."

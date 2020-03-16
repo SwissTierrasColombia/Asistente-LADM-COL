@@ -1,6 +1,7 @@
 from qgis.PyQt.QtCore import QSettings
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 
 class RefactorFieldsMappings:
 

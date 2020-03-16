@@ -32,8 +32,8 @@ from qgis.core import QgsWkbTypes
 
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.mapping_config import (LADMNames,
-                                                      QueryNames)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.utils import get_ui_class
 
 

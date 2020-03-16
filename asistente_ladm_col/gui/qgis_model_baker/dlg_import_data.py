@@ -49,7 +49,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       SETTINGS_MODELS_TAB_INDEX,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.context import Context
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
@@ -297,7 +297,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-        # Get list of models present in the XTF file and in the DB
+        # Get list of models present in the XTF file, in the DB and in the list of required models (by the plugin)
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
         db_models = set(self.db.get_models())
 

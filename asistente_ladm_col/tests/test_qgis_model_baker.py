@@ -18,7 +18,7 @@ from QgisModelBaker.libili2db.globals import DbIliMode
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.general_config import (TOML_FILE_DIR,
                                                       DEFAULT_EPSG)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_test_copy_path,
                                             get_gpkg_conn_from_path,

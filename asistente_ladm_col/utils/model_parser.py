@@ -19,7 +19,7 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import is_version_valid
 

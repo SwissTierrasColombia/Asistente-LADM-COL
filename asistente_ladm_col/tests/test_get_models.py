@@ -5,7 +5,7 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema)

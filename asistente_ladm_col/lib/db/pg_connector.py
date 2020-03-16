@@ -40,15 +40,16 @@ from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report.pg import (ant
 from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                   annex17_point_data_query,
                                                                                   annex17_plot_data_query)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.utils.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
-                                                      DESCRIPTION_KEY,
-                                                      QueryNames)
+                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.config.query_names import QueryNames
+
 
 class PGConnector(DBConnector):
     _PROVIDER_NAME = 'postgres'

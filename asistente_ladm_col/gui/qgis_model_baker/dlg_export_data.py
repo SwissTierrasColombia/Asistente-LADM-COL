@@ -42,7 +42,7 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_CONNECTION_TAB_INDEX,

@@ -47,7 +47,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       SETTINGS_MODELS_TAB_INDEX,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils

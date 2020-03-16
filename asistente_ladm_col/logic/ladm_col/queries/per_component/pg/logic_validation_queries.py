@@ -1,5 +1,5 @@
 from qgis.PyQt.QtCore import QCoreApplication
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 
 def get_logic_validation_queries(schema, names):

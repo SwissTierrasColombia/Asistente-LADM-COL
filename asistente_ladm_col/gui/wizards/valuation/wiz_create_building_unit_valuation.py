@@ -3,7 +3,7 @@ from functools import partial
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)

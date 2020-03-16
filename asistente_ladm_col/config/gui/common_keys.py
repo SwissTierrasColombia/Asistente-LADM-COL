@@ -1,5 +1,4 @@
-from asistente_ladm_col.config.mapping_config import LADMNames
-
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 DEFAULT_GUI = 'DEFAULT_GUI'
 TEMPLATE_GUI = 'TEMPLATE_GUI'

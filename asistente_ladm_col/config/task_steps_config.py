@@ -3,7 +3,7 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
 from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_COBOL
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.enums import (STStepTypeEnum,
                                              EnumUserLevel)
 from asistente_ladm_col.lib.context import TaskContext

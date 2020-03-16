@@ -26,7 +26,7 @@ from qgis.core import (Qgis,
 
 import processing
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 
 

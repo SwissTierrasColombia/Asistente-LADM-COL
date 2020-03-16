@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import LAYER, WIZARD_CLASS, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
     WIZARD_HELP_PAGES, WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, \
     WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, WIZARD_TOOL_NAME, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, WIZARD_HELP4, \

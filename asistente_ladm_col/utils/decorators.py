@@ -27,8 +27,7 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
                                                       LOG_QUALITY_LIST_CONTAINER_CLOSE,
                                                       LOG_QUALITY_CONTENT_SEPARATOR,
                                                       COLLECTED_DB_SOURCE)
-from asistente_ladm_col.config.mapping_config import LADMNames
-
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 """
 Decorators to ensure requirements before calling a plugin method.

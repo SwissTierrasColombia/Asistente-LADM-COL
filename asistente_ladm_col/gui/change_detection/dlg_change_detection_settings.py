@@ -29,7 +29,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
