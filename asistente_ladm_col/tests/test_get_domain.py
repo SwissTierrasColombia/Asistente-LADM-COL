@@ -22,8 +22,8 @@ class TestGetDomains(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker()
         cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
-        result = cls.db_gpkg.test_connection()
-        cls.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = cls.db_gpkg.test_connection()
+        cls.assertTrue(res, msg)
 
         cls.qgis_utils = QGISUtils()
         cls.ladm_data = LADM_DATA(cls.qgis_utils)
@@ -63,8 +63,8 @@ class TestGetDomains(unittest.TestCase):
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, None, 1, value_is_ilicode=True)
         self.assertIsNone(value)
 
-        # value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, None, value_is_ilicode=True)
-        # self.assertIsNone(value)
+        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, None, value_is_ilicode=True)
+        self.assertIsNone(value)
 
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, 1, None)
         self.assertIsNone(value)
@@ -75,8 +75,8 @@ class TestGetDomains(unittest.TestCase):
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, NULL, 1, value_is_ilicode=True)
         self.assertIsNone(value)
 
-        # value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, NULL, value_is_ilicode=True)
-        # self.assertIsNone(value)
+        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, NULL, value_is_ilicode=True)
+        self.assertIsNone(value)
 
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, 1, NULL)
         self.assertIsNone(value)
@@ -144,7 +144,7 @@ class TestGetDomains(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Closing open connections to databases")
+        print("INFO: Closing open db connections; unloading Model Baker")
         cls.db_gpkg.conn.close()
         unload_qgis_model_baker()
 
