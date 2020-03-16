@@ -105,15 +105,15 @@ class LADMNames(metaclass=Singleton):
         VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
     }
 
-    ASSISTANT_SUPPORTED_MODELS = [SUPPORTED_LADM_MODEL,
-                                  SUPPORTED_SNR_DATA_MODEL,
-                                  SUPPORTED_SUPPLIES_MODEL,
-                                  SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                  SUPPORTED_OPERATION_MODEL,
-                                  SUPPORTED_ANT_MODEL,
-                                  SUPPORTED_CADASTRAL_FORM_MODEL,
-                                  SUPPORTED_REFERENCE_CARTOGRAPHY,
-                                  SUPPORTED_VALUATION_MODEL]
+    SUPPORTED_MODELS = [SUPPORTED_LADM_MODEL,
+                        SUPPORTED_SNR_DATA_MODEL,
+                        SUPPORTED_SUPPLIES_MODEL,
+                        SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
+                        SUPPORTED_OPERATION_MODEL,
+                        SUPPORTED_ANT_MODEL,
+                        SUPPORTED_CADASTRAL_FORM_MODEL,
+                        SUPPORTED_REFERENCE_CARTOGRAPHY,
+                        SUPPORTED_VALUATION_MODEL]
 
     DEFAULT_MODEL_NAMES_CHECKED = {
         SUPPORTED_ANT_MODEL: Qt.Unchecked,

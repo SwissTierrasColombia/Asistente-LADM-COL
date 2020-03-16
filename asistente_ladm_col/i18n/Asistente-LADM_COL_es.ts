@@ -377,10 +377,10 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="523"/>
-        <location filename="../utils/decorators.py" line="65"/>
-        <location filename="../utils/decorators.py" line="177"/>
-        <location filename="../utils/decorators.py" line="203"/>
-        <location filename="../utils/decorators.py" line="230"/>
+        <location filename="../utils/decorators.py" line="64"/>
+        <location filename="../utils/decorators.py" line="176"/>
+        <location filename="../utils/decorators.py" line="202"/>
+        <location filename="../utils/decorators.py" line="229"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
@@ -646,47 +646,47 @@
         <translation type="vanished">La conexión de base de datos no es válida. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="62"/>
+        <location filename="../utils/decorators.py" line="61"/>
         <source>The DB {} connection is not valid. Details: {}</source>
         <translation>La conexión de base de datos &apos;{}&apos; no es válida. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="69"/>
-        <location filename="../utils/decorators.py" line="181"/>
-        <location filename="../utils/decorators.py" line="207"/>
-        <location filename="../utils/decorators.py" line="234"/>
+        <location filename="../utils/decorators.py" line="68"/>
+        <location filename="../utils/decorators.py" line="180"/>
+        <location filename="../utils/decorators.py" line="206"/>
+        <location filename="../utils/decorators.py" line="233"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="96"/>
+        <location filename="../utils/decorators.py" line="95"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="100"/>
+        <location filename="../utils/decorators.py" line="99"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="113"/>
+        <location filename="../utils/decorators.py" line="112"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="125"/>
+        <location filename="../utils/decorators.py" line="124"/>
         <source>The processing plugin has been activated!</source>
         <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="174"/>
-        <location filename="../utils/decorators.py" line="200"/>
-        <location filename="../utils/decorators.py" line="227"/>
+        <location filename="../utils/decorators.py" line="173"/>
+        <location filename="../utils/decorators.py" line="199"/>
+        <location filename="../utils/decorators.py" line="226"/>
         <source>Check your {} database connection. The &apos;{}&apos; model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.</source>
         <translation>Compruebe su conexión a la base de datos &apos;{}&apos;. El modelo &apos;{}&apos; es necesario para esta funcionalidad, pero no se ha podido encontrar en su base de datos actual. Haga clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="297"/>
+        <location filename="../utils/decorators.py" line="296"/>
         <source>The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.</source>
         <translation>No se pudo ejecutar la herramienta porque la(s) capa(s) {} está(n) en sesión de edición. Finaliza la sesión de edición antes de intentar ejecutar la herramienta.</translation>
     </message>
@@ -739,27 +739,27 @@
         <translation type="vanished">No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="257"/>
+        <location filename="../utils/decorators.py" line="256"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="259"/>
+        <location filename="../utils/decorators.py" line="258"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="268"/>
+        <location filename="../utils/decorators.py" line="267"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="278"/>
+        <location filename="../utils/decorators.py" line="277"/>
         <source>There is a wizard open, you need to close it before continuing with another tool.</source>
         <translation>Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="280"/>
+        <location filename="../utils/decorators.py" line="279"/>
         <source>Close the open wizard</source>
         <translation>Cerrar el wizard abierto</translation>
     </message>
@@ -768,8 +768,8 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="107"/>
-        <location filename="../utils/decorators.py" line="263"/>
+        <location filename="../utils/decorators.py" line="106"/>
+        <location filename="../utils/decorators.py" line="262"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -3258,9 +3258,19 @@ p, li { white-space: pre-wrap; }
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="266"/>
+        <source>Please set a valid XTF file before importing data. XTF file does not exist.</source>
+        <translation>Por favor define un XTF válido antes de importar datos. El archivo XTF no existe.</translation>
+    </message>
+    <message>
         <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="274"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="286"/>
+        <source>Please set a valid XTF before importing data.</source>
+        <translation>Por favor define un archivo XTF válido antes de importar los datos.</translation>
     </message>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="294"/>
@@ -3268,7 +3278,25 @@ p, li { white-space: pre-wrap; }
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="360"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="307"/>
+        <source>The selected XTF file does not have data from any LADM-COL model supported by the LADM_COL Assistant. Therefore, you cannot import it! These are the models supported:
+
+ * {}</source>
+        <translation>El archivo XTF seleccionado no tiene datos de ningún modelo LADM-COL soportado por el Asistente LADM_COL. Por tanto, no puedes importarlo. Estos son los modelos soportados:
+
+ * {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="320"/>
+        <source>IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. Please create a schema that also includes the following missing modules:
+
+ * {}</source>
+        <translation>ERROR de importación: El archivo XTF a importar no tiene los mismos modelos que la base de datos destino. Por favor crea una base de datos o esquema que también incluya los siguientes modelos:
+
+ * {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="376"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
@@ -3277,7 +3305,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="356"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="372"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
@@ -3290,12 +3318,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="372"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="388"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="474"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="490"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
@@ -4676,7 +4704,7 @@ Rol:</translation>
 <context>
     <name>HelpStrings</name>
     <message>
-        <location filename="../config/help_strings.py" line="26"/>
+        <location filename="../config/help_strings.py" line="27"/>
         <source>Choose this option to load points to &lt;b&gt;Survey Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Survey Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents a building, right of way or auxiliary vertex.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Levantamiento&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
@@ -4687,19 +4715,19 @@ Rol:</translation>
         <translation type="vanished">Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto de Control&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;. &lt;b&gt;Punto de Control&lt;/b&gt; es una clase especializada de &lt;i&gt;LA_Punto&lt;/i&gt; que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="39"/>
+        <location filename="../config/help_strings.py" line="40"/>
         <source>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.</source>
         <translation>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="59"/>
+        <location filename="../config/help_strings.py" line="60"/>
         <source>Choose this option if you want to create a &lt;b&gt;Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Party&lt;/b&gt; is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcels&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Interesado&lt;/b&gt; es una persona natural o jurídicaque tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="65"/>
+        <location filename="../config/help_strings.py" line="66"/>
         <source>Choose this option if you want to add a &lt;b&gt;Party&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Party&lt;/b&gt; is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcel&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -4714,12 +4742,12 @@ Rol:</translation>
         <translation type="vanished">Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de paso&lt;/b&gt; digitalizando el eje usando &lt;i&gt;Puntos de levantamiento&lt;/i&gt; existentes y dando un valor de ancho.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="149"/>
+        <location filename="../config/help_strings.py" line="150"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right of Way&lt;/b&gt; digitizing a polygon using existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Right of Way&lt;/b&gt; is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de Paso&lt;/b&gt; digitalizando un polígono usando &lt;i&gt;Puntos de Levantamiento&lt;/i&gt; existentes.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="155"/>
+        <location filename="../config/help_strings.py" line="156"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right of Way&lt;/b&gt; digitizing centerline using existing &lt;i&gt;Survey Points&lt;/i&gt; and giving a width value.&lt;br&gt;&lt;br&gt;&lt;b&gt;Right of Way&lt;/b&gt; is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Servidumbre de paso&lt;/b&gt; digitalizando el eje usando &lt;i&gt;Puntos de levantamiento&lt;/i&gt; existentes y dando un valor de ancho.&lt;br&gt;&lt;br&gt;&lt;b&gt;Servidumbre de Paso&lt;/b&gt; es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una LA_BAUnit.</translation>
     </message>
@@ -4752,22 +4780,22 @@ Rol:</translation>
         <translation type="vanished">Antes de crear un &lt;b&gt;Predio&lt;/b&gt; debes relacionarlo con una o más &lt;b&gt;Unidades Espaciales&lt;/b&gt; existentes. Primero debes seleccionar las Unidades Espaciales de interés.&lt;br&gt;&lt;br&gt;Hay dos maneras de relacionar:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Seleccionar unidades espaciales en el mapa&lt;/b&gt;: Seleccionas la unidad espacial en el mapa y das clic derecho sobre el mismo para retornar a este diálogo, lo cual habilitará el botón para crear la relación.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Seleccionar unidades espaciales con base en una expresión&lt;/b&gt;: Seleccionas la unidad espacial usando una expresión, la cual debe ser válida y seleccionar por lo menos un registro. Si la expresión obtiene cero registros, el botón para crear la relación no se habilitará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="161"/>
+        <location filename="../config/help_strings.py" line="162"/>
         <source>Choose this option if you want to associate an &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Spatial Unit&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;ExtAddress&lt;/b&gt; is a class for manage the &lt;i&gt;Spatial Units&lt;/i&gt; addresses from &lt;i&gt;LADM-COL model&lt;/i&gt;.</source>
         <translation>Elige esta opción si quieres relacionar una &lt;b&gt;Dirección&lt;/b&gt; a una &lt;i&gt;Unidad Espacial&lt;/i&gt; existente.&lt;br&gt;&lt;br&gt;&lt;b&gt;ExtDirección&lt;/b&gt; es una clase para administrar las direcciones de &lt;i&gt;Unidades Espaciales&lt;/i&gt; en el &lt;i&gt;modelo LADM-COL&lt;/i&gt;.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="167"/>
+        <location filename="../config/help_strings.py" line="168"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Plot&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Plots:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Plot on the map&lt;/b&gt;: select one &lt;i&gt;Plot&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Plot&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation>Para asociar una &lt;b&gt; ExtDireccion &lt;/b&gt; a una &lt;i&gt; Terreno &lt;/i&gt; existente, primero debió haber seleccionado uno.&lt;br&gt;&lt;br&gt; Hay dos formas de seleccionar los terrenos: &lt;br&gt;&lt;br&gt;1. &lt;b&gt; Selección de un terreno en el mapa &lt;/b&gt;: seleccione una &lt;i&gt;Terreno&lt;/i&gt; y haga clic derecho en el mapa para volver al asistente, se activa el botón para crear la asociación. &lt;br&gt;&lt;br&gt; 2. &lt;b&gt; Selección por expresión &lt;/b&gt;: Seleccione un &lt;i&gt;Terreno&lt;/i&gt; usando una expresión. La selección tiene que ser válida y debe coincidir con un objeto espacial. Si la expresión coincide con dos o más objetos espaciales, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="180"/>
+        <location filename="../config/help_strings.py" line="181"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Building&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Buildings:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Building on the map&lt;/b&gt;: select one &lt;i&gt;Building&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;:  select one &lt;i&gt;Building&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation>Para asociar una &lt;b&gt; ExtDireccion &lt;/b&gt; a una &lt;i&gt; Construcción &lt;/i&gt; existente, primero debió haber seleccionado una.&lt;br&gt;&lt;br&gt; Hay dos formas de seleccionar las construcciones: &lt;br&gt;&lt;br&gt;1. &lt;b&gt; Selección de la construcción en el mapa &lt;/b&gt;: seleccione una &lt;i&gt;Construcción&lt;/i&gt; y haga clic derecho en el mapa para volver al asistente, se activa el botón para crear la asociación. &lt;br&gt;&lt;br&gt; 2. &lt;b&gt; Selección por expresión &lt;/b&gt;: seleccione una &lt;i&gt;Construcción&lt;/i&gt; usando una expresión. La selección tiene que ser válida y debe coincidir con un objeto espacial. Si la expresión coincide con dos o más objetos espaciales, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="193"/>
+        <location filename="../config/help_strings.py" line="194"/>
         <source>To associate the &lt;b&gt;ExtAddress&lt;/b&gt; to an existing &lt;i&gt;Building Unit&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Building Units:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Building Unit on the map&lt;/b&gt;: select one &lt;i&gt;Building Unit&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Building Unit&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation>Para asociar una &lt;b&gt; ExtDireccion &lt;/b&gt; a una &lt;i&gt; Unidad de construcción &lt;/i&gt; existente, primero debió haber seleccionado una.&lt;br&gt;&lt;br&gt; Hay dos formas de seleccionar las unidades de construcción: &lt;br&gt;&lt;br&gt;1. &lt;b&gt; Selección de unidad de construcción en el mapa &lt;/b&gt;: seleccione una &lt;i&gt; Unidad de construcción &lt;/i&gt; y haga clic derecho en el mapa para volver al asistente, se activa el botón para crear la asociación. &lt;br&gt;&lt;br&gt; 2. &lt;b&gt; Selección por expresión &lt;/b&gt;: seleccione una &lt;i&gt; Unidad de construcción &lt;/i&gt; usando una expresión. La selección tiene que ser válida y debe coincidir con un objeto espacial. Si la expresión coincide con dos o más objetos espaciales, el botón para crear la asociación no se activará.</translation>
     </message>
@@ -4788,27 +4816,27 @@ Rol:</translation>
         <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario. Luego selecciona una capa para asociar todos sus objetos seleccionados a la nueva &lt;b&gt;Fuente Espacial&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="120"/>
+        <location filename="../config/help_strings.py" line="121"/>
         <source>To create a &lt;b&gt;plot&lt;/b&gt; you can use the existing boundaries, first you have at least one.&lt;br&gt;&lt;br&gt;There are three ways to select boundaries:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Boundaries on the map&lt;/b&gt;: select one o more &lt;i&gt;Boundaries&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the plots.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one o more &lt;i&gt;Boundaries&lt;/i&gt; using an expression.If one or more boundaries were selected the button for creating the plots will be enable.&lt;br&gt;&lt;br&gt;3. &lt;b&gt;Select all boundaries&lt;/b&gt;: Select all boundaries available, If one or more boundaries were selected the button for creating the plots will be enable.</source>
         <translation>Para crear un &lt;b&gt;Terreno&lt;/b&gt; puede usar los linderos existentes, debes tener al menos uno. &lt;br&gt;&lt;br&gt; Hay tres formas de seleccionar los linderos: &lt;br&gt;&lt;br&gt; 1. &lt;b&gt;Selección de linderos en el mapa&lt;/b&gt;: Seleccione uno o más &lt;i&gt;Linderos&lt;/i&gt; y haga clic derecho en el mapa para volver al asistente, se activará el botón para crear los terrenos. &lt;br&gt;&lt;br&gt; 2. &lt;b&gt; Selección por expresión &lt;/b&gt;: seleccione uno o más &lt;i&gt;Linderos&lt;/i&gt; usando una expresión. Si se seleccionaron uno o más linderos, se habilitará el botón para crear los terrenos. &lt;br&gt;&lt;br&gt; 3) &lt;b&gt;Seleccionar todos los linderos&lt;/b&gt;: seleccione todos los linderos disponibles. Si se seleccionarón uno o más linderos, se habilitará el botón para crear los terrenos.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="213"/>
+        <location filename="../config/help_strings.py" line="214"/>
         <source>Before creating a &lt;b&gt;Restriction&lt;/b&gt; you must associate with one or more existing &lt;b&gt;Administrative Sources&lt;/b&gt;, First you must select the Administrative Source(s) of interest&lt;br&gt;&lt;br&gt;You can select an Administrative Source(s) by:&lt;br&gt;&lt;br&gt;&lt;b&gt; * Expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation>Antes de crear una &lt;b&gt; Restricción &lt;/b&gt; debe asociarse con una o más &lt;b&gt;Fuentes administrativas&lt;/b&gt;, primero debe seleccionar las Fuentes administrativas de interés &lt;br&gt;&lt;br&gt; Puede seleccionar una(s) fuente(s) administrativa(es) por: &lt;br&gt;&lt;br&gt;&lt;b&gt; * Expresión &lt;/b&gt;: Aquí puede seleccionar usando una expresión, esta tiene que ser válida y la selección debe tomar un registro. Si la expresión obtiene cero registros o más de una, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="230"/>
+        <location filename="../config/help_strings.py" line="231"/>
         <source>Before creating a &lt;b&gt;Right&lt;/b&gt; you must associate with one or more existing &lt;b&gt;Administrative Sources&lt;/b&gt;, First you must select the Administrative Source(s) of interest&lt;br&gt;&lt;br&gt;You can select an Administrative Source(s) by:&lt;br&gt;&lt;br&gt;&lt;b&gt; * Expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation>Antes de crear un &lt;b&gt;Derecho&lt;/b&gt;, debe asociarse con una o más &lt;b&gt;Fuentes administrativas&lt;/b&gt;, primero debe seleccionar las Fuentes Administrativas de interés &lt;br&gt;&lt;br&gt; Puede seleccionar una(s) fuente(s) administrativa(s) por: &lt;br&gt;&lt;br&gt; &lt;b&gt; * Expresión &lt;/b&gt;: Aquí puede seleccionar usando una expresión, esta tiene que ser válida y la selección debe tomar una registro. Si la expresión obtiene cero registros o más de uno, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="240"/>
+        <location filename="../config/help_strings.py" line="241"/>
         <source>Choose this option if you want to create a &lt;b&gt;Spatial Source&lt;/b&gt; using a form. Then select the &lt;b&gt;Spatial Features&lt;/b&gt; that you want to associate with the Spatial Source to create.&lt;br&gt;&lt;br&gt;&lt;b&gt;Spatial Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.</source>
         <translation>Elija esta opción si desea crear una &lt;b&gt;Fuente espacial&lt;/b&gt; utilizando un formulario. Luego, seleccione los &lt;b&gt; objetos espaciales &lt;/b&gt; que desea asociar con la Fuente espacial para crear. &lt;br&gt;&lt;br&gt;&lt;b&gt;La Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt; COL_Fuente &lt;/i&gt; para almacenar las fuentes correspondientes a datos espaciales (objetos geográficas, imágenes satelitales, vuelos fotogramétricos, mapas, listas de coordenadas, planos antiguos o modernos, descripciones de ubicación y similares) que documentan técnicamente la relación entre las partes y las parcelas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="246"/>
+        <location filename="../config/help_strings.py" line="247"/>
         <source>Before creating a &lt;b&gt;Spatial Source&lt;/b&gt;  you must associate with one or more existing &lt;b&gt;Spatial Features&lt;/b&gt;, First you must select the Spatial feature(s) of interest&lt;br&gt;&lt;br&gt;There are two ways to associate:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Spatial Feature(s) on the map&lt;/b&gt;: Here you can select on the map and immediately it will come back to wizard, this enables the button for create the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting Spatial Unit(s) by expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation>Antes de crear una &lt;b&gt; Fuente espacial &lt;/b&gt;, debe asociarse con una o más &lt;b&gt;objetos espaciales &lt;/b&gt;, primero debe seleccionar los objetos espaciales de interés &lt;br&gt;&lt;br&gt; Hay dos formas de asociar: &lt;br&gt;&lt;br&gt; 1. &lt;b&gt; Selección de objetos espaciales en el mapa &lt;/b&gt;: aquí puede seleccionar en el mapa e inmediatamente volverá al asistente, esto habilita el botón para crear la asociación.&lt;br&gt;&lt;br&gt;2. &lt;b&gt; Selección de unidad (es) espacial (es) por expresión&lt;/b&gt;: Aquí puede seleccionar usando una expresión, esta tiene que ser válida y la selección debe tomar un objeto espacial. Si la expresión obtiene cero objetos espaciales o más de uno, el botón para crear la asociación no se activará.</translation>
     </message>
@@ -4833,7 +4861,7 @@ Rol:</translation>
         <translation type="vanished">Elige esta opción si deseas agregar un &lt;b&gt;Interesado Jurídico&lt;/b&gt; con un formulario. &lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Jurídico&lt;/b&gt; que actúa como interesado.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="265"/>
+        <location filename="../config/help_strings.py" line="266"/>
         <source>Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM_COL.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Click to download Excel template&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click to download Excel sample data&lt;/a&gt;</source>
         <translation>Puedes usar una estructura intermedia de Excel para importar datos jurídicos (alfanuméricos) a LADM_COL.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Clic para descargar la plantilla de Excel&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click para descargar datos de prueba en Excel&lt;/a&gt;</translation>
     </message>
@@ -4854,117 +4882,117 @@ Rol:</translation>
         <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Construcción&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Construcción&lt;/b&gt; (modelo de Avalúos) es una agrupación de atributos específicos para el avalúo de la misma. Por tanto, representa lo mismo que en el caso del modelo de Catastro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avalúo masivo de las construcciones, de acuerdo con la metodología vigente.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="71"/>
+        <location filename="../config/help_strings.py" line="72"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; based on existing plots.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian operation. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
         <translation>Elija esta opción si desea crear un &lt;b&gt;Predio&lt;/b&gt; basada en los terrenos existentes. &lt;br&gt;&lt;br&gt;&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de &lt;i&gt;BA Unit&lt;/i&gt;, que describe la unidad administrativa básica de la operación colombiana. Un &lt;b&gt;Predio&lt;/b&gt; es la unidad territorial legal, que está formada por un terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="78"/>
+        <location filename="../config/help_strings.py" line="79"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; without geometry.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian operation. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
         <translation>Elija esta opción si desea crear un &lt;b&gt;Predio&lt;/b&gt; sin geometría.&lt;br&gt;&lt;br&gt;&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de &lt;i&gt;BA Unit&lt;/i&gt;, que describe La Unidad Administrativa Básica de la operación en colombiana. Un &lt;b&gt; Predio &lt;/b&gt; es la unidad territorial legal, que está formada por un terreno y puede o no tener asociadas construcciones.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="207"/>
+        <location filename="../config/help_strings.py" line="208"/>
         <source>Choose this option if you want to create a &lt;b&gt;Restriction&lt;/b&gt; based on existing &lt;b&gt;Administrative Source(s)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;OP_Restriction&lt;/b&gt; are the restrictions on a parcel that affect rights that parties may have over it.</source>
         <translation>Elija esta opción si desea crear una &lt;b&gt; Restricción &lt;/b&gt; basada en &lt;b&gt; Fuentes administrativas existentes &lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;OP_Restriccion&lt;/b&gt; son las restricciones en una parcela que afecta los derechos que los interesados puedan tener sobre ella.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="224"/>
+        <location filename="../config/help_strings.py" line="225"/>
         <source>Choose this option if you want to create a &lt;b&gt;Right&lt;/b&gt; based on existing &lt;b&gt;Administrative Source(s)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;OP_Right&lt;/b&gt; is a class that stores right instances that a party has over a parcel. It is a specialization of the class OP_RRR.</source>
         <translation>Elija esta opción si desea crear un &lt;b&gt;Derecho&lt;/b&gt; usando en las &lt;b&gt;Fuentes administrativas&lt;/b&gt; existentes. &lt;br&gt;&lt;br&gt;&lt;b&gt;OP_Derecho&lt;/b&gt; es una clase que almacena los derechos que un interesado tiene sobre un predio. Es una especialización de la clase OP_RRR.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="269"/>
+        <location filename="../config/help_strings.py" line="270"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building Unit&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building Unit&lt;/b&gt; (valuation model) is a grouping of specific attributes that are needed to appraise the building.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Unidad de Construcción&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Unidad de Construcción&lt;/b&gt; (modelo de Avalúos) es una agrupación de atributos específicos para el avalúo de la misma. Por tanto, representa lo mismo que en el caso del modelo de Catastro, pero sus atributos almacenan los datos relativos a aquellas características que es necesario conocer para realizar el avalúo masivo de las construcciones, de acuerdo con la metodología vigente.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="275"/>
+        <location filename="../config/help_strings.py" line="276"/>
         <source>To associate the &lt;b&gt;Building unit valuation&lt;/b&gt; to an existing &lt;i&gt;Building unit&lt;/i&gt;, first you have to select one.&lt;br&gt;&lt;br&gt;There are two ways to select Building unit:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting building on the map&lt;/b&gt;: select one &lt;i&gt;building unit&lt;/i&gt; and right click on the map to go back to the wizard, which enables the button for creating the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting by expression&lt;/b&gt;: select one &lt;i&gt;Building unit&lt;/i&gt; using an expression. The selection has to be valid and should match only one feature. If the expression matches two or more features, the button for creating the association will not be activated.</source>
         <translation>Para asociar el &lt;b&gt;Avaluo de una unidad de construcción&lt;/b&gt; a una &lt;i&gt; Unidad de construcción &lt;/i&gt; existente, primero debe seleccionar una.&lt;br&gt;&lt;br&gt;Hay dos formas de seleccionar una unidad de construcción: &lt;br &gt;&lt;br&gt;1. &lt;b&gt; Seleccionando una construcción en el mapa &lt;/b&gt;: seleccione una &lt;i&gt; unidad de construcción&lt;/i&gt; y haga clic derecho en el mapa para volver al asistente, y se activará el botón para crear la asociación. &lt;br&gt;&lt;br&gt; 2. &lt;b&gt; Selección por expresión &lt;/b&gt;: seleccione una &lt;i&gt; Unidad de construcción &lt;/i&gt; usando una expresión. La selección tiene que ser válida y debe coincidir con un solo objeto espacial. Si la expresión coincide con dos o más objetos espaciales, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="288"/>
+        <location filename="../config/help_strings.py" line="289"/>
         <source>&lt;b&gt;Building Unit Qualification (unconventional)&lt;/b&gt; is a class to store data for the valuation of the building unit.</source>
         <translation>&lt;b&gt;Calificación de Unidades de Construcción (No Convencional)&lt;/b&gt; es una clase para almacenar datos relativos a avalúos de construcciones que usan métodos no convencionales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="291"/>
+        <location filename="../config/help_strings.py" line="292"/>
         <source>&lt;b&gt;Building Unit Qualification (conventional)&lt;/b&gt; is a class to store data for the valuation of the building unit.</source>
         <translation>&lt;b&gt;Calificación de Unidades de Construcción (Convencional)&lt;/b&gt; es una clase para almacenar datos relativos a avalúos de construcciones que usan métodos convencionales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="294"/>
+        <location filename="../config/help_strings.py" line="295"/>
         <source>Choose this option if you want to create a &lt;b&gt;Geoeconomic Zone&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Geoeconomic Zone&lt;/b&gt; allows you to manage areas with similar economic and geographical characteristics.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Zona Homogénea Geoeconómica&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Zona Homogénea Geoeconómica&lt;/b&gt; permite gestionar las zonas con características económicas y de localización geográfica similares, definidas para caracterizar el avalúo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="300"/>
+        <location filename="../config/help_strings.py" line="301"/>
         <source>Choose this option if you want to create a &lt;b&gt;Physical Zone&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Physical Zone&lt;/b&gt; allows you to manage regions with similar physic characteristics.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Zona Homogénea Física&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Zona Homogénea Física&lt;/b&gt; permite gestionar las zonas físicamente homogéneas definidas para el avalúo y que delimitan las zonas que tienen características físicas similares.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="306"/>
+        <location filename="../config/help_strings.py" line="307"/>
         <source>Choose this option if you want to create a &lt;b&gt;Conventional Building Unit Qualification&lt;/b&gt; using a form.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Calificación de Unidad de Construcción Convencional&lt;/b&gt; con un formulario.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="309"/>
+        <location filename="../config/help_strings.py" line="310"/>
         <source>Choose this option if you want to create an &lt;b&gt;Unconventional Building Unit Qualification&lt;/b&gt; using a form.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Calificación de Unidad de Construcción No Convencional&lt;/b&gt; con un formulario.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="329"/>
+        <location filename="../config/help_strings.py" line="330"/>
         <source>When the type of parcel is &lt;b&gt;&apos;No Horizontal Property&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos; and &apos;Building Units&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;No Propiedad Horizontal&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o mas &apos;construcciones&apos; y &apos;unidades de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="333"/>
+        <location filename="../config/help_strings.py" line="334"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="337"/>
+        <location filename="../config/help_strings.py" line="338"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be one or more &apos;Building Units&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una o más &apos;unidades de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="341"/>
+        <location filename="../config/help_strings.py" line="342"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Condominium Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz Condominio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="345"/>
+        <location filename="../config/help_strings.py" line="346"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Condominium Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial Condominio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="349"/>
+        <location filename="../config/help_strings.py" line="350"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Mejora&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Building&apos; or &apos;Building Unit&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Mejora PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una &apos;construcción&apos; o &apos;unidad de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="353"/>
+        <location filename="../config/help_strings.py" line="354"/>
         <source>When the type of parcel is &lt;b&gt;&apos;No Horizontal Property Mejora&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Building&apos; or &apos;Building Unit&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Mejora NPH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una &apos;construcción&apos; o &apos;unidad de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="357"/>
+        <location filename="../config/help_strings.py" line="358"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Cemetery Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz Parque Cementerio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="361"/>
+        <location filename="../config/help_strings.py" line="362"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Cemetery Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial Parque Cementerio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="365"/>
+        <location filename="../config/help_strings.py" line="366"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Road&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Vía&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="369"/>
+        <location filename="../config/help_strings.py" line="370"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Public Use&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Bien de Uso Público&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
@@ -4989,7 +5017,7 @@ Rol:</translation>
         <translation type="obsolete">When the type of parcel is &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; the spatial unit associated must be a &apos;{plot_table}&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="317"/>
+        <location filename="../config/help_strings.py" line="318"/>
         <source>               Choose this option to open a window that allows you to import data from a source {type} into the LADM_COL &lt;b&gt;{name}&lt;/b&gt; {type}.                &lt;br&gt;&lt;br&gt;               If the field structure of input and target {type}s differs, you can set a field mapping to define field transformations and correspondence.               &lt;br&gt;&lt;br&gt;               You can select previous mappings in the &lt;b&gt;Recent mappings&lt;/b&gt; list, which can save you time taking advantage of mappings that you already used.                </source>
         <translation>               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM_COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.               &lt;br&gt;&lt;br&gt;               Puedes seleccionar mapeos previos en el listado &lt;b&gt;Mapeos recientes&lt;/b&gt;, lo cual puede ahorrarte tiempo aprovechando mapeos que ya has usado.                </translation>
     </message>
@@ -4998,17 +5026,17 @@ Rol:</translation>
         <translation type="vanished">               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM_COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.                </translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="325"/>
+        <location filename="../config/help_strings.py" line="326"/>
         <source>layer</source>
         <translation>capa</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="325"/>
+        <location filename="../config/help_strings.py" line="326"/>
         <source>table</source>
         <translation>tabla</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="47"/>
+        <location filename="../config/help_strings.py" line="48"/>
         <source>Choose this option if you want to create an &lt;b&gt;Administrative Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to documents (mortgage document, notarial documents, historical documents, and the like) that document the relationship between parties and parcels.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente administrativa&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
@@ -5039,7 +5067,7 @@ Rol:</translation>
 &lt;b&gt;Interesado natural&lt;/b&gt; es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="19"/>
+        <location filename="../config/help_strings.py" line="20"/>
         <source>Choose this option to load points to &lt;b&gt;Boundary Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which stores points that define a boundary.Boundary is an instance of &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; class and its specializations.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Lindero&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
@@ -5047,12 +5075,12 @@ Rol:</translation>
 Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y sus especializaciones.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="33"/>
+        <location filename="../config/help_strings.py" line="34"/>
         <source>Choose this option to load points to &lt;b&gt;Control Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Control Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents points belonging to the local network, used in operation operation for surveying physical information of the territorial objects.</source>
         <translation>Elija esta opción para cargar puntos en la capa &lt;b&gt; Puntos de control &lt;/b&gt; del modelo &lt;i&gt; LADM_COL &lt;/i&gt;. &lt;br&gt; &lt;br&gt; &lt;b&gt; El punto de control &lt;/b&gt; es una clase especializada de &lt;i &gt; LA_Point &lt;/i&gt; que representa puntos de referencia topográficos o geodésicos utilizados en las operaciones de levantamiento de información fisica de los objetos territoriales.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="43"/>
+        <location filename="../config/help_strings.py" line="44"/>
         <source>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#template&apos;&gt;Click to download CSV template&lt;/a&gt;&lt;br&gt;&lt;br&gt;&lt;a href=&apos;#data&apos;&gt;Click to download CSV sample data&lt;/a&gt;</source>
         <translation>Agregar un archivo separado por comas (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.
 &lt;br&gt;&lt;br&gt;
@@ -5061,7 +5089,7 @@ Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y 
 &lt;a href=&apos;#data&apos;&gt;Clic para descargar un CSV con datos de ejemplo&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="53"/>
+        <location filename="../config/help_strings.py" line="54"/>
         <source>Choose this option if you want to add an &lt;b&gt;Administrative Source&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the class &lt;i&gt;COL_Fuente&lt;/i&gt; to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between instances of interested and property.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente Administrativa&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Fuente Administrativa&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
@@ -5074,7 +5102,7 @@ Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y 
         <translation type="vanished">Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="85"/>
+        <location filename="../config/help_strings.py" line="86"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.The property is the legal territorial unit of Cadastre.It is formed by the terrain and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -5083,19 +5111,19 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="93"/>
+        <location filename="../config/help_strings.py" line="94"/>
         <source>Before creating a &lt;b&gt;Parcel&lt;/b&gt;  you must associate with one or more existing &lt;b&gt;Spatial Units&lt;/b&gt;.&lt;br&gt;&lt;br&gt;{msg_parcel_type}&lt;br&gt;There are two ways to associate:&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Selecting Spatial Unit(s) on the map&lt;/b&gt;: Here you can select on the map and immediately it will come back to wizard, this enables the button for create the association.&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Selecting Spatial Unit(s) by expression&lt;/b&gt;: Here you can select using an expression, this has to be valid and the selection should take one feature. If the expression gets zero features or more than one, the button for create the association will not be activated.</source>
         <translation>Antes de crear un &lt;b&gt;Predio&lt;/b&gt;, debe asociarse con una o más &lt;b&gt; Unidades espaciales &lt;/b&gt; existentes. &lt;br&gt; &lt;br&gt; {msg_parcel_type} &lt;br&gt; Hay dos formas de asociar: &lt;br &gt; &lt;br&gt; 1. &lt;b&gt; Seleccionar unidades espaciales en el mapa &lt;/b&gt;: Aquí puede seleccionar en el mapa e inmediatamente volverá al asistente, esto habilita el botón para crear la asociación. &lt;br&gt; &lt;br&gt; 2. &lt;b&gt; Selección de unidad (es) espacial (es) por expresión &lt;/b&gt;: Aquí puede seleccionar usando una expresión, esta tiene que ser válida y la selección debe tomar un objeto espacial. Si la expresión obtiene cero objetos espaciales o más de una, el botón para crear la asociación no se activará.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="108"/>
+        <location filename="../config/help_strings.py" line="109"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from a re-factored layer.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de una capa re-factorizada.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Terreno&lt;/b&gt; es una porción de tierra con una extensión geográfica definida.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="114"/>
+        <location filename="../config/help_strings.py" line="115"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from existing &lt;i&gt;Boundaries&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de &lt;i&gt;Límites&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
@@ -5106,14 +5134,14 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Seleccione la capa de &lt;b&gt;Terreno&lt;/b&gt; de las disponibles en el proyecto de QGIS.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="134"/>
+        <location filename="../config/help_strings.py" line="135"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building&lt;/b&gt; is a type of legal space of the building unit of the LADM model that stores data specific of the resulting valuation.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntos de Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Construcción&lt;/b&gt; es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="143"/>
+        <location filename="../config/help_strings.py" line="144"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building Unit&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building Unit&lt;/b&gt; is a group of consolidated materials within a &lt;i&gt;Parcel&lt;/i&gt; that has specific characteristics in terms of physical constituent elements and their usage.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Unidad de Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntosde Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
@@ -5162,7 +5190,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 &lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="259"/>
+        <location filename="../config/help_strings.py" line="260"/>
         <source>Choose this option if you want to create a &lt;b&gt;Boundary&lt;/b&gt; using QGIS digitizing tools.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary&lt;/b&gt; is a specialization of the &lt;i&gt;LA_CadenaCarasLindero&lt;/i&gt; class to store boundaries that define plots. Two boundaries must not cross or overlap.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Lindero&lt;/b&gt; usando las herramientas de digitalización de QGIS.
 &lt;br&gt;&lt;br&gt;
@@ -6184,7 +6212,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="197"/>
+        <location filename="../lib/db/pg_connector.py" line="198"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
@@ -6201,7 +6229,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="203"/>
+        <location filename="../lib/db/pg_connector.py" line="204"/>
         <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
         <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
     </message>
@@ -6210,52 +6238,52 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="157"/>
+        <location filename="../lib/db/pg_connector.py" line="158"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al servidor fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="164"/>
+        <location filename="../lib/db/pg_connector.py" line="165"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="188"/>
+        <location filename="../lib/db/pg_connector.py" line="189"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="193"/>
+        <location filename="../lib/db/pg_connector.py" line="194"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="209"/>
+        <location filename="../lib/db/pg_connector.py" line="210"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="214"/>
+        <location filename="../lib/db/pg_connector.py" line="215"/>
         <source>The schema &apos;{}&apos; is not a valid LADM_COL schema. That is, the schema doesn&apos;t have the structure of the LADM_COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="219"/>
+        <location filename="../lib/db/pg_connector.py" line="220"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="798"/>
+        <location filename="../lib/db/pg_connector.py" line="799"/>
         <source>The user has both Create and Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar y crear objetos en el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="801"/>
+        <location filename="../lib/db/pg_connector.py" line="802"/>
         <source>The user has Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="804"/>
+        <location filename="../lib/db/pg_connector.py" line="805"/>
         <source>The user has not enough privileges over the schema.</source>
         <translation>El usuario no tiene suficientes permisos sobre el esquema.</translation>
     </message>
@@ -6265,7 +6293,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="149"/>
-        <location filename="../lib/db/pg_connector.py" line="236"/>
+        <location filename="../lib/db/pg_connector.py" line="237"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
@@ -6274,18 +6302,18 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="241"/>
+        <location filename="../lib/db/pg_connector.py" line="242"/>
         <source>The schema &apos;{}&apos; has a valid LADM_COL structure!</source>
         <translation>El esquema &apos;{}&apos; tiene una estructura LADM_COL válida!</translation>
     </message>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="110"/>
-        <location filename="../lib/db/pg_connector.py" line="246"/>
+        <location filename="../lib/db/pg_connector.py" line="247"/>
         <source>Connection successful!</source>
         <translation>¡Conexión exitosa!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="248"/>
+        <location filename="../lib/db/pg_connector.py" line="249"/>
         <source>There was a problem checking the connection. Most likely due to invalid or not supported test_level!</source>
         <translation>Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación (test_level) no soportado!</translation>
     </message>
@@ -6298,7 +6326,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Por lo menos un modelo LADM_COL debe existir! Los modelos soportados son &apos;{}&apos; pero usted tiene &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="267"/>
+        <location filename="../lib/db/pg_connector.py" line="268"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
@@ -6307,22 +6335,22 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="747"/>
+        <location filename="../lib/db/pg_connector.py" line="748"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="768"/>
+        <location filename="../lib/db/pg_connector.py" line="769"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="789"/>
+        <location filename="../lib/db/pg_connector.py" line="790"/>
         <source>No information for schema &apos;{}&apos;.</source>
         <translation>No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="793"/>
+        <location filename="../lib/db/pg_connector.py" line="794"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
         <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
@@ -8080,49 +8108,40 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Terminar la creación de geometrías</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1372"/>
         <source>LADM COL</source>
-        <translation>LADM COL</translation>
+        <translation type="vanished">LADM COL</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1373"/>
         <source>SNR data</source>
-        <translation>Datos SNR</translation>
+        <translation type="vanished">Datos SNR</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1374"/>
         <source>Supplies</source>
-        <translation>Datos gestor catastral</translation>
+        <translation type="vanished">Datos gestor catastral</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1375"/>
         <source>Supplies integration data</source>
-        <translation>Datos integración insumos</translation>
+        <translation type="vanished">Datos integración insumos</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1377"/>
         <source>Operation</source>
-        <translation>Operación</translation>
+        <translation type="vanished">Operación</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1378"/>
         <source>ANT</source>
-        <translation>ANT</translation>
+        <translation type="vanished">ANT</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1379"/>
         <source>Cadastral form</source>
-        <translation>Formulario único de catastro multipropósito</translation>
+        <translation type="vanished">Formulario único de catastro multipropósito</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1380"/>
         <source>Reference cartography</source>
-        <translation>Cartografía de referencia</translation>
+        <translation type="vanished">Cartografía de referencia</translation>
     </message>
     <message>
-        <location filename="../config/mapping_config.py" line="1381"/>
         <source>Valuation</source>
-        <translation>Avalúos</translation>
+        <translation type="vanished">Avalúos</translation>
     </message>
     <message>
         <location filename="../config/gui/change_detection_config.py" line="7"/>
