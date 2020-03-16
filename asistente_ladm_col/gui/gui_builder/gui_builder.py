@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
 

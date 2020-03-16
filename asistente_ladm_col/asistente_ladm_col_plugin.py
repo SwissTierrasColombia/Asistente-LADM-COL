@@ -80,7 +80,7 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                                            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # >> DON'T REMOVE << Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value, get_domain_description_from_code  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder

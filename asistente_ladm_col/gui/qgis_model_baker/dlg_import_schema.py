@@ -44,8 +44,10 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR,
-                                                      SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.config.mapping_config import LADMNames
+                                                      SETTINGS_MODELS_TAB_INDEX,
+                                                      DEFAULT_USE_CUSTOM_MODELS,
+                                                      DEFAULT_MODELS_DIR)
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
@@ -341,9 +343,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
         if self.crsSelector.crs().authid()[:5] != 'EPSG:':
@@ -375,12 +377,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
-            if self.custom_model_directories is None:
+            if not self.custom_model_directories:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
                 self.base_configuration.custom_model_directories = self.custom_model_directories

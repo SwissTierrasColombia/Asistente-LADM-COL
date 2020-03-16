@@ -3,7 +3,7 @@ import nose2
 from qgis.core import (NULL,
                        QgsVectorLayer)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from qgis.testing import (unittest,
                           start_app)
 
@@ -11,7 +11,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
-                                            get_gpkg_conn)
+                                            get_copy_gpkg_conn)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
 
@@ -21,7 +21,7 @@ class TestGetDomains(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_qgis_model_baker()
-        cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_operation_model_gpkg')
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 

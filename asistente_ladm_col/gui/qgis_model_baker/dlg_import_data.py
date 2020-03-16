@@ -46,8 +46,10 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
-                                                      SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.config.mapping_config import LADMNames
+                                                      SETTINGS_MODELS_TAB_INDEX,
+                                                      DEFAULT_USE_CUSTOM_MODELS,
+                                                      DEFAULT_MODELS_DIR)
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.context import Context
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
@@ -185,7 +187,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def update_import_models(self):
         self.clear_messages()
-        message_error = None
+        error_msg = None
 
         if not self.xtf_file_line_edit.text().strip():
             color = '#ffd356'  # Light orange
@@ -209,21 +211,21 @@ class DialogImportData(QDialog, DIALOG_UI):
                 if self.import_models_qmodel.rowCount() > 0:
                     self.import_models_list_view.setModel(self.import_models_qmodel)
                 else:
-                    message_error = QCoreApplication.translate("DialogImportData",
+                    error_msg = QCoreApplication.translate("DialogImportData",
                                                                "No models were found in the XTF. Is it a valid file?")
                     color = '#ffd356'  # Light orange
                     self.import_models_qmodel = QStandardItemModel()
                     self.import_models_list_view.setModel(self.import_models_qmodel)
             else:
-                message_error = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file")
+                error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file")
                 color = '#ffd356'  # Light orange
                 self.import_models_qmodel = QStandardItemModel()
                 self.import_models_list_view.setModel(self.import_models_qmodel)
         self.xtf_file_line_edit.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
-        if message_error:
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
+        if error_msg:
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
 
@@ -261,9 +263,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
             self._running_tool = False
-            message_error = "Please set a valid XTF file before importing data. XTF file does not exist"
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file before importing data. XTF file does not exist.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
@@ -281,32 +283,48 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             self._running_tool = False
-            message_error = "Please set a valid XTF before importing data."
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF before importing data.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.get_ili_models():
             self._running_tool = False
-            message_error = QCoreApplication.translate("DialogImportData", "The selected XTF file does not have information according to the LADM-COL model to import.")
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "The selected XTF file does not have information according to the LADM-COL model to import.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
 
-        # Get list of models present in the XTF file and in the DB
+        # Get list of models present in the XTF file, in the DB and in the list of required models (by the plugin)
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
+
+        supported_models_in_ili = set(LADMNames.SUPPORTED_MODELS).intersection(ili_models)
+
+        if not supported_models_in_ili:
+            self._running_tool = False
+            error_msg = QCoreApplication.translate("DialogImportData",
+                                                   "The selected XTF file does not have data from any LADM-COL model supported by the LADM_COL Assistant. " \
+                                                   "Therefore, you cannot import it! These are the models supported:\n\n * {}").format(" \n * ".join(LADMNames.SUPPORTED_MODELS))
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
+            self.import_models_list_view.setFocus()
+            return
+
         db_models = set(self.db.get_models())
+        suggested_models = sorted(ili_models.difference(db_models))
 
         if not ili_models.issubset(db_models):
             self._running_tool = False
-            message_error = "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
-                            "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+            error_msg = QCoreApplication.translate("DialogImportData",
+                                                   "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
+                                                   "Please create a schema that also includes the following missing modules:\n\n * {}").format(
+                " \n * ".join(suggested_models))
             self.txtStdout.clear()
             self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
 
             # button is removed to define order in GUI
@@ -355,11 +373,11 @@ class DialogImportData(QDialog, DIALOG_UI):
                     return
             except JavaNotFoundError:
                 self._running_tool = False
-                message_error_java = QCoreApplication.translate("DialogImportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                error_msg_java = QCoreApplication.translate("DialogImportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(message_error_java)
-                self.show_message(message_error_java, Qgis.Warning)
+                self.txtStdout.setText(error_msg_java)
+                self.show_message(error_msg_java, Qgis.Warning)
                 return
 
             self._running_tool = False
@@ -397,9 +415,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def update_configuration(self):
         """
@@ -425,12 +443,12 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
-            if self.custom_model_directories is None:
+            if not self.custom_model_directories:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
                 self.base_configuration.custom_model_directories = self.custom_model_directories

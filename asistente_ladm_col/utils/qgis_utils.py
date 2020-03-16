@@ -81,8 +81,8 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
-from asistente_ladm_col.config.mapping_config import (LADMNames,
-                                                      QueryNames)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.config.translator import (QGIS_LANG,

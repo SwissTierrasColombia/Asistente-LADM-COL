@@ -19,12 +19,18 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.3.1.2](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip) y permite:
+La versión actual ([2.99.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.1)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
 
- - Integración con el Sistema de Transición. Autenticación y gestión de tareas.
+ - Integración con el Sistema de Transición:
+   - Autenticación.
+   - Gestión de tareas: consulta, iniciación, cancelación y finalización.
+   - Tareas de generación de insumos catastrales e integración asistida de insumos (soporte parcial).
  - Soporte de roles y generación de interfaz de usuario para cada rol.
+ - Crear estructura de base de datos conforme con el modelo LADM-COL v2.9.6.
+ - Soporte de dos motores para manejar datos de LADM-COL:
+   - PostgreSQL/PostGIS: Soporte total.
+   - GeoPackage: Validaciones de calidad, consultas y reportes no están soportadas.
  - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
- - Crear estructura de base de datos conforme con el modelo mencionado.
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
  - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
@@ -123,7 +129,7 @@ La versión actual ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-
  - Generar reporte 'Plano ANT' con base en `Terrenos` seleccionados.
  - Generar reporte de Omisiones y Comisiones.
  - Identificar novedades:
-   - Comparar base de datos del barrido contra base de datos oficial y mostrar diferencias masivas y por predio.
+   - Comparar base de datos del barrido contra datos de insumos y mostrar diferencias masivas y por predio.
  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
@@ -142,7 +148,7 @@ Para usar el Asistente LADM_COL se requiere:
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
    - PostGIS 2.4 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM_COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v4.3.1.2
+   - QGIS Model Baker v6.0.0
    - MapSwipe Tool v1.2
  
 ## Pruebas automatizadas y asistidas al software
@@ -234,4 +240,4 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
       
 + Integración con Sistema de Transición
 
-![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)
+  ![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)

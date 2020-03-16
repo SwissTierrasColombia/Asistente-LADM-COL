@@ -3,7 +3,7 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 

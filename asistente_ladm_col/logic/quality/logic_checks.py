@@ -8,7 +8,7 @@ from qgis.core import (QgsGeometry,
 
 from asistente_ladm_col.config.translation_strings import (ERROR_PARCEL_WITH_NO_RIGHT,
                                                            ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 
 class LogicChecks(QObject):

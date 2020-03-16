@@ -26,12 +26,12 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
-                                                      QueryNames,
-                                                      LADMNames,
                                                       T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 
 COMPOSED_KEY_SEPARATOR = ".."
@@ -265,7 +265,7 @@ class DBConnector(QObject):
                 code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
                 msg = QCoreApplication.translate("DBConnector",
                             "At least one LADM_COL model should exist in the required version! Supported models are: '{}', but you have '{}'").format(
-                                ', '.join(LADMNames.ASSISTANT_SUPPORTED_MODELS), ', '.join(self.get_models()))
+                                ', '.join(LADMNames.SUPPORTED_MODELS), ', '.join(self.get_models()))
 
         return res, code, msg
 

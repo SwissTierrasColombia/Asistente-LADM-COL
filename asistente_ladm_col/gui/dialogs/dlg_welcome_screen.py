@@ -70,7 +70,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
 
     def show_description(self, description, checked):
         if checked:
-            self.txt_help_page.setHtml(description)
+            self.txt_help_page.setHtml("<span style=\" color:#545454;\">{}</span>".format(description))
 
     def set_checked_role_active(self):
         radio_checked = None

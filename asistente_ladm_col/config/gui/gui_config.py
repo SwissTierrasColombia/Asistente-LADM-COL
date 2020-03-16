@@ -35,6 +35,14 @@ class GUI_Config(QObject):
                     ]
                 },
                 SEPARATOR,
+                {
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transitional System"),
+                    OBJECT_NAME: 'ladm_col_st_menu',
+                    ICON: ST_ICON,
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
                 ACTION_SETTINGS,
                 SEPARATOR,
                 ACTION_HELP,

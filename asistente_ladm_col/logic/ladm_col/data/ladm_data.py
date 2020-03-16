@@ -37,7 +37,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY
                                                                    DICT_KEY_PARTY_T_NAME_F,
                                                                    DICT_KEY_PARTY_T_RIGHT,
                                                                    DICT_KEY_PLOT_T_AREA_F)
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 

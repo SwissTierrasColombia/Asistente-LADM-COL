@@ -85,6 +85,9 @@ class STSession(QObject, metaclass=SingletonQObject):
                                                  "Wrong user name or password, change credentials and try again.")
             elif response.status_code == 500:
                 msg = QCoreApplication.translate("STSession", "There is an error in the login server!")
+            elif response.status_code > 500 and response.status_code < 600:
+                msg = self.st_config.ST_STATUS_GT_500_MSG
+                self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
                 msg = QCoreApplication.translate("STSession", "Unauthorized client! The server won't allow requests from this client.")
             self.logger.warning(__name__, msg)

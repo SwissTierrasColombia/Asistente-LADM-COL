@@ -56,6 +56,11 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def login(self):
+        if not self.txt_login_user.text().strip() or not self.txt_login_password.text().strip():
+            msg = QCoreApplication.translate("LoginSTDialog", "First enter user and password data.")
+            self.show_message(msg, Qgis.Warning)
+            return
+
         msg = self.logger.status(QCoreApplication.translate("LoginSTDialog", "Connecting to login service..."))
         with ProcessWithStatus(msg):
             res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())

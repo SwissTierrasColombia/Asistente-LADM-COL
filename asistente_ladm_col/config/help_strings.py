@@ -1,7 +1,8 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 
 # For this module use multiline "\" instead of triple double quotes
 

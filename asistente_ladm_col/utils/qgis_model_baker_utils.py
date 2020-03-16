@@ -24,7 +24,7 @@ from qgis.core import QgsProject
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 
 
 class QgisModelBakerUtils(QObject):
