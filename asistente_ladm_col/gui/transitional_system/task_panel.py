@@ -118,20 +118,22 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         :param item: QTreeWidgetItem that is linked to an action, (i.e., a child item)
         :param column: 0
         """
-        step_id = item.data(column, Qt.UserRole)
-        step = self._task.get_step(step_id)
-        if step:
-            slot = step.get_custom_action_slot()
-            if slot:  # Custom action call
-                self.logger.info(__name__, "Executing step action with custom parameters...")
-                if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
-                    slot[SLOT_CONTEXT].set_slot_on_result(partial(self.set_item_enabled, item.parent()))
-                    slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
-                else:
-                    slot[SLOT_NAME](**slot[SLOT_PARAMS])
-            else:  # Default action call
-                self.logger.info(__name__, "Executing default action...")
-                self.trigger_action_emitted.emit(step.get_action_tag())
+        # Make sure we have a child item and only trigger if parent is not checked yet (i.e., step is not done yet)
+        if not item.childCount() and item.parent().checkState(column) == Qt.Unchecked:
+            step_id = item.data(column, Qt.UserRole)
+            step = self._task.get_step(step_id)
+            if step:
+                slot = step.get_custom_action_slot()
+                if slot:  # Custom action call
+                    self.logger.info(__name__, "Executing step action with custom parameters...")
+                    if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
+                        slot[SLOT_CONTEXT].set_slot_on_result(partial(self.set_item_enabled, item.parent()))
+                        slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
+                    else:
+                        slot[SLOT_NAME](**slot[SLOT_PARAMS])
+                else:  # Default action call
+                    self.logger.info(__name__, "Executing default action...")
+                    self.trigger_action_emitted.emit(step.get_action_tag())
 
     def set_item_enabled(self, item, enable):
         """
