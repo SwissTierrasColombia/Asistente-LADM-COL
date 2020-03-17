@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Topografía y Representación &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Topografía y Representación &mdash; documentación de Asistente LADM-COL - </title>
   
 
   
@@ -20,24 +20,15 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'',
-              LANGUAGE:'es',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/translations.js"></script>
-        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
-        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -46,7 +37,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
   <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
@@ -66,7 +56,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> LADM_COL Assistant
+            <a href="../index.html" class="icon icon-home"> Asistente LADM-COL
           
 
           
@@ -141,7 +131,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">LADM_COL Assistant</a>
+          <a href="../index.html">Asistente LADM-COL</a>
         
       </nav>
 
@@ -193,16 +183,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-
-
-    
-    
-
-
-
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../2.99.1/cadastre/Surveying_and_Representation.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 2.99.1.</a></p>
-<div class="section" id="surveying-and-representation">
+  <div class="section" id="surveying-and-representation">
 <h1>Topografía y Representación<a class="headerlink" href="#surveying-and-representation" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="create-point">
 <h2>Crear Punto<a class="headerlink" href="#create-point" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -211,12 +192,12 @@
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto Lindero</strong> del modelo <em>LADM_COL</em>.</p>
 <p><strong>Punto Lindero</strong> es una clase especializada de <em>LA_Punto</em> que almacena puntos que definen un lindero. Lindero es una instancia de la clase <em>LA_BoundaryFaceString</em> y sus especializaciones.</p>
 <ol class="arabic simple">
-<li>Desde un archivo CSV con la estructura requerida</li>
+<li><p>Desde un archivo CSV con la estructura requerida</p></li>
 </ol>
 <blockquote>
 <div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
 <a class=""
-               data-lightbox="group-79a33a30-4d70-4c15-8eb2-5838fb9e0893"
+               data-lightbox="group-4ba9abba-a3ae-474e-9eba-18964a86c3dc"
                href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
                title=""
                data-title=""
@@ -227,7 +208,7 @@
                      alt="Create Control Point"/>
                 </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
 </ol>
 <blockquote>
 <div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntolindero</strong> de <em>LADM_COL</em>.</p>
@@ -240,12 +221,12 @@
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto Levantamiento</strong> del modelo <em>LADM_COL</em>.</p>
 <p><strong>Punto Levantamiento</strong> es una clase especializada de <em>LA_Punto</em> que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</p>
 <ol class="arabic simple">
-<li>Desde un archivo CSV con la estructura requerida</li>
+<li><p>Desde un archivo CSV con la estructura requerida</p></li>
 </ol>
 <blockquote>
 <div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
 <a class=""
-               data-lightbox="group-fbd067a1-85aa-421e-854a-26a0ec8487d6"
+               data-lightbox="group-d267c296-a5cd-4d25-b4df-60c6684274c7"
                href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
                title=""
                data-title=""
@@ -256,7 +237,7 @@
                      alt="Create Boundary Point"/>
                 </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
 </ol>
 <blockquote>
 <div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM_COL</em>.</p>
@@ -269,12 +250,12 @@
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto de Control</strong> del modelo <em>LADM_COL</em>.</p>
 <p><strong>Punto de Control</strong> es una clase especializada de <em>LA_Punto</em> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</p>
 <ol class="arabic simple">
-<li>Desde un archivo CSV con la estructura requerida</li>
+<li><p>Desde un archivo CSV con la estructura requerida</p></li>
 </ol>
 <blockquote>
 <div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
 <a class=""
-               data-lightbox="group-9a3939a6-6631-42e5-9e1f-5db7f5743443"
+               data-lightbox="group-b3914c62-f459-45c9-98b4-067cb12b6373"
                href="../_images/crear_punto_control1.gif"
                title=""
                data-title=""
@@ -285,7 +266,7 @@
                      alt="Create Boundary Point"/>
                 </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
 </ol>
 <blockquote>
 <div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntocontrol</strong> de <em>LADM_COL</em>.</p>
@@ -297,13 +278,13 @@
 <div class="section" id="create-boundary">
 <h2>Crear Lindero<a class="headerlink" href="#create-boundary" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
-<li>Digitalizando</li>
+<li><p>Digitalizando</p></li>
 </ol>
 <blockquote>
 <div><p>Elige esta opción si deseas agregar un <strong>Lindero</strong> usando las herramientas de digitalización de QGIS.</p>
 <p><strong>Lindero</strong> es una clase especializada de <em>LA_CadenaCarasLindero</em> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.</p>
 <a class=""
-               data-lightbox="group-a422394c-3572-46d0-ac18-968cbdb9b161"
+               data-lightbox="group-2915bd4b-ee4a-406b-b9c1-a59cd015154e"
                href="../_images/_CREAR_LINDERO1.gif"
                title=""
                data-title=""
@@ -314,7 +295,7 @@
                      alt="Create Boundary Point"/>
                 </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
 </ol>
 <blockquote>
 <div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM_COL</em>.</p>
@@ -322,7 +303,7 @@
 <p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
 <p>Si necesitas unir o partir por segmentos los linderos, puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM-COL.</p>
 <a class=""
-               data-lightbox="group-8b4a586b-baa4-4a95-8707-72a6f505d908"
+               data-lightbox="group-e92e3556-9935-4108-b6b6-c2e0c01a8a11"
                href="../_images/_UNIR_PARTIR_LINDERO1.gif"
                title=""
                data-title=""
@@ -336,7 +317,8 @@
 <div class="line"><br /></div>
 </div>
 <blockquote>
-<div>Puedes llenar la tabla de topología PuntoCCL usando el botón <em>Llenar PuntosCCL</em> en barra de herramientas de LADM_COL que hace más rápido y de forma automática este trabajo. Para usar esta función revisa este <a class="reference external" href="../toolbar.html">ENLACE</a>.</div></blockquote>
+<div><p>Puedes llenar la tabla de topología PuntoCCL usando el botón <em>Llenar PuntosCCL</em> en barra de herramientas de LADM_COL que hace más rápido y de forma automática este trabajo. Para usar esta función revisa este <a class="reference external" href="../toolbar.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -360,7 +342,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Agencia de Implementación
+        &copy; Copyright 2020, Agencia de implementación
 
     </p>
   </div>
@@ -375,67 +357,6 @@
 
   </div>
   
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-        <span class="fa fa-book"> Other Versions</span>
-        v: master
-        <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-        <dl>
-            <dt>Tags</dt>
-            <dd><a href="../0.0.9/cadastre/Surveying_and_Representation.html">0.0.9</a></dd>
-            <dd><a href="../0.1.0/cadastre/Surveying_and_Representation.html">0.1.0</a></dd>
-            <dd><a href="../0.10.0/cadastre/Surveying_and_Representation.html">0.10.0</a></dd>
-            <dd><a href="../0.11.0/cadastre/Surveying_and_Representation.html">0.11.0</a></dd>
-            <dd><a href="../0.11.1/cadastre/Surveying_and_Representation.html">0.11.1</a></dd>
-            <dd><a href="../0.11.2/cadastre/Surveying_and_Representation.html">0.11.2</a></dd>
-            <dd><a href="../0.11.3/cadastre/Surveying_and_Representation.html">0.11.3</a></dd>
-            <dd><a href="../0.2.0/cadastre/Surveying_and_Representation.html">0.2.0</a></dd>
-            <dd><a href="../0.3.0/cadastre/Surveying_and_Representation.html">0.3.0</a></dd>
-            <dd><a href="../0.4.0/cadastre/Surveying_and_Representation.html">0.4.0</a></dd>
-            <dd><a href="../0.5.0/cadastre/Surveying_and_Representation.html">0.5.0</a></dd>
-            <dd><a href="../0.6.0/cadastre/Surveying_and_Representation.html">0.6.0</a></dd>
-            <dd><a href="../0.6.1/cadastre/Surveying_and_Representation.html">0.6.1</a></dd>
-            <dd><a href="../0.6.2/cadastre/Surveying_and_Representation.html">0.6.2</a></dd>
-            <dd><a href="../0.6.3/cadastre/Surveying_and_Representation.html">0.6.3</a></dd>
-            <dd><a href="../0.7.0/cadastre/Surveying_and_Representation.html">0.7.0</a></dd>
-            <dd><a href="../0.7.1/cadastre/Surveying_and_Representation.html">0.7.1</a></dd>
-            <dd><a href="../0.8.0/cadastre/Surveying_and_Representation.html">0.8.0</a></dd>
-            <dd><a href="../0.9.0/cadastre/Surveying_and_Representation.html">0.9.0</a></dd>
-            <dd><a href="../1.0.0/cadastre/Surveying_and_Representation.html">1.0.0</a></dd>
-            <dd><a href="../1.1.0/cadastre/Surveying_and_Representation.html">1.1.0</a></dd>
-            <dd><a href="../1.2.0/cadastre/Surveying_and_Representation.html">1.2.0</a></dd>
-            <dd><a href="../1.3.0/cadastre/Surveying_and_Representation.html">1.3.0</a></dd>
-            <dd><a href="../1.3.1/cadastre/Surveying_and_Representation.html">1.3.1</a></dd>
-            <dd><a href="../1.4.0/cadastre/Surveying_and_Representation.html">1.4.0</a></dd>
-            <dd><a href="../1.5.0/cadastre/Surveying_and_Representation.html">1.5.0</a></dd>
-            <dd><a href="../1.6.0/cadastre/Surveying_and_Representation.html">1.6.0</a></dd>
-            <dd><a href="../1.6.1/cadastre/Surveying_and_Representation.html">1.6.1</a></dd>
-            <dd><a href="../1.6.2/cadastre/Surveying_and_Representation.html">1.6.2</a></dd>
-            <dd><a href="../1.6.3/cadastre/Surveying_and_Representation.html">1.6.3</a></dd>
-            <dd><a href="../1.7.0/cadastre/Surveying_and_Representation.html">1.7.0</a></dd>
-            <dd><a href="../1.8.0/cadastre/Surveying_and_Representation.html">1.8.0</a></dd>
-            <dd><a href="../1.8.1/cadastre/Surveying_and_Representation.html">1.8.1</a></dd>
-            <dd><a href="../1.9.0/cadastre/Surveying_and_Representation.html">1.9.0</a></dd>
-            <dd><a href="../1.9.1/cadastre/Surveying_and_Representation.html">1.9.1</a></dd>
-            <dd><a href="../2.0.0/cadastre/Surveying_and_Representation.html">2.0.0</a></dd>
-            <dd><a href="../2.99.1/cadastre/Surveying_and_Representation.html">2.99.1</a></dd>
-        </dl>
-        <dl>
-            <dt>Branches</dt>
-            <dd><a href="../Documentation_for_annex_17/cadastre/Surveying_and_Representation.html">Documentation_for_annex_17</a></dd>
-            <dd><a href="../Documentation_valuation_asistente_ladm_col/cadastre/Surveying_and_Representation.html">Documentation_valuation_asistente_ladm_col</a></dd>
-            <dd><a href="../Subscribe_releases_asistente/cadastre/Surveying_and_Representation.html">Subscribe_releases_asistente</a></dd>
-            <dd><a href="../images_of_valuation/cadastre/Surveying_and_Representation.html">images_of_valuation</a></dd>
-            <dd><a href="../master/cadastre/Surveying_and_Representation.html">master</a></dd>
-            <dd><a href="../prepare_PR_2/cadastre/Surveying_and_Representation.html">prepare_PR_2</a></dd>
-            <dd><a href="../update_docs/cadastre/Surveying_and_Representation.html">update_docs</a></dd>
-            <dd><a href="../update_docs_n/cadastre/Surveying_and_Representation.html">update_docs_n</a></dd>
-            <dd><a href="../update_quality_rules/cadastre/Surveying_and_Representation.html">update_quality_rules</a></dd>
-        </dl>
-    </div>
-</div>
 
 
   <script type="text/javascript">
