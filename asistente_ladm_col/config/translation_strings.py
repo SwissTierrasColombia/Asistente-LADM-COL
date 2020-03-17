@@ -67,6 +67,25 @@ TOOLBAR_FINALIZE_GEOMETRY_CREATION = QCoreApplication.translate("TranslatableCon
 
 
 class TranslatableConfigStrings(QObject):
+    help_get_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a domain value") + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                         "<span class=\"functionname\">get_domain_code_from_value</span>(" \
+                                         "<span class=\"argument\">domain_table</span>," \
+                                         "<span class=\"argument\">value</span>," \
+                                         "<span class=\"argument\">value_is_ilicode</span>," \
+                                         "<span class=\"argument\">validate_conn</span>)" + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
+                                         "<span class=\"argument\">domain_table</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Domain table name or layer obj") + \
+                                         "<br><span class=\"argument\">value</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Domain value to look for") + \
+                                         "<br><span class=\"argument\">value_is_ilicode</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Whether value is iliCode or dispName") + \
+                                         "<br><span class=\"argument\">validate_conn</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Whether validate connection or not") + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                         """<pre>get_domain_code_from_value( 
+  'op_condicionprediotipo',
+  'NPH',
+  True,
+  False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain op_condicion_predio"))
+
     def __init__(self):
         pass
 

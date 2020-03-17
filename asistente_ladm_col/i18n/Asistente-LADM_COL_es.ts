@@ -8234,32 +8234,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Interesados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="75"/>
+        <location filename="../config/translation_strings.py" line="94"/>
         <source>Validation errors</source>
         <translation>Errores de validación</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="76"/>
+        <location filename="../config/translation_strings.py" line="95"/>
         <source>Boundary Points should not overlap</source>
         <translation>Los Puntos de Lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="77"/>
+        <location filename="../config/translation_strings.py" line="96"/>
         <source>Control Points should not overlap</source>
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="78"/>
+        <location filename="../config/translation_strings.py" line="97"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="79"/>
+        <location filename="../config/translation_strings.py" line="98"/>
         <source>Right of way line</source>
         <translation>Linea de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="80"/>
+        <location filename="../config/translation_strings.py" line="99"/>
         <source>Boundary Points should be covered by plot nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Terrenos</translation>
     </message>
@@ -8268,112 +8268,152 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
+        <location filename="../config/translation_strings.py" line="70"/>
+        <source>Gets the t_id that corresponds to a domain value</source>
+        <translation>Obtiene el t_id que corresponde a un valor de dominio</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="71"/>
+        <source>&lt;h4&gt;Syntax&lt;/h4&gt;</source>
+        <translation>&lt;h4&gt;Syntaxis&lt;/h4&gt;</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="77"/>
+        <source>&lt;h4&gt;Arguments&lt;/h4&gt;</source>
+        <translation>&lt;h4&gt;Argumentos&lt;/h4&gt;</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="78"/>
+        <source>Domain table name or layer obj</source>
+        <translation>Nombre de la tabla del dominio u objeto capa</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="79"/>
+        <source>Domain value to look for</source>
+        <translation>Valor del dominio a buscar</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="80"/>
+        <source>Whether value is iliCode or dispName</source>
+        <translation>Indica si el valor es iliCode o no (dispName)</translation>
+    </message>
+    <message>
         <location filename="../config/translation_strings.py" line="81"/>
+        <source>Whether validate connection or not</source>
+        <translation>Indica si validar conexión o no</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="82"/>
+        <source>&lt;h4&gt;Examples&lt;/h4&gt;</source>
+        <translation>&lt;h4&gt;Ejemplos&lt;/h4&gt;</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="100"/>
         <source>Boundaries should not overlap</source>
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="82"/>
+        <location filename="../config/translation_strings.py" line="101"/>
         <source>Boundaries should not be split</source>
         <translation>Los Linderos deben terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="83"/>
+        <location filename="../config/translation_strings.py" line="102"/>
         <source>Boundaries should be covered by Plots</source>
         <translation>Los Linderos deben estar cubiertos por límites de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="84"/>
+        <location filename="../config/translation_strings.py" line="103"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="85"/>
+        <location filename="../config/translation_strings.py" line="104"/>
         <source>Boundaries should not have dangles</source>
         <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="86"/>
+        <location filename="../config/translation_strings.py" line="105"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="87"/>
+        <location filename="../config/translation_strings.py" line="106"/>
         <source>Buildings should not overlap</source>
         <translation>Las Construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="88"/>
+        <location filename="../config/translation_strings.py" line="107"/>
         <source>Rights of Way should not overlap</source>
         <translation>Las Servidumbres de Paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="89"/>
+        <location filename="../config/translation_strings.py" line="108"/>
         <source>Plots should be covered by Boundaries</source>
         <translation>Los límites de Terreno deben estar cubiertos por Linderos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="90"/>
+        <location filename="../config/translation_strings.py" line="109"/>
         <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="91"/>
+        <location filename="../config/translation_strings.py" line="110"/>
         <source>Plots should not have gaps</source>
         <translation>No deben haber huecos entre Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="92"/>
+        <location filename="../config/translation_strings.py" line="111"/>
         <source>Right of Way should not have multipart geometries</source>
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="93"/>
+        <location filename="../config/translation_strings.py" line="112"/>
         <source>Buildings should be within Plots</source>
         <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="94"/>
+        <location filename="../config/translation_strings.py" line="113"/>
         <source>Building Units should be within Plots</source>
         <translation>Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="95"/>
+        <location filename="../config/translation_strings.py" line="114"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="96"/>
+        <location filename="../config/translation_strings.py" line="115"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="97"/>
+        <location filename="../config/translation_strings.py" line="116"/>
         <source>Table records should not be repeated</source>
         <translation>No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="98"/>
+        <location filename="../config/translation_strings.py" line="117"/>
         <source>Check that the department field of the parcel table has two numerical characters</source>
         <translation>Revisar que el campo departmento de la tabla predio tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="99"/>
+        <location filename="../config/translation_strings.py" line="118"/>
         <source>Check that the municipality field of the parcel table has three numerical characters</source>
         <translation>Revisar que el campo municipio de la tabla predio tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="100"/>
+        <location filename="../config/translation_strings.py" line="119"/>
         <source>Check that the parcel number has 30 numerical characters</source>
         <translation>Revisar que el número predial tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="101"/>
+        <location filename="../config/translation_strings.py" line="120"/>
         <source>Check that the parcel number before has 20 numerical characters</source>
         <translation>Revisar que el número predial anterior tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="104"/>
+        <location filename="../config/translation_strings.py" line="123"/>
         <source>Check that the type of parcel corresponds to position 22 of the parcel number</source>
         <translation>Revisar que el tipo de predio corresponde a la posición 22 del número predial</translation>
     </message>
@@ -8386,32 +8426,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Revisar que el campo {municipality} de la tabla {parcel} tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="111"/>
+        <location filename="../config/translation_strings.py" line="130"/>
         <source>Topological relationship between boundary and plot is not recorded in the masccl table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="112"/>
+        <location filename="../config/translation_strings.py" line="131"/>
         <source>Topological relationship between boundary and plot is duplicated in the masccl table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="113"/>
+        <location filename="../config/translation_strings.py" line="132"/>
         <source>Topological relationship between boundary and plot is not recorded in the menosccl table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="114"/>
+        <location filename="../config/translation_strings.py" line="133"/>
         <source>Topological relationship between boundary and plot is duplicated in the menosccl table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="115"/>
+        <location filename="../config/translation_strings.py" line="134"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the puntoccl table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="116"/>
+        <location filename="../config/translation_strings.py" line="135"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the puntoccl table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla puntoccl</translation>
     </message>
@@ -8428,12 +8468,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Revisar que el {parcel_number_before} tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="102"/>
+        <location filename="../config/translation_strings.py" line="121"/>
         <source>Check that attributes are appropriate for parties of type natural</source>
         <translation>Revisar que los atributos son apropiados para interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="103"/>
+        <location filename="../config/translation_strings.py" line="122"/>
         <source>Check that attributes are appropriate for parties of type legal</source>
         <translation>Revisar que los atributos son apropiados para interesados jurídicos</translation>
     </message>
@@ -8442,32 +8482,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="105"/>
+        <location filename="../config/translation_strings.py" line="124"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="106"/>
+        <location filename="../config/translation_strings.py" line="125"/>
         <source>Parcel does not have any Right associated</source>
         <translation>El Predio no tiene Derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="107"/>
+        <location filename="../config/translation_strings.py" line="126"/>
         <source>Parcel has more than one domain right associated</source>
         <translation>El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="108"/>
+        <location filename="../config/translation_strings.py" line="127"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="109"/>
+        <location filename="../config/translation_strings.py" line="128"/>
         <source>Plot is not covered by boundary</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="110"/>
+        <location filename="../config/translation_strings.py" line="129"/>
         <source>Boundary is not covered by plot</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
@@ -8484,32 +8524,32 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="117"/>
+        <location filename="../config/translation_strings.py" line="136"/>
         <source>Boundary point is not covered by boundary node</source>
         <translation>Punto lindero no está cubierto por un nodo de un lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="118"/>
+        <location filename="../config/translation_strings.py" line="137"/>
         <source>Boundary node is not covered by boundary point</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="119"/>
+        <location filename="../config/translation_strings.py" line="138"/>
         <source>Building is not over a plot</source>
         <translation>La Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="120"/>
+        <location filename="../config/translation_strings.py" line="139"/>
         <source>Building crosses a plot&apos;s limit</source>
         <translation>La Construcción cruza los límites de su Terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="121"/>
+        <location filename="../config/translation_strings.py" line="140"/>
         <source>Building Unit is not over a plot</source>
         <translation>La Unidad de Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="122"/>
+        <location filename="../config/translation_strings.py" line="141"/>
         <source>Building Unit crosses a plot&apos;s limit</source>
         <translation>La Unidad de Construcción cruza los límites de su Terreno</translation>
     </message>

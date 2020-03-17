@@ -1,19 +1,19 @@
 from qgis.utils import qgsfunction
-from qgis.core import (QgsExpression,
-                       QgsFeatureRequest,
-                       QgsFeature)
 
-@qgsfunction(args='auto', group='LADM_COL')
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+
+
+@qgsfunction(args='auto', group='LADM_COL', helpText=TranslatableConfigStrings.help_get_domain_code_from_value)
 def get_domain_code_from_value(domain_table, value, value_is_ilicode, validate_conn, feature, parent):
     """
     Gets a t_id from a domain value
 
-    domain_table: Either a string (class name in the DB) or a Vector Layer
-    value: Domain value to look for
-    value_is_ilicode: Whether 'value' is iliCode or not (if not, it's dispName)
-    validate_conn: Whether to call test_connection (might be costly in batch) or not
-    feature: Not used, but mandatory for QGIS
-    parent: Not used, but mandatory for QGIS
+    : param domain_table: Either a string (class name in the DB) or a Vector Layer
+    : param value: Domain value to look for
+    : param value_is_ilicode: Whether 'value' is iliCode or not (if not, it's dispName)
+    : param validate_conn: Whether to call test_connection (might be costly in batch) or not
+    : param feature: Not used, but mandatory for QGIS
+    : param parent: Not used, but mandatory for QGIS
     """
     debug = False
     res = None
