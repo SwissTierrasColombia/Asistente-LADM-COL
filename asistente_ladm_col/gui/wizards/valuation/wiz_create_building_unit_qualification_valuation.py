@@ -10,7 +10,7 @@
                                (C) 2018 by Jorge Useche (Incige SAS)
                                (C) 2018 by Jhon Galindo (Incige SAS)
                                (C) 2019 by Leo Cardona (BFS Swissphoto)
-        email                : gcarrillo@linuxmail.com
+        email                : gcarrillo@linuxmail.org
                                sergio.ramirez@incige.com
                                naturalmentejorge@gmail.com
                                jhonsigpjc@gmail.com

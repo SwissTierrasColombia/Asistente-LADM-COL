@@ -7,7 +7,7 @@
         git sha              : :%H$
         copyright            : (C) 2017 by Germán Carrillo (BFS Swissphoto)
                                (C) 2019 by Leo Cardona (BFS Swissphoto)
-        email                : gcarrillo@linuxmail.com
+        email                : gcarrillo@linuxmail.org
                                leo.cardona.p@gmail.com
  ***************************************************************************/
 /***************************************************************************
