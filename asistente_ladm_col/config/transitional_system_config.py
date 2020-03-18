@@ -17,6 +17,20 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
     ST_STATUS_GT_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "A connection could not be established with the server, it is possible that the server is not running.")
     ST_STATUS_401_MSG = QCoreApplication.translate("TransitionalSystemConfig", "Unauthorized client! (Status: 401)")
 
+    TASK_TITLE_TEXT_CSS = "font-size: 11pt;font-weight: bold;color: rgb(54, 54, 54);"  # dark-gray
+    TASK_TITLE_SELECTED_TEXT_CSS = "font-size: 11pt;font-weight: bold;color: rgb(236, 236, 236);"  # light-gray, almost white
+    TASK_NORMAL_TEXT_CSS = "font-size: 9pt;color: rgb(54, 54, 54);"  # dark-gray
+    TASK_NORMAL_SELECTED_TEXT_CSS = "font-size: 9pt;color: rgb(236, 236, 236);"  # light-gray, almost white
+    TASK_DATE_TEXT_CSS = "font-size: 8pt;font-style: italic;color: rgb(125, 125, 125);"  # gray
+    TASK_DATE_SELECTED_TEXT_CSS = "font-size: 8pt;font-style: italic;color: rgb(187, 187, 187);"  # light-gray
+    TASK_ASSIGNED_STATUS_TEXT_CSS = "font-size: 10pt;color: rgb(255, 174, 0);"  # orange
+    TASK_STARTED_STATUS_TEXT_CSS = "font-size: 10pt;color: rgb(90, 170, 78);"  # green
+    TASK_STARTED_STATUS_SELECTED_TEXT_CSS = "font-size: 10pt;color: rgb(159, 207, 151);"  # light-green
+
+    TASK_TITLE_BIG_TEXT_CSS = "font-size: 14pt;font-weight: bold;color: rgb(54, 54, 54);"  # dark-gray
+    TASK_ASSIGNED_STATUS_BIG_TEXT_CSS = "font-size: 12pt;color: rgb(255, 174, 0);"  # orange
+    TASK_STARTED_STATUS_BIG_TEXT_CSS = "font-size: 12pt;color: rgb(79, 157, 66);"  # different-green
+
     def __init__(self):
         QObject.__init__(self)
 

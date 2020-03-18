@@ -26,9 +26,9 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QMessageBox)
 
 from asistente_ladm_col.config.enums import STTaskStatusEnum
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
-from asistente_ladm_col.lib.transitional_system.task_manager.tasks_model import TasksModel
 from asistente_ladm_col.utils.ui import get_ui_class, get_ui_file_path
 
 WIDGET_UI = get_ui_class('transitional_system/tasks_widget.ui')
@@ -43,6 +43,7 @@ class TasksWidget(QWidget, WIDGET_UI):
         self.logger = Logger()
         self.session = STSession()
         self._user = user
+        self.st_config = TransitionalSystemConfig()
 
         self.lvw_tasks.itemSelectionChanged.connect(self.update_controls)
         self.lvw_tasks.itemDoubleClicked.connect(self.call_task_panel)
@@ -73,6 +74,11 @@ class TasksWidget(QWidget, WIDGET_UI):
                 enable = task.get_status() == STTaskStatusEnum.STARTED.value and task.steps_complete()
 
         self.btn_close_task.setEnabled(enable)
+
+        for index in range(self.lvw_tasks.count()):
+            # Update every single task item with a proper style
+            item = self.lvw_tasks.item(index)
+            self.set_task_item_style(self.lvw_tasks.itemWidget(item), item.isSelected())
 
     def update_task_count_label(self, count):
         self.lbl_task_count.setText(QCoreApplication.translate("TasksWidget",
@@ -106,13 +112,35 @@ class TasksWidget(QWidget, WIDGET_UI):
         widget_item.lbl_name.setText(task.get_name())
         widget_item.lbl_description.setText(task.get_description())
         widget_item.lbl_status.setText(task.get_status())
-        widget_item.lbl_created_at.setText("Created at: {}".format(task.get_creation_date()))
-        widget_item.lbl_deadline.setText("Deadline: {}".format(task.get_deadline()))
+        widget_item.lbl_created_at.setText(QCoreApplication.translate("TaskPanelWidget", "Created at: {}").format(task.get_creation_date()))
+        widget_item.lbl_deadline.setText(QCoreApplication.translate("TaskPanelWidget", "Deadline: {}").format(task.get_deadline()))
+
+        self.set_task_item_style(widget_item)
         item = QListWidgetItem(self.lvw_tasks)
         self.lvw_tasks.setItemWidget(item, widget_item)
         item.setSizeHint(QSize(widget_item.width(), widget_item.height()))
         item.setData(Qt.UserRole, task.get_id())
         self.lvw_tasks.addItem(item)
+
+    def set_task_item_style(self, widget, selected=False):
+        title_text = self.st_config.TASK_TITLE_TEXT_CSS
+        normal_text = self.st_config.TASK_NORMAL_TEXT_CSS
+        date_text = self.st_config.TASK_DATE_TEXT_CSS
+        if widget.lbl_status.text() == STTaskStatusEnum.ASSIGNED.value:
+            status_text = self.st_config.TASK_ASSIGNED_STATUS_TEXT_CSS
+        elif widget.lbl_status.text() == STTaskStatusEnum.STARTED.value:
+            status_text = self.st_config.TASK_STARTED_STATUS_SELECTED_TEXT_CSS if selected else self.st_config.TASK_STARTED_STATUS_TEXT_CSS
+
+        if selected:
+            title_text = self.st_config.TASK_TITLE_SELECTED_TEXT_CSS
+            normal_text = self.st_config.TASK_NORMAL_SELECTED_TEXT_CSS
+            date_text = self.st_config.TASK_DATE_SELECTED_TEXT_CSS
+
+        widget.lbl_name.setStyleSheet(title_text)
+        widget.lbl_description.setStyleSheet(normal_text)
+        widget.lbl_status.setStyleSheet(status_text)
+        widget.lbl_created_at.setStyleSheet(date_text)
+        widget.lbl_deadline.setStyleSheet(date_text)
 
     def clear_task_widget(self):
         self.lvw_tasks.clear()

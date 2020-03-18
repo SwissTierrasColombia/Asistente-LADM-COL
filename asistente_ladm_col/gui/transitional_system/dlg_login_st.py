@@ -51,6 +51,8 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.login)
         self.buttonBox.helpRequested.connect(self.show_help)
 
+        self.txt_login_user.setFocus()
+
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
