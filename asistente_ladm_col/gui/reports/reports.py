@@ -51,6 +51,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 from asistente_ladm_col.utils.java_utils import JavaUtils
+from asistente_ladm_col.utils.utils import is_connected
 
 
 class ReportGenerator(QObject):
@@ -380,7 +381,7 @@ class ReportGenerator(QObject):
     def download_report_dependency(self):
         self.logger.clear_message_bar()
         if not self._downloading: # Already downloading report dependency?
-            if self.qgis_utils.is_connected(TEST_SERVER):
+            if is_connected(TEST_SERVER):
                 self._downloading = True
                 fetcher_task = QgsNetworkContentFetcherTask(QUrl(URL_REPORTS_LIBRARIES))
                 fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))

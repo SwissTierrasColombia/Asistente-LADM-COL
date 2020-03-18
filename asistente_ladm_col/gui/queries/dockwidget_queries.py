@@ -51,6 +51,7 @@ from asistente_ladm_col.config.general_config import (TEST_SERVER,
 from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import is_connected
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus,
                                                OverrideCursor)
 
@@ -457,7 +458,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.logger.info(__name__, "Downloading file from {}".format(url))
             msg = "Downloading image from document repository (this might take a while)..."
             with ProcessWithStatus(msg):
-                if self.qgis_utils.is_connected(TEST_SERVER):
+                if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
                     request = QNetworkRequest(QUrl(url))

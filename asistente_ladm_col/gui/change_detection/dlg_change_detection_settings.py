@@ -33,6 +33,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.config.help_strings import HelpStrings
 
 DIALOG_UI = get_ui_class('change_detection/dlg_change_detection_settings.ui')
@@ -321,4 +322,4 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.done(result)
 
     def show_help(self):
-        self.qgis_utils.show_help("change_detection_settings")
+        show_plugin_help("change_detection_settings")

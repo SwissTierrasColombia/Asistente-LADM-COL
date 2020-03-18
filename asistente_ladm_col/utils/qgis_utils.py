@@ -21,8 +21,6 @@ import datetime
 import glob
 import json
 import os
-import socket
-import webbrowser
 
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
@@ -66,16 +64,13 @@ from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                ProcessWithStatus)
+from asistente_ladm_col.utils.utils import is_connected
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       LAYER,
                                                       FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
-                                                      MODULE_HELP_MAPPING,
                                                       TEST_SERVER,
-                                                      HELP_URL,
-                                                      PLUGIN_VERSION,
-                                                      HELP_DIR_NAME,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
@@ -85,8 +80,6 @@ from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
-from asistente_ladm_col.config.translator import (QGIS_LANG,
-                                                  PLUGIN_DIR)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
@@ -1059,7 +1052,7 @@ class QGISUtils(QObject):
 
         if url:
             with ProcessWithStatus("Checking Transitional System service availability (this might take a while)..."):
-                if self.is_connected(TEST_SERVER):
+                if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
                     request = QNetworkRequest(QUrl(url))
@@ -1110,7 +1103,7 @@ class QGISUtils(QObject):
 
         if url:
             with ProcessWithStatus("Checking source service availability (this might take a while)..."):
-                if self.is_connected(TEST_SERVER):
+                if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
                     request = QNetworkRequest(QUrl(url))
@@ -1172,55 +1165,6 @@ class QGISUtils(QObject):
 
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
-
-    @staticmethod
-    def is_connected(hostname):
-        try:
-            host = socket.gethostbyname(hostname)
-            s = socket.create_connection((host, 80), 2)
-            return True
-        except:
-            pass
-        finally:
-            try:
-                # s might not exist if socket.create_connection breaks
-                s.close()
-            except:
-                pass
-
-        return False
-
-    def show_help(self, module='', offline=False):
-        url = ''
-        section = MODULE_HELP_MAPPING[module]
-
-        # If we don't have Internet access check if the documentation is in the
-        # expected local dir and show it. Otherwise, show a warning message.
-        web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)
-
-        is_connected = self.is_connected(TEST_SERVER)
-        if offline or not is_connected:
-            basepath = os.path.dirname(os.path.abspath(__file__))
-
-            help_path = os.path.join(
-                PLUGIN_DIR,
-                HELP_DIR_NAME,
-                QGIS_LANG
-            )
-            if os.path.exists(help_path):
-                url = os.path.join("file://", help_path)
-            else:
-                if is_connected:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
-                        "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
-                else:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
-                        "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
-                return
-        else:
-            url = web_url
-
-        webbrowser.open("{}/{}".format(url, section))
 
     def suppress_form(self, layer, suppress=True):
         if layer:

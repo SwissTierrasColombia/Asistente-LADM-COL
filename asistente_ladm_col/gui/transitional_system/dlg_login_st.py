@@ -31,17 +31,19 @@ from asistente_ladm_col.lib.transitional_system.st_session.st_session import STS
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('transitional_system/dlg_login_st.ui')
 
 
 class LoginSTDialog(QDialog, DIALOG_UI):
-    def __init__(self, parent=None):
+    def __init__(self, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.session = STSession()
 
         self.logger = Logger()
+        self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)
@@ -78,4 +80,4 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        show_plugin_help()

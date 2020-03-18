@@ -52,6 +52,7 @@ from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
@@ -436,7 +437,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
-        self.qgis_utils.show_help("import_schema")
+        show_plugin_help("import_schema")
 
     def disable(self):
         self.db_config.setEnabled(False)

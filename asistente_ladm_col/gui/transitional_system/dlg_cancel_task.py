@@ -31,7 +31,7 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.ui import get_ui_class
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_cancel_task.ui')
 
@@ -71,5 +71,4 @@ class STCancelTaskDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.bar.pushMessage(message, level, 0)
 
     def show_help(self):
-        # self.qgis_utils.show_help("settings")
-        pass
+        show_plugin_help()
