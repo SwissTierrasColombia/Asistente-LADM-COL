@@ -1272,7 +1272,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz.close_wizard()  # This updates the is_wizard_open flag
 
     def show_st_login_dialog(self):
-        dlg = LoginSTDialog(self.main_window)
+        dlg = LoginSTDialog(self.qgis_utils, self.main_window)
         dlg.exec_()
 
         if self.session.is_user_logged():

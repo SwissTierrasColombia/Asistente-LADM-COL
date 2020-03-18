@@ -77,6 +77,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
         self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
+        self.buttonBox.helpRequested.connect(self.show_help)
 
     def accepted(self):
         self.bar.clearWidgets()
@@ -298,3 +299,6 @@ class MissingCobolSupplies(CobolBaseDialog):
             return True
         else:
             return False
+
+    def show_help(self):
+        self.qgis_utils.show_help()

@@ -63,6 +63,7 @@ class ETLCobolDialog(CobolBaseDialog):
         self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
         self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
+        self.buttonBox.helpRequested.connect(self.show_help)
 
     def accepted(self):
         self.bar.clearWidgets()
@@ -208,3 +209,6 @@ class ETLCobolDialog(CobolBaseDialog):
             self.target_data.db_connect_label.setText(
                 QCoreApplication.translate("CobolBaseDialog", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
+
+    def show_help(self):
+        self.qgis_utils.show_help()

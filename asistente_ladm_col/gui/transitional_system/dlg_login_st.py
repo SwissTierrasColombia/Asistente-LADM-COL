@@ -36,12 +36,13 @@ DIALOG_UI = get_ui_class('transitional_system/dlg_login_st.ui')
 
 
 class LoginSTDialog(QDialog, DIALOG_UI):
-    def __init__(self, parent=None):
+    def __init__(self, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.session = STSession()
 
         self.logger = Logger()
+        self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)
@@ -76,4 +77,4 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        self.qgis_utils.show_help()

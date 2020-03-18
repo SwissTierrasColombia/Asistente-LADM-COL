@@ -1196,7 +1196,8 @@ class QGISUtils(QObject):
 
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
-        web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)
+        # web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)  # TODO: To be used when the documentation has been versioned
+        web_url = "{}/{}".format(HELP_URL, QGIS_LANG)
 
         is_connected = self.is_connected(TEST_SERVER)
         if offline or not is_connected:
