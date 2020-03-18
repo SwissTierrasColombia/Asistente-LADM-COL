@@ -35,6 +35,7 @@ from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP, WIZARD_
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.utils.qt_utils import enable_next_wizard
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 
 class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
@@ -110,9 +111,9 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
 
     def show_help(self):
         if self.EDITING_LAYER_NAME == LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
-            self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
+            show_plugin_help(self.wizard_config[WIZARD_HELP])
         else:
-            self.qgis_utils.show_help("create_building_unit_qualification_valuation_unconventional")
+            show_plugin_help("create_building_unit_qualification_valuation_unconventional")
 
     #############################################################################
     # Custom methods

@@ -35,6 +35,7 @@ from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
@@ -320,4 +321,4 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.update_selected_count_label()
 
     def show_help(self):
-        self.qgis_utils.show_help("load_layers")
+        show_plugin_help("load_layers")

@@ -56,6 +56,7 @@ from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
                                                make_file_selector,
@@ -513,7 +514,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
-        self.qgis_utils.show_help("import_data")
+        show_plugin_help("import_data")
 
     def disable(self):
         self.db_config.setEnabled(False)

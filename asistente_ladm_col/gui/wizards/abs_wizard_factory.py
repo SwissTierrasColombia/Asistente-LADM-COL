@@ -36,6 +36,7 @@ from asistente_ladm_col.config.translation_strings import TranslatableConfigStri
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.ui import load_ui
 
 
@@ -156,7 +157,7 @@ class AbsWizardFactory(QWizard):
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
+        show_plugin_help(self.wizard_config[WIZARD_HELP])
 
     def set_ready_only_field(self, read_only=True):
         if self._layers[self.EDITING_LAYER_NAME][LAYER] is not None:

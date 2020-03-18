@@ -31,6 +31,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
@@ -211,4 +212,4 @@ class ETLCobolDialog(CobolBaseDialog):
             self.target_data.db_connect_label.setToolTip('')
 
     def show_help(self):
-        self.qgis_utils.show_help()
+        show_plugin_help()

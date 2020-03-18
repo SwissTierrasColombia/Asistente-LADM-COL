@@ -59,6 +59,7 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            CHECK_UEBAUNIT_PARCEL,
                                                            CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
@@ -341,4 +342,4 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.trw_quality_rules.clearSelection()
 
     def show_help(self):
-        self.qgis_utils.show_help("quality_rules")
+        show_plugin_help("quality_rules")

@@ -49,6 +49,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       LOG_QUALITY_LIST_CONTAINER_CLOSE,
                                                       LOG_QUALITY_CONTENT_SEPARATOR)
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_import_from_excel.ui')
 
@@ -574,7 +575,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, 10)
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        show_plugin_help("import_from_excel")
 
     def progress_changed(self):
         QCoreApplication.processEvents()  # Listen to cancel from the user

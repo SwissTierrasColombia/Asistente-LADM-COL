@@ -32,7 +32,8 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.ui import get_ui_class
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.utils import (Utils,
+                                            show_plugin_help)
 
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_upload_file.ui')
 
@@ -120,5 +121,4 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 
     def show_help(self):
-        # self.qgis_utils.show_help("settings")
-        pass
+        show_plugin_help()

@@ -37,6 +37,7 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                make_folder_selector,
                                                normalize_local_url)
 
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
@@ -301,4 +302,4 @@ class MissingCobolSupplies(CobolBaseDialog):
             return False
 
     def show_help(self):
-        self.qgis_utils.show_help()
+        show_plugin_help()

@@ -119,7 +119,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.utils import (Utils,
+                                            show_plugin_help)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
@@ -1224,11 +1225,11 @@ class AsistenteLADMCOLPlugin(QObject):
         Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
 
     def show_help(self):
-        self.qgis_utils.show_help()
+        show_plugin_help()
 
     def show_about_dialog(self):
         if self._about_dialog is None:
-            self._about_dialog = AboutDialog(self.qgis_utils)
+            self._about_dialog = AboutDialog()
             self._about_dialog.message_with_button_open_about_emitted.connect(self.show_message_to_open_about_dialog)
         else:
             self._about_dialog.check_local_help()

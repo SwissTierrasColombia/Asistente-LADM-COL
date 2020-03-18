@@ -31,6 +31,7 @@ from asistente_ladm_col.lib.transitional_system.st_session.st_session import STS
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('transitional_system/dlg_login_st.ui')
 
@@ -77,4 +78,4 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
-        self.qgis_utils.show_help()
+        show_plugin_help()
