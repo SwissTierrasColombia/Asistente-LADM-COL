@@ -82,6 +82,7 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value, get_domain_description_from_code  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
@@ -327,7 +328,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_etl_cobol_dialog, self._context_supplies))
+        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_wiz_supplies_etl, self._context_supplies))
         self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
@@ -800,6 +801,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_log_excel_dialog(self):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
+
+    @_db_connection_required
+    @_supplies_model_required
+    def show_wiz_supplies_etl(self, *args):
+        wiz = SuppliesETLWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_db_connection_required
     @_supplies_model_required
