@@ -24,7 +24,7 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
         ../ui/supplies/dlg_etl_cobol.ui \
-        ../ui/supplies/wig_cobol_supplies.ui \
+        ../ui/supplies/wig_etl_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
         ../ui/transitional_system/dlg_cancel_task.ui \
         ../ui/transitional_system/dlg_login_st.ui \

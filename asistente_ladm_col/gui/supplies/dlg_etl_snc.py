@@ -3,9 +3,9 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2019-11-13
+        begin                : 2020-11-13
         git sha              : :%H$
-        copyright            : (C) 2019 by Jhon Galindo (Incige SAS)
+        copyright            : (C) 2020 by Jhon Galindo (BSF Swissphoto)
         email                : jhonsigpjc@gmail.com
  ***************************************************************************/
 /***************************************************************************
@@ -31,12 +31,17 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
+                                               FileValidator,
+                                               DirValidator,
+                                               Validators,
+                                               make_file_selector,
+                                               make_folder_selector)
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_etl_base import EtlBaseDialog
 
 
-class ETLCobolDialog(EtlBaseDialog):
+class ETLSNCDialog(EtlBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         EtlBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
         self.qgis_utils = qgis_utils
@@ -45,25 +50,63 @@ class ETLCobolDialog(EtlBaseDialog):
         self.conn_manager = conn_manager
         self.parent = parent
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
-        self.tool_name = QCoreApplication.translate("ETLCobolDialog", "ETL-Cobol")
-        self.setWindowTitle(QCoreApplication.translate("ETLCobolDialog", "ETL: Cobol to Supplies model"))
+        self.tool_name = QCoreApplication.translate("EtlSNCDialog", "ETL-SNC")
+        self.setWindowTitle(QCoreApplication.translate("EtlSNCDialog", "ETL: SNC to Supplies model"))
         self.db_source = SUPPLIES_DB_SOURCE
 
         load_ui('supplies/wig_etl_supplies.ui', self.target_data)
         self.target_data.setVisible(True)
 
-        self.disable_widgets()
+        self.rename_widgets()
 
         self.target_data.btn_browse_connection.clicked.connect(self.show_settings)
         self.update_connection_info()
 
         self.restore_settings()
 
+        self.txt_help_page.clear()
+        self.txt_help_page.insertHtml('Este diálogo permite convertir datos procedentes de SNC \
+                                   al modelo de Datos Gestor Catastral, uno de los modelos \
+                                   extendidos de perfil colombiano LADM-COL.')
+
+        self.btn_browse_file_blo.clicked.disconnect()
+        self.btn_browse_file_uni.clicked.disconnect()
+        self.btn_browse_file_ter.clicked.disconnect()
+        self.btn_browse_file_pro.clicked.disconnect()
+        self.btn_browse_file_gdb.clicked.disconnect()
+
+        self.btn_browse_file_blo.clicked.connect(
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("EtlBaseDialog",
+                        "Select the Predio sanción .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_uni.clicked.connect(
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Predio .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_ter.clicked.connect(
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Dirección .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_pro.clicked.connect(
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Unidad construccion .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_gdb.clicked.connect(
+            make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
+                        'EtlSNCDialog', 'Open GDB folder'), parent=None))
+
         # Trigger validations right now
         self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.text())
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
         self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
+        self.txt_file_path_persona.textChanged.emit(self.txt_file_path_persona.text())
+        self.txt_file_path_ficha_m.textChanged.emit(self.txt_file_path_ter.text())
+        self.txt_file_path_ficha_m_predio.textChanged.emit(self.txt_file_path_pro.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def accepted(self):
@@ -72,8 +115,8 @@ class ETLCobolDialog(EtlBaseDialog):
 
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
-                QCoreApplication.translate("ETLCobolDialog", "Warning"),
-                QCoreApplication.translate("ETLCobolDialog", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
+                QCoreApplication.translate("EtlSNCDialog", "Warning"),
+                QCoreApplication.translate("EtlSNCDialog", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             lis_paths = {
@@ -122,7 +165,7 @@ class ETLCobolDialog(EtlBaseDialog):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate("ETLCobolDialog", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate("EtlSNCDialog", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -211,18 +254,11 @@ class ETLCobolDialog(EtlBaseDialog):
                 QCoreApplication.translate("EtlBaseDialog", "The database is not defined!"))
             self.target_data.db_connect_label.setToolTip('')
 
-    def disable_widgets(self):
+    def rename_widgets(self):
         """
-        The base dialog has widgets that we don't need in this subclass. so hide them.
+        The base dialog has labels that we will change the text inside, with the objective of give a good description of the interface.
         """
-        self.label_persona.setVisible(False)
-        self.label_ficha_m.setVisible(False)
-        self.label_ficha_m_predio.setVisible(False)
-
-        self.txt_file_path_persona.setVisible(False)
-        self.txt_file_path_ficha_m.setVisible(False)
-        self.txt_file_path_ficha_m_predio.setVisible(False)
-
-        self.btn_browse_file_persona.setVisible(False)
-        self.btn_browse_file_ficha_m.setVisible(False)
-        self.btn_browse_file_ficha_m_predio.setVisible(False)
+        self.label_blo.setText('Predio sanción')
+        self.label_uni.setText('Predio')
+        self.label_ter.setText('Direccion')
+        self.label_pro.setText('Unidad construccion')

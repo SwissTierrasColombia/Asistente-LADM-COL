@@ -1100,7 +1100,7 @@
     </message>
 </context>
 <context>
-    <name>CobolBaseDialog</name>
+    <name>EtlBaseDialog</name>
     <message>
         <location filename="../gui/supplies/dlg_cobol_base.py" line="73"/>
         <source>Import</source>
@@ -4476,22 +4476,22 @@ Rol:</translation>
 <context>
     <name>Form_etl_cobol</name>
     <message>
-        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="14"/>
+        <location filename="../ui/supplies/wig_etl_supplies.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="26"/>
+        <location filename="../ui/supplies/wig_etl_supplies.ui" line="26"/>
         <source>Data settings</source>
         <translation>Configuración de datos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="38"/>
+        <location filename="../ui/supplies/wig_etl_supplies.ui" line="38"/>
         <source>Database:</source>
         <translation>Base de datos:</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_cobol_supplies.ui" line="78"/>
+        <location filename="../ui/supplies/wig_etl_supplies.ui" line="78"/>
         <source>Connection settings</source>
         <translation>Configurar conexión</translation>
     </message>

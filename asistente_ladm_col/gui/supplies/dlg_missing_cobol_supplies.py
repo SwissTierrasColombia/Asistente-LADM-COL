@@ -38,12 +38,12 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                normalize_local_url)
 
 from asistente_ladm_col.utils.ui import load_ui
-from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
+from asistente_ladm_col.gui.supplies.dlg_etl_base import EtlBaseDialog
 
 
-class MissingCobolSupplies(CobolBaseDialog):
+class MissingCobolSupplies(EtlBaseDialog):
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
-        CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
+        EtlBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
         self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
@@ -282,14 +282,23 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.label_blo.setVisible(False)
         self.label_ter.setVisible(False)
         self.label_pro.setVisible(False)
+        self.label_persona.setVisible(False)
+        self.label_ficha_m.setVisible(False)
+        self.label_ficha_m_predio.setVisible(False)
 
         self.txt_file_path_blo.setVisible(False)
         self.txt_file_path_ter.setVisible(False)
         self.txt_file_path_pro.setVisible(False)
+        self.txt_file_path_persona.setVisible(False)
+        self.txt_file_path_ficha_m.setVisible(False)
+        self.txt_file_path_ficha_m_predio.setVisible(False)
 
         self.btn_browse_file_blo.setVisible(False)
         self.btn_browse_file_ter.setVisible(False)
         self.btn_browse_file_pro.setVisible(False)
+        self.btn_browse_file_persona.setVisible(False)
+        self.btn_browse_file_ficha_m.setVisible(False)
+        self.btn_browse_file_ficha_m_predio.setVisible(False)
 
     def validate_inputs(self):
         state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]

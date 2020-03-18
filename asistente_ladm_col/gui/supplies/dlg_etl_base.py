@@ -47,7 +47,7 @@ from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomF
 DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 
 
-class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
+class EtlBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
@@ -70,38 +70,53 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("CobolBaseDialog", "Import"))
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("EtlBaseDialog", "Import"))
         self.finished.connect(self.finished_slot)
 
         self._layers = dict()
         self.initialize_layers()
 
         self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("EtlBaseDialog",
                         "Select the BLO .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("EtlBaseDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("EtlBaseDialog",
                         "Select the UNI .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("EtlBaseDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("EtlBaseDialog",
                         "Select the TER .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("EtlBaseDialog", 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("EtlBaseDialog",
                         "Select the PRO .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                        QCoreApplication.translate("EtlBaseDialog", 'lis File (*.lis)')))
+
+        self.btn_browse_file_persona.clicked.connect(
+            make_file_selector(self.txt_file_path_persona, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Persona .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_ficha_m.clicked.connect(
+            make_file_selector(self.txt_file_path_ficha_m, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Ficha matriz .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_ficha_m_predio.clicked.connect(
+            make_file_selector(self.txt_file_path_ficha_m_predio, QCoreApplication.translate("EtlSNCDialog",
+                        "Select the Ficha matriz predio .csv file with SNC data "),
+                        QCoreApplication.translate("EtlSNCDialog", 'CSV File (*.csv)')))
 
         self.btn_browse_file_gdb.clicked.connect(
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                'CobolBaseDialog', 'Open GDB folder'), parent=None))
+                'EtlBaseDialog', 'Open GDB folder'), parent=None))
 
         file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
-        file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
+        file_validator_file = FileValidator(pattern=['*.lis', '*.csv'], allow_non_existing=False)
         dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
        
         self.bar = QgsMessageBar()
@@ -109,21 +124,30 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.txt_file_path_blo.setValidator(file_validator_blo)
-        self.txt_file_path_uni.setValidator(file_validator_lis)
-        self.txt_file_path_ter.setValidator(file_validator_lis)
-        self.txt_file_path_pro.setValidator(file_validator_lis)
+        self.txt_file_path_uni.setValidator(file_validator_file)
+        self.txt_file_path_ter.setValidator(file_validator_file)
+        self.txt_file_path_pro.setValidator(file_validator_file)
+        self.txt_file_path_persona.setValidator(file_validator_file)
+        self.txt_file_path_ficha_m.setValidator(file_validator_file)
+        self.txt_file_path_ficha_m_predio.setValidator(file_validator_file)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
 
         self.txt_file_path_blo.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_ter.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_pro.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_persona.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_ficha_m.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_ficha_m_predio.textChanged.connect(self.validators.validate_line_edits)
 
         self.txt_file_path_blo.textChanged.connect(self.input_data_changed)
         self.txt_file_path_uni.textChanged.connect(self.input_data_changed)
         self.txt_file_path_ter.textChanged.connect(self.input_data_changed)
         self.txt_file_path_pro.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_pro.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_ficha_m.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_ficha_m_predio.textChanged.connect(self.input_data_changed)
         self.txt_file_path_gdb.textChanged.connect(self.input_data_changed)
 
     def progress_configuration(self, base, num_process):
@@ -161,15 +185,15 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def reject(self):
         if self._running_tool:
             reply = QMessageBox.question(self,
-                                         QCoreApplication.translate("CobolBaseDialog", "Warning"),
-                                         QCoreApplication.translate("CobolBaseDialog",
+                                         QCoreApplication.translate("EtlBaseDialog", "Warning"),
+                                         QCoreApplication.translate("EtlBaseDialog",
                                                                     "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 self.custom_feedback.cancel()
                 self._running_tool = False
-                msg = QCoreApplication.translate("CobolBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
+                msg = QCoreApplication.translate("EtlBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
                 self.show_message(msg, Qgis.Info)
         else:
@@ -235,7 +259,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.lis_paths = lis_paths
 
         root = QgsProject.instance().layerTreeRoot()
-        lis_group = root.addGroup(QCoreApplication.translate("CobolBaseDialog", "LIS Supplies"))
+        lis_group = root.addGroup(QCoreApplication.translate("EtlBaseDialog", "LIS Supplies"))
 
         for name in self.lis_paths:
             uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.lis_paths[name])
@@ -253,7 +277,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                     QgsProject.instance().addMapLayer(layer, False)
                     lis_group.addLayer(layer)
                 else:
-                    return False, QCoreApplication.translate("CobolBaseDialog", "There were troubles loading the LIS file called '{}'.".format(name))
+                    return False, QCoreApplication.translate("EtlBaseDialog", "There were troubles loading the LIS file called '{}'.".format(name))
 
         return True, ''
 
@@ -264,12 +288,12 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
 
         if not layer.isValid():
-            return False, QCoreApplication.translate("CobolBaseDialog", "There were troubles loading the GDB.")
+            return False, QCoreApplication.translate("EtlBaseDialog", "There were troubles loading the GDB.")
 
         sublayers = layer.dataProvider().subLayers()
 
         root = QgsProject.instance().layerTreeRoot()
-        gdb_group = root.addGroup(QCoreApplication.translate("CobolBaseDialog", "GDB Supplies"))
+        gdb_group = root.addGroup(QCoreApplication.translate("EtlBaseDialog", "GDB Supplies"))
 
         for data in sublayers:
             sublayer = data.split('!!::!!')[1]
@@ -280,14 +304,14 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 gdb_group.addLayer(layer)
 
         if len(self.gdb_paths) != len(required_layers):
-            return False, QCoreApplication.translate("CobolBaseDialog", "The GDB does not have the required layers!")
+            return False, QCoreApplication.translate("EtlBaseDialog", "The GDB does not have the required layers!")
 
         return True, ''
 
     def load_model_layers(self):
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            return False, QCoreApplication.translate("CobolBaseDialog",
+            return False, QCoreApplication.translate("EtlBaseDialog",
                                                      "There was a problem loading layers from the 'Supplies' model!")
 
         return True, ''
