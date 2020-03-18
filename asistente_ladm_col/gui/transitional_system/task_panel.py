@@ -84,15 +84,19 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.lbl_name.setText(self._task.get_name())
             self.lbl_description.setText(self._task.get_description())
             self.lbl_created_at.setText(QCoreApplication.translate("TaskPanelWidget", "Created at: {}").format(self._task.get_creation_date()))
-            self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
+            if self._task.get_status() == STTaskStatusEnum.STARTED.value:
+                self.lbl_started_at.setVisible(True)
+                self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
+            else:
+                self.lbl_started_at.setVisible(False)
             self.lbl_deadline.setText(QCoreApplication.translate("TaskPanelWidget", "Deadline: {}").format(self._task.get_deadline()))
             self.lbl_status.setText(self._task.get_status())
 
             # Styles
             self.lbl_name.setStyleSheet(self.st_config.TASK_TITLE_BIG_TEXT_CSS)
-            if self.lbl_status.text() == STTaskStatusEnum.ASSIGNED.value:
+            if self._task.get_status() == STTaskStatusEnum.ASSIGNED.value:
                 self.lbl_status.setStyleSheet(self.st_config.TASK_ASSIGNED_STATUS_BIG_TEXT_CSS)
-            elif self.lbl_status.text() == STTaskStatusEnum.STARTED.value:
+            elif self._task.get_status() == STTaskStatusEnum.STARTED.value:
                 self.lbl_status.setStyleSheet(self.st_config.TASK_STARTED_STATUS_BIG_TEXT_CSS)
 
     def show_task_steps(self):
