@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtGui import QBrush
+from qgis.PyQt.QtGui import (QBrush,
+                             QIcon)
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QMessageBox,
                                  QDialog)
@@ -34,7 +35,9 @@ from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
 from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
-                                                         SLOT_PARAMS, SLOT_CONTEXT)
+                                                         SLOT_PARAMS,
+                                                         SLOT_CONTEXT)
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.gui.transitional_system.dlg_cancel_task import STCancelTaskDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -53,6 +56,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         self._task = self.session.task_manager.get_task(task_id)
         self.parent = parent
         self.logger = Logger()
+        self.st_config = TransitionalSystemConfig()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("TaskPanelWidget", "Task details"))
@@ -80,9 +84,20 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.lbl_name.setText(self._task.get_name())
             self.lbl_description.setText(self._task.get_description())
             self.lbl_created_at.setText(QCoreApplication.translate("TaskPanelWidget", "Created at: {}").format(self._task.get_creation_date()))
-            self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
+            if self._task.get_status() == STTaskStatusEnum.STARTED.value:
+                self.lbl_started_at.setVisible(True)
+                self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
+            else:
+                self.lbl_started_at.setVisible(False)
             self.lbl_deadline.setText(QCoreApplication.translate("TaskPanelWidget", "Deadline: {}").format(self._task.get_deadline()))
             self.lbl_status.setText(self._task.get_status())
+
+            # Styles
+            self.lbl_name.setStyleSheet(self.st_config.TASK_TITLE_BIG_TEXT_CSS)
+            if self._task.get_status() == STTaskStatusEnum.ASSIGNED.value:
+                self.lbl_status.setStyleSheet(self.st_config.TASK_ASSIGNED_STATUS_BIG_TEXT_CSS)
+            elif self._task.get_status() == STTaskStatusEnum.STARTED.value:
+                self.lbl_status.setStyleSheet(self.st_config.TASK_STARTED_STATUS_BIG_TEXT_CSS)
 
     def show_task_steps(self):
         self.trw_task_steps.clear()
@@ -99,6 +114,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             action_item = QTreeWidgetItem([step.get_name()])
             action_item.setData(0, Qt.UserRole, step.get_id())
+            action_item.setIcon(0, QIcon(":/Asistente-LADM_COL/resources/images/process.svg"))
             action_item.setToolTip(0, step.get_description())
             step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             children.append(action_item)
