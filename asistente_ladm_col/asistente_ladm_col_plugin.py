@@ -535,7 +535,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(self.show_settings)
-        self._help_action.triggered.connect(self.show_help)
+        self._help_action.triggered.connect(partial(show_plugin_help, ''))
         self._about_action.triggered.connect(self.show_about_dialog)
 
         self.gui_builder.register_actions({
@@ -1223,9 +1223,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def remove_report_dependency(self):
         self.clear_message_bar()  # Remove messages
         Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
-
-    def show_help(self):
-        show_plugin_help()
 
     def show_about_dialog(self):
         if self._about_dialog is None:
