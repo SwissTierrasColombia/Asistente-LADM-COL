@@ -544,7 +544,7 @@ class ETLSNC(ETLSupplies):
         }
 
         root = QgsProject.instance().layerTreeRoot()
-        lis_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alfanumeric Supplies"))
+        alphanumeric_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alphanumeric Supplies"))
 
         for name in self.alphanumeric_file_paths:
             uri = 'file:///{}?type=csv&delimiter=,&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.alphanumeric_file_paths[name])
@@ -552,7 +552,7 @@ class ETLSNC(ETLSupplies):
             if layer.isValid():
                 self.alphanumeric_file_paths[name] = layer
                 QgsProject.instance().addMapLayer(layer, False)
-                lis_group.addLayer(layer)
+                alphanumeric_group.addLayer(layer)
             else:
                 if name == 'predio_sancion':
                     # predio_sancion is kind of optional, if it is not given, we pass a default one
@@ -560,7 +560,7 @@ class ETLSNC(ETLSupplies):
                     layer = QgsVectorLayer(uri, name, 'delimitedtext')
                     self.alphanumeric_file_paths[name] = layer
                     QgsProject.instance().addMapLayer(layer, False)
-                    lis_group.addLayer(layer)
+                    alphanumeric_group.addLayer(layer)
                 else:
                     return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the CSV file called '{}'.".format(name))
 
@@ -607,5 +607,4 @@ class ETLSNC(ETLSupplies):
                         'uunidad': self.gdb_layer_paths['U_UNIDAD'],
                         'vereda': self.gdb_layer_paths['R_VEREDA']},
                         feedback=custom_feedback)
-
         self.logger.info(__name__, "ETL-SNC model finished.")
