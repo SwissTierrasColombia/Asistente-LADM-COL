@@ -805,7 +805,16 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_supplies_model_required
     def show_wiz_supplies_etl(self, *args):
-        wiz = SuppliesETLWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        # TODO: Should use @_activate_processing_plugin
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        wiz = SuppliesETLWizard(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        if isinstance(context, TaskContext):
+            wiz.on_result.connect(context.get_slot_on_result())
         wiz.exec_()
 
     @_db_connection_required
