@@ -310,6 +310,12 @@ Choose this option if you want to create a <b>Conventional Building Unit Qualifi
         self.WIZ_USING_FORM_BUILDING_UNIT_NO_QUALIFICATION_PAGE_2_OPTION = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create an <b>Unconventional Building Unit Qualification</b> using a form.")
 
+        self.WIZ_SUPPLIES_ETL_PAGE_2 = QCoreApplication.translate("HelpStrings", """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><style type="text/css">
+p, li {{ white-space: pre-wrap; }}
+</style></head><body style=" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;">
+<p align="justify" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#545454;">Este diálogo permite convertir datos procedentes {} al modelo de </span><span style=" font-weight:600; color:#545454;">Datos Gestor Catastral</span><span style=" color:#545454;">, uno de los modelos extendidos del perfil colombiano LADM-COL</span><span style=" font-weight:600; color:#545454;">.</span></p></body></html>""")
+
     def get_refactor_help_string(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
         layer_is_spatial = layer.isSpatial()

@@ -21,7 +21,8 @@
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication,
-                              pyqtSignal, QObject)
+                              pyqtSignal,
+                              QObject)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QSizePolicy,
                                  QGridLayout,
@@ -49,7 +50,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 WIZARD_UI = get_ui_class('supplies/wiz_supplies_etl.ui')
 
@@ -98,10 +99,6 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self.update_connection_info()
         self.restore_settings()
         self.initialize_feedback()
-
-        # Set help pages
-        #self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_2_OPTION_CSV)
-        #self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_3_OPTION_CSV)
 
         # Set MessageBar for QWizard
         self.bar = QgsMessageBar()
@@ -152,11 +149,11 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         Adjust help, names and titles according to the selected option
         """
         if self.rad_snc_data.isChecked():
-            #self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP)
             self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-SNC")
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_SUPPLIES_ETL_PAGE_2.format("del SNC"))
         elif self.rad_cobol_data.isChecked(): # self.rad_cobol_data is checked
-            #self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_SP)
             self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-Cobol")
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_SUPPLIES_ETL_PAGE_2.format("de Cobol"))
 
     def load_data_source_controls(self):
         self.clear_data_source_widget()
@@ -312,7 +309,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.rad_cobol_data.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help()  # TODO show_help from utils
+        show_plugin_help()
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
