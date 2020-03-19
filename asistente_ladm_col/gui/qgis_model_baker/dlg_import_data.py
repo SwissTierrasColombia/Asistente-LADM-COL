@@ -284,15 +284,15 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration = self.update_configuration()
 
-        if configuration.disable_validation:  # If data validation at import is disabled, we alert to user
+        if configuration.disable_validation:  # If data validation at import is disabled, we ask for confirmation
             self.msg = QMessageBox()
-            self.msg.setIcon(QMessageBox.Information)
+            self.msg.setIcon(QMessageBox.Question)
             self.msg.setText(QCoreApplication.translate("DialogImportData",
                                                         "Are you sure you want to import your data without validation?"))
-            self.msg.setWindowTitle(QCoreApplication.translate("DialogImportData", "Import xtf without validation?"))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogImportData", "Import XTF without validation?"))
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msg_box = self.msg.exec_()
-            if msg_box == QMessageBox.No:
+            res = self.msg.exec_()
+            if res == QMessageBox.No:
                 self._running_tool = False
                 return
 

@@ -242,15 +242,15 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         configuration = self.update_configuration()
 
-        if configuration.disable_validation:  # If data validation at export is disabled, we alert to user
+        if configuration.disable_validation:  # If data validation at export is disabled, we ask for confirmation
             self.msg = QMessageBox()
-            self.msg.setIcon(QMessageBox.Information)
+            self.msg.setIcon(QMessageBox.Question)
             self.msg.setText(QCoreApplication.translate("DialogExportData",
                                                         "Are you sure you want to export your data without validation?"))
-            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Export xtf without validation?"))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Export XTF without validation?"))
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msg_box = self.msg.exec_()
-            if msg_box == QMessageBox.No:
+            res = self.msg.exec_()
+            if res == QMessageBox.No:
                 self._running_tool = False
                 return
 
