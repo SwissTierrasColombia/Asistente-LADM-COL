@@ -329,7 +329,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Connections
         self._etl_cobol_supplies_action.triggered.connect(partial(self.show_etl_cobol_dialog, self._context_supplies))
-        self._missing_cobol_supplies_action.triggered.connect(self.show_missing_cobol_supplies_dialog)
+        self._missing_cobol_supplies_action.triggered.connect(partial(self.show_missing_cobol_supplies_dialog, self._context_supplies))
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
                                            ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
@@ -490,7 +490,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(partial(self.query_changes_per_parcel, self._context_collected_supplies))
         self._query_changes_all_parcels_action.triggered.connect(partial(self.query_changes_all_parcels, self._context_collected_supplies))
-        self._change_detections_settings_action.triggered.connect(self.show_change_detection_settings)
+        self._change_detections_settings_action.triggered.connect(partial(self.show_change_detection_settings, self._context_collected_supplies))
 
         self.gui_builder.register_actions({
             ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
@@ -812,13 +812,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = ETLCobolDialog(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(db_source=SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
 
-    def show_missing_cobol_supplies_dialog(self):
-        dlg = MissingCobolSupplies(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+    @_db_connection_required
+    @_supplies_model_required
+    def show_missing_cobol_supplies_dialog(self, *args):
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        dlg = MissingCobolSupplies(self.qgis_utils, self.get_db_connection(db_source=SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -903,18 +912,34 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
+        dlg.set_db_source(db_source)
 
-        # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
-        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.active_role_changed.connect(self.call_refresh_gui)
+        if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
+            # Connect signals (DBUtils, QgisUtils)
+            dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            dlg.active_role_changed.connect(self.call_refresh_gui)
 
         dlg.set_action_type(EnumDbActionType.CONFIG)
         dlg.exec_()
 
-    def show_settings_clear_message_bar(self):
-        self.clear_message_bar()
-        self.show_settings()
+    def show_settings_clear_message_bar(self, db_source):
+        self.show_settings(db_source)
+        self.iface.messageBar().popWidget()
+
+    def use_current_db_connection(self, db_source):
+        db = self.get_db_connection(db_source)
+        self.conn_manager.save_parameters_conn(db, db_source)  # Update QSettings
+        self.conn_manager.set_db_connector_for_source(db, db_source)
+        self.iface.messageBar().popWidget()
+
+    def update_db_connection(self, db_source):
+        self.conn_manager.update_db_connector_for_source(db_source)
+        self.conn_manager.db_connection_changed.emit(self.get_db_connection(db_source),
+                                                     self.get_db_connection(db_source).test_connection()[0],
+                                                     db_source)
+        self.iface.messageBar().popWidget()
 
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
@@ -940,11 +965,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
 
-    def get_db_connection(self):
-        return self.conn_manager.get_db_connector_from_source()
-
-    def get_supplies_db_connection(self):
-        return self.conn_manager.get_db_connector_from_source(db_source=SUPPLIES_DB_SOURCE)
+    def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
+        return self.conn_manager.get_db_connector_from_source(db_source)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1200,7 +1222,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
                                                                        self.get_db_connection(),
-                                                                       self.get_supplies_db_connection(),
+                                                                       self.get_db_connection(db_source=SUPPLIES_DB_SOURCE),
                                                                        self.qgis_utils,
                                                                        self.ladm_data,
                                                                        all_parcels_mode)
@@ -1208,6 +1230,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
+    @_db_connection_required
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
         dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)

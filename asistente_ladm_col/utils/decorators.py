@@ -1,5 +1,6 @@
 import time
-from functools import wraps
+from functools import (wraps,
+                       partial)
 
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
@@ -49,31 +50,66 @@ for my_method() is called.
 def _db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
+        """
+        For all db_source in the context check:
+        1. db connection is valid if no show message with button that open db connection setting dialog.
+        2. db connection parameters are equals to db source connection parameters ('QSettings') if not show message
+           with two buttons "Use DB from Settings"and "Use the current connection".
+        """
         # Check if current connection is valid and disable access if not
         inst = args[0]
         context = args[1]
+        db_sources_changed = list()
+        no_db_connection = list()
 
         for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
-            res, code, msg = db.test_connection()
-            if not res:
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "The DB {} connection is not valid. Details: {}").format(db_source, msg))
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-                button.pressed.connect(inst.show_settings_clear_message_bar)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-                inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                    "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
-                return
-            
-            if db_source == COLLECTED_DB_SOURCE:
-                if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                    inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True, db_source=None)
+            qsettings_db = inst.conn_manager.get_db_connection_from_qsettings(db_source=db_source)
 
-        func_to_decorate(*args, **kwargs)
+            if db.equals(qsettings_db):
+                res, code, msg = db.test_connection()
+                if not res:
+                    no_db_connection.append(db_source)
+                    widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                            "The DB {} connection is not valid. Details: {}").format(db_source, msg))
+                    button = QPushButton(widget)
+                    button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
+                    button.pressed.connect(partial(inst.show_settings_clear_message_bar, db_source))
+                    widget.layout().addWidget(button)
+                    inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                    inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                        "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
+                    continue
+
+                if db_source == COLLECTED_DB_SOURCE:
+                    if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
+                        inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True, db_source=None)
+            else:
+                db_sources_changed.append(db_source)
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                 "Your current {} DB does not match with the one registered in the settings. Would you like to update your connection?").format(db_source)
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+                btn_current_connection = QPushButton(widget)
+                btn_current_connection.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Use the current connection"))
+                btn_current_connection.pressed.connect(partial(inst.use_current_db_connection, db_source))
+
+                btn_update_connection = QPushButton(widget)
+                btn_update_connection.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Use DB from Settings"))
+                btn_update_connection.pressed.connect(partial(inst.update_db_connection, db_source))
+
+                widget.layout().addWidget(btn_current_connection)
+                widget.layout().addWidget(btn_update_connection)
+
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning)
+                inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                 "Your current {} DB does not match with the one registered in the settings. Would you like to update your connection?").format(db_source))
+
+        if db_sources_changed or no_db_connection:
+            return  # If any db connection changed or bad db connection, we don't return the decorated function
+        else:
+            func_to_decorate(*args, **kwargs)
 
     return decorated_function
 
