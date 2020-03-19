@@ -76,7 +76,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
 
-        self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate(self.WIZARD_NAME, "Import"))
+        self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate(self.WIZARD_NAME, "Run ETL"))
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -151,10 +151,10 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         """
         if self.rad_snc_data.isChecked():
             #self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP)
-            self.tool_name = QCoreApplication.translate("ETLCobolDialog", "ETL-SNC")
+            self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-SNC")
         elif self.rad_cobol_data.isChecked(): # self.rad_cobol_data is checked
             #self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_SP)
-            self.tool_name = QCoreApplication.translate("ETLCobolDialog", "ETL-Cobol")
+            self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-Cobol")
 
     def load_data_source_controls(self):
         self.clear_data_source_widget()
@@ -208,7 +208,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         etl_result = False
 
         if self.rad_snc_data.isChecked():
-            etl = ETLCobol(self.names, self._data_source_widget)
+            etl = ETLSNC(self.names, self._data_source_widget)
         else:  # Cobol
             etl = ETLCobol(self.names, self._data_source_widget)
 
@@ -355,8 +355,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         return True, ''
 
 
-class ETLCobol(QObject):
-    CLASS_NAME = "ETLCobol"
+class ETLSupplies(QObject):
+    CLASS_NAME = ""
 
     def __init__(self, names, data_source_widget):
         QObject.__init__(self)
@@ -364,109 +364,24 @@ class ETLCobol(QObject):
         self.data_source_widget = data_source_widget
         self.logger = Logger()
 
-        self.lis_paths = {}
         self.gdb_path = self.data_source_widget.txt_file_path_gdb.text()
 
+        self.alphanumeric_file_paths = {}
         self.gdb_layer_paths = dict()
         self.layers = dict()
 
         self.initialize_layers()
 
     def initialize_layers(self):
-        self.layers = {
-            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
-            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
-        }
-
-    def run_etl_model(self, custom_feedback):
-        self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies",
-                       {'barrio': self.gdb_layer_paths['U_BARRIO'],
-                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
-                        'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
-                        'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
-                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T][LAYER],
-                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T][LAYER],
-                        'gcmanzana': self.layers[self.names.GC_BLOCK_T][LAYER],
-                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T][LAYER],
-                        'gcpropietario': self.layers[self.names.GC_OWNER_T][LAYER],
-                        'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T][LAYER],
-                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T][LAYER],
-                        'gcterreno': self.layers[self.names.GC_PLOT_T][LAYER],
-                        'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T][LAYER],
-                        'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
-                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T][LAYER],
-                        'inputblo': self.lis_paths['blo'],
-                        'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
-                        'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
-                        'inputperimetro': self.gdb_layer_paths['U_PERIMETRO'],
-                        'inputpro': self.lis_paths['pro'],
-                        'inputrunidad': self.gdb_layer_paths['R_UNIDAD'],
-                        'inputsector': self.gdb_layer_paths['R_SECTOR'],
-                        'inputter': self.lis_paths['ter'],
-                        'inputterreno': self.gdb_layer_paths['R_TERRENO'],
-                        'inputuconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
-                        'inputuni': self.lis_paths['uni'],
-                        'inputusector': self.gdb_layer_paths['U_SECTOR'],
-                        'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
-                        'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
-                        'inputvereda': self.gdb_layer_paths['R_VEREDA'],
-                        'ouputlayer': self.layers[self.names.GC_PARCEL_T][LAYER],
-                        'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
-                        'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
-                       feedback=custom_feedback)
-        self.logger.info(__name__, "ETL-Cobol model finished.")
+        raise NotImplementedError
 
     def load_alphanumeric_layers(self):
-        self.lis_paths = {
-            'blo': self.data_source_widget.txt_file_path_blo.text().strip(),
-            'uni': self.data_source_widget.txt_file_path_uni.text().strip(),
-            'ter': self.data_source_widget.txt_file_path_ter.text().strip(),
-            'pro': self.data_source_widget.txt_file_path_pro.text().strip()
-        }
-
-        root = QgsProject.instance().layerTreeRoot()
-        lis_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "LIS Supplies"))
-
-        for name in self.lis_paths:
-            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.lis_paths[name])
-            layer = QgsVectorLayer(uri, name, 'delimitedtext')
-            if layer.isValid():
-                self.lis_paths[name] = layer
-                QgsProject.instance().addMapLayer(layer, False)
-                lis_group.addLayer(layer)
-            else:
-                if name == 'blo':
-                    # BLO is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(BLO_LIS_FILE_PATH)
-                    layer = QgsVectorLayer(uri, name, 'delimitedtext')
-                    self.lis_paths[name] = layer
-                    QgsProject.instance().addMapLayer(layer, False)
-                    lis_group.addLayer(layer)
-                else:
-                    return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the LIS file called '{}'.".format(name))
-
-        return True, ''
+        raise NotImplementedError
 
     def load_spatial_layers(self):
         required_layers = ['R_TERRENO', 'U_TERRENO', 'R_SECTOR', 'U_SECTOR', 'R_VEREDA', 'U_MANZANA', 'U_BARRIO',
                            'R_CONSTRUCCION', 'U_CONSTRUCCION', 'U_UNIDAD', 'R_UNIDAD',
                            'U_NOMENCLATURA_DOMICILIARIA', 'R_NOMENCLATURA_DOMICILIARIA', 'U_PERIMETRO']
-
-        self.gdb_layer_paths = dict()
 
         layer = QgsVectorLayer(self.gdb_path, 'layer name', 'ogr')
 
@@ -490,3 +405,157 @@ class ETLCobol(QObject):
             return False, QCoreApplication.translate(self.CLASS_NAME, "The GDB does not have the required layers!")
 
         return True, ''
+
+    def run_etl_model(self, custom_feedback):
+        raise NotImplementedError
+
+
+class ETLCobol(ETLSupplies):
+    CLASS_NAME = "ETLCobol"
+
+    def __init__(self, names, data_source_widget):
+        ETLSupplies.__init__(self, names, data_source_widget)
+
+    def initialize_layers(self):
+        self.layers = {
+            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
+            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
+            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+
+    def load_alphanumeric_layers(self):
+        self.alphanumeric_file_paths = {
+            'blo': self.data_source_widget.txt_file_path_blo.text().strip(),
+            'uni': self.data_source_widget.txt_file_path_uni.text().strip(),
+            'ter': self.data_source_widget.txt_file_path_ter.text().strip(),
+            'pro': self.data_source_widget.txt_file_path_pro.text().strip()
+        }
+
+        root = QgsProject.instance().layerTreeRoot()
+        lis_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "LIS Supplies"))
+
+        for name in self.alphanumeric_file_paths:
+            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.alphanumeric_file_paths[name])
+            layer = QgsVectorLayer(uri, name, 'delimitedtext')
+            if layer.isValid():
+                self.alphanumeric_file_paths[name] = layer
+                QgsProject.instance().addMapLayer(layer, False)
+                lis_group.addLayer(layer)
+            else:
+                if name == 'blo':
+                    # BLO is kind of optional, if it is not given, we pass a default one
+                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(BLO_LIS_FILE_PATH)
+                    layer = QgsVectorLayer(uri, name, 'delimitedtext')
+                    self.alphanumeric_file_paths[name] = layer
+                    QgsProject.instance().addMapLayer(layer, False)
+                    lis_group.addLayer(layer)
+                else:
+                    return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the LIS file called '{}'.".format(name))
+
+        return True, ''
+
+    def run_etl_model(self, custom_feedback):
+        self.logger.info(__name__, "Running ETL-Cobol model...")
+        processing.run("model:ETL-model-supplies",
+                       {'barrio': self.gdb_layer_paths['U_BARRIO'],
+                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
+                        'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
+                        'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
+                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T][LAYER],
+                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T][LAYER],
+                        'gcmanzana': self.layers[self.names.GC_BLOCK_T][LAYER],
+                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T][LAYER],
+                        'gcpropietario': self.layers[self.names.GC_OWNER_T][LAYER],
+                        'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T][LAYER],
+                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T][LAYER],
+                        'gcterreno': self.layers[self.names.GC_PLOT_T][LAYER],
+                        'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T][LAYER],
+                        'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
+                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+                        'inputblo': self.alphanumeric_file_paths['blo'],
+                        'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
+                        'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
+                        'inputperimetro': self.gdb_layer_paths['U_PERIMETRO'],
+                        'inputpro': self.alphanumeric_file_paths['pro'],
+                        'inputrunidad': self.gdb_layer_paths['R_UNIDAD'],
+                        'inputsector': self.gdb_layer_paths['R_SECTOR'],
+                        'inputter': self.alphanumeric_file_paths['ter'],
+                        'inputterreno': self.gdb_layer_paths['R_TERRENO'],
+                        'inputuconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
+                        'inputuni': self.alphanumeric_file_paths['uni'],
+                        'inputusector': self.gdb_layer_paths['U_SECTOR'],
+                        'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
+                        'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
+                        'inputvereda': self.gdb_layer_paths['R_VEREDA'],
+                        'ouputlayer': self.layers[self.names.GC_PARCEL_T][LAYER],
+                        'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
+                        'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
+                       feedback=custom_feedback)
+        self.logger.info(__name__, "ETL-Cobol model finished.")
+
+
+class ETLSNC(ETLSupplies):
+    CLASS_NAME = "ETLSNC"
+
+    def __init__(self, names, data_source_widget):
+        ETLSupplies.__init__(self, names, data_source_widget)
+
+    def initialize_layers(self):
+        # TODO: Implement
+        self.layers = dict()
+
+    def load_alphanumeric_layers(self):
+        # TODO: Implement
+        return True, ''
+
+    def run_etl_model(self, custom_feedback):
+        # TODO: Implement
+        self.logger.info(__name__, "Running ETL-SNC model...")
+        # processing.run("model:ETL-model-supplies",
+        #                {'barrio': self.gdb_layer_paths['U_BARRIO'],
+        #                 'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
+        #                 'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
+        #                 'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
+        #                 'gcconstruccion': self.layers[self.names.GC_BUILDING_T][LAYER],
+        #                 'gcdireccion': self.layers[self.names.GC_ADDRESS_T][LAYER],
+        #                 'gcmanzana': self.layers[self.names.GC_BLOCK_T][LAYER],
+        #                 'gcperimetro': self.layers[self.names.GC_PERIMETER_T][LAYER],
+        #                 'gcpropietario': self.layers[self.names.GC_OWNER_T][LAYER],
+        #                 'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T][LAYER],
+        #                 'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T][LAYER],
+        #                 'gcterreno': self.layers[self.names.GC_PLOT_T][LAYER],
+        #                 'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T][LAYER],
+        #                 'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
+        #                 'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+        #                 'inputblo': self.alphanumeric_file_paths['blo'],
+        #                 'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
+        #                 'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
+        #                 'inputperimetro': self.gdb_layer_paths['U_PERIMETRO'],
+        #                 'inputpro': self.alphanumeric_file_paths['pro'],
+        #                 'inputrunidad': self.gdb_layer_paths['R_UNIDAD'],
+        #                 'inputsector': self.gdb_layer_paths['R_SECTOR'],
+        #                 'inputter': self.alphanumeric_file_paths['ter'],
+        #                 'inputterreno': self.gdb_layer_paths['R_TERRENO'],
+        #                 'inputuconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
+        #                 'inputuni': self.alphanumeric_file_paths['uni'],
+        #                 'inputusector': self.gdb_layer_paths['U_SECTOR'],
+        #                 'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
+        #                 'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
+        #                 'inputvereda': self.gdb_layer_paths['R_VEREDA'],
+        #                 'ouputlayer': self.layers[self.names.GC_PARCEL_T][LAYER],
+        #                 'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
+        #                 'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
+        #                feedback=custom_feedback)
+        self.logger.info(__name__, "ETL-SNC model finished.")
