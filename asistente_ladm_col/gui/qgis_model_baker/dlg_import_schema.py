@@ -244,6 +244,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def accepted(self):
         self._running_tool = True
+        self.txtStdout.clear()
+        self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
         java_home_set = self.java_utils.set_java_home()
