@@ -21,10 +21,11 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QRadioButton)
 
-from ...config.help_strings import HelpStrings
+from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 
-from ...utils import get_ui_class
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_welcome_screen.ui')
 
@@ -86,4 +87,4 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
                 break
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        show_plugin_help()

@@ -47,9 +47,9 @@ from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       DICT_JAVA_MD5SUM,
                                                       DICT_JAVA_DIR_NAME,
                                                       TEST_SERVER)
-from asistente_ladm_col.utils.utils import md5sum
+from asistente_ladm_col.utils.utils import (md5sum,
+                                            is_connected)
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.lib.logger import Logger
 
 
@@ -81,7 +81,7 @@ class JavaUtils(QObject):
         self.logger.clear_message_bar()
 
         if not self._downloading: # Already downloading report dependency?
-            if QGISUtils.is_connected(TEST_SERVER):
+            if is_connected(TEST_SERVER):
                 self._downloading = True
                 fetcher_task = QgsNetworkContentFetcherTask(QUrl(uri))
                 fetcher_task.begun.connect(self.task_begun)

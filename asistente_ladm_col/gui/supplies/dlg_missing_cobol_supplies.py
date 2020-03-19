@@ -37,6 +37,7 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                make_folder_selector,
                                                normalize_local_url)
 
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
@@ -77,6 +78,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
         self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
+        self.buttonBox.helpRequested.connect(self.show_help)
 
     def accepted(self):
         self.bar.clearWidgets()
@@ -298,3 +300,6 @@ class MissingCobolSupplies(CobolBaseDialog):
             return True
         else:
             return False
+
+    def show_help(self):
+        show_plugin_help()

@@ -38,6 +38,7 @@ from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from qgis.core import NULL
 
 DIALOG_UI = get_ui_class('wizards/operation/dlg_group_party.ui')
@@ -450,4 +451,4 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             pass
 
     def show_help(self):
-        self.qgis_utils.show_help("group_party")
+        show_plugin_help("group_party")

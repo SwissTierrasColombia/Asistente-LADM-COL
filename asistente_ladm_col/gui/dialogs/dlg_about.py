@@ -26,23 +26,23 @@ from functools import partial
 from qgis.PyQt.QtCore import (QUrl,
                               QFile,
                               QTextStream,
-                              QTextCodec,
                               QIODevice,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsNetworkContentFetcherTask,
-                       QgsApplication,
-                       Qgis)
+                       QgsApplication)
 
 from asistente_ladm_col.lib.logger import Logger
-from ...config.general_config import (HELP_DIR_NAME,
-                                      HELP_DOWNLOAD,
-                                      PLUGIN_VERSION,
-                                      TEST_SERVER)
-from ...config.translator import (QGIS_LANG,
-                                  PLUGIN_DIR)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.general_config import (HELP_DIR_NAME,
+                                                      HELP_DOWNLOAD,
+                                                      PLUGIN_VERSION,
+                                                      TEST_SERVER)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  PLUGIN_DIR)
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import (is_connected,
+                                            show_plugin_help)
 
 DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
 
@@ -50,10 +50,9 @@ DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
 class AboutDialog(QDialog, DIALOG_UI):
     message_with_button_open_about_emitted = pyqtSignal(str)
 
-    def __init__(self, qgis_utils):
+    def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
         self.check_local_help()
 
@@ -125,7 +124,7 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.check_local_help()
 
     def download_help(self):
-        if self.qgis_utils.is_connected(TEST_SERVER):
+        if is_connected(TEST_SERVER):
             self.btn_download_help.setEnabled(False)
             url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs_{lang}.zip'.format(lang=QGIS_LANG)])
             fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
@@ -141,4 +140,4 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.check_local_help()
 
     def show_help(self):
-        self.qgis_utils.show_help('', offline=True)
+        show_plugin_help('', offline=True)

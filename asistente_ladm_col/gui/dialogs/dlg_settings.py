@@ -41,6 +41,7 @@ from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
@@ -447,7 +448,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             "SettingsDialog", "Missing roads will not be marked as errors."))
 
     def show_help(self):
-        self.qgis_utils.show_help("settings")
+        show_plugin_help("settings")
 
     def set_action_type(self, action_type):
         self._action_type = action_type
