@@ -33,6 +33,7 @@ WIDGET_UI = get_ui_class('supplies/cobol_data_source_widget.ui')
 class CobolDataSourceWidget(QWidget, WIDGET_UI):
 
     input_data_changed = pyqtSignal(bool)
+    WIDGET_NAME = "CobolDataSourceWidget"
 
     def __init__(self, ):
         QWidget.__init__(self)
@@ -44,28 +45,28 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
         self.restore_settings()
 
         self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate(self.WIDGET_NAME,
                                                                                   "Select the BLO .lis file with Cobol data "),
-                               QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate(self.WIDGET_NAME,
                                                                                   "Select the UNI .lis file with Cobol data "),
-                               QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate(self.WIDGET_NAME,
                                                                                   "Select the TER .lis file with Cobol data "),
-                               QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("CobolBaseDialog",
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate(self.WIDGET_NAME,
                                                                                   "Select the PRO .lis file with Cobol data "),
-                               QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
+                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
 
         self.btn_browse_file_gdb.clicked.connect(
             make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                'CobolBaseDialog', 'Open GDB folder'), parent=None))
+                self.WIDGET_NAME, "Open GDB folder"), parent=None))
 
         file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
         file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
@@ -83,11 +84,11 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_pro.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
 
-        self.txt_file_path_blo.textChanged.connect(self.input_data_changed_slot)
-        self.txt_file_path_uni.textChanged.connect(self.input_data_changed_slot)
-        self.txt_file_path_ter.textChanged.connect(self.input_data_changed_slot)
-        self.txt_file_path_pro.textChanged.connect(self.input_data_changed_slot)
-        self.txt_file_path_gdb.textChanged.connect(self.input_data_changed_slot)
+        self.txt_file_path_blo.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_uni.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_ter.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_pro.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_gdb.textChanged.connect(self.emit_input_data_changed)
 
         # Trigger validations right now
         self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.text())
@@ -112,7 +113,7 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
         else:
             return False
 
-    def input_data_changed_slot(self):
+    def emit_input_data_changed(self):
         self.input_data_changed.emit(self.validate_inputs())
 
     def save_settings(self):

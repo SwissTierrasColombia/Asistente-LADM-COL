@@ -42,6 +42,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.supplies.cobol_data_sources_widget import CobolDataSourceWidget
+from asistente_ladm_col.gui.supplies.snc_data_sources_widget import SNCDataSourceWidget
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 from asistente_ladm_col.utils import get_ui_class
@@ -158,11 +159,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
     def load_data_source_controls(self):
         self.clear_data_source_widget()
         if self.rad_snc_data.isChecked():
-            self._data_source_widget = CobolDataSourceWidget()
-            self._data_source_widget.input_data_changed.connect(self.set_import_button_enabled)
+            self._data_source_widget = SNCDataSourceWidget()
         else:  # Cobol
             self._data_source_widget = CobolDataSourceWidget()
-            self._data_source_widget.input_data_changed.connect(self.set_import_button_enabled)
+
+        self._data_source_widget.input_data_changed.connect(self.set_import_button_enabled)
+        self._data_source_widget.emit_input_data_changed()  # Initialize input validation
         self.data_source_layout.addWidget(self._data_source_widget)
         self._data_source_widget.setVisible(True)
 
