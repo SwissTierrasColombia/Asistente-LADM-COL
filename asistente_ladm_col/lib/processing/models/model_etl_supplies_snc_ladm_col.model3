@@ -1378,7 +1378,7 @@
         <Option name="METHOD" type="List">
           <Option type="Map">
             <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="0"/>
+            <Option name="static_value" type="int" value="1"/>
           </Option>
         </Option>
         <Option name="PREFIX" type="List">
@@ -1445,7 +1445,7 @@
         <Option name="METHOD" type="List">
           <Option type="Map">
             <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="0"/>
+            <Option name="static_value" type="int" value="1"/>
           </Option>
         </Option>
         <Option name="PREFIX" type="List">
@@ -1513,7 +1513,7 @@
         <Option name="METHOD" type="List">
           <Option type="Map">
             <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="0"/>
+            <Option name="static_value" type="int" value="1"/>
           </Option>
         </Option>
         <Option name="PREFIX" type="List">
@@ -2855,14 +2855,14 @@
                 <Option name="type" type="int" value="10"/>
               </Option>
               <Option type="Map">
-                <Option name="expression" type="QString" value="CIRCULO_REGISTRAL"/>
+                <Option name="expression" type="QString" value="if (CIRCULO_REGISTRAL = '','*', CIRCULO_REGISTRAL)"/>
                 <Option name="length" type="int" value="4"/>
                 <Option name="name" type="QString" value="circulo_registral"/>
                 <Option name="precision" type="int" value="-1"/>
                 <Option name="type" type="int" value="10"/>
               </Option>
               <Option type="Map">
-                <Option name="expression" type="QString" value="NUMERO_REGISTRO"/>
+                <Option name="expression" type="QString" value="if (NUMERO_REGISTRO = '','*', NUMERO_REGISTRO)"/>
                 <Option name="length" type="int" value="80"/>
                 <Option name="name" type="QString" value="matricula_inmobiliaria_catastro"/>
                 <Option name="precision" type="int" value="-1"/>
