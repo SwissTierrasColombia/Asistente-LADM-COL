@@ -299,7 +299,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+        settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
@@ -369,7 +369,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool))
 
         self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
