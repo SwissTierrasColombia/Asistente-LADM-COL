@@ -21,8 +21,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import psycopg2.extras
 from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsWkbTypes,
-                       QgsDataSourceUri)
+from qgis.core import (QgsDataSourceUri)
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
@@ -42,7 +41,7 @@ from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import
                                                                                   annex17_plot_data_query)
 from asistente_ladm_col.config.ladm_names import LADMNames
 
-from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,

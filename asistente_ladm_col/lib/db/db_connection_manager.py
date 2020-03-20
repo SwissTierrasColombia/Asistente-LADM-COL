@@ -26,7 +26,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
+from asistente_ladm_col.core.encrypter_decrypter import EncrypterDecrypter
 
 
 class ConnectionManager(QObject):

@@ -330,7 +330,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_etl_cobol_dialog, self._context_supplies))
+        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_wiz_supplies_etl, self._context_supplies))
         self._missing_cobol_supplies_action.triggered.connect(partial(self.show_missing_cobol_supplies_dialog, self._context_supplies))
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
@@ -814,7 +814,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        wiz = SuppliesETLWizard(self.qgis_utils, self.get_supplies_db_connection(), self.conn_manager, self.iface.mainWindow())
+        wiz = SuppliesETLWizard(self.qgis_utils, self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             wiz.on_result.connect(context.get_slot_on_result())
         wiz.exec_()

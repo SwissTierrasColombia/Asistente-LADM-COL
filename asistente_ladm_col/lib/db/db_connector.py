@@ -21,7 +21,7 @@ from PyQt5.QtCore import QCoreApplication
 
 from qgis.PyQt.QtCore import QObject
 
-from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
