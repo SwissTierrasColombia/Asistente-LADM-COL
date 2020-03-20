@@ -71,8 +71,7 @@ class ETLSNC(ETLSupplies):
         alphanumeric_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alphanumeric Supplies"))
 
         for name in self.alphanumeric_file_paths:
-            uri = 'file:///{}?type=csv&delimiter=,&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.alphanumeric_file_paths[name])
-            layer = QgsVectorLayer(uri, name, 'delimitedtext')
+            layer = QgsVectorLayer(self.alphanumeric_file_paths[name], name, 'ogr')
             if layer.isValid():
                 self.alphanumeric_file_paths[name] = layer
                 QgsProject.instance().addMapLayer(layer, False)
