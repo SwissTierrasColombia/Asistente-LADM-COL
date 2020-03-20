@@ -161,8 +161,7 @@ class Role_Registry(metaclass=Singleton):
                 },
                 SEPARATOR,
                 ACTION_SCHEMA_IMPORT,
-                ACTION_RUN_ETL_COBOL,
-                ACTION_RUN_ETL_SNC,
+                ACTION_RUN_ETL_SUPPLIES,
                 ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_LOAD_LAYERS,
                 ACTION_EXPORT_DATA
@@ -173,8 +172,7 @@ class Role_Registry(metaclass=Singleton):
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "The Supplies Provider role generates a XTF file with supplies data for the Manager role."),
             ROLE_ACTIONS: [
-                ACTION_RUN_ETL_COBOL,
-                ACTION_RUN_ETL_SNC,
+                ACTION_RUN_ETL_SUPPLIES,
                 ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_ST_LOGIN,
                 ACTION_ST_LOGOUT

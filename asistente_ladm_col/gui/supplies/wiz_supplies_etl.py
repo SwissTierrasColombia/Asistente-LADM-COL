@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import (QWizard,
                                  QSizePolicy,
                                  QGridLayout,
                                  QMessageBox)
-from qgis.core import (Qgis)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.enums import EnumDbActionType
@@ -250,7 +250,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate("ETLCobolDialog", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate(self.WIZARD_NAME, "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -292,6 +292,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             etl_source = "cobol"
 
         settings.setValue('Asistente-LADM_COL/supplies/etl_source', etl_source)
+        self._data_source_widget.save_settings()
 
     def restore_settings(self):
         settings = QSettings()

@@ -95,7 +95,6 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.supplies.dlg_etl_cobol import ETLCobolDialog
 from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
@@ -319,9 +318,9 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_ST_LOGOUT: self._st_logout_action})
 
     def create_supplies_actions(self):
-        self._etl_cobol_supplies_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/etl_cobol.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load Cobol data"),
+        self._etl_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/etl.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Run supplies ETL"),
             self.main_window)
 
         self._missing_cobol_supplies_action = QAction(
@@ -330,10 +329,10 @@ class AsistenteLADMCOLPlugin(QObject):
             self.main_window)
 
         # Connections
-        self._etl_cobol_supplies_action.triggered.connect(partial(self.show_wiz_supplies_etl, self._context_supplies))
+        self._etl_supplies_action.triggered.connect(partial(self.show_wiz_supplies_etl, self._context_supplies))
         self._missing_cobol_supplies_action.triggered.connect(partial(self.show_missing_cobol_supplies_dialog, self._context_supplies))
 
-        self.gui_builder.register_actions({ACTION_RUN_ETL_COBOL: self._etl_cobol_supplies_action,
+        self.gui_builder.register_actions({ACTION_RUN_ETL_SUPPLIES: self._etl_supplies_action,
                                            ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
 
     def create_operation_actions(self):
@@ -818,21 +817,6 @@ class AsistenteLADMCOLPlugin(QObject):
         if isinstance(context, TaskContext):
             wiz.on_result.connect(context.get_slot_on_result())
         wiz.exec_()
-
-    @_db_connection_required
-    @_supplies_model_required
-    def show_etl_cobol_dialog(self, *args):
-        # TODO: Should use @_activate_processing_plugin
-
-        if not args or not isinstance(args[0], Context):
-            return
-
-        context = args[0]
-
-        dlg = ETLCobolDialog(self.qgis_utils, self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
-        if isinstance(context, TaskContext):
-            dlg.on_result.connect(context.get_slot_on_result())
-        dlg.exec_()
 
     @_db_connection_required
     @_supplies_model_required
