@@ -4,11 +4,9 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.tests.utils import (get_iface,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker)
+from asistente_ladm_col.tests.utils import (get_iface)
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
-from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
+from asistente_ladm_col.core.encrypter_decrypter import EncrypterDecrypter
 
 asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), True)
 

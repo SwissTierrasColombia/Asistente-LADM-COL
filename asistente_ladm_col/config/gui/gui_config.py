@@ -161,8 +161,7 @@ class GUI_Config(QObject):
                     OBJECT_NAME: "ladm_col_supplies_menu",
                     ICON: SUPPLIES_ICON,
                     ACTIONS: [
-                        ACTION_RUN_ETL_COBOL,
-                        ACTION_RUN_ETL_SNC,
+                        ACTION_RUN_ETL_SUPPLIES,
                         ACTION_INTEGRATE_SUPPLIES,
                         ACTION_FIND_MISSING_COBOL_SUPPLIES
                     ]

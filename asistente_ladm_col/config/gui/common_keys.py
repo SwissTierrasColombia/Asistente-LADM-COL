@@ -43,8 +43,7 @@ ACTION_FILL_MORE_BFS_AND_LESS = 'action_fill_more_bfs_and_less'
 ACTION_FILL_RIGHT_OF_WAY_RELATIONS = 'action_fill_right_of_way_relations'
 ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE = 'action_import_from_intermediate_structure'
 
-ACTION_RUN_ETL_COBOL = 'action_run_etl_cobol'
-ACTION_RUN_ETL_SNC = 'action_run_etl_snc'
+ACTION_RUN_ETL_SUPPLIES = 'action_run_etl_supplies'
 ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
@@ -112,8 +111,7 @@ MODELS_GUI_DICT = {
     LADMNames.VALUATION_MODEL_PREFIX: [
     ],
     LADMNames.SUPPLIES_MODEL_PREFIX: [
-        ACTION_RUN_ETL_COBOL,
-        ACTION_RUN_ETL_SNC,
+        ACTION_RUN_ETL_SUPPLIES,
         ACTION_FIND_MISSING_COBOL_SUPPLIES
     ]
 }

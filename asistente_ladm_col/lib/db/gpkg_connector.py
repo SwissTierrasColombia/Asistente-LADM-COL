@@ -33,7 +33,7 @@ from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
-from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 
 

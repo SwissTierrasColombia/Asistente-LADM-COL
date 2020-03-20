@@ -2,7 +2,7 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
 from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
-from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_COBOL
+from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_SUPPLIES
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.enums import (STStepTypeEnum,
                                              EnumUserLevel)
@@ -68,9 +68,9 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),
                  STEP_TYPE: STStepTypeEnum.RUN_ETL_COBOL,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
-                                                              "Migrate Cobol data (.lis files) and its corresponding GBD to the LADM-COL (supplies model)."),
+                                                              "Migrate SNC or Cobol data to the LADM-COL (supplies model)."),
                  STEP_CUSTOM_ACTION_SLOT: {
-                     SLOT_NAME: self._slot_caller.show_etl_cobol_dialog,
+                     SLOT_NAME: self._slot_caller.show_wiz_supplies_etl,
                      SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
                      SLOT_PARAMS: {}}
                  },
@@ -123,9 +123,9 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Start assisted integration"),
                  STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
-                 STEP_ACTION: ACTION_RUN_ETL_COBOL,  # TODO: functionality to integrate in assisted manner
+                 STEP_ACTION: ACTION_RUN_ETL_SUPPLIES,  # TODO: functionality to integrate in assisted manner
                  STEP_DESCRIPTION: "Not implemented yet."
-                }]
+                 }]
 
         return steps_config
 
