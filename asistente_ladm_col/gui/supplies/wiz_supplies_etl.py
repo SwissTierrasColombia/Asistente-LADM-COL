@@ -303,7 +303,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.rad_cobol_data.setChecked(True)
 
     def show_help(self):
-        show_plugin_help()
+        show_plugin_help('supplies')
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)

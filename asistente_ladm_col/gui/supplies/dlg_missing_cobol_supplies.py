@@ -302,4 +302,4 @@ class MissingCobolSupplies(CobolBaseDialog):
             return False
 
     def show_help(self):
-        show_plugin_help()
+        show_plugin_help('supplies')
