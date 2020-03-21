@@ -18,12 +18,14 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([2.99.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.1)) of the LADM_COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
+The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) of the LADM_COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
    - Task management: start, cancel and finalize tasks.
    - Tasks of cadastral supplies generation and assisted integration of supplies (partial support). 
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
  - Create database structures for the LADM-COL v2.9.6 model.
  - Two database engines to manage LADM-COL data:
@@ -87,7 +89,6 @@ The current version ([2.99.1](https://github.com/AgenciaImplementacion/Asistente
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
- - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.

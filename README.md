@@ -19,12 +19,14 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([2.99.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.1)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
+La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
 
  - Integración con el Sistema de Transición:
    - Autenticación.
    - Gestión de tareas: consulta, iniciación, cancelación y finalización.
    - Tareas de generación de insumos catastrales e integración asistida de insumos (soporte parcial).
+     - ETL para generar insumos catastrales a partir de datos del IGAC (fuente SNC).
+     - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
  - Soporte de roles y generación de interfaz de usuario para cada rol.
  - Crear estructura de base de datos conforme con el modelo LADM-COL v2.9.6.
  - Soporte de dos motores para manejar datos de LADM-COL:
@@ -89,7 +91,6 @@ La versión actual ([2.99.1](https://github.com/AgenciaImplementacion/Asistente-
  - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
- - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.

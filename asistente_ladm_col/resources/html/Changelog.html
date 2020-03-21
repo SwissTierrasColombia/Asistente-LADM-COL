@@ -4,21 +4,16 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>2.99.1</b></p>
+<p>Cambios en la version <b>2.99.2</b></p>
 <ul>
-    <li>Integración con el Sistema de Transición:
+    <li>ETL para datos del Sistema Nacional Catastral (SNC).</li>
+    <li>Wizard para los dos ETLs: SNC y Cobol.</li>
+    <li>Otros ajustes:
         <ul>
-            <li>Iniciar, cancelar y finalizar tarea desde el Asistente LADM_COL.</li>
-            <li>Tareas de generación de insumos catastrales e Integración asistida (soporte parcial).</li>
-        </ul>
-    </li>
-    <li>Identificación de novedades entre datos del barrido predial y datos de insumos.</li>
-    <li>Soporte de GeoPackage como base de datos para manejar datos LADM-COL (exceptuando validaciones de calidad, consultas y  reportes).</li>
-    <li>Usabilidad: Instalación automática de prerrequisitos: incluye los complementos Model Baker y Map Swipe Tool, modelos LADM-COL v2.9.6 y Java v1.8.</li>
-    <li>Mejoras en pruebas:
-        <ul>
-            <li>1 prueba de interfaz semi-asistida (nueva).</li>
-            <li>150 pruebas unitarias automáticas.</li>
+            <li>Mejora de la ayuda de la función de expresión: get_domain_code_from_value.</li>
+            <li>Mejora de estilos en la interfaz de tareas.</li>
+            <li>Solo se permite ejecutar cada paso de la tarea, si el paso no está chequeado.</li>
+            <li>Si está activa opción de no validar datos en operaciones Importar/Exportar XTF, se advierte al usuario y se pide confirmación.</li>
         </ul>
     </li>
 </ul>
