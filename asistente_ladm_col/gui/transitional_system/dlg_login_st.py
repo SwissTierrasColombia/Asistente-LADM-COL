@@ -80,4 +80,4 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
-        show_plugin_help()
+        show_plugin_help('transitional_system')

@@ -113,7 +113,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
         if self.EDITING_LAYER_NAME == LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
             show_plugin_help(self.wizard_config[WIZARD_HELP])
         else:
-            show_plugin_help("create_building_unit_qualification_valuation_unconventional")
+            show_plugin_help()
 
     #############################################################################
     # Custom methods
