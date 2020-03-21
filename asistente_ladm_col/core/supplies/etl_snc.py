@@ -79,11 +79,11 @@ class ETLSNC(ETLSupplies):
             else:
                 if name == 'predio_sancion':
                     # predio_sancion is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=,&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(PREDIO_SANCION_FILE_PATH)
-                    layer = QgsVectorLayer(uri, name, 'delimitedtext')
+                    layer = QgsVectorLayer(PREDIO_SANCION_FILE_PATH, name, 'ogr')
                     self.alphanumeric_file_paths[name] = layer
-                    QgsProject.instance().addMapLayer(layer, False)
-                    alphanumeric_group.addLayer(layer)
+                    if layer.isValid():
+                        QgsProject.instance().addMapLayer(layer, False)
+                        alphanumeric_group.addLayer(layer)
                 else:
                     return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the CSV file called '{}'.".format(name))
 
