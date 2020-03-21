@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuración &mdash; documentación de Asistente LADM-COL - </title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Barra de herramientas" href="barra_de_herramientas.html" />
+    <link rel="prev" title="Instalación" href="instalacion.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Asistente LADM-COL
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="instalacion.html">Instalación</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuración</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#conexion-a-base-de-datos">Conexión a Base de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parametros-de-postgresql-postgis">Párametros de PostgreSQL/PostGIS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametros-de-geopackage">Parámetros de GeoPackage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modelos">Modelos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calidad">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#valores-automaticos">Valores automáticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="administracion_de_datos.html">Administración de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="captura_y_estructura_de_datos.html">Captura y estructuración de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargas capas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de insumos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reglas_de_calidad.html">Reglas de calidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="consulta_de_datos.html">Consulta de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reportes.html">Reportes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="identificacion_de_novedades.html">Identificación de novedades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sistema_de_transicion.html">Sistema de transición</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acerca_de.html">Acerca de</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Asistente LADM-COL</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Configuración</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/configuracion.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuracion">
+<h1>Configuración<a class="headerlink" href="#configuracion" title="Enlazar permanentemente con este título">¶</a></h1>
+<a class=""
+               data-lightbox="group-ad96deba-9c14-4299-8d38-87be9a71ad16"
+               href="_images/settings.gif"
+               title="Configuración básica"
+               data-title="Configuración básica"
+               ><img src="_images/settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Configuración básica"/>
+                </a><div class="section" id="conexion-a-base-de-datos">
+<h2>Conexión a Base de Datos<a class="headerlink" href="#conexion-a-base-de-datos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta pestaña, se definen los parámetros para conectarse con la base de datos que almacena el modelo físico de LADM_COL.</p>
+<p>Estos parámetros son:</p>
+<p><strong>Parámetros comunes</strong></p>
+<ul class="simple">
+<li><p><strong>Fuente</strong>: Define el origen de los datos, esta puede ser una base de datos espacial PostgreSQL o GeoPackage.</p></li>
+</ul>
+<div class="section" id="parametros-de-postgresql-postgis">
+<h3>Párametros de PostgreSQL/PostGIS<a class="headerlink" href="#parametros-de-postgresql-postgis" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Usuario</strong>: Nombre del Usuario que tiene permiso sobre la base de datos</p></li>
+<li><p><strong>Contraseña</strong>: Contraseña de Usuario</p></li>
+<li><p><strong>Host</strong>: dirección donde la base de datos es almacenada localhost es equivalente a 127.0.0.</p></li>
+<li><p><strong>Puerto</strong>: Número del puerto de escucha para la base de datos</p></li>
+<li><p><strong>Base de Datos</strong>:Nombre de la base de datos que contiene o contendrá el modelo físico de LADM_COL</p></li>
+<li><p><strong>Esquema</strong>: Nombre del esquema que almacena los objetos del modelo físico de LADM_COL</p></li>
+</ul>
+<a class=""
+               data-lightbox="group-e2a96054-ef03-478a-a661-8fb5f840f18a"
+               href="_images/db_connection_settings.gif"
+               title="Configuración básica"
+               data-title="Configuración básica"
+               ><img src="_images/db_connection_settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Configuración básica"/>
+                </a><p><strong>Nota</strong>: Puede crear su base de datos y su esquema. Pero los nombres no deben contener caracteres especiales.</p>
+</div>
+<div class="section" id="parametros-de-geopackage">
+<h3>Parámetros de GeoPackage<a class="headerlink" href="#parametros-de-geopackage" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Archivo de Base de Datos</strong>: Ubicación en disco del archivo Geopackage que contiene la base de datos.</p></li>
+</ul>
+<p>El botón Probar Conexión se usa para saber si los parámetros ingresados son correctos y permiten la conexión a la base de datos</p>
+</div>
+</div>
+<div class="section" id="modelos">
+<h2>Modelos<a class="headerlink" href="#modelos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta pestaña, puede seleccionar si desea utilizar el repositorio de modelos locales o remotos.</p>
+<a class=""
+               data-lightbox="group-4a85f688-c09b-4d2c-a75a-3addddc77ede"
+               href="_images/set_custom_models_directories.gif"
+               title="Establecer directorios de modelos personalizados"
+               data-title="Establecer directorios de modelos personalizados"
+               ><img src="_images/set_custom_models_directories.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Establecer directorios de modelos personalizados"/>
+                </a></div>
+<div class="section" id="calidad">
+<h2>Calidad<a class="headerlink" href="#calidad" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta pestaña se definen parámetros para validaciones de calidad. Por ejemplo, se establece el límite de tolerancia permitido para segmentos de linderos demasiado largos, el cual debe estar definido en metros.</p>
+</div>
+<div class="section" id="valores-automaticos">
+<h2>Valores automáticos<a class="headerlink" href="#valores-automaticos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La mayoría de las clases en LADM_COL tiene dos atributos que combinados deben ser únicos en todo el <cite>esquema/base de datos</cite>. Se denominan <strong>espacio_de_nombres</strong> y <strong>local_id</strong>. Para hacer más fácil el llenado de estos atributos, el asistente LADM_COL puede configurarse con valores automáticos para ellos.</p>
+<p>Concretamente, <strong>espacio_de_nombres</strong> corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LINDERO): MI_ORGANIZATION_LINDERO.</p>
+<p>Por otra parte , <strong>local_id</strong> correspondera al ID del registro en la base de datos.</p>
+<p>Si deseas llenar esos valores por tu cuenta desmarca las siguientes opciones en este formulario.</p>
+<a class=""
+               data-lightbox="group-8665fc7d-74c8-45cb-a6aa-2333252ca75a"
+               href="_images/automatic_values_settings.gif"
+               title="Configuración de valores automáticos"
+               data-title="Configuración de valores automáticos"
+               ><img src="_images/automatic_values_settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Configuración de valores automáticos"/>
+                </a></div>
+<div class="section" id="fuentes">
+<h2>Fuentes<a class="headerlink" href="#fuentes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Es posible configurar a través de un repositorio de datos una ruta de acceso URL para subir fuentes administrativas y fuentes espaciales asociadas a la información recolectada en LADM-COL.</p>
+<a class=""
+               data-lightbox="group-dc57abd9-0e44-4c63-83fa-93be77639fd4"
+               href="_images/source_settings.gif"
+               title="Fuentes"
+               data-title="Fuentes"
+               ><img src="_images/source_settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Fuentes"/>
+                </a></div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="barra_de_herramientas.html" class="btn btn-neutral float-right" title="Barra de herramientas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="instalacion.html" class="btn btn-neutral float-left" title="Instalación" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Agencia de implementación
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
