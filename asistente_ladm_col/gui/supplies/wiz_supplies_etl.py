@@ -52,8 +52,6 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
-    WIZARD_NAME = "SuppliesETLWizard"
-
     def __init__(self, qgis_utils, db, conn_manager, parent=None):
         QWizard.__init__(self)
         self.setupUi(self)
@@ -72,7 +70,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
 
-        self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate(self.WIZARD_NAME, "Run ETL"))
+        self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate("SuppliesETLWizard", "Run ETL"))
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -115,7 +113,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         not_visible = []
 
         if id == self.dict_pages_ids[self.wizardPage1]:
-            self.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Run supplies ETL"))
+            self.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "Run supplies ETL"))
             button_list.remove(QWizard.BackButton)
             button_list.remove(QWizard.CustomButton1)
             button_list.remove(QWizard.FinishButton)
@@ -124,9 +122,9 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             not_visible.append(self.NextButton)
             self.load_data_source_controls()
             if self.rad_snc_data.isChecked():
-                self.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "ETL: SNC to Supplies model"))
+                self.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "ETL: SNC to Supplies model"))
             else:
-                self.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "ETL: Cobol to Supplies model"))
+                self.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "ETL: Cobol to Supplies model"))
         elif id == self.dict_pages_ids[self.wizardPage3]:
             self.bar.clearWidgets()
             button_list.remove(QWizard.CustomButton1)
@@ -142,10 +140,10 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         Adjust help, names and titles according to the selected option
         """
         if self.rad_snc_data.isChecked():
-            self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-SNC")
+            self.tool_name = QCoreApplication.translate("SuppliesETLWizard", "ETL-SNC")
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_SUPPLIES_ETL_PAGE_2.format("del SNC"))
         elif self.rad_cobol_data.isChecked(): # self.rad_cobol_data is checked
-            self.tool_name = QCoreApplication.translate(self.WIZARD_NAME, "ETL-Cobol")
+            self.tool_name = QCoreApplication.translate("SuppliesETLWizard", "ETL-Cobol")
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_SUPPLIES_ETL_PAGE_2.format("de Cobol"))
 
     def load_data_source_controls(self):
@@ -206,8 +204,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
-                QCoreApplication.translate(self.WIZARD_NAME, "Warning"),
-                QCoreApplication.translate(self.WIZARD_NAME, "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
+                QCoreApplication.translate("SuppliesETLWizard", "Warning"),
+                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -229,7 +227,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
                                     self.button(self.NextButton).setVisible(True)
                                     self.button(self.CustomButton1).setVisible(False)
-                                    self.show_message(QCoreApplication.translate(self.WIZARD_NAME,
+                                    self.show_message(QCoreApplication.translate("SuppliesETLWizard",
                                                         "The {} has finished successfully!").format(self.tool_name),
                                                       Qgis.Success, 0)
 
@@ -250,7 +248,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate(self.WIZARD_NAME, "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -259,15 +257,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
     def reject(self):
         if self._running_tool:
             reply = QMessageBox.question(self,
-                                         QCoreApplication.translate(self.WIZARD_NAME, "Warning"),
-                                         QCoreApplication.translate(self.WIZARD_NAME,
+                                         QCoreApplication.translate("SuppliesETLWizard", "Warning"),
+                                         QCoreApplication.translate("SuppliesETLWizard",
                                                                     "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 self.custom_feedback.cancel()
                 self._running_tool = False
-                msg = QCoreApplication.translate(self.WIZARD_NAME, "The '{}' tool was cancelled.").format(self.tool_name)
+                msg = QCoreApplication.translate("SuppliesETLWizard", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
                 self.show_message(msg, Qgis.Info)
         else:
@@ -331,7 +329,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.db_connect_label.setToolTip(self._db.get_display_conn_string())
         else:
             self.db_connect_label.setText(
-                QCoreApplication.translate(self.WIZARD_NAME, "The database is not defined!"))
+                QCoreApplication.translate("SuppliesETLWizard", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
 
     def db_connection_changed(self, db, ladm_col_db, db_source):
@@ -342,7 +340,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
     def load_model_layers(self, layers):
         self.qgis_utils.get_layers(self._db, layers, load=True)
         if not layers:
-            return False, QCoreApplication.translate(self.WIZARD_NAME,
+            return False, QCoreApplication.translate("SuppliesETLWizard",
                                                      "There was a problem loading layers from the 'Supplies' model!")
 
         return True, ''

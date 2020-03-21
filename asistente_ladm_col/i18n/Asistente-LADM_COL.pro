@@ -23,9 +23,11 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
-        ../ui/supplies/dlg_etl_cobol.ui \
+        ../ui/supplies/cobol_data_source_widget.ui \
+        ../ui/supplies/snc_data_source_widget.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
+        ../ui/supplies/wiz_supplies_etl.ui \
         ../ui/transitional_system/dlg_cancel_task.ui \
         ../ui/transitional_system/dlg_login_st.ui \
         ../ui/transitional_system/dlg_upload_file.ui \
@@ -89,9 +91,11 @@ SOURCES = ../__init__.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
           ../gui/queries/dockwidget_queries.py \
           ../gui/reports/reports.py \
+          ../gui/supplies/cobol_data_sources_widget.py \
           ../gui/supplies/dlg_cobol_base.py \
-          ../gui/supplies/dlg_etl_cobol.py \
           ../gui/supplies/dlg_missing_cobol_supplies.py \
+          ../gui/supplies/snc_data_sources_widget.py \
+          ../gui/supplies/wiz_supplies_etl.py \
           ../gui/transitional_system/dlg_cancel_task.py \
           ../gui/transitional_system/dlg_login_st.py \
           ../gui/transitional_system/dlg_upload_file.py \

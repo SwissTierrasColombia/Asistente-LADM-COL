@@ -33,7 +33,6 @@ WIDGET_UI = get_ui_class('supplies/cobol_data_source_widget.ui')
 class CobolDataSourceWidget(QWidget, WIDGET_UI):
 
     input_data_changed = pyqtSignal(bool)
-    WIDGET_NAME = "CobolDataSourceWidget"
 
     def __init__(self, ):
         QWidget.__init__(self)
@@ -45,28 +44,28 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
         self.restore_settings()
 
         self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate(self.WIDGET_NAME,
+            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the BLO .lis file with Cobol data "),
-                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
+                               QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)')))
 
         self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate(self.WIDGET_NAME,
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the UNI .lis file with Cobol data "),
-                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
+                               QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)')))
 
         self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate(self.WIDGET_NAME,
+            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the TER .lis file with Cobol data "),
-                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
+                               QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)')))
 
         self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate(self.WIDGET_NAME,
+            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the PRO .lis file with Cobol data "),
-                               QCoreApplication.translate(self.WIDGET_NAME, 'lis File (*.lis)')))
+                               QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)')))
 
         self.btn_browse_file_gdb.clicked.connect(
             make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                self.WIDGET_NAME, "Open GDB folder"), parent=None))
+                "CobolDataSourceWidget", "Open GDB folder"), parent=None))
 
         file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
         file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
