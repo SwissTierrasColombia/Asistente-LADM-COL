@@ -18,12 +18,20 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([2.99.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.3.1.2](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip) and allows users to:
+The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) of the LADM_COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
 
- - Integration with the transitional System. Authentication and task management.
+ - Integration with the Transitional System:
+   - Authentication
+   - Task management: start, cancel and finalize tasks.
+   - Tasks of cadastral supplies generation and assisted integration of supplies (partial support). 
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
+ - Create database structures for the LADM-COL v2.9.6 model.
+ - Two database engines to manage LADM-COL data:
+   - PostgreSQL/PostGIS: Total support.
+   - GeoPackage: quality validations, parcel queries and reports are not yet supported.
  - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
- - Create database structures for the aforementioned model.
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
  - Import/export data from/to transfer files (.XTF) disabling data validation.
@@ -81,7 +89,6 @@ The current version ([2.99.0](https://github.com/AgenciaImplementacion/Asistente
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
- - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
@@ -140,9 +147,8 @@ To use the LADM_COL Assistant you need:
    - Java v1.8
    - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
    - PostGIS 2.4 or higher.
- - QGIS plugins:
-   - LADM_COL Assistant
-   - QGIS Model Baker v4.3.1.2
+ - QGIS plugins (installing LADM_COL Assistant using QGIS Plugin Manager will also install these automatically):
+   - QGIS Model Baker v6.0.0
    - MapSwipe Tool v1.2
 
 ## Testing

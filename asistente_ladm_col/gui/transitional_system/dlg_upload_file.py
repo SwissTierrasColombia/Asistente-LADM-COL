@@ -24,19 +24,23 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.ui import get_ui_class
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.utils import (Utils,
+                                            show_plugin_help)
 
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_upload_file.ui')
 
 
 class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     def __init__(self, request_id, supply_type, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -89,6 +93,8 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         else:
             self.enable_controls(True)  # Prepare next run
 
+        self.on_result.emit(res)  # Inform other classes if the execution was successful
+
         return  # Do not close dialog
 
     def show_message(self, message, level):
@@ -115,5 +121,4 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 
     def show_help(self):
-        # self.qgis_utils.show_help("settings")
-        pass
+        show_plugin_help('transitional_system')

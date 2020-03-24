@@ -26,7 +26,7 @@ from qgis.core import (Qgis,
 import processing
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 
 
@@ -69,7 +69,7 @@ class RightOfWay(QObject):
         restriction_right_of_way_t_id = [feature for feature in layers[self.names.OP_RESTRICTION_TYPE_D][LAYER].getFeatures(exp)][0][self.names.T_ID_F]
 
         if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount() == 0:
-            if self.qgis_utils.get_ladm_layer_by_register_type(db, self.names.OP_PLOT_T, LayerRegisterType.IN_CANVAS) is None:
+            if self.qgis_utils.get_ladm_layer_by_registry_type(db, self.names.OP_PLOT_T, LayerRegistryType.IN_CANVAS) is None:
                 self.logger.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                                "First load the layer {} into QGIS and select at least one plot!").format(self.names.OP_PLOT_T),

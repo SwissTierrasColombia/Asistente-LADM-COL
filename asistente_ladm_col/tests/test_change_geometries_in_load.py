@@ -8,14 +8,13 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            unload_qgis_model_baker,
                                             get_pg_conn,
                                             delete_features,
                                             restore_schema,
                                             run_etl_model)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.tests.utils import get_test_copy_path
-
-import_qgis_model_baker()
 
 GPKG_PATH_DISTINCT_GEOMS = 'geopackage/test_distinct_geoms_v296.gpkg'
 SCHEMA_DISTINCT_GEOMS = 'test_distinct_geoms'
@@ -28,7 +27,9 @@ class TestGeomsLoad(unittest.TestCase):
     def setUpClass(cls):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
 
-        # resore schemas
+        import_qgis_model_baker()
+
+        # restore schemas
         print("INFO: Restoring databases to be used")
         restore_schema(SCHEMA_DISTINCT_GEOMS)
         restore_schema(SCHEMA_LADM_COL_EMPTY)
@@ -166,6 +167,8 @@ class TestGeomsLoad(unittest.TestCase):
         print("INFO: Closing open connections to databases")
         cls.db_distinct_geoms.conn.close()
         cls.db_pg.conn.close()
+        unload_qgis_model_baker()
+
 
 if __name__ == '__main__':
     nose2.main()

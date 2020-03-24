@@ -20,7 +20,7 @@
    <string>Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -30,7 +30,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -123,69 +123,67 @@
        <string>Models</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
-       <item row="2" column="2">
-        <widget class="QToolButton" name="custom_models_dir_button">
-         <property name="text">
-          <string>…</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QRadioButton" name="offline_models_radio_button">
-         <property name="text">
-          <string>Use models from local folders</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <spacer name="horizontalSpacer_8">
+       <item row="4" column="1">
+        <spacer name="verticalSpacer_7">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QRadioButton" name="online_models_radio_button">
-         <property name="text">
-          <string>Use models from Internet repository </string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="autoRepeat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <spacer name="horizontalSpacer_7">
+       <item row="6" column="1">
+        <spacer name="verticalSpacer_12">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="custom_model_directories_line_edit">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item row="5" column="0" colspan="3">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Options for data management</string>
          </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="chk_validate_data_importing_exporting">
+            <property name="text">
+             <string>Validate data while importing from/exporting to XTF</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Models</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="6" column="0">
+           <widget class="QLineEdit" name="custom_model_directories_line_edit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Directories which contain Interlis Models (ili files). Several paths can be separated with a semicolon `;`. It is also possible to specify URL's of model repositories.&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;%ILI_FROM_DB&lt;/dt&gt;&lt;dd&gt;is a placeholder for the models in the database (in the table &lt;code&gt;t_ili2db_model&lt;/code&gt;).
@@ -194,11 +192,54 @@
 &lt;dd&gt;is a placeholder for the directory with a transfer file.&lt;/dd&gt;
 &lt;dt&gt;%JAR_DIR&lt;/dt&gt;&lt;dd&gt;is a placeholder for the directory with the ili2db application (ili2pg.jar / ili2gpkg.jar).&lt;/dd&gt;&lt;/dl&gt;
 &lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="placeholderText">
-          <string>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</string>
-         </property>
+            </property>
+            <property name="placeholderText">
+             <string>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="online_models_radio_button">
+            <property name="text">
+             <string>Use models from Internet repository </string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QToolButton" name="custom_models_dir_button">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="offline_models_radio_button">
+            <property name="text">
+             <string>Use models from local folders</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
+       </item>
+       <item row="0" column="1">
+        <spacer name="verticalSpacer_11">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -694,38 +735,6 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>Options for data management</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="chk_validate_data_importing_exporting">
-            <property name="text">
-             <string>Validate data while importing from/exporting to XTF</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -756,10 +765,6 @@
   <tabstop>cbo_db_engine</tabstop>
   <tabstop>btn_test_connection</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>online_models_radio_button</tabstop>
-  <tabstop>offline_models_radio_button</tabstop>
-  <tabstop>custom_model_directories_line_edit</tabstop>
-  <tabstop>custom_models_dir_button</tabstop>
   <tabstop>chk_use_roads</tabstop>
   <tabstop>chk_automatic_values_in_batch_mode</tabstop>
   <tabstop>namespace_collapsible_group_box</tabstop>

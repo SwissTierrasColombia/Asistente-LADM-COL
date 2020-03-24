@@ -35,6 +35,14 @@ class GUI_Config(QObject):
                     ]
                 },
                 SEPARATOR,
+                {
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Transitional System"),
+                    OBJECT_NAME: 'ladm_col_st_menu',
+                    ICON: ST_ICON,
+                    ACTIONS: [ACTION_ST_LOGIN,
+                              ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
                 ACTION_SETTINGS,
                 SEPARATOR,
                 ACTION_HELP,
@@ -153,8 +161,7 @@ class GUI_Config(QObject):
                     OBJECT_NAME: "ladm_col_supplies_menu",
                     ICON: SUPPLIES_ICON,
                     ACTIONS: [
-                        ACTION_RUN_ETL_COBOL,
-                        ACTION_RUN_ETL_SNC,
+                        ACTION_RUN_ETL_SUPPLIES,
                         ACTION_INTEGRATE_SUPPLIES,
                         ACTION_FIND_MISSING_COBOL_SUPPLIES
                     ]

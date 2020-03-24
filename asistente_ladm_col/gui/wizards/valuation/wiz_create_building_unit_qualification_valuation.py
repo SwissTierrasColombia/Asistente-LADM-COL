@@ -10,7 +10,7 @@
                                (C) 2018 by Jorge Useche (Incige SAS)
                                (C) 2018 by Jhon Galindo (Incige SAS)
                                (C) 2019 by Leo Cardona (BFS Swissphoto)
-        email                : gcarrillo@linuxmail.com
+        email                : gcarrillo@linuxmail.org
                                sergio.ramirez@incige.com
                                naturalmentejorge@gmail.com
                                jhonsigpjc@gmail.com
@@ -32,9 +32,10 @@ from qgis.core import QgsMapLayerProxyModel
 from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_QSETTINGS, \
     WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, \
     WIZARD_HELP4, WIZARD_HELP5, WIZARD_MAP_LAYER_PROXY_MODEL
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.utils.qt_utils import enable_next_wizard
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 
 class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
@@ -110,9 +111,9 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
 
     def show_help(self):
         if self.EDITING_LAYER_NAME == LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
-            self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
+            show_plugin_help(self.wizard_config[WIZARD_HELP])
         else:
-            self.qgis_utils.show_help("create_building_unit_qualification_valuation_unconventional")
+            show_plugin_help()
 
     #############################################################################
     # Custom methods

@@ -22,17 +22,25 @@ import shutil
 import tempfile
 import zipfile
 from functools import partial
+import socket
+import webbrowser
 
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import DEPENDENCIES_BASE_PATH
+from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
+                                                      MODULE_HELP_MAPPING,
+                                                      TEST_SERVER,
+                                                      HELP_URL,
+                                                      HELP_DIR_NAME)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
                                                remove_readonly,
                                                normalize_local_url,
                                                ProcessWithStatus)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  PLUGIN_DIR)
 
 class Utils(QObject):
     """
@@ -100,6 +108,7 @@ def is_plugin_version_valid(plugin_name, min_required_version, exact_required_ve
     if not plugin_found:
         return False
     current_version = get_plugin_metadata(plugin_name, 'version')
+    current_version = current_version[1:] if current_version.startswith("v") else current_version
     return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
@@ -161,3 +170,53 @@ def md5sum(filename):
         for buf in iter(partial(f.read, 128), b''):
             d.update(buf)
     return d.hexdigest()
+
+
+def is_connected(hostname):
+    try:
+        host = socket.gethostbyname(hostname)
+        s = socket.create_connection((host, 80), 2)
+        return True
+    except:
+        pass
+    finally:
+        try:
+            # s might not exist if socket.create_connection breaks
+            s.close()
+        except:
+            pass
+
+    return False
+
+
+def show_plugin_help(module='', offline=False):
+    url = ''
+    section = MODULE_HELP_MAPPING[module]
+
+    # If we don't have Internet access check if the documentation is in the
+    # expected local dir and show it. Otherwise, show a warning message.
+    # web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)  # TODO: To be used when the documentation has been versioned
+    web_url = HELP_URL
+
+    _is_connected = is_connected(TEST_SERVER)
+    if offline or not _is_connected:
+
+        help_path = os.path.join(
+            PLUGIN_DIR,
+            HELP_DIR_NAME,
+            QGIS_LANG
+        )
+        if os.path.exists(help_path):
+            url = os.path.join("file://", help_path)
+        else:
+            if _is_connected:
+                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
+            else:
+                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                    "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
+            return
+    else:
+        url = web_url
+
+    webbrowser.open("{}/{}".format(url, section))

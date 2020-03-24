@@ -21,10 +21,11 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QRadioButton)
 
-from ...config.help_strings import HelpStrings
+from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 
-from ...utils import get_ui_class
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_welcome_screen.ui')
 
@@ -70,7 +71,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
 
     def show_description(self, description, checked):
         if checked:
-            self.txt_help_page.setHtml(description)
+            self.txt_help_page.setHtml("<span style=\" color:#545454;\">{}</span>".format(description))
 
     def set_checked_role_active(self):
         radio_checked = None
@@ -86,4 +87,4 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
                 break
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        show_plugin_help()

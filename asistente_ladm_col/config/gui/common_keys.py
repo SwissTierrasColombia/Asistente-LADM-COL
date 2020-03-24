@@ -1,11 +1,11 @@
-from asistente_ladm_col.config.mapping_config import LADMNames
-
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 DEFAULT_GUI = 'DEFAULT_GUI'
 TEMPLATE_GUI = 'TEMPLATE_GUI'
 
 ACTION = 'action'
 DEFAULT_ACTION_TEXT = 'default_action_text'
+DEFAULT_ACTION_STATUS = 'default_action_status'
 OBJECT_NAME = 'object_name'
 ICON = 'icon'
 ACTIONS = 'actions'
@@ -43,8 +43,7 @@ ACTION_FILL_MORE_BFS_AND_LESS = 'action_fill_more_bfs_and_less'
 ACTION_FILL_RIGHT_OF_WAY_RELATIONS = 'action_fill_right_of_way_relations'
 ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE = 'action_import_from_intermediate_structure'
 
-ACTION_RUN_ETL_COBOL = 'action_run_etl_cobol'
-ACTION_RUN_ETL_SNC = 'action_run_etl_snc'
+ACTION_RUN_ETL_SUPPLIES = 'action_run_etl_supplies'
 ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
@@ -70,11 +69,8 @@ ACTION_CREATE_ADMINISTRATIVE_SOURCE = 'action_create_administrative_source'
 ACTION_CREATE_SPATIAL_SOURCE = 'action_create_spatial_source'
 ACTION_UPLOAD_PENDING_SOURCE = 'action_upload_pending_source'
 ACTION_SCHEMA_IMPORT = 'action_schema_import'
-ACTION_SCHEMA_IMPORT_SUPPLIES = 'action_schema_import_supplies'
 ACTION_IMPORT_DATA = 'action_import_data'
-ACTION_IMPORT_DATA_SUPPLIES = 'action_import_data_supplies'
 ACTION_EXPORT_DATA = 'action_export_data'
-ACTION_EXPORT_DATA_SUPPLIES = 'action_export_data_supplies'
 ACTION_LOAD_LAYERS = 'action_load_layers'
 ACTION_REPORT_ANNEX_17 = 'action_report_annex_17'
 ACTION_REPORT_ANT = 'action_report_ant'
@@ -115,8 +111,7 @@ MODELS_GUI_DICT = {
     LADMNames.VALUATION_MODEL_PREFIX: [
     ],
     LADMNames.SUPPLIES_MODEL_PREFIX: [
-        ACTION_RUN_ETL_COBOL,
-        ACTION_RUN_ETL_SNC,
+        ACTION_RUN_ETL_SUPPLIES,
         ACTION_FIND_MISSING_COBOL_SUPPLIES
     ]
 }

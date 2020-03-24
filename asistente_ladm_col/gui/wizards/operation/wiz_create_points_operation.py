@@ -39,6 +39,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                OverrideCursor,
                                                enable_next_wizard,
@@ -509,4 +510,4 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.update_crs_info()
 
     def show_help(self):
-        self.qgis_utils.show_help("create_points")
+        show_plugin_help("create_points")

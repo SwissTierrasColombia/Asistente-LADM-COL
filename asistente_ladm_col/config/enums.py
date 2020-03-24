@@ -2,11 +2,6 @@ from enum import (Enum,
                   IntFlag)
 
 
-class LayerRegisterType(Enum):
-    IN_REGISTER = 1
-    IN_CANVAS = 2
-    NOT_IN_CANVAS = 3
-
 class EnumDbActionType(Enum):
     SCHEMA_IMPORT = 1
     IMPORT = 2
@@ -99,6 +94,7 @@ class STTaskStatusEnum(Enum):
     CANCELED = "CANCELADA"
     CLOSED = "CERRADA"
 
+
 class STStepTypeEnum(Enum):
     UPLOAD_FILE = 1
     CONNECT_TO_DB = 2
@@ -106,3 +102,9 @@ class STStepTypeEnum(Enum):
     IMPORT_DATA = 4
     EXPORT_DATA = 5
     RUN_ETL_COBOL = 6
+
+
+class LayerRegistryType(Enum):
+    IN_REGISTRY = 1
+    IN_CANVAS = 2
+    NOT_IN_CANVAS = 3

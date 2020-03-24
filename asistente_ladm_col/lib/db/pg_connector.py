@@ -34,15 +34,15 @@ from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                  annex17_point_data_query,
                                                                                  annex17_plot_data_query)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
-from asistente_ladm_col.utils.model_parser import ModelParser
+from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
-                                                      DESCRIPTION_KEY,
-                                                      QueryNames)
+                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.config.query_names import QueryNames
 
 
 class PGConnector(DBConnector):
@@ -483,9 +483,9 @@ class PGConnector(DBConnector):
         if res:
             for unit in result:
                 dict_units[unit['unit_key']] = unit['unit_value']
-            self.logger.debug(__name__, "Units found: {}".format(dict_units))
+            self.logger.debug(__name__, "Units found: {}".format(len(dict_units)))
         else:
-            self.logger.error_msg(__name__, "Error getting models: {}".format(result))
+            self.logger.error_msg(__name__, "Error getting units: {}".format(result))
 
         return dict_units
 

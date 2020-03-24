@@ -28,7 +28,8 @@ from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QStandardItemModel,
@@ -41,15 +42,18 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
-                                                      SETTINGS_MODELS_TAB_INDEX)
+                                                      SETTINGS_MODELS_TAB_INDEX,
+                                                      DEFAULT_USE_CUSTOM_MODELS,
+                                                      DEFAULT_MODELS_DIR)
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
                                                make_save_file_selector,
@@ -62,17 +66,19 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
-    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.logger = Logger()
@@ -220,6 +226,8 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def accepted(self):
         self._running_tool = True
+        self.txtStdout.clear()
+        self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
         java_home_set = self.java_utils.set_java_home()
@@ -233,6 +241,18 @@ class DialogExportData(QDialog, DIALOG_UI):
             return
 
         configuration = self.update_configuration()
+
+        if configuration.disable_validation:  # If data validation at export is disabled, we ask for confirmation
+            self.msg = QMessageBox()
+            self.msg.setIcon(QMessageBox.Question)
+            self.msg.setText(QCoreApplication.translate("DialogExportData",
+                                                        "Are you sure you want to export your data without validation?"))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Export XTF without validation?"))
+            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            res = self.msg.exec_()
+            if res == QMessageBox.No:
+                self._running_tool = False
+                return
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             self._running_tool = False
@@ -298,6 +318,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
+                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -314,6 +335,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
+            self.on_result.emit(True)  # Inform other classes that the execution was successful
 
     def download_java_complete(self):
         self.accepted()
@@ -338,9 +360,9 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if custom_model_is_checked:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models')
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def update_configuration(self):
         """
@@ -358,12 +380,12 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
-            if self.custom_model_directories is None:
+            if not self.custom_model_directories:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
                 self.base_configuration.custom_model_directories = self.custom_model_directories
@@ -374,7 +396,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             configuration.iliexportmodels = ';'.join(self.get_ili_models())
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
-        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool)
+        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -429,7 +451,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
-        self.qgis_utils.show_help("export_data")
+        show_plugin_help("export_data")
 
     def disable(self):
         self.db_config.setEnabled(False)

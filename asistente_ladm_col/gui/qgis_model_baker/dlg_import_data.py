@@ -46,13 +46,17 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
-                                                      SETTINGS_MODELS_TAB_INDEX)
-from asistente_ladm_col.config.mapping_config import LADMNames
+                                                      SETTINGS_MODELS_TAB_INDEX,
+                                                      DEFAULT_USE_CUSTOM_MODELS,
+                                                      DEFAULT_MODELS_DIR)
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.context import Context
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
                                                make_file_selector,
@@ -70,14 +74,15 @@ class DialogImportData(QDialog, DIALOG_UI):
     BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
     BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, db_source=COLLECTED_DB_SOURCE):
+    def __init__(self, iface, qgis_utils, conn_manager, context, link_to_import_schema=True):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.db_source = db_source
+        self.db_source = context.get_db_sources()[0]
+        self.link_to_import_schema = link_to_import_schema
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
@@ -142,7 +147,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 self.accepted()
             elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
-                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models(), 'db_source': self.db_source})  # Emit signal to open import schema dialog
+                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models()})  # Emit signal to open import schema dialog
 
     def reject(self):
         if self._running_tool:
@@ -183,7 +188,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def update_import_models(self):
         self.clear_messages()
-        message_error = None
+        error_msg = None
 
         if not self.xtf_file_line_edit.text().strip():
             color = '#ffd356'  # Light orange
@@ -207,21 +212,21 @@ class DialogImportData(QDialog, DIALOG_UI):
                 if self.import_models_qmodel.rowCount() > 0:
                     self.import_models_list_view.setModel(self.import_models_qmodel)
                 else:
-                    message_error = QCoreApplication.translate("DialogImportData",
+                    error_msg = QCoreApplication.translate("DialogImportData",
                                                                "No models were found in the XTF. Is it a valid file?")
                     color = '#ffd356'  # Light orange
                     self.import_models_qmodel = QStandardItemModel()
                     self.import_models_list_view.setModel(self.import_models_qmodel)
             else:
-                message_error = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file")
+                error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file")
                 color = '#ffd356'  # Light orange
                 self.import_models_qmodel = QStandardItemModel()
                 self.import_models_list_view.setModel(self.import_models_qmodel)
         self.xtf_file_line_edit.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
-        if message_error:
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
+        if error_msg:
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
 
@@ -255,13 +260,15 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def accepted(self):
         self._running_tool = True
+        self.txtStdout.clear()
+        self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
             self._running_tool = False
-            message_error = "Please set a valid XTF file before importing data. XTF file does not exist"
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file before importing data. XTF file does not exist.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
@@ -277,34 +284,62 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration = self.update_configuration()
 
+        if configuration.disable_validation:  # If data validation at import is disabled, we ask for confirmation
+            self.msg = QMessageBox()
+            self.msg.setIcon(QMessageBox.Question)
+            self.msg.setText(QCoreApplication.translate("DialogImportData",
+                                                        "Are you sure you want to import your data without validation?"))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogImportData", "Import XTF without validation?"))
+            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            res = self.msg.exec_()
+            if res == QMessageBox.No:
+                self._running_tool = False
+                return
+
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             self._running_tool = False
-            message_error = "Please set a valid XTF before importing data."
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF before importing data.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.get_ili_models():
             self._running_tool = False
-            message_error = QCoreApplication.translate("DialogImportData", "The selected XTF file does not have information according to the LADM-COL model to import.")
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
+            error_msg = QCoreApplication.translate("DialogImportData", "The selected XTF file does not have information according to the LADM-COL model to import.")
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
 
-        # Get list of models present in the XTF file and in the DB
+        # Get list of models present in the XTF file, in the DB and in the list of required models (by the plugin)
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
+
+        supported_models_in_ili = set(LADMNames.SUPPORTED_MODELS).intersection(ili_models)
+
+        if not supported_models_in_ili:
+            self._running_tool = False
+            error_msg = QCoreApplication.translate("DialogImportData",
+                                                   "The selected XTF file does not have data from any LADM-COL model supported by the LADM_COL Assistant. " \
+                                                   "Therefore, you cannot import it! These are the models supported:\n\n * {}").format(" \n * ".join(LADMNames.SUPPORTED_MODELS))
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
+            self.import_models_list_view.setFocus()
+            return
+
         db_models = set(self.db.get_models())
+        suggested_models = sorted(ili_models.difference(db_models))
 
         if not ili_models.issubset(db_models):
             self._running_tool = False
-            message_error = "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
-                            "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+            error_msg = QCoreApplication.translate("DialogImportData",
+                                                   "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
+                                                   "Please create a schema that also includes the following missing modules:\n\n * {}").format(
+                " \n * ".join(suggested_models))
             self.txtStdout.clear()
             self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            self.txtStdout.setText(error_msg)
+            self.show_message(error_msg, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
 
             # button is removed to define order in GUI
@@ -315,8 +350,9 @@ class DialogImportData(QDialog, DIALOG_UI):
             # Check if button was previously added
             self.remove_create_structure_button()
 
-            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
-                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
+            if self.link_to_import_schema:
+                self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
+                                         QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
             self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA,
                                      QDialogButtonBox.AcceptRole)
 
@@ -352,11 +388,11 @@ class DialogImportData(QDialog, DIALOG_UI):
                     return
             except JavaNotFoundError:
                 self._running_tool = False
-                message_error_java = QCoreApplication.translate("DialogImportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
+                error_msg_java = QCoreApplication.translate("DialogImportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(message_error_java)
-                self.show_message(message_error_java, Qgis.Warning)
+                self.txtStdout.setText(error_msg_java)
+                self.show_message(error_msg_java, Qgis.Warning)
                 return
 
             self._running_tool = False
@@ -394,9 +430,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def update_configuration(self):
         """
@@ -422,12 +458,12 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models') if QSettings().value('Asistente-LADM_COL/models/custom_models') else None
+        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
-            if self.custom_model_directories is None:
+            if not self.custom_model_directories:
                 self.base_configuration.custom_model_directories_enabled = False
             else:
                 self.base_configuration.custom_model_directories = self.custom_model_directories
@@ -437,7 +473,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
-        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool)
+        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -492,7 +528,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)  # Initialize progress bar
 
     def show_help(self):
-        self.qgis_utils.show_help("import_data")
+        show_plugin_help("import_data")
 
     def disable(self):
         self.db_config.setEnabled(False)

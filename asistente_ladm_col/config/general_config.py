@@ -1,6 +1,7 @@
 import os.path
 import platform
 
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
@@ -28,11 +29,13 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 # PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
+DEFAULT_USE_CUSTOM_MODELS = True
+DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
-
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
+PREDIO_SANCION_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_sancion.csv')  # Default SNC predio_sancion.csv file
 
 LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 LAYER_NAME = 'name'
@@ -53,32 +56,29 @@ URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Repor
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
-    'create_admin_source': 'operation/Source.html#administrative-source',
-    'create_parcel': 'operation/Basic_Administrative_Unit.html#parcel',
-    'create_points': 'operation/Surveying_and_Representation.html#create-point',
-    'create_boundaries': 'operation/Surveying_and_Representation.html#create-boundary',
-    'create_plot': 'operation/Spatial_Unit.html#create-plot',
-    'create_building': 'operation/Spatial_Unit.html#create-building',
-    'create_building_unit': 'operation/Spatial_Unit.html#create-building-unit',
-    'create_right_of_way':'operation/Spatial_Unit.html#create-right-of-way',
-    'associate_ext_address': 'operation/Spatial_Unit.html#associate-extaddress',
-    'create_right': 'operation/RRR.html#right',
-    'create_restriction': 'operation/RRR.html#restriction',
-    'create_spatial_source': 'operation/Source.html#spatial-source',
-    'load_layers': 'load_layers.html#load-layers',
-    'col_party': 'operation/Party.html#col-party',
-    'group_party': 'operation/Party.html#group-party',
-    'quality_rules': 'operation/Quality.html',
-    'settings': 'settings.html',
-    'create_building_unit_valuation': 'valuation/Create_building_unit.html',
-    'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',
-    'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
-    'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
-    'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
-    'import_from_excel': 'toolbar.html#import-from-intermediate-structure',
-    'import_schema' : 'data_management.html#create-ladm-col-structure',
-    'import_data' : 'data_management.html#import-data',
-    'export_data' : 'data_management.html#export-data'
+    'supplies': 'gestion_de_insumos.html',
+    'transitional_system': 'sistema_de_transicion.html',
+    'create_admin_source': 'captura_y_estructura_de_datos/fuentes.html#fuente-administrativa',
+    'create_parcel': 'captura_y_estructura_de_datos/unidad_basica_administrativa.html#predio',
+    'create_points': 'captura_y_estructura_de_datos/topografia_y_representacion.html#crear-punto',
+    'create_boundaries': 'captura_y_estructura_de_datos/topografia_y_representacion.html#crear-lindero',
+    'create_plot': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-terreno',
+    'create_building': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-construccion',
+    'create_building_unit': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-unidad-de-construccion',
+    'create_right_of_way':'captura_y_estructura_de_datos/unidad_espacial.html#crear-servidumbre-de-paso',
+    'associate_ext_address': 'captura_y_estructura_de_datos/unidad_espacial.html#relacionar-extdireccion',
+    'create_right': 'captura_y_estructura_de_datos/rrr.html#derecho',
+    'create_restriction': 'captura_y_estructura_de_datos/rrr.html#restriccion',
+    'create_spatial_source': 'captura_y_estructura_de_datos/fuentes.html#fuente-espacial',
+    'load_layers': 'cargar_capas.html',
+    'party': 'captura_y_estructura_de_datos/interesado.html#crear-interesado',
+    'group_party': 'captura_y_estructura_de_datos/interesado.html#agrupacion-de-interesados',
+    'quality_rules': 'reglas_de_calidad.html',
+    'settings': 'configuracion.html',
+    'import_from_excel': 'captura_y_estructura_de_datos/importar_desde_estructura_intermedia.html',
+    'import_schema' : 'administracion_de_datos/crear_estructura_ladm_col.html',
+    'import_data' : 'administracion_de_datos/importar_datos.html',
+    'export_data' : 'administracion_de_datos/exportar_datos.html'
 }
 
 QGIS_REQUIRED_VERSION = '3.10.0-A Coruña'
@@ -113,16 +113,16 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1.2"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.0.0"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'  # 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -131,8 +131,8 @@ MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
 
 SOURCE_DB = '_SOURCE_'
-SUPPLIES_DB_SOURCE = '_SUPPLIES_'
-COLLECTED_DB_SOURCE = '_COLLECTED_'
+SUPPLIES_DB_SOURCE = 'SUPPLIES'
+COLLECTED_DB_SOURCE = 'COLLECTED'
 
 TEST_SERVER = "www.google.com"
 

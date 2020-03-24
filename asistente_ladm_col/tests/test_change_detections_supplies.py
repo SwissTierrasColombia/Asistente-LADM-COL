@@ -13,7 +13,9 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
-                                            restore_schema)
+                                            restore_schema,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 
 class TestChangeDetectionsSupplies(unittest.TestCase):
@@ -21,6 +23,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("INFO: Restoring databases to be used")
+        import_qgis_model_baker()
         restore_schema('test_change_detections')
         cls.db_pg = get_pg_conn('test_change_detections')
         result = cls.db_pg.test_connection()
@@ -1180,6 +1183,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
     def tearDownClass(cls):
         print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
+        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

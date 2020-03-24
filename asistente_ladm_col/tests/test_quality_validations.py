@@ -25,12 +25,12 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_test_copy_path,
                                             get_pg_conn,
                                             get_gpkg_conn,
-                                            restore_schema)
+                                            restore_schema,
+                                            unload_qgis_model_baker)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 
-import_qgis_model_baker()
 import_processing()
 import processing
 
@@ -39,6 +39,7 @@ class TesQualityValidations(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        import_qgis_model_baker()
         cls.qgis_utils = QGISUtils()
         cls.quality = QualityUtils(cls.qgis_utils)
         cls.logic_checks = LogicChecks()
@@ -1332,6 +1333,10 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
 
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()

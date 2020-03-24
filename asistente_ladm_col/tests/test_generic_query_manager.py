@@ -7,8 +7,11 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (get_gpkg_conn,
-                                            import_asistente_ladm_col)
+from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
+                                            import_asistente_ladm_col,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker,
+                                            import_processing)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
@@ -25,8 +28,10 @@ class TestGenericQueryManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        import_processing()
         import_asistente_ladm_col() # Import plugin
-        cls.db_gpkg = get_gpkg_conn('test_ladm_col_queries_qpkg')
+        import_qgis_model_baker()
+        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_col_queries_qpkg')
 
         # We can't use the restored database connection because the expression functions use the one in the plugin;
         # that's why we have to get the database connection and assign it to the plugin
@@ -81,8 +86,9 @@ class TestGenericQueryManager(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print('Close connection')
+        print('Closing connection and unloading Model Baker...')
         cls.db_gpkg.conn.close()
+        unload_qgis_model_baker()
 
 
 

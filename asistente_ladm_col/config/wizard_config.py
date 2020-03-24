@@ -7,7 +7,7 @@
         git sha              : :%H$
         copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
                                (C) 2019 by Leo Cardona (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.com
+        email                : gcarrillo@linuxmail.org
                                leo.cardona.p@gmail.com
  ***************************************************************************/
 /***************************************************************************
@@ -21,7 +21,7 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME,
                                                       WIZARD_CLASS,
@@ -89,7 +89,7 @@ class WizardConfig:
                 WIZARD_CLASS: SinglePageWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "party"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "Create party"),
-                WIZARD_HELP: "col_party",
+                WIZARD_HELP: "party",
                 WIZARD_UI: "wizards/operation/wiz_create_col_party_operation.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/col_party_load_data_type"
@@ -392,7 +392,7 @@ class WizardConfig:
                                                                         "geoeconomic zone"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                                                         "Create geoeconomic zone"),
-                WIZARD_HELP: "create_geoeconomic_zone_valuation",
+                WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/geoeconomic_zone_valuation_load_data_type"
@@ -414,7 +414,7 @@ class WizardConfig:
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "physical zone"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "Create physical zone"),
-                WIZARD_HELP: "create_physical_zone_valuation",
+                WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_physical_zone_valuation.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/physical_zone_valuation_load_data_type"
@@ -438,7 +438,7 @@ class WizardConfig:
                                                                         "building unit valuation"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitValuationWizard",
                                                                         "Create building unit valuation"),
-                WIZARD_HELP: "create_building_unit_valuation",
+                WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_building_unit_valuation.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_building_unit_load_data_type"
@@ -464,7 +464,7 @@ class WizardConfig:
                                                                         "building unit qualification valuation"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
                                                                         "Create building unit qualification valuation"),
-                WIZARD_HELP: "create_building_unit_qualification_valuation_conventional",
+                WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_building_unit_qualification_valuation.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_unit_qualification_load_data_type",

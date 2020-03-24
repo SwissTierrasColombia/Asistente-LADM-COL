@@ -26,7 +26,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.encrypter_decrypter import EncrypterDecrypter
+from asistente_ladm_col.core.encrypter_decrypter import EncrypterDecrypter
 
 
 class ConnectionManager(QObject):
@@ -51,20 +51,7 @@ class ConnectionManager(QObject):
         }
         self.encrypter_decrypter = EncrypterDecrypter()
 
-    def get_query_manager(self):
-        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=COLLECTED_DB_SOURCE))
-
-        if db_connection_engine:
-            db_factory = self.dbs_supported.get_db_factory(db_connection_engine)
-            query_manager = db_factory.get_query_manager(self.qgis_utils)
-        else:
-            # Use the default connector
-            db_factory = self.dbs_supported.get_db_factory(self.dbs_supported.id_default_db)
-            query_manager = db_factory.get_query_manager(self.qgis_utils)
-
-        return query_manager
-
-    def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
+    def get_db_connection_from_qsettings(self, db_source=COLLECTED_DB_SOURCE):
         db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source))
 
         if db_connection_engine:
@@ -77,6 +64,10 @@ class ConnectionManager(QObject):
             db_factory = self.dbs_supported.get_db_factory(self.dbs_supported.id_default_db)
             db = db_factory.get_db_connector()  # When the connection parameters are not filled we use empty values
 
+        return db
+
+    def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
+        db = self.get_db_connection_from_qsettings(db_source)
         self.set_db_connector_for_source(db, db_source)
 
     def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):
@@ -133,3 +124,11 @@ class ConnectionManager(QObject):
         """
         self.dbs_supported.get_db_factory(db.engine).save_parameters_conn(db.dict_conn_params, db_source)
         self.update_db_connector_for_source(db_source)  # Update db connection with new parameters
+
+    def get_query_manager(self):
+        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=COLLECTED_DB_SOURCE))
+
+        db_factory = self.dbs_supported.get_db_factory(db_connection_engine or self.dbs_supported.id_default_db)
+        query_manager = db_factory.get_query_manager(self.qgis_utils)
+
+        return query_manager

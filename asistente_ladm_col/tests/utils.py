@@ -86,6 +86,17 @@ def get_gpkg_conn(gpkg_schema_name):
 
     return db
 
+def get_copy_gpkg_conn(gpkg_schema_name):
+    dict_conn = dict()
+    db = None
+    if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
+        gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
+        gpkg_path = get_test_copy_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        dict_conn['dbfile'] = gpkg_path
+        db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
+
+    return db
+
 def restore_schema(schema):
     print("\nRestoring schema {}...".format(schema))
     db_connection = get_pg_conn(schema)

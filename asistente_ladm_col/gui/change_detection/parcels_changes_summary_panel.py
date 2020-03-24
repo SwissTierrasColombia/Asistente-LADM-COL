@@ -35,7 +35,7 @@ from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECT
                                                                    CHANGE_DETECTION_NULL_PARCEL,
                                                                    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                                                    PARCEL_STATUS)
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/parcels_changes_summary_panel_widget.ui')

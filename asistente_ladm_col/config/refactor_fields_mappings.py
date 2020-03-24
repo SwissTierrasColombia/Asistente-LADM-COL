@@ -1,6 +1,7 @@
 from qgis.PyQt.QtCore import QSettings
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 
 class RefactorFieldsMappings:
 
@@ -71,7 +72,7 @@ class RefactorFieldsMappings:
             mapping = [
                 {'expression': '"{}"'.format(names.OP_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(names.OP_PLOT_T_PLOT_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_PLOT_T_PLOT_VALUATION_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(names.OP_PLOT_T_BLOCK_VILLAGE_CODE_F), 'length': 17, 'name': '{}'.format(names.OP_PLOT_T_BLOCK_VILLAGE_CODE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F), 'length': 17, 'name': '{}'.format(names.OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F), 'length': -1, 'name': '{}'.format(names.OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
@@ -174,7 +175,7 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_USE_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_USE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'precision': 1, 'type': 6},

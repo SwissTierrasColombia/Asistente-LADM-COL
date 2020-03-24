@@ -3,7 +3,7 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
@@ -12,10 +12,17 @@ from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
-                                            get_gpkg_conn_from_path)
+                                            get_gpkg_conn_from_path,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 
 class TestDBTestConnection(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        print("\nINFO: Importing Model Baker...")
+        import_qgis_model_baker()
 
     def test_pg_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, no LADM-COL models)...")
@@ -137,6 +144,11 @@ class TestDBTestConnection(unittest.TestCase):
         res, code, msg = db.test_connection(required_models=[LADMNames.ANT_MODEL_PREFIX])
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
+
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()

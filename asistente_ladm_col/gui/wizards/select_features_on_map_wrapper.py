@@ -8,7 +8,7 @@
         copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
                                (C) 2018 by Sergio Ramírez (Incige SAS)
                                (C) 2019 by Leo Cardona (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.com
+        email                : gcarrillo@linuxmail.org
                                sergio.ramirez@incige.com
                                leo.cardona.p@gmail.com
  ***************************************************************************/

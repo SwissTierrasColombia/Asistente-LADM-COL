@@ -43,8 +43,13 @@ class STUtils(QObject):
             self.logger.success(__name__, msg)
         else:
             if response.status_code == 500:
+                msg = self.st_config.ST_STATUS_500_MSG
                 self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+            elif response.status_code > 500 and response.status_code < 600:
+                msg = self.st_config.ST_STATUS_GT_500_MSG
+                self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
+                msg = self.st_config.ST_STATUS_401_MSG
                 self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             elif response.status_code == 422:
                  response_data = json.loads(response.text)

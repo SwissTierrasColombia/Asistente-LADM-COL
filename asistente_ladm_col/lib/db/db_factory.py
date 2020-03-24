@@ -58,6 +58,8 @@ class DbFactory(ABC):
 
     def save_parameters_conn(self, dict_conn, db_source):
         settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source), self._engine)
+
         for parameter, value in dict_conn.items():
                 settings.setValue(
                     'Asistente-LADM_COL/db/{db_source}/{engine}/{parameter}'.format(db_source=db_source,

@@ -75,9 +75,11 @@ class STTaskManager(QObject):
                     self.__register_task(task)
         else:
              if response.status_code == 500:
-                self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+                 self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+             elif response.status_code > 500 and response.status_code < 600:
+                 self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
              elif response.status_code == 401:
-                self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
+                 self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
 
     def get_tasks(self, st_user, task_type=None, task_status=None):
         """
@@ -145,6 +147,8 @@ class STTaskManager(QObject):
         else:
             if response.status_code == 500:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+            elif response.status_code > 500 and response.status_code < 600:
+                self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             else:
@@ -175,6 +179,8 @@ class STTaskManager(QObject):
         else:
             if response.status_code == 500:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+            elif response.status_code > 500 and response.status_code < 600:
+                self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             else:
@@ -206,6 +212,8 @@ class STTaskManager(QObject):
         else:
             if response.status_code == 500:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_500_MSG)
+            elif response.status_code > 500 and response.status_code < 600:
+                self.logger.warning(__name__, self.st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
                 self.logger.warning(__name__, self.st_config.ST_STATUS_401_MSG)
             elif response.status_code == 422:

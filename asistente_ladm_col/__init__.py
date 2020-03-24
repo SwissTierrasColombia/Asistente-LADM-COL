@@ -27,7 +27,6 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       QGIS_REQUIRED_VERSION,
                                                       QGIS_REQUIRED_VERSION_INT)
-from asistente_ladm_col.tests.gui_tests import gui_tests_model_baker
 
 
 def classFactory(iface):
@@ -52,6 +51,7 @@ def classFactory(iface):
             return Mock()
 
         try:
+            from asistente_ladm_col.tests.gui_tests import gui_tests_model_baker
             from qgistester.tests import addTestModule
             addTestModule(gui_tests_model_baker, PLUGIN_NAME)
         except:

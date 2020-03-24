@@ -12,6 +12,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             run_etl_model,
                                             import_asistente_ladm_col,
+                                            unload_qgis_model_baker,
                                             import_processing,
                                             get_pg_conn,
                                             delete_features,
@@ -24,7 +25,6 @@ from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
 
-import_qgis_model_baker()
 import_processing()
 
 SCHEMA_LADM_COL_EMPTY = 'test_ladm_col_empty'
@@ -36,6 +36,7 @@ class TestCopy(unittest.TestCase):
     def setUpClass(cls):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         print("INFO: Restoring databases to be used")
+        import_qgis_model_baker()
         cls.qgis_utils = QGISUtils()
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
@@ -223,6 +224,7 @@ class TestCopy(unittest.TestCase):
     def tearDownClass(cls):
         print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
+        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

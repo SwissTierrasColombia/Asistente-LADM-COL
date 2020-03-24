@@ -18,12 +18,14 @@ from QgisModelBaker.libili2db.globals import DbIliMode
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.general_config import (TOML_FILE_DIR,
                                                       DEFAULT_EPSG)
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_test_copy_path,
                                             get_gpkg_conn_from_path,
                                             get_pg_conn,
-                                            restore_schema)
+                                            restore_schema,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 
 class TestQgisModelBaker(unittest.TestCase):
@@ -34,6 +36,7 @@ class TestQgisModelBaker(unittest.TestCase):
         print("INFO: Restoring databases to be used")
         cls.qgis_utils = QGISUtils()
         cls.base_test_path = tempfile.mkdtemp()
+        import_qgis_model_baker()
 
     def test_export_data_in_pg(self):
         print("\nINFO: Validate Export Data in PG...")
@@ -172,10 +175,10 @@ class TestQgisModelBaker(unittest.TestCase):
             importer.configuration.dbschema)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 193)
+        self.assertEqual(len(available_layers), 189)
 
-        result = db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = db_pg.test_connection()
+        self.assertTrue(res, msg)
         test_layer = self.qgis_utils.get_layer(db_pg, db_pg.names.OP_BOUNDARY_POINT_T, load=True)
 
         self.assertEqual(test_layer.featureCount(), 390)
@@ -219,11 +222,11 @@ class TestQgisModelBaker(unittest.TestCase):
         generator = Generator(DbIliMode.ili2gpkg, config_manager.get_uri(), configuration.inheritance)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 193)
+        self.assertEqual(len(available_layers), 189)
 
         db_gpkg = get_gpkg_conn_from_path(config_manager.get_uri())
-        result = db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         test_layer = self.qgis_utils.get_layer(db_gpkg, db_gpkg.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(test_layer.featureCount(), 390)
         db_gpkg.conn.close()
@@ -271,7 +274,7 @@ class TestQgisModelBaker(unittest.TestCase):
             importer.configuration.dbschema)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 211)
+        self.assertEqual(len(available_layers), 207)
 
     def test_import_schema_in_gpkg(self):
         print("\nINFO: Validate Import Schema in GPKG...")
@@ -309,7 +312,11 @@ class TestQgisModelBaker(unittest.TestCase):
         generator = Generator(DbIliMode.ili2gpkg, config_manager.get_uri(), configuration.inheritance)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 211)
+        self.assertEqual(len(available_layers), 207)
+
+    @classmethod
+    def tearDownClass(cls):
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()

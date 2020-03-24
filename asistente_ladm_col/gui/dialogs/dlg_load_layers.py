@@ -30,13 +30,14 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.enums import LayerRegisterType
+from asistente_ladm_col.config.enums import LayerRegistryType
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.mapping_config import (LADMNames,
-                                                      QueryNames)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
@@ -138,7 +139,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded in canvas?
-                if self.qgis_utils.get_ladm_layer_by_register_type(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], LayerRegisterType.IN_CANVAS) is not None:
+                if self.qgis_utils.get_ladm_layer_by_registry_type(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], LayerRegistryType.IN_CANVAS) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
@@ -310,4 +311,4 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.update_selected_count_label()
 
     def show_help(self):
-        self.qgis_utils.show_help("load_layers")
+        show_plugin_help("load_layers")

@@ -19,10 +19,12 @@
 from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsFeature)
-from asistente_ladm_col.config.layer_config import LayerConfig
+                       QgsFeature,
+                       QgsVectorLayer)
+from asistente_ladm_col.config.enums import LogModeEnum
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      LAYER_NAME)
+                                                      LAYER_NAME, 
+                                                      DEFAULT_LOG_MODE)
 from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY_KEY,
                                                                    DICT_KEY_PARTIES,
                                                                    DICT_KEY_PARCEL_T_DEPARTMENT_F,
@@ -35,6 +37,8 @@ from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY
                                                                    DICT_KEY_PARTY_T_NAME_F,
                                                                    DICT_KEY_PARTY_T_RIGHT,
                                                                    DICT_KEY_PLOT_T_AREA_F)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
 # TODO: Update with correct field
@@ -165,7 +169,8 @@ class LADM_DATA():
         layers = {
             db.names.GC_PARCEL_T: {LAYER_NAME: db.names.GC_PARCEL_T, LAYER: None},
             db.names.GC_PLOT_T: {LAYER_NAME: db.names.GC_PLOT_T, LAYER: None},
-            db.names.GC_OWNER_T: {LAYER_NAME: db.names.GC_OWNER_T, LAYER: None}
+            db.names.GC_OWNER_T: {LAYER_NAME: db.names.GC_OWNER_T, LAYER: None},
+            db.names.GC_PARCEL_TYPE_D: {LAYER_NAME: db.names.GC_PARCEL_TYPE_D, LAYER: None}
         }
 
         self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
@@ -184,7 +189,7 @@ class LADM_DATA():
                 if parcel_field in parcel_fields:
                     if parcel_field == db.names.GC_PARCEL_T_CONDITION_F:
                         # Go for domain value, instead of t_id
-                        value = self.get_domain_value_from_code(db, db.names.GC_PARCEL_TYPE_D, feature.attribute(parcel_field))
+                        value = self.get_domain_value_from_code(db, layers[db.names.GC_PARCEL_TYPE_D][LAYER], feature.attribute(parcel_field))
                     else:
                         value = feature.attribute(parcel_field)
                 elif parcel_field == DICT_KEY_PARCEL_T_DEPARTMENT_F:
@@ -420,6 +425,10 @@ class LADM_DATA():
             db.names.OP_GROUP_PARTY_T: {LAYER_NAME: db.names.OP_GROUP_PARTY_T, LAYER: None},
             db.names.COL_UE_BAUNIT_T: {LAYER_NAME: db.names.COL_UE_BAUNIT_T, LAYER: None},
             db.names.MEMBERS_T: {LAYER_NAME: db.names.MEMBERS_T, LAYER: None},
+            db.names.OP_CONDITION_PARCEL_TYPE_D: {LAYER_NAME: db.names.OP_CONDITION_PARCEL_TYPE_D, LAYER: None},
+            db.names.OP_PARTY_DOCUMENT_TYPE_D: {LAYER_NAME: db.names.OP_PARTY_DOCUMENT_TYPE_D, LAYER: None},
+            db.names.OP_RIGHT_TYPE_D: {LAYER_NAME: db.names.OP_RIGHT_TYPE_D, LAYER: None},
+            db.names.OP_PARTY_DOCUMENT_TYPE_D: {LAYER_NAME: db.names.OP_PARTY_DOCUMENT_TYPE_D, LAYER: None}
         }
 
         if db.cadastral_form_model_exists():
@@ -441,7 +450,7 @@ class LADM_DATA():
                 if field.name() in mapping_parcels_field.keys():  # parcel fields to compare
                     if field.name() == db.names.OP_PARCEL_T_PARCEL_TYPE_F:
                         # Go for domain value, instead of t_id
-                        value = self.get_domain_value_from_code(db, db.names.OP_CONDITION_PARCEL_TYPE_D, feature.attribute(field.name()))
+                        value = self.get_domain_value_from_code(db, layers[db.names.OP_CONDITION_PARCEL_TYPE_D][LAYER], feature.attribute(field.name()))
                     else:
                         value = feature.attribute(field.name())
 
@@ -502,12 +511,12 @@ class LADM_DATA():
             dict_party = dict()
             for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, db.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D][LAYER], party_feature[party_field])
                 else:
                     dict_party[common_key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
             right_type_id = dict_party_right[party_feature[db.names.T_ID_F]][db.names.OP_RIGHT_T_TYPE_F]
-            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, db.names.OP_RIGHT_TYPE_D, right_type_id)
+            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D][LAYER], right_type_id)
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -565,7 +574,7 @@ class LADM_DATA():
             dict_party = dict()
             for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
                 if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, db.names.OP_PARTY_DOCUMENT_TYPE_D, party_feature[party_field])
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D][LAYER], party_feature[party_field])
                 else:
                     dict_party[common_key_value_party] = party_feature[party_field]
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
@@ -578,7 +587,7 @@ class LADM_DATA():
                 if id_party in dict_parties:
                     # Add extra attribute from right table
                     right_type_id = dict_group_party_right[id_group_party][db.names.OP_RIGHT_T_TYPE_F]
-                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, db.names.OP_RIGHT_TYPE_D, right_type_id)
+                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D][LAYER], right_type_id)
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -727,7 +736,13 @@ class LADM_DATA():
         :return: The t_id corresponding to the given value or None.
         """
         res = None
+        value_not_found = False
         domain_table_name = ''
+
+        if not isinstance(db, DBConnector) \
+                or not (isinstance(domain_table, str) or isinstance(domain_table, QgsVectorLayer)) \
+                or not isinstance(value_is_ilicode, bool):
+            return None
 
         if type(domain_table) is str:
             domain_table_name = domain_table
@@ -735,13 +750,18 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        cached_res = db.names.get_domain_code(domain_table_name, value)
-        if cached_res is not None:
-            self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_res))
-            return cached_res
+        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
 
-        if type(domain_table_name) is str:
+        if found_in_cache:
+            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+                self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
+                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
+            return cached_value
+
+        # Not in cache, let's go for the value and cache it
+        # TODO: We could even cache all domain values from current table in the first call.
+
+        if type(domain_table) is str:
             domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
@@ -756,10 +776,18 @@ class LADM_DATA():
             if features.nextFeature(feature):
                 res = feature[db.names.T_ID_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, res, value)
+                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode)
+            else:
+                value_not_found = True
+        else:
+            value_not_found = True
 
-        self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
-            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
+        if value_not_found:
+            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode)
+
+        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
 
         return res
 
@@ -769,12 +797,18 @@ class LADM_DATA():
 
         :param db: DB Connector object.
         :param domain_table: Table name or QgsVectorLayer
-        :param value: t_id to search in the domain.
+        :param code: t_id to search in the domain.
         :param value_is_ilicode: Whether the result should be iliCode or display name.
         :return: The value corresponding to the given t_id or None.
         """
         res = None
+        value_not_found = False
         domain_table_name = ''
+
+        if not isinstance(db, DBConnector) \
+                or not (isinstance(domain_table, str) or isinstance(domain_table, QgsVectorLayer)) \
+                or not isinstance(value_is_ilicode, bool):
+            return None
 
         if type(domain_table) is str:
             domain_table_name = domain_table
@@ -782,11 +816,15 @@ class LADM_DATA():
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        cached_res = db.names.get_domain_value(domain_table_name, code)
-        if cached_res is not None:
-            self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_res))
-            return cached_res
+        found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code, value_is_ilicode)
+        if found_in_cache:
+            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+                self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
+                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_value))
+            return cached_value
+
+        # Not in cache, let's go for the value and cache it
+        # TODO: We could even cache all domain values from current table in the first call.
 
         if type(domain_table) is str:
             domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
@@ -796,9 +834,17 @@ class LADM_DATA():
             if features:
                 res = features[0][db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, code, res)
+                    db.names.cache_domain_value(domain_table_name, code, res, value_is_ilicode)
+            else:
+                value_not_found = True
+        else:
+            value_not_found = True
 
-        self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
-            domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
+        if value_not_found:
+            db.names.cache_wrong_query(QueryNames.CODE_KEY, domain_table_name, res, None, value_is_ilicode)
+
+        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
+                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
 
         return res

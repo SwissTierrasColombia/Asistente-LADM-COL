@@ -19,9 +19,8 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.mapping_config import LADMNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.utils import is_version_valid
 
 
@@ -55,24 +54,22 @@ class ModelParser(QObject):
         }
 
         self._db = db
-        qgis_model_baker_utils = QgisModelBakerUtils()
-        self._pro_gen_db_connector = qgis_model_baker_utils.get_model_baker_db_connection(self._db)
 
         # Fill versions for each model found
-        if self._pro_gen_db_connector:
-            for current_model_name in self._get_models():
-                for model_prefix,v in self.current_model_version.items():
-                    if current_model_name.startswith(model_prefix):
-                        parts = current_model_name.split(model_prefix)
-                        if len(parts) > 1:
-                            current_version = self.parse_version(parts[1])
-                            current_version_valid = is_version_valid(current_version,
-                                                                     LADMNames.SUPPORTED_MODEL_VERSIONS[model_prefix],
-                                                                     True,  # Exact version required
-                                                                     QCoreApplication.translate("ModelParser", model_prefix))
-                            self.current_model_version[model_prefix] = current_version
-                            self.model_version_is_supported[model_prefix] = current_version_valid
-                            break
+        for current_model_name in self._get_models():
+            for model_prefix,v in self.current_model_version.items():
+                if current_model_name.startswith(model_prefix):
+                    parts = current_model_name.split(model_prefix)
+                    if len(parts) > 1:
+                        current_version = self.parse_version(parts[1])
+                        current_version_valid = is_version_valid(current_version,
+                                                                 LADMNames.SUPPORTED_MODEL_VERSIONS[model_prefix],
+                                                                 True,  # Exact version required
+                                                                 QCoreApplication.translate("ModelParser", model_prefix))
+                        self.current_model_version[model_prefix] = current_version
+                        self.model_version_is_supported[model_prefix] = current_version_valid
+                        self.logger.debug(__name__, "Model '{}' found! Valid: {}".format(model_prefix, current_version_valid))
+                        break
 
     def parse_version(self, str_version):
         """ E.g., _V2_9_6 -> 2.9.6 """

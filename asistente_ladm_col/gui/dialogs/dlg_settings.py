@@ -31,7 +31,9 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
-                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE)
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                                      DEFAULT_USE_CUSTOM_MODELS,
+                                                      DEFAULT_MODELS_DIR)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
@@ -39,6 +41,7 @@ from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
@@ -296,7 +299,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+        settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
@@ -344,10 +347,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Restore QSettings
         settings = QSettings()
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
-            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models'))
+            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR))
             self.custom_model_directories_line_edit.setVisible(True)
             self.custom_models_dir_button.setVisible(True)
         else:
@@ -366,7 +369,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool))
 
         self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
@@ -445,7 +448,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             "SettingsDialog", "Missing roads will not be marked as errors."))
 
     def show_help(self):
-        self.qgis_utils.show_help("settings")
+        show_plugin_help("settings")
 
     def set_action_type(self, action_type):
         self._action_type = action_type

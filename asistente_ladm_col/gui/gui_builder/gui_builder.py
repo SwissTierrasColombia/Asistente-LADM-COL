@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
 from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
 
@@ -51,13 +52,15 @@ class GUI_Builder(QObject):
 
     def register_action(self, key, action):
         self._registered_actions[key] = {ACTION: action,
-                                         DEFAULT_ACTION_TEXT: action.text()}
+                                         DEFAULT_ACTION_TEXT: action.text(),
+                                         DEFAULT_ACTION_STATUS: action.isEnabled()}
 
     def register_actions(self, dict_key_action):
         new_dict = dict()
         for k,v in dict_key_action.items():
             new_dict[k] = {ACTION: v,
-                           DEFAULT_ACTION_TEXT: v.text()}
+                           DEFAULT_ACTION_TEXT: v.text(),
+                           DEFAULT_ACTION_STATUS: v.isEnabled()}
 
         self._registered_actions.update(new_dict)
 
@@ -356,7 +359,7 @@ class GUI_Builder(QObject):
 
         # Default properties
         action_text = self._registered_actions[action_key][DEFAULT_ACTION_TEXT]
-        action.setEnabled(True)
+        action.setEnabled(self._registered_actions[action_key][DEFAULT_ACTION_STATUS])
         action.setText(action_text)
         action.setToolTip(action_text)
 

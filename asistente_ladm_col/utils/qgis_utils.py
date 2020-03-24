@@ -21,8 +21,6 @@ import datetime
 import glob
 import json
 import os
-import socket
-import webbrowser
 
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
@@ -66,29 +64,24 @@ from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                ProcessWithStatus)
+from asistente_ladm_col.utils.utils import is_connected
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       LAYER,
                                                       LAYER_NAME,
                                                       FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
-                                                      MODULE_HELP_MAPPING,
                                                       TEST_SERVER,
-                                                      HELP_URL,
-                                                      PLUGIN_VERSION,
-                                                      HELP_DIR_NAME,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.enums import LayerRegisterType
+from asistente_ladm_col.config.enums import LayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
-from asistente_ladm_col.config.mapping_config import (LADMNames,
-                                                      QueryNames)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
-from asistente_ladm_col.config.translator import (QGIS_LANG,
-                                                  PLUGIN_DIR)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
@@ -212,7 +205,7 @@ class QGISUtils(QObject):
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
 
-            ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_REGISTER)
+            ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_REGISTRY)
             dict_ladm_layers = {db.get_ladm_layer_name(ladm_layer):ladm_layer for ladm_layer in ladm_layers}
             ladm_layers_names = dict_ladm_layers.keys()
 
@@ -233,7 +226,7 @@ class QGISUtils(QObject):
             profiler.clear()
 
             if load:
-                ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_CANVAS)
+                ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_CANVAS)
                 for layer_id, layer_info in layers.items():
                     layer_obj = None
 
@@ -279,7 +272,7 @@ class QGISUtils(QObject):
                     # Remove layers in two steps:
                     # 1) Remove those spatial layers with more than one geometry
                     #    column loaded because one geometry was requested.
-                    ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_CANVAS)
+                    ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_CANVAS)
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
 
@@ -355,7 +348,7 @@ class QGISUtils(QObject):
                 layers[layer_name][LAYER] = response_layers[layer_name]
 
     def remove_layer_from_no_in_canvas(self, db, layers_names):
-        layers_no_canvas = self.get_ladm_layers_by_register_type(db, LayerRegisterType.NOT_IN_CANVAS)
+        layers_no_canvas = self.get_ladm_layers_by_register_type(db, LayerRegistryType.NOT_IN_CANVAS)
         for layer_no_canvas in layers_no_canvas:
             if db.get_ladm_layer_name(layer_no_canvas) in layers_names:
                 self.remove_layer_not_in_canvas(layer_no_canvas)
@@ -371,19 +364,19 @@ class QGISUtils(QObject):
         return None
 
     @staticmethod
-    def get_ladm_layer_by_register_type(db, layer_name, register_type):
+    def get_ladm_layer_by_registry_type(db, layer_name, register_type):
         for k, layer in QgsProject.instance().mapLayers().items():
-            if register_type == LayerRegisterType.IN_CANVAS:
+            if register_type == LayerRegistryType.IN_CANVAS:
                 if QgsProject.instance().layerTreeRoot().findLayer(layer):
                     result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                     if result and result == layer_name:
                         return layer
-            elif register_type == LayerRegisterType.NOT_IN_CANVAS:
+            elif register_type == LayerRegistryType.NOT_IN_CANVAS:
                 if not QgsProject.instance().layerTreeRoot().findLayer(layer):
                     result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                     if result and result == layer_name:
                         return layer
-            elif register_type == LayerRegisterType.IN_REGISTER:
+            elif register_type == LayerRegistryType.IN_REGISTRY:
                 result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                 if result and result == layer_name:
                     return layer
@@ -393,15 +386,15 @@ class QGISUtils(QObject):
     def get_ladm_layers_by_register_type(db, register_type):
         ladm_layers = list()
         for k, layer in QgsProject.instance().mapLayers().items():
-            if register_type == LayerRegisterType.IN_CANVAS:
+            if register_type == LayerRegistryType.IN_CANVAS:
                 if QgsProject.instance().layerTreeRoot().findLayer(layer):
                     if db.is_ladm_layer(layer):
                         ladm_layers.append(layer)
-            elif register_type == LayerRegisterType.NOT_IN_CANVAS:
+            elif register_type == LayerRegistryType.NOT_IN_CANVAS:
                 if not QgsProject.instance().layerTreeRoot().findLayer(layer):
                     if db.is_ladm_layer(layer):
                         ladm_layers.append(layer)
-            elif register_type == LayerRegisterType.IN_REGISTER:
+            elif register_type == LayerRegistryType.IN_REGISTRY:
                 if db.is_ladm_layer(layer):
                     ladm_layers.append(layer)
         return ladm_layers
@@ -437,7 +430,7 @@ class QGISUtils(QObject):
         return True
 
     def automatic_namespace_local_id_configuration_changed(self, db):
-        layers = self.get_ladm_layers_by_register_type(db, LayerRegisterType.IN_REGISTER)
+        layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_REGISTRY)
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
@@ -526,7 +519,7 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_ladm_layer_by_register_type(db, db_relation[QueryNames.REFERENCED_LAYER], LayerRegisterType.IN_REGISTER)
+                referenced_layer = self.get_ladm_layer_by_registry_type(db, db_relation[QueryNames.REFERENCED_LAYER], LayerRegistryType.IN_REGISTRY)
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
@@ -558,7 +551,7 @@ class QGISUtils(QObject):
                 if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
                     continue
 
-                domain = self.get_ladm_layer_by_register_type(db, v[2], LayerRegisterType.IN_REGISTER)
+                domain = self.get_ladm_layer_by_registry_type(db, v[2], LayerRegistryType.IN_REGISTRY)
                 if domain is not None:
                     cardinality = v[1]
                     domain_table = v[2]
@@ -1102,7 +1095,7 @@ class QGISUtils(QObject):
 
         if url:
             with ProcessWithStatus("Checking Transitional System service availability (this might take a while)..."):
-                if self.is_connected(TEST_SERVER):
+                if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
                     request = QNetworkRequest(QUrl(url))
@@ -1153,7 +1146,7 @@ class QGISUtils(QObject):
 
         if url:
             with ProcessWithStatus("Checking source service availability (this might take a while)..."):
-                if self.is_connected(TEST_SERVER):
+                if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
                     request = QNetworkRequest(QUrl(url))
@@ -1215,55 +1208,6 @@ class QGISUtils(QObject):
 
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
-
-    @staticmethod
-    def is_connected(hostname):
-        try:
-            host = socket.gethostbyname(hostname)
-            s = socket.create_connection((host, 80), 2)
-            return True
-        except:
-            pass
-        finally:
-            try:
-                # s might not exist if socket.create_connection breaks
-                s.close()
-            except:
-                pass
-
-        return False
-
-    def show_help(self, module='', offline=False):
-        url = ''
-        section = MODULE_HELP_MAPPING[module]
-
-        # If we don't have Internet access check if the documentation is in the
-        # expected local dir and show it. Otherwise, show a warning message.
-        web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)
-
-        is_connected = self.is_connected(TEST_SERVER)
-        if offline or not is_connected:
-            basepath = os.path.dirname(os.path.abspath(__file__))
-
-            help_path = os.path.join(
-                PLUGIN_DIR,
-                HELP_DIR_NAME,
-                QGIS_LANG
-            )
-            if os.path.exists(help_path):
-                url = os.path.join("file://", help_path)
-            else:
-                if is_connected:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
-                        "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
-                else:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
-                        "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
-                return
-        else:
-            url = web_url
-
-        webbrowser.open("{}/{}".format(url, section))
 
     def suppress_form(self, layer, suppress=True):
         if layer:

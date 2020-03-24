@@ -1,7 +1,8 @@
 import qgis
 
-from asistente_ladm_col.config.mapping_config import (QueryNames,
-                                                      LADMNames)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 
 def functionalTests():
     try:
