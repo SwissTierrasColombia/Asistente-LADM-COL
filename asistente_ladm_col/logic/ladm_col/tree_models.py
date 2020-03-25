@@ -146,7 +146,8 @@ class TreeModel(QAbstractItemModel):
         rootData = ("",) # [header for header in headers]
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data, self.rootItem)
-        self.pixmapIndexList = list()
+        self._collapseIndexList = list()
+        self._pixmapIndexList = list()
 
     def columnCount(self, parent=QModelIndex()):
         return self.rootItem.columnCount()
@@ -160,8 +161,29 @@ class TreeModel(QAbstractItemModel):
         else:
             return QVariant()
 
+    def getCollapseIndexList(self, index=QModelIndex()):
+        self._collapseIndexList = list()
+        return self._getCollapseIndexList(index)
+
+    def _getCollapseIndexList(self, index):
+        """
+        Recursive function to traverse the whole model looking for items that should be collapsed
+
+        :param index:
+        :return: index list
+        """
+        item = self.getItem(index)
+        if item.data(index.column(), Qt.UserRole) is not None and 'collapse' in item.data(index.column(), Qt.UserRole):
+            if item.data(index.column(), Qt.UserRole)['collapse'] and index not in self._collapseIndexList:
+                self._collapseIndexList.append(index)
+
+        for row in range(item.childCount()):
+            self._getCollapseIndexList(self.index(row, 0, index))
+
+        return self._collapseIndexList
+
     def getPixmapIndexList(self, index=QModelIndex()):
-        self.pixmapIndexList = list()
+        self._pixmapIndexList = list()
         return self._getPixmapIndexList(index)
 
     def _getPixmapIndexList(self, index):
@@ -171,18 +193,18 @@ class TreeModel(QAbstractItemModel):
         :param index:
         :return: index list
         """
-        parent = self.getItem(index)
-        if parent.data(index.column(), Qt.UserRole) is not None and \
-                'url' in parent.data(index.column(), Qt.UserRole) and \
-                'type' in parent.data(index.column(), Qt.UserRole) and \
-                parent.data(index.column(), Qt.UserRole)['type'] == 'img':
-            if index not in self.pixmapIndexList:
-                self.pixmapIndexList.append(index)
+        item = self.getItem(index)
+        if item.data(index.column(), Qt.UserRole) is not None and \
+                'url' in item.data(index.column(), Qt.UserRole) and \
+                'type' in item.data(index.column(), Qt.UserRole) and \
+                item.data(index.column(), Qt.UserRole)['type'] == 'img':
+            if index not in self._pixmapIndexList:
+                self._pixmapIndexList.append(index)
 
-        for row in range(parent.childCount()):
+        for row in range(item.childCount()):
             self._getPixmapIndexList(self.index(row, 0, index))
 
-        return self.pixmapIndexList
+        return self._pixmapIndexList
 
     def flags(self, index):
         if not index.isValid():
@@ -359,7 +381,7 @@ class TreeModel(QAbstractItemModel):
         key = self._normalize_key(key)
         collection_parent = self._create_new_item(parent)
         collection_parent.setData(0, "{} ({})".format(display_name, len(collection)))
-        collection_parent.setData(0, {"type": key}, Qt.UserRole)
+        collection_parent.setData(0, {"type": key, "collapse": key not in [self.names.OP_PLOT_T, self.names.OP_PARCEL_T]}, Qt.UserRole)
         dict_table_package = LayerConfig.get_dict_table_package(self.names)
 
         res = collection_parent.setData(0, QIcon(

@@ -302,10 +302,18 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         :return:
         """
         tree_view.setModel(TreeModel(self.names, data=records))
-        tree_view.expandAll()
-        self.add_thumbnails_to_tree_view(tree_view)
+        self._collapse_tree_view_items(tree_view)
+        self._add_thumbnails_to_tree_view(tree_view)
 
-    def add_thumbnails_to_tree_view(self, tree_view):
+    def _collapse_tree_view_items(self, tree_view):
+        """
+        Collapse tree view items based on a property
+        """
+        tree_view.expandAll()
+        for idx in tree_view.model().getCollapseIndexList():
+            tree_view.collapse(idx)
+
+    def _add_thumbnails_to_tree_view(self, tree_view):
         """
         Gets a list of model indexes corresponding to extFiles objects to show a preview
 
@@ -313,8 +321,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         :return:
         """
         model = tree_view.model()
-        indexes = model.getPixmapIndexList()
-        for idx in indexes:
+        for idx in model.getPixmapIndexList():
             url = model.data(idx, Qt.UserRole)['url']
             res, image = self.download_image("{}{}".format(url, SUFFIX_GET_THUMBNAIL))
             if res:
