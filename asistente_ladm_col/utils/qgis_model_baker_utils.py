@@ -38,7 +38,7 @@ class QgisModelBakerUtils(QObject):
 
     def get_generator(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            tool = self._dbs_supported.get_db_factory(db.engine).get_mbaker_db_ili_mode()
+            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
             generator = QgisModelBaker.get_generator()(tool,
@@ -68,7 +68,7 @@ class QgisModelBakerUtils(QObject):
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
 
-            tool = self._dbs_supported.get_db_factory(db.engine).get_mbaker_db_ili_mode()
+            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
             generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             qmb_layers = generator.layers(layer_list)
 
@@ -99,7 +99,7 @@ class QgisModelBakerUtils(QObject):
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
 
-            tool = self._dbs_supported.get_db_factory(db.engine).get_mbaker_db_ili_mode()
+            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
             generator = QgisModelBaker.get_generator()(tool,
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)

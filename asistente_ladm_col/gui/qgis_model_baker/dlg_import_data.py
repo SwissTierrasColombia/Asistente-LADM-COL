@@ -369,7 +369,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
-            dataImporter.tool = db_factory.get_mbaker_db_ili_mode()
+            dataImporter.tool = db_factory.get_model_baker_db_ili_mode()
             dataImporter.configuration = configuration
 
             self.save_configuration(configuration)

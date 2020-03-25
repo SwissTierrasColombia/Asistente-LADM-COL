@@ -302,7 +302,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
-            exporter.tool = db_factory.get_mbaker_db_ili_mode()
+            exporter.tool = db_factory.get_model_baker_db_ili_mode()
             exporter.configuration = configuration
 
             self.save_configuration(configuration)

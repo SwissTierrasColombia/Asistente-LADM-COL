@@ -26,7 +26,6 @@ class DBFactory(ABC):
     """
     Abstract class
     """
-
     def __init__(self):
         self._engine = None
 
@@ -39,10 +38,13 @@ class DBFactory(ABC):
     def get_config_panel(self, parent):
         raise NotImplementedError
 
-    def get_mbaker_db_ili_mode(self):
+    def get_model_baker_db_ili_mode(self):
         raise NotImplementedError
 
     def get_db_connector(self, parameters=dict()):
+        raise NotImplementedError
+
+    def get_ladm_queries(self, qgis_utils):
         raise NotImplementedError
 
     def set_ili2db_configuration_params(self, params, configuration):

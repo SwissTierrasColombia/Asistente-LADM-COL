@@ -30,7 +30,7 @@ class GPKGFactory(DBFactory):
     def get_name(self):
         return 'GeoPackage'
 
-    def get_mbaker_db_ili_mode(self):
+    def get_model_baker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2gpkg
 
