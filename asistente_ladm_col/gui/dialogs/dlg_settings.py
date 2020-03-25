@@ -28,7 +28,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
@@ -63,7 +63,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.init_db_engine = None
 
         self._action_type = None
-        self.dbs_supported = ConfigDBSupported()
+        self.dbs_supported = ConfigDBsSupported()
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)

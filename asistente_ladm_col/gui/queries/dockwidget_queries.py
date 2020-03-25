@@ -42,6 +42,7 @@ from qgis.core import (Qgis,
 from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (TEST_SERVER,
@@ -64,19 +65,20 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
-    def __init__(self, iface, db, ladm_queries, qgis_utils, ladm_data, parent=None):
+    def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self._db = db
-        self._ladm_queries = ladm_queries
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.logger = Logger()
         self.canvas = iface.mapCanvas()
         self.active_map_tool_before_custom = None
         self.names = self._db.names
+
+        self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries(self.qgis_utils)
 
         self.clipboard = QApplication.clipboard()
 

@@ -60,7 +60,7 @@ from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
 from ...resources_rc import * # Necessary to show icons
-from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
 from asistente_ladm_col.config.enums import EnumDbActionType
 
@@ -91,7 +91,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
 
-        self._dbs_supported = ConfigDBSupported()
+        self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
 
         # There may be 1 case where we need to emit a db_connection_changed from the Export Data dialog:

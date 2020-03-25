@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject,
                               QSettings)
 
-from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
@@ -39,11 +39,10 @@ class ConnectionManager(QObject):
     """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, db_source
 
-    def __init__(self, qgis_utils):
+    def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
-        self.qgis_utils = qgis_utils
-        self.dbs_supported = ConfigDBSupported()
+        self.dbs_supported = ConfigDBsSupported()
 
         self._db_sources = {  # Values are DB Connectors
             COLLECTED_DB_SOURCE: None,
@@ -124,11 +123,3 @@ class ConnectionManager(QObject):
         """
         self.dbs_supported.get_db_factory(db.engine).save_parameters_conn(db.dict_conn_params, db_source)
         self.update_db_connector_for_source(db_source)  # Update db connection with new parameters
-
-    def get_ladm_queries(self):
-        db_connection_engine = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=COLLECTED_DB_SOURCE))
-
-        db_factory = self.dbs_supported.get_db_factory(db_connection_engine or self.dbs_supported.id_default_db)
-        ladm_queries = db_factory.get_ladm_queries(self.qgis_utils)
-
-        return ladm_queries

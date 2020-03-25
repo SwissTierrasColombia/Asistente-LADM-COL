@@ -22,7 +22,7 @@ from asistente_ladm_col.lib.db.pg_factory import PGFactory
 from asistente_ladm_col.lib.db.gpkg_factory import GPKGFactory
 
 
-class ConfigDBSupported(QObject):
+class ConfigDBsSupported(QObject):
 
     def __init__(self):
         self.id_default_db = None

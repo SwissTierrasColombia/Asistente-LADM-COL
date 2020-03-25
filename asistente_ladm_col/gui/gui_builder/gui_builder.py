@@ -22,7 +22,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
-from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -77,7 +77,7 @@ class GUI_Builder(QObject):
         """
         self._db = db
         self._test_conn_result = test_conn_result if test_conn_result is not None else db.test_connection()[0]
-        db_factory = ConfigDBSupported().get_db_factory(db.engine)
+        db_factory = ConfigDBsSupported().get_db_factory(db.engine)
         self._db_engine_actions = db_factory.get_db_engine_actions()
         self._engine_name = db_factory.get_name()
 

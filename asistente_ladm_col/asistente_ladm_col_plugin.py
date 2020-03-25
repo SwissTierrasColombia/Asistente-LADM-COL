@@ -148,8 +148,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_transitional_system = None
         self.toolbar = None
         self.wiz_address = None
-        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.conn_manager = ConnectionManager(self.qgis_utils)
+        self.conn_manager = ConnectionManager()
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
         self.wizard_config = WizardConfig()
@@ -168,6 +167,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
 
     def initGui(self):
+        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
@@ -971,7 +971,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
-                                                      self.get_ladm_queries(),
                                                       self.qgis_utils,
                                                       self.ladm_data)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
@@ -980,9 +979,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
-
-    def get_ladm_queries(self):
-        return self.conn_manager.get_ladm_queries()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
