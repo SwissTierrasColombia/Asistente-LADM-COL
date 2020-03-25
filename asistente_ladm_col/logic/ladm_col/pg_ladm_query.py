@@ -29,9 +29,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                  previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                  cadastral_form_model=db.cadastral_form_model_exists())
-
-        res = PGLADMQuery._get_query_results(db, query)
-        return res
+        return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
     def get_igac_legal_info(db, **kwargs):
@@ -50,8 +48,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                  previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
-        res = PGLADMQuery._get_query_results(db, query)
-        return res
+        return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
     def get_igac_property_record_card_info(db, **kwargs):
@@ -71,8 +68,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                                                parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                                                previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                                                cadastral_form_model=db.cadastral_form_model_exists())
-        res = PGLADMQuery._get_query_results(db, query)
-        return res
+        return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
     def get_igac_physical_info(db, **kwargs):
@@ -91,8 +87,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                        previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
-        res = PGLADMQuery._get_query_results(db, query)
-        return res
+        return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
     def get_igac_economic_info(db, **kwargs):
@@ -112,15 +107,13 @@ class PGLADMQuery(QGISLADMQuery):
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
                                                        previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
                                                        cadastral_form_model=db.cadastral_form_model_exists())
-        res = PGLADMQuery._get_query_results(db, query)
-        return res
-
+        return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
     def _get_query_results(db, query):
         res, msg = db.check_and_fix_connection()
         if not res:
-            return (res, msg)
+            return None
         cur = db.conn.cursor()
         cur.execute(query)
         query_result = cur.fetchone()[0]

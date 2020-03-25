@@ -56,33 +56,6 @@ class QgisModelBakerUtils(QObject):
 
         return None
 
-    def get_required_layers_without_load(self, layer_list, db):
-        """
-        Gets a list of layers through a list of names using QGIS Model Baker
-        Layers are register in QgsProject
-        :param layer_list: list of layers names ['op_terreno', 'op_lindero']
-        :param db: db connection
-        :return: list of  QgsVectorLayers register in the project
-        """
-        layers = list()
-        if 'QgisModelBaker' in qgis.utils.plugins:
-            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-
-            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
-            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
-            qmb_layers = generator.layers(layer_list)
-
-            for qmb_layer in qmb_layers:
-                layer = qmb_layer.create()  # Convert QMB layer to QGIS layer
-                QgsProject.instance().addMapLayer(layer, False)
-                layers.append(layer)
-        else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
-
-        return layers
-
-
     def load_layers(self, layer_list, db):
         """
         Load a selected list of layers from qgis model baker.
@@ -101,8 +74,7 @@ class QgisModelBakerUtils(QObject):
 
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
-            generator = QgisModelBaker.get_generator()(tool,
-                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
@@ -110,6 +82,32 @@ class QgisModelBakerUtils(QObject):
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+
+    def get_required_layers_without_load(self, layer_list, db):
+        """
+        Gets a list of layers from a list of layer names using QGIS Model Baker
+        Layers are register in QgsProject, but not loaded to the canvas!
+        :param layer_list: list of layers names (e.g., ['op_terreno', 'op_lindero'])
+        :param db: db connection
+        :return: list of QgsVectorLayers registered in the project
+        """
+        layers = list()
+        if 'QgisModelBaker' in qgis.utils.plugins:
+            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
+
+            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
+            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            model_baker_layers = generator.layers(layer_list)
+
+            for model_baker_layer in model_baker_layers:
+                layer = model_baker_layer.create()  # Convert Model Baker layer to QGIS layer
+                QgsProject.instance().addMapLayer(layer, False)  # Do not load it to canvas
+                layers.append(layer)
+        else:
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+
+        return layers
 
     def get_layers_and_relations_info(self, db):
         """
