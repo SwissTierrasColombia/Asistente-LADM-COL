@@ -10,7 +10,7 @@ from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_pg_conn,
-                                            get_gpkg_conn,
+                                            get_copy_gpkg_conn,
                                             restore_schema)
 
 from asistente_ladm_col.config.general_config import (LAYER_NAME,
@@ -24,7 +24,7 @@ class TestGetLayers(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker(),
         cls.qgis_utils = QGISUtils()
-        cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_operation_model_gpkg')
 
         print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')

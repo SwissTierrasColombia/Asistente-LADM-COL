@@ -971,7 +971,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
-                                                      self.get_query_manager(),
+                                                      self.get_ladm_queries(),
                                                       self.qgis_utils,
                                                       self.ladm_data)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
@@ -981,8 +981,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
 
-    def get_query_manager(self):
-        return self.conn_manager.get_query_manager()
+    def get_ladm_queries(self):
+        return self.conn_manager.get_ladm_queries()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

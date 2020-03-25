@@ -75,11 +75,11 @@ class EnumLogMode(Enum):
 
 
 class EnumLADMQueryType(Enum):
-    IGAC_BASIC_QUERY = 1
-    IGAC_PHYSICAL_QUERY = 2
-    IGAC_LEGAL_QUERY = 3
-    IGAC_ECONOMIC_QUERY = 4
-    IGAC_PROPERTY_RECORD_CARD = 5
+    IGAC_BASIC_INFO = 1
+    IGAC_PHYSICAL_INFO = 2
+    IGAC_LEGAL_INFO = 3
+    IGAC_ECONOMIC_INFO = 4
+    IGAC_PROPERTY_RECORD_CARD_INFO = 5
 
 
 class EnumSpatialOperationType(Enum):

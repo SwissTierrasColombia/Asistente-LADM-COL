@@ -64,13 +64,13 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
-    def __init__(self, iface, db, query_manager, qgis_utils, ladm_data, parent=None):
+    def __init__(self, iface, db, ladm_queries, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self._db = db
-        self._query_manager = query_manager
+        self._ladm_queries = ladm_queries
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.logger = Logger()
@@ -270,7 +270,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             bZoom = kwargs['zoom_and_select']
             del kwargs['zoom_and_select']
 
-        records = self._query_manager.get_igac_basic_info(self._db, **kwargs)
+        records = self._ladm_queries.get_igac_basic_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_basic, records)
 
         if bZoom:
@@ -282,16 +282,16 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self.zoom_to_features_requested.emit(self._layers[self.names.OP_PLOT_T][LAYER], plot_ids, dict(), 500)
                 self._layers[self.names.OP_PLOT_T][LAYER].selectByIds(plot_ids)
 
-        records = self._query_manager.get_igac_legal_info(self._db, **kwargs)
+        records = self._ladm_queries.get_igac_legal_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_legal, records)
 
-        records = self._query_manager.get_igac_property_record_card_info(self._db, **kwargs)
+        records = self._ladm_queries.get_igac_property_record_card_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_property_record_card, records)
 
-        records = self._query_manager.get_igac_physical_info(self._db, **kwargs)
+        records = self._ladm_queries.get_igac_physical_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_physical, records)
 
-        records = self._query_manager.get_igac_economic_info(self._db, **kwargs)
+        records = self._ladm_queries.get_igac_economic_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_economic, records)
 
     def setup_tree_view(self, tree_view, records):

@@ -36,19 +36,19 @@ class QGISLADMQuery:
         self.ladm_data = LADMDATA(self.qgis_utils)
 
     def get_igac_property_record_card_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO, kwargs)
 
     def get_igac_economic_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_ECONOMIC_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_ECONOMIC_INFO, kwargs)
 
     def get_igac_physical_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PHYSICAL_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PHYSICAL_INFO, kwargs)
 
     def get_igac_legal_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_LEGAL_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_LEGAL_INFO, kwargs)
 
     def get_igac_basic_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_BASIC_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_BASIC_INFO, kwargs)
 
     def _execute_ladm_query(self, db, query_type, kwargs):
         params = QGISLADMQuery._get_parameters(kwargs)
@@ -58,15 +58,15 @@ class QGISLADMQuery:
         query = dict()
 
         ladm_units = db.get_ladm_units()
-        if EnumLADMQueryType.IGAC_BASIC_QUERY == query_type:
+        if EnumLADMQueryType.IGAC_BASIC_INFO == query_type:
             query = get_igac_basic_query(db.names, ladm_units)
-        elif EnumLADMQueryType.IGAC_PHYSICAL_QUERY == query_type:
+        elif EnumLADMQueryType.IGAC_PHYSICAL_INFO == query_type:
             query = get_igac_physical_query(db.names, ladm_units)
-        elif EnumLADMQueryType.IGAC_LEGAL_QUERY == query_type:
+        elif EnumLADMQueryType.IGAC_LEGAL_INFO == query_type:
             query = get_igac_legal_query(db.names, ladm_units)
-        elif EnumLADMQueryType.IGAC_ECONOMIC_QUERY == query_type:
+        elif EnumLADMQueryType.IGAC_ECONOMIC_INFO == query_type:
             query = get_igac_economic_query(db.names, ladm_units)
-        elif EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD == query_type:
+        elif EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO == query_type:
             query = get_igac_property_record_card_query(db.names, ladm_units)
 
         self._execute_query(db, response, query[QueryNames.LEVEL_TABLE], filter_field_values)
