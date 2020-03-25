@@ -454,13 +454,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         show_plugin_help("export_data")
 
     def disable(self):
-        self.db_config.setEnabled(False)
-        self.ili_config.setEnabled(False)
+        self.source_config.setEnabled(False)
+        self.target_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
-        self.db_config.setEnabled(True)
-        self.ili_config.setEnabled(True)
+        self.source_config.setEnabled(True)
+        self.target_config.setEnabled(True)
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
