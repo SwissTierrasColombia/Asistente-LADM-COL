@@ -19,10 +19,10 @@
 from abc import ABC
 from qgis.PyQt.QtCore import QSettings
 
-from asistente_ladm_col.config.gui.db_engine_gui_config import DB_Engine_GUI_Config
+from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
 
 
-class DbFactory(ABC):
+class DBFactory(ABC):
     """
     Abstract class
     """
@@ -54,7 +54,7 @@ class DbFactory(ABC):
 
         :return: List of actions implemented in the plugin for the DB engine.
         """
-        return DB_Engine_GUI_Config().get_db_engine_actions(self._engine)  # Returns a default if cannot find the engine
+        return DBEngineGUIConfig().get_db_engine_actions(self._engine)  # Returns a default if cannot find the engine
 
     def save_parameters_conn(self, dict_conn, db_source):
         settings = QSettings()

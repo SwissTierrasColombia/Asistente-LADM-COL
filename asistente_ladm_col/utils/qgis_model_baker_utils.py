@@ -32,8 +32,8 @@ class QgisModelBakerUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
-        from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
-        self._dbs_supported = ConfigDbSupported()
+        from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
+        self._dbs_supported = ConfigDBSupported()
         self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_generator(self, db):

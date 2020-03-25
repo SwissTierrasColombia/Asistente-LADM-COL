@@ -12,7 +12,7 @@ from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_economi
 from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_legal_query_test_results import expected_result_ladm_legal_query
 from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_physical_query_test_results import expected_result_ladm_physical_query
 from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
-from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PgLADMQuery
+from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
@@ -25,7 +25,7 @@ class TestQueries(unittest.TestCase):
         cls.db_pg = get_pg_conn('test_ladm_col_queries')
 
         cls.qgis_utils = QGISUtils()
-        cls.query_manager = PgLADMQuery(cls.qgis_utils)
+        cls.query_manager = PGLADMQuery(cls.qgis_utils)
 
     def test_igac_basic_info_query(self):
         print("\nINFO: Validating basic info query from IGAC...")

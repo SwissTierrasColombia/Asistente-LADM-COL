@@ -53,7 +53,7 @@ class EnumTestConnectionMsg(IntFlag):
     DB_MODELS_ARE_CORRECT = 107
 
 
-class WizardTypeEnum(IntFlag):
+class EnumWizardType(IntFlag):
     SINGLE_PAGE_WIZARD_TYPE = 1
     SINGLE_PAGE_SPATIAL_WIZARD_TYPE = 2
     MULTI_PAGE_WIZARD_TYPE = 4
@@ -63,18 +63,18 @@ class WizardTypeEnum(IntFlag):
     NON_SPATIAL_WIZARD = SINGLE_PAGE_WIZARD_TYPE | MULTI_PAGE_WIZARD_TYPE
 
 
-class LogHandlerEnum(Enum):
+class EnumLogHandler(Enum):
     MESSAGE_BAR = 1
     STATUS_BAR = 2
     QGIS_LOG = 3
 
 
-class LogModeEnum(Enum):
+class EnumLogMode(Enum):
     USER = 1
     DEV = 2
 
 
-class GenericQueryType(Enum):
+class EnumLADMQueryType(Enum):
     IGAC_BASIC_QUERY = 1
     IGAC_PHYSICAL_QUERY = 2
     IGAC_LEGAL_QUERY = 3
@@ -82,20 +82,20 @@ class GenericQueryType(Enum):
     IGAC_PROPERTY_RECORD_CARD = 5
 
 
-class SpatialOperationType(Enum):
-    INTERSECTS_SPATIAL_OPERATION = 1
-    OVERLAPS_SPATIAL_OPERATION = 2
-    CONTAINS_SPATIAL_OPERATION = 3
+class EnumSpatialOperationType(Enum):
+    INTERSECTS = 1
+    OVERLAPS = 2
+    CONTAINS = 3
 
 
-class STTaskStatusEnum(Enum):
+class EnumSTTaskStatus(Enum):
     ASSIGNED = "ASIGNADA"
     STARTED = "INICIADA"
     CANCELED = "CANCELADA"
     CLOSED = "CERRADA"
 
 
-class STStepTypeEnum(Enum):
+class EnumSTStepType(Enum):
     UPLOAD_FILE = 1
     CONNECT_TO_DB = 2
     SCHEMA_IMPORT = 3
@@ -104,7 +104,7 @@ class STStepTypeEnum(Enum):
     RUN_ETL_COBOL = 6
 
 
-class LayerRegistryType(Enum):
+class EnumLayerRegistryType(Enum):
     IN_REGISTRY = 1
     IN_CANVAS = 2
     NOT_IN_CANVAS = 3

@@ -1,10 +1,10 @@
 from asistente_ladm_col.logic.ladm_col.config.queries.queries_config_utils import get_full_alias
-from asistente_ladm_col.config.enums import SpatialOperationType
+from asistente_ladm_col.config.enums import EnumSpatialOperationType
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
                                                                   EvalExprOwnField,
-                                                                  RelateOwnFieldValue,
+                                                                  RelatedOwnFieldValue,
                                                                   SpatialFilterSubLevel,
                                                                   FilterSubLevel)
 from qgis.core import QgsExpression
@@ -18,9 +18,9 @@ def get_igac_physical_query(names, ladm_units):
                        names.COL_AVAILABILITY_TYPE_D),
         DomainOwnField(names.COL_SOURCE_T_MAIN_TYPE_F, "Tipo principal", names.CI_CODE_PRESENTATION_FORM_D),
         OwnField(names.COL_SOURCE_T_DATE_DOCUMENT_F, "Fecha documento"),
-        RelateOwnFieldValue('Archivo fuente', names.EXT_ARCHIVE_S,
-                            OwnField(names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'),
-                            names.EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F)
+        RelatedOwnFieldValue('Archivo fuente', names.EXT_ARCHIVE_S,
+                             OwnField(names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'),
+                             names.EXT_ARCHIVE_S_OP_SPATIAL_SOURCE_F)
     ]
 
     query = {
@@ -135,7 +135,7 @@ def get_igac_physical_query(names, ladm_units):
                 QueryNames.LEVEL_TABLE_ALIAS: names.OP_SURVEY_POINT_T,
                 QueryNames.FILTER_SUB_LEVEL: SpatialFilterSubLevel(names.T_ID_F, names.OP_SURVEY_POINT_T,
                                                                    names.OP_PLOT_T,
-                                                                   SpatialOperationType.INTERSECTS_SPATIAL_OPERATION),
+                                                                   EnumSpatialOperationType.INTERSECTS),
                 QueryNames.TABLE_FIELDS: [
                     EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
             },

@@ -8,7 +8,7 @@ from qgis.testing import (start_app,
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
@@ -34,7 +34,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             return
 
         cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.ladm_data = LADMDATA(cls.qgis_utils)
 
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")

@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from asistente_ladm_col.lib.db.db_factory import DbFactory
-from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GpkgConfigPanel
+from asistente_ladm_col.lib.db.db_factory import DBFactory
+from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GPKGConfigPanel
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GpkgLADMQuery
+from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GPKGLADMQuery
 
 
-class GpkgFactory(DbFactory):
+class GPKGFactory(DBFactory):
     def __init__(self):
-        DbFactory.__init__(self)
+        DBFactory.__init__(self)
         self._engine = "gpkg"
 
     def get_name(self):
@@ -35,13 +35,13 @@ class GpkgFactory(DbFactory):
         return DbIliMode.ili2gpkg
 
     def get_config_panel(self, parent):
-        return GpkgConfigPanel(parent)
+        return GPKGConfigPanel(parent)
 
     def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
     def get_query_manager(self, qgis_utils):
-        return GpkgLADMQuery(qgis_utils)
+        return GPKGLADMQuery(qgis_utils)
 
     def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'

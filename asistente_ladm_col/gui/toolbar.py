@@ -23,7 +23,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayerUtils)
 
-from asistente_ladm_col.config.enums import LayerRegistryType
+from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME)
@@ -41,7 +41,7 @@ class ToolBar(QObject):
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
-        layer = self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_BOUNDARY_T,  LayerRegistryType.IN_CANVAS)
+        layer = self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_CANVAS)
         use_selection = True
 
         if layer is None:
@@ -109,7 +109,7 @@ class ToolBar(QObject):
 
         if use_selection:
             if layers[db.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_BOUNDARY_T, LayerRegistryType.IN_CANVAS) is None:
+                if self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_CANVAS) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
@@ -194,7 +194,7 @@ class ToolBar(QObject):
 
         if use_selection:
             if layers[db.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_PLOT_T, LayerRegistryType.IN_CANVAS) is None:
+                if self.qgis_utils.get_ladm_layer_by_registry_type(db, db.names.OP_PLOT_T, EnumLayerRegistryType.IN_CANVAS) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(

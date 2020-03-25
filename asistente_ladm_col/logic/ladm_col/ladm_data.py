@@ -21,7 +21,7 @@ from qgis.core import (NULL,
                        QgsExpression,
                        QgsFeature,
                        QgsVectorLayer)
-from asistente_ladm_col.config.enums import LogModeEnum
+from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       LAYER_NAME, 
                                                       DEFAULT_LOG_MODE)
@@ -48,7 +48,7 @@ from asistente_ladm_col.lib.logger import Logger
 #                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
 
 
-class LADM_DATA():
+class LADMDATA():
     """
     High-level class to get related information from the LADM-COL database.
     """
@@ -753,7 +753,7 @@ class LADM_DATA():
         found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
 
         if found_in_cache:
-            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            if DEFAULT_LOG_MODE == EnumLogMode.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
                     domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
             return cached_value
@@ -785,7 +785,7 @@ class LADM_DATA():
         if value_not_found:
             db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode)
 
-        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+        if DEFAULT_LOG_MODE == EnumLogMode.DEV:
             self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
                 domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
 
@@ -818,7 +818,7 @@ class LADM_DATA():
         # Try to get it from cache
         found_in_cache, cached_value = db.names.get_domain_value(domain_table_name, code, value_is_ilicode)
         if found_in_cache:
-            if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+            if DEFAULT_LOG_MODE == EnumLogMode.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) {} from code ({}): {}".format(
                     domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, cached_value))
             return cached_value
@@ -843,7 +843,7 @@ class LADM_DATA():
         if value_not_found:
             db.names.cache_wrong_query(QueryNames.CODE_KEY, domain_table_name, res, None, value_is_ilicode)
 
-        if DEFAULT_LOG_MODE == LogModeEnum.DEV:
+        if DEFAULT_LOG_MODE == EnumLogMode.DEV:
             self.logger.debug(__name__, "Get domain ({}) {} from code ({}): {}".format(
                 domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
 

@@ -15,42 +15,42 @@ from asistente_ladm_col.logic.ladm_col.config.queries.qgis.property_record_card_
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
                                                                   EvalExprOwnField,
-                                                                  AbsRelateFields,
-                                                                  RelateOwnFieldObject,
-                                                                  RelateOwnFieldValue,
-                                                                  RelateRemoteFieldValue,
-                                                                  RelateRemoteFieldObject,
+                                                                  AbsRelatedFields,
+                                                                  RelatedOwnFieldObject,
+                                                                  RelatedOwnFieldValue,
+                                                                  RelatedRemoteFieldValue,
+                                                                  RelatedRemoteFieldObject,
                                                                   SpatialFilterSubLevel,
                                                                   FilterSubLevel)
 
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.config.mapping_config import QueryNames
-from asistente_ladm_col.config.enums import (SpatialOperationType,
-                                             GenericQueryType)
+from asistente_ladm_col.config.enums import (EnumSpatialOperationType,
+                                             EnumLADMQueryType)
 
 
 class QGISLADMQuery:
 
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
-        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.ladm_data = LADMDATA(self.qgis_utils)
 
     def get_igac_property_record_card_info(self, db, **kwargs):
-        return self._execute_generic_query(db, GenericQueryType.IGAC_PROPERTY_RECORD_CARD, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD, kwargs)
 
     def get_igac_economic_info(self, db, **kwargs):
-        return self._execute_generic_query(db, GenericQueryType.IGAC_ECONOMIC_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_ECONOMIC_QUERY, kwargs)
 
     def get_igac_physical_info(self, db, **kwargs):
-        return self._execute_generic_query(db, GenericQueryType.IGAC_PHYSICAL_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PHYSICAL_QUERY, kwargs)
 
     def get_igac_legal_info(self, db, **kwargs):
-        return self._execute_generic_query(db, GenericQueryType.IGAC_LEGAL_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_LEGAL_QUERY, kwargs)
 
     def get_igac_basic_info(self, db, **kwargs):
-        return self._execute_generic_query(db, GenericQueryType.IGAC_BASIC_QUERY, kwargs)
+        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_BASIC_QUERY, kwargs)
 
-    def _execute_generic_query(self, db, enum_generic_query, kwargs):
+    def _execute_ladm_query(self, db, query_type, kwargs):
         params = QGISLADMQuery._get_parameters(kwargs)
         filter_field_values = self._get_plots_ids_from_params(db, params)
 
@@ -58,15 +58,15 @@ class QGISLADMQuery:
         query = dict()
 
         ladm_units = db.get_ladm_units()
-        if GenericQueryType.IGAC_BASIC_QUERY == enum_generic_query:
+        if EnumLADMQueryType.IGAC_BASIC_QUERY == query_type:
             query = get_igac_basic_query(db.names, ladm_units)
-        elif GenericQueryType.IGAC_PHYSICAL_QUERY == enum_generic_query:
+        elif EnumLADMQueryType.IGAC_PHYSICAL_QUERY == query_type:
             query = get_igac_physical_query(db.names, ladm_units)
-        elif GenericQueryType.IGAC_LEGAL_QUERY == enum_generic_query:
+        elif EnumLADMQueryType.IGAC_LEGAL_QUERY == query_type:
             query = get_igac_legal_query(db.names, ladm_units)
-        elif GenericQueryType.IGAC_ECONOMIC_QUERY == enum_generic_query:
+        elif EnumLADMQueryType.IGAC_ECONOMIC_QUERY == query_type:
             query = get_igac_economic_query(db.names, ladm_units)
-        elif GenericQueryType.IGAC_PROPERTY_RECORD_CARD == enum_generic_query:
+        elif EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD == query_type:
             query = get_igac_property_record_card_query(db.names, ladm_units)
 
         self._execute_query(db, response, query[QueryNames.LEVEL_TABLE], filter_field_values)
@@ -154,14 +154,14 @@ class QGISLADMQuery:
                     node_fields_response[field.field_alias] = select_feature[field.field_name] if select_feature[field.field_name] != NULL else None
                 elif isinstance(field, EvalExprOwnField):
                     node_fields_response[field.field_alias] = self._get_eval_expr_value(layer, select_feature, field.expression)
-                elif isinstance(field, AbsRelateFields):
-                    if isinstance(field, RelateRemoteFieldObject):
+                elif isinstance(field, AbsRelatedFields):
+                    if isinstance(field, RelatedRemoteFieldObject):
                         node_fields_response[field.field_alias] = self._get_relate_remote_field_object(db, field, [select_feature[db.names.T_ID_F]])
-                    elif isinstance(field, RelateRemoteFieldValue):
+                    elif isinstance(field, RelatedRemoteFieldValue):
                         node_fields_response[field.field_alias] = self._get_relate_remote_field_value(db, field, [select_feature[db.names.T_ID_F]])
-                    elif isinstance(field, RelateOwnFieldObject):
+                    elif isinstance(field, RelatedOwnFieldObject):
                         node_fields_response[field.field_alias] = self._get_relate_own_field_object(db, field, [select_feature[db.names.T_ID_F]])
-                    elif isinstance(field, RelateOwnFieldValue):
+                    elif isinstance(field, RelatedOwnFieldValue):
                         node_fields_response[field.field_alias] = self._get_relate_own_field_value(db, field, [select_feature[db.names.T_ID_F]])
 
             for dict_key in level_dict:
@@ -255,11 +255,11 @@ class QGISLADMQuery:
             filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'memory:'})['OUTPUT']
 
             parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'memory:'}
-            if spatial_operation == SpatialOperationType.INTERSECTS_SPATIAL_OPERATION:
+            if spatial_operation == EnumSpatialOperationType.INTERSECTS:
                 parameters['PREDICATE'] = [0]  # Intersects
-            elif spatial_operation == SpatialOperationType.OVERLAPS_SPATIAL_OPERATION:
+            elif spatial_operation == EnumSpatialOperationType.OVERLAPS:
                 parameters['PREDICATE'] = [5]  # Overlaps
-            elif spatial_operation == SpatialOperationType.CONTAINS_SPATIAL_OPERATION:
+            elif spatial_operation == EnumSpatialOperationType.CONTAINS:
                 parameters['PREDICATE'] = [1]  # Contains
 
             filter_sub_level_layer = processing.run("native:extractbylocation", parameters)['OUTPUT']

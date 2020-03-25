@@ -23,7 +23,7 @@ from asistente_ladm_col.utils.qgis_utils import (QGISUtils,
                                                  GeometryUtils)
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 
 import_processing()
 
@@ -43,7 +43,7 @@ class TestCopy(unittest.TestCase):
 
         cls.names = cls.db_pg.names
         import_asistente_ladm_col()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.ladm_data = LADMDATA(cls.qgis_utils)
         cls.geometry = GeometryUtils()
 
         result = cls.db_pg.test_connection()

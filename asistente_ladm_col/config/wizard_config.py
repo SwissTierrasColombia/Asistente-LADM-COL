@@ -61,7 +61,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
 
-from asistente_ladm_col.config.enums import WizardTypeEnum
+from asistente_ladm_col.config.enums import EnumWizardType
 from asistente_ladm_col.gui.wizards.operation.wiz_create_parcel_operation import CreateParcelOperationWizard
 from asistente_ladm_col.gui.wizards.operation.wiz_create_rrr_operation import CreateRRROperationWizard
 from asistente_ladm_col.config.help_strings import HelpStrings
@@ -85,7 +85,7 @@ class WizardConfig:
     def get_wizard_config(self, names, wizard_config_name):
         if wizard_config_name == WIZARD_CREATE_COL_PARTY_CADASTRAL:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "party"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "Create party"),
@@ -107,7 +107,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateAdministrativeSourceOperationWizard",
                                                                         "administrative source"),
@@ -132,7 +132,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BOUNDARY_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBoundaryOperationWizard", "boundary"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBoundaryOperationWizard", "Create boundary"),
@@ -155,7 +155,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingOperationWizard", "building"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingOperationWizard", "Create building"),
@@ -178,7 +178,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitOperationWizard", "building unit"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitOperationWizard", "Create building unit"),
@@ -202,7 +202,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRROperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightOperationWizard", "right"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightOperationWizard", "Create right"),
@@ -226,7 +226,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RESTRICTION_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRROperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRestrictionOperationWizard", "restriction"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRestrictionOperationWizard", "Create restriction"),
@@ -250,7 +250,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_SPATIAL_SOURCE_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateSpatialSourceOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateSpatialSourceOperationWizard",
                                                                         "spatial source"),
@@ -283,7 +283,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_PARCEL_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateParcelOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateParcelOperationWizard", "parcel"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateParcelOperationWizard", "Create parcel"),
@@ -311,7 +311,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_PLOT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreatePlotOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePlotOperationWizard", "plot"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePlotOperationWizard", "Create plot"),
@@ -334,7 +334,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_EXT_ADDRESS_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: CreateExtAddressOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateExtAddressOperationWizard", "ext address"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateExtAddressOperationWizard", "Create ext address"),
@@ -360,7 +360,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_OF_WAY_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRightOfWayOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightOfWayOperationWizard", "right of way"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightOfWayOperationWizard", "Create right of way"),
@@ -386,7 +386,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                                                         "geoeconomic zone"),
@@ -410,7 +410,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_PHYSICAL_ZONE_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "physical zone"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "Create physical zone"),
@@ -432,7 +432,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateBuildingUnitValuationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitValuationWizard",
                                                                         "building unit valuation"),
@@ -458,7 +458,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateBuildingUnitQualificationValuationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
                                                                         "building unit qualification valuation"),

@@ -22,8 +22,8 @@ from qgis.core import (QgsApplication,
                        Qgis,
                        QgsVectorLayer)
 
-from asistente_ladm_col.config.enums import (LogHandlerEnum,
-                                             LogModeEnum)
+from asistente_ladm_col.config.enums import (EnumLogHandler,
+                                             EnumLogMode)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 TAB_NAME_FOR_LOGS = "Asistente LADM_COL"
@@ -59,7 +59,7 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.mode = LogModeEnum.USER  # Default value
+        self.mode = EnumLogMode.USER  # Default value
         self.log = QgsApplication.messageLog()
         self._file_log = ''
 
@@ -79,35 +79,35 @@ class Logger(QObject, metaclass=SingletonQObject):
     def disable_file_log(self):
         self._file_log = ''
 
-    def info(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def info(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
     def info_msg(self, module_name, msg, duration=0):
-        self.log_message(module_name, msg, Qgis.Info, LogHandlerEnum.MESSAGE_BAR, duration)
+        self.log_message(module_name, msg, Qgis.Info, EnumLogHandler.MESSAGE_BAR, duration)
 
-    def warning(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def warning(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
     def warning_msg(self, module_name, msg, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
+        self.log_message(module_name, msg, Qgis.Warning, EnumLogHandler.MESSAGE_BAR, duration)
 
-    def error(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def error(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         self.log_message(module_name, msg, Qgis.Warning, handler, duration, tab)
 
     def error_msg(self, module_name, msg, duration=0):
-        self.log_message(module_name, msg, Qgis.Warning, LogHandlerEnum.MESSAGE_BAR, duration)
+        self.log_message(module_name, msg, Qgis.Warning, EnumLogHandler.MESSAGE_BAR, duration)
 
-    def critical(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def critical(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         self.log_message(module_name, msg, Qgis.Critical, handler, duration, tab)
 
     def critical_msg(self, module_name, msg, duration=0):
-        self.log_message(module_name, msg, Qgis.Critical, LogHandlerEnum.MESSAGE_BAR, duration)
+        self.log_message(module_name, msg, Qgis.Critical, EnumLogHandler.MESSAGE_BAR, duration)
 
-    def success(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def success(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         self.log_message(module_name, msg, Qgis.Success, handler, duration, tab)
 
     def success_msg(self, module_name, msg, duration=0):
-        self.log_message(module_name, msg, Qgis.Success, LogHandlerEnum.MESSAGE_BAR, duration)
+        self.log_message(module_name, msg, Qgis.Success, EnumLogHandler.MESSAGE_BAR, duration)
 
     def clear_message_bar(self):
         self.clear_message_bar_emitted.emit()
@@ -119,33 +119,33 @@ class Logger(QObject, metaclass=SingletonQObject):
         if msg is None:
             self.clear_status_bar_emitted.emit()
         else:
-            self.log_message("status_bar", msg, Qgis.Info, LogHandlerEnum.STATUS_BAR, 0)
+            self.log_message("status_bar", msg, Qgis.Info, EnumLogHandler.STATUS_BAR, 0)
         QCoreApplication.processEvents()
 
-    def debug(self, module_name, msg, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def debug(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         """
         Here we define messages of a particular run (e.g., showing variable values or potentially long messages)
         """
-        if self.mode == LogModeEnum.DEV or self._file_log:
+        if self.mode == EnumLogMode.DEV or self._file_log:
             # Debug messages go for devs and/or for files
             self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
-    def log_message(self, module_name, msg, level, handler=LogHandlerEnum.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
+    def log_message(self, module_name, msg, level, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         module_name = module_name.split(".")[-1]
         call_message_log = False
-        if handler == LogHandlerEnum.MESSAGE_BAR:
+        if handler == EnumLogHandler.MESSAGE_BAR:
             self.message_with_duration_emitted.emit(msg, level, duration)
-            if self.mode == LogModeEnum.DEV:
+            if self.mode == EnumLogMode.DEV:
                 call_message_log = True
-        if handler == LogHandlerEnum.STATUS_BAR:
+        if handler == EnumLogHandler.STATUS_BAR:
             self.status_bar_message_emitted.emit(msg, duration)
-            if self.mode == LogModeEnum.DEV:
+            if self.mode == EnumLogMode.DEV:
                 call_message_log = True
-        if handler == LogHandlerEnum.QGIS_LOG:
+        if handler == EnumLogHandler.QGIS_LOG:
             self.log.logMessage(f"[{module_name}] {msg}", tab, level, False)
 
         if call_message_log:
-            self.log_message(module_name, msg, level, LogHandlerEnum.QGIS_LOG)
+            self.log_message(module_name, msg, level, EnumLogHandler.QGIS_LOG)
 
         if self._file_log:
             # Logic to write message to file

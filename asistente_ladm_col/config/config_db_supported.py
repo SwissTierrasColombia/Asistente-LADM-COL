@@ -18,11 +18,11 @@
 """
 from qgis.PyQt.QtCore import QObject
 
-from asistente_ladm_col.lib.db.pg_factory import PgFactory
-from asistente_ladm_col.lib.db.gpkg_factory import GpkgFactory
+from asistente_ladm_col.lib.db.pg_factory import PGFactory
+from asistente_ladm_col.lib.db.gpkg_factory import GPKGFactory
 
 
-class ConfigDbSupported(QObject):
+class ConfigDBSupported(QObject):
 
     def __init__(self):
         self.id_default_db = None
@@ -30,11 +30,11 @@ class ConfigDbSupported(QObject):
         self._init_db_factories()
 
     def _init_db_factories(self):
-        db_factory = PgFactory()
+        db_factory = PGFactory()
         self._db_factories[db_factory.get_id()] = db_factory
         self.id_default_db = db_factory.get_id()  # Make PostgreSQL the default DB engine
 
-        db_factory = GpkgFactory()
+        db_factory = GPKGFactory()
         self._db_factories[db_factory.get_id()] = db_factory
 
     def get_db_factories(self):

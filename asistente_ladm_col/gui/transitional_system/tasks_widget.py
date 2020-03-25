@@ -25,7 +25,7 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QListWidgetItem,
                                  QMessageBox)
 
-from asistente_ladm_col.config.enums import STTaskStatusEnum
+from asistente_ladm_col.config.enums import EnumSTTaskStatus
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -71,7 +71,7 @@ class TasksWidget(QWidget, WIDGET_UI):
             # Enable Close Task button?
             task = self.session.task_manager.get_task(selected_items[0].data(Qt.UserRole))
             if task:
-                enable = task.get_status() == STTaskStatusEnum.STARTED.value and task.steps_complete()
+                enable = task.get_status() == EnumSTTaskStatus.STARTED.value and task.steps_complete()
 
         self.btn_close_task.setEnabled(enable)
 
@@ -126,9 +126,9 @@ class TasksWidget(QWidget, WIDGET_UI):
         title_text = self.st_config.TASK_TITLE_TEXT_CSS
         normal_text = self.st_config.TASK_NORMAL_TEXT_CSS
         date_text = self.st_config.TASK_DATE_TEXT_CSS
-        if widget.lbl_status.text() == STTaskStatusEnum.ASSIGNED.value:
+        if widget.lbl_status.text() == EnumSTTaskStatus.ASSIGNED.value:
             status_text = self.st_config.TASK_ASSIGNED_STATUS_TEXT_CSS
-        elif widget.lbl_status.text() == STTaskStatusEnum.STARTED.value:
+        elif widget.lbl_status.text() == EnumSTTaskStatus.STARTED.value:
             status_text = self.st_config.TASK_STARTED_STATUS_SELECTED_TEXT_CSS if selected else self.st_config.TASK_STARTED_STATUS_TEXT_CSS
 
         if selected:

@@ -24,7 +24,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.enums import LogHandlerEnum
+from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -70,7 +70,7 @@ class LoginSTDialog(QDialog, DIALOG_UI):
             res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
 
         if res:
-            self.logger.info(__name__, msg, LogHandlerEnum.MESSAGE_BAR, 15)
+            self.logger.info(__name__, msg, EnumLogHandler.MESSAGE_BAR, 15)
             self.close()
         else:
             self.show_message(msg, Qgis.Warning, 0)

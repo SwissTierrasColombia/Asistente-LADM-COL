@@ -5,13 +5,13 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
-from asistente_ladm_col.config.enums import LogModeEnum
+from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
 DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL')
 DEPENDENCY_REPORTS_DIR_NAME = 'impresion'
 
-DEFAULT_LOG_MODE = LogModeEnum.DEV
+DEFAULT_LOG_MODE = EnumLogMode.DEV
 DEFAULT_LOG_FILE = ''
 
 # Constants for reports

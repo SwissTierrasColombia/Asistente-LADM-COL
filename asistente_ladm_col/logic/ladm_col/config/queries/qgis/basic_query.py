@@ -3,7 +3,7 @@ from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
                                                                   EvalExprOwnField,
-                                                                  RelateOwnFieldObject,
+                                                                  RelatedOwnFieldObject,
                                                                   FilterSubLevel)
 from qgis.core import QgsExpression
 
@@ -45,9 +45,9 @@ def get_igac_basic_query(names, ladm_units):
             QueryNames.LEVEL_TABLE_ALIAS: names.OP_PLOT_T,
             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.T_ID_F, names.OP_PLOT_T, names.T_ID_F),
             QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias("Área terreno", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F)),
-                                      RelateOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
-                                                           required_address_fields,
-                                                           names.EXT_ADDRESS_S_OP_PLOT_F)],
+                                      RelatedOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
+                                                            required_address_fields,
+                                                            names.EXT_ADDRESS_S_OP_PLOT_F)],
             QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_PARCEL_T,
                 QueryNames.LEVEL_TABLE_ALIAS: names.OP_PARCEL_T,
@@ -72,8 +72,8 @@ def get_igac_basic_query(names, ladm_units):
                                                                 names.COL_UE_BAUNIT_T_PARCEL_F),
                     QueryNames.TABLE_FIELDS: [
                         OwnField(names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
-                        RelateOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
-                                             required_address_fields, names.EXT_ADDRESS_S_OP_BUILDING_F)
+                        RelatedOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
+                                              required_address_fields, names.EXT_ADDRESS_S_OP_BUILDING_F)
                     ],
                     QueryNames.LEVEL_TABLE: {
                         QueryNames.LEVEL_TABLE_NAME: names.OP_BUILDING_UNIT_T,
@@ -97,8 +97,8 @@ def get_igac_basic_query(names, ladm_units):
                             OwnField(names.OP_BUILDING_UNIT_T_BUILT_AREA_F, get_full_alias("Área construida", ladm_units, names.OP_BUILDING_UNIT_T, names.OP_BUILDING_UNIT_T_BUILT_AREA_F)),
                             DomainOwnField(names.OP_BUILDING_UNIT_T_USE_F, "Uso",
                                            names.OP_BUILDING_UNIT_USE_D),
-                            RelateOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
-                                                 required_address_fields, names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
+                            RelatedOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
+                                                  required_address_fields, names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
                         ]
                     }
                 }

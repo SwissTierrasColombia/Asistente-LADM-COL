@@ -3,9 +3,9 @@ from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
                                                                   EvalExprOwnField,
-                                                                  RelateOwnFieldObject,
-                                                                  RelateOwnFieldValue,
-                                                                  RelateRemoteFieldValue,
+                                                                  RelatedOwnFieldObject,
+                                                                  RelatedOwnFieldValue,
+                                                                  RelatedRemoteFieldValue,
                                                                   FilterSubLevel)
 from qgis.core import QgsExpression
 
@@ -25,9 +25,9 @@ def get_igac_legal_query(names, ladm_units):
         OwnField(names.OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F, "Ente emisor"),
         DomainOwnField(names.COL_SOURCE_T_AVAILABILITY_STATUS_F, "Estado disponibilidad",
                        names.COL_AVAILABILITY_TYPE_D),
-        RelateOwnFieldValue('Archivo fuente', names.EXT_ARCHIVE_S,
-                            OwnField(names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'),
-                            names.EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F)
+        RelatedOwnFieldValue('Archivo fuente', names.EXT_ARCHIVE_S,
+                             OwnField(names.EXT_ARCHIVE_S_DATA_F, 'Archivo fuente'),
+                             names.EXT_ARCHIVE_S_OP_ADMINISTRATIVE_SOURCE_F)
     ]
 
     op_party_fields = [
@@ -35,8 +35,8 @@ def get_igac_legal_query(names, ladm_units):
         OwnField(names.OP_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
         OwnField(names.COL_PARTY_T_NAME_F, 'Nombre'),
         OwnField(names.OP_PARTY_T_GENRE_F, 'Género'),
-        RelateOwnFieldObject(names.OP_PARTY_CONTACT_T, names.OP_PARTY_CONTACT_T, op_party_contact_fields,
-                             names.OP_PARTY_CONTACT_T_OP_PARTY_F)
+        RelatedOwnFieldObject(names.OP_PARTY_CONTACT_T, names.OP_PARTY_CONTACT_T, op_party_contact_fields,
+                              names.OP_PARTY_CONTACT_T_OP_PARTY_F)
     ]
 
     op_group_party_party_fields = [
@@ -44,18 +44,18 @@ def get_igac_legal_query(names, ladm_units):
         OwnField(names.OP_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
         OwnField(names.COL_PARTY_T_NAME_F, 'Nombre'),
         OwnField(names.OP_PARTY_T_GENRE_F, 'Género'),
-        RelateOwnFieldObject(names.OP_PARTY_CONTACT_T, names.OP_PARTY_CONTACT_T, op_party_contact_fields,
-                             names.OP_PARTY_CONTACT_T_OP_PARTY_F),
-        RelateRemoteFieldValue(names.FRACTION_S,
-                               names.FRACTION_S,
-                               EvalExprOwnField("fracción",
+        RelatedOwnFieldObject(names.OP_PARTY_CONTACT_T, names.OP_PARTY_CONTACT_T, op_party_contact_fields,
+                              names.OP_PARTY_CONTACT_T_OP_PARTY_F),
+        RelatedRemoteFieldValue(names.FRACTION_S,
+                                names.FRACTION_S,
+                                EvalExprOwnField("fracción",
                                                 QgsExpression(
                                                     "round({numerador}/{denominador} * 100, 3)".format(
                                                         denominador=names.FRACTION_S_DENOMINATOR_F,
                                                         numerador=names.FRACTION_S_NUMERATOR_F
                                                     ))),
-                               names.FRACTION_S_MEMBER_F,
-                               FilterSubLevel(names.T_ID_F, names.MEMBERS_T, names.MEMBERS_T_PARTY_F))
+                                names.FRACTION_S_MEMBER_F,
+                                FilterSubLevel(names.T_ID_F, names.MEMBERS_T, names.MEMBERS_T_PARTY_F))
     ]
 
     op_group_party_fields = [

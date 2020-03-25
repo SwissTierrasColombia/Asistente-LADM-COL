@@ -23,17 +23,17 @@ from qgis.core import Qgis
 from ...config.enums import EnumDbActionType
 from ...utils.qt_utils import (make_save_file_selector,
                                make_file_selector)
-from .db_config_panel import DbConfigPanel
+from .db_config_panel import DBConfigPanel
 from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('dialogs/settings_gpkg.ui')
 
 
-class GpkgConfigPanel(DbConfigPanel, WIDGET_UI):
+class GPKGConfigPanel(DBConfigPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent):
-        DbConfigPanel.__init__(self, parent)
+        DBConfigPanel.__init__(self, parent)
         self.setupUi(self)
 
         self.action = None

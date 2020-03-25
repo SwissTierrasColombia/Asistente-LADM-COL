@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject,
                               QSettings)
 
-from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBSupported
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.lib.db.db_connector import DBConnector
@@ -43,7 +43,7 @@ class ConnectionManager(QObject):
         QObject.__init__(self)
         self.logger = Logger()
         self.qgis_utils = qgis_utils
-        self.dbs_supported = ConfigDbSupported()
+        self.dbs_supported = ConfigDBSupported()
 
         self._db_sources = {  # Values are DB Connectors
             COLLECTED_DB_SOURCE: None,

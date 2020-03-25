@@ -40,8 +40,8 @@ from qgis.core import (Qgis,
                        QgsExpression)
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum,
-                                             LogHandlerEnum,
+                                             EnumWizardType,
+                                             EnumLogHandler,
                                              EnumUserLevel)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
@@ -95,7 +95,7 @@ from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system i
 from asistente_ladm_col.lib.context import (Context, 
                                             TaskContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
@@ -171,7 +171,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.ladm_data = LADMDATA(self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         self.create_actions()
@@ -1292,7 +1292,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                          wiz_settings[WIZARD_TOOL_NAME]):
             self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
                                                   wiz_settings)
-            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+            if wiz_settings[WIZARD_TYPE] & EnumWizardType.SPATIAL_WIZARD:
                 # Required signal for wizard geometry creating
                 self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
                 self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
@@ -1348,7 +1348,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if logout:
             logged_out, msg = self.session.logout()
             if show_message:
-                self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
+                self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, EnumLogHandler.MESSAGE_BAR)
 
     def set_login_controls_visibility(self, login_activated):
         """

@@ -13,7 +13,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_copy_gpkg_conn)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 
 
 class TestGetDomains(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestGetDomains(unittest.TestCase):
         cls.assertTrue(res, msg)
 
         cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.ladm_data = LADMDATA(cls.qgis_utils)
 
     def test_get_domain_value_from_code(self):
         print('\nINFO: Validating get domain value from code ...')

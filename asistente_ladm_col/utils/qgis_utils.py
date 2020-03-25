@@ -74,7 +74,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       TEST_SERVER,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
-from asistente_ladm_col.config.enums import LayerRegistryType
+from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
@@ -205,7 +205,7 @@ class QGISUtils(QObject):
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
 
-            ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_REGISTRY)
+            ladm_layers = self.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)
             dict_ladm_layers = {db.get_ladm_layer_name(ladm_layer):ladm_layer for ladm_layer in ladm_layers}
             ladm_layers_names = dict_ladm_layers.keys()
 
@@ -226,7 +226,7 @@ class QGISUtils(QObject):
             profiler.clear()
 
             if load:
-                ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_CANVAS)
+                ladm_layers = self.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_CANVAS)
                 for layer_id, layer_info in layers.items():
                     layer_obj = None
 
@@ -272,7 +272,7 @@ class QGISUtils(QObject):
                     # Remove layers in two steps:
                     # 1) Remove those spatial layers with more than one geometry
                     #    column loaded because one geometry was requested.
-                    ladm_layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_CANVAS)
+                    ladm_layers = self.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_CANVAS)
                     for layer in ladm_layers:
                         layer_name = db.get_ladm_layer_name(layer)
 
@@ -348,7 +348,7 @@ class QGISUtils(QObject):
                 layers[layer_name][LAYER] = response_layers[layer_name]
 
     def remove_layer_from_no_in_canvas(self, db, layers_names):
-        layers_no_canvas = self.get_ladm_layers_by_register_type(db, LayerRegistryType.NOT_IN_CANVAS)
+        layers_no_canvas = self.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.NOT_IN_CANVAS)
         for layer_no_canvas in layers_no_canvas:
             if db.get_ladm_layer_name(layer_no_canvas) in layers_names:
                 self.remove_layer_not_in_canvas(layer_no_canvas)
@@ -366,17 +366,17 @@ class QGISUtils(QObject):
     @staticmethod
     def get_ladm_layer_by_registry_type(db, layer_name, register_type):
         for k, layer in QgsProject.instance().mapLayers().items():
-            if register_type == LayerRegistryType.IN_CANVAS:
+            if register_type == EnumLayerRegistryType.IN_CANVAS:
                 if QgsProject.instance().layerTreeRoot().findLayer(layer):
                     result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                     if result and result == layer_name:
                         return layer
-            elif register_type == LayerRegistryType.NOT_IN_CANVAS:
+            elif register_type == EnumLayerRegistryType.NOT_IN_CANVAS:
                 if not QgsProject.instance().layerTreeRoot().findLayer(layer):
                     result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                     if result and result == layer_name:
                         return layer
-            elif register_type == LayerRegistryType.IN_REGISTRY:
+            elif register_type == EnumLayerRegistryType.IN_REGISTRY:
                 result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
                 if result and result == layer_name:
                     return layer
@@ -386,15 +386,15 @@ class QGISUtils(QObject):
     def get_ladm_layers_by_register_type(db, register_type):
         ladm_layers = list()
         for k, layer in QgsProject.instance().mapLayers().items():
-            if register_type == LayerRegistryType.IN_CANVAS:
+            if register_type == EnumLayerRegistryType.IN_CANVAS:
                 if QgsProject.instance().layerTreeRoot().findLayer(layer):
                     if db.is_ladm_layer(layer):
                         ladm_layers.append(layer)
-            elif register_type == LayerRegistryType.NOT_IN_CANVAS:
+            elif register_type == EnumLayerRegistryType.NOT_IN_CANVAS:
                 if not QgsProject.instance().layerTreeRoot().findLayer(layer):
                     if db.is_ladm_layer(layer):
                         ladm_layers.append(layer)
-            elif register_type == LayerRegistryType.IN_REGISTRY:
+            elif register_type == EnumLayerRegistryType.IN_REGISTRY:
                 if db.is_ladm_layer(layer):
                     ladm_layers.append(layer)
         return ladm_layers
@@ -430,7 +430,7 @@ class QGISUtils(QObject):
         return True
 
     def automatic_namespace_local_id_configuration_changed(self, db):
-        layers = self.get_ladm_layers_by_register_type(db, LayerRegistryType.IN_REGISTRY)
+        layers = self.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
@@ -519,7 +519,7 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_ladm_layer_by_registry_type(db, db_relation[QueryNames.REFERENCED_LAYER], LayerRegistryType.IN_REGISTRY)
+                referenced_layer = self.get_ladm_layer_by_registry_type(db, db_relation[QueryNames.REFERENCED_LAYER], EnumLayerRegistryType.IN_REGISTRY)
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
@@ -551,7 +551,7 @@ class QGISUtils(QObject):
                 if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
                     continue
 
-                domain = self.get_ladm_layer_by_registry_type(db, v[2], LayerRegistryType.IN_REGISTRY)
+                domain = self.get_ladm_layer_by_registry_type(db, v[2], EnumLayerRegistryType.IN_REGISTRY)
                 if domain is not None:
                     cardinality = v[1]
                     domain_table = v[2]
