@@ -232,6 +232,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                                                       Qgis.Success, 0)
 
                                     self.logger.clear_status()
+                                    etl.show_resume_etl(self.txt_log)
                                     etl_result = True
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution

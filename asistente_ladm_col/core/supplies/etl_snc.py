@@ -90,6 +90,9 @@ class ETLSNC(ETLSupplies):
         return True, ''
 
     def run_etl_model(self, custom_feedback):
+        self.ladm_layers = [self.layers[ladm_layer][LAYER] for ladm_layer in self.layers]
+        self.ladm_tables_feature_count_before = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
+
         self.logger.info(__name__, "Running ETL-SNC model...")
         processing.run("model:ETL_SNC",
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
@@ -131,3 +134,12 @@ class ETLSNC(ETLSupplies):
                         'vereda': self.gdb_layer_paths['R_VEREDA']},
                         feedback=custom_feedback)
         self.logger.info(__name__, "ETL-SNC model finished.")
+
+    def show_resume_etl(self, txt_log):
+        self.ladm_tables_feature_count_after = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
+        text = ''
+        
+        for layer in self.ladm_tables_feature_count_before:
+            text += '{} : {} \n'.format(layer, self.ladm_tables_feature_count_after['{}'.format(layer)] - self.ladm_tables_feature_count_before['{}'.format(layer)])
+            
+        txt_log.setText(text)
