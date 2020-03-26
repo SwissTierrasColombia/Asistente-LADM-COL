@@ -4,17 +4,18 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
+from asistente_ladm_col.tests.utils import (get_iface,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
+from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), True)
+
+from asistente_ladm_col.utils.utils import is_plugin_version_valid
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 start_app()
 
-from asistente_ladm_col.tests.utils import (get_iface,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker)
-
-from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
-asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface())
 asistente_ladm_col.initGui()
 
 class TestPlugin(unittest.TestCase):
@@ -23,15 +24,15 @@ class TestPlugin(unittest.TestCase):
         global asistente_ladm_col
 
         unload_qgis_model_baker()
-        valid = asistente_ladm_col.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                           QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                           QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
         self.assertFalse(valid)
 
         import_qgis_model_baker()
-        valid = asistente_ladm_col.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                           QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                           QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
         self.assertTrue(valid)
 
     def test_02_plugin(self):
@@ -40,7 +41,7 @@ class TestPlugin(unittest.TestCase):
         pass
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
         global asistente_ladm_col
         #asistente_ladm_col.unload()
         pass

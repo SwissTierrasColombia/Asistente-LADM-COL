@@ -16,53 +16,37 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 import qgis
 from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication,
-                              QSettings)
-from qgis.core import (QgsProject,
-                       Qgis,
-                       QgsApplication)
+                              QCoreApplication)
+from qgis.core import QgsProject
 
-from .domains_parser import DomainRelationGenerator
-from ..config.general_config import (PLUGIN_NAME,
-                                     KIND_SETTINGS,
-                                     TABLE_NAME,
-                                     RELATION_NAME,
-                                     REFERENCED_LAYER,
-                                     REFERENCED_FIELD,
-                                     REFERENCING_LAYER,
-                                     REFERENCING_FIELD,
-                                     RELATION_TYPE,
-                                     CLASS_CLASS_RELATION,
-                                     translated_strings)
-from ..config.table_mapping_config import (TABLE_PROP_DOMAIN,
-                                           TABLE_PROP_STRUCTURE)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_LAYER_GROUP)
+from asistente_ladm_col.config.query_names import QueryNames
 
 
 class QgisModelBakerUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.log = QgsApplication.messageLog()
-        from ..config.config_db_supported import ConfigDbSupported
-        self._conf_db = ConfigDbSupported()
+        self.logger = Logger()
+        from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+        self._dbs_supported = ConfigDbSupported()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_generator(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            tool = self._conf_db.get_db_items()[db.mode].get_mbaker_db_ili_mode()
+            tool = self._dbs_supported.get_db_factory(db.engine).get_mbaker_db_ili_mode()
 
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
             generator = QgisModelBaker.get_generator()(tool,
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             return generator
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
             return None
 
     def get_model_baker_db_connection(self, db):
@@ -83,23 +67,22 @@ class QgisModelBakerUtils(QObject):
         enums that we get only once per session and configure in
         the Asistente LADM_COL.
         """
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
 
-            tool = self._conf_db.get_db_items()[db.mode].get_mbaker_db_ili_mode()
+            tool = self._dbs_supported.get_db_factory(db.engine).get_mbaker_db_ili_mode()
 
             generator = QgisModelBaker.get_generator()(tool,
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
-            legend = generator.legend(layers, ignore_node_names=[translated_strings.ERROR_LAYER_GROUP])
+            legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
             QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
 
     def get_layers_and_relations_info(self, db):
         """
@@ -111,50 +94,38 @@ class QgisModelBakerUtils(QObject):
             generator = self.get_generator(db)
 
             layers = generator.get_tables_info_without_ignored_tables()
-            relations = generator.get_relations_info()
-            relations = self.filter_relations(relations)
-
-            domain_generator = DomainRelationGenerator(generator._db_connector, "smart2")
-            layer_names = [record[TABLE_NAME] for record in layers]
-            domain_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_DOMAIN]
-            structure_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_STRUCTURE]
-            domains, bags_of_enum = domain_generator.get_domain_relations_info(layer_names, domain_names, structure_names)
-
-            return (layers, relations + domains, bags_of_enum)
+            relations = [relation for relation in generator.get_relations_info()]
+            self.logger.debug(__name__, "Relationships before filter: {}".format(len(relations)))
+            self.filter_relations(relations)
+            self.logger.debug(__name__, "Relationships after filter: {}".format(len(relations)))
+            return (layers, relations, {})
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
             return (None, None)
 
     def filter_relations(self, relations):
-        filtered_relations = list()
+        """
+        Modifies the input list of relations, removing elements that meet a condition.
+
+        :param relations: List of a dict of relations.
+        :return: Nothing, changes the input list of relations.
+        """
+        to_delete = list()
         for relation in relations:
-            if not relation[REFERENCING_FIELD].startswith('uej2_') and \
-               not relation[REFERENCING_FIELD].startswith('ue_'):
-                new_relation = {
-                    RELATION_NAME: relation[RELATION_NAME],
-                    REFERENCED_LAYER: relation[REFERENCED_LAYER],
-                    REFERENCED_FIELD: relation[REFERENCED_FIELD],
-                    REFERENCING_LAYER: relation[REFERENCING_LAYER],
-                    REFERENCING_FIELD: relation[REFERENCING_FIELD],
-                    RELATION_TYPE: CLASS_CLASS_RELATION
-                }
-                filtered_relations.append(new_relation)
-        return filtered_relations
+            if relation[QueryNames.REFERENCING_FIELD].startswith('uej2_') or relation[QueryNames.REFERENCING_FIELD].startswith('ue_'):
+                to_delete.append(relation)
+
+        for idx in to_delete:
+            relations.remove(idx)
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
             generator = self.get_generator(db)
             return generator.get_tables_info_without_ignored_tables()
         else:
-            self.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
-                PLUGIN_NAME,
-                Qgis.Critical
-            )
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'QgisModelBaker' in qgis.utils.plugins:
@@ -167,13 +138,3 @@ class QgisModelBakerUtils(QObject):
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
         return None
-
-def get_java_path_dir_from_qgis_model_baker():
-    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath')
-    java_path_dir = os.path.dirname(os.path.dirname(java_path or ''))
-    return java_path_dir
-
-def get_java_path_from_qgis_model_baker():
-    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath', '', str)
-    return java_path
-

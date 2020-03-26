@@ -23,11 +23,11 @@ from osgeo import ogr
 from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsFeatureRequest, 
-                       QgsApplication)
+                       QgsFeatureRequest,
+                       QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
-                              QCoreApplication, 
+                              QCoreApplication,
                               QFile,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
@@ -35,63 +35,60 @@ import processing
 
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
-                                 QGridLayout,
                                  QDialogButtonBox,
+                                 QMessageBox,
                                  QFileDialog)
 
-from ...utils.qt_utils import make_file_selector, normalize_local_url
-from ...config.help_strings import HelpStrings
-from ...config.table_mapping_config import (COL_PARTY_TABLE,
-                                         PARCEL_TABLE,
-                                         RIGHT_TABLE,
-                                         RRR_SOURCE_RELATION_TABLE,
-                                         EXTFILE_TABLE,
-                                         LA_GROUP_PARTY_TABLE,
-                                         ADMINISTRATIVE_SOURCE_TABLE,
-                                         MEMBERS_TABLE)
-from ...config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
-                                      EXCEL_SHEET_TITLE_MUNICIPALITY,
-                                      EXCEL_SHEET_TITLE_ZONE,
-                                      EXCEL_SHEET_TITLE_REGISTRATION_PLOT,
-                                      EXCEL_SHEET_TITLE_NPN,
-                                      EXCEL_SHEET_TITLE_NPV,
-                                      EXCEL_SHEET_TITLE_PLOT_NAME,
-                                      EXCEL_SHEET_TITLE_VALUATION,
-                                      EXCEL_SHEET_TITLE_PLOT_TYPE,
-                                      EXCEL_SHEET_TITLE_FIRST_NAME,
-                                      EXCEL_SHEET_TITLE_MIDDLE,
-                                      EXCEL_SHEET_TITLE_FIRST_SURNAME,
-                                      EXCEL_SHEET_TITLE_SECOND_SURNAME,
-                                      EXCEL_SHEET_TITLE_BUSINESS_NAME,
-                                      EXCEL_SHEET_TITLE_SEX,
-                                      EXCEL_SHEET_TITLE_DOCUMENT_TYPE,
-                                      EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
-                                      EXCEL_SHEET_TITLE_KIND_PERSON,
-                                      EXCEL_SHEET_TITLE_ISSUING_ENTITY,
-                                      EXCEL_SHEET_TITLE_DATE_ISSUE,
-                                      EXCEL_SHEET_TITLE_ID_GROUP,
-                                      EXCEL_SHEET_TITLE_TYPE,
-                                      EXCEL_SHEET_TITLE_GROUP,
-                                      EXCEL_SHEET_TITLE_SOURCE_TYPE,
-                                      EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER,
-                                      EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE,
-                                      EXCEL_SHEET_TITLE_STATE_SOURCE,
-                                      EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE,
-                                      EXCEL_SHEET_TITLE_STORAGE_PATH,
-                                      LAYER,
-                                      PLUGIN_NAME,
-                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
-                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
-                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
-                                      LOG_QUALITY_CONTENT_SEPARATOR,
-                                      EXCEL_SHEET_NAME_PLOT,
-                                      EXCEL_SHEET_NAME_PARTY,
-                                      EXCEL_SHEET_NAME_GROUP,
-                                      EXCEL_SHEET_NAME_RIGHT)
-from ...utils import get_ui_class
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
+from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                                      LOG_QUALITY_CONTENT_SEPARATOR)
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 DIALOG_UI = get_ui_class('dialogs/dlg_import_from_excel.ui')
+
+# Excel titles
+EXCEL_SHEET_NAME_PLOT = 'predio'
+EXCEL_SHEET_NAME_PARTY = 'interesado'
+EXCEL_SHEET_NAME_GROUP = 'agrupacion'
+EXCEL_SHEET_NAME_RIGHT = 'derecho'
+EXCEL_SHEET_TITLE_DEPARTMENT = 'departamento'
+EXCEL_SHEET_TITLE_MUNICIPALITY = 'municipio'
+EXCEL_SHEET_TITLE_ZONE = 'zona'
+EXCEL_SHEET_TITLE_REGISTRATION_PLOT = 'matricula predio'
+EXCEL_SHEET_TITLE_NPN = 'numero predial nuevo'
+EXCEL_SHEET_TITLE_NPV = 'numero predial viejo'
+EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
+EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
+EXCEL_SHEET_TITLE_PLOT_CONDITION = 'condicion predio'
+EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
+EXCEL_SHEET_TITLE_ADDRESS = 'direccion'
+EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
+EXCEL_SHEET_TITLE_MIDDLE = 'nombre2'
+EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1'
+EXCEL_SHEET_TITLE_SECOND_SURNAME = 'apellido2'
+EXCEL_SHEET_TITLE_BUSINESS_NAME = 'razon social'
+EXCEL_SHEET_TITLE_SEX = 'sexo persona'
+EXCEL_SHEET_TITLE_DOCUMENT_TYPE = 'tipo documento'
+EXCEL_SHEET_TITLE_DOCUMENT_NUMBER = 'numero de documento'
+EXCEL_SHEET_TITLE_KIND_PERSON = 'tipo persona'
+EXCEL_SHEET_TITLE_ISSUING_ENTITY = 'organo emisor del documento'
+EXCEL_SHEET_TITLE_DATE_ISSUE = 'fecha emision del documento'
+EXCEL_SHEET_TITLE_ID_GROUP = 'id agrupación'
+EXCEL_SHEET_TITLE_TYPE = 'tipo'
+EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER = 'número documento Interesado'
+EXCEL_SHEET_TITLE_GROUP = 'agrupación'
+EXCEL_SHEET_TITLE_SOURCE_TYPE = 'tipo de fuente'
+EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE = 'Descripción de la fuente'
+EXCEL_SHEET_TITLE_STATE_SOURCE = 'estado_disponibilidad de la fuente'
+EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE = 'Es oficial la fuente'
+EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 
 
 class ImportFromExcelDialog(QDialog, DIALOG_UI):
@@ -103,19 +100,23 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.log = QgsApplication.messageLog()
+        self.logger = Logger()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
+        self.names = self._db.names
+        self._running_tool = False
+        self.tool_name = QCoreApplication.translate("ImportFromExcelDialog", "Import intermediate structure")
 
         self.fields = {EXCEL_SHEET_NAME_PLOT: [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
                             EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
-                            EXCEL_SHEET_TITLE_PLOT_NAME, EXCEL_SHEET_TITLE_VALUATION, EXCEL_SHEET_TITLE_PLOT_TYPE
+                            EXCEL_SHEET_TITLE_PLOT_NAME, EXCEL_SHEET_TITLE_VALUATION, EXCEL_SHEET_TITLE_PLOT_CONDITION, 
+                            EXCEL_SHEET_TITLE_PLOT_TYPE, EXCEL_SHEET_TITLE_ADDRESS
                             ],
                         EXCEL_SHEET_NAME_PARTY: [EXCEL_SHEET_TITLE_FIRST_NAME, EXCEL_SHEET_TITLE_MIDDLE, EXCEL_SHEET_TITLE_FIRST_SURNAME,
                             EXCEL_SHEET_TITLE_SECOND_SURNAME, EXCEL_SHEET_TITLE_BUSINESS_NAME, EXCEL_SHEET_TITLE_SEX,
                             EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER, EXCEL_SHEET_TITLE_KIND_PERSON,
-                            EXCEL_SHEET_TITLE_ISSUING_ENTITY,EXCEL_SHEET_TITLE_DATE_ISSUE
+                            EXCEL_SHEET_TITLE_ISSUING_ENTITY,EXCEL_SHEET_TITLE_DATE_ISSUE, EXCEL_SHEET_TITLE_NPN
                             ],
                         EXCEL_SHEET_NAME_GROUP: [EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
                             EXCEL_SHEET_TITLE_ID_GROUP
@@ -130,7 +131,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.rejected.connect(self.rejected)
+        #self.buttonBox.rejected.connect(self.rejected)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_excel_path,
@@ -140,12 +141,11 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                                                                       'Excel File (*.xlsx *.xls)')))
         self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ImportFromExcelDialog", "Import"))
 
-        self.progress.setVisible(False)
+        self.initialize_feedback()
         self.restore_settings()
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.setLayout(QGridLayout())
         # self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
@@ -154,6 +154,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.import_from_excel()
 
     def import_from_excel(self):
+        self._running_tool = True
         steps = 18
         step = 0
         self.progress.setVisible(True)
@@ -205,20 +206,16 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
 
-        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "Loading LADM_COL tables..."))
-        step += 1
-        self.progress.setValue(step/steps * 100)
-
         # GET LADM LAYERS
         layers = {
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
-            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None},
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, LAYER: None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.OP_RIGHT_T: {'name': self.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
+            self.names.EXT_ARCHIVE_S: {'name': self.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
+            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
+            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
+            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None}
         }
 
         self.qgis_utils.get_layers(self._db, layers, load=True)
@@ -226,357 +223,43 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             return None
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
-        ladm_tables = [layers[PARCEL_TABLE][LAYER],
-                       layers[COL_PARTY_TABLE][LAYER],
-                       layers[RIGHT_TABLE][LAYER],
-                       layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
-                       layers[RRR_SOURCE_RELATION_TABLE][LAYER],
-                       layers[LA_GROUP_PARTY_TABLE][LAYER],
-                       layers[MEMBERS_TABLE][LAYER]]
+        ladm_tables = [layers[self.names.OP_PARCEL_T][LAYER],
+                       layers[self.names.OP_PARTY_T][LAYER],
+                       layers[self.names.OP_RIGHT_T][LAYER],
+                       layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
+                       layers[self.names.COL_RRR_SOURCE_T][LAYER],
+                       layers[self.names.OP_GROUP_PARTY_T][LAYER],
+                       layers[self.names.MEMBERS_T][LAYER]]
         ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
 
 
         # Run the ETL
-        # 1
-        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 1): Load col_interesado data..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
+        params = {'agrupacion': layers[self.names.OP_GROUP_PARTY_T][LAYER],
+                  'colmiembros': layers[self.names.MEMBERS_T][LAYER],
+                  'colrrrsourcet': layers[self.names.COL_RRR_SOURCE_T][LAYER],
+                  'extarchivo': layers[self.names.EXT_ARCHIVE_S][LAYER],
+                  'interesado': layers[self.names.OP_PARTY_T][LAYER],
+                  'layergroupparty': layer_group_party,
+                  'layerparcel': layer_parcel,
+                  'layerparty': layer_party,
+                  'layerright': layer_right,
+                  'opderecho': layers[self.names.OP_RIGHT_T][LAYER],
+                  'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
+                  'parcel': layers[self.names.OP_PARCEL_T][LAYER]}
 
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': layer_party,
-                           'mapping': [
-                               {'expression': '"numero de documento"', 'length': 12, 'name': 'documento_identidad',
-                                'precision': -1, 'type': 10},
-                               {'expression': '"tipo documento"', 'length': 255, 'name': 'tipo_documento',
-                                'precision': -1, 'type': 10},
-                               {'expression': '"organo_emisor"', 'length': 20, 'name': 'organo_emisor', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"fecha_emision"', 'length': -1, 'name': 'fecha_emision', 'precision': -1,
-                                'type': 14},
-                               {'expression': '"apellido1"', 'length': 100, 'name': 'primer_apellido', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"nombre1"', 'length': 100, 'name': 'primer_nombre', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"apellido2"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"nombre2"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"razon social"', 'length': 250, 'name': 'razon_social', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"sexo persona"', 'length': 255, 'name': 'genero', 'precision': -1,
-                                'type': 10},
-                               {'expression': '"tipo_interesado_juridico"', 'length': 255,
-                                'name': 'tipo_interesado_juridico', 'precision': -1, 'type': 10},
-                               {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-                               {'expression': '"tipo persona"', 'length': 255, 'name': 'tipo', 'precision': -1,
-                                'type': 10},
-                               {'expression': "'ANT_COL_INTERESADO'", 'length': 255, 'name': 'p_espacio_de_nombres',
-                                'precision': -1, 'type': 10},
-                               {'expression': '$id', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
-                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version',
-                                'precision': -1, 'type': 16},
-                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version',
-                                'precision': -1, 'type': 16}],
-                           'output': layers[COL_PARTY_TABLE][LAYER]
-                       })
+        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
+        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
+        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
 
-        # 2
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 2): Define group parties..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
+        processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
 
-        pre_group_party_layer = processing.run("qgis:statisticsbycategories",
-                                   { 'CATEGORIES_FIELD_NAME': 'id agrupación',
-                                      'INPUT': layer_group_party,
-                                     'OUTPUT': 'memory:',
-                                     'VALUES_FIELD_NAME': None })['OUTPUT']
-
-        # 3
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 3): Load group parties..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': pre_group_party_layer,
-                           'mapping': [
-                               {'expression': "'Grupo_Civil'", 'length': 255, 'name': 'ai_tipo', 'precision': -1, 'type': 10},
-                               {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-                               {'expression': "'Otro'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
-                               {'expression': "'ANT_Agrupacion_Interesados'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10},
-                               {'expression': '"id agrupación"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
-                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[LA_GROUP_PARTY_TABLE][LAYER]
-                       })
-
-        # 4
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 4): Join group parties t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        group_party_tid_layer = processing.run("native:joinattributestable",
-                                               {  'DISCARD_NONMATCHING': False,
-                                                  'FIELD': 'id agrupación',
-                                                  'FIELDS_TO_COPY': 't_id',
-                                                  'FIELD_2': 'p_local_id',
-                                                  'INPUT': layer_group_party,
-                                                  'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
-                                                  'METHOD': 1,
-                                                  'OUTPUT': 'memory:',
-                                                  'PREFIX': 'agrupacion_' })['OUTPUT']
-
-        # 5
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 5): Join group parties with parties..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        group_party_party_tid_layer = processing.run("native:joinattributestable",
-                                                     { 	'DISCARD_NONMATCHING': False,
-                                                          'FIELD': 'numero de documento',
-                                                          'FIELDS_TO_COPY': 't_id',
-                                                          'FIELD_2': 'documento_identidad',
-                                                          'INPUT': group_party_tid_layer,
-                                                          'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
-                                                          'METHOD': 1,
-                                                          'OUTPUT': 'memory:',
-                                                          'PREFIX': 'interesado_' })['OUTPUT']
-
-        # 6
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 6): Load group party members..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': group_party_party_tid_layer,
-                           'mapping': [
-                               {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesados_col_interesado', 'precision': 0, 'type': 4},
-                               {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'agrupacion', 'precision': 0, 'type': 4}],
-                           'output': layers[MEMBERS_TABLE][LAYER]
-                       })
-
-        # 7
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 7): Load parcels..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': layer_parcel,
-                           'mapping': [
-                               {'expression': '"departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10},
-                               {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10},
-                               {'expression': '"zona"', 'length': 2, 'name': 'zona', 'precision': -1, 'type': 10},
-                               {'expression': '$id', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10},
-                               {'expression': '"matricula predio"', 'length': 80, 'name': 'fmi', 'precision': -1, 'type': 10},
-                               {'expression': '"numero predial nuevo"', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10},
-                               {'expression': '"numero predial viejo"', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10},
-                               {'expression': '"avaluo"', 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
-                               {'expression': '"copropiedad"', 'length': -1, 'name': 'copropiedad', 'precision': 0, 'type': 4},
-                               {'expression': '"nombre predio"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-                               {'expression': '"tipo predio"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
-                               {'expression': "'ANT_PREDIO'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10},
-                               {'expression': '$id', 'length': 255, 'name': 'u_local_id', 'precision': -1, 'type': 10},
-                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[PARCEL_TABLE][LAYER]
-                       })
-
-        # 8
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 8): Concatenate Rights and Sources fields..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        concat_right_source_layer = processing.run("qgis:fieldcalculator",
-                                                   { 	'FIELD_LENGTH': 100,
-                                                        'FIELD_NAME': 'concat_',
-                                                        'FIELD_PRECISION': 3,
-                                                        'FIELD_TYPE': 2,
-                                                        'FORMULA': 'concat( \"número documento interesado\" , \"agrupacion\" , \"numero predial nuevo\" , \"tipo de fuente\" , \"Descricpión de la fuente\")',
-                                                        'INPUT': layer_right,
-                                                        'NEW_FIELD': True,
-                                                        'OUTPUT': 'memory:' })['OUTPUT']
-
-        # 9
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 9): Load Administrative Sources..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': concat_right_source_layer,
-                           'mapping': [
-                               {'expression': '"Descripción de la fuente"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10},
-                               {'expression': '"tipo de fuente"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
-                               {'expression': '"codigo_registral_transaccion"', 'length': 5, 'name': 'codigo_registral_transaccion', 'precision': -1, 'type': 10},
-                               {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10},
-                               {'expression': '"fecha_aceptacion"', 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'type': 16},
-                               {'expression': '"estado_disponibilidad de la fuente"', 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10},
-                               {'expression': '"sello_inicio_validez"', 'length': -1, 'name': 'sello_inicio_validez', 'precision': -1, 'type': 16},
-                               {'expression': '"tipo_principal"', 'length': 255, 'name': 'tipo_principal', 'precision': -1, 'type': 10},
-                               {'expression': '"fecha_grabacion"', 'length': -1, 'name': 'fecha_grabacion', 'precision': -1, 'type': 16},
-                               {'expression': '"fecha_entrega"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 16},
-                               {'expression': "'ANT_COLFUENTEADMINISTRATIVA'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
-                               {'expression': '"concat_"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
-                               {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1}],
-                           'output': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]
-                       })
-
-        # 10
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 10): Join concatenate source to administrative source t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        source_tid_layer = processing.run("native:joinattributestable",
-                                          {	'DISCARD_NONMATCHING': False,
-                                               'FIELD': 'concat_',
-                                               'FIELDS_TO_COPY': 't_id',
-                                               'FIELD_2': 's_local_id',
-                                               'INPUT': concat_right_source_layer,
-                                               'INPUT_2': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
-                                               'METHOD': 1,
-                                               'OUTPUT': 'memory:',
-                                               'PREFIX': 'fuente_' })['OUTPUT']
-
-        # 11
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 11): Load extarchivo..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': source_tid_layer,
-                           'mapping': [
-                               {'expression': '"fecha_aceptacion"', 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'type': 14},
-                               {'expression': '"Ruta de Almacenamiento de la fuente"', 'length': 255, 'name': 'datos', 'precision': -1, 'type': 10},
-                               {'expression': '"extraccion"', 'length': -1, 'name': 'extraccion', 'precision': -1, 'type': 14},
-                               {'expression': '"fecha_grabacion"', 'length': -1, 'name': 'fecha_grabacion', 'precision': -1, 'type': 14},
-                               {'expression': '"fecha_entrega"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 14},
-                               {'expression': "'ANT_EXTARCHIVO'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
-                               {'expression': '$id', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
-                               {'expression': '"fuente_t_id"', 'length': -1, 'name': 'col_fuenteadminstrtiva_ext_archivo_id', 'precision': 0, 'type': 4},
-                               {'expression': '"col_fuenteespacial_ext_archivo_id"', 'length': -1, 'name': 'col_fuenteespacial_ext_archivo_id', 'precision': 0, 'type': 4}],
-                           'output': EXTFILE_TABLE
-                       })
-
-        # 12
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 12): Join source and party t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        source_party_tid_layer = processing.run("native:joinattributestable",
-                                                { 	'DISCARD_NONMATCHING': False,
-                                                     'FIELD': 'número documento Interesado',
-                                                     'FIELDS_TO_COPY': 't_id',
-                                                     'FIELD_2': 'documento_identidad',
-                                                     'INPUT': source_tid_layer,
-                                                     'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
-                                                     'METHOD': 1,
-                                                     'OUTPUT': 'memory:',
-                                                     'PREFIX': 'interesado_'})['OUTPUT']
-
-        # 13
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 13): Join source, party, group party t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        source_party_group_tid_layer = processing.run("native:joinattributestable",
-                                                      {    'DISCARD_NONMATCHING': False,
-                                                           'FIELD': 'agrupación',
-                                                           'FIELDS_TO_COPY': 't_id',
-                                                           'FIELD_2': 'p_local_id',
-                                                           'INPUT': source_party_tid_layer,
-                                                           'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
-                                                           'METHOD': 1,
-                                                           'OUTPUT': 'memory:',
-                                                           'PREFIX': 'agrupacion_' })['OUTPUT']
-
-        # 14
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 14): Join source, party, group party, parcel t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        source_party_group_parcel_tid_layer = processing.run("native:joinattributestable",
-                                                             { 	'DISCARD_NONMATCHING': False,
-                                                                  'FIELD': 'numero predial nuevo',
-                                                                  'FIELDS_TO_COPY': 't_id',
-                                                                  'FIELD_2': 'numero_predial',
-                                                                  'INPUT': source_party_group_tid_layer,
-                                                                  'INPUT_2': layers[PARCEL_TABLE][LAYER],
-                                                                  'METHOD': 1,
-                                                                  'OUTPUT': 'memory:',
-                                                                  'PREFIX': 'predio_' })['OUTPUT']
-
-        # 15
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 15): Load Rights..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': source_party_group_parcel_tid_layer,
-                           'mapping': [
-                               {'expression': '"tipo"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
-                               {'expression': '"codigo_registral_derecho"', 'length': 5, 'name': 'codigo_registral_derecho', 'precision': -1, 'type': 10},
-                               {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
-                               {'expression': '"comprobacion_comparte"', 'length': -1, 'name': 'comprobacion_comparte', 'precision': -1, 'type': 1},
-                               {'expression': '"uso_efectivo"', 'length': 255, 'name': 'uso_efectivo', 'precision': -1, 'type': 10},
-                               {'expression': "'ANT_Col_Derecho'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10},
-                               {'expression': '"concat_"', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10},
-                               {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'interesado_la_agrupacion_interesados', 'precision': 0, 'type': 4},
-                               {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4},
-                               {'expression': '"unidad_la_baunit"', 'length': -1, 'name': 'unidad_la_baunit', 'precision': 0, 'type': 4},
-                               {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4},
-                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': layers[RIGHT_TABLE][LAYER]
-                       })
-
-        # 16
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 16): Join source, party, group party, parcel, right t_id..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        source_party_group_parcel_right_tid_layer = processing.run("native:joinattributestable",
-                                                                   { 	'DISCARD_NONMATCHING': False,
-                                                                        'FIELD': 'concat_',
-                                                                        'FIELDS_TO_COPY': 't_id',
-                                                                        'FIELD_2': 'r_local_id',
-                                                                        'INPUT': source_party_group_parcel_tid_layer,
-                                                                        'INPUT_2': layers[RIGHT_TABLE][LAYER],
-                                                                        'METHOD': 1,
-                                                                        'OUTPUT': 'memory:',
-                                                                        'PREFIX': 'derecho_' })['OUTPUT']
-
-        # 17
-        self.txt_log.setText(
-            QCoreApplication.translate("ImportFromExcelDialog",
-                                       "ETL (step 17): Load rrrfuente..."))
-        step += 1
-        self.progress.setValue(step / steps * 100)
-        processing.run("model:ETL-model",
-                       {
-                           'INPUT': source_party_group_parcel_right_tid_layer,
-                           'mapping': [
-                               {'expression': '"fuente_t_id"', 'length': -1, 'name': 'rfuente', 'precision': 0, 'type': 4},
-                               {'expression': '"rrr_col_responsabilidad"', 'length': -1, 'name': 'rrr_col_responsabilidad', 'precision': 0, 'type': 4},
-                               {'expression': '"derecho_t_id"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4},
-                               {'expression': '"rrr_col_restriccion"', 'length': -1, 'name': 'rrr_col_restriccion', 'precision': 0, 'type': 4},
-                               {'expression': '"rrr_col_hipoteca"', 'length': -1, 'name': 'rrr_col_hipoteca', 'precision': 0, 'type': 4}],
-                           'output': layers[RRR_SOURCE_RELATION_TABLE][LAYER]
-                       })
-
+        if not self.feedback.isCanceled():
+            self.progress.setValue(100)
+            self.buttonBox.clear()
+            self.buttonBox.setEnabled(True)
+            self.buttonBox.addButton(QDialogButtonBox.Close)
+        else:
+            self.initialize_feedback() 
 
         # Print summary getting feature count in involved LADM_COL tables...
         summary = """<html><head/><body><p>"""
@@ -590,12 +273,9 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.qgis_utils.message_with_duration_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
-                excel_path),
-            Qgis.Success,
-            0)
+        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
+            "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
+        self._running_tool = False
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
@@ -787,14 +467,14 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path,
                                                                       sheetname=sheetname, filename=filename)
 
-        self.log.logMessage("Loading layer from excel with uri='{}'".format(uri), PLUGIN_NAME, Qgis.Info)
+        self.logger.info(__name__, "Loading layer from excel with uri='{}'".format(uri))
         layer = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
         layer.setProviderEncoding('UTF-8')
         return layer
 
     def get_excel_info(self, path, sheetname):
         data_source = ogr.Open(path, 0)
-        layer = data_source.GetLayer(sheetname)
+        layer = data_source.GetLayerByName(sheetname)
 
         if layer is None:
             # A sheetname couldn't be found
@@ -842,13 +522,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/excel/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.logger.critical(__name__, "Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...")
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "Excel file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'Removing existing file {}...'.format(new_filename))
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -857,13 +537,30 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                 msg = QCoreApplication.translate("ImportFromExcelDialog", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.logger.info(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate("ImportFromExcelDialog", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 
 
-    def rejected(self):
+    def reject(self):
         self.selected_items_dict = dict()
+            
+        if self._running_tool:
+            reply = QMessageBox.question(self,
+                                         QCoreApplication.translate("import_from_excel", "Warning"),
+                                         QCoreApplication.translate("import_from_excel",
+                                                                    "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
+                                         QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                self.feedback.cancel()
+                self._running_tool = False
+                msg = QCoreApplication.translate("import_from_excel", "The '{}' tool was cancelled.").format(self.tool_name)
+                self.logger.info(__name__, msg)
+                self.show_message(msg, Qgis.Info)
+        else:
+            self.logger.info(__name__, "Dialog closed.")
+            self.done(1)
 
     def save_settings(self):
         settings = QSettings()
@@ -874,7 +571,19 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.txt_excel_path.setText(settings.value('Asistente-LADM_COL/import_from_excel_dialog/excel_path', ''))
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def show_help(self):
-        self.qgis_utils.show_help("import_from_excel")
+        show_plugin_help("import_from_excel")
+
+    def progress_changed(self):
+        QCoreApplication.processEvents()  # Listen to cancel from the user
+        self.progress.setValue(self.feedback.progress())
+
+    def initialize_feedback(self):
+        self.progress.setValue(0)
+        self.progress.setVisible(False)
+        self.feedback = QgsProcessingFeedback()         
+        self.feedback.progressChanged.connect(self.progress_changed)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)

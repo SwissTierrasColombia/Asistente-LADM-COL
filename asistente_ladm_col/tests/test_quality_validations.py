@@ -1,79 +1,83 @@
 import nose2
-import qgis
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
-                       QgsApplication,
-                       QgsDataSourceUri,
                        QgsField,
                        QgsWkbTypes)
 from qgis.testing import (unittest,
                           start_app)
 
-from qgis.PyQt.QtCore import QVariant
-
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (ID_FIELD,
-                                                            BOUNDARY_POINT_TABLE,
-                                                            SURVEY_POINT_TABLE,
-                                                            BOUNDARY_TABLE,
-                                                            PLOT_TABLE,
-                                                            BUILDING_TABLE,
-                                                            BUILDING_UNIT_TABLE,
-                                                            COL_PARTY_TABLE,
-                                                            LOGIC_CONSISTENCY_TABLES)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                                                           ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
+                                                           ERROR_NO_FOUND_POINT_BFS,
+                                                           ERROR_DUPLICATE_POINT_BFS,
+                                                           ERROR_DUPLICATE_LESS_TABLE,
+                                                           ERROR_NO_LESS_TABLE,
+                                                           ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                                                           ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
+                                                           ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                                                           ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE)
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
-                                            get_dbconn,
-                                            restore_schema)
+                                            get_pg_conn,
+                                            get_gpkg_conn,
+                                            restore_schema,
+                                            unload_qgis_model_baker)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.utils.quality import QualityUtils
-from asistente_ladm_col.utils.logic_checks import LogicChecks
+from asistente_ladm_col.logic.quality.quality import QualityUtils
+from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 
-import_qgis_model_baker()
 import_processing()
 import processing
+
 
 class TesQualityValidations(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.qgis_utils = QGISUtils()
-        self.quality = QualityUtils(self.qgis_utils)
-        self.logic_checks = LogicChecks()
+    def setUpClass(cls):
+        import_qgis_model_baker()
+        cls.qgis_utils = QGISUtils()
+        cls.quality = QualityUtils(cls.qgis_utils)
+        cls.logic_checks = LogicChecks()
+        cls.translatable_config_strings = TranslatableConfigStrings()
 
-        test_connection_dbs = ['test_ladm_col_validations_against_topology_tables', 'test_ladm_col_logic_checks']
+        print("INFO: Restoring databases to be used")
+        test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
 
+        print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
-            # Test connection DB
-            self.db_connection = get_dbconn(test_connection_db)
-            result = self.db_connection.test_connection()
-            print('test_connection', result)
-            if not result[1]:
-                print('The test connection is not working')
-                return
             restore_schema(test_connection_db)
 
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
-        self.db_connection = get_dbconn(schema_name)
-        db = self.db_connection
+        self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
+
+        result = self.db_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
+        db = self.db_pg
 
         test_results = {
-            COL_PARTY_TABLE: [('1,4', 2), ('3,6', 2), ('2,5', 2)],
-            BUILDING_UNIT_TABLE: [('40,49', 2)],
-            BUILDING_TABLE: [('39,50', 2), ('37,51', 2)],
-            PLOT_TABLE: [('36,53', 2), ('33,52', 2)],
-            BOUNDARY_TABLE: [('30,48', 2), ('25,46', 2), ('24,47', 2)],
-            SURVEY_POINT_TABLE: [('10,45', 2), ('9,44', 2)],
-            BOUNDARY_POINT_TABLE: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]}
+            self.names.OP_PARTY_T: [('1068,1071', 2), ('1066,1069', 2), ('1067,1070', 2)],
+            self.names.OP_BUILDING_UNIT_T: [('1112,1113', 2)],
+            self.names.OP_BUILDING_T: [('1063,1064', 2), ('1062,1065', 2)],
+            self.names.OP_PLOT_T: [('1099,1103', 2), ('1102,1104', 2)] ,
+            self.names.OP_BOUNDARY_T: [('1073,1081', 2), ('1072,1082', 2), ('1078,1083', 2)],
+            self.names.OP_SURVEY_POINT_T: [('1107,1109', 2), ('1108,1110', 2)],
+            self.names.OP_BOUNDARY_POINT_T: [('1094,1097', 2), ('1088,1091', 2), ('1095,1096', 2), ('1087,1092', 2), ('1089,1098', 2), ('1090,1093', 2)]
+        }
 
         for table in test_results:
             test_result = test_results[table]
-            fields = LOGIC_CONSISTENCY_TABLES[table]
+            fields = LayerConfig.get_logic_consistency_tables(self.names)[table]
             error_layer = None
-            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer)
+            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
             result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]
 
             for item in test_result:
@@ -83,6 +87,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of selected boundary ...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
 
         test_result = [{'selected_ids': [1], 'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'selected_ids': [1], 'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -99,7 +106,7 @@ class TesQualityValidations(unittest.TestCase):
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             test_selected_ids = test_result[i]['selected_ids']
             #boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer, selected_ids=test_selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(self.names, boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:
@@ -110,6 +117,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validation of the definition of boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         test_result = [{'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -125,7 +135,7 @@ class TesQualityValidations(unittest.TestCase):
             uri = gpkg_path + '|layername=boundary_case_{case}'.format(case=i+1)
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             self.assertEqual(boundary_layer.featureCount(), len(test_result[i]['boundaries_to_del']), 'Invalid number of features: case {case}'.format(case=i+1))
-            merge_geoms, boundaries_to_del = self.qgis_utils.geometry.fix_boundaries(boundary_layer)
+            merge_geoms, boundaries_to_del = self.qgis_utils.geometry.fix_boundaries(boundary_layer, self.names.T_ID_F)
             self.assertEqual(boundaries_to_del, test_result[i]['boundaries_to_del'], 'The boundaries to delete are invalid: case {case}'.format(case=i + 1))
 
             for merge_geom in merge_geoms:
@@ -136,6 +146,10 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
         self.assertEqual(boundary_point_layer.featureCount(), 82)
@@ -144,15 +158,17 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_point_layer.sourceCrs().authid()), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
 
         topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                     boundary_point_layer,
                                                                                                      plot_layer, error_layer,
-                                                                                                     topology_rule)
+                                                                                                     topology_rule,
+                                                                                                     self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 14)
 
@@ -180,6 +196,10 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
         self.assertEqual(boundary_point_layer.featureCount(), 82)
@@ -188,15 +208,17 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
 
         topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                     boundary_point_layer,
                                                                                                      plot_layer, error_layer,
-                                                                                                     topology_rule)
+                                                                                                     topology_rule,
+                                                                                                     self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 10)
 
@@ -218,33 +240,28 @@ class TesQualityValidations(unittest.TestCase):
                           'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
 
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
-        DB_HOSTNAME = "postgres"
-        DB_PORT = "5432"
-        DB_NAME = "ladm_col"
-        DB_USER = "usuario_ladm_col"
-        DB_PASSWORD = "clave_ladm_col"
-        SCHEMA_NAME = 'validaciones'
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        schema_name = 'test_ladm_validations_topology_tables'
+        self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
 
-        # Read data
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
-        boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
+        result = self.db_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
+        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
-        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
-        point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
+        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        self.assertEqual(plot_layer.featureCount(), 17)
+
+        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -252,100 +269,103 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = 'Boundary node is not covered by boundary point'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 13)
 
         result = [{'id': f['boundary_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'id': 46, 'geom': 'Point (895070.07765273051336408 1544331.15500104054808617)'},
-                       {'id': 6, 'geom': 'Point (894822.14029542286880314 1544541.38756661443039775)'},
-                       {'id': 15, 'geom': 'Point (894911.74524271208792925 1544391.85083696991205215)'},
-                       {'id': 46, 'geom': 'Point (895121.96658773790113628 1544243.82460397086106241)'},
-                       {'id': 46, 'geom': 'Point (895178.79977707355283201 1544283.71215808903798461)'},
-                       {'id': 23, 'geom': 'Point (895076.2805417146300897 1544438.87918988126330078)'},
-                       {'id': 23, 'geom': 'Point (895126.55513874720782042 1544446.56235088966786861)'},
-                       {'id': 23, 'geom': 'Point (895065.96786221780348569 1544460.84679944021627307)'},
-                       {'id': 43, 'geom': 'Point (894732.8430670362431556 1544594.12277876189909875)'},
-                       {'id': 43, 'geom': 'Point (894770.40772755595389754 1544602.14288571989163756)'},
-                       {'id': 23, 'geom': 'Point (895138.19374559889547527 1544479.25731873349286616)'},
-                       {'id': 23, 'geom': 'Point (895150.11316665716003627 1544450.16258106869645417)'},
-                       {'id': 46, 'geom': 'Point (895120.17207429651170969 1544364.95636973413638771)'}]
+        test_result = [{'id': 368, 'geom': 'PointZ (895065.96799999999348074 1544460.84700000006705523 0)'},
+                       {'id': 368, 'geom': 'PointZ (895076.28099999995902181 1544438.87899999995715916 0)'},
+                       {'id': 368, 'geom': 'PointZ (895126.55500000005122274 1544446.56199999991804361 0)'},
+                       {'id': 368, 'geom': 'PointZ (895138.19400000001769513 1544479.25699999998323619 0)'},
+                       {'id': 368, 'geom': 'PointZ (895150.11300000001210719 1544450.162999999942258 0)'},
+                       {'id': 371, 'geom': 'PointZ (894732.84299999999348074 1544594.1229999999050051 0)'},
+                       {'id': 371, 'geom': 'PointZ (894770.40800000005401671 1544602.14299999992363155 0)'},
+                       {'id': 372, 'geom': 'PointZ (894822.14000000001396984 1544541.38800000003539026 0)'},
+                       {'id': 373, 'geom': 'PointZ (894911.74499999999534339 1544391.85100000002421439 0)'},
+                       {'id': 374, 'geom': 'PointZ (895120.1720000000204891 1544364.95600000000558794 0)'},
+                       {'id': 374, 'geom': 'PointZ (895070.0779999999795109 1544331.15500000002793968 0)'},
+                       {'id': 374, 'geom': 'PointZ (895121.96699999994598329 1544243.82499999995343387 0)'},
+                       {'id': 374, 'geom': 'PointZ (895178.80000000004656613 1544283.712000000057742 0)'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error: Boundary node {} is not covered by boundary boundary point'.format(item['id']))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'boundary_point_id': 229, 'boundary_id': 51},
-                       {'boundary_point_id': 240, 'boundary_id': 42},
-                       {'boundary_point_id': 233, 'boundary_id': 48},
-                       {'boundary_point_id': 227, 'boundary_id': 50},
-                       {'boundary_point_id': 231, 'boundary_id': 51},
-                       {'boundary_point_id': 225, 'boundary_id': 50},
-                       {'boundary_point_id': 242, 'boundary_id': 42},
-                       {'boundary_point_id': 239, 'boundary_id': 52}]
+
+        test_result = [{'boundary_point_id': 461, 'boundary_id': 377},
+                       {'boundary_point_id': 463, 'boundary_id': 375},
+                       {'boundary_point_id': 469, 'boundary_id': 378},
+                       {'boundary_point_id': 470, 'boundary_id': 370},
+                       {'boundary_point_id': 472, 'boundary_id': 370},
+                       {'boundary_point_id': 455, 'boundary_id': 376},
+                       {'boundary_point_id': 459, 'boundary_id': 377},
+                       {'boundary_point_id': 457, 'boundary_id': 376}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_DUPLICATE_POINT_BFS]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_FOUND_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'boundary_point_id': 176, 'boundary_id': 7},
-                       {'boundary_point_id': 179, 'boundary_id': 7},
-                       {'boundary_point_id': 211, 'boundary_id': 18},
-                       {'boundary_point_id': 177, 'boundary_id': 7},
-                       {'boundary_point_id': 208, 'boundary_id': 18},
-                       {'boundary_point_id': 205, 'boundary_id': 17},
-                       {'boundary_point_id': 206, 'boundary_id': 17},
-                       {'boundary_point_id': 178, 'boundary_id': 7},
-                       {'boundary_point_id': 210, 'boundary_id': 18},
-                       {'boundary_point_id': 209, 'boundary_id': 18},
-                       {'boundary_point_id': 207, 'boundary_id': 17},
-                       {'boundary_point_id': 204, 'boundary_id': 17}]
+
+        test_result = [{'boundary_point_id': 408, 'boundary_id': 362},
+                       {'boundary_point_id': 437, 'boundary_id': 364},
+                       {'boundary_point_id': 434, 'boundary_id': 364},
+                       {'boundary_point_id': 409, 'boundary_id': 362},
+                       {'boundary_point_id': 439, 'boundary_id': 365},
+                       {'boundary_point_id': 440, 'boundary_id': 365},
+                       {'boundary_point_id': 441, 'boundary_id': 365},
+                       {'boundary_point_id': 438, 'boundary_id': 365},
+                       {'boundary_point_id': 436, 'boundary_id': 364},
+                       {'boundary_point_id': 435, 'boundary_id': 364},
+                       {'boundary_point_id': 406, 'boundary_id': 362},
+                       {'boundary_point_id': 407, 'boundary_id': 362}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_NO_FOUND_POINT_BFS]))
 
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
-        DB_HOSTNAME = "postgres"
-        DB_PORT = "5432"
-        DB_NAME = "ladm_col"
-        DB_USER = "usuario_ladm_col"
-        DB_PASSWORD = "clave_ladm_col"
-        SCHEMA_NAME = 'validaciones'
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        schema_name = 'test_ladm_validations_topology_tables'
+        self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
 
-        # Read data
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
-        boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
+        result = self.db_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
+        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
-        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
-        point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
+        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        self.assertEqual(plot_layer.featureCount(), 17)
+
+        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        self.assertEqual(more_bfs_layer.featureCount(), 18)
+
+        less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        self.assertEqual(less_layer.featureCount(), 6)
+
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -353,7 +373,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -361,120 +381,116 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = 'Boundary point is not covered by boundary node'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 34)
 
         result = [{'id': f['boundary_point_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'id': 219, 'geom': 'Point (894905.93796374613884836 1544314.50677428883500397)'},
-                       {'id': 218, 'geom': 'Point (894910.65860971866641194 1544288.07115684216842055)'},
-                       {'id': 217, 'geom': 'Point (894862.50802079797722399 1544287.59909224486909807)'},
-                       {'id': 186, 'geom': 'Point (894702.99202395498286933 1544362.47262292890809476)'},
-                       {'id': 185, 'geom': 'Point (894696.62536594981793314 1544436.52187805180437863)'},
-                       {'id': 184, 'geom': 'Point (894768.33113364421296865 1544443.61644163983874023)'},
-                       {'id': 183, 'geom': 'Point (894768.33113364421296865 1544443.61644163983874023)'},
-                       {'id': 190, 'geom': 'Point (894634.73685261909849942 1544430.39863291662186384)'},
-                       {'id': 189, 'geom': 'Point (894696.62536594981793314 1544436.52187805180437863)'},
-                       {'id': 188, 'geom': 'Point (894702.99202395498286933 1544362.47262292890809476)'},
-                       {'id': 187, 'geom': 'Point (894773.52384421403985471 1544367.14197688340209424)'},
-                       {'id': 196, 'geom': 'Point (894847.40195368567947298 1544448.57311991089954972)'},
-                       {'id': 195, 'geom': 'Point (894972.97113655728753656 1544459.43060564785264432)'},
-                       {'id': 192, 'geom': 'Point (894847.40195368567947298 1544448.57311991089954972)'},
-                       {'id': 191, 'geom': 'Point (894638.04130479984451085 1544358.17274953541345894)'},
-                       {'id': 216, 'geom': 'Point (894863.92421458975877613 1544306.00961153814569116)'},
-                       {'id': 203, 'geom': 'Point (894914.05367824051063508 1544372.94515221077017486)'},
-                       {'id': 201, 'geom': 'Point (894972.97113655728753656 1544459.43060564785264432)'},
-                       {'id': 198, 'geom': 'Point (894914.05367824051063508 1544372.94515221077017486)'},
-                       {'id': 154, 'geom': 'Point (894723.67667196702677757 1544488.34796187235042453)'},
-                       {'id': 153, 'geom': 'Point (894648.56400672777090222 1544485.16136395325884223)'},
-                       {'id': 152, 'geom': 'Point (894639.00421297014690936 1544574.38610569201409817)'},
-                       {'id': 168, 'geom': 'Point (894856.60721333208493888 1544597.50950034754350781)'},
-                       {'id': 159, 'geom': 'Point (894723.67667196702677757 1544488.34796187235042453)'},
-                       {'id': 156, 'geom': 'Point (894715.02733475773129612 1544590.31909528817050159)'},
-                       {'id': 155, 'geom': 'Point (894715.02733475773129612 1544590.31909528817050159)'},
-                       {'id': 174, 'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)'},
-                       {'id': 171, 'geom': 'Point (894882.57076618145219982 1544602.70221091737039387)'},
-                       {'id': 170, 'geom': 'Point (894879.26631400070618838 1544575.79452887340448797)'},
-                       {'id': 169, 'geom': 'Point (894860.85579470742959529 1544572.9621412898413837)'},
-                       {'id': 182, 'geom': 'Point (894773.52384421403985471 1544367.14197688340209424)'},
-                       {'id': 181, 'geom': 'Point (894638.04130479984451085 1544358.17274953541345894)'},
-                       {'id': 180, 'geom': 'Point (894634.73685261909849942 1544430.39863291662186384)'},
-                       {'id': 175, 'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)'}]
+        test_result = [{'id': 382, 'geom': 'PointZ (894639.00399999995715916 1544574.38599999994039536 0)'},
+                       {'id': 383, 'geom': 'PointZ (894648.56400000001303852 1544485.16100000008009374 0)'},
+                       {'id': 384, 'geom': 'PointZ (894723.67700000002514571 1544488.34799999999813735 0)'},
+                       {'id': 385, 'geom': 'PointZ (894715.02700000000186265 1544590.31899999990127981 0)'},
+                       {'id': 386, 'geom': 'PointZ (894715.02700000000186265 1544590.31899999990127981 0)'},
+                       {'id': 389, 'geom': 'PointZ (894723.67700000002514571 1544488.34799999999813735 0)'},
+                       {'id': 398, 'geom': 'PointZ (894856.60699999995995313 1544597.51000000000931323 0)'},
+                       {'id': 399, 'geom': 'PointZ (894860.856000000028871 1544572.962000000057742 0)'},
+                       {'id': 400, 'geom': 'PointZ (894879.26599999994505197 1544575.79499999992549419 0)'},
+                       {'id': 401, 'geom': 'PointZ (894882.57099999999627471 1544602.70200000004842877 0)'},
+                       {'id': 404, 'geom': 'PointZ (894837.25300000002607703 1544520.56300000008195639 0)'},
+                       {'id': 405, 'geom': 'PointZ (894833.94799999997485429 1544542.75 0)'},
+                       {'id': 410, 'geom': 'PointZ (894634.73699999996460974 1544430.39899999997578561 0)'},
+                       {'id': 411, 'geom': 'PointZ (894638.04099999996833503 1544358.17299999995157123 0)'},
+                       {'id': 412, 'geom': 'PointZ (894773.52399999997578561 1544367.14199999999254942 0)'},
+                       {'id': 413, 'geom': 'PointZ (894768.33100000000558794 1544443.6159999999217689 0)'},
+                       {'id': 414, 'geom': 'PointZ (894768.33100000000558794 1544443.6159999999217689 0)'},
+                       {'id': 415, 'geom': 'PointZ (894696.625 1544436.52200000011362135 0)'},
+                       {'id': 416, 'geom': 'PointZ (894702.99199999996926636 1544362.47299999999813735 0)'},
+                       {'id': 417, 'geom': 'PointZ (894773.52399999997578561 1544367.14199999999254942 0)'},
+                       {'id': 418, 'geom': 'PointZ (894702.99199999996926636 1544362.47299999999813735 0)'},
+                       {'id': 419, 'geom': 'PointZ (894696.625 1544436.52200000011362135 0)'},
+                       {'id': 420, 'geom': 'PointZ (894634.73699999996460974 1544430.39899999997578561 0)'},
+                       {'id': 421, 'geom': 'PointZ (894638.04099999996833503 1544358.17299999995157123 0)'},
+                       {'id': 422, 'geom': 'PointZ (894847.40200000000186265 1544448.57300000009126961 0)'},
+                       {'id': 425, 'geom': 'PointZ (894972.97100000001955777 1544459.43100000009872019 0)'},
+                       {'id': 426, 'geom': 'PointZ (894847.40200000000186265 1544448.57300000009126961 0)'},
+                       {'id': 428, 'geom': 'PointZ (894914.05400000000372529 1544372.94500000006519258 0)'},
+                       {'id': 431, 'geom': 'PointZ (894972.97100000001955777 1544459.43100000009872019 0)'},
+                       {'id': 433, 'geom': 'PointZ (894914.05400000000372529 1544372.94500000006519258 0)'},
+                       {'id': 446, 'geom': 'PointZ (894863.92399999999906868 1544306.01000000000931323 0)'},
+                       {'id': 447, 'geom': 'PointZ (894862.50800000003073364 1544287.59899999992921948 0)'},
+                       {'id': 448, 'geom': 'PointZ (894910.65899999998509884 1544288.07099999999627471 0)'},
+                       {'id': 449, 'geom': 'PointZ (894905.93799999996554106 1544314.50699999998323619 0)'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error: Boundary point {} is not covered by boundary node'.format(item['id']))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'boundary_point_id': 240, 'boundary_id': 42},
-                       {'boundary_point_id': 231, 'boundary_id': 51},
-                       {'boundary_point_id': 225, 'boundary_id': 50},
-                       {'boundary_point_id': 229, 'boundary_id': 51},
-                       {'boundary_point_id': 239, 'boundary_id': 52},
-                       {'boundary_point_id': 242, 'boundary_id': 42},
-                       {'boundary_point_id': 227, 'boundary_id': 50},
-                       {'boundary_point_id': 233, 'boundary_id': 48}]
+        test_result = [{'boundary_point_id': 457, 'boundary_id': 376},
+                       {'boundary_point_id': 469, 'boundary_id': 378},
+                       {'boundary_point_id': 461, 'boundary_id': 377},
+                       {'boundary_point_id': 455, 'boundary_id': 376},
+                       {'boundary_point_id': 472, 'boundary_id': 370},
+                       {'boundary_point_id': 463, 'boundary_id': 375},
+                       {'boundary_point_id': 459, 'boundary_id': 377},
+                       {'boundary_point_id': 470, 'boundary_id': 370}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_DUPLICATE_POINT_BFS]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_FOUND_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'boundary_point_id': 209, 'boundary_id': 18},
-                       {'boundary_point_id': 179, 'boundary_id': 7},
-                       {'boundary_point_id': 177, 'boundary_id': 7},
-                       {'boundary_point_id': 211, 'boundary_id': 18},
-                       {'boundary_point_id': 206, 'boundary_id': 17},
-                       {'boundary_point_id': 210, 'boundary_id': 18},
-                       {'boundary_point_id': 204, 'boundary_id': 17},
-                       {'boundary_point_id': 205, 'boundary_id': 17},
-                       {'boundary_point_id': 178, 'boundary_id': 7},
-                       {'boundary_point_id': 207, 'boundary_id': 17},
-                       {'boundary_point_id': 176, 'boundary_id': 7},
-                       {'boundary_point_id': 208, 'boundary_id': 18}]
+
+        test_result = [{'boundary_point_id': 409, 'boundary_id': 362},
+                       {'boundary_point_id': 436, 'boundary_id': 364},
+                       {'boundary_point_id': 434, 'boundary_id': 364},
+                       {'boundary_point_id': 407, 'boundary_id': 362},
+                       {'boundary_point_id': 438, 'boundary_id': 365},
+                       {'boundary_point_id': 439, 'boundary_id': 365},
+                       {'boundary_point_id': 441, 'boundary_id': 365},
+                       {'boundary_point_id': 435, 'boundary_id': 364},
+                       {'boundary_point_id': 440, 'boundary_id': 365},
+                       {'boundary_point_id': 437, 'boundary_id': 364},
+                       {'boundary_point_id': 406, 'boundary_id': 362},
+                       {'boundary_point_id': 408, 'boundary_id': 362}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_NO_FOUND_POINT_BFS]))
 
     def test_topology_plot_must_be_covered_by_boundary(self):
-        DB_HOSTNAME = "postgres"
-        DB_PORT = "5432"
-        DB_NAME = "ladm_col"
-        DB_USER = "usuario_ladm_col"
-        DB_PASSWORD = "clave_ladm_col"
-        SCHEMA_NAME = 'validaciones'
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        schema_name = 'test_ladm_validations_topology_tables'
+        self.db_pg = get_pg_conn(schema_name)
+        self.names = self.db_pg.names
 
-        # Read data
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
-        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        result = self.db_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+
+        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        self.assertEqual(boundary_point_layer.featureCount(), 109)
+
+        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
-        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
+        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
-        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
+        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        self.assertEqual(point_bfs_layer.featureCount(), 81)
+
+        more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
-        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
+        less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
@@ -482,7 +498,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.quality.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -490,204 +506,152 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = 'Plot is not covered by boundary'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY])
+
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
 
         result = [{'id': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'id': 1, 'geom': 'MultiLineString ((894639.00421297014690936 1544574.38610569201409817, 894648.56400672777090222 1544485.16136395325884223, 894723.67667196702677757 1544488.34796187235042453, 894715.02733475773129612 1544590.31909528817050159, 894639.00421297014690936 1544574.38610569201409817))'},
-                       {'id': 2, 'geom': 'MultiLineString ((894715.02733475773129612 1544590.31909528817050159, 894732.8430670362431556 1544594.12277876189909875),(894770.40772755595389754 1544602.14288571989163756, 894779.66068397834897041 1544604.11840470926836133),(894788.15784672915469855 1544496.48767653340473771, 894723.67667196702677757 1544488.34796187235042453, 894715.02733475773129612 1544590.31909528817050159))'},
-                       {'id': 4, 'geom': 'MultiLineString ((894856.60721333208493888 1544597.50950034754350781, 894860.85579470742959529 1544572.9621412898413837, 894879.26631400070618838 1544575.79452887340448797, 894882.57076618145219982 1544602.70221091737039387, 894856.60721333208493888 1544597.50950034754350781),(894810.34488280047662556 1544519.14677720214240253, 894837.25256484432611614 1544520.56297099380753934, 894833.94811266358010471 1544542.75000706524588168, 894822.14029542286880314 1544541.38756661443039775))'},
-                       {'id': 8, 'geom': 'MultiLineString ((894634.73685261909849942 1544430.39863291662186384, 894638.04130479984451085 1544358.17274953541345894, 894773.52384421403985471 1544367.14197688340209424, 894768.33113364421296865 1544443.61644163983874023, 894634.73685261909849942 1544430.39863291662186384))'},
-                       {'id': 9, 'geom': 'MultiLineString ((894768.33113364421296865 1544443.61644163983874023, 894696.62536594981793314 1544436.52187805180437863, 894702.99202395498286933 1544362.47262292890809476, 894773.52384421403985471 1544367.14197688340209424, 894768.33113364421296865 1544443.61644163983874023))'},
-                       {'id': 10, 'geom': 'MultiLineString ((894702.99202395498286933 1544362.47262292890809476, 894696.62536594981793314 1544436.52187805180437863, 894634.73685261909849942 1544430.39863291662186384, 894638.04130479984451085 1544358.17274953541345894, 894702.99202395498286933 1544362.47262292890809476))'},
-                       {'id': 11, 'geom': 'MultiLineString ((894847.40195368567947298 1544448.57311991089954972, 894852.59466425550635904 1544369.26626757089979947),(894986.66100987792015076 1544377.2913657242897898, 894972.97113655728753656 1544459.43060564785264432, 894904.21943272789940238 1544453.48590945219621062),(894904.21943272789940238 1544453.48590945219621062, 894847.40195368567947298 1544448.57311991089954972))'},
-                       {'id': 12, 'geom': 'MultiLineString ((894847.40195368567947298 1544448.57311991089954972, 894852.59466425550635904 1544369.26626757089979947),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215),(894904.21943272789940238 1544453.48590945219621062, 894847.40195368567947298 1544448.57311991089954972))'},
-                       {'id': 13, 'geom': 'MultiLineString ((894904.21943272789940238 1544453.48590945219621062, 894972.97113655728753656 1544459.43060564785264432, 894986.66100987792015076 1544377.2913657242897898),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215))'},
-                       {'id': 19, 'geom': 'MultiLineString ((894863.92421458975877613 1544306.00961153814569116, 894862.50802079797722399 1544287.59909224486909807, 894910.65860971866641194 1544288.07115684216842055, 894905.93796374613884836 1544314.50677428883500397, 894863.92421458975877613 1544306.00961153814569116))'},
-                       {'id': 22, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895150.11316665716003627 1544450.16258106869645417))'},
-                       {'id': 50, 'geom': 'MultiLineString ((871581.97680000029504299 1554559.16310000047087669, 871583.06890000030398369 1554559.11189999990165234, 871586.15149999968707561 1554558.96719999983906746))'}]
+        test_result = [{'id': 491, 'geom': 'MultiLineStringZ ((894639.00399999995715916 1544574.38599999994039536 0, 894648.56400000001303852 1544485.16100000008009374 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0, 894639.00399999995715916 1544574.38599999994039536 0))'},
+                       {'id': 492, 'geom': 'MultiLineStringZ ((894715.02700000000186265 1544590.31899999990127981 0, 894732.84299999999348074 1544594.1229999999050051 0),(894770.40800000005401671 1544602.14299999992363155 0, 894779.66099999996367842 1544604.11800000001676381 0),(894788.15800000005401671 1544496.48799999989569187 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0))'},
+                       {'id': 493, 'geom': 'MultiLineStringZ ((894856.60699999995995313 1544597.51000000000931323 0, 894860.856000000028871 1544572.962000000057742 0, 894879.26599999994505197 1544575.79499999992549419 0, 894882.57099999999627471 1544602.70200000004842877 0, 894856.60699999995995313 1544597.51000000000931323 0),(894810.34499999997206032 1544519.14700000011362135 0, 894837.25300000002607703 1544520.56300000008195639 0, 894833.94799999997485429 1544542.75 0, 894822.14000000001396984 1544541.38800000003539026 0))'},
+                       {'id': 494, 'geom': 'MultiLineStringZ ((894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0, 894634.73699999996460974 1544430.39899999997578561 0))'},
+                       {'id': 495, 'geom': 'MultiLineStringZ ((894768.33100000000558794 1544443.6159999999217689 0, 894696.625 1544436.52200000011362135 0, 894702.99199999996926636 1544362.47299999999813735 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0))'},
+                       {'id': 496, 'geom': 'MultiLineStringZ ((894702.99199999996926636 1544362.47299999999813735 0, 894696.625 1544436.52200000011362135 0, 894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894702.99199999996926636 1544362.47299999999813735 0))'},
+                       {'id': 497, 'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894986.66099999996367842 1544377.29099999996833503 0, 894972.97100000001955777 1544459.43100000009872019 0, 894904.21900145395193249 1544453.48598809260874987 0),(894904.21900145395193249 1544453.48598809260874987 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
+                       {'id': 498, 'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894852.59499999997206032 1544369.26600000006146729 0, 894914.05400000000372529 1544372.94500000006519258 0, 894911.74499999999534339 1544391.85100000002421439 0),(894904.21900000004097819 1544453.48600000003352761 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
+                       {'id': 499, 'geom': 'MultiLineStringZ ((894904.21900000004097819 1544453.48600000003352761 0, 894972.97100000001955777 1544459.43100000009872019 0, 894986.66099999996367842 1544377.29099999996833503 0),(894986.66099999996367842 1544377.29099999996833503 0, 894914.05400000000372529 1544372.94500000006519258 0, 894911.74499999999534339 1544391.85100000002421439 0))'},
+                       {'id': 501, 'geom': 'MultiLineStringZ ((894863.92399999999906868 1544306.01000000000931323 0, 894862.50800000003073364 1544287.59899999992921948 0, 894910.65899999998509884 1544288.07099999999627471 0, 894905.93799999996554106 1544314.50699999998323619 0, 894863.92399999999906868 1544306.01000000000931323 0))'},
+                       {'id': 502, 'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895076.28099999995902181 1544438.87899999995715916 0),(895076.28099999995902181 1544438.87899999995715916 0, 895119.085573127027601 1544445.42050326871685684 0),(895119.085573127027601 1544445.42050326871685684 0, 895126.55500278458930552 1544446.56200782209634781 0),(895126.55500278458930552 1544446.56200782209634781 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895150.11300000001210719 1544450.162999999942258 0))'},
+                       {'id': 506, 'geom': 'MultiLineStringZ ((871581.97699999995529652 1554559.162999999942258 0, 871583.06900000001769513 1554559.11199999996460974 0, 871586.15099999995436519 1554558.96699999994598329 0))'}]
 
         for item in test_result:
             self.assertIn(item, result, 'geometrical error in the polygon with id {}'.format(item['id']))
 
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the masccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 41, 'boundary_id': 50}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is duplicated in the masccl table')
+        test_result = [{'plot_id': 504, 'boundary_id': 376}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the menos table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_LESS_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 41, 'boundary_id': 51}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
+        test_result = [{'plot_id': 504, 'boundary_id': 377}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 47, 'boundary_id': 48}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
+        test_result = [{'plot_id': 505, 'boundary_id': 375}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
+        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_LESS_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 16, 'boundary_id': 18}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
-
+        test_result = [{'plot_id': 500, 'boundary_id': 365}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_NO_LESS_TABLE]))
 
     def test_topology_boundary_must_be_covered_by_plot(self):
-        DB_HOSTNAME = "postgres"
-        DB_PORT = "5432"
-        DB_NAME = "ladm_col"
-        DB_USER = "usuario_ladm_col"
-        DB_PASSWORD = "clave_ladm_col"
-        SCHEMA_NAME = 'validaciones'
+       translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+       schema_name = 'test_ladm_validations_topology_tables'
+       self.db_pg = get_pg_conn(schema_name)
+       self.names = self.db_pg.names
 
-        # Read data
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
-        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
-        self.assertEqual(boundary_layer.featureCount(), 22)
+       result = self.db_pg.test_connection()
+       self.assertTrue(result[0], 'The test connection is not working')
+       self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
-        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
-        self.assertEqual(plot_layer.featureCount(), 17)
+       boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+       self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
-        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
-        self.assertEqual(more_bfs_layer.featureCount(), 18)
+       boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+       self.assertEqual(boundary_layer.featureCount(), 22)
 
-        uri = QgsDataSourceUri()
-        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
-        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
-        self.assertEqual(less_layer.featureCount(), 6)
+       plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+       self.assertEqual(plot_layer.featureCount(), 17)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+       point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+       self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
-        error_layer.updateFields()
+       more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+       self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+       less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+       self.assertEqual(less_layer.featureCount(), 6)
 
-        # the algorithm was successfully executed
-        self.assertEqual(len(features), 11)
+       error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
-        error_layer.dataProvider().addFeatures(features)
+       data_provider = error_layer.dataProvider()
+       data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                    QgsField('boundary_id', QVariant.Int),
+                                    QgsField('error_type', QVariant.String)])
+       error_layer.updateFields()
 
-        # English language is set as default for validations
-        exp = "\"error_type\" = 'Boundary is not covered by plot'"
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 3)
+       features = self.quality.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
-        result = [{'id': f['boundary_id'], 'id_plot': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+       # the algorithm was successfully executed
+       self.assertEqual(len(features), 11)
 
-        test_result = [{'id': 23, 'id_plot': None, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895065.96786221780348569 1544460.84679944021627307, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895138.19374559889547527 1544479.25731873349286616, 895150.11316665716003627 1544450.16258106869645417))'},
-                       {'id': 46, 'id_plot': None, 'geom': 'MultiLineString ((895120.17207429651170969 1544364.95636973413638771, 895070.07765273051336408 1544331.15500104054808617, 895121.96658773790113628 1544243.82460397086106241, 895178.79977707355283201 1544283.71215808903798461, 895120.17207429651170969 1544364.95636973413638771))'},
-                       {'id': 53, 'id_plot': 50, 'geom': 'LineString (871560.66490000020712614 1554564.43640000000596046, 871564.08800000045448542 1554562.86659999936819077, 871564.11380000039935112 1554562.17349999956786633, 871581.97680000029504299 1554559.16310000047087669, 871586.15149999968707561 1554558.96719999983906746)'}]
+       error_layer.dataProvider().addFeatures(features)
 
-        for item in test_result:
-            self.assertIn(item, result, 'Error: Boundary is not covered by the plot.  boundary_id = {}'.format(item['id']))
+       # English language is set as default for validations
+       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT])
+       error_layer.selectByExpression(exp)
+       self.assertEqual(error_layer.selectedFeatureCount(), 3)
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the masccl table'"
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 2, 'boundary_id': 3}, {'plot_id': 41, 'boundary_id': 50}]
+       result = [{'id': f['boundary_id'], 'id_plot': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is duplicated in the masccl table')
+       test_result = [
+           {'id': 374, 'id_plot': None, 'geom': 'MultiLineStringZ ((895120.1720000000204891 1544364.95600000000558794 0, 895070.0779999999795109 1544331.15500000002793968 0, 895121.96699999994598329 1544243.82499999995343387 0, 895178.80000000004656613 1544283.712000000057742 0, 895120.1720000000204891 1544364.95600000000558794 0))'},
+           {'id': 379, 'id_plot': 506,  'geom': 'LineStringZ (871560.6650000000372529 1554564.43599999998696148 0, 871564.08799999998882413 1554562.86700000008568168 0, 871564.11399999994318932 1554562.17299999995157123 0, 871581.97699999995529652 1554559.162999999942258 0, 871586.15099999995436519 1554558.96699999994598329 0)'},
+           {'id': 368, 'id_plot': None, 'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895065.96799999999348074 1544460.84700000006705523 0, 895076.28099999995902181 1544438.87899999995715916 0),(895126.55500000005122274 1544446.56199999991804361 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895138.19400000001769513 1544479.25699999998323619 0, 895150.11300000001210719 1544450.162999999942258 0))'}
+       ]
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the menos table'"
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 4, 'boundary_id': 5}, {'plot_id': 41, 'boundary_id': 51}]
+       for item in test_result:
+           self.assertIn(item, result, 'Error: Boundary is not covered by the plot.  boundary_id = {}'.format(item['id']))
 
-        for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
+       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
+       error_layer.selectByExpression(exp)
+       self.assertEqual(error_layer.selectedFeatureCount(), 2)
+       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+       test_result = [{'plot_id': 492, 'boundary_id': 360}, {'plot_id': 504, 'boundary_id': 376}]
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 19, 'boundary_id': 20}, {'plot_id': 47, 'boundary_id': 48}]
+       for item in test_result:
+           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-        for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
+       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_LESS_TABLE])
+       error_layer.selectByExpression(exp)
+       self.assertEqual(error_layer.selectedFeatureCount(), 2)
+       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+       test_result = [{'plot_id': 504, 'boundary_id': 377}, {'plot_id': 493, 'boundary_id': 361}]
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 4, 'boundary_id': 7}, {'plot_id': 16, 'boundary_id': 18}]
+       for item in test_result:
+           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
 
-        for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
+       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
+       error_layer.selectByExpression(exp)
+       self.assertEqual(error_layer.selectedFeatureCount(), 2)
+       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+       test_result = [{'plot_id': 505, 'boundary_id': 375}, {'plot_id': 501, 'boundary_id': 366}]
 
+       for item in test_result:
+           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-    def test_get_too_long_segments_from_simple_line(self):
-        print('\nINFO: Validating too long segments...')
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='too_long_lines')
-        boundary_layer = QgsVectorLayer(uri, 'too_long_lines', 'ogr')
+       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_LESS_TABLE])
+       error_layer.selectByExpression(exp)
+       self.assertEqual(error_layer.selectedFeatureCount(), 2)
+       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+       test_result = [{'plot_id': 493, 'boundary_id': 362}, {'plot_id': 500, 'boundary_id': 365}]
 
-        tolerance = 200 # meters
-
-        features = [feature for feature in boundary_layer.getFeatures()]
-        self.assertEqual(len(features), 2)
-
-        ### feature 1 ###
-        feature = features[0]
-        lines = feature.geometry()
-        self.assertTrue(lines.isMultipart())
-        self.assertEqual(lines.constGet().numGeometries(), 4)
-
-        line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 2)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(1)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(2)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 0)
-        self.validate_segments(segments_info, tolerance)
-
-        line = lines.constGet().geometryN(3)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
-
-        ### feature 2 ###
-        feature = features[1]
-        lines = feature.geometry()
-        self.assertTrue(lines.isMultipart())
-        self.assertEqual(lines.constGet().numGeometries(), 1)
-
-        line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
-        self.assertEqual(len(segments_info), 1)
-        self.validate_segments(segments_info, tolerance)
+       for item in test_result:
+           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_NO_LESS_TABLE]))
 
     def test_overlapping_points(self):
         print('\nINFO: Validating overlaps in points...')
@@ -720,6 +684,10 @@ class TesQualityValidations(unittest.TestCase):
     def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
 
@@ -749,10 +717,10 @@ class TesQualityValidations(unittest.TestCase):
                 overlapping[pair].append(geometry)
 
         for point in point_features:
-            insert_into_res([point[ID_FIELD], point[ID_FIELD+'_2']], point.geometry().asWkt())
+            insert_into_res([point[self.names.T_ID_F], point[self.names.T_ID_F+'_2']], point.geometry().asWkt())
 
         for line in line_features:
-            insert_into_res([line[ID_FIELD], line[ID_FIELD+'_2']], line.geometry().asWkt())
+            insert_into_res([line[self.names.T_ID_F], line[self.names.T_ID_F+'_2']], line.geometry().asWkt())
 
         expected_overlaps = {
             '7-15': [
@@ -817,6 +785,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating search for missing vertices...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
+        self.names = self.db_gpkg.names
 
         # Map between case number and number of vertices that should be added
         # For instance, the 4th case (reflected in the layer's name) should
@@ -839,7 +809,7 @@ class TesQualityValidations(unittest.TestCase):
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
+            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer, self.names.T_ID_F)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -851,6 +821,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating polygons must be covered by lines...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
+        self.names = self.db_gpkg.names
 
         diff_geom = [['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
                      ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
@@ -869,7 +841,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(self.names, polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -882,6 +854,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating lines must be covered by polygons...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
+        self.names = self.db_gpkg.names
 
         diff_geom = ['',
                      '',
@@ -898,7 +872,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_as_lines_layer, 'fid')
+            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(self.names, lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:
@@ -924,6 +898,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary_points_')
@@ -935,7 +912,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -952,9 +929,12 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
-        point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(3116), "Boundary points", "memory")
+        point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "Boundary points", "memory")
 
         boundary_features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(boundary_features), 8)
@@ -962,7 +942,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -988,6 +968,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating missing survey points in buildings...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
         uril = gpkg_path + '|layername={layername}'.format(layername='p_levantamiento')
@@ -999,7 +982,7 @@ class TesQualityValidations(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(survey_layer, building_layer)
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -1018,6 +1001,10 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
         uri_boundary = gpkg_path + '|layername=good_boundary'
         uri_points_ccl_table = gpkg_path + '|layername=pointsCcl'
@@ -1037,11 +1024,11 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[ID_FIELD]
-            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            boundary_point_id = point_selected[self.names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1067,11 +1054,11 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[ID_FIELD]
-            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            boundary_point_id = point_selected[self.names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1112,6 +1099,10 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
@@ -1121,7 +1112,7 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
-        boundary_ids = [feature[ID_FIELD] for feature in end_points.getFeatures(dangle_ids)]
+        boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
         boundary_ids.sort()
         expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 10, 10, 13, 14, 325, 325, 334, 334, 335, 336, 336, 337]
 
@@ -1142,6 +1133,10 @@ class TesQualityValidations(unittest.TestCase):
     def test_boundaries_are_not_split(self):
         print('\nINFO: Validating boundaries are not split...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
         uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
         uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')
         uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
@@ -1149,17 +1144,17 @@ class TesQualityValidations(unittest.TestCase):
         bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
         good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
 
-        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
+        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
         self.assertEqual(len(bad_boundary_errors_list), 4)
         self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
-        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
+        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
         self.assertEqual(len(bbox_boundary_errors_list), 9)
         self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
-        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
+        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
         self.assertEqual(len(good_boundary_errors_list), 0)
 
@@ -1338,9 +1333,10 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
 
-    def tearDownClass():
-        print('tearDown test_boundaries_digitizing')
-
+    @classmethod
+    def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
 
 if __name__ == '__main__':
     nose2.main()

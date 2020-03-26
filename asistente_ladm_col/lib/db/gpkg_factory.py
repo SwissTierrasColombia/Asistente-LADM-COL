@@ -24,10 +24,7 @@ from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 class GpkgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
-        self._mode = "gpkg"
-
-    def get_id(self):
-        return 'gpkg'
+        self._engine = "gpkg"
 
     def get_name(self):
         return 'GeoPackage'
@@ -42,6 +39,6 @@ class GpkgFactory(DbFactory):
     def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
-    def set_db_configuration_params(self, params, configuration):
+    def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'
         configuration.dbfile = params['dbfile']

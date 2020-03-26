@@ -16,31 +16,46 @@
  *                                                                         *
  ***************************************************************************/
 """
+from functools import partial
+
+from qgis.PyQt.QtWidgets import QPushButton
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        Qgis)
 
-from .config.general_config import (PLUGIN_NAME,
-                                    QGIS_REQUIRED_VERSION,
-                                    QGIS_REQUIRED_VERSION_INT)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
+                                                      QGIS_REQUIRED_VERSION,
+                                                      QGIS_REQUIRED_VERSION_INT)
 
 
 def classFactory(iface):
     if Qgis.QGIS_VERSION_INT >= QGIS_REQUIRED_VERSION_INT:
         try:
+            Logger().info(__name__, "STARTING LADM-COL ASSISTANT...")
             from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
         except ImportError as e:
-            iface.messageBar().pushMessage("Asistente LADM_COL",
-                                           QCoreApplication.translate("__init__",
-                                                                      "There was a problem loading the plugin {}. See the log for details.").format(
-                                               PLUGIN_NAME),
-                                           1, 0)
+            iface.messageBar().clearWidgets()
+            widget = iface.messageBar().createMessage("Asistente LADM_COL", QCoreApplication.translate("__init__",
+                                                      "There was a problem loading the plugin {}. See the log for details.").format(
+                                               PLUGIN_NAME))
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("__init__", "Open log panel..."))
+            button.pressed.connect(partial(open_log, iface))
+            widget.layout().addWidget(button)
+            iface.messageBar().pushWidget(widget, Qgis.Warning, 0)
 
-            QgsApplication.messageLog().logMessage("ERROR while loading the plugin: " + repr(e), PLUGIN_NAME,
-                                                   Qgis.Critical)
+            Logger().critical(__name__, "ERROR while loading the plugin: " + repr(e))
 
             from mock import Mock
             return Mock()
+
+        try:
+            from asistente_ladm_col.tests.gui_tests import gui_tests_model_baker
+            from qgistester.tests import addTestModule
+            addTestModule(gui_tests_model_baker, PLUGIN_NAME)
+        except:
+            Logger().warning(__name__, "QGIS Tester plugin was not found. Therefore, no GUI tests could be registered!")
 
         return AsistenteLADMCOLPlugin(iface)
     else:
@@ -51,7 +66,11 @@ def classFactory(iface):
                                            QGIS_REQUIRED_VERSION),
                                        1, 0)
 
-        QgsApplication.messageLog().logMessage("ERROR while loading the plugin: ", PLUGIN_NAME, Qgis.Critical)
+        Logger().critical(__name__, "ERROR while loading the plugin: QGIS version {} not supported! Required: {}".format(Qgis.QGIS_VERSION_INT, QGIS_REQUIRED_VERSION_INT))
 
         from mock import Mock
         return Mock()
+
+def open_log(iface):
+    iface.messageBar().clearWidgets()
+    iface.openMessageLog()

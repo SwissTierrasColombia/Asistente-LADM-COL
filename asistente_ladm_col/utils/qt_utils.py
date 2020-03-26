@@ -23,16 +23,19 @@ import stat
 import sys
 from functools import partial
 
-from qgis.core import Qgis
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              QSettings)
+                              QSettings,
+                              Qt)
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
+from qgis.core import Qgis
+
+from asistente_ladm_col.lib.logger import Logger
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
@@ -104,7 +107,7 @@ def get_plugin_metadata(plugin_name, key):
 
 
 def remove_readonly(func, path, _):
-    "Clear the readonly bit and reattempt the removal"
+    """Clear the readonly bit and reattempt the removal"""
     try:
         os.chmod(path, stat.S_IWRITE)
         func(path)
@@ -122,10 +125,10 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
-def save_pdf_format(qgis_utils, settings_path, title, text):
+def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
-                                                       QCoreApplication.translate('Asistente-LADM_COL', 'Export to PDF'),
+                                                       QCoreApplication.translate("Asistente-LADM_COL", "Export to PDF"),
                                                        settings.value(settings_path, '.'),
                                                        filter="PDF (*.pdf)")
 
@@ -146,7 +149,7 @@ def save_pdf_format(qgis_utils, settings_path, title, text):
             "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
             normalized_path=normalize_local_url(new_filename),
             path=new_filename)
-        qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+        Logger().success_msg(__name__, msg)
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):
@@ -219,6 +222,41 @@ class FileValidator(QValidator):
         else:
             return QValidator.Acceptable, text, pos
 
+class DirValidator(QValidator):
+    def __init__(self, pattern=None, parent=None, allow_empty=False, allow_non_existing=False, allow_empty_dir=False):
+        QValidator.__init__(self, parent)
+        self.pattern = pattern
+        self.allow_empty = allow_empty
+        self.allow_non_existing = allow_non_existing
+        self.allow_empty_dir = allow_empty_dir
+
+    """
+    Validator for line edits that hold a dir path
+    """
+    def validate(self, text, pos):
+        if self.allow_empty and not text.strip():
+            return QValidator.Acceptable, text, pos
+
+        if self.pattern is not None:
+            pattern_matches = False
+            if type(self.pattern) is str:
+                pattern_matches = fnmatch.fnmatch(text, self.pattern)
+            elif type(self.pattern) is list:
+                pattern_matches = True in (fnmatch.fnmatch(text, pattern) for pattern in self.pattern)
+            else:
+                raise TypeError('pattern must be str or list, not {}'.format(type(self.pattern)))
+        else:
+            pattern_matches = True
+
+        if not text \
+                or (not self.allow_non_existing and not os.path.isdir(text)) \
+                or not pattern_matches:
+            return QValidator.Intermediate, text, pos
+        else:
+            if not self.allow_empty_dir and not os.listdir(text):
+                return QValidator.Intermediate, text, pos
+            else:
+                return QValidator.Acceptable, text, pos
 
 class NonEmptyStringValidator(QValidator):
     def __init__(self, parent=None):
@@ -240,3 +278,16 @@ class OverrideCursor():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
+
+
+class ProcessWithStatus():
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        Logger().status(self.msg)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+        Logger().clear_status()

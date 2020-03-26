@@ -13,17 +13,25 @@ Links of interest: [Documentation](https://agenciaimplementacion.github.io/Asist
 A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: We suggest you to use QGIS v3.4.x, available at https://qgis.org/downloads/
+:arrow_right: We suggest you to use QGIS v3.10.x, available at https://qgis.org/downloads/
 
 
 ## Functionalities
 
-The current version ([1.9.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.9.1)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.3.1](https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip) and allows users to:
+The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) of the LADM_COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
 
- - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
- - Capture data for the `FICHA_PREDIAL v2.2.1` model.
- - Capture data for the `AVALÚOS v2.2.1` model.
- - Create database structures for the aforementioned models.
+ - Integration with the Transitional System:
+   - Authentication
+   - Task management: start, cancel and finalize tasks.
+   - Tasks of cadastral supplies generation and assisted integration of supplies (partial support). 
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
+     - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
+ - Roles support and GUI for each role.
+ - Create database structures for the LADM-COL v2.9.6 model.
+ - Two database engines to manage LADM-COL data:
+   - PostgreSQL/PostGIS: Total support.
+   - GeoPackage: quality validations, parcel queries and reports are not yet supported.
+ - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
  - Import/export data from/to transfer files (.XTF) disabling data validation.
@@ -33,9 +41,6 @@ The current version ([1.9.1](https://github.com/AgenciaImplementacion/Asistente-
    - Property record card information.
    - Physical information.
    - Economic information.
- - Preprocess points: Controlled Measurement.
-   - Group points by nearness.
-   - Average point position from points of the same group.
  - Add points to the `Boundary Point`, `Survey Point` and `Control Point` layers:
    - From CSV files.
      - Validate and avoid insertion of overlapping points.
@@ -84,14 +89,10 @@ The current version ([1.9.1](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
- - Create `Propert Record Card`, `Market Research`, `Nuclear Family`, `Natural Party` and `Legal Party`:
-   - Using preconfigured forms.
-   - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
  - Check quality rules (topology):
-   - Check too long `Boundary` segments (exceeding a given tolerance).
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
@@ -110,27 +111,28 @@ The current version ([1.9.1](https://github.com/AgenciaImplementacion/Asistente-
    - Check that `Buildings` are within their corresponding `Plots`.
    - Check that `Building Units` are within their corresponding `Plots`.
  - Check quality rules (consistency):
-   - Parcel should hace one and only one Right
-   - Table records should not be repeated
-   - Group Party Fractions should sum 1
-   - Check that the departamento field of the predio table has two numerical characters
-   - Check that the municipality field of the predio table has three numerical characters
-   - Check that the zona field of the predio table has two numerical characters
-   - Check that the numero_predial has 30 numerical characters
-   - Check that the numero_predial_anterior has 20 numerical characters
-   - Check that attributes are appropriate for parties of type natural
-   - Check that attributes are appropriate for parties of type legal
-   - Check that the type of parcel corresponds to position 22 of the numero_predial
-   - Check that Spatial Units associated with Parcels correspond to the parcel type
+   - Parcel should have one and only one Right.
+   - Table records should not be repeated.
+   - Group Party Fractions should sum 1.
+   - Check that the departamento field of the predio table has two numerical characters.
+   - Check that the municipality field of the predio table has three numerical characters.
+   - Check that the zona field of the predio table has two numerical characters.
+   - Check that the numero_predial has 30 numerical characters.
+   - Check that the numero_predial_anterior has 20 numerical characters.
+   - Check that attributes are appropriate for parties of type natural.
+   - Check that attributes are appropriate for parties of type legal.
+   - Check that the type of parcel corresponds to position 22 of the numero_predial.
+   - Check that Spatial Units associated with Parcels correspond to the parcel type.
  - Generate report of the quality checks.
  - Generate reports based on selected `Plots` (Annex 17).
  - Generate reports based on selected `Plots` (ANT map).
+ - Generate reports of missing supplies.
  - Detect parcel changes:
-   - Compare a collected database versus the official database and show differences by batch or per parcel.
+   - Compare a collected database versus the supplies database and show differences by batch or per parcel.
  - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
- - View illustrative GIFs in the plugin's online help or download them for offline work.
+ - Online/offline help.
 
 
 ## Minimum requirements
@@ -141,21 +143,21 @@ To use the LADM_COL Assistant you need:
    - Windows 8 or Windows 10
    - GNU/Linux
  - Base software:
-   - QGIS v3.4.6-Madeira o superior
+   - QGIS v3.10.0-A Coruña or higher
    - Java v1.8
-   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well).
+   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
    - PostGIS 2.4 or higher.
- - QGIS plugins:
-   - LADM_COL Assistant
-   - QGIS Model Baker v4.3.1
+ - QGIS plugins (installing LADM_COL Assistant using QGIS Plugin Manager will also install these automatically):
+   - QGIS Model Baker v6.0.0
    - MapSwipe Tool v1.2
 
 ## Testing
 
+### Unit tests
+
 Unit tests are automatically executed after every commit made to the repository. Results are available for:
 
 - GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
-- Windows: http://portal.proadmintierra.info:18000/
 
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
 - Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
@@ -170,6 +172,22 @@ If you need to recreate docker image, you can use:
 ```sh
 docker-compose down --rmi local && docker-compose build
 ```
+
+### Assisted tests (for the GUI)
+
+The LADM_COL Assistant uses *QGIS Tester* plugin to support assisted tests for GUI functionalities. 
+
+Prerrequisites:
+
+In order to run the assisted tests, you need to install:
+
+- *QGIS Tester* plugin (available at: https://github.com/planetfederal/qgis-tester-plugin).
+- *qgiscommons* library: ```pip install qgiscommons```
+
+See [the docs](https://github.com/planetfederal/qgis-tester-plugin/blob/master/docs/source/usage.rst) for usage instructions.
+
+If these prerrequisites are not met, the LADM_COL Assistant will continue running smoothly and will put a warning in the QGIS log. 
+
 
 ## How to be notified of new relases of the LADM_COL Assistant?
 
@@ -206,3 +224,7 @@ docker-compose down --rmi local && docker-compose build
 + Change detection:
 
   ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+
++ Integration with Transitional System
+
+![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)

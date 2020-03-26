@@ -18,36 +18,32 @@
 """
 from qgis.PyQt.QtCore import QObject
 
-from ..lib.db.pg_factory import PgFactory
-from ..lib.db.gpkg_factory import GpkgFactory
-from ..lib.db.mssql_factory import MssqlFactory
+
+from asistente_ladm_col.lib.db.pg_factory import PgFactory
+from asistente_ladm_col.lib.db.gpkg_factory import GpkgFactory
+from asistente_ladm_col.lib.db.mssql_factory import MssqlFactory
 
 
 class ConfigDbSupported(QObject):
 
     def __init__(self):
         self.id_default_db = None
-        self._db_items = dict()
-        self._init_db_items()
+        self._db_factories = dict()
+        self._init_db_factories()
 
-    def _init_db_items(self):
-        db_item = PgFactory()
-        self._db_items[db_item.get_id()] = db_item
-        self.id_default_db = db_item.get_id()
+    def _init_db_factories(self):
+        db_factory = PgFactory()
+        self._db_factories[db_factory.get_id()] = db_factory
+        self.id_default_db = db_factory.get_id()  # Make PostgreSQL the default DB engine
 
-        db_item = GpkgFactory()
-        self._db_items[db_item.get_id()] = db_item
+        db_factory = GpkgFactory()
+        self._db_factories[db_factory.get_id()] = db_factory
 
-        db_item = MssqlFactory()
-        self._db_items[db_item.get_id()] = db_item
+        db_factory = MssqlFactory()
+        self._db_items[db_factory.get_id()] = db_factory
 
-    def get_db_items(self):
-        return self._db_items
+    def get_db_factories(self):
+        return self._db_factories
 
-    def get_db_admin(self, db_type):
-        result = None
-
-        if db_type in self._db_items:
-            result = self._db_items[db_type]
-
-        return result
+    def get_db_factory(self, engine):
+        return self._db_factories[engine] if engine in self._db_factories else None

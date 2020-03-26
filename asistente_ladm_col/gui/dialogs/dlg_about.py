@@ -26,22 +26,23 @@ from functools import partial
 from qgis.PyQt.QtCore import (QUrl,
                               QFile,
                               QTextStream,
-                              QTextCodec,
                               QIODevice,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsNetworkContentFetcherTask,
-                       QgsApplication,
-                       Qgis)
+                       QgsApplication)
 
-from ...config.general_config import (HELP_DIR_NAME,
-                                      HELP_DOWNLOAD,
-                                      PLUGIN_VERSION,
-                                      TEST_SERVER)
-from ...config.translator import (QGIS_LANG,
-                                  PLUGIN_DIR)
-from ...utils import get_ui_class
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.general_config import (HELP_DIR_NAME,
+                                                      HELP_DOWNLOAD,
+                                                      PLUGIN_VERSION,
+                                                      TEST_SERVER)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  PLUGIN_DIR)
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.utils import (is_connected,
+                                            show_plugin_help)
 
 DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
 
@@ -49,10 +50,10 @@ DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
 class AboutDialog(QDialog, DIALOG_UI):
     message_with_button_open_about_emitted = pyqtSignal(str)
 
-    def __init__(self, qgis_utils):
+    def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
+        self.logger = Logger()
         self.check_local_help()
 
         self.tb_changelog.setOpenExternalLinks(True)
@@ -108,9 +109,8 @@ class AboutDialog(QDialog, DIALOG_UI):
                         shutil.move(language, os.path.join(PLUGIN_DIR, HELP_DIR_NAME, language[-2:]))
 
             except zipfile.BadZipFile as e:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("AboutDialog", "There was an error with the download. The downloaded file is invalid."),
-                    Qgis.Warning)
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AboutDialog",
+                    "There was an error with the download. The downloaded file is invalid."))
             else:
                 self.message_with_button_open_about_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "Help files were successfully downloaded and can be accessed offline from the About dialog!"))
@@ -124,7 +124,7 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.check_local_help()
 
     def download_help(self):
-        if self.qgis_utils.is_connected(TEST_SERVER):
+        if is_connected(TEST_SERVER):
             self.btn_download_help.setEnabled(False)
             url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs_{lang}.zip'.format(lang=QGIS_LANG)])
             fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
@@ -132,13 +132,12 @@ class AboutDialog(QDialog, DIALOG_UI):
             fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))
             QgsApplication.taskManager().addTask(fetcher_task)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
-                Qgis.Warning)
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AboutDialog",
+                                                                         "There was a problem connecting to Internet."))
 
     def enable_download_button(self):
         self.btn_download_help.setEnabled(True)
         self.check_local_help()
 
     def show_help(self):
-        self.qgis_utils.show_help('', offline=True)
+        show_plugin_help('', offline=True)

@@ -31,7 +31,6 @@ class PgConfigPanel(DbSchemaDbPanel, WIDGET_UI):
     def __init__(self, parent):
         DbSchemaDbPanel.__init__(self, parent)
         self.setupUi(self)
-        self.mode = "pg"
         self.init_schema()
 
     def showEvent(self, event):
@@ -84,12 +83,12 @@ class PgConfigPanel(DbSchemaDbPanel, WIDGET_UI):
         result = True
 
         if self.state:
-            result = (self.state['host'] != self.txt_host.text().strip() or \
-                self.state['port'] != self.txt_port.text().strip() or \
-                self.state['database'] != self.selected_db_combobox.currentText().strip() or \
-                self.state['schema'] != self.selected_schema_combobox.currentText().strip() or \
-                self.state['username'] != self.txt_user.text().strip() or \
-                self.state['password'] != self.txt_password.text().strip())
+            result = (self.state['host'] != self.txt_host.text().strip() or
+                      self.state['port'] != self.txt_port.text().strip() or
+                      self.state['database'] != self.selected_db_combobox.currentText().strip() or
+                      self.state['schema'] != self.selected_schema_combobox.currentText().strip() or
+                      self.state['username'] != self.txt_user.text().strip() or
+                      self.state['password'] != self.txt_password.text().strip())
 
         return result
 

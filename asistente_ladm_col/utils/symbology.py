@@ -27,13 +27,12 @@ from qgis.core import (QgsFeatureRenderer,
                        QgsAbstractVectorLayerLabeling,
                        QgsReadWriteContext)
 
-from ..config.translator import (QGIS_LANG,
-                                 DEFAULT_LANGUAGE)
-from ..config.general_config import (STYLES_DIR,
-                                     STYLE_GROUP_LAYER_MODIFIERS)
-from ..config.symbology import (DEFAULT_STYLE_GROUP,
-                                CUSTOM_ERROR_LAYERS,
-                                ERROR_LAYER)
+from asistente_ladm_col.config.translator import (QGIS_LANG,
+                                                  DEFAULT_LANGUAGE)
+from asistente_ladm_col.config.general_config import STYLES_DIR
+from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.symbology import Symbology
+from asistente_ladm_col.lib.logger import Logger
 
 
 class SymbologyUtils(QObject):
@@ -42,23 +41,26 @@ class SymbologyUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
+        self.symbology = Symbology()
 
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):
-        style_group = DEFAULT_STYLE_GROUP
-        if STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
-            if layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]:
-                style_group = layer_modifiers[STYLE_GROUP_LAYER_MODIFIERS]
+        style_group = self.symbology.get_default_style_group(db.names)
+        style_group_const = self.symbology.get_default_style_group(db.names)
+        if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]:
+                style_group = layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]
 
         qml_name = None
         if is_error_layer:
-            if layer.name() in CUSTOM_ERROR_LAYERS:
+            if layer.name() in self.symbology.get_custom_error_layers():
                 # Symbology is selected according to the language
-                if QGIS_LANG in CUSTOM_ERROR_LAYERS[layer.name()]:
-                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][QGIS_LANG]
+                if QGIS_LANG in self.symbology.get_custom_error_layers()[layer.name()]:
+                    qml_name = self.symbology.get_custom_error_layers()[layer.name()][QGIS_LANG]
                 else:
-                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][DEFAULT_LANGUAGE]
+                    qml_name = self.symbology.get_custom_error_layers()[layer.name()][DEFAULT_LANGUAGE]
             else:
-                qml_name = DEFAULT_STYLE_GROUP[ERROR_LAYER][layer.geometryType()]
+                qml_name = style_group_const[self.symbology.get_error_layer_name()][layer.geometryType()]
         else:
             if db is None:
                 return
@@ -71,9 +73,9 @@ class SymbologyUtils(QObject):
 
             # If style not in style group then we use default simbology
             if qml_name is None:
-                if layer_name in DEFAULT_STYLE_GROUP:
-                    if layer.geometryType() in DEFAULT_STYLE_GROUP[layer_name]:
-                        qml_name = DEFAULT_STYLE_GROUP[layer_name][layer.geometryType()]
+                if layer_name in style_group_const:
+                    if layer.geometryType() in style_group_const[layer_name]:
+                        qml_name = style_group_const[layer_name][layer.geometryType()]
 
         if qml_name is not None:
             renderer, labeling = self.get_style_from_qml(qml_name)
@@ -92,7 +94,7 @@ class SymbologyUtils(QObject):
         style_path = os.path.join(STYLES_DIR, qml_name + '.qml')
         file = QFile(style_path)
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
-            print("Unable to read style file from", style_path)
+            self.logger.warning(__name__, "Unable to read style file from {}".format(style_path))
 
         doc = QDomDocument()
         doc.setContent(file)

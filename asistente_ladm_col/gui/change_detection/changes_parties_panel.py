@@ -22,13 +22,13 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem,
 from qgis.core import NULL
 from qgis.gui import QgsPanelWidget
 
-from ...config.general_config import (COLLECTED_DB_SOURCE,
-                                      OFFICIAL_DB_SOURCE)
-from ...config.table_mapping_config import (COL_PARTY_DOCUMENT_ID_FIELD,
-                                            COL_PARTY_DOC_TYPE_FIELD,
-                                            DOCUMENT_ID_FIELD,
-                                            COL_PARTY_NAME_FIELD)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.gui.change_detection_config import (DICT_KEY_PARTY_T_NAME_F,
+                                                                   DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+                                                                   DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+                                                                   DICT_KEY_PARTY_T_RIGHT)
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE)
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_parties_panel_widget.ui')
 
@@ -40,8 +40,8 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.utils = utils
 
-        # dict with 2 k:v pairs, one for collected data and one for official data
-        # Values are dicts themselves, with the party info we compare (see PARTY_FIELDS_TO_COMPARE + right type)
+        # dict with 2 k:v pairs, one for collected data and one for supplies data
+        # Values are dicts themselves, with the party info we compare (see party_fields_to_compare + right type)
         self.data = data
 
         self.setDockMode(True)
@@ -54,48 +54,58 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self):
         self.tbl_changes_parties.clearContents()
-        number_of_official_rows = len(self.data[OFFICIAL_DB_SOURCE]) if self.data[OFFICIAL_DB_SOURCE] != NULL else 0
-        self.tbl_changes_parties.setRowCount(max(len(self.data[COLLECTED_DB_SOURCE]) if self.data[COLLECTED_DB_SOURCE] != NULL else 0,
-                                             number_of_official_rows))  # t_id shouldn't be counted
+
+        # Get max num of columns for tbl_changes_parties (equals to the number of different documents in both db sources)
+        list_documents = list()
+        for db_source in self.data:
+            if self.data[db_source] != NULL:
+                for party in self.data[db_source]:
+                    list_documents.append(party[DICT_KEY_PARTY_T_DOCUMENT_ID_F])
+
+        number_of_supplies_rows = len(self.data[SUPPLIES_DB_SOURCE]) if self.data[SUPPLIES_DB_SOURCE] != NULL else 0
+        max_num_rows = len(set(list_documents))
+        self.tbl_changes_parties.setRowCount(max_num_rows)
         self.tbl_changes_parties.setSortingEnabled(False)
 
-        sorted_official_parties = list()
+        sorted_supplies_parties = list()
         sorted_collected_parties = list()
-        if self.data[OFFICIAL_DB_SOURCE] != NULL:
-            sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+        if self.data[SUPPLIES_DB_SOURCE] != NULL:
+            sorted_supplies_parties = sorted(self.data[SUPPLIES_DB_SOURCE], key=lambda item: item[DICT_KEY_PARTY_T_DOCUMENT_ID_F])
         if self.data[COLLECTED_DB_SOURCE] != NULL:
-            sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+            sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[DICT_KEY_PARTY_T_DOCUMENT_ID_F])
 
-        for row, official_party in enumerate(sorted_official_parties):
+        # Iterate supplies parties looking for its corresponding collected party. If none found, pair it with empty dict
+        for row, supplies_party in enumerate(sorted_supplies_parties):
             collected_party_pair = {}
             for collected_party in sorted_collected_parties:
-                if official_party[COL_PARTY_DOCUMENT_ID_FIELD] == official_party[COL_PARTY_DOCUMENT_ID_FIELD]:
-                    collected_party_pair = official_party
-                    sorted_collected_parties.remove(collected_party_pair)
+                if supplies_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F] == collected_party[DICT_KEY_PARTY_T_DOCUMENT_ID_F]:
+                    collected_party_pair = collected_party
+                    sorted_collected_parties.remove(collected_party_pair)  # Don't search again this party
                     break
 
-            self.fill_item(official_party, collected_party_pair, row)
+            self.fill_item(supplies_party, collected_party_pair, row)
 
         for row, collected_party in enumerate(sorted_collected_parties):
-            self.fill_item({}, collected_party, row + number_of_official_rows)
+            self.fill_item({}, collected_party, row + number_of_supplies_rows)
 
         self.tbl_changes_parties.setSortingEnabled(True)
 
-    def fill_item(self, official_party, collected_party, row):
-        self.tbl_changes_parties.setCellWidget(row, 0, self.get_widget_with_party_info_formatted(official_party))
+    def fill_item(self, supplies_party, collected_party, row):
+        self.tbl_changes_parties.setCellWidget(row, 0, self.get_widget_with_party_info_formatted(supplies_party))
         self.tbl_changes_parties.setCellWidget(row, 1, self.get_widget_with_party_info_formatted(collected_party))
 
-        self.tbl_changes_parties.setItem(row, 2, QTableWidgetItem())
-        self.tbl_changes_parties.item(row, 2).setBackground(Qt.green if official_party == collected_party else Qt.red)
+        type_item = QTableWidgetItem()
+        type_item.setBackground(Qt.green if supplies_party == collected_party else Qt.red)
+        self.tbl_changes_parties.setItem(row, 2, type_item)
 
     def get_widget_with_party_info_formatted(self, party_info):
         widget = QTextEdit()
 
         if party_info:
             html = list()
-            html.append("<b>{}</b>".format(party_info[COL_PARTY_NAME_FIELD]))
-            html.append("<i>{}</i>: <b>{}</b>".format(party_info[COL_PARTY_DOC_TYPE_FIELD], party_info[DOCUMENT_ID_FIELD]))
-            html.append("<i>Derecho</i>: <b>{}</b>".format(party_info['derecho']))
+            html.append("<b>{}</b>".format(party_info[DICT_KEY_PARTY_T_NAME_F]))
+            html.append("<i>{}</i>: <b>{}</b>".format(party_info[DICT_KEY_PARTY_T_DOCUMENT_TYPE_F], party_info[DICT_KEY_PARTY_T_DOCUMENT_ID_F]))
+            html.append("<i>Derecho</i>: <b>{}</b>".format(party_info[DICT_KEY_PARTY_T_RIGHT]))
             widget.setHtml("<br>".join(html))
 
         return widget
