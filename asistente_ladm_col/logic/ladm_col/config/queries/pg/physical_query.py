@@ -106,9 +106,9 @@ def get_igac_physical_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
               SELECT col_uebaunit.baunit,
                     json_agg(json_build_object('id', op_construccion.t_id,
                                       'attributes', json_build_object('Área construcción', op_construccion.area_construccion,
-                                                                      'Ńúmero de pisos', op_construccion.numero_pisos,
-                                                                      'op_fuenteespacial', COALESCE(c_fuente_espacial.op_fuenteespacial, '[]'),
-                                                                      'op_unidadconstruccion', COALESCE(info_uc.op_unidadconstruccion, '[]')
+                                                                      'Número de pisos', op_construccion.numero_pisos,
+                                                                      'op_unidadconstruccion', COALESCE(info_uc.op_unidadconstruccion, '[]'),
+                                                                      'op_fuenteespacial', COALESCE(c_fuente_espacial.op_fuenteespacial, '[]')
                                                                      )) ORDER BY op_construccion.t_id) FILTER(WHERE op_construccion.t_id IS NOT NULL) as op_construccion
               FROM {schema}.op_construccion LEFT JOIN c_fuente_espacial ON op_construccion.t_id = c_fuente_espacial.ue_op_construccion
               LEFT JOIN info_uc ON op_construccion.t_id = info_uc.op_construccion
@@ -174,7 +174,7 @@ def get_igac_physical_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
                         json_agg(
                             json_build_object('id', op_puntolindero.t_id,
                                                    'attributes', json_build_object('Nombre', op_puntolindero.id_punto_lindero,
-                                                                                   'coordenadas', concat(st_x(op_puntolindero.geometria),
+                                                                                   'Coordenadas', concat(st_x(op_puntolindero.geometria),
                                                                                                  ' ', st_y(op_puntolindero.geometria),
                                                                                                  CASE WHEN st_z(op_puntolindero.geometria) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.geometria)) END))
                         ) ORDER BY op_puntolindero.t_id) FILTER(WHERE op_puntolindero.t_id IS NOT NULL) AS op_puntolindero
@@ -187,7 +187,7 @@ def get_igac_physical_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
                         json_agg(
                             json_build_object('id', op_puntolindero.t_id,
                                                    'attributes', json_build_object('Nombre', op_puntolindero.id_punto_lindero,
-                                                                                   'coordenadas', concat(st_x(op_puntolindero.geometria),
+                                                                                   'Coordenadas', concat(st_x(op_puntolindero.geometria),
                                                                                                  ' ', st_y(op_puntolindero.geometria),
                                                                                                  CASE WHEN st_z(op_puntolindero.geometria) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.geometria)) END))
                         ) ORDER BY op_puntolindero.t_id) FILTER(WHERE op_puntolindero.t_id IS NOT NULL) AS op_puntolindero
@@ -196,35 +196,31 @@ def get_igac_physical_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
                  GROUP BY punto_lindero_internos_seleccionados.ue_menos_op_terreno
              ),
             info_puntolevantamiento AS (
-                SELECT col_uebaunit.ue_op_terreno,
+                	SELECT ue_op_terreno,
                         json_agg(
                                 json_build_object('id', puntoslevantamiento_seleccionados.t_id_puntolevantamiento,
-                                                       'attributes', json_build_object('coordenadas', concat(st_x(puntoslevantamiento_seleccionados.geometria),
+                                                       'attributes', json_build_object('Coordenadas', concat(st_x(puntoslevantamiento_seleccionados.geometria),
                                                                                                  ' ', st_y(puntoslevantamiento_seleccionados.geometria),
                                                                                                  CASE WHEN st_z(puntoslevantamiento_seleccionados.geometria) IS NOT NULL THEN concat(' ', st_z(puntoslevantamiento_seleccionados.geometria)) END)
                                                                                       ))
                         ORDER BY puntoslevantamiento_seleccionados.t_id_puntolevantamiento) FILTER(WHERE puntoslevantamiento_seleccionados.t_id_puntolevantamiento IS NOT NULL) AS op_puntolevantamiento
                 FROM
                 (
-                    SELECT op_puntolevantamiento.t_id AS t_id_puntolevantamiento, op_puntolevantamiento.geometria, op_construccion.t_id AS t_id_construccion  FROM {schema}.op_construccion, {schema}.op_puntolevantamiento
-                    WHERE ST_Intersects(op_construccion.geometria, op_puntolevantamiento.geometria) = True AND op_construccion.t_id IN (SELECT * from construcciones_seleccionadas)
+                    SELECT op_puntolevantamiento.t_id AS t_id_puntolevantamiento, op_puntolevantamiento.geometria, op_terreno.t_id AS ue_op_terreno
+                    FROM {schema}.op_terreno, {schema}.op_puntolevantamiento
+                    WHERE ST_Intersects(op_terreno.geometria, op_puntolevantamiento.geometria) AND op_terreno.t_id IN (SELECT * from terrenos_seleccionados)
                 ) AS puntoslevantamiento_seleccionados
-                LEFT JOIN {schema}.col_uebaunit AS uebaunit_construccion  ON uebaunit_construccion.ue_op_construccion = puntoslevantamiento_seleccionados.t_id_construccion
-                LEFT JOIN {schema}.col_uebaunit AS col_uebaunit ON col_uebaunit.baunit = uebaunit_construccion.baunit
-                WHERE col_uebaunit.ue_op_terreno IS NOT NULL AND
-                      col_uebaunit.ue_op_construccion IS NULL AND
-                      col_uebaunit.ue_op_unidadconstruccion IS NULL
-                GROUP BY col_uebaunit.ue_op_terreno
+                GROUP BY ue_op_terreno
             ),
              info_terreno AS (
                 SELECT op_terreno.t_id,
                   json_build_object('id', op_terreno.t_id,
-                                    'attributes', json_build_object(CONCAT('Área calculada' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno,
+                                    'attributes', json_build_object(CONCAT('Área' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno,
                                                                     'op_predio', COALESCE(info_predio.op_predio, '[]'),
-                                                                    'Linderos externos', json_build_object('op_lindero', COALESCE(info_linderos_externos.op_lindero, '[]'),
-                                                                                                           'op_puntolindero', COALESCE(info_punto_lindero_externos.op_puntolindero, '[]')),
-                                                                    'Linderos internos', json_build_object('op_lindero', COALESCE(info_linderos_internos.op_lindero, '[]'),
-                                                                                                           'op_puntolindero', COALESCE(info_punto_lindero_internos.op_puntolindero, '[]')),
+                                                                    'op_lindero externos', COALESCE(info_linderos_externos.op_lindero, '[]'),
+                                                                    'op_puntolindero externos', COALESCE(info_punto_lindero_externos.op_puntolindero, '[]'),
+                                                                    'op_lindero internos', COALESCE(info_linderos_internos.op_lindero, '[]'),
+                                                                    'op_puntolindero internos', COALESCE(info_punto_lindero_internos.op_puntolindero, '[]'),
                                                                     'op_puntolevantamiento', COALESCE(info_puntolevantamiento.op_puntolevantamiento, '[]'),
                                                                     'op_fuenteespacial', COALESCE(t_fuente_espacial.op_fuenteespacial, '[]')
                                                                    )) as terreno

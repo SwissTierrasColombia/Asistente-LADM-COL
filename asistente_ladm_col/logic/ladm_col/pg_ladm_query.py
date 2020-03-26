@@ -27,8 +27,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                  plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
-                                                 previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
-                                                 cadastral_form_model=db.cadastral_form_model_exists())
+                                                 previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
         return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
@@ -66,8 +65,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                                                plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                                                parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                                                parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
-                                                                               previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
-                                                                               cadastral_form_model=db.cadastral_form_model_exists())
+                                                                               previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
         return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
@@ -105,8 +103,7 @@ class PGLADMQuery(QGISLADMQuery):
                                                        plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
-                                                       previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER],
-                                                       cadastral_form_model=db.cadastral_form_model_exists())
+                                                       previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
         return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod

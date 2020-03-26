@@ -2,7 +2,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.pg.pg_queries_config_utils
                                                                                          get_custom_filter_plots)
 
 
-def get_igac_economic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number, cadastral_form_model):
+def get_igac_economic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number):
     custom_filter_plots = get_custom_filter_plots(schema, plot_t_ids)
     custom_filter_parcels = get_custom_filter_parcels(schema, plot_t_ids)
 
@@ -91,30 +91,10 @@ def get_igac_economic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
                                                                           'Número predial anterior', op_predio.numero_predial_anterior,
                                                                           CONCAT('Avalúo predio' , (select * from unidad_avaluo_predio)), op_predio.avaluo_predio,
                                                                           'Tipo', (SELECT dispname FROM {schema}.op_prediotipo WHERE t_id = op_predio.tipo),
-    """
-
-    if cadastral_form_model:
-        query += """
-                															  'Destinación económica', (SELECT dispname FROM {schema}.fcm_destinacioneconomicatipo WHERE t_id = fcm_formulario_unico_cm.destinacion_economica),
-        """
-    else:
-        query += """
-                															  'Destinación económica', NULL,
-        """
-
-    query += """
                                                                           'op_construccion', COALESCE(info_construccion.op_construccion, '[]')
                                                                          )) ORDER BY op_predio.t_id) FILTER(WHERE op_predio.t_id IS NOT NULL) as op_predio
                  FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON col_uebaunit.baunit = op_predio.t_id
                  LEFT JOIN info_construccion ON op_predio.t_id = info_construccion.baunit
-             """
-
-    if cadastral_form_model:
-        query += """
-            	 LEFT JOIN {schema}.fcm_formulario_unico_cm ON fcm_formulario_unico_cm.op_predio = op_predio.t_id
-            """
-
-    query += """
                  	 WHERE op_predio.t_id IN (SELECT * FROM predios_seleccionados)
                      AND col_uebaunit.ue_op_terreno IS NOT NULL
                      AND col_uebaunit.ue_op_construccion IS NULL
@@ -124,9 +104,9 @@ def get_igac_economic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previ
                  info_terreno AS (
                     SELECT op_terreno.t_id,
                       json_build_object('id', op_terreno.t_id,
-                                        'attributes', json_build_object(CONCAT('Avalúo terreno', (SELECT * FROM unidad_avaluo_terreno)), op_terreno.Avaluo_Terreno
-                                                                        , CONCAT('Área de terreno' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno
-                                                                        , 'predio', COALESCE(info_predio.op_predio, '[]')
+                                        'attributes', json_build_object(CONCAT('Avalúo', (SELECT * FROM unidad_avaluo_terreno)), op_terreno.Avaluo_Terreno
+                                                                        , CONCAT('Área' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno
+                                                                        , 'op_predio', COALESCE(info_predio.op_predio, '[]')
                                                                        )) as terreno
                     FROM {schema}.op_terreno LEFT JOIN info_predio ON info_predio.ue_op_terreno = op_terreno.t_id
                     WHERE op_terreno.t_id IN (SELECT * FROM terrenos_seleccionados)

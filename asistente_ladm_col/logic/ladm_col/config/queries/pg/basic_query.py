@@ -2,7 +2,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.pg.pg_queries_config_utils
                                                                                          get_custom_filter_plots)
 
 
-def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number, cadastral_form_model):
+def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number):
     custom_filter_plots = get_custom_filter_plots(schema, plot_t_ids)
     custom_filter_parcels = get_custom_filter_parcels(schema, plot_t_ids)
 
@@ -42,7 +42,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                 json_build_object('id', extdireccion.t_id,
                                          'attributes', json_build_object('Tipo dirección', (select dispname from {schema}.extdireccion_tipo_direccion where t_id = extdireccion.tipo_direccion),
                                                                          'Código postal', extdireccion.codigo_postal,
-                                                                         'Dirección', concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
+                                                                         'Dirección', trim(concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
                                                                                              COALESCE(extdireccion.valor_via_principal || ' ', ''),
                                                                                              COALESCE(extdireccion.letra_via_principal || ' ', ''),
                                                                                              COALESCE((select dispname from {schema}.extdireccion_sector_ciudad where t_id = extdireccion.sector_ciudad) || ' ', ''),
@@ -52,7 +52,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                                                                                              COALESCE((select dispname from {schema}.extdireccion_sector_predio where t_id = extdireccion.sector_predio) || ' ', ''),
                                                                                              COALESCE(extdireccion.complemento || ' ', ''),
                                                                                              COALESCE(extdireccion.nombre_predio || ' ', '')
-                                                                                            )))
+                                                                                            ))))
             ORDER BY extdireccion.t_id) FILTER(WHERE extdireccion.t_id IS NOT NULL) AS extdireccion
         FROM {schema}.extdireccion WHERE op_unidadconstruccion_ext_direccion_id IN (SELECT * FROM unidadesconstruccion_seleccionadas)
         GROUP BY extdireccion.op_unidadconstruccion_ext_direccion_id
@@ -66,7 +66,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                                                                   'Número de locales', op_unidadconstruccion.total_locales,
                                                                   'Tipo construcción', (select dispname from {schema}.OP_ConstruccionTipo where t_id = op_unidadconstruccion.tipo_construccion),
                                                                   'Tipo unidad de construcción', (select dispname from {schema}.OP_UnidadConstruccionTipo where t_id = op_unidadconstruccion.tipo_unidad_construccion),
-                                                                  'Tipo planta', (select dispname from {schema}.OP_ConstruccionPlantaTipo where t_id = op_unidadconstruccion.tipo_planta),
+                                                                  'Tipo de planta', (select dispname from {schema}.OP_ConstruccionPlantaTipo where t_id = op_unidadconstruccion.tipo_planta),
                                                                   'Tipo dominio', (select dispname from {schema}.OP_DominioConstruccionTipo where t_id = op_unidadconstruccion.tipo_dominio),
                                                                   'Ubicación en el piso', op_unidadconstruccion.planta_ubicacion,
                                                                   CONCAT('Área construida' , (SELECT * FROM unidad_area_construida_uc)), op_unidadconstruccion.area_construida,
@@ -84,7 +84,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                 json_build_object('id', extdireccion.t_id,
                                          'attributes', json_build_object('Tipo dirección', (select dispname from {schema}.extdireccion_tipo_direccion where t_id = extdireccion.tipo_direccion),
                                                                          'Código postal', extdireccion.codigo_postal,
-                                                                         'Dirección', concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
+                                                                         'Dirección', trim(concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
                                                                                              COALESCE(extdireccion.valor_via_principal || ' ', ''),
                                                                                              COALESCE(extdireccion.letra_via_principal || ' ', ''),
                                                                                              COALESCE((select dispname from {schema}.extdireccion_sector_ciudad where t_id = extdireccion.sector_ciudad) || ' ', ''),
@@ -94,7 +94,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                                                                                              COALESCE((select dispname from {schema}.extdireccion_sector_predio where t_id = extdireccion.sector_predio) || ' ', ''),
                                                                                              COALESCE(extdireccion.complemento || ' ', ''),
                                                                                              COALESCE(extdireccion.nombre_predio || ' ', '')
-                                                                                            )))
+                                                                                            ))))
             ORDER BY extdireccion.t_id) FILTER(WHERE extdireccion.t_id IS NOT NULL) AS extdireccion
         FROM {schema}.extdireccion WHERE op_construccion_ext_direccion_id IN (SELECT * FROM construcciones_seleccionadas)
         GROUP BY extdireccion.op_construccion_ext_direccion_id
@@ -102,7 +102,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
         info_construccion as (
          SELECT col_uebaunit.baunit,
                 json_agg(json_build_object('id', op_construccion.t_id,
-                                  'attributes', json_build_object('Área construcción', op_construccion.area_construccion,
+                                  'attributes', json_build_object('Área', op_construccion.area_construccion,
                                                                   'extdireccion', COALESCE(c_extdireccion.extdireccion, '[]'),
                                                                   'op_unidadconstruccion', COALESCE(info_uc.unidadconstruccion, '[]')
                                                                  )) ORDER BY op_construccion.t_id) FILTER(WHERE op_construccion.t_id IS NOT NULL) as construccion
@@ -123,30 +123,10 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                                                                   'Número predial', op_predio.numero_predial,
                                                                   'Número predial anterior', op_predio.numero_predial_anterior,
                                                                   'Tipo', (SELECT dispname FROM {schema}.op_prediotipo WHERE t_id = op_predio.tipo),
-"""
-
-    if cadastral_form_model:
-        query += """
-                                                                          'Destinación económica', (SELECT dispname FROM {schema}.fcm_destinacioneconomicatipo WHERE t_id = fcm_formulario_unico_cm.destinacion_economica),
-        """
-    else:
-        query += """
-                                                                          'Destinación económica', NULL,
-        """
-
-    query += """
                                                                   'op_construccion', COALESCE(info_construccion.construccion, '[]')
                                                                  )) ORDER BY op_predio.t_id) FILTER(WHERE op_predio.t_id IS NOT NULL) as predio
          FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON col_uebaunit.baunit = op_predio.t_id
          LEFT JOIN info_construccion ON op_predio.t_id = info_construccion.baunit
-            """
-
-    if cadastral_form_model:
-        query += """
-                LEFT JOIN {schema}.fcm_formulario_unico_cm ON fcm_formulario_unico_cm.op_predio = op_predio.t_id
-            """
-
-    query += """
              WHERE op_predio.t_id IN (SELECT * FROM predios_seleccionados)
                 AND col_uebaunit.ue_op_terreno IS NOT NULL
                 AND col_uebaunit.ue_op_construccion IS NULL
@@ -159,7 +139,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                     json_build_object('id', extdireccion.t_id,
                                              'attributes', json_build_object('Tipo dirección', (select dispname from {schema}.extdireccion_tipo_direccion where t_id = extdireccion.tipo_direccion),
                                                                              'Código postal', extdireccion.codigo_postal,
-                                                                             'Dirección', concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
+                                                                             'Dirección', trim(concat(COALESCE((select dispname from {schema}.extdireccion_clase_via_principal where t_id = extdireccion.clase_via_principal) || ' ', ''),
                                                                                                  COALESCE(extdireccion.valor_via_principal || ' ', ''),
                                                                                                  COALESCE(extdireccion.letra_via_principal || ' ', ''),
                                                                                                  COALESCE((select dispname from {schema}.extdireccion_sector_ciudad where t_id = extdireccion.sector_ciudad) || ' ', ''),
@@ -169,7 +149,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
                                                                                                  COALESCE((select dispname from {schema}.extdireccion_sector_predio where t_id = extdireccion.sector_predio) || ' ', ''),
                                                                                                  COALESCE(extdireccion.complemento || ' ', ''),
                                                                                                  COALESCE(extdireccion.nombre_predio || ' ', '')
-                                                                                                )))
+                                                                                                ))))
                 ORDER BY extdireccion.t_id) FILTER(WHERE extdireccion.t_id IS NOT NULL) AS extdireccion
             FROM {schema}.extdireccion WHERE op_terreno_ext_direccion_id IN (SELECT * FROM terrenos_seleccionados)
             GROUP BY extdireccion.op_terreno_ext_direccion_id
@@ -177,7 +157,7 @@ def get_igac_basic_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous
          info_terreno AS (
             SELECT op_terreno.t_id,
               json_build_object('id', op_terreno.t_id,
-                                'attributes', json_build_object(CONCAT('Área de terreno' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno,
+                                'attributes', json_build_object(CONCAT('Área' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno,
                                                                 'extdireccion', COALESCE(t_extdireccion.extdireccion, '[]'),
                                                                 'op_predio', COALESCE(info_predio.predio, '[]')
                                                                )) as terreno

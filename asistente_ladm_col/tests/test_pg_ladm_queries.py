@@ -7,11 +7,11 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
-from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_basic_query_test_results import expected_result_ladm_basic_query
-from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_economic_query_test_results import expected_result_ladm_economic_query
-from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_legal_query_test_results import expected_result_ladm_legal_query
-from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_physical_query_test_results import expected_result_ladm_physical_query
-from asistente_ladm_col.tests.resources.expected_results.queries.pg_ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_economic_query_test_results import expected_result_ladm_economic_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_legal_query_test_results import expected_result_ladm_legal_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_physical_query_test_results import expected_result_ladm_physical_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
 from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 

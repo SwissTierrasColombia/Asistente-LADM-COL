@@ -11,7 +11,7 @@ def get_igac_property_record_card_query(names, ladm_units):
             QueryNames.LEVEL_TABLE_NAME: names.OP_PLOT_T,
             QueryNames.LEVEL_TABLE_ALIAS: names.OP_PLOT_T,
             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.T_ID_F, names.OP_PLOT_T, names.T_ID_F),
-            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias('Área terreno', ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F))],
+            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias('Área', ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F))],
             QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_PARCEL_T,
                 QueryNames.LEVEL_TABLE_ALIAS: names.OP_PARCEL_T,

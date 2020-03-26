@@ -44,7 +44,7 @@ def get_igac_basic_query(names, ladm_units):
             QueryNames.LEVEL_TABLE_NAME: names.OP_PLOT_T,
             QueryNames.LEVEL_TABLE_ALIAS: names.OP_PLOT_T,
             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.T_ID_F, names.OP_PLOT_T, names.T_ID_F),
-            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias("Área terreno", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F)),
+            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias("Área", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F)),
                                       RelatedOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
                                                             required_address_fields,
                                                             names.EXT_ADDRESS_S_OP_PLOT_F)],
@@ -71,7 +71,7 @@ def get_igac_basic_query(names, ladm_units):
                                                                 names.COL_UE_BAUNIT_T,
                                                                 names.COL_UE_BAUNIT_T_PARCEL_F),
                     QueryNames.TABLE_FIELDS: [
-                        OwnField(names.OP_BUILDING_T_BUILDING_AREA_F, "Área construcción"),
+                        OwnField(names.OP_BUILDING_T_BUILDING_AREA_F, "Área"),
                         RelatedOwnFieldObject(names.EXT_ADDRESS_S, names.EXT_ADDRESS_S,
                                               required_address_fields, names.EXT_ADDRESS_S_OP_BUILDING_F)
                     ],

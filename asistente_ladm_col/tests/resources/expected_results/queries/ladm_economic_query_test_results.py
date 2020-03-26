@@ -16,7 +16,7 @@ expected_result_ladm_economic_query = {
                             'FMI': None,
                             'Número predial': '253940000000000230073000000000',
                             'Número predial anterior': '25394000000230073000',
-                            'Ávaluo predio': None,
+                            'Avalúo predio [COP]': None,
                             'Tipo': 'Privado',
                             'op_construccion': [
                                 {

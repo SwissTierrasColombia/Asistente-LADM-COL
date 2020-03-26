@@ -15,11 +15,11 @@ from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
-from asistente_ladm_col.tests.resources.expected_results.queries.qgis_ladm_basic_query_test_results import expected_result_ladm_basic_query
-from asistente_ladm_col.tests.resources.expected_results.queries.qgis_ladm_legal_query_test_results import expected_result_ladm_legal_query
-from asistente_ladm_col.tests.resources.expected_results.queries.qgis_ladm_physical_query_test_results import expected_result_ladm_physical_query
-from asistente_ladm_col.tests.resources.expected_results.queries.qgis_ladm_economic_query_test_results import expected_result_ladm_economic_query
-from asistente_ladm_col.tests.resources.expected_results.queries.qgis_ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_legal_query_test_results import expected_result_ladm_legal_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_physical_query_test_results import expected_result_ladm_physical_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_economic_query_test_results import expected_result_ladm_economic_query
+from asistente_ladm_col.tests.resources.expected_results.queries.ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code)
 

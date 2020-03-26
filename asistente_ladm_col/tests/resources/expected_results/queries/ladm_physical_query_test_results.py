@@ -3,7 +3,7 @@ expected_result_ladm_physical_query = {
         {
             'id': 831,
             'attributes': {
-                'Área terreno [m2]': 4934.3,
+                'Área [m2]': 4934.3,
                 'op_predio': [
                     {
                         'id': 392,

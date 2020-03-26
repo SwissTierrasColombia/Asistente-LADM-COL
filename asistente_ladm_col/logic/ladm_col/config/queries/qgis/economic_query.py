@@ -11,8 +11,8 @@ def get_igac_economic_query(names, ladm_units):
             QueryNames.LEVEL_TABLE_NAME: names.OP_PLOT_T,
             QueryNames.LEVEL_TABLE_ALIAS: names.OP_PLOT_T,
             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.T_ID_F, names.OP_PLOT_T, names.T_ID_F),
-            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_VALUATION_F, get_full_alias("Avalúo terreno", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_VALUATION_F)),
-                                      OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias("Área terreno", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F))],
+            QueryNames.TABLE_FIELDS: [OwnField(names.OP_PLOT_T_PLOT_VALUATION_F, get_full_alias("Avalúo", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_VALUATION_F)),
+                                      OwnField(names.OP_PLOT_T_PLOT_AREA_F, get_full_alias("Área", ladm_units, names.OP_PLOT_T, names.OP_PLOT_T_PLOT_AREA_F))],
             QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_PARCEL_T,
                 QueryNames.LEVEL_TABLE_ALIAS: names.OP_PARCEL_T,
@@ -27,7 +27,7 @@ def get_igac_economic_query(names, ladm_units):
                     OwnField(names.OP_PARCEL_T_FMI_F, "FMI"),
                     OwnField(names.OP_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
                     OwnField(names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
-                    OwnField(names.OP_PARCEL_T_VALUATION_F, "Ávaluo predio"),
+                    OwnField(names.OP_PARCEL_T_VALUATION_F, get_full_alias("Avalúo predio", ladm_units, names.OP_PARCEL_T, names.OP_PARCEL_T_VALUATION_F)),
                     DomainOwnField(names.OP_PARCEL_T_TYPE_F, "Tipo", names.OP_PARCEL_TYPE_D)
                 ],
                 QueryNames.LEVEL_TABLE: {
