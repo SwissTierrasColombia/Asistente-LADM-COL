@@ -105,6 +105,8 @@ class EnumSTStepType(Enum):
 
 
 class EnumLayerRegistryType(Enum):
-    IN_REGISTRY = 1
-    IN_CANVAS = 2
-    NOT_IN_CANVAS = 3
+    """
+    Loaded layers in QGIS can be: 1) only in registry or 2) both in registry and in layer tree
+    """
+    ONLY_IN_REGISTRY = 1
+    IN_LAYER_TREE = 2

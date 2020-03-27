@@ -32,9 +32,7 @@ from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      LAYER_NAME,
-                                                      BLO_LIS_FILE_PATH)
+from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -141,21 +139,21 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def initialize_layers(self):
         self._layers = {
-            self.names.GC_PARCEL_T: {LAYER_NAME: self.names.GC_PARCEL_T, LAYER: None},
-            self.names.GC_OWNER_T: {LAYER_NAME: self.names.GC_OWNER_T, LAYER: None},
-            self.names.GC_ADDRESS_T: {LAYER_NAME: self.names.GC_ADDRESS_T, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {LAYER_NAME: self.names.GC_BUILDING_UNIT_T, LAYER: None},
-            self.names.GC_BUILDING_T: {LAYER_NAME: self.names.GC_BUILDING_T, LAYER: None},
-            self.names.GC_PLOT_T: {LAYER_NAME: self.names.GC_PLOT_T, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {LAYER_NAME: self.names.GC_RURAL_DIVISION_T, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {LAYER_NAME: self.names.GC_URBAN_SECTOR_T, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {LAYER_NAME: self.names.GC_RURAL_SECTOR_T, LAYER: None},
-            self.names.GC_PERIMETER_T: {LAYER_NAME: self.names.GC_PERIMETER_T, LAYER: None},
-            self.names.GC_BLOCK_T: {LAYER_NAME: self.names.GC_BLOCK_T, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {LAYER_NAME: self.names.GC_NEIGHBOURHOOD_T, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {LAYER_NAME: self.names.GC_COMMISSION_BUILDING_T, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {LAYER_NAME: self.names.GC_COMMISSION_PLOT_T, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {LAYER_NAME: self.names.GC_COMMISSION_BUILDING_UNIT_T, LAYER: None},
+            self.names.GC_PARCEL_T: None,
+            self.names.GC_OWNER_T: None,
+            self.names.GC_ADDRESS_T: None,
+            self.names.GC_BUILDING_UNIT_T: None,
+            self.names.GC_BUILDING_T: None,
+            self.names.GC_PLOT_T: None,
+            self.names.GC_RURAL_DIVISION_T: None,
+            self.names.GC_URBAN_SECTOR_T: None,
+            self.names.GC_RURAL_SECTOR_T: None,
+            self.names.GC_PERIMETER_T: None,
+            self.names.GC_BLOCK_T: None,
+            self.names.GC_NEIGHBOURHOOD_T: None,
+            self.names.GC_COMMISSION_BUILDING_T: None,
+            self.names.GC_COMMISSION_PLOT_T: None,
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
         }
 
     def reject(self):

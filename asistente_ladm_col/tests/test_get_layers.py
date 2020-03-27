@@ -6,15 +6,11 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_pg_conn,
                                             get_copy_gpkg_conn,
                                             restore_schema)
-
-from asistente_ladm_col.config.general_config import (LAYER_NAME,
-                                                      LAYER)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
@@ -32,16 +28,29 @@ class TestGetLayers(unittest.TestCase):
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")
+        result = self.db_pg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
         self.check_get_layer(self.db_pg)
 
     def test_get_layer_in_gpkg(self):
         print("\nINFO: Validating get_layer() method in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
         self.check_get_layer(self.db_gpkg)
 
-    def check_get_layer(self, db):
-        result = db.test_connection()
+    def test_get_layers_in_pg(self):
+        print("\nINFO: Validating get_layers() method in PG...")
+        result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
+        self.check_get_layers(self.db_pg)
 
+    def test_get_layers_in_gpkg(self):
+        print("\nINFO: Validating get_layers() method in GPKG...")
+        result = self.db_gpkg.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_get_layers(self.db_gpkg)
+
+    def check_get_layer(self, db):
         self.assertIsNotNone(db.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
         RELATED_TABLES = {db.names.OP_BOUNDARY_POINT_T: [db.names.OP_AGREEMENT_TYPE_D,
@@ -66,10 +75,12 @@ class TestGetLayers(unittest.TestCase):
         for layer in [db.names.OP_BOUNDARY_POINT_T, db.names.OP_PLOT_T]:
             loaded_table = self.qgis_utils.get_layer(db, layer, load=True)
             self.assertEqual(db.get_ladm_layer_name(loaded_table), layer)
-            loaded_layers_tree_names = [db.get_ladm_layer_name(layer) for layer in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)]
+            loaded_layers_tree_names = self.qgis_utils.get_ladm_layers_from_qgis(db).keys()
             for layer_related in RELATED_TABLES[layer]:
                 print("Check if {} exists in loaded layers {}".format(layer_related, loaded_layers_tree_names))
                 self.assertIn(layer_related, loaded_layers_tree_names)
+
+            self.assertEqual(len(loaded_layers_tree_names), len(RELATED_TABLES[layer]), "Number of loaded layers does not correspond to expected number!")
             QgsProject.instance().clear()
 
         print("\nINFO: Validating get_layer() when the project contains some of the related tables...")
@@ -83,13 +94,13 @@ class TestGetLayers(unittest.TestCase):
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[db.names.OP_BOUNDARY_POINT_T])
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)])
+        layer_tree_elements = len(self.qgis_utils.get_ladm_layers_from_qgis(db))
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading PuntoLindero is not what we expect...")
 
         # Load again preloaded layer to check not duplicate layers in load
         for pre_load in [db.names.OP_AGREEMENT_TYPE_D, db.names.COL_MONUMENTATION_TYPE_D]:
             self.qgis_utils.get_layer(db, pre_load, load=True)
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)])
+        layer_tree_elements = len(self.qgis_utils.get_ladm_layers_from_qgis(db))
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
         QgsProject.instance().clear()
 
@@ -101,26 +112,76 @@ class TestGetLayers(unittest.TestCase):
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[db.names.OP_PLOT_T])
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)])
+        layer_tree_elements = len(self.qgis_utils.get_ladm_layers_from_qgis(db))
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading Terreno is not what we expect...")
 
         # Check duplicate layers...
         for pre_load in [db.names.COL_SURFACE_RELATION_TYPE_D]:
             self.qgis_utils.get_layer(db, pre_load, load=True)
-        layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)])
+        layer_tree_elements = len(self.qgis_utils.get_ladm_layers_from_qgis(db))
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
         QgsProject.instance().clear()
 
-        print("\nINFO: Validating when loaded layers have the same name...")
-        # Load terreno without geometry parameter load point and polygon layer with different geometries (10 layers)
-        self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, load=True)
-        toc_layers = [l for l in self.qgis_utils.get_ladm_layers_by_register_type(db, EnumLayerRegistryType.IN_REGISTRY)]
-        toc_names = [l.name() for l in toc_layers]
-        same_name_layers = [layer for layer in toc_layers if toc_names.count(layer.name()) > 1]
-        for layer_1, layer_2 in itertools.combinations(same_name_layers, 2):
-            if layer_1.name() == layer_2.name():
-                print("Testing {} ({}) against {} ({})".format(layer_1.name(), layer_1.geometryType(), layer_2.name(), layer_2.geometryType()))
-                self.assertNotEqual(layer_1.geometryType(), layer_2.geometryType(), "Function get_layer loads layers with same name and geometry... This is an error!!!")
+    def check_get_layers(self, db):
+        layers = {db.names.OP_BOUNDARY_POINT_T: None,
+                  db.names.OP_BOUNDARY_T: None,
+                  db.names.OP_PLOT_T: None,
+                  db.names.MORE_BFS_T: None,
+                  db.names.LESS_BFS_T: None,
+                  db.names.POINT_BFS_T: None}
+
+        self.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True, db_source=None) # Gather information from the database
+        QgsProject.instance().clear()
+
+        # Expected number of loaded layers and relationships
+        self.qgis_utils.get_layers(db, layers, load=False)
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 6)
+        self.assertEqual(len(QgsProject.instance().layerTreeRoot().findLayers()), 0)
+        self.assertEqual(len(QgsProject.instance().relationManager().relations()), 0)
+
+        QgsProject.instance().clear()
+        self.qgis_utils.get_layers(db, layers, load=True)
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 19)
+        self.assertEqual(len(QgsProject.instance().layerTreeRoot().findLayers()), 19)
+        self.assertEqual(len(QgsProject.instance().relationManager().relations()), 31)
+
+        # Expected groups
+        self.assertIsNotNone(QgsProject.instance().layerTreeRoot().findGroup("tables"))
+        self.assertIsNotNone(QgsProject.instance().layerTreeRoot().findGroup("domains"))
+        self.assertEqual(len(QgsProject.instance().layerTreeRoot().findGroups()), 2)
+
+        # Expected layer visibility
+        survey_point_layer = self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_SURVEY_POINT_T)  # related layer: not visible
+        self.assertIsNotNone(survey_point_layer)
+        # For some reason it returns always true...
+        #self.assertFalse(QgsProject.instance().layerTreeRoot().findLayer(survey_point_layer).itemVisibilityChecked())
+
+        boundary_point_layer = self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_BOUNDARY_POINT_T)  # requested layer: visible
+        self.assertIsNotNone(boundary_point_layer)
+        # For some reason it returns always true...
+        # self.assertTrue(QgsProject.instance().layerTreeRoot().findLayer(boundary_point_layer).itemVisibilityChecked())
+
+        # Expected domain from related table
+        survey_point_type_domain = self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_SURVEY_POINT_TYPE_D)
+        self.assertIsNotNone(survey_point_type_domain)
+        self.assertTrue(self._is_relation_in_qgis_relations(survey_point_layer,
+                                                            db.names.OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
+                                                            survey_point_type_domain,
+                                                            db.names.T_ID_F),
+                        "'op_puntolevantamiento-tipo_punto_levantamiento' relationship should be there!")
+
+        QgsProject.instance().clear()
+
+    def _is_relation_in_qgis_relations(self, referencing_layer, referencing_field, referenced_layer, referenced_field):
+        qgis_relations = QgsProject.instance().relationManager().referencingRelations(referencing_layer)
+        for qgis_relation in qgis_relations:
+            if qgis_relation.referencedLayer() == referenced_layer and \
+                    referenced_layer.fields()[qgis_relation.referencedFields()[0]].name() == referenced_field and \
+                    referencing_layer.fields()[qgis_relation.referencingFields()[0]].name() == referencing_field:
+                return True
+
+        return False
+
 
     @classmethod
     def tearDownClass(cls):

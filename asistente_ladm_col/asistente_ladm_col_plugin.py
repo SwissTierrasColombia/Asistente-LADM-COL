@@ -54,8 +54,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       DEPENDENCY_REPORTS_DIR_NAME,
                                                       COLLECTED_DB_SOURCE,
                                                       WIZARD_CLASS,
-                                                      LAYER,
-                                                      LAYER_NAME,
                                                       WIZARD_TOOL_NAME, 
                                                       WIZARD_TYPE,
                                                       WIZARD_LAYERS,
@@ -1413,8 +1411,8 @@ class AsistenteLADMCOLPlugin(QObject):
         db = self.open_encrypted_db_connection(db_engine, conn_dict, user_level)
         if db:
             layers = {
-                db.names.INI_PARCEL_SUPPLIES_T: {LAYER_NAME: db.names.INI_PARCEL_SUPPLIES_T, LAYER: None},
-                db.names.GC_PARCEL_T: {LAYER_NAME: db.names.GC_PARCEL_T, LAYER: None},
-                db.names.SNR_PARCEL_REGISTRY_T: {LAYER_NAME: db.names.SNR_PARCEL_REGISTRY_T, LAYER: None},
+                db.names.INI_PARCEL_SUPPLIES_T: None,
+                db.names.GC_PARCEL_T: None,
+                db.names.SNR_PARCEL_REGISTRY_T: None
             }
             self.qgis_utils.get_layers(db, layers, load=True)

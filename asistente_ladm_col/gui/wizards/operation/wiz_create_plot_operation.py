@@ -27,9 +27,10 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsGeometry,
                        Qgis)
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      CSS_COLOR_OKAY_LABEL,
-                                                      CSS_COLOR_ERROR_LABEL, WIZARD_HELP_PAGES, WIZARD_HELP1)
+from asistente_ladm_col.config.general_config import (CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -56,11 +57,11 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
+        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount()))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         _color = CSS_COLOR_OKAY_LABEL
-        has_selected_boundaries = self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() > 0
+        has_selected_boundaries = self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount() > 0
         if not has_selected_boundaries:
             _color = CSS_COLOR_ERROR_LABEL
         self.lb_info.setStyleSheet(_color)
@@ -78,8 +79,8 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
-        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BOUNDARY_T]))
+        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.OP_BOUNDARY_T]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
@@ -91,7 +92,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BOUNDARY_T]))
 
     #############################################################################
     # Override methods
@@ -110,7 +111,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -125,9 +126,9 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def edit_feature(self):
-        if self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() > 0:
+        if self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount() > 0:
             # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
             self.qgis_utils.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
@@ -142,26 +143,26 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         self.check_selected_features()
 
     def create_plots_from_boundaries(self):
-        selected_boundaries = self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatures()
+        selected_boundaries = self._layers[self.names.OP_BOUNDARY_T].selectedFeatures()
 
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
         features = list()
         for polygon in collection.asGeometryCollection():
-            feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME][LAYER], polygon)
+            feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME], polygon)
             features.append(feature)
 
         if features:
-            if not self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
-                self._layers[self.EDITING_LAYER_NAME][LAYER].startEditing()
+            if not self._layers[self.EDITING_LAYER_NAME].isEditable():
+                self._layers[self.EDITING_LAYER_NAME].startEditing()
 
-            self._layers[self.EDITING_LAYER_NAME][LAYER].addFeatures(features)
+            self._layers[self.EDITING_LAYER_NAME].addFeatures(features)
             self.iface.mapCanvas().refresh()
 
             message = QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created! To finish the creation of the plots, open its attribute table and fill in the mandatory fields.").format(len(features))
             button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes")
             level = Qgis.Info
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME]
             filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
             self.logger.message_with_button_open_table_attributes_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)

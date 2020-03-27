@@ -35,9 +35,7 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 from asistente_ladm_col.config.symbology import Symbology
-from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                                      LAYER_NAME,
-                                                      LAYER)
+from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
@@ -192,8 +190,8 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER], True)
-        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[self.utils._db.names.OP_PLOT_T], True)
 
 
 class ChangeDetectionUtils(QObject):
@@ -219,14 +217,14 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            self._db.names.OP_PLOT_T: {LAYER_NAME: self._db.names.OP_PLOT_T, LAYER: None},
-            self._db.names.OP_PARCEL_T: {LAYER_NAME: self._db.names.OP_PARCEL_T, LAYER: None},
-            self._db.names.COL_UE_BAUNIT_T: {LAYER_NAME: self._db.names.COL_UE_BAUNIT_T, LAYER: None}
+            self._db.names.OP_PLOT_T: None,
+            self._db.names.OP_PARCEL_T: None,
+            self._db.names.COL_UE_BAUNIT_T: None
         }
 
         self._supplies_layers = {
-            self._supplies_db.names.GC_PLOT_T: {LAYER_NAME: self._supplies_db.names.GC_PLOT_T, LAYER: None},
-            self._supplies_db.names.GC_PARCEL_T: {LAYER_NAME: self._supplies_db.names.GC_PARCEL_T, LAYER: None}
+            self._supplies_db.names.GC_PLOT_T: None,
+            self._supplies_db.names.GC_PARCEL_T: None
         }
 
     def initialize_data(self):
@@ -235,7 +233,7 @@ class ChangeDetectionUtils(QObject):
 
     def add_layers(self):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[self._db.names.OP_PLOT_T][LAYER] is None:
+        if self._layers[self._db.names.OP_PLOT_T] is None:
             self.qgis_utils.map_freeze_requested.emit(True)
 
             self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
@@ -258,26 +256,26 @@ class ChangeDetectionUtils(QObject):
                 return None
             else:
                 # In some occasions the supplies and collected plots might not overlap and have different extents
-                self.iface.setActiveLayer(self._supplies_layers[self._supplies_db.names.GC_PLOT_T][LAYER])
+                self.iface.setActiveLayer(self._supplies_layers[self._supplies_db.names.GC_PLOT_T])
                 self.iface.zoomToActiveLayer()
 
             self.qgis_utils.map_freeze_requested.emit(False)
 
             for layer_name in self._layers:
-                if self._layers[layer_name][LAYER]: # Layer was found, listen to its removal so that we can react properly
+                if self._layers[layer_name]: # Layer was found, listen to its removal so that we can react properly
                     try:
-                        self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                        self._layers[layer_name].willBeDeleted.disconnect(self.change_detection_layer_removed)
                     except:
                         pass
-                    self._layers[layer_name][LAYER].willBeDeleted.connect(self.change_detection_layer_removed)
+                    self._layers[layer_name].willBeDeleted.connect(self.change_detection_layer_removed)
 
             for layer_name in self._supplies_layers:
-                if self._supplies_layers[layer_name][LAYER]: # Layer was found, listen to its removal so that we can react properly
+                if self._supplies_layers[layer_name]: # Layer was found, listen to its removal so that we can react properly
                     try:
-                        self._supplies_layers[layer_name][LAYER].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                        self._supplies_layers[layer_name].willBeDeleted.disconnect(self.change_detection_layer_removed)
                     except:
                         pass
-                    self._supplies_layers[layer_name][LAYER].willBeDeleted.connect(self.change_detection_layer_removed)
+                    self._supplies_layers[layer_name].willBeDeleted.connect(self.change_detection_layer_removed)
 
     def get_compared_parcels_data(self, inverse=False):
         # If it's the first call, get from the DB, else get from a cache

@@ -56,13 +56,12 @@ class QgisModelBakerUtils(QObject):
 
         return None
 
-    def load_layers(self, layer_list, db):
+    def load_layers(self, db, layer_list):
         """
         Load a selected list of layers from qgis model baker.
         This call should configure relations and bag of enums
         between layers being loaded, but not when a layer already
         loaded has a relation or is part of a bag of enum. For
-        that case, we use a cached set of relations and bags of
         that case, we use a cached set of relations and bags of
         enums that we get only once per session and configure in
         the Asistente LADM_COL.
@@ -85,7 +84,7 @@ class QgisModelBakerUtils(QObject):
 
     def get_required_layers_without_load(self, layer_list, db):
         """
-        Gets a list of layers from a list of layer names using QGIS Model Baker
+        Gets a list of layers from a list of layer names using QGIS Model Baker.
         Layers are register in QgsProject, but not loaded to the canvas!
         :param layer_list: list of layers names (e.g., ['op_terreno', 'op_lindero'])
         :param db: db connection

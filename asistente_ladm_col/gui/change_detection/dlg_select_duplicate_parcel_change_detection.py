@@ -23,7 +23,6 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsFeatureRequest,
                        QgsExpression)
 
-from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('change_detection/dlg_select_duplicate_parcel_change_detection.ui')
@@ -45,8 +44,8 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.setWindowTitle(QCoreApplication.translate("SelectParcelDialog", "Duplicate Parcels in collected DB"))
 
         # Remove selection in plot layers
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
+        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
 
         self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
         self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all listed parcels")
@@ -69,8 +68,8 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
                                        self.utils._db.names.OP_PARCEL_T_NUPRE_F,
                                        self.utils._db.names.OP_PARCEL_T_FMI_F,
                                        self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F],
-                                      self.utils._layers[self.utils._db.names.OP_PARCEL_T][LAYER].fields())  # NOTE: this adds a new flag
-        parcels = self.utils._layers[self.utils._db.names.OP_PARCEL_T][LAYER].getFeatures(request)
+                                      self.utils._layers[self.utils._db.names.OP_PARCEL_T].fields())  # NOTE: this adds a new flag
+        parcels = self.utils._layers[self.utils._db.names.OP_PARCEL_T].getFeatures(request)
 
         if parcels:
             row = 0
@@ -94,14 +93,14 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.set_controls_enabled()
 
     def zoom_to_parcels(self, parcels_t_ids):
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
+        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                      parcels_t_ids,
                                                                      field_name=None,
-                                                                     plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
-                                                                     uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
+                                                                     plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                                                                     uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T])
 
-        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER], plot_ids, dict(), 500)
+        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T], plot_ids, dict(), 500)
 
     def set_controls_enabled(self):
         for button in self.buttonBox.buttons():

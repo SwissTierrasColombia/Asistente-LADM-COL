@@ -31,8 +31,6 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import QgsWkbTypes
 
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      LAYER_NAME)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -139,7 +137,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded in canvas?
-                if self.qgis_utils.get_ladm_layer_by_registry_type(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], EnumLayerRegistryType.IN_CANVAS) is not None:
+                if self.qgis_utils.get_ladm_layer_from_qgis(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], EnumLayerRegistryType.IN_LAYER_TREE) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
@@ -228,10 +226,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
             # Load selected layers
             layers_dict = {}
             for item_text, data in self.selected_items_dict.items():
-                layers_dict[item_text] = {
-                    LAYER_NAME: data[QueryNames.TABLE_NAME_MODEL_BAKER],
-                    LAYER: None
-                }
+                layers_dict[data[QueryNames.TABLE_NAME_MODEL_BAKER]] = None
 
             self.selected_items_dict = dict() # Reset
             self.qgis_utils.get_layers(self._db, layers_dict, load=True)

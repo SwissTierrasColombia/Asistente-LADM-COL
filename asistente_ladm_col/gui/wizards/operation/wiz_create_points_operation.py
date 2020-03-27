@@ -33,9 +33,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      LAYER_NAME,
-                                                      DEFAULT_EPSG)
+from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -64,9 +62,9 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            self.names.OP_BOUNDARY_POINT_T: {LAYER_NAME: self.names.OP_BOUNDARY_POINT_T, LAYER: None},
-            self.names.OP_SURVEY_POINT_T: {LAYER_NAME: self.names.OP_SURVEY_POINT_T, LAYER: None},
-            self.names.OP_CONTROL_POINT_T: {LAYER_NAME: self.names.OP_CONTROL_POINT_T, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: None,
+            self.names.OP_SURVEY_POINT_T: None,
+            self.names.OP_CONTROL_POINT_T: None
         }
 
         self.target_layer = None
@@ -205,7 +203,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
-            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.current_point_name()][LAYER]))
+            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.current_point_name()]))
 
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)

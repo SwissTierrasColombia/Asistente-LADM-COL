@@ -29,9 +29,15 @@ from qgis.PyQt.QtCore import (QSettings,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
 
-from asistente_ladm_col.config.general_config import LAYER, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
-    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_TOOL_NAME, WIZARD_LAYERS, WIZARD_EDITING_LAYER_NAME, \
-    WIZARD_READ_ONLY_FIELDS
+from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
+                                                      WIZARD_UI,
+                                                      WIZARD_HELP,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_TOOL_NAME,
+                                                      WIZARD_LAYERS,
+                                                      WIZARD_EDITING_LAYER_NAME,
+                                                      WIZARD_READ_ONLY_FIELDS)
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.lib.logger import Logger
@@ -88,10 +94,10 @@ class AbsWizardFactory(QWizard):
 
     def rollback_in_layers_with_empty_editing_buffer(self):
         for layer_name in self._layers:
-            if self._layers[layer_name][LAYER] is not None:  # If the layer was removed, this becomes None
-                if self._layers[layer_name][LAYER].isEditable():
-                    if not self._layers[layer_name][LAYER].editBuffer().isModified():
-                        self._layers[layer_name][LAYER].rollBack()
+            if self._layers[layer_name] is not None:  # If the layer was removed, this becomes None
+                if self._layers[layer_name].isEditable():
+                    if not self._layers[layer_name].editBuffer().isModified():
+                        self._layers[layer_name].rollBack()
 
     def disconnect_signals(self):
         raise NotImplementedError
@@ -102,7 +108,7 @@ class AbsWizardFactory(QWizard):
     def finish_feature_creation(self, layerId, features):
         message = self.post_save(features)
 
-        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.logger.info(__name__, "{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME))
         self.close_wizard(message)
 
@@ -160,7 +166,7 @@ class AbsWizardFactory(QWizard):
         show_plugin_help(self.wizard_config[WIZARD_HELP])
 
     def set_ready_only_field(self, read_only=True):
-        if self._layers[self.EDITING_LAYER_NAME][LAYER] is not None:
+        if self._layers[self.EDITING_LAYER_NAME] is not None:
             for field in self.wizard_config[WIZARD_READ_ONLY_FIELDS]:
                 # Not validate field that are read only
-                QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME][LAYER], field, read_only)
+                QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME], field, read_only)

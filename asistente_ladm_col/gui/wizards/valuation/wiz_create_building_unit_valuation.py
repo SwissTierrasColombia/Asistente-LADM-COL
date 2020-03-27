@@ -4,8 +4,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils)
 
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      CSS_COLOR_OKAY_LABEL,
+from asistente_ladm_col.config.general_config import (CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
@@ -28,23 +27,23 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
-            building_unit_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatures()]
+            building_unit_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatures()]
 
-            if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
+            if not self._layers[self.EDITING_LAYER_NAME].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
             else:
-                building_unit_valuation_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
+                building_unit_valuation_id = self._layers[self.EDITING_LAYER_NAME].getFeature(fid)[self.names.T_ID_F]
 
                 # Fill avaluounidadconstruccion table
                 new_features = []
                 for building_unit_id in building_unit_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER])
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE])
                     new_feature.setAttribute(LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
                     new_feature.setAttribute(LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD, building_unit_valuation_id)
                     self.logger.info(__name__, "Saving Building unit-Building unit valuation: {}-{}".format(building_unit_id, building_unit_valuation_id))
                     new_features.append(new_feature)
 
-                self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                self._layers[LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE].dataProvider().addFeatures(new_features)
                 if building_unit_ids:
                     message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created and associated with its corresponding building unit (t_id={})!").format(self.WIZARD_FEATURE_NAME, building_unit_valuation_id, building_unit_ids[0])
 
@@ -54,7 +53,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        _count = self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()
+        _count = self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount()
         self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
@@ -73,7 +72,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_UNIT_T][LAYER]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_UNIT_T]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
@@ -85,4 +84,4 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_UNIT_T][LAYER]))
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_UNIT_T]))
