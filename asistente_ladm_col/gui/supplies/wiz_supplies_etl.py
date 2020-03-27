@@ -32,7 +32,8 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
-                                                      SUPPLIES_DB_SOURCE)
+                                                      SUPPLIES_DB_SOURCE,
+                                                      LAYER)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.core.supplies.etl_cobol import ETLCobol
 from asistente_ladm_col.core.supplies.etl_snc import ETLSNC
@@ -218,6 +219,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                         res_spatial, msg_spatial = etl.load_spatial_layers()
                         if res_spatial:
                             res_model, msg_model = self.load_model_layers(etl.layers)
+                            self.ladm_layers = [etl.layers[ladm_layer][LAYER] for ladm_layer in etl.layers]
+                            self.ladm_tables_feature_count_before = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
                             if res_model:
                                 self._running_tool = True
                                 self.progress.setVisible(True)
@@ -232,7 +235,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                                                       Qgis.Success, 0)
 
                                     self.logger.clear_status()
-                                    etl.show_resume_etl(self.txt_log)
+                                    self.show_resumen_etl()
                                     etl_result = True
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
@@ -281,6 +284,22 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
     def show_message(self, message, level, duration=10):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, duration)
+
+    def show_resumen_etl(self):
+        self.ladm_tables_feature_count_after = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
+        summary = """<html><head/><body><p>"""
+        summary += """<hr>"""
+        summary += QCoreApplication.translate("SuppliesETLWizard", "New report on the migration of cadastral data to the input model of the cadastral manager:<br/>")
+        for layer in self.ladm_tables_feature_count_before:
+            summary += QCoreApplication.translate(
+                        "SuppliesETLWizard",
+                        '<br/><b>{}</b> : {}'.format(
+                            layer, self.ladm_tables_feature_count_after['{}'.format(layer)] - 
+                            self.ladm_tables_feature_count_before['{}'.format(layer)]))
+
+        summary += """<hr>"""
+        summary += """</body></html>"""    
+        self.txt_log.setText(summary)
 
     def save_settings(self):
         settings = QSettings()

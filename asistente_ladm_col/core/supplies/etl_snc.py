@@ -18,6 +18,9 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+import shutil
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsProject,
@@ -25,7 +28,8 @@ from qgis.core import (QgsWkbTypes,
 import processing
 
 from asistente_ladm_col.config.general_config import (LAYER,
-                                                      PREDIO_SANCION_FILE_PATH)
+                                                      PREDIO_SANCION_FILE_PATH,
+                                                      BUILDING_UNIT_CSVT_FILE_PATH)
 from asistente_ladm_col.core.supplies.etl_supplies import ETLSupplies
 
 
@@ -67,6 +71,9 @@ class ETLSNC(ETLSupplies):
             'ficha_matriz_predio': self.data_source_widget.txt_file_path_ficha_m_predio.text().strip(),
         }
 
+        filename, file_extension = os.path.splitext(self.data_source_widget.txt_file_path_uni.text().strip())
+        shutil.copyfile(BUILDING_UNIT_CSVT_FILE_PATH, '{}.{}'.format(filename, 'csvt'))
+        
         root = QgsProject.instance().layerTreeRoot()
         alphanumeric_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alphanumeric Supplies"))
 
@@ -87,12 +94,10 @@ class ETLSNC(ETLSupplies):
                 else:
                     return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the CSV file called '{}'.".format(name))
 
+        os.remove('{}.{}'.format(filename, 'csvt'))
         return True, ''
 
     def run_etl_model(self, custom_feedback):
-        self.ladm_layers = [self.layers[ladm_layer][LAYER] for ladm_layer in self.layers]
-        self.ladm_tables_feature_count_before = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
-
         self.logger.info(__name__, "Running ETL-SNC model...")
         processing.run("model:ETL_SNC",
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
@@ -134,12 +139,3 @@ class ETLSNC(ETLSupplies):
                         'vereda': self.gdb_layer_paths['R_VEREDA']},
                         feedback=custom_feedback)
         self.logger.info(__name__, "ETL-SNC model finished.")
-
-    def show_resume_etl(self, txt_log):
-        self.ladm_tables_feature_count_after = {layer.name(): layer.featureCount() for layer in self.ladm_layers}
-        text = ''
-        
-        for layer in self.ladm_tables_feature_count_before:
-            text += '{} : {} \n'.format(layer, self.ladm_tables_feature_count_after['{}'.format(layer)] - self.ladm_tables_feature_count_before['{}'.format(layer)])
-            
-        txt_log.setText(text)
