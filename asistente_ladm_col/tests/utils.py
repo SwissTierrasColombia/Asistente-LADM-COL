@@ -260,3 +260,17 @@ def delete_features(layer):
     with edit(layer):
         list_ids = [feat.id() for feat in layer.getFeatures()]
         layer.deleteFeatures(list_ids)
+
+
+def standardize_query_results(result):
+    if isinstance(result, (list, dict)):
+        if isinstance(result, dict):
+            result.pop('id', None)
+            for item in result:
+                standardize_query_results(result[item])
+
+        elif isinstance(result, list):
+            for item in result:
+                if isinstance(item, dict):
+                    standardize_query_results(item)
+    return result

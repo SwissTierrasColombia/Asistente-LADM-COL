@@ -3,8 +3,8 @@ expected_result_ladm_economic_query = {
         {
             'id': 831,
             'attributes': {
-                'Avalúo terreno [COP]': 493429.8,
-                'Área terreno [m2]': 4934.3,
+                'Avalúo [COP]': 493429.8,
+                'Área [m2]': 4934.3,
                 'op_predio': [
                     {
                         'id': 392,

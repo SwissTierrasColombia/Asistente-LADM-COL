@@ -73,6 +73,12 @@ class QGISLADMQuery:
         return response
 
     def _get_plots_ids_from_params(self, db, params):
+        """
+        Get plots ids depending of a defined filter in params
+            SEARCH_KEY_PARCEL_FMI: Get plots id associated with parcel filter by parcel FMI
+            SEARCH_KEY_PARCEL_NUMBER: Get plots id associated with parcel filter by parcel number
+            SEARCH_KEY_PREVIOUS_PARCEL_NUMBER: Get plots id associated with parcel filter by previous parcel number
+        """
         plots_ids = list()
 
         if params[QueryNames.SEARCH_KEY_PLOT_T_IDS] != 'NULL':
@@ -99,6 +105,9 @@ class QGISLADMQuery:
 
     @staticmethod
     def _filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr_select_parcels):
+        """
+        Get plots ids depending of a defined filter expression
+        """
 
         # Only required field in parcel layer
         fields_idx = list()
@@ -124,6 +133,15 @@ class QGISLADMQuery:
         return plots_ids
 
     def _execute_query(self, db, response, level_dict, filter_field_values):
+        """
+        Recursive function that allows solving the queries defined using the LADM Query Objects.
+        Recursion ends when the last nesting level is reached.
+        :param db: database connection instance
+        :param response: object that is recursively built with the response.
+        :param level_dict: nesting level dictionary to solve
+        :param filter_field_values: list of filter field values
+        :return dictionary with the query result
+        """
         table_name = level_dict[QueryNames.LEVEL_TABLE_NAME]
         level_alias = level_dict[QueryNames.LEVEL_TABLE_ALIAS]
         layer = self.qgis_utils.get_layer(db, table_name, False)
@@ -182,6 +200,13 @@ class QGISLADMQuery:
         return self._get_relate_own_field_value(db, field, t_id_features)
 
     def _get_relate_own_field_object(self, db, field, filter_field_values):
+        """
+        Get relate own field object
+        :param db: database connection instance
+        :field AbsRelatedFields
+        :filter_field_values: list of field values used to apply the filter
+        return list of dict with fields required
+        """
         relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
         dict_fields_and_alias =  self._get_dict_fields_and_alias(field.relate_table_fields)
         fields_names = list(dict_fields_and_alias.keys())
@@ -211,6 +236,13 @@ class QGISLADMQuery:
         return list_relate_result
 
     def _get_relate_own_field_value(self, db, field, filter_field_values):
+        """
+        Get relate own field value
+        :param db: database connection instance
+        :param field: AbsRelatedFields
+        :param filter_field_values: list of field values used to apply the filter
+        :return required field value
+        """
         relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
         required_field = field.relate_table_field
         dict_fields_and_alias = self._get_dict_fields_and_alias([required_field])
@@ -233,7 +265,15 @@ class QGISLADMQuery:
 
         return field_value
 
-    def _get_features_ids_by_filter(self, db, filter_sub_level, filter_field_values):  # filter_field_values it is a list with only one item
+    def _get_features_ids_by_filter(self, db, filter_sub_level, filter_field_values):
+        """
+        Get features ids using filter.
+        :param db: database connection instance
+        :filter_sub_level LADM Query filter
+        :filter_field_values it is a list with only one item
+
+        return list features ids filters
+        """
         sub_level_table = filter_sub_level.sub_level_table
         required_field = filter_sub_level.required_field_sub_level_table
         sub_level_layer = self.qgis_utils.get_layer(db, sub_level_table, False)
@@ -268,6 +308,14 @@ class QGISLADMQuery:
             return features_ids
 
     def _get_features_ids_sub_level(self, db, filter_sub_level, filter_field_values):
+        """
+        Get features t_ids values associate to sub level filter.
+        this method is recursive and its recursion ends when all the filters it has nested are resolved.
+        :param db: database connection instance
+        :param filter_sub_level: custom LADM Query Filter
+        :param filter_field_values: list of field values to be filtered
+        return list of t_ids
+        """
         t_id_features = list()
         for filter_field_value in filter_field_values:
             t_id_features.extend(self._get_features_ids_by_filter(db, filter_sub_level, [filter_field_value]))
