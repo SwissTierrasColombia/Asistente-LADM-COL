@@ -19,23 +19,47 @@
  ***************************************************************************/
  """
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsMapLayerProxyModel,
-                       QgsWkbTypes)
+from qgis.core import QgsMapLayerProxyModel
 
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.general_config import LAYER, WIZARD_CLASS, WIZARD_FEATURE_NAME, WIZARD_UI, WIZARD_HELP, \
-    WIZARD_HELP_PAGES, WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, \
-    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, WIZARD_TOOL_NAME, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, WIZARD_HELP4, \
-    WIZARD_HELP5, WIZARD_TYPE, WIZARD_LAYERS, WIZARD_EDITING_LAYER_NAME, WIZARD_MAP_LAYER_PROXY_MODEL, \
-    WIZARD_READ_ONLY_FIELDS, WIZARD_CREATE_COL_PARTY_CADASTRAL, WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION, \
-    WIZARD_CREATE_BOUNDARY_OPERATION, WIZARD_CREATE_BUILDING_OPERATION, WIZARD_CREATE_BUILDING_UNIT_OPERATION, \
-    WIZARD_CREATE_RIGHT_OPERATION, WIZARD_CREATE_RESTRICTION_OPERATION, WIZARD_CREATE_SPATIAL_SOURCE_OPERATION, \
-    WIZARD_CREATE_PARCEL_OPERATION, WIZARD_CREATE_PLOT_OPERATION, WIZARD_CREATE_EXT_ADDRESS_OPERATION, \
-    WIZARD_CREATE_RIGHT_OF_WAY_OPERATION, WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, \
-    WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, WIZARD_CREATE_BUILDING_UNIT_VALUATION, \
-    WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION
+from asistente_ladm_col.config.general_config import (WIZARD_CLASS,
+                                                      WIZARD_FEATURE_NAME,
+                                                      WIZARD_UI,
+                                                      WIZARD_HELP,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE,
+                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
+                                                      WIZARD_TOOL_NAME,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_HELP3,
+                                                      WIZARD_HELP4,
+                                                      WIZARD_HELP5,
+                                                      WIZARD_TYPE,
+                                                      WIZARD_LAYERS,
+                                                      WIZARD_EDITING_LAYER_NAME,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL,
+                                                      WIZARD_READ_ONLY_FIELDS,
+                                                      WIZARD_CREATE_COL_PARTY_CADASTRAL,
+                                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION,
+                                                      WIZARD_CREATE_BOUNDARY_OPERATION,
+                                                      WIZARD_CREATE_BUILDING_OPERATION,
+                                                      WIZARD_CREATE_BUILDING_UNIT_OPERATION,
+                                                      WIZARD_CREATE_RIGHT_OPERATION,
+                                                      WIZARD_CREATE_RESTRICTION_OPERATION,
+                                                      WIZARD_CREATE_SPATIAL_SOURCE_OPERATION,
+                                                      WIZARD_CREATE_PARCEL_OPERATION,
+                                                      WIZARD_CREATE_PLOT_OPERATION,
+                                                      WIZARD_CREATE_EXT_ADDRESS_OPERATION,
+                                                      WIZARD_CREATE_RIGHT_OF_WAY_OPERATION,
+                                                      WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
+                                                      WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
+                                                      WIZARD_CREATE_BUILDING_UNIT_VALUATION,
+                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
 
-from asistente_ladm_col.config.enums import WizardTypeEnum
+from asistente_ladm_col.config.enums import EnumWizardType
 from asistente_ladm_col.gui.wizards.operation.wiz_create_parcel_operation import CreateParcelOperationWizard
 from asistente_ladm_col.gui.wizards.operation.wiz_create_rrr_operation import CreateRRROperationWizard
 from asistente_ladm_col.config.help_strings import HelpStrings
@@ -59,7 +83,7 @@ class WizardConfig:
     def get_wizard_config(self, names, wizard_config_name):
         if wizard_config_name == WIZARD_CREATE_COL_PARTY_CADASTRAL:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "party"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateColPartyOperationWizard", "Create party"),
@@ -72,16 +96,14 @@ class WizardConfig:
                     WIZARD_HELP1: help_strings.WIZ_CREATE_COL_PARTY_OPERATION_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: ""
                 },
-                WIZARD_LAYERS: {
-                    names.OP_PARTY_T: {'name': names.OP_PARTY_T, 'geometry': None, LAYER: None}
-                },
+                WIZARD_LAYERS: {names.OP_PARTY_T: None},
                 WIZARD_EDITING_LAYER_NAME: names.OP_PARTY_T,
                 WIZARD_READ_ONLY_FIELDS: [names.COL_PARTY_T_NAME_F],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
         elif wizard_config_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateAdministrativeSourceOperationWizard",
                                                                         "administrative source"),
@@ -97,8 +119,8 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.EXT_ARCHIVE_S: {'name': names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None}
+                    names.OP_ADMINISTRATIVE_SOURCE_T: None,
+                    names.EXT_ARCHIVE_S: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_ADMINISTRATIVE_SOURCE_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -106,7 +128,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BOUNDARY_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBoundaryOperationWizard", "boundary"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBoundaryOperationWizard", "Create boundary"),
@@ -120,8 +142,8 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-                    names.OP_BOUNDARY_POINT_T: {'name': names.OP_BOUNDARY_POINT_T, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None}
+                    names.OP_BOUNDARY_T: None,
+                    names.OP_BOUNDARY_POINT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_BOUNDARY_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -129,7 +151,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingOperationWizard", "building"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingOperationWizard", "Create building"),
@@ -143,8 +165,8 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_BUILDING_T: None,
+                    names.OP_SURVEY_POINT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_BUILDING_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -152,7 +174,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitOperationWizard", "building unit"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitOperationWizard", "Create building unit"),
@@ -166,9 +188,9 @@ class WizardConfig:
                     WIZARD_HELP2: ""
                 },
                 WIZARD_LAYERS: {
-                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_BUILDING_UNIT_T: None,
+                    names.OP_BUILDING_T: None,
+                    names.OP_SURVEY_POINT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_BUILDING_UNIT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -176,7 +198,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRROperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightOperationWizard", "right"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightOperationWizard", "Create right"),
@@ -190,9 +212,9 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    names.OP_RIGHT_T: {'name': names.OP_RIGHT_T, 'geometry': None, LAYER: None},
-                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.COL_RRR_SOURCE_T: {'name': names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
+                    names.OP_RIGHT_T: None,
+                    names.OP_ADMINISTRATIVE_SOURCE_T: None,
+                    names.COL_RRR_SOURCE_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_RIGHT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -200,7 +222,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RESTRICTION_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRROperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRestrictionOperationWizard", "restriction"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRestrictionOperationWizard", "Create restriction"),
@@ -214,9 +236,9 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RESTRICTION_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    names.OP_RESTRICTION_T: {'name': names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
-                    names.OP_ADMINISTRATIVE_SOURCE_T: {'name': names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.COL_RRR_SOURCE_T: {'name': names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None}
+                    names.OP_RESTRICTION_T: None,
+                    names.OP_ADMINISTRATIVE_SOURCE_T: None,
+                    names.COL_RRR_SOURCE_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_RESTRICTION_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -224,7 +246,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_SPATIAL_SOURCE_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateSpatialSourceOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateSpatialSourceOperationWizard",
                                                                         "spatial source"),
@@ -240,16 +262,16 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    names.OP_SPATIAL_SOURCE_T: {'name': names.OP_SPATIAL_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.EXT_ARCHIVE_S: {'name': names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
-                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.COL_UE_SOURCE_T: {'name': names.COL_UE_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-                    names.COL_CCL_SOURCE_T: {'name': names.COL_CCL_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.COL_POINT_SOURCE_T: {'name': names.COL_POINT_SOURCE_T, 'geometry': None, LAYER: None},
-                    names.OP_BOUNDARY_POINT_T: {'name': names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-                    names.OP_CONTROL_POINT_T: {'name': names.OP_CONTROL_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_SPATIAL_SOURCE_T: None,
+                    names.EXT_ARCHIVE_S: None,
+                    names.OP_PLOT_T: None,
+                    names.COL_UE_SOURCE_T: None,
+                    names.OP_BOUNDARY_T: None,
+                    names.COL_CCL_SOURCE_T: None,
+                    names.COL_POINT_SOURCE_T: None,
+                    names.OP_BOUNDARY_POINT_T: None,
+                    names.OP_SURVEY_POINT_T: None,
+                    names.OP_CONTROL_POINT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_SPATIAL_SOURCE_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -257,7 +279,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_PARCEL_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateParcelOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateParcelOperationWizard", "parcel"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateParcelOperationWizard", "Create parcel"),
@@ -272,12 +294,12 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PARCEL_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_PARCEL_T: {'name': names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.COL_UE_BAUNIT_T: {'name': names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None},
-                    names.OP_CONDITION_PARCEL_TYPE_D: {'name': names.OP_CONDITION_PARCEL_TYPE_D, 'geometry': None, LAYER: None}
+                    names.OP_PLOT_T: None,
+                    names.OP_PARCEL_T: None,
+                    names.OP_BUILDING_T: None,
+                    names.OP_BUILDING_UNIT_T: None,
+                    names.COL_UE_BAUNIT_T: None,
+                    names.OP_CONDITION_PARCEL_TYPE_D: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_PARCEL_T,
                 WIZARD_READ_ONLY_FIELDS: [names.OP_PARCEL_T_PARCEL_TYPE_F],
@@ -285,7 +307,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_PLOT_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreatePlotOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePlotOperationWizard", "plot"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePlotOperationWizard", "Create plot"),
@@ -299,8 +321,8 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PLOT_OPERATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_BOUNDARY_T: {'name': names.OP_BOUNDARY_T, 'geometry': None, LAYER: None}
+                    names.OP_PLOT_T: None,
+                    names.OP_BOUNDARY_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_PLOT_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -308,7 +330,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_EXT_ADDRESS_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: CreateExtAddressOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateExtAddressOperationWizard", "ext address"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateExtAddressOperationWizard", "Create ext address"),
@@ -323,10 +345,10 @@ class WizardConfig:
                     WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_OPERATION_PAGE_2_OPTION_3
                 },
                 WIZARD_LAYERS: {
-                    names.EXT_ADDRESS_S: {'name': names.EXT_ADDRESS_S, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
-                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_BUILDING_T: {'name': names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+                    names.EXT_ADDRESS_S: None,
+                    names.OP_PLOT_T: None,
+                    names.OP_BUILDING_T: None,
+                    names.OP_BUILDING_UNIT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.EXT_ADDRESS_S,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -334,7 +356,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_OF_WAY_OPERATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRightOfWayOperationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightOfWayOperationWizard", "right of way"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightOfWayOperationWizard", "Create right of way"),
@@ -350,9 +372,9 @@ class WizardConfig:
                     WIZARD_HELP4: help_strings.WIZ_ASSOCIATE_EXTADDRESS_OPERATION_PAGE_2_OPTION_3
                 },
                 WIZARD_LAYERS: {
-                    names.OP_RIGHT_OF_WAY_T: {'name': names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_PLOT_T: {'name': names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    names.OP_SURVEY_POINT_T: {'name': names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
+                    names.OP_RIGHT_OF_WAY_T: None,
+                    names.OP_PLOT_T: None,
+                    names.OP_SURVEY_POINT_T: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.OP_RIGHT_OF_WAY_T,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -360,7 +382,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                                                         "geoeconomic zone"),
@@ -375,16 +397,14 @@ class WizardConfig:
                     WIZARD_HELP1: help_strings.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: ""
                 },
-                WIZARD_LAYERS: {
-                    LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
-                },
+                WIZARD_LAYERS: {LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE: None},
                 WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_GEOECONOMIC_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
         elif wizard_config_name == WIZARD_CREATE_PHYSICAL_ZONE_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
                 WIZARD_CLASS: SinglePageSpatialWizardFactory,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "physical zone"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "Create physical zone"),
@@ -397,16 +417,14 @@ class WizardConfig:
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: ""
                 },
-                WIZARD_LAYERS: {
-                    LADMNames.VALUATION_PHYSICAL_ZONE_TABLE: {'name': LADMNames.VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
-                },
+                WIZARD_LAYERS: {LADMNames.VALUATION_PHYSICAL_ZONE_TABLE: None},
                 WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_PHYSICAL_ZONE_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateBuildingUnitValuationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitValuationWizard",
                                                                         "building unit valuation"),
@@ -422,9 +440,9 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
                 },
                 WIZARD_LAYERS: {
-                    LADMNames.VALUATION_BUILDING_UNIT_TABLE: {'name': LADMNames.VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
-                    names.OP_BUILDING_UNIT_T: {'name': names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                    LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE: {'name': LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.VALUATION_BUILDING_UNIT_TABLE: None,
+                    names.OP_BUILDING_UNIT_T: None,
+                    LADMNames.AVALUOUNIDADCONSTRUCCION_TABLE: None
                 },
                 WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_BUILDING_UNIT_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],
@@ -432,7 +450,7 @@ class WizardConfig:
             }
         elif wizard_config_name == WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION:
             return {
-                WIZARD_TYPE: WizardTypeEnum.MULTI_PAGE_WIZARD_TYPE,
+                WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateBuildingUnitQualificationValuationWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
                                                                         "building unit qualification valuation"),
@@ -452,10 +470,8 @@ class WizardConfig:
                     WIZARD_HELP5: help_strings.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM
                 },
                 WIZARD_LAYERS: {
-                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {
-                        'name': LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None},
-                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
-                        'name': LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
+                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: None,
+                    LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: None
                 },
                 WIZARD_EDITING_LAYER_NAME: LADMNames.VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                 WIZARD_READ_ONLY_FIELDS: [],

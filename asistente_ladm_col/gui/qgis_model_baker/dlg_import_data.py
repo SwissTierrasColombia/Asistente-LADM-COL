@@ -63,7 +63,7 @@ from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
 from ...resources_rc import * # Necessary to show icons
-from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
@@ -95,7 +95,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
 
-        self._dbs_supported = ConfigDbSupported()
+        self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
 
         # There may be 1 case where we need to emit a db_connection_changed from the Import Data dialog:
@@ -369,7 +369,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
-            dataImporter.tool = db_factory.get_mbaker_db_ili_mode()
+            dataImporter.tool = db_factory.get_model_baker_db_ili_mode()
             dataImporter.configuration = configuration
 
             self.save_configuration(configuration)

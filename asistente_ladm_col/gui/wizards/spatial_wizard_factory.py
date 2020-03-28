@@ -33,7 +33,6 @@ from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.map_interaction_expansion import MapInteractionExpansion
-from asistente_ladm_col.config.general_config import LAYER
 
 
 class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
@@ -93,7 +92,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
             self.disconnect_signals_select_features_on_map()
 
         try:
-            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -117,15 +116,15 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
-        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
+        self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
         # Activate snapping
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
-        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self.open_form(self._layers[self.EDITING_LAYER_NAME])
 
         self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
            "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))

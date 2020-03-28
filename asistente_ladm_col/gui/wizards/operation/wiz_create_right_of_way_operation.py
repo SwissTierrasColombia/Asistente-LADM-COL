@@ -35,8 +35,7 @@ from qgis.core import (QgsProject,
                        QgsVectorLayerUtils,
                        QgsMapLayerProxyModel)
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      WIZARD_HELP_PAGES,
+from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_HELP1,
@@ -82,7 +81,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
@@ -165,10 +164,10 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            self.temporal_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[self.EDITING_LAYER_NAME][LAYER].sourceCrs().authid()), translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[self.EDITING_LAYER_NAME].sourceCrs().authid()), translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
             layer = self.temporal_layer
             QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
@@ -176,7 +175,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
         if layer:
             self.iface.layerTreeView().setCurrentLayer(layer)
-            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
 
             # Disable transactions groups
             QgsProject.instance().setAutoTransaction(False)
@@ -193,11 +192,11 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME].getFeature(fid).isValid():
             message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a {}. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME, self.WIZARD_FEATURE_NAME)
             self.logger.warning(__name__, "Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME))
         else:
-            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME].getFeature(fid)[self.names.T_ID_F]
             message = QCoreApplication.translate("WizardTranslations", "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
 
         return message
@@ -215,7 +214,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             layer.commitChanges()
 
             # Change target layer (temporal by db layer)
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME]
 
             # Add temporal geometry create
             if not layer.isEditable():
@@ -253,7 +252,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
                   'OUTPUT': 'memory:'}
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
         buffer_geometry = buffered_right_of_way_layer.getFeature(1).geometry()
-        feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME][LAYER], buffer_geometry)
+        feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME], buffer_geometry)
         return feature
 
     def save_settings(self):
@@ -282,15 +281,15 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
 
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME]
         elif self.type_geometry_creation == "digitizing_line":
             try:
                 if self.temporal_layer:
                     layer = self.temporal_layer
                 else:
-                    layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+                    layer = self._layers[self.EDITING_LAYER_NAME]
             except:
-                layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+                layer = self._layers[self.EDITING_LAYER_NAME]
 
         message = None
         if layer.editBuffer():
@@ -312,7 +311,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
     def show_message_associate_geometry_creation(self, message):
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME]
         elif self.type_geometry_creation == "digitizing_line":
             layer = self.temporal_layer
 

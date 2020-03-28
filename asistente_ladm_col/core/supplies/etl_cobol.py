@@ -24,8 +24,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsVectorLayer)
 import processing
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      BLO_LIS_FILE_PATH)
+from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
 from asistente_ladm_col.core.supplies.etl_supplies import ETLSupplies
 
 
@@ -37,21 +36,21 @@ class ETLCobol(ETLSupplies):
 
     def initialize_layers(self):
         self.layers = {
-            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
-            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.GC_PARCEL_T: None,
+            self.names.GC_OWNER_T: None,
+            self.names.GC_ADDRESS_T: None,
+            self.names.GC_BUILDING_UNIT_T: None,
+            self.names.GC_BUILDING_T: None,
+            self.names.GC_PLOT_T: None,
+            self.names.GC_RURAL_DIVISION_T: None,
+            self.names.GC_URBAN_SECTOR_T: None,
+            self.names.GC_RURAL_SECTOR_T: None,
+            self.names.GC_PERIMETER_T: None,
+            self.names.GC_BLOCK_T: None,
+            self.names.GC_NEIGHBOURHOOD_T: None,
+            self.names.GC_COMMISSION_BUILDING_T: None,
+            self.names.GC_COMMISSION_PLOT_T: None,
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
         }
 
     def load_alphanumeric_layers(self):
@@ -89,20 +88,20 @@ class ETLCobol(ETLSupplies):
         self.logger.info(__name__, "Running ETL-Cobol model...")
         processing.run("model:ETL-model-supplies",
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
-                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
-                        'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
-                        'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
-                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T][LAYER],
-                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T][LAYER],
-                        'gcmanzana': self.layers[self.names.GC_BLOCK_T][LAYER],
-                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T][LAYER],
-                        'gcpropietario': self.layers[self.names.GC_OWNER_T][LAYER],
-                        'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T][LAYER],
-                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T][LAYER],
-                        'gcterreno': self.layers[self.names.GC_PLOT_T][LAYER],
-                        'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T][LAYER],
-                        'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
-                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
+                        'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
+                        'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T],
+                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T],
+                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T],
+                        'gcmanzana': self.layers[self.names.GC_BLOCK_T],
+                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T],
+                        'gcpropietario': self.layers[self.names.GC_OWNER_T],
+                        'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T],
+                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T],
+                        'gcterreno': self.layers[self.names.GC_PLOT_T],
+                        'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T],
+                        'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T],
+                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T],
                         'inputblo': self.alphanumeric_file_paths['blo'],
                         'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
                         'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
@@ -118,7 +117,7 @@ class ETLCobol(ETLSupplies):
                         'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
                         'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
                         'inputvereda': self.gdb_layer_paths['R_VEREDA'],
-                        'ouputlayer': self.layers[self.names.GC_PARCEL_T][LAYER],
+                        'ouputlayer': self.layers[self.names.GC_PARCEL_T],
                         'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
                         'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
                        feedback=custom_feedback)

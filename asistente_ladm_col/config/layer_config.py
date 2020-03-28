@@ -406,13 +406,6 @@ class LayerConfig:
         return {
             names.OP_BOUNDARY_T: [{names.OP_BOUNDARY_T_LENGTH_F: "$length"}],
             names.OP_PARTY_T: [{
-                names.COL_PARTY_T_NAME_F: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
-                    names.OP_PARTY_T_DOCUMENT_ID_F,
-                    names.OP_PARTY_T_SURNAME_1_F,
-                    names.OP_PARTY_T_SURNAME_2_F,
-                    names.OP_PARTY_T_FIRST_NAME_1_F,
-                    names.OP_PARTY_T_FIRST_NAME_2_F,
-                    names.OP_PARTY_T_BUSINESS_NAME_F)}, {
                 names.COL_PARTY_T_NAME_F: """
                     CASE
                         WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN

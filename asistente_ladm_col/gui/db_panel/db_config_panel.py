@@ -21,7 +21,7 @@ from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import Qgis
 
 
-class DbConfigPanel(QWidget):
+class DBConfigPanel(QWidget):
 
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 

@@ -28,7 +28,7 @@ class TableAndFieldNames:
     GC_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_predio"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_unidad"
-    GC_COPROPERTY_T = None # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad"
+    GC_COPROPERTY_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_copropiedad"
     GC_HP_CONDOMINIUM_DATA_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Datos_PH_Condiminio"
     GC_BLOCK_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Manzana"
     GC_PERIMETER_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Perimetro"
@@ -74,7 +74,7 @@ class TableAndFieldNames:
     #
     # "LADM_COL_V1_2.LADM_Nucleo.CI_CodigoTarea"
     # "LADM_COL_V1_2.LADM_Nucleo.CI_Contacto"
-    # "LADM_COL_V1_2.LADM_Nucleo.CI_Forma_Presentacion_Codigo"
+    CI_CODE_PRESENTATION_FORM_D = None  # "LADM_COL_V1_2.LADM_Nucleo.CI_Forma_Presentacion_Codigo"
     # "LADM_COL_V1_2.LADM_Nucleo.CI_ParteResponsable"
     #
     # "LADM_COL_V1_2.LADM_Nucleo.col_clFuente"
@@ -159,7 +159,7 @@ class TableAndFieldNames:
     OP_SPATIAL_SOURCE_T = None  # "Operacion_V2_9_5.Operacion.OP_FuenteEspacial"
     OP_PARTY_T = None  # "Operacion_V2_9_5.Operacion.OP_Interesado"
     # "Operacion_V2_9_5.Operacion.op_interesado_contacto"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto"
+    OP_PARTY_CONTACT_T = None  # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto"
     OP_BOUNDARY_T = None  # "Operacion_V2_9_5.Operacion.OP_Lindero"
     OP_PARCEL_T = None  # "Operacion_V2_9_5.Operacion.OP_Predio"
     OP_COPROPERTY_T = None  # "Operacion_V2_9_5.Operacion.op_predio_copropiedad"
@@ -173,8 +173,8 @@ class TableAndFieldNames:
     OP_BUILDING_UNIT_T = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion"
     OP_PHOTO_IDENTIFICATION_TYPE_D = None  # "Operacion_V2_9_5.OP_FotoidentificacionTipo"
     OP_ADMINISTRATIVE_SOURCE_TYPE_D = None  # "Operacion_V2_9_5.OP_FuenteAdministrativaTipo"
-    OP_ETHNIC_GROUP_TYPE = None  # "Operacion_V2_9_5.OP_GrupoEtnicoTipo"
-    # "Operacion_V2_9_5.OP_InstitucionTipo"
+    OP_ETHNIC_GROUP_TYPE_D = None  # "Operacion_V2_9_5.OP_GrupoEtnicoTipo"
+    OP_INSTITUTION_TYPE_D = None  # "Operacion_V2_9_5.OP_InstitucionTipo"
     OP_PARTY_DOCUMENT_TYPE_D = None  # "Operacion_V2_9_5.OP_InteresadoDocumentoTipo"
     OP_PARTY_TYPE_D = None  # "Operacion_V2_9_5.OP_InteresadoTipo"
     OP_PARCEL_TYPE_D = None  # "Operacion_V2_9_5.OP_PredioTipo"
@@ -183,7 +183,7 @@ class TableAndFieldNames:
     OP_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoTipo"
     OP_GENRE_D = None  # "Operacion_V2_9_5.OP_SexoTipo"
     OP_LOCATION_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
-    # "Operacion_V2_9_5.OP_UsoUConsTipo"
+    OP_BUILDING_UNIT_USE_D = None  # "Operacion_V2_9_5.OP_UsoUConsTipo"
     # "Operacion_V2_9_5.OP_ViaTipo"
 
     OP_BUILDING_FLOOR_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionPlantaTipo"
@@ -445,6 +445,11 @@ class TableAndFieldNames:
     EXT_ADDRESS_S_CITY_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad"
     EXT_ADDRESS_S_POSTAL_CODE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal"
     EXT_ADDRESS_S_COMPLEMENT_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento"
+    EXT_ADDRESS_TYPE_D = None  # 'LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion'
+    EXT_ADDRESS_TYPE_MAIN_ROAD_CLASS_D = None  # LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal
+    EXT_ADDRESS_TYPE_CITY_SECTOR_D = None  # LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad
+    EXT_ADDRESS_TYPE_PARCEL_SECTOR_D = None  # LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio
+
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Firma"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Fotografia"
@@ -512,13 +517,13 @@ class TableAndFieldNames:
     OP_RIGHT_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_Derecho.Tipo"
     OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F = None  # "Operacion_V2_9_5.Operacion.OP_FuenteAdministrativa.Ente_Emisor"
     OP_ADMINISTRATIVE_SOURCE_T_TYPE_F = None  # "Operacion_V2_9_5.Operacion.OP_FuenteAdministrativa.Tipo"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Autoriza_Notificacion_Correo"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Correo_Electronico"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Domicilio_Notificacion"
-    # "Operacion_V2_9_5.Operacion.op_interesado_contacto.op_interesado"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Origen_Datos"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono1"
-    # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono2"
+    OP_PARTY_CONTACT_T_ALLOW_MAIL_NOTIFICATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Autoriza_Notificacion_Correo"
+    OP_PARTY_CONTACT_T_EMAIL_F = None # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Correo_Electronico"
+    OP_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F = None # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Domicilio_Notificacion"
+    OP_PARTY_CONTACT_T_OP_PARTY_F = None # "Operacion_V2_9_5.Operacion.op_interesado_contacto.op_interesado" --> Operacion.Operacion.op_interesado_contacto.op_interesado..Operacion.Operacion.OP_Interesado
+    OP_PARTY_CONTACT_T_DATA_SOURCE_F = None # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Origen_Datos"
+    OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F = None # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono1"
+    OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F = None # "Operacion_V2_9_5.Operacion.OP_Interesado_Contacto.Telefono2"
 
     OP_PARTY_T_DOCUMENT_ID_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Documento_Identidad"
     OP_PARTY_T_ETHNIC_GROUP_F = None  # "Operacion_V2_9_5.Operacion.OP_Interesado.Grupo_Etnico"
@@ -776,6 +781,7 @@ class TableAndFieldNames:
         "Datos_SNR.SNR_FuenteTipo": {VARIABLE_NAME: "SNR_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "Datos_SNR.SNR_PersonaTitularTipo": {VARIABLE_NAME: "SNR_TITLE_HOLDER_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_EstadoDisponibilidadTipo": {VARIABLE_NAME: "COL_AVAILABILITY_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.CI_Forma_Presentacion_Codigo": {VARIABLE_NAME: "CI_CODE_PRESENTATION_FORM_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativaTipo": {VARIABLE_NAME: "COL_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
@@ -814,6 +820,10 @@ class TableAndFieldNames:
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
         }},
+        "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": {VARIABLE_NAME: "EXT_ADDRESS_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal": {VARIABLE_NAME: "EXT_ADDRESS_TYPE_MAIN_ROAD_CLASS_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": {VARIABLE_NAME: "EXT_ADDRESS_TYPE_CITY_SECTOR_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio": {VARIABLE_NAME: "EXT_ADDRESS_TYPE_PARCEL_SECTOR_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
@@ -887,6 +897,7 @@ class TableAndFieldNames:
         }},
         "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UsoUConsTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_USE_D", FIELDS_DICT: {}},
         "Operacion.OP_ConstruccionPlantaTipo": {VARIABLE_NAME: "OP_BUILDING_FLOOR_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
@@ -1118,10 +1129,20 @@ class TableAndFieldNames:
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
+        "Operacion.Operacion.OP_Interesado_Contacto": {VARIABLE_NAME: "OP_PARTY_CONTACT_T", FIELDS_DICT: {
+            'Operacion.Operacion.OP_Interesado_Contacto.Autoriza_Notificacion_Correo': 'OP_PARTY_CONTACT_T_ALLOW_MAIL_NOTIFICATION_F',
+            'Operacion.Operacion.OP_Interesado_Contacto.Correo_Electronico': 'OP_PARTY_CONTACT_T_EMAIL_F',
+            'Operacion.Operacion.OP_Interesado_Contacto.Domicilio_Notificacion': 'OP_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F',
+            'Operacion.Operacion.OP_Interesado_Contacto.Origen_Datos': 'OP_PARTY_CONTACT_T_DATA_SOURCE_F',
+            'Operacion.Operacion.OP_Interesado_Contacto.Telefono1': 'OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F',
+            'Operacion.Operacion.OP_Interesado_Contacto.Telefono2': 'OP_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F',
+            'Operacion.Operacion.op_interesado_contacto.op_interesado..Operacion.Operacion.OP_Interesado': 'OP_PARTY_CONTACT_T_OP_PARTY_F'
+        }},
         "Operacion.OP_FuenteAdministrativaTipo": {VARIABLE_NAME: "OP_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_FotoidentificacionTipo": {VARIABLE_NAME: "OP_PHOTO_IDENTIFICATION_TYPE_D", FIELDS_DICT: {}},
-        "Operacion.OP_GrupoEtnicoTipo": {VARIABLE_NAME: "OP_ETHNIC_GROUP_TYPE", FIELDS_DICT: {}},
+        "Operacion.OP_GrupoEtnicoTipo": {VARIABLE_NAME: "OP_ETHNIC_GROUP_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_InteresadoDocumentoTipo": {VARIABLE_NAME: "OP_PARTY_DOCUMENT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_InstitucionTipo": {VARIABLE_NAME: "OP_INSTITUTION_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_InteresadoTipo": {VARIABLE_NAME: "OP_PARTY_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_PredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_PuntoControlTipo": {VARIABLE_NAME: "OP_CONTROL_POINT_TYPE_D", FIELDS_DICT: {}},

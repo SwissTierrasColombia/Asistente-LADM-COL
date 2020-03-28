@@ -18,18 +18,18 @@
 """
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.core import Qgis
-from .db_schema_db_panel import DbSchemaDbPanel
+from .db_schema_db_panel import DBSchemaDBPanel
 from ...lib.db.pg_connector import PGConnector
 from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('dialogs/settings_pg.ui')
 
 
-class PgConfigPanel(DbSchemaDbPanel, WIDGET_UI):
+class PGConfigPanel(DBSchemaDBPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent):
-        DbSchemaDbPanel.__init__(self, parent)
+        DBSchemaDBPanel.__init__(self, parent)
         self.setupUi(self)
         self.init_schema()
 

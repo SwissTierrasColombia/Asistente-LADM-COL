@@ -1,17 +1,9 @@
 import nose2
 
-from qgis.core import QgsWkbTypes, NULL
 from qgis.testing import (start_app,
                           unittest)
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
-
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
-from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            normalize_response,
-                                            restore_schema)
 
 
 class TestLADMData(unittest.TestCase):

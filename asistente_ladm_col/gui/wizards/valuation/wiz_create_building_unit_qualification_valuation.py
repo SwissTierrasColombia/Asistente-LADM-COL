@@ -29,9 +29,17 @@ from qgis.PyQt.QtCore import (QSettings,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_QSETTINGS, \
-    WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE, WIZARD_HELP1, WIZARD_HELP2, WIZARD_HELP3, \
-    WIZARD_HELP4, WIZARD_HELP5, WIZARD_MAP_LAYER_PROXY_MODEL
+from asistente_ladm_col.config.general_config import (WIZARD_HELP,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_HELP3,
+                                                      WIZARD_HELP4,
+                                                      WIZARD_HELP5,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.utils.qt_utils import enable_next_wizard
@@ -74,7 +82,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
+            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)

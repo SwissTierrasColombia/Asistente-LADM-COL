@@ -30,8 +30,9 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP_PAGES, WIZARD_HELP1, \
-    WIZARD_MAP_LAYER_PROXY_MODEL
+from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.gui.wizards.wizard_factory import WizardFactory
 
 
@@ -63,7 +64,7 @@ class SinglePageWizardFactory(WizardFactory):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
@@ -79,12 +80,12 @@ class SinglePageWizardFactory(WizardFactory):
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME].getFeature(fid).isValid():
             message = QCoreApplication.translate("WizardTranslations",
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create it.").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.logger.warning(__name__, "Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME))
         else:
-            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME].getFeature(fid)[self.names.T_ID_F]
             message = QCoreApplication.translate("WizardTranslations",
                                                  "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
         return message

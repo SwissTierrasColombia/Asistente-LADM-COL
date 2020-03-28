@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QDialog)
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.config.enums import STTaskStatusEnum
+from asistente_ladm_col.config.enums import EnumSTTaskStatus
 from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
                                                       GRAY_COLOR)
@@ -84,7 +84,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.lbl_name.setText(self._task.get_name())
             self.lbl_description.setText(self._task.get_description())
             self.lbl_created_at.setText(QCoreApplication.translate("TaskPanelWidget", "Created at: {}").format(self._task.get_creation_date()))
-            if self._task.get_status() == STTaskStatusEnum.STARTED.value:
+            if self._task.get_status() == EnumSTTaskStatus.STARTED.value:
                 self.lbl_started_at.setVisible(True)
                 self.lbl_started_at.setText(QCoreApplication.translate("TaskPanelWidget", "Started at: {}").format(self._task.get_started_date()))
             else:
@@ -94,9 +94,9 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             # Styles
             self.lbl_name.setStyleSheet(self.st_config.TASK_TITLE_BIG_TEXT_CSS)
-            if self._task.get_status() == STTaskStatusEnum.ASSIGNED.value:
+            if self._task.get_status() == EnumSTTaskStatus.ASSIGNED.value:
                 self.lbl_status.setStyleSheet(self.st_config.TASK_ASSIGNED_STATUS_BIG_TEXT_CSS)
-            elif self._task.get_status() == STTaskStatusEnum.STARTED.value:
+            elif self._task.get_status() == EnumSTTaskStatus.STARTED.value:
                 self.lbl_status.setStyleSheet(self.st_config.TASK_STARTED_STATUS_BIG_TEXT_CSS)
 
     def show_task_steps(self):
@@ -179,22 +179,22 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def update_controls(self):
         # Steps panel
-        self.trw_task_steps.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+        self.trw_task_steps.setEnabled(self._task.get_status() == EnumSTTaskStatus.STARTED.value)
 
         # Start task button
-        self.btn_start_task.setEnabled(self._task.get_status() == STTaskStatusEnum.ASSIGNED.value)
+        self.btn_start_task.setEnabled(self._task.get_status() == EnumSTTaskStatus.ASSIGNED.value)
 
         # Cancel task button
-        self.btn_cancel_task.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value)
+        self.btn_cancel_task.setEnabled(self._task.get_status() == EnumSTTaskStatus.STARTED.value)
 
         self.update_close_control()
 
     def update_close_control(self):
         # Can we close the task?
-        self.btn_close_task.setEnabled(self._task.get_status() == STTaskStatusEnum.STARTED.value and self.steps_complete())
-        if self._task.get_status() == STTaskStatusEnum.STARTED.value and self.steps_complete():
+        self.btn_close_task.setEnabled(self._task.get_status() == EnumSTTaskStatus.STARTED.value and self.steps_complete())
+        if self._task.get_status() == EnumSTTaskStatus.STARTED.value and self.steps_complete():
             self.btn_close_task.setToolTip("")
-        elif self._task.get_status() != STTaskStatusEnum.STARTED.value and self.steps_complete():
+        elif self._task.get_status() != EnumSTTaskStatus.STARTED.value and self.steps_complete():
             self.btn_close_task.setToolTip(
                 QCoreApplication.translate("TaskPanelWidget", "The task is not started yet, hence, it cannot be closed."))
         else:  # The remaining 2 cases: steps incomplete (whether the task is started or not)

@@ -40,8 +40,8 @@ from qgis.core import (Qgis,
                        QgsExpression)
 
 from asistente_ladm_col.config.enums import (EnumDbActionType,
-                                             WizardTypeEnum,
-                                             LogHandlerEnum,
+                                             EnumWizardType,
+                                             EnumLogHandler,
                                              EnumUserLevel)
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
@@ -52,8 +52,9 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       RELEASE_URL,
                                                       URL_REPORTS_LIBRARIES,
                                                       DEPENDENCY_REPORTS_DIR_NAME,
-                                                      COLLECTED_DB_SOURCE, WIZARD_CLASS,
-                                                      WIZARD_TOOL_NAME,
+                                                      COLLECTED_DB_SOURCE,
+                                                      WIZARD_CLASS,
+                                                      WIZARD_TOOL_NAME, 
                                                       WIZARD_TYPE,
                                                       WIZARD_LAYERS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
@@ -81,15 +82,18 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                                            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
 from asistente_ladm_col.config.wizard_config import (WizardConfig)
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value, get_domain_description_from_code  # >> DON'T REMOVE << Registers it in QgsExpression
+from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
+                                                            get_domain_value_from_code,
+                                                            get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
-from asistente_ladm_col.lib.context import Context, TaskContext
+from asistente_ladm_col.lib.context import (Context, 
+                                            TaskContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
@@ -165,7 +169,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.ladm_data = LADMDATA(self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         self.create_actions()
@@ -238,7 +242,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @staticmethod
     def uninstall_custom_expression_functions():
-        res = QgsExpression.unregisterFunction('get_domain_code_from_value')
+        QgsExpression.unregisterFunction('get_domain_code_from_value')
+        QgsExpression.unregisterFunction('get_domain_value_from_code')
+        QgsExpression.unregisterFunction('get_domain_description_from_code')
 
     def call_refresh_gui(self):
         """
@@ -722,7 +728,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def load_layer(self, layer):
         self.clear_message_bar()
-        self.qgis_utils.get_layer(self.get_db_connection(), layer, None, load=True)
+        self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
@@ -1234,7 +1240,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
-    @_db_connection_required
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
         dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
@@ -1280,7 +1285,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                          wiz_settings[WIZARD_TOOL_NAME]):
             self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
                                                   wiz_settings)
-            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+            if wiz_settings[WIZARD_TYPE] & EnumWizardType.SPATIAL_WIZARD:
                 # Required signal for wizard geometry creating
                 self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
                 self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
@@ -1297,7 +1302,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz.close_wizard()  # This updates the is_wizard_open flag
 
     def show_st_login_dialog(self):
-        dlg = LoginSTDialog(self.qgis_utils, self.main_window)
+        dlg = LoginSTDialog(self.main_window)
         dlg.exec_()
 
         if self.session.is_user_logged():
@@ -1336,7 +1341,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if logout:
             logged_out, msg = self.session.logout()
             if show_message:
-                self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, LogHandlerEnum.MESSAGE_BAR)
+                self.logger.log_message(__name__, msg, Qgis.Info if logged_out else Qgis.Warning, EnumLogHandler.MESSAGE_BAR)
 
     def set_login_controls_visibility(self, login_activated):
         """
@@ -1405,8 +1410,8 @@ class AsistenteLADMCOLPlugin(QObject):
         db = self.open_encrypted_db_connection(db_engine, conn_dict, user_level)
         if db:
             layers = {
-                db.names.INI_PARCEL_SUPPLIES_T: {'name': db.names.INI_PARCEL_SUPPLIES_T, 'geometry': None, 'layer': None},
-                db.names.GC_PARCEL_T: {'name': db.names.GC_PARCEL_T, 'geometry': None, 'layer': None},
-                db.names.SNR_PARCEL_REGISTRY_T: {'name': db.names.SNR_PARCEL_REGISTRY_T, 'geometry': None, 'layer': None},
+                db.names.INI_PARCEL_SUPPLIES_T: None,
+                db.names.GC_PARCEL_T: None,
+                db.names.SNR_PARCEL_REGISTRY_T: None
             }
             self.qgis_utils.get_layers(db, layers, load=True)

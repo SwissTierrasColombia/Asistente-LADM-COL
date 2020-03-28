@@ -42,8 +42,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
+from asistente_ladm_col.config.general_config import (LOG_QUALITY_LIST_CONTAINER_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
                                                       LOG_QUALITY_LIST_CONTAINER_CLOSE,
@@ -208,14 +207,14 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         # GET LADM LAYERS
         layers = {
-            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.OP_RIGHT_T: {'name': self.names.OP_RIGHT_T, 'geometry': None, LAYER: None},
-            self.names.EXT_ARCHIVE_S: {'name': self.names.EXT_ARCHIVE_S, 'geometry': None, LAYER: None},
-            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
-            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
-            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None}
+            self.names.OP_PARTY_T: None,
+            self.names.OP_PARCEL_T: None,
+            self.names.OP_RIGHT_T: None,
+            self.names.EXT_ARCHIVE_S: None,
+            self.names.COL_RRR_SOURCE_T: None,
+            self.names.OP_GROUP_PARTY_T: None,
+            self.names.MEMBERS_T: None,
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: None
         }
 
         self.qgis_utils.get_layers(self._db, layers, load=True)
@@ -223,29 +222,29 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             return None
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
-        ladm_tables = [layers[self.names.OP_PARCEL_T][LAYER],
-                       layers[self.names.OP_PARTY_T][LAYER],
-                       layers[self.names.OP_RIGHT_T][LAYER],
-                       layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
-                       layers[self.names.COL_RRR_SOURCE_T][LAYER],
-                       layers[self.names.OP_GROUP_PARTY_T][LAYER],
-                       layers[self.names.MEMBERS_T][LAYER]]
+        ladm_tables = [layers[self.names.OP_PARCEL_T],
+                       layers[self.names.OP_PARTY_T],
+                       layers[self.names.OP_RIGHT_T],
+                       layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
+                       layers[self.names.COL_RRR_SOURCE_T],
+                       layers[self.names.OP_GROUP_PARTY_T],
+                       layers[self.names.MEMBERS_T]]
         ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
 
 
         # Run the ETL
-        params = {'agrupacion': layers[self.names.OP_GROUP_PARTY_T][LAYER],
-                  'colmiembros': layers[self.names.MEMBERS_T][LAYER],
-                  'colrrrsourcet': layers[self.names.COL_RRR_SOURCE_T][LAYER],
-                  'extarchivo': layers[self.names.EXT_ARCHIVE_S][LAYER],
-                  'interesado': layers[self.names.OP_PARTY_T][LAYER],
+        params = {'agrupacion': layers[self.names.OP_GROUP_PARTY_T],
+                  'colmiembros': layers[self.names.MEMBERS_T],
+                  'colrrrsourcet': layers[self.names.COL_RRR_SOURCE_T],
+                  'extarchivo': layers[self.names.EXT_ARCHIVE_S],
+                  'interesado': layers[self.names.OP_PARTY_T],
                   'layergroupparty': layer_group_party,
                   'layerparcel': layer_parcel,
                   'layerparty': layer_party,
                   'layerright': layer_right,
-                  'opderecho': layers[self.names.OP_RIGHT_T][LAYER],
-                  'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER],
-                  'parcel': layers[self.names.OP_PARCEL_T][LAYER]}
+                  'opderecho': layers[self.names.OP_RIGHT_T],
+                  'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
+                  'parcel': layers[self.names.OP_PARCEL_T]}
 
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
         self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)

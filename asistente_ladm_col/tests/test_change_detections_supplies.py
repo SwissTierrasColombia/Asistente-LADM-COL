@@ -8,8 +8,7 @@ from qgis.testing import (start_app,
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             restore_schema,
@@ -33,7 +32,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             return
 
         cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.ladm_data = LADMDATA(cls.qgis_utils)
 
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")
@@ -62,7 +61,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id) with preloaded tables...")
 
-        layers = {self.db_pg.names.GC_PLOT_T: {'name': self.db_pg.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}}
+        layers = {self.db_pg.names.GC_PLOT_T: None}
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
@@ -71,7 +70,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             plot_ids = self.ladm_data.get_plots_related_to_parcels_supplies(self.db_pg,
                                                                             parcel_ids_test,
                                                                             self.db_pg.names.T_ID_F,
-                                                                            gc_plot_layer=layers[self.db_pg.names.GC_PLOT_T][LAYER])
+                                                                            gc_plot_layer=layers[self.db_pg.names.GC_PLOT_T])
             self.assertEqual(sorted(plot_ids), sorted(plot_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -102,9 +101,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         print("\nINFO: Validating get parcels related to plots in supplies model (Case: t_id) with preloaded tables...")
 
-        layers = {
-            self.db_pg.names.GC_PARCEL_T: {'name': self.db_pg.names.GC_PARCEL_T, 'geometry': None, LAYER: None}
-        }
+        layers = {self.db_pg.names.GC_PARCEL_T: None}
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
@@ -113,7 +110,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             parcel_ids = self.ladm_data.get_parcels_related_to_plots_supplies(self.db_pg,
                                                                               plot_ids_test,
                                                                               self.db_pg.names.T_ID_F,
-                                                                              gc_parcel_table=layers[self.db_pg.names.GC_PARCEL_T][LAYER])
+                                                                              gc_parcel_table=layers[self.db_pg.names.GC_PARCEL_T])
             self.assertEqual(sorted(parcel_ids), sorted(parcel_ids_tests[count]), "Failure with data set {}".format(count + 1))
             count += 1
 

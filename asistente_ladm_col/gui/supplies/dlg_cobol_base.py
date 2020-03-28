@@ -27,14 +27,12 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
-                       QgsWkbTypes,
                        QgsVectorLayer)
 from qgis.gui import QgsMessageBar
 
 import processing
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      BLO_LIS_FILE_PATH)
+from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -141,21 +139,21 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def initialize_layers(self):
         self._layers = {
-            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
-            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PARCEL_T: None,
+            self.names.GC_OWNER_T: None,
+            self.names.GC_ADDRESS_T: None,
+            self.names.GC_BUILDING_UNIT_T: None,
+            self.names.GC_BUILDING_T: None,
+            self.names.GC_PLOT_T: None,
+            self.names.GC_RURAL_DIVISION_T: None,
+            self.names.GC_URBAN_SECTOR_T: None,
+            self.names.GC_RURAL_SECTOR_T: None,
+            self.names.GC_PERIMETER_T: None,
+            self.names.GC_BLOCK_T: None,
+            self.names.GC_NEIGHBOURHOOD_T: None,
+            self.names.GC_COMMISSION_BUILDING_T: None,
+            self.names.GC_COMMISSION_PLOT_T: None,
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
         }
 
     def reject(self):

@@ -57,7 +57,7 @@ from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
 from ...resources_rc import *  # Necessary to show icons
-from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
@@ -87,7 +87,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
-        self._dbs_supported = ConfigDbSupported()
+        self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
 
         # There may be two cases where we need to emit a db_connection_changed from the Schema Import dialog:
@@ -280,7 +280,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             db_factory = self._dbs_supported.get_db_factory(self.db.engine)
 
-            importer.tool = db_factory.get_mbaker_db_ili_mode()
+            importer.tool = db_factory.get_model_baker_db_ili_mode()
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)

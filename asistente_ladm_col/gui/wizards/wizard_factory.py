@@ -30,7 +30,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from asistente_ladm_col.config.general_config import LAYER
 
 
 class WizardFactory(AbsWizardFactory):
@@ -88,7 +87,7 @@ class WizardFactory(AbsWizardFactory):
             self.disconnect_signals_select_features_on_map()
 
         try:
-            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -108,9 +107,9 @@ class WizardFactory(AbsWizardFactory):
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
-        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
+        self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[self.EDITING_LAYER_NAME])
 
     def post_save(self, features):
         raise NotImplementedError

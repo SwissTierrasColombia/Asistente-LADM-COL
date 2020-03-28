@@ -24,15 +24,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QPushButton)
 
-from asistente_ladm_col.config.general_config import LAYER
-
 
 class MapInteractionExpansion:
     """
     Used when creating spatial objects on the map.
     It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
-
     def __init__(self):
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
@@ -40,13 +37,13 @@ class MapInteractionExpansion:
 
     def connect_on_removing_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name][LAYER]:
+            if self._layers[layer_name]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate("WizardTranslations",
@@ -56,21 +53,21 @@ class MapInteractionExpansion:
     def disconnect_signals_map_interaction_expansion(self):
         for layer_name in self._layers:
             try:
-                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
     def save_created_geometry(self):
         message = None
-        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
-            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
-                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
+        if self._layers[self.EDITING_LAYER_NAME].editBuffer():
+            if len(self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures()) == 1:
+                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures().items()][0]
                 if feature.geometry().isGeosValid():
-                    self.exec_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+                    self.exec_form(self._layers[self.EDITING_LAYER_NAME])
                 else:
                     message = QCoreApplication.translate("WizardTranslations", "The geometry is invalid. Do you want to return to the edit session?")
             else:
-                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
+                if len(self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures()) == 0:
                     message = QCoreApplication.translate("WizardTranslations", "No geometry has been created. Do you want to return to the edit session?")
                 else:
                     message = QCoreApplication.translate("WizardTranslations", "Several geometries were created but only one was expected. Do you want to return to the edit session?")
@@ -89,8 +86,8 @@ class MapInteractionExpansion:
 
         if reply == QMessageBox.No:
             # stop edition in close_wizard crash qgis
-            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
-                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
+            if self._layers[self.EDITING_LAYER_NAME].isEditable():
+                self._layers[self.EDITING_LAYER_NAME].rollBack()
 
             message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(
                 self.WIZARD_TOOL_NAME)

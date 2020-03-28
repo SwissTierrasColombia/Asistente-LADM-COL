@@ -53,7 +53,7 @@ class EnumTestConnectionMsg(IntFlag):
     DB_MODELS_ARE_CORRECT = 107
 
 
-class WizardTypeEnum(IntFlag):
+class EnumWizardType(IntFlag):
     SINGLE_PAGE_WIZARD_TYPE = 1
     SINGLE_PAGE_SPATIAL_WIZARD_TYPE = 2
     MULTI_PAGE_WIZARD_TYPE = 4
@@ -63,27 +63,50 @@ class WizardTypeEnum(IntFlag):
     NON_SPATIAL_WIZARD = SINGLE_PAGE_WIZARD_TYPE | MULTI_PAGE_WIZARD_TYPE
 
 
-class LogHandlerEnum(Enum):
+class EnumLogHandler(Enum):
     MESSAGE_BAR = 1
     STATUS_BAR = 2
     QGIS_LOG = 3
 
 
-class LogModeEnum(Enum):
+class EnumLogMode(Enum):
     USER = 1
     DEV = 2
 
 
-class STTaskStatusEnum(Enum):
+class EnumLADMQueryType(Enum):
+    IGAC_BASIC_INFO = 1
+    IGAC_PHYSICAL_INFO = 2
+    IGAC_LEGAL_INFO = 3
+    IGAC_ECONOMIC_INFO = 4
+    IGAC_PROPERTY_RECORD_CARD_INFO = 5
+
+
+class EnumSpatialOperationType(Enum):
+    INTERSECTS = 1
+    OVERLAPS = 2
+    CONTAINS = 3
+
+
+class EnumSTTaskStatus(Enum):
     ASSIGNED = "ASIGNADA"
     STARTED = "INICIADA"
     CANCELED = "CANCELADA"
     CLOSED = "CERRADA"
 
-class STStepTypeEnum(Enum):
+
+class EnumSTStepType(Enum):
     UPLOAD_FILE = 1
     CONNECT_TO_DB = 2
     SCHEMA_IMPORT = 3
     IMPORT_DATA = 4
     EXPORT_DATA = 5
     RUN_ETL_COBOL = 6
+
+
+class EnumLayerRegistryType(Enum):
+    """
+    Loaded layers in QGIS can be: 1) only in registry or 2) both in registry and in layer tree
+    """
+    ONLY_IN_REGISTRY = 1
+    IN_LAYER_TREE = 2

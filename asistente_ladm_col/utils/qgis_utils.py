@@ -67,12 +67,12 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
 from asistente_ladm_col.utils.utils import is_connected
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                                      LAYER,
                                                       FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                                       TEST_SERVER,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID)
+from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
@@ -132,14 +132,18 @@ class QGISUtils(QObject):
         self._relations = list()
         self._bags_of_enum = list()
 
-    def get_related_layers(self, layer_names, already_loaded):
+    def get_related_layers(self, layer_names, ladm_layers):
         """
         For a given layer we load its domains, all its related layers and the
         domains of those related layers. Additionally, we load its related
         structures and domains to build bags_of_enum widgets.
+
+        :param layer_names: list of layer names from which we want to obtain related layers
+        :param ladm_layers: dict of ladm_layers currently loaded
         """
+        already_loaded = list(ladm_layers.keys())  # List of loaded ladm layer names
         related_layers = list()
-        for relation in self._relations:
+        for relation in self._relations:  # Takes into account both domains and not-domain layers
             for layer_name in layer_names:
                 if relation[QueryNames.REFERENCING_LAYER] == layer_name:
                     if relation[QueryNames.REFERENCED_LAYER] not in already_loaded and relation[QueryNames.REFERENCED_LAYER] not in layer_names:
@@ -167,191 +171,155 @@ class QGISUtils(QObject):
 
         return related_domains
 
-    def get_layer(self, db, layer_name, geometry_type=None, load=False, emit_map_freeze=True, layer_modifiers=dict()):
-        # Handy function to avoid sending a whole dict when all we need is a single table/layer
-        layer = {layer_name: {'name': layer_name, 'geometry': geometry_type, LAYER: None}}
+    def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+        # Handy function to get a single layer
+        layer = {layer_name: None}
         self.get_layers(db, layer, load, emit_map_freeze, layer_modifiers=layer_modifiers)
         if not layer:
             return None
 
-        if layer[layer_name]:
-            return layer[layer_name][LAYER]
-        else:
-            return None
+        return layer[layer_name]
 
     def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         """
+        Load LADM-COL layers to QGIS.
+
         :param db: db connection instance
-        :param layers: {layer_id : {name: ABC, geometry: DEF, 'layer': None}}
-        layer_id should match layer_name most of the times, but if the same layer has multiple geometries,
-        layer_id should contain the geometry type to make the layer_id unique
-        layer: key to store the QgsVectorLayer object.
-        The whole dict will be None if any of the requested layers is not found. A message will inform which layer wasn't
-        :param load: Load layer in the map canvas
+        :param layers: parameter passed by reference, i.e., it will be updated {layer_name : None}
+            layer_name: layer name as it is stored in the db
+            layer: key to store the QgsVectorLayer object.
+            The whole dict will be None if any of the requested layers is not found. A message will inform which layer
+            wasn't found.
+        :param load: Whether to load layer in the layer tree/map canvas or not (if not, it'll only be added to registry)
         :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
         one could be interested in handling the map_freeze from the outside
         :param layer_modifiers: is a dict that it have properties that modify the layer properties
         like prefix_layer_name, suffix_layer_name, symbology_group
-        :return: is a dict like this: {layer_id: layer_object} layer_object might be None
         """
-        response_layers = dict()
-        additional_layers_to_load = list()
-
         if emit_map_freeze:
             self.map_freeze_requested.emit(True)
 
-        profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
-            profiler.start("existing_layers")
-            ladm_layers = self.get_ladm_layers_from_layer_tree(db)
-            for layer_id, layer_info in layers.items():
-                layer_obj = None
+            if not load:
+                # We don't need the layers to be loaded (to layer tree), so, check if the layer is in QGIS and use it or
+                # if not found just add it to the registry! Note: for layers added to registry we don't load related
+                # tables nor domains!
+                ladm_layers = self.get_ladm_layers_from_qgis(db)
+                for layer_name in layers.keys():
+                    layers[layer_name] = ladm_layers[layer_name] if layer_name in ladm_layers else self.load_layer_to_registry(db, layer_name)
 
-                # If layer is in LayerTree, return it
-                for ladm_layer in ladm_layers:
-                    if layer_info['name'] == db.get_ladm_layer_name(ladm_layer):
-                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.geometryType():
-                            continue
+            else:  # We want to load the layers
+                # First, use already loaded layers
+                ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)
+                for layer_name in layers.keys():
+                    layers[layer_name] = ladm_layers[layer_name] if layer_name in ladm_layers else None
 
-                        layer_obj = ladm_layer
-
-                response_layers[layer_id] = layer_obj
-            profiler.end()
-            self.logger.debug(__name__, "Existing layers... {}".format(profiler.totalTime()))
-            profiler.clear()
-
-            if load:
-                layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+                # Let's load the remaining layers
+                layers_to_load = [layer_name for layer_name,layer in layers.items() if layer is None]
 
                 if layers_to_load:
                     # Get related layers from cached relations and add them to
                     # list of layers to load, QGIS Model Baker will set relations
-                    already_loaded = [db.get_ladm_layer_name(ladm_layer) for ladm_layer in ladm_layers]
-                    profiler.start("related_layers")
-                    additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
-                    profiler.end()
-                    self.logger.debug(__name__, "Related layers... {}".format(profiler.totalTime()))
-                    profiler.clear()
+                    additional_layers_to_load = self.get_related_layers(layers_to_load, ladm_layers)
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
-                    self.logger.status(QCoreApplication.translate("QGISUtils",
-                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
-                    profiler.start("load_layers")
-                    self.qgis_model_baker_utils.load_layers(all_layers_to_load, db)
-                    profiler.end()
-                    self.logger.debug(__name__, "Load layers... {}".format(profiler.totalTime()))
-                    profiler.clear()
+                    # Required layers that are only in registry are removed, we reload them to get everything configured
+                    self.remove_registry_layers(db, all_layers_to_load)
+
+                    self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
+                    self.qgis_model_baker_utils.load_layers(db, all_layers_to_load)
+                    ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
                     # Now that all layers are loaded, update response dict
-                    # and apply post_load_configurations to new layers
-                    new_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
-
-                    # Remove layers in two steps:
-                    # 1) Remove those spatial layers with more than one geometry
-                    #    column loaded because one geometry was requested.
-                    ladm_layers = self.get_ladm_layers_from_layer_tree(db)
-                    for layer in ladm_layers:
-                        layer_name = db.get_ladm_layer_name(layer)
-
-                        if layer_name in all_layers_to_load and layer.isSpatial():
-                            remove_layer = True
-                            for layer_id, layer_info in new_layers.items():
-                                if layer_info['name'] == layer_name:
-                                    if layer_info['geometry'] == layer.geometryType():
-                                        remove_layer = False
-                                        break
-                                    if layer_info['geometry'] is None:
-                                        # We allow loading layers that only have
-                                        # one geometry column by not specifying
-                                        # its geometry (i.e., by using None)
-                                        remove_layer = False
-                                        break
-                            if remove_layer:
-                                QgsProject.instance().removeMapLayer(layer)
-                                ladm_layers.remove(layer)
-
-                    # 2) Remove related spatial layers with more than one
-                    #    geometry column, which we don't prefer (i.e., points)
-                    for additional_layer_name in additional_layers_to_load:
-                        num_geometry_columns = 0
-                        for layer in ladm_layers:
-                            if db.get_ladm_layer_name(layer) == additional_layer_name and layer.isSpatial():
-                                num_geometry_columns += 1
-
-                        if num_geometry_columns > 1:
-                            QgsProject.instance().removeMapLayer(layer)
-                            ladm_layers.remove(layer)
-
-                    profiler.start("post_load")
-                    # Apply post-load configs to all just loaded layers
-                    requested_layer_names = [v['name'] for k,v in layers.items()]
-                    for layer in ladm_layers:
-                        layer_name = db.get_ladm_layer_name(layer)
-                        layer_geometry = layer.geometryType()
-
-                        if layer_name in all_layers_to_load:
-                            # Discard already loaded layers
-
-                            for layer_id, layer_info in new_layers.items():
-                                # This should update response_layers dict with
-                                # newly added layer objects
-                                if layer_info['name'] == layer_name:
-                                    if layer_info['geometry'] is not None and layer_info['geometry'] != layer_geometry:
-                                        continue
-
-                                    response_layers[layer_id] = layer
-                                    del new_layers[layer_id] # Don't look for this layer anymore
-                                    break
+                    # and apply post_load_configurations to all new layers
+                    for layer_name, layer in ladm_layers.items():
+                        if layer_name in all_layers_to_load:  # Discard already loaded layers
+                            if layer_name in layers_to_load:
+                                layers[layer_name] = layer  # If originally requested, store layer object in dict
 
                             # Turn off layers loaded as related layers
-                            layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS] = layer_name in requested_layer_names
-                            self.post_load_configurations(db, layer, layer_modifiers=layer_modifiers)
+                            layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS] = layer_name in layers_to_load
+                            self.post_load_configurations(db, layer, layer_name, layer_modifiers=layer_modifiers)
 
-                    profiler.end()
-                    self.logger.debug(__name__, "Post load... {}".format(profiler.totalTime()))
-                    profiler.clear()
                     self.logger.clear_status()
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(False)
 
-        self.map_refresh_requested.emit()
-        self.activate_layer_requested.emit(list(response_layers.values())[0])
+        if load:
+            self.map_refresh_requested.emit()
+            self.activate_layer_requested.emit(list(layers.values())[0])
 
         # Verifies that the layers have been successfully loaded
-        for layer_name in layers:
-            if response_layers[layer_name] is None:
+        layer_not_loaded = False
+        for layer_name, layer in layers.items():
+            if layer is None:
+                layer_not_loaded = True
                 self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
                     "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
                         description=db.get_display_conn_string()))
 
-                # If it is not possible to obtain the requested layers we make null the variable "layers"
-                layers = None
-                return {}
+        if layer_not_loaded:  # If it is not possible to obtain the requested layers we make the variable layers None
+            layers = None
 
-            # Save reference to layer loaded
-            if LAYER in layers[layer_name]:
-                layers[layer_name][LAYER] = response_layers[layer_name]
+    def remove_registry_layers(self, db, layer_names):
+        """
+        :param db: DB connection
+        :param layer_names: list of layer names from which registry layers should be removed
+        """
+        registry_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.ONLY_IN_REGISTRY)
+        QgsProject.instance().removeMapLayers([layer.id() for layer_name,layer in registry_layers.items() if layer_name in layer_names])
 
-    def get_layer_from_layer_tree(self, db, layer_name, geometry_type=None):
+    def load_layer_to_registry(self, db, layer_name):
+        """ Load layer to registry, not to tree view/map canvas """
+        layers = self.qgis_model_baker_utils.get_required_layers_without_load([layer_name], db)
+        return layers[0] if layers else None
+
+    @staticmethod
+    def get_ladm_layer_from_qgis(db, layer_name, registry_type=None):
+        """
+        :param db: DB connection
+        :param layer_name: layer name
+        :param registry_type: None if no filter should be applied (i.e., layer can be only in registry or also in tree
+                              view), otherwise, value of EnumLayerRegistryType to filter only registry layers or
+                              tree view (and therefore also in registry).
+        :return: QgsVectorLayer
+        """
         for k, layer in QgsProject.instance().mapLayers().items():
-            result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
-            if result:
-                if result == layer_name:
-                    if geometry_type is not None:
-                        if layer.geometryType() == geometry_type:
-                            return layer
-                    else:
-                        return layer
+            name = db.get_ladm_layer_name(layer, validate_is_ladm=True)  # get layer name from provider
+
+            if name and name == layer_name:
+                in_layer_tree = QgsProject.instance().layerTreeRoot().findLayer(layer) if registry_type else None
+
+                if not registry_type or (registry_type == EnumLayerRegistryType.IN_LAYER_TREE and in_layer_tree) or \
+                        (registry_type == EnumLayerRegistryType.ONLY_IN_REGISTRY and not in_layer_tree):
+                    return layer
+
         return None
 
-    def get_ladm_layers_from_layer_tree(self, db):
-        ladm_layers = list()
+    @staticmethod
+    def get_ladm_layers_from_qgis(db, registry_type=None):
+        """
+        Note that this method only gets ladm layers from the db connection. Even if you have layers from several db's
+        loaded in QGIS, this method will filter only those that correspond to the db passed.
 
-        for k,layer in QgsProject.instance().mapLayers().items():
-            if db.is_ladm_layer(layer):
-                ladm_layers.append(layer)
+        :param db: DB connection
+        :param registry_type: None if no filter should be applied (i.e., layer can be only in registry or also in tree
+                              view), otherwise, value of EnumLayerRegistryType to filter only registry layers or
+                              tree view (and therefore also in registry).
+        :return: dict where key is ladm layer name and value is QgsVectorLayer
+        """
+        ladm_layers = dict()
+        for k, layer in QgsProject.instance().mapLayers().items():
+            name = db.get_ladm_layer_name(layer, validate_is_ladm=True)  # get layer name from provider
+
+            if name:  # If no ladm_layer, name is None
+                in_layer_tree = QgsProject.instance().layerTreeRoot().findLayer(layer) if registry_type else None
+
+                if not registry_type or (registry_type == EnumLayerRegistryType.IN_LAYER_TREE and in_layer_tree) or \
+                        (registry_type == EnumLayerRegistryType.ONLY_IN_REGISTRY and not in_layer_tree):
+                    ladm_layers[name] = layer
 
         return ladm_layers
 
@@ -371,10 +339,9 @@ class QGISUtils(QObject):
 
         # Check if any layer is in editing mode
         layers_name = list()
-        for layer in layers:
-            if layers[layer][LAYER] is not None:
-                if layers[layer][LAYER].isEditable():
-                    layers_name.append(layers[layer][LAYER].name())
+        for layer_name, layer in layers.items():
+            if layer is not None and layer.isEditable():
+                layers_name.append(layer_name)
 
         if layers_name:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -386,24 +353,22 @@ class QGISUtils(QObject):
         return True
 
     def automatic_namespace_local_id_configuration_changed(self, db):
-        layers = self.get_ladm_layers_from_layer_tree(db)
-        for layer in layers:
-            self.set_automatic_fields_namespace_local_id(db, layer)
+        for layer_name, layer in self.get_ladm_layers_from_qgis(db).items():
+            self.set_automatic_fields_namespace_local_id(db, layer_name, layer)
 
-    def post_load_configurations(self, db, layer, layer_modifiers=dict()):
+    def post_load_configurations(self, db, layer, layer_name, layer_modifiers=dict()):
         # TODO: Just call this method once after get_layers (IMPORTANT!)
-        # Do some post-load work, such as setting styles or
-        # setting automatic fields for that layer
-        self.configure_missing_relations(db, layer)
-        self.configure_missing_bags_of_enum(db, layer)
-        self.set_display_expressions(db, layer)
-        self.set_layer_variables(db, layer)
-        self.set_custom_widgets(db, layer)
-        self.set_custom_read_only_fiels(db, layer)
-        self.set_custom_events(db, layer)
-        self.set_automatic_fields(db, layer)
-        self.set_layer_constraints(db, layer)
-        self.set_form_groups(db, layer)
+        # Do some post-load work, such as setting styles or setting automatic fields for that layer
+        self.configure_missing_relations(db, layer, layer_name)
+        self.configure_missing_bags_of_enum(db, layer, layer_name)
+        self.set_display_expressions(db, layer, layer_name)
+        self.set_layer_variables(db, layer, layer_name)
+        self.set_custom_widgets(db, layer, layer_name)
+        self.set_custom_read_only_fiels(db, layer, layer_name)
+        self.set_custom_events(db, layer, layer_name)
+        self.set_automatic_fields(db, layer, layer_name)
+        self.set_layer_constraints(db, layer, layer_name)
+        self.set_form_groups(db, layer, layer_name)
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
         if layer.isSpatial():
@@ -411,8 +376,7 @@ class QGISUtils(QObject):
 
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
-                if layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]:
-                    visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
+                visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
             self.set_layer_visibility(layer, visible)
 
     def set_custom_layer_name(self, db, layer, layer_modifiers=dict()):
@@ -435,19 +399,18 @@ class QGISUtils(QObject):
         if full_layer_name and full_layer_name != layer_name:
             layer.setName(full_layer_name)
 
-    def configure_missing_relations(self, db, layer):
+    def configure_missing_relations(self, db, layer, layer_name):
         """
         Relations between newly loaded layers and already loaded layer cannot
-        be handled by qgis model baker (which only sets relations between
-        loaded layers), so we do it in the Asistente LADM_COL.
+        be handled by QGIS Model Baker (which only sets relations between
+        loaded layers), so we do it in the Asistente LADM_COL!
         """
-        layer_name = db.get_ladm_layer_name(layer)
-
         db_relations = list()
         for relation in self._relations:
             if relation[QueryNames.REFERENCING_LAYER] == layer_name:
                 db_relations.append(relation)
 
+        # Get already existent QGIS relations where this layer is the referencing layer
         qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
         qgis_rels = list()
         for qgis_relation in qgis_relations:
@@ -459,26 +422,24 @@ class QGISUtils(QObject):
             qgis_rels.append(qgis_rel)
 
         new_relations = list()
-        # Compare relations, configure what is missing
+        # Compare relations and configure what is missing
         for db_relation in db_relations:
             found = False
             for qgis_rel in qgis_rels:
                 # We known that referencing_layer already matches, so don't check
                 if qgis_rel[QueryNames.REFERENCED_LAYER] == db_relation[QueryNames.REFERENCED_LAYER] and \
-                    qgis_rel[QueryNames.REFERENCING_FIELD] == db_relation[QueryNames.REFERENCING_FIELD] and \
-                    qgis_rel[QueryNames.REFERENCED_FIELD] == db_relation[QueryNames.REFERENCED_FIELD]:
-
+                        qgis_rel[QueryNames.REFERENCING_FIELD] == db_relation[QueryNames.REFERENCING_FIELD] and \
+                        qgis_rel[QueryNames.REFERENCED_FIELD] == db_relation[QueryNames.REFERENCED_FIELD]:
                     found = True
                     break
 
             if not found:
-                # This relation is not configured into QGIS, let's do it
+                # This relation is not configured in QGIS, let's do it!
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db, db_relation[QueryNames.REFERENCED_LAYER])
+                referenced_layer = self.get_ladm_layer_from_qgis(db, db_relation[QueryNames.REFERENCED_LAYER])
                 if referenced_layer is None:
-                    # Referenced_layer NOT FOUND in layer tree...
-                    continue
+                    continue  # Referenced_layer NOT FOUND in layer tree...
                 new_rel.setReferencedLayer(referenced_layer.id())
                 new_rel.addFieldPair(db_relation[QueryNames.REFERENCING_FIELD],
                     db_relation[QueryNames.REFERENCED_FIELD])
@@ -491,14 +452,12 @@ class QGISUtils(QObject):
         all_qgis_relations.extend(new_relations)
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
 
-    def configure_missing_bags_of_enum(self, db, layer):
+    def configure_missing_bags_of_enum(self, db, layer, layer_name):
         """
         Bags of enums between newly loaded layers and already loaded layers
         cannot be handled by qgis model baker (which only sets relations
         between loaded layers), so we do it in the Asistente LADM_COL.
         """
-        layer_name = db.get_ladm_layer_name(layer)
-
         if layer_name in self._bags_of_enum:
             for k,v in self._bags_of_enum[layer_name].items():
                 # Check if bag of enum field has already a value relation
@@ -507,7 +466,7 @@ class QGISUtils(QObject):
                 if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
                     continue
 
-                domain = self.get_layer_from_layer_tree(db, v[2])
+                domain = self.get_ladm_layer_from_qgis(db, v[2])
                 if domain is not None:
                     cardinality = v[1]
                     domain_table = v[2]
@@ -531,24 +490,18 @@ class QGISUtils(QObject):
                     setup = QgsEditorWidgetSetup('ValueRelation', field_widget_config)
                     layer.setEditorWidgetSetup(idx, setup)
 
-    def set_display_expressions(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_display_expressions(self, db, layer, layer_name):
         dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names)
         if layer_name in dict_display_expressions:
             layer.setDisplayExpression(dict_display_expressions[layer_name])
 
-    def set_layer_variables(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_layer_variables(self, db, layer, layer_name):
         layer_variables = LayerConfig.get_layer_variables(db.names)
         if layer_name in layer_variables:
             for variable, value in layer_variables[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
-    def set_custom_widgets(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_custom_widgets(self, db, layer, layer_name):
         custom_widget_configuration = LayerConfig.get_custom_widget_configuration(db.names)
         if layer_name in custom_widget_configuration:
             editor_widget_setup = QgsEditorWidgetSetup(custom_widget_configuration[layer_name]['type'],
@@ -560,9 +513,7 @@ class QGISUtils(QObject):
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
-    def set_custom_read_only_fiels(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_custom_read_only_fiels(self, db, layer, layer_name):
         custom_read_only_fields = LayerConfig.get_custom_read_only_fields(db.names)
         if layer_name in custom_read_only_fields:
             for field in custom_read_only_fields[layer_name]:
@@ -576,16 +527,12 @@ class QGISUtils(QObject):
             formConfig.setReadOnly(field_idx, read_only)
             layer.setEditFormConfig(formConfig)
 
-    def set_custom_events(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_custom_events(self, db, layer, layer_name):
         if layer_name == db.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
             self._source_handler.handle_source_upload(db, layer, db.names.EXT_ARCHIVE_S_DATA_F)
 
-    def set_layer_constraints(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_layer_constraints(self, db, layer, layer_name):
         layer_constraints = LayerConfig.get_layer_constraints(db.names)
         if layer_name in layer_constraints:
             for field_name, value in layer_constraints[layer_name].items():
@@ -606,9 +553,7 @@ class QGISUtils(QObject):
                 #     QgsFieldConstraints.ConstraintUnique,
                 #     QgsFieldConstraints.ConstraintStrengthSoft)
 
-    def set_form_groups(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_form_groups(self, db, layer, layer_name):
         if layer_name in LADMNames.FORM_GROUPS:
             # Preserve children, clear irc
             irc = layer.editFormConfig().invisibleRootContainer()
@@ -672,24 +617,19 @@ class QGISUtils(QObject):
             irc.addChildElement(new_general_tab)
 
     def configure_automatic_fields(self, db, layer, list_dicts_field_expression):
-
-        layer_name = db.get_ladm_layer_name(layer)
-
         for dict_field_expression in list_dicts_field_expression:
             for field, expression in dict_field_expression.items(): # There should be one key and one value
                 index = layer.fields().indexFromName(field)
                 default_value = QgsDefaultValue(expression, True) # Calculate on update
                 layer.setDefaultValueDefinition(index, default_value)
                 self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
-                    layer_name, field, expression))
+                    layer.name(), field, expression))
 
     def reset_automatic_field(self, db, layer, field):
         self.configure_automatic_fields(db, layer, [{field: ""}])
 
-    def set_automatic_fields(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
-        self.set_automatic_fields_namespace_local_id(db, layer)
+    def set_automatic_fields(self, db, layer, layer_name):
+        self.set_automatic_fields_namespace_local_id(db, layer_name, layer)
 
         if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
             self.configure_automatic_fields(db, layer, [{db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
@@ -698,9 +638,7 @@ class QGISUtils(QObject):
         if layer_name in dict_automatic_values:
             self.configure_automatic_fields(db, layer, dict_automatic_values[layer_name])
 
-    def set_automatic_fields_namespace_local_id(self, db, layer):
-        layer_name = db.get_ladm_layer_name(layer)
-
+    def set_automatic_fields_namespace_local_id(self, db, layer_name, layer):
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(db.names, layer_name)
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(db.names, layer_name)
 
@@ -739,7 +677,7 @@ class QGISUtils(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
-    def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+    def check_if_and_disable_automatic_fields(self, db, layer_name):
         """
         Check settings to see if the user wants to calculate automatic values
         when in batch mode. If not, disable automatic fields and return
@@ -748,12 +686,12 @@ class QGISUtils(QObject):
         settings = QSettings()
         automatic_fields_definition = {}
         if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-            automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
+            automatic_fields_definition = self.disable_automatic_fields(db, layer_name)
 
         return automatic_fields_definition
 
-    def disable_automatic_fields(self, db, layer_name, geometry_type=None):
-        layer = self.get_layer(db, layer_name, geometry_type, True)
+    def disable_automatic_fields(self, db, layer_name):
+        layer = self.get_layer(db, layer_name, True)
         automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
 
         for field in layer.fields():
@@ -761,7 +699,7 @@ class QGISUtils(QObject):
 
         return automatic_fields_definition
 
-    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
         """
         Once the batch load is done, check whether the user wanted to calculate
         automatic values in batch mode or not. If not, restore the expressions
@@ -772,11 +710,10 @@ class QGISUtils(QObject):
             if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 self.enable_automatic_fields(db,
                                              automatic_fields_definition,
-                                             layer_name,
-                                             geometry_type)
+                                             layer_name)
 
-    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
-        layer = self.get_layer(db, layer_name, geometry_type, True)
+    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
+        layer = self.get_layer(db, layer_name, True)
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
@@ -912,8 +849,8 @@ class QGISUtils(QObject):
         return root.findGroup(translated_strings[ERROR_LAYER_GROUP]) is not None
 
     @_activate_processing_plugin
-    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
-        output_layer = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
+        output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
 
         if not output_layer:
@@ -942,8 +879,8 @@ class QGISUtils(QObject):
             return False
 
     @_activate_processing_plugin
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
-        output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, field_mapping=''):
+        output = self.get_layer(db, ladm_col_layer_name, load=True)
         if not output:
             return False
 
@@ -1147,7 +1084,7 @@ class QGISUtils(QObject):
         return (res, msg)
 
     def upload_source_files(self, db):
-        extfile_layer = self.get_layer(db, db.names.EXT_ARCHIVE_S, None, True)
+        extfile_layer = self.get_layer(db, db.names.EXT_ARCHIVE_S, True)
         if not extfile_layer:
             return
 
@@ -1227,8 +1164,7 @@ class QGISUtils(QObject):
 
             list_layers = list()
             # Open edit session in all layers
-            for layer_name, layer_info in layers.items():
-                layer = layers[layer_name][LAYER]
+            for layer_name, layer in layers.items():
                 layer.startEditing()
                 list_layers.append(layer)
 

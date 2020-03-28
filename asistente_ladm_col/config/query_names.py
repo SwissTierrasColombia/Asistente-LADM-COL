@@ -26,3 +26,18 @@ class QueryNames:
 
     VALUE_KEY = 'VALUE'
     CODE_KEY = 'CODE'
+
+    # Queries LADM
+    LEVEL_TABLE = 'level_table'
+    LEVEL_TABLE_NAME = 'level_table_name'
+    LEVEL_TABLE_ALIAS = 'level_table_alias'
+    FILTER_SUB_LEVEL = 'filter_sub_level'
+    TABLE_FIELDS = 'table_fields'
+
+    ATTRIBUTES_RESPONSE = "attributes"
+    ID_FEATURE_RESPONSE = "id"
+
+    SEARCH_KEY_PLOT_T_IDS = 'plot_t_ids'
+    SEARCH_KEY_PARCEL_FMI = 'parcel_fmi'
+    SEARCH_KEY_PARCEL_NUMBER = 'parcel_number'
+    SEARCH_KEY_PREVIOUS_PARCEL_NUMBER = 'previous_parcel_number'

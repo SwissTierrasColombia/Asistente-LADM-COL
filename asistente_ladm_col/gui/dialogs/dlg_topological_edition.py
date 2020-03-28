@@ -22,9 +22,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QListWidgetItem,
                                  QDialogButtonBox)
-from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_topological_edition.ui')
@@ -41,15 +39,15 @@ class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
         self.lst_buildings.clear()
 
         self.plots = {
-            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
-            self.names.OP_BOUNDARY_T: {'name': self.names.OP_BOUNDARY_T, 'geometry': None, LAYER: None},
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: None,
+            self.names.OP_BOUNDARY_T: None,
+            self.names.OP_PLOT_T: None
         }
 
         self.buildings = {
-            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
-            self.names.OP_BUILDING_T: {'name': self.names.OP_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_BUILDING_UNIT_T: {'name': self.names.OP_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.OP_SURVEY_POINT_T: None,
+            self.names.OP_BUILDING_T: None,
+            self.names.OP_BUILDING_UNIT_T: None
         }
 
         icons = {

@@ -7,8 +7,7 @@ from qgis.testing import (start_app,
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             restore_schema,
@@ -32,7 +31,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             return
 
         cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.ladm_data = LADMDATA(cls.qgis_utils)
         cls.names = cls.db_pg.names
 
     def test_get_plots_related_to_parcels(self):
@@ -60,8 +59,10 @@ class TestChangeDetectionsCollected(unittest.TestCase):
 
         print("\nINFO: Validating get plots related to parcels (Case: t_id) with preloaded tables...")
 
-        layers = {self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                  self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
+        layers = {
+            self.names.OP_PLOT_T: None,
+            self.names.COL_UE_BAUNIT_T: None
+        }
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
@@ -70,8 +71,8 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg,
                                                                    parcel_ids_test,
                                                                    self.names.T_ID_F,
-                                                                   plot_layer=layers[self.names.OP_PLOT_T][LAYER],
-                                                                   uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                                                                   plot_layer=layers[self.names.OP_PLOT_T],
+                                                                   uebaunit_table=layers[self.names.COL_UE_BAUNIT_T])
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -106,8 +107,8 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots (Case: t_id) with preloaded tables...")
 
         layers = {
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.OP_PARCEL_T: None,
+            self.names.COL_UE_BAUNIT_T: None
         }
         self.qgis_utils.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
@@ -117,8 +118,8 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg,
                                                                      plot_ids_test,
                                                                      self.names.T_ID_F,
-                                                                     parcel_table=layers[self.names.OP_PARCEL_T][LAYER],
-                                                                     uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                                                                     parcel_table=layers[self.names.OP_PARCEL_T],
+                                                                     uebaunit_table=layers[self.names.COL_UE_BAUNIT_T])
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 

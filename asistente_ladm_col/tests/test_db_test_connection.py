@@ -65,17 +65,6 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertEqual(EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, code)
         db_pg.conn.close()
 
-    def test_pg_test_connection_bad_interlis_ladm_col_models(self):
-        print("\nINFO: Validate test_connection() for PostgreSQL (Bad Interlis, LADM-COL models)...")
-        print("\nINFO: All records for t_ili2db_attrname table where removed...")
-
-        restore_schema('bad_interlis_ladm')
-        db_pg = get_pg_conn('bad_interlis_ladm')
-        res, code, msg = db_pg.test_connection()
-        self.assertFalse(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE)
-        db_pg.conn.close()
-
     def test_pg_test_connection_interlis_ladm_col_models_higher_version(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, LADM-COL with higher models version)...")
 

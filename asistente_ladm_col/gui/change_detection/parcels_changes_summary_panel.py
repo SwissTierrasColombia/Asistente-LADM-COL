@@ -22,8 +22,7 @@ from qgis.gui import QgsPanelWidget
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      SOURCE_DB,
+from asistente_ladm_col.config.general_config import (SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
@@ -136,7 +135,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                   CHANGE_DETECTION_NULL_PARCEL]))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
-        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER])
+        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
+        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T])
         self.utils.iface.zoomToActiveLayer()

@@ -24,8 +24,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsVectorLayer)
 import processing
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      PREDIO_SANCION_FILE_PATH)
+from asistente_ladm_col.config.general_config import PREDIO_SANCION_FILE_PATH
 from asistente_ladm_col.core.supplies.etl_supplies import ETLSupplies
 
 
@@ -37,23 +36,23 @@ class ETLSNC(ETLSupplies):
 
     def initialize_layers(self):
         self.layers = {
-            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
-            self.names.GC_HP_CONDOMINIUM_DATA_T: {'name': self.names.GC_HP_CONDOMINIUM_DATA_T, 'geometry': None, LAYER: None},
-            self.names.GC_COPROPERTY_T: {'name': self.names.GC_COPROPERTY_T, 'geometry': None, LAYER: None},
-            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            self.names.GC_PARCEL_T: None,
+            self.names.GC_OWNER_T: None,
+            self.names.GC_HP_CONDOMINIUM_DATA_T: None,
+            self.names.GC_COPROPERTY_T: None,
+            self.names.GC_ADDRESS_T: None,
+            self.names.GC_BUILDING_UNIT_T: None,
+            self.names.GC_BUILDING_T: None,
+            self.names.GC_PLOT_T: None,
+            self.names.GC_RURAL_DIVISION_T: None,
+            self.names.GC_URBAN_SECTOR_T: None,
+            self.names.GC_RURAL_SECTOR_T: None,
+            self.names.GC_PERIMETER_T: None,
+            self.names.GC_BLOCK_T: None,
+            self.names.GC_NEIGHBOURHOOD_T: None,
+            self.names.GC_COMMISSION_BUILDING_T: None,
+            self.names.GC_COMMISSION_PLOT_T: None,
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
         }
 
     def load_alphanumeric_layers(self):
@@ -95,23 +94,23 @@ class ETLSNC(ETLSupplies):
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
                         'fichamatriz': self.alphanumeric_file_paths['ficha_matriz'],
                         'fichamatrizpredio': self.alphanumeric_file_paths['ficha_matriz_predio'],
-                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T][LAYER],
-                        'gccomisionesconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T][LAYER],
-                        'gccomisionesterreno': self.layers[self.names.GC_COMMISSION_PLOT_T][LAYER],
-                        'gccomisionesunidadconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T][LAYER],
-                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T][LAYER],
-                        'gccopropiedad': self.layers[self.names.GC_COPROPERTY_T][LAYER],
-                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T][LAYER],
-                        'gcmanzana': self.layers[self.names.GC_BLOCK_T][LAYER],
-                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T][LAYER],
-                        'gcpredio': self.layers[self.names.GC_PARCEL_T][LAYER],
-                        'gcpropiedadhorizontal': self.layers[self.names.GC_HP_CONDOMINIUM_DATA_T][LAYER],
-                        'gcpropietario': self.layers[self.names.GC_OWNER_T][LAYER],
-                        'gcsectorrural': self.layers[self.names.GC_RURAL_SECTOR_T][LAYER],
-                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T][LAYER],
-                        'gcterreno': self.layers[self.names.GC_PLOT_T][LAYER],
-                        'gcunidadconstruccion': self.layers[self.names.GC_BUILDING_UNIT_T][LAYER],
-                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T][LAYER],
+                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
+                        'gccomisionesconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
+                        'gccomisionesterreno': self.layers[self.names.GC_COMMISSION_PLOT_T],
+                        'gccomisionesunidadconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T],
+                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T],
+                        'gccopropiedad': self.layers[self.names.GC_COPROPERTY_T],
+                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T],
+                        'gcmanzana': self.layers[self.names.GC_BLOCK_T],
+                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T],
+                        'gcpredio': self.layers[self.names.GC_PARCEL_T],
+                        'gcpropiedadhorizontal': self.layers[self.names.GC_HP_CONDOMINIUM_DATA_T],
+                        'gcpropietario': self.layers[self.names.GC_OWNER_T],
+                        'gcsectorrural': self.layers[self.names.GC_RURAL_SECTOR_T],
+                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T],
+                        'gcterreno': self.layers[self.names.GC_PLOT_T],
+                        'gcunidadconstruccion': self.layers[self.names.GC_BUILDING_UNIT_T],
+                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T],
                         'manzana': self.gdb_layer_paths['U_MANZANA'],
                         'persona': self.alphanumeric_file_paths['persona'],
                         'predio': self.alphanumeric_file_paths['predio'],

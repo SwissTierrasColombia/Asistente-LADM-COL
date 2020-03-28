@@ -21,24 +21,19 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import psycopg2.extras
 from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsDataSourceUri)
+from qgis.core import QgsDataSourceUri
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
-from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import (basic_query,
-                                                                        economic_query,
-                                                                        physical_query,
-                                                                        legal_query,
-                                                                        property_record_card_query)
-from asistente_ladm_col.logic.ladm_col.queries.per_component.pg import logic_validation_queries
-from asistente_ladm_col.logic.ladm_col.queries.reports.ant_report.pg import (ant_map_neighbouring_change_query,
-                                                                             ant_map_plot_query)
-from asistente_ladm_col.logic.ladm_col.queries.reports.annex_17_report.pg import (annex17_building_data_query,
-                                                                                  annex17_point_data_query,
-                                                                                  annex17_plot_data_query)
+from asistente_ladm_col.logic.ladm_col.config.queries.pg import logic_validation_queries
+from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_neighbouring_change_query,
+                                                                            ant_map_plot_query)
+from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
+                                                                                 annex17_point_data_query,
+                                                                                 annex17_plot_data_query)
 from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.core.model_parser import ModelParser
@@ -364,189 +359,6 @@ class PGConnector(DBConnector):
 
         return True, ''
 
-    def get_igac_basic_info(self, **kwargs):
-        """
-        Query by component: Basic info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_id
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = {
-            'plot_t_id': 'NULL',
-            'parcel_fmi': 'NULL',
-            'parcel_number': 'NULL',
-            'previous_parcel_number': 'NULL'
-        }
-        params.update(kwargs)
-
-        query = basic_query.get_igac_basic_query(schema=self.schema,
-                                                 plot_t_id=params['plot_t_id'],
-                                                 parcel_fmi=params['parcel_fmi'],
-                                                 parcel_number=params['parcel_number'],
-                                                 previous_parcel_number=params['previous_parcel_number'],
-                                                 valuation_model=self.valuation_model_exists(),
-                                                 cadastral_form_model=self.cadastral_form_model_exists())
-
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
-        cur.execute(query)
-        records = cur.fetchall()
-        res = [record._asdict() for record in records]
-
-        return res
-
-    def get_igac_legal_info(self, **kwargs):
-        """
-        Query by component: Legal info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_id
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = {
-            'plot_t_id': 'NULL',
-            'parcel_fmi': 'NULL',
-            'parcel_number': 'NULL',
-            'previous_parcel_number': 'NULL'
-        }
-        params.update(kwargs)
-
-        query = legal_query.get_igac_legal_query(schema=self.schema,
-                                                 plot_t_id=params['plot_t_id'],
-                                                 parcel_fmi=params['parcel_fmi'],
-                                                 parcel_number=params['parcel_number'],
-                                                 previous_parcel_number=params['previous_parcel_number'])
-
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
-        cur.execute(query)
-        records = cur.fetchall()
-        res = [record._asdict() for record in records]
-
-        return res
-
-    def get_igac_property_record_card_info(self, **kwargs):
-        """
-        Query by component: Legal info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_id
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = {
-            'plot_t_id': 'NULL',
-            'parcel_fmi': 'NULL',
-            'parcel_number': 'NULL',
-            'previous_parcel_number': 'NULL'
-        }
-        params.update(kwargs)
-
-        query = property_record_card_query.get_igac_property_record_card_query(schema=self.schema,
-                                                                               plot_t_id=params['plot_t_id'],
-                                                                               parcel_fmi=params['parcel_fmi'],
-                                                                               parcel_number=params['parcel_number'],
-                                                                               previous_parcel_number=params[
-                                                                                   'previous_parcel_number'],
-                                                                               cadastral_form_model=self.cadastral_form_model_exists())
-
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
-        cur.execute(query)
-        records = cur.fetchall()
-        res = [record._asdict() for record in records]
-
-        # self.logger.debug(__name__, "PROPERTY RECORD CARD QUERY: {}".format(query))
-
-        return res
-
-    def get_igac_physical_info(self, **kwargs):
-        """
-        Query by component: Physical info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_id
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = {
-            'plot_t_id': 'NULL',
-            'parcel_fmi': 'NULL',
-            'parcel_number': 'NULL',
-            'previous_parcel_number': 'NULL'
-        }
-        params.update(kwargs)
-
-        query = physical_query.get_igac_physical_query(schema=self.schema,
-                                                       plot_t_id=params['plot_t_id'],
-                                                       parcel_fmi=params['parcel_fmi'],
-                                                       parcel_number=params['parcel_number'],
-                                                       previous_parcel_number=params['previous_parcel_number'],
-                                                       valuation_model=self.valuation_model_exists())
-
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
-        cur.execute(query)
-        records = cur.fetchall()
-        res = [record._asdict() for record in records]
-
-        # self.logger.debug(__name__, "PHYSICAL QUERY: {}".format(query))
-
-        return res
-
-    def get_igac_economic_info(self, **kwargs):
-        """
-        Query by component: Economic info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_id
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = {
-            'plot_t_id': 'NULL',
-            'parcel_fmi': 'NULL',
-            'parcel_number': 'NULL',
-            'previous_parcel_number': 'NULL'
-        }
-        params.update(kwargs)
-
-        query = economic_query.get_igac_economic_query(schema=self.schema,
-                                                       plot_t_id=params['plot_t_id'],
-                                                       parcel_fmi=params['parcel_fmi'],
-                                                       parcel_number=params['parcel_number'],
-                                                       previous_parcel_number=params['previous_parcel_number'],
-                                                       valuation_model=self.valuation_model_exists(),
-                                                       cadastral_form_model=self.cadastral_form_model_exists())
-
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
-        cur.execute(query)
-        records = cur.fetchall()
-        res = [record._asdict() for record in records]
-
-        # self.logger.debug(__name__, "ECONOMIC QUERY:".format(query))
-
-        return res
-
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
         res, msg = self.check_and_fix_connection()
         if not res:
@@ -662,6 +474,20 @@ class PGConnector(DBConnector):
         if self._logic_validation_queries is None:
             self._logic_validation_queries = logic_validation_queries.get_logic_validation_queries(self.schema, self.names)
         return self._logic_validation_queries
+
+    def get_ladm_units(self):
+        query = """SELECT DISTINCT tablename || '..' || columnname AS unit_key, ' [' || setting || ']' AS unit_value FROM {schema}.t_ili2db_column_prop WHERE tag LIKE 'ch.ehi.ili2db.unit'""".format(schema=self.schema)
+        res, result = self.execute_sql_query(query)
+
+        dict_units = dict()
+        if res:
+            for unit in result:
+                dict_units[unit['unit_key']] = unit['unit_value']
+            self.logger.debug(__name__, "Units found: {}".format(len(dict_units)))
+        else:
+            self.logger.error_msg(__name__, "Error getting units: {}".format(result))
+
+        return dict_units
 
     def get_models(self, schema=None):
         query = "SELECT distinct split_part(iliname,'.',1) as modelname FROM {schema}.t_ili2db_trafo".format(
