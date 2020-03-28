@@ -2,7 +2,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.queries_config_utils impor
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
-                                                                  EvalExprOwnField,
+                                                                  EvalExpressionOwnField,
                                                                   RelatedOwnFieldObject,
                                                                   FilterSubLevel)
 from qgis.core import QgsExpression
@@ -12,8 +12,8 @@ def get_igac_basic_query(names, ladm_units):
     required_address_fields = [
         DomainOwnField(names.EXT_ADDRESS_S_ADDRESS_TYPE_F, "Tipo dirección", names.EXT_ADDRESS_TYPE_D),
         OwnField(names.EXT_ADDRESS_S_POSTAL_CODE_F, 'Código postal'),
-        EvalExprOwnField("Dirección",
-                         QgsExpression("""trim(
+        EvalExpressionOwnField("Dirección",
+                               QgsExpression("""trim(
                                 coalesce(get_domain_value_from_code( '{dominio_clase_via_principal}',  "{clase_via_principal}" , False, False)||' ', '') ||
                                 coalesce({valor_via_principal} || ' ', '') ||
                                 coalesce({letra_via_principal} || ' ', '') ||

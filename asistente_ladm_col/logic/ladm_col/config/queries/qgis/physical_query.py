@@ -3,7 +3,7 @@ from asistente_ladm_col.config.enums import EnumSpatialOperationType
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
-                                                                  EvalExprOwnField,
+                                                                  EvalExpressionOwnField,
                                                                   RelatedOwnFieldValue,
                                                                   SpatialFilterSubLevel,
                                                                   FilterSubLevel)
@@ -107,7 +107,7 @@ def get_igac_physical_query(names, ladm_units):
                                                                            names.POINT_BFS_T_OP_BOUNDARY_F)
                                                             ),
                 QueryNames.TABLE_FIELDS: [
-                    EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                    EvalExpressionOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
             },
             '4' + QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_BOUNDARY_T,
@@ -128,7 +128,7 @@ def get_igac_physical_query(names, ladm_units):
                                                                            names.POINT_BFS_T_OP_BOUNDARY_F)
                                                             ),
                 QueryNames.TABLE_FIELDS: [
-                    EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                    EvalExpressionOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
             },
             '6' + QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_SURVEY_POINT_T,
@@ -137,7 +137,7 @@ def get_igac_physical_query(names, ladm_units):
                                                                    names.OP_PLOT_T,
                                                                    EnumSpatialOperationType.INTERSECTS),
                 QueryNames.TABLE_FIELDS: [
-                    EvalExprOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
+                    EvalExpressionOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
             },
             '7' + QueryNames.LEVEL_TABLE: {
                 QueryNames.LEVEL_TABLE_NAME: names.OP_SPATIAL_SOURCE_T,

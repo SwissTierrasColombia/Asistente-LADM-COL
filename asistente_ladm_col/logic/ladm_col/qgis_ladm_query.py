@@ -1,3 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-02-24
+        git sha              : :%H$
+        copyright            : (C) 2020 by Leonardo Cardona (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import processing
 
 from qgis.core import (QgsFeatureRequest,
@@ -14,7 +32,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.qgis.property_record_card_
 
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
-                                                                  EvalExprOwnField,
+                                                                  EvalExpressionOwnField,
                                                                   AbsRelatedFields,
                                                                   RelatedOwnFieldObject,
                                                                   RelatedOwnFieldValue,
@@ -52,7 +70,7 @@ class QGISLADMQuery:
 
     def _execute_ladm_query(self, db, query_type, kwargs):
         params = QGISLADMQuery._get_parameters(kwargs)
-        filter_field_values = self._get_plots_ids_from_params(db, params)
+        filter_field_values = self._get_plot_ids_from_params(db, params)
 
         response = dict()
         query = dict()
@@ -72,65 +90,66 @@ class QGISLADMQuery:
         self._execute_query(db, response, query[QueryNames.LEVEL_TABLE], filter_field_values)
         return response
 
-    def _get_plots_ids_from_params(self, db, params):
+    def _get_plot_ids_from_params(self, db, params):
         """
-        Get plots ids depending of a defined filter in params
+        Get plot ids depending on a defined filter in params
             SEARCH_KEY_PARCEL_FMI: Get plots id associated with parcel filter by parcel FMI
             SEARCH_KEY_PARCEL_NUMBER: Get plots id associated with parcel filter by parcel number
             SEARCH_KEY_PREVIOUS_PARCEL_NUMBER: Get plots id associated with parcel filter by previous parcel number
         """
-        plots_ids = list()
+        plot_ids = list()
 
         if params[QueryNames.SEARCH_KEY_PLOT_T_IDS] != 'NULL':
-            plots_ids = params[QueryNames.SEARCH_KEY_PLOT_T_IDS]
+            plot_ids = params[QueryNames.SEARCH_KEY_PLOT_T_IDS]
 
         if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL' or params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL' or params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
+            layers = {db.names.OP_PARCEL_T: None,
+                      db.names.COL_UE_BAUNIT_T: None}
+            self.qgis_utils.get_layers(db, layers, False)
 
-            parcel_layer = self.qgis_utils.get_layer(db, db.names.OP_PARCEL_T, False)
-            ue_baunit_layer = self.qgis_utils.get_layer(db, db.names.COL_UE_BAUNIT_T, False)
+            if layers:
+                parcel_layer = layers[db.names.OP_PARCEL_T]
+                ue_baunit_layer = layers[db.names.COL_UE_BAUNIT_T]
 
-            if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL':
-                expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_FMI_F, params[QueryNames.SEARCH_KEY_PARCEL_FMI]))
-                plots_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
+                if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL':
+                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_FMI_F, params[QueryNames.SEARCH_KEY_PARCEL_FMI]))
+                    plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
-            if params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL':
-                expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PARCEL_NUMBER]))
-                plots_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
+                if params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL':
+                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PARCEL_NUMBER]))
+                    plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
-            if params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
-                expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER]))
-                plots_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
+                if params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
+                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER]))
+                    plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
-        return plots_ids
+        return plot_ids
 
     @staticmethod
-    def _filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr_select_parcels):
+    def _filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expression_select_parcels):
         """
         Get plots ids depending of a defined filter expression
         """
-
         # Only required field in parcel layer
         fields_idx = list()
         for field in [db.names.T_ID_F, db.names.OP_PARCEL_T_FMI_F, db.names.OP_PARCEL_T_PARCEL_NUMBER_F, db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F]:
-            field_idx = parcel_layer.fields().indexFromName(field)
-            fields_idx.append(field_idx)
+            fields_idx.append(parcel_layer.fields().indexFromName(field))
 
-        request = QgsFeatureRequest(expr_select_parcels)
+        request = QgsFeatureRequest(expression_select_parcels)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes(fields_idx)  # Note: this adds a new flag
-        select_parcels = parcel_layer.getFeatures(request)
-        parcels_ids = [select_parcel[db.names.T_ID_F] for select_parcel in select_parcels]
+        parcels = parcel_layer.getFeatures(request)
+        parcel_ids = [select_parcel[db.names.T_ID_F] for select_parcel in parcels]
 
         # Only required field in ue baunit layer
         field_idx = parcel_layer.fields().indexFromName(db.names.COL_UE_BAUNIT_T_OP_PLOT_F)
-        expr_select_plots = QgsExpression('{} in ({}) AND {} IS NOT NULL'.format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ','.join([str(parcel_id) for parcel_id in parcels_ids]), db.names.COL_UE_BAUNIT_T_OP_PLOT_F))
-        request = QgsFeatureRequest(expr_select_plots)
+        expression_select_plots = QgsExpression('{} in ({}) AND {} IS NOT NULL'.format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ','.join([str(parcel_id) for parcel_id in parcel_ids]), db.names.COL_UE_BAUNIT_T_OP_PLOT_F))
+        request = QgsFeatureRequest(expression_select_plots)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-        select_plots = ue_baunit_layer.getFeatures(request)
-        plots_ids = [select_plot[db.names.COL_UE_BAUNIT_T_OP_PLOT_F] for select_plot in select_plots]
+        plots = ue_baunit_layer.getFeatures(request)
 
-        return plots_ids
+        return [plot[db.names.COL_UE_BAUNIT_T_OP_PLOT_F] for plot in plots]  # Plot ids
 
     def _execute_query(self, db, response, level_dict, filter_field_values):
         """
@@ -154,72 +173,71 @@ class QGISLADMQuery:
             if isinstance(required_table_field, OwnField):
                 dict_fields_and_alias[required_table_field.field_name] = required_table_field.field_alias
 
-        fields_names = list(dict_fields_and_alias.keys())
-        select_features = self._get_features(layer, db.names.T_ID_F, fields_names, t_id_features)
+        field_names = list(dict_fields_and_alias.keys())
+        features = self._get_features(layer, db.names.T_ID_F, field_names, t_id_features)
 
-        for select_feature in select_features:
+        for feature in features:
             node_response = dict()
-            node_response[QueryNames.ID_FEATURE_RESPONSE] = select_feature[db.names.T_ID_F]
+            node_response[QueryNames.ID_FEATURE_RESPONSE] = feature[db.names.T_ID_F]
 
             node_fields_response = dict()
             for field in level_dict[QueryNames.TABLE_FIELDS]:
                 if isinstance(field, DomainOwnField):
                     domain_table = field.domain_table
-                    domain_code = select_feature[field.field_name]
+                    domain_code = feature[field.field_name]
                     domain_value = self.ladm_data.get_domain_value_from_code(db, domain_table, domain_code, False)
                     node_fields_response[field.field_alias] = domain_value
                 elif isinstance(field, OwnField):
-                    node_fields_response[field.field_alias] = select_feature[field.field_name] if select_feature[field.field_name] != NULL else None
-                elif isinstance(field, EvalExprOwnField):
-                    node_fields_response[field.field_alias] = self._get_eval_expr_value(layer, select_feature, field.expression)
+                    node_fields_response[field.field_alias] = feature[field.field_name] if feature[field.field_name] != NULL else None
+                elif isinstance(field, EvalExpressionOwnField):
+                    node_fields_response[field.field_alias] = self._get_eval_expr_value(layer, feature, field.expression)
                 elif isinstance(field, AbsRelatedFields):
                     if isinstance(field, RelatedRemoteFieldObject):
-                        node_fields_response[field.field_alias] = self._get_relate_remote_field_object(db, field, [select_feature[db.names.T_ID_F]])
+                        node_fields_response[field.field_alias] = self._get_relate_remote_field_object(db, field, [feature[db.names.T_ID_F]])
                     elif isinstance(field, RelatedRemoteFieldValue):
-                        node_fields_response[field.field_alias] = self._get_relate_remote_field_value(db, field, [select_feature[db.names.T_ID_F]])
+                        node_fields_response[field.field_alias] = self._get_relate_remote_field_value(db, field, [feature[db.names.T_ID_F]])
                     elif isinstance(field, RelatedOwnFieldObject):
-                        node_fields_response[field.field_alias] = self._get_relate_own_field_object(db, field, [select_feature[db.names.T_ID_F]])
+                        node_fields_response[field.field_alias] = self._get_relate_own_field_object(db, field, [feature[db.names.T_ID_F]])
                     elif isinstance(field, RelatedOwnFieldValue):
-                        node_fields_response[field.field_alias] = self._get_relate_own_field_value(db, field, [select_feature[db.names.T_ID_F]])
+                        node_fields_response[field.field_alias] = self._get_relate_own_field_value(db, field, [feature[db.names.T_ID_F]])
 
             for dict_key in level_dict:
                 if dict_key.endswith(QueryNames.LEVEL_TABLE):
-                    self._execute_query(db, node_fields_response, level_dict[dict_key], [select_feature[db.names.T_ID_F]])
+                    self._execute_query(db, node_fields_response, level_dict[dict_key], [feature[db.names.T_ID_F]])
 
             node_response[QueryNames.ATTRIBUTES_RESPONSE] = node_fields_response
             response[level_alias].append(node_response)
 
     def _get_relate_remote_field_object(self, db, field, filter_field_values):
-        filter_sub_level = field.filter_sub_level
-        t_id_features = self._get_relate_own_field_object(db, filter_sub_level, filter_field_values)
+        t_id_features = self._get_relate_own_field_object(db, field.filter_sub_level, filter_field_values)
         return self._get_relate_own_field_value(db, field, t_id_features)
 
     def _get_relate_remote_field_value(self, db, field, filter_field_values):
-        filter_sub_level = field.filter_sub_level
-        t_id_features = self._get_features_ids_sub_level(db, filter_sub_level, filter_field_values)
+        t_id_features = self._get_features_ids_sub_level(db, field.filter_sub_level, filter_field_values)
         return self._get_relate_own_field_value(db, field, t_id_features)
 
     def _get_relate_own_field_object(self, db, field, filter_field_values):
         """
         Get relate own field object
+
         :param db: database connection instance
-        :field AbsRelatedFields
-        :filter_field_values: list of field values used to apply the filter
-        return list of dict with fields required
+        :param field: AbsRelatedFields
+        :param filter_field_values: list of field values used to apply the filter
+        return list of dict with required fields
         """
-        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
-        dict_fields_and_alias =  self._get_dict_fields_and_alias(field.relate_table_fields)
-        fields_names = list(dict_fields_and_alias.keys())
-        fields_names.append(db.names.T_ID_F)
+        referenced_layer = self.qgis_utils.get_layer(db, field.referenced_layer, False)
+        dict_fields_and_alias =  self._get_dict_fields_and_alias(field.required_fields_referenced_layer)
+        field_names = list(dict_fields_and_alias.keys())
+        field_names.append(db.names.T_ID_F)
 
-        features = self._get_features(relate_layer, field.relate_table_filter_field, fields_names, filter_field_values)
+        features = self._get_features(referenced_layer, field.referenced_field, field_names, filter_field_values)
 
-        list_relate_result = list()
+        list_result = list()
         for feature in features:
-            dict_relate_field = dict()
-            dict_relate_field[QueryNames.ID_FEATURE_RESPONSE] = feature[db.names.T_ID_F]
+            dict_referenced_field = dict()
+            dict_referenced_field[QueryNames.ID_FEATURE_RESPONSE] = feature[db.names.T_ID_F]
             dict_attributes = dict()
-            for field_relation in field.relate_table_fields:
+            for field_relation in field.required_fields_referenced_layer:
                 if isinstance(field_relation, DomainOwnField):
                     domain_table = field_relation.domain_table
                     domain_code = feature[field_relation.field_name]
@@ -227,71 +245,73 @@ class QGISLADMQuery:
                     dict_attributes[field_relation.field_alias] = domain_value
                 elif isinstance(field_relation, OwnField):
                     dict_attributes[field_relation.field_alias] = feature[field_relation.field_name] if feature[field_relation.field_name] != NULL else None
-                elif isinstance(field_relation, EvalExprOwnField):
-                    dict_attributes[field_relation.field_alias] = self._get_eval_expr_value(relate_layer, feature, field_relation.expression)
+                elif isinstance(field_relation, EvalExpressionOwnField):
+                    dict_attributes[field_relation.field_alias] = self._get_eval_expr_value(referenced_layer, feature, field_relation.expression)
 
-            dict_relate_field[QueryNames.ATTRIBUTES_RESPONSE] = dict_attributes
-            list_relate_result.append(dict_relate_field)
+            dict_referenced_field[QueryNames.ATTRIBUTES_RESPONSE] = dict_attributes
+            list_result.append(dict_referenced_field)
 
-        return list_relate_result
+        return list_result
 
     def _get_relate_own_field_value(self, db, field, filter_field_values):
         """
-        Get relate own field value
+        Get relate own field value.
+
         :param db: database connection instance
         :param field: AbsRelatedFields
         :param filter_field_values: list of field values used to apply the filter
         :return required field value
         """
-        relate_layer = self.qgis_utils.get_layer(db, field.relate_table, False)
-        required_field = field.relate_table_field
-        dict_fields_and_alias = self._get_dict_fields_and_alias([required_field])
-        fields_names = list(dict_fields_and_alias.keys())
-        fields_names.append(db.names.T_ID_F)
+        referenced_layer = self.qgis_utils.get_layer(db, field.referenced_layer, False)
+        required_field_referenced_layer = field.required_field_referenced_layer
+        dict_fields_and_alias = self._get_dict_fields_and_alias([required_field_referenced_layer])
+        field_names = list(dict_fields_and_alias.keys())
+        field_names.append(db.names.T_ID_F)
 
-        features = self._get_features(relate_layer, field.relate_table_filter_field, fields_names, filter_field_values)
+        features = self._get_features(referenced_layer, field.referenced_field, field_names, filter_field_values)
 
         field_value = None
         for feature in features:
-            if isinstance(required_field, DomainOwnField):
-                domain_table = required_field.domain_table
-                domain_code = feature[required_field.field_name]
+            if isinstance(required_field_referenced_layer, DomainOwnField):
+                domain_table = required_field_referenced_layer.domain_table
+                domain_code = feature[required_field_referenced_layer.field_name]
                 domain_value = self.ladm_data.get_domain_value_from_code(db, domain_table, domain_code, False)
                 field_value = domain_value
-            elif isinstance(required_field, OwnField):
-                field_value = feature[required_field.field_name] if feature[required_field.field_name] != NULL else None
-            elif isinstance(required_field, EvalExprOwnField):
-                field_value = self._get_eval_expr_value(relate_layer, feature, required_field.expression)
+            elif isinstance(required_field_referenced_layer, OwnField):
+                field_value = feature[required_field_referenced_layer.field_name] if feature[required_field_referenced_layer.field_name] != NULL else None
+            elif isinstance(required_field_referenced_layer, EvalExpressionOwnField):
+                field_value = self._get_eval_expr_value(referenced_layer, feature, required_field_referenced_layer.expression)
 
         return field_value
 
     def _get_features_ids_by_filter(self, db, filter_sub_level, filter_field_values):
         """
-        Get features ids using filter.
-        :param db: database connection instance
-        :filter_sub_level LADM Query filter
-        :filter_field_values it is a list with only one item
+        Get feature ids using filter.
 
-        return list features ids filters
+        :param db: database connection instance
+        :param filter_sub_level: LADM Query filter
+        :param filter_field_values: it is a list with only one item
+
+        return list feature ids filters
         """
-        sub_level_table = filter_sub_level.sub_level_table
-        required_field = filter_sub_level.required_field_sub_level_table
-        sub_level_layer = self.qgis_utils.get_layer(db, sub_level_table, False)
+        referenced_layer = filter_sub_level.referenced_layer
+        required_field_referenced_layer = filter_sub_level.required_field_referenced_layer
+        sub_level_layer = self.qgis_utils.get_layer(db, referenced_layer, False)
 
         if isinstance(filter_sub_level, FilterSubLevel):
-            filter_field = filter_sub_level.filter_field_in_sub_level_table
-            expression = QgsExpression("{} in ({}) and {} is not null".format(filter_field, ', '.join(str(filter_field_value) for filter_field_value in filter_field_values), required_field))
+            referenced_field = filter_sub_level.referenced_field
+            expression = QgsExpression("{} in ({}) and {} is not null".format(referenced_field, ', '.join(str(filter_field_value) for filter_field_value in filter_field_values), required_field_referenced_layer))
             request = QgsFeatureRequest(expression)
-            field_idx = sub_level_layer.fields().indexFromName(required_field)
+            field_idx = sub_level_layer.fields().indexFromName(required_field_referenced_layer)
             request.setFlags(QgsFeatureRequest.NoGeometry)
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
-            features_ids = [feature[required_field] for feature in sub_level_layer.getFeatures(request)]
-            return features_ids
+            feature_ids = [feature[required_field_referenced_layer] for feature in sub_level_layer.getFeatures(request)]
+            return feature_ids
 
         elif isinstance(filter_sub_level, SpatialFilterSubLevel):
-            level_table = filter_sub_level.level_table
+            referencing_layer = filter_sub_level.referencing_layer
             spatial_operation = filter_sub_level.spatial_operation
-            level_layer = self.qgis_utils.get_layer(db, level_table, False)
+            level_layer = self.qgis_utils.get_layer(db, referencing_layer, False)
             filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'memory:'})['OUTPUT']
 
             parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'memory:'}
@@ -304,13 +324,14 @@ class QGISLADMQuery:
 
             filter_sub_level_layer = processing.run("native:extractbylocation", parameters)['OUTPUT']
 
-            features_ids = [feature[required_field] for feature in filter_sub_level_layer.getFeatures()]
-            return features_ids
+            feature_ids = [feature[required_field_referenced_layer] for feature in filter_sub_level_layer.getFeatures()]
+            return feature_ids
 
     def _get_features_ids_sub_level(self, db, filter_sub_level, filter_field_values):
         """
-        Get features t_ids values associate to sub level filter.
-        this method is recursive and its recursion ends when all the filters it has nested are resolved.
+        Get feature t_id values associated to sub level filter.
+        This method is recursive and its recursion ends when all the filters it has nested are resolved.
+
         :param db: database connection instance
         :param filter_sub_level: custom LADM Query Filter
         :param filter_field_values: list of field values to be filtered
@@ -334,9 +355,8 @@ class QGISLADMQuery:
         scope.setFeature(eval_feature)
         context.appendScope(scope)
         expression.prepare(context)
-        display_value = expression.evaluate(context)
 
-        return display_value
+        return expression.evaluate(context)
 
     @staticmethod
     def _get_dict_fields_and_alias(table_fields):
@@ -347,22 +367,19 @@ class QGISLADMQuery:
         return dict_fields_and_alias
 
     @staticmethod
-    def _get_features(layer, filter_field, fields_names, t_id_features):
+    def _get_features(layer, referenced_field, field_names, t_id_features):
         if not t_id_features:
             return list()
 
-        fields_idx = list()
-        for field in fields_names:
-            field_idx = layer.fields().indexFromName(field)
-            fields_idx.append(field_idx)
+        fields_idx = [layer.fields().indexFromName(field) for field in field_names]
 
-        expression = QgsExpression('{} in ({})'.format(filter_field, ', '.join( str(t_id_feature) for t_id_feature in t_id_features)))
+        expression = QgsExpression('{} in ({})'.format(referenced_field, ', '.join( str(t_id_feature) for t_id_feature in t_id_features)))
         request = QgsFeatureRequest(expression)
-
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes(fields_idx)  # Note: this adds a new flag
-        select_features = [feature for feature in layer.getFeatures(request)]
-        return select_features
+
+        features = [feature for feature in layer.getFeatures(request)]
+        return features
 
     @staticmethod
     def _get_parameters(kwargs):

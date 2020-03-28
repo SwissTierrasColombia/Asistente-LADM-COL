@@ -2,7 +2,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.queries_config_utils impor
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
-                                                                  EvalExprOwnField,
+                                                                  EvalExpressionOwnField,
                                                                   RelatedOwnFieldObject,
                                                                   RelatedOwnFieldValue,
                                                                   RelatedRemoteFieldValue,
@@ -48,8 +48,8 @@ def get_igac_legal_query(names, ladm_units):
                               names.OP_PARTY_CONTACT_T_OP_PARTY_F),
         RelatedRemoteFieldValue(names.FRACTION_S,
                                 names.FRACTION_S,
-                                EvalExprOwnField("fracción",
-                                                QgsExpression(
+                                EvalExpressionOwnField("fracción",
+                                                       QgsExpression(
                                                     "round({numerador}/{denominador} * 100, 2)".format(
                                                         denominador=names.FRACTION_S_DENOMINATOR_F,
                                                         numerador=names.FRACTION_S_NUMERATOR_F
