@@ -36,7 +36,10 @@ TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 PREDIO_SANCION_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_sancion.csv')  # Default SNC predio_sancion.csv file
-BUILDING_UNIT_CSVT_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'unidad_construccion.csvt')  # Default Cobol BLO.lis file
+FICHA_MATRIZ_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz.csv')  # Default SNC ficha_matriz.csv file
+FICHA_MATRIZ_PREDIO_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_predio.csv')  # Default SNC ficha_matriz_predio.csv file
+FICHA_MATRIZ_TORRE_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_torre.csv')  # Default SNC ficha_matriz_torre.csv file
+BUILDING_UNIT_CSVT_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'unidad_construccion.csvt')  # Default SNC unidad_construccion.csvt file
 
 LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 
