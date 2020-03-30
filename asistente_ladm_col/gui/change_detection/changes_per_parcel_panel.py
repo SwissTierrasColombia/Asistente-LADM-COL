@@ -31,7 +31,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsRectangle,
                        QgsGeometry,
-                       QgsProject,
                        NULL)
 
 from qgis.gui import (QgsPanelWidget,
@@ -41,14 +40,14 @@ from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE)
-from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY_KEY,
-                                                                   DICT_KEY_PARTIES,
-                                                                   PARCEL_NUMBER_SEARCH_KEY,
-                                                                   PREVIOUS_PARCEL_NUMBER_SEARCH_KEY,
-                                                                   FMI_PARCEL_SEARCH_KEY,
-                                                                   get_collected_search_options,
-                                                                   get_supplies_search_options,
-                                                                   DICT_ALIAS_KEYS_CHANGE_DETECTION)
+from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY,
+                                                               DICT_KEY_PARTIES,
+                                                               PARCEL_NUMBER_SEARCH_KEY,
+                                                               PREVIOUS_PARCEL_NUMBER_SEARCH_KEY,
+                                                               FMI_PARCEL_SEARCH_KEY,
+                                                               get_collected_search_options,
+                                                               get_supplies_search_options,
+                                                               DICT_ALIAS_KEYS_CHANGE_DETECTION)
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.decorators import _with_override_cursor

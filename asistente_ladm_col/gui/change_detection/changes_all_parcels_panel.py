@@ -33,13 +33,13 @@ from qgis.gui import QgsPanelWidget
 from asistente_ladm_col.config.general_config import (SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.change_detection_config import (STATUS_COLORS,
-                                                                   PARCEL_STATUS_DISPLAY,
-                                                                   PARCEL_STATUS,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
-                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                                   CHANGE_DETECTION_NEW_PARCEL)
+from asistente_ladm_col.config.change_detection_config import (STATUS_COLORS,
+                                                               PARCEL_STATUS_DISPLAY,
+                                                               PARCEL_STATUS,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               CHANGE_DETECTION_MISSING_PARCEL,
+                                                               CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                               CHANGE_DETECTION_NEW_PARCEL)
 
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.utils import get_ui_class

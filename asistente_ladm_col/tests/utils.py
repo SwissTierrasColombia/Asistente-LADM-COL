@@ -27,7 +27,7 @@ from qgis.core import (QgsApplication,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
-from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
+from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 

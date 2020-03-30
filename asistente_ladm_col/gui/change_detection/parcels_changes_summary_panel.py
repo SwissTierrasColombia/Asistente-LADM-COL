@@ -25,15 +25,15 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 from asistente_ladm_col.config.general_config import (SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
-                                                                   CHANGE_DETECTION_PARCEL_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_REMAINS,
-                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                                   CHANGE_DETECTION_NULL_PARCEL,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   PARCEL_STATUS)
+from asistente_ladm_col.config.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                               CHANGE_DETECTION_MISSING_PARCEL,
+                                                               CHANGE_DETECTION_PARCEL_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_REMAINS,
+                                                               CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                               CHANGE_DETECTION_NULL_PARCEL,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               PARCEL_STATUS)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.utils import get_ui_class
 

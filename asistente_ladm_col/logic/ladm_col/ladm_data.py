@@ -23,18 +23,18 @@ from qgis.core import (NULL,
                        QgsVectorLayer)
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.config.general_config import DEFAULT_LOG_MODE
-from asistente_ladm_col.config.gui.change_detection_config import (PLOT_GEOMETRY_KEY,
-                                                                   DICT_KEY_PARTIES,
-                                                                   DICT_KEY_PARCEL_T_DEPARTMENT_F,
-                                                                   DICT_KEY_PARCEL_T_FMI_F,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   DICT_KEY_PARCEL_T_CONDITION_F,
-                                                                   DICT_KEY_PARCEL_T_NAME_F,
-                                                                   DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
-                                                                   DICT_KEY_PARTY_T_DOCUMENT_ID_F,
-                                                                   DICT_KEY_PARTY_T_NAME_F,
-                                                                   DICT_KEY_PARTY_T_RIGHT,
-                                                                   DICT_KEY_PLOT_T_AREA_F)
+from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY,
+                                                               DICT_KEY_PARTIES,
+                                                               DICT_KEY_PARCEL_T_DEPARTMENT_F,
+                                                               DICT_KEY_PARCEL_T_FMI_F,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               DICT_KEY_PARCEL_T_CONDITION_F,
+                                                               DICT_KEY_PARCEL_T_NAME_F,
+                                                               DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+                                                               DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+                                                               DICT_KEY_PARTY_T_NAME_F,
+                                                               DICT_KEY_PARTY_T_RIGHT,
+                                                               DICT_KEY_PLOT_T_AREA_F)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger

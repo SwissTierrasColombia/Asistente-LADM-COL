@@ -38,17 +38,16 @@ from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
-                                                                   CHANGE_DETECTION_PARCEL_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_REMAINS,
-                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                                   CHANGE_DETECTION_NULL_PARCEL,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   PARCEL_STATUS,
-                                                                   PARCEL_STATUS_DISPLAY,
-                                                                   PLOT_GEOMETRY_KEY)
+from asistente_ladm_col.config.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                               CHANGE_DETECTION_PARCEL_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_REMAINS,
+                                                               CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                               CHANGE_DETECTION_NULL_PARCEL,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               PARCEL_STATUS,
+                                                               PARCEL_STATUS_DISPLAY,
+                                                               PLOT_GEOMETRY_KEY)
 
 DOCKWIDGET_UI = get_ui_class('change_detection/dockwidget_change_detection.ui')
 

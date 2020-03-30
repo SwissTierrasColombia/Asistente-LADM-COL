@@ -42,10 +42,9 @@ DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
 
 
 class LoadLayersDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
         self.names = self._db.names
