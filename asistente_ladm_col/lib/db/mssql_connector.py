@@ -26,6 +26,9 @@ from qgis.core import (Qgis, QgsApplication)
 from ...utils.model_parser import ModelParser
 from .db_connector import (DBConnector, EnumTestLevel)
 
+from asistente_ladm_col.config.enums import (EnumTestLevel,
+                                             EnumUserLevel,
+                                             EnumTestConnectionMsg)
 
 class MssqlConnector(DBConnector):
 
@@ -44,10 +47,9 @@ class MssqlConnector(DBConnector):
 
     def __init__(self, uri, conn_dict=dict()):
         DBConnector.__init__(self, uri, conn_dict)
-        self.mode = 'mssql'
+        self.engine = 'mssql'
         self.conn = None
         self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
-        self.log = QgsApplication.messageLog()
         self.provider = 'mssql'
         self._tables_info = None
 
@@ -135,7 +137,7 @@ class MssqlConnector(DBConnector):
 
         return False
 
-    def test_connection(self, test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
         """
         :param test_level: (EnumTestLevel) level of connection
         """
@@ -145,21 +147,21 @@ class MssqlConnector(DBConnector):
             uri = self.get_connection_uri(self._dict_conn_params, 0)
             res, msg = self.open_connection()
             if res:
-                return (True, QCoreApplication.translate("MSSQLConnector",
-                                                         "Connection to server was successful."))
+                return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate("MSSQLConnector",
+                                                         "Connection to server was successful.")
             else:
-                return (False, msg)
+                return False, EnumTestConnectionMsg.CONNECTION_TO_SERVER_FAILED, msg
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'] or self._dict_conn_params['database'] == 'master':
-                return (False, QCoreApplication.translate("MSSQLConnector",
-                    "You should first select a database."))
+                return False, EnumTestConnectionMsg.DATABASE_NOT_FOUND, QCoreApplication.translate("MSSQLConnector",
+                    "You should first select a database.")
 
         # Client side check
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
         try:
             # Server side check
@@ -171,45 +173,63 @@ class MssqlConnector(DBConnector):
             self.conn.close()
             res, msg = self.open_connection()
             if not res:
-                return (res, msg)
+                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
         if test_level == EnumTestLevel.DB:  # Just in the DB case
-            return (True, QCoreApplication.translate("MSSQLConnector",
-                                                     "Connection to the database was successful."))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("MSSQLConnector",
+                                                     "Connection to the database was successful.")
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             # TODO # is 'dbo' database valid?  self._dict_conn_params['schema'] == 'dbo':
             if not self._dict_conn_params['schema']:
-                return (False, QCoreApplication.translate("MSSQLConnector",
-                    "You should first select a schema."))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("MSSQLConnector",
+                    "You should first select a schema.")
             if not self._schema_exists():
-                return (False, QCoreApplication.translate("MSSQLConnector",
-                    "The schema '{}' does not exist in the database!").format(self.schema))
+                return False, EnumTestConnectionMsg.SCHEMA_NOT_FOUND, QCoreApplication.translate("MSSQLConnector",
+                    "The schema '{}' does not exist in the database!").format(self.schema)
             # TODO Test schema permissions (*)
 
         if test_level == EnumTestLevel.DB_SCHEMA:
-            return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the database schema was successful."))
+            return True,EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database schema was successful.")
 
         if test_level & EnumTestLevel._CHECK_LADM:
             if not self._metadata_exists():
-                return (False, QCoreApplication.translate("MSSQLConnector",
-                        "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+                return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate("MSSQLConnector",
+                                                          "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
+                    self.schema)
+
+            if self.get_ili2db_version() != 4:
+                return False, EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, QCoreApplication.translate("MSSQLConnector",
+                                                          "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
+                    self.schema)
 
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
-            res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
+            res, code, msg = self.model_parser.validate_cadastre_model_version() //code
             if not res_parser:
-                return (False, msg_parser)
+                return res, code, msg
+
+            # Validate table and field names
+            #if not self._table_and_field_names:
+            #    self._initialize_names()
+
+            #res, msg = self.names.test_names(self._table_and_field_names)
+            #if not res:
+            #    return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
+            #                                                                                        "Table/field names from the DB are not correct. Details: {}.").format(
+            #        msg)
 
         if test_level == EnumTestLevel.LADM:
-            return (True, QCoreApplication.translate("MSSQLConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
+            return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
+                "MSSQLConnector", "The schema '{}' has a valid LADM_COL structure!").format(
+                self.schema)
 
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            return (True, QCoreApplication.translate("MSSQLConnector", "Connection successful!"))
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate("MSSQLConnector", "Connection successful!")
 
-        return (False, QCoreApplication.translate("MSSQLConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("MSSQLConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
 
     def open_connection(self, uri=None):
         if uri is None:
@@ -221,19 +241,19 @@ class MssqlConnector(DBConnector):
             try:
                 self.conn = pyodbc.connect(uri)
             except (ProgrammingError, InterfaceError, pyodbc.Error, pyodbc.OperationalError) as e:
-                return (False, QCoreApplication.translate("MssqlConnector", "Could not open connection! Details: {}".format(e)))
+                return False, QCoreApplication.translate("MssqlConnector", "Could not open connection! Details: {}".format(e))
 
-            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         else:
-            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.logger.info(__name__, "Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
-        return (True, QCoreApplication.translate("MssqlConnector", "Connection is open!"))
+        return True, QCoreApplication.translate("MssqlConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
+            self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
-            self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def get_dbnames_list(self, uri):
         res, msg = self.test_connection(EnumTestLevel.SERVER)
@@ -274,9 +294,9 @@ class MssqlConnector(DBConnector):
             cur.close()
             conn.close()
         except Exception as e:
-            return (False, QCoreApplication.translate("MSSQLConnector",
-                                               "There was an error when obtaining the list of existing schemas: {}").format(e))
-        return (True, schemas_list)
+            return False, QCoreApplication.translate("MSSQLConnector",
+                                               "There was an error when obtaining the list of existing schemas: {}").format(e)
+        return True, schemas_list
 
     def create_schema(self, uri, schema_name):
         """
@@ -296,10 +316,10 @@ class MssqlConnector(DBConnector):
                 cur.execute(sql)
                 cur.commit()
             except pyodbc.ProgrammingError as e:
-                return (False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e)))
+                return False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("MssqlConnector", "Schema '{}' was successfully created!".format(schema_name)))
+        return True, QCoreApplication.translate("MssqlConnector", "Schema '{}' was successfully created!".format(schema_name))
 
     def create_database(self, uri, db_name):
         """
@@ -319,10 +339,10 @@ class MssqlConnector(DBConnector):
                 cur.execute(sql)
 
             except pyodbc.ProgrammingError as e:
-                return (False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e)))
+                return False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("MssqlConnector", "Database '{}' was successfully created!".format(db_name)))
+        return True, QCoreApplication.translate("MssqlConnector", "Database '{}' was successfully created!".format(db_name))
 
     def get_models(self, schema=None):
         query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
@@ -338,7 +358,7 @@ class MssqlConnector(DBConnector):
         if self.conn is None:
             res, msg = self.test_connection()
             if not res:
-                return (res, msg)
+                return res, msg
         cur = self.conn.cursor()
 
         try:
@@ -401,3 +421,21 @@ class MssqlConnector(DBConnector):
         uri += ['PWD={}'.format(dict_conn['password'])]
 
         return ';'.join(uri)
+
+    def get_ili2db_version(self):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return res, msg
+
+        # Borrowed from Model Baker
+        cur = self.conn.cursor()
+        cur.execute("""SELECT *
+                       FROM information_schema.columns
+                       WHERE table_schema = '{schema}'
+                       AND(table_name='t_ili2db_attrname' OR table_name='t_ili2db_model' )
+                       AND(column_name='owner' OR column_name = 'file' )
+                    """.format(schema=self.schema))
+        if cur.rowcount > 1:
+            return 3
+        else:
+            return 4

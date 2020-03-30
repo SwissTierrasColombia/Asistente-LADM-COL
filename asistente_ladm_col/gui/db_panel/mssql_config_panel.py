@@ -32,8 +32,6 @@ class MssqlConfigPanel(DbSchemaDbPanel, WIDGET_UI):
     def __init__(self, parent):
         DbSchemaDbPanel.__init__(self, parent)
         self.setupUi(self)
-        # FIXME unused code (probably)
-        self.mode = "mssql"
         self.init_schema()
 
         for item_odbc_driver in get_odbc_drivers():

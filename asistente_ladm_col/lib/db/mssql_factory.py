@@ -25,14 +25,10 @@ from .mssql_connector import MssqlConnector
 class MssqlFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
-        # FIXME unused code (probably)
-        self._mode = "mssql"
+        self._engine = "mssql"
 
     def get_name(self):
         return "Ms SQL Server"
-
-    def get_id(self):
-        return "mssql"
 
     def get_mbaker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
