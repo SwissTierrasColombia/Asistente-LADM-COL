@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis styleCategories="Symbology" version="3.4.1-Madeira">
-  <renderer-v2 attr="error_type" enableorderby="0" symbollevels="0" forceraster="0" type="categorizedSymbol">
+  <renderer-v2 attr="tipo_de_error" enableorderby="0" symbollevels="0" forceraster="0" type="categorizedSymbol">
     <categories>
       <category value="Boundary is not covered by plot" symbol="0" render="true" label="Boundary is not covered by the plot"/>
       <category value="Topological relationship between boundary and plot is duplicated in the masccl table" symbol="1" render="true" label="Topological relationship between boundary and plot is duplicated in the masccl table"/>

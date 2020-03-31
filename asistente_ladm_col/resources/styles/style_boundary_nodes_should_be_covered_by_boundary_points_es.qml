@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.4.1-Madeira" styleCategories="Symbology">
-  <renderer-v2 symbollevels="0" attr="error_type" enableorderby="0" type="categorizedSymbol" forceraster="0">
+  <renderer-v2 symbollevels="0" attr="tipo_de_error" enableorderby="0" type="categorizedSymbol" forceraster="0">
     <categories>
       <category symbol="0" value="Nodo lindero no está cubierto por un punto lindero" label="Nodo lindero no está cubierto por un punto lindero" render="true"/>
       <category symbol="1" value="La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de puntoccl" label="La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de puntoccl" render="true"/>

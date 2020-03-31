@@ -41,3 +41,8 @@ class QueryNames:
     SEARCH_KEY_PARCEL_FMI = 'parcel_fmi'
     SEARCH_KEY_PARCEL_NUMBER = 'parcel_number'
     SEARCH_KEY_PREVIOUS_PARCEL_NUMBER = 'previous_parcel_number'
+
+    # Logic Quality Rules
+    RULE_NAME_LOGIC_QUERY = 'desc_error_logic_query'
+    TABLE_NAME_LOGIC_QUERY = 'table_name_logic_query'
+    TABLE_LOGIC_QUERY = 'table_logic_query'

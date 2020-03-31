@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.4.1-Madeira" styleCategories="Symbology">
-  <renderer-v2 symbollevels="0" type="categorizedSymbol" forceraster="0" attr="error_type" enableorderby="0">
+  <renderer-v2 symbollevels="0" type="categorizedSymbol" forceraster="0" attr="tipo_de_error" enableorderby="0">
     <categories>
       <category symbol="0" label="Boundary node is not covered by boundary point" value="Boundary node is not covered by boundary point" render="true"/>
       <category symbol="1" label="Topological relationship between boundary point and boundary is duplicated in the puntoccl table" value="Topological relationship between boundary point and boundary is duplicated in the puntoccl table" render="true"/>

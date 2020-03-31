@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.4.1-Madeira" styleCategories="Symbology">
-  <renderer-v2 type="categorizedSymbol" forceraster="0" symbollevels="0" enableorderby="0" attr="error_type">
+  <renderer-v2 type="categorizedSymbol" forceraster="0" symbollevels="0" enableorderby="0" attr="tipo_de_error">
     <categories>
       <category render="true" label="El lindero no está cubierto por terreno" value="El lindero no está cubierto por terreno" symbol="0"/>
       <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" value="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" symbol="1"/>

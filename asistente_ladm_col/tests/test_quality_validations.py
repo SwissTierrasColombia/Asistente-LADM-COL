@@ -8,6 +8,8 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.logic.quality.facade_quality_rules import FacadeQualityRules
+from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
                                                            ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
@@ -19,7 +21,6 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
                                                            ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
                                                            ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE)
-from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -28,8 +29,6 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema,
                                             unload_qgis_model_baker)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.quality.quality import QualityUtils
-from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
 
 import_processing()
 import processing
@@ -41,9 +40,9 @@ class TesQualityValidations(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker()
         cls.qgis_utils = QGISUtils()
-        cls.quality = QualityUtils(cls.qgis_utils)
-        cls.logic_checks = LogicChecks()
+        cls.facade_quality_rules = FacadeQualityRules(cls.qgis_utils)
         cls.translatable_config_strings = TranslatableConfigStrings()
+        cls.translated_strings = cls.translatable_config_strings.get_translatable_config_strings()
 
         print("INFO: Restoring databases to be used")
         test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
@@ -51,37 +50,6 @@ class TesQualityValidations(unittest.TestCase):
         print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
             restore_schema(test_connection_db)
-
-    def test_find_duplicate_records(self):
-        schema_name = 'test_ladm_col_logic_checks'
-        self.db_pg = get_pg_conn(schema_name)
-        self.names = self.db_pg.names
-
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
-
-        db = self.db_pg
-
-        test_results = {
-            self.names.OP_PARTY_T: [('1068,1071', 2), ('1066,1069', 2), ('1067,1070', 2)],
-            self.names.OP_BUILDING_UNIT_T: [('1112,1113', 2)],
-            self.names.OP_BUILDING_T: [('1063,1064', 2), ('1062,1065', 2)],
-            self.names.OP_PLOT_T: [('1099,1103', 2), ('1102,1104', 2)] ,
-            self.names.OP_BOUNDARY_T: [('1073,1081', 2), ('1072,1082', 2), ('1078,1083', 2)],
-            self.names.OP_SURVEY_POINT_T: [('1107,1109', 2), ('1108,1110', 2)],
-            self.names.OP_BOUNDARY_POINT_T: [('1094,1097', 2), ('1088,1091', 2), ('1095,1096', 2), ('1087,1092', 2), ('1089,1098', 2), ('1090,1093', 2)]
-        }
-
-        for table in test_results:
-            test_result = test_results[table]
-            fields = LayerConfig.get_logic_consistency_tables(self.names)[table]
-            error_layer = None
-            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
-            result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]
-
-            for item in test_result:
-                self.assertIn(item, result, 'the record {error_item} is not duplicated in the table {table}'.format(error_item=item,table=table))
 
     def test_split_by_selected_boundary(self):
         print('\nINFO: Validation of the definition of selected boundary ...')
@@ -164,11 +132,12 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
-                                                                                                     boundary_point_layer,
-                                                                                                     plot_layer, error_layer,
-                                                                                                     topology_rule,
-                                                                                                     self.names.T_ID_F)
+        features = UtilsQualityRules.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                          boundary_point_layer,
+                                                                                                          plot_layer,
+                                                                                                          error_layer,
+                                                                                                          topology_rule,
+                                                                                                          self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 14)
 
@@ -214,11 +183,12 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
-                                                                                                     boundary_point_layer,
-                                                                                                     plot_layer, error_layer,
-                                                                                                     topology_rule,
-                                                                                                     self.names.T_ID_F)
+        features = UtilsQualityRules.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self.db_gpkg,
+                                                                                                          boundary_point_layer,
+                                                                                                          plot_layer,
+                                                                                                          error_layer,
+                                                                                                          topology_rule,
+                                                                                                          self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 10)
 
@@ -240,7 +210,6 @@ class TesQualityValidations(unittest.TestCase):
                           'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
 
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
@@ -264,23 +233,23 @@ class TesQualityValidations(unittest.TestCase):
         error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+        data_provider.addAttributes([QgsField('id_punto_lindero', QVariant.Int),
+                                     QgsField('id_lindero', QVariant.Int),
+                                     QgsField('tipo_de_error', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.facade_quality_rules.line_quality_rules.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 13)
 
-        result = [{'id': f['boundary_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        result = [{'id': f['id_lindero'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
         test_result = [{'id': 368, 'geom': 'PointZ (895065.96799999999348074 1544460.84700000006705523 0)'},
                        {'id': 368, 'geom': 'PointZ (895076.28099999995902181 1544438.87899999995715916 0)'},
@@ -297,48 +266,47 @@ class TesQualityValidations(unittest.TestCase):
                        {'id': 374, 'geom': 'PointZ (895178.80000000004656613 1544283.712000000057742 0)'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_POINT_BFS])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
-        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'boundary_point_id': 461, 'boundary_id': 377},
-                       {'boundary_point_id': 463, 'boundary_id': 375},
-                       {'boundary_point_id': 469, 'boundary_id': 378},
-                       {'boundary_point_id': 470, 'boundary_id': 370},
-                       {'boundary_point_id': 472, 'boundary_id': 370},
-                       {'boundary_point_id': 455, 'boundary_id': 376},
-                       {'boundary_point_id': 459, 'boundary_id': 377},
-                       {'boundary_point_id': 457, 'boundary_id': 376}]
+        test_result = [{'id_punto_lindero': 461, 'id_lindero': 377},
+                       {'id_punto_lindero': 463, 'id_lindero': 375},
+                       {'id_punto_lindero': 469, 'id_lindero': 378},
+                       {'id_punto_lindero': 470, 'id_lindero': 370},
+                       {'id_punto_lindero': 472, 'id_lindero': 370},
+                       {'id_punto_lindero': 455, 'id_lindero': 376},
+                       {'id_punto_lindero': 459, 'id_lindero': 377},
+                       {'id_punto_lindero': 457, 'id_lindero': 376}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_DUPLICATE_POINT_BFS]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_DUPLICATE_POINT_BFS]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_FOUND_POINT_BFS])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_FOUND_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
-        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'boundary_point_id': 408, 'boundary_id': 362},
-                       {'boundary_point_id': 437, 'boundary_id': 364},
-                       {'boundary_point_id': 434, 'boundary_id': 364},
-                       {'boundary_point_id': 409, 'boundary_id': 362},
-                       {'boundary_point_id': 439, 'boundary_id': 365},
-                       {'boundary_point_id': 440, 'boundary_id': 365},
-                       {'boundary_point_id': 441, 'boundary_id': 365},
-                       {'boundary_point_id': 438, 'boundary_id': 365},
-                       {'boundary_point_id': 436, 'boundary_id': 364},
-                       {'boundary_point_id': 435, 'boundary_id': 364},
-                       {'boundary_point_id': 406, 'boundary_id': 362},
-                       {'boundary_point_id': 407, 'boundary_id': 362}]
+        test_result = [{'id_punto_lindero': 408, 'id_lindero': 362},
+                       {'id_punto_lindero': 437, 'id_lindero': 364},
+                       {'id_punto_lindero': 434, 'id_lindero': 364},
+                       {'id_punto_lindero': 409, 'id_lindero': 362},
+                       {'id_punto_lindero': 439, 'id_lindero': 365},
+                       {'id_punto_lindero': 440, 'id_lindero': 365},
+                       {'id_punto_lindero': 441, 'id_lindero': 365},
+                       {'id_punto_lindero': 438, 'id_lindero': 365},
+                       {'id_punto_lindero': 436, 'id_lindero': 364},
+                       {'id_punto_lindero': 435, 'id_lindero': 364},
+                       {'id_punto_lindero': 406, 'id_lindero': 362},
+                       {'id_punto_lindero': 407, 'id_lindero': 362}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_NO_FOUND_POINT_BFS]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_NO_FOUND_POINT_BFS]))
 
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
@@ -368,12 +336,12 @@ class TesQualityValidations(unittest.TestCase):
         error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+        data_provider.addAttributes([QgsField('id_punto_lindero', QVariant.Int),
+                                     QgsField('id_lindero', QVariant.Int),
+                                     QgsField('tipo_de_error', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.facade_quality_rules.point_quality_rules.get_boundary_points_features_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -381,11 +349,11 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 34)
 
-        result = [{'id': f['boundary_point_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        result = [{'id': f['id_punto_lindero'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
         test_result = [{'id': 382, 'geom': 'PointZ (894639.00399999995715916 1544574.38599999994039536 0)'},
                        {'id': 383, 'geom': 'PointZ (894648.56400000001303852 1544485.16100000008009374 0)'},
@@ -423,47 +391,46 @@ class TesQualityValidations(unittest.TestCase):
                        {'id': 449, 'geom': 'PointZ (894905.93799999996554106 1544314.50699999998323619 0)'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_POINT_BFS])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
-        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'boundary_point_id': 457, 'boundary_id': 376},
-                       {'boundary_point_id': 469, 'boundary_id': 378},
-                       {'boundary_point_id': 461, 'boundary_id': 377},
-                       {'boundary_point_id': 455, 'boundary_id': 376},
-                       {'boundary_point_id': 472, 'boundary_id': 370},
-                       {'boundary_point_id': 463, 'boundary_id': 375},
-                       {'boundary_point_id': 459, 'boundary_id': 377},
-                       {'boundary_point_id': 470, 'boundary_id': 370}]
+        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        test_result = [{'id_punto_lindero': 457, 'id_lindero': 376},
+                       {'id_punto_lindero': 469, 'id_lindero': 378},
+                       {'id_punto_lindero': 461, 'id_lindero': 377},
+                       {'id_punto_lindero': 455, 'id_lindero': 376},
+                       {'id_punto_lindero': 472, 'id_lindero': 370},
+                       {'id_punto_lindero': 463, 'id_lindero': 375},
+                       {'id_punto_lindero': 459, 'id_lindero': 377},
+                       {'id_punto_lindero': 470, 'id_lindero': 370}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_DUPLICATE_POINT_BFS]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_DUPLICATE_POINT_BFS]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_FOUND_POINT_BFS])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_FOUND_POINT_BFS])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
-        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'boundary_point_id': 409, 'boundary_id': 362},
-                       {'boundary_point_id': 436, 'boundary_id': 364},
-                       {'boundary_point_id': 434, 'boundary_id': 364},
-                       {'boundary_point_id': 407, 'boundary_id': 362},
-                       {'boundary_point_id': 438, 'boundary_id': 365},
-                       {'boundary_point_id': 439, 'boundary_id': 365},
-                       {'boundary_point_id': 441, 'boundary_id': 365},
-                       {'boundary_point_id': 435, 'boundary_id': 364},
-                       {'boundary_point_id': 440, 'boundary_id': 365},
-                       {'boundary_point_id': 437, 'boundary_id': 364},
-                       {'boundary_point_id': 406, 'boundary_id': 362},
-                       {'boundary_point_id': 408, 'boundary_id': 362}]
+        test_result = [{'id_punto_lindero': 409, 'id_lindero': 362},
+                       {'id_punto_lindero': 436, 'id_lindero': 364},
+                       {'id_punto_lindero': 434, 'id_lindero': 364},
+                       {'id_punto_lindero': 407, 'id_lindero': 362},
+                       {'id_punto_lindero': 438, 'id_lindero': 365},
+                       {'id_punto_lindero': 439, 'id_lindero': 365},
+                       {'id_punto_lindero': 441, 'id_lindero': 365},
+                       {'id_punto_lindero': 435, 'id_lindero': 364},
+                       {'id_punto_lindero': 440, 'id_lindero': 365},
+                       {'id_punto_lindero': 437, 'id_lindero': 364},
+                       {'id_punto_lindero': 406, 'id_lindero': 362},
+                       {'id_punto_lindero': 408, 'id_lindero': 362}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, translated_strings[ERROR_NO_FOUND_POINT_BFS]))
+            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.translated_strings[ERROR_NO_FOUND_POINT_BFS]))
 
     def test_topology_plot_must_be_covered_by_boundary(self):
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
@@ -493,12 +460,12 @@ class TesQualityValidations(unittest.TestCase):
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+        data_provider.addAttributes([QgsField('id_terreno', QVariant.Int),
+                                     QgsField('id_lindero', QVariant.Int),
+                                     QgsField('tipo_de_error', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
+        features = self.facade_quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -506,12 +473,12 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY])
 
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
 
-        result = [{'id': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        result = [{'id': f['id_terreno'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
         test_result = [{'id': 491, 'geom': 'MultiLineStringZ ((894639.00399999995715916 1544574.38599999994039536 0, 894648.56400000001303852 1544485.16100000008009374 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0, 894639.00399999995715916 1544574.38599999994039536 0))'},
                        {'id': 492, 'geom': 'MultiLineStringZ ((894715.02700000000186265 1544590.31899999990127981 0, 894732.84299999999348074 1544594.1229999999050051 0),(894770.40800000005401671 1544602.14299999992363155 0, 894779.66099999996367842 1544604.11800000001676381 0),(894788.15800000005401671 1544496.48799999989569187 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0))'},
@@ -530,36 +497,35 @@ class TesQualityValidations(unittest.TestCase):
             self.assertIn(item, result, 'geometrical error in the polygon with id {}'.format(item['id']))
 
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 504, 'boundary_id': 376}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
+        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        test_result = [{'id_terreno': 504, 'id_lindero': 376}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_LESS_TABLE])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_LESS_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 504, 'boundary_id': 377}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
+        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        test_result = [{'id_terreno': 504, 'id_lindero': 377}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(self.translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 505, 'boundary_id': 375}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
+        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        test_result = [{'id_terreno': 505, 'id_lindero': 375}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-        exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_LESS_TABLE])
+        exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_LESS_TABLE])
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-        test_result = [{'plot_id': 500, 'boundary_id': 365}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(translated_strings[ERROR_NO_LESS_TABLE]))
+        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        test_result = [{'id_terreno': 500, 'id_lindero': 365}]
+        self.assertEqual(result, test_result, 'Error in: {}'.format(self.translated_strings[ERROR_NO_LESS_TABLE]))
 
     def test_topology_boundary_must_be_covered_by_plot(self):
-       translated_strings = self.translatable_config_strings.get_translatable_config_strings()
        schema_name = 'test_ladm_validations_topology_tables'
        self.db_pg = get_pg_conn(schema_name)
        self.names = self.db_pg.names
@@ -589,12 +555,12 @@ class TesQualityValidations(unittest.TestCase):
        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
        data_provider = error_layer.dataProvider()
-       data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
-                                    QgsField('boundary_id', QVariant.Int),
-                                    QgsField('error_type', QVariant.String)])
+       data_provider.addAttributes([QgsField('id_terreno', QVariant.Int),
+                                    QgsField('id_lindero', QVariant.Int),
+                                    QgsField('tipo_de_error', QVariant.String)])
        error_layer.updateFields()
 
-       features = self.quality.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
+       features = self.facade_quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
 
        # the algorithm was successfully executed
        self.assertEqual(len(features), 11)
@@ -602,11 +568,11 @@ class TesQualityValidations(unittest.TestCase):
        error_layer.dataProvider().addFeatures(features)
 
        # English language is set as default for validations
-       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT])
+       exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT])
        error_layer.selectByExpression(exp)
        self.assertEqual(error_layer.selectedFeatureCount(), 3)
 
-       result = [{'id': f['boundary_id'], 'id_plot': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+       result = [{'id': f['id_lindero'], 'id_plot': f['id_terreno'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
        test_result = [
            {'id': 374, 'id_plot': None, 'geom': 'MultiLineStringZ ((895120.1720000000204891 1544364.95600000000558794 0, 895070.0779999999795109 1544331.15500000002793968 0, 895121.96699999994598329 1544243.82499999995343387 0, 895178.80000000004656613 1544283.712000000057742 0, 895120.1720000000204891 1544364.95600000000558794 0))'},
@@ -617,41 +583,41 @@ class TesQualityValidations(unittest.TestCase):
        for item in test_result:
            self.assertIn(item, result, 'Error: Boundary is not covered by the plot.  boundary_id = {}'.format(item['id']))
 
-       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
+       exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE])
        error_layer.selectByExpression(exp)
        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-       test_result = [{'plot_id': 492, 'boundary_id': 360}, {'plot_id': 504, 'boundary_id': 376}]
+       result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+       test_result = [{'id_terreno': 492, 'id_lindero': 360}, {'id_terreno': 504, 'id_lindero': 376}]
 
        for item in test_result:
-           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
+           self.assertIn(item, result, 'Error in: {}'.format(self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_DUPLICATE_LESS_TABLE])
+       exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_DUPLICATE_LESS_TABLE])
        error_layer.selectByExpression(exp)
        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-       test_result = [{'plot_id': 504, 'boundary_id': 377}, {'plot_id': 493, 'boundary_id': 361}]
+       result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+       test_result = [{'id_terreno': 504, 'id_lindero': 377}, {'id_terreno': 493, 'id_lindero': 361}]
 
        for item in test_result:
-           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
+           self.assertIn(item, result, 'Error in: {}'.format(self.translated_strings[ERROR_DUPLICATE_LESS_TABLE]))
 
-       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
+       exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE])
        error_layer.selectByExpression(exp)
        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-       test_result = [{'plot_id': 505, 'boundary_id': 375}, {'plot_id': 501, 'boundary_id': 366}]
+       result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+       test_result = [{'id_terreno': 505, 'id_lindero': 375}, {'id_terreno': 501, 'id_lindero': 366}]
 
        for item in test_result:
-           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
+           self.assertIn(item, result, 'Error in: {}'.format(self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE]))
 
-       exp = "\"error_type\" = '{}'".format(translated_strings[ERROR_NO_LESS_TABLE])
+       exp = "\"tipo_de_error\" = '{}'".format(self.translated_strings[ERROR_NO_LESS_TABLE])
        error_layer.selectByExpression(exp)
        self.assertEqual(error_layer.selectedFeatureCount(), 2)
-       result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
-       test_result = [{'plot_id': 493, 'boundary_id': 362}, {'plot_id': 500, 'boundary_id': 365}]
+       result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+       test_result = [{'id_terreno': 493, 'id_lindero': 362}, {'id_terreno': 500, 'id_lindero': 365}]
 
        for item in test_result:
-           self.assertIn(item, result, 'Error in: {}'.format(translated_strings[ERROR_NO_LESS_TABLE]))
+           self.assertIn(item, result, 'Error in: {}'.format(self.translated_strings[ERROR_NO_LESS_TABLE]))
 
     def test_overlapping_points(self):
         print('\nINFO: Validating overlaps in points...')
@@ -912,7 +878,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -942,7 +908,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -982,7 +948,7 @@ class TesQualityValidations(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.quality.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
+        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -1109,7 +1075,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 15)
 
-        end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.facade_quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
         boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
@@ -1127,7 +1093,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 8)
 
-        end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.facade_quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
     def test_boundaries_are_not_split(self):

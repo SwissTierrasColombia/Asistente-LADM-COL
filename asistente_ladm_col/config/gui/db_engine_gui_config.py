@@ -47,7 +47,7 @@ class DBEngineGUIConfig(QObject):
                       ACTION_CHANGE_DETECTION_PER_PARCEL,
                       ACTION_CHANGE_DETECTION_ALL_PARCELS,
                       ACTION_PARCEL_QUERY,
-                      # ACTION_CHECK_QUALITY_RULES,
+                      ACTION_CHECK_QUALITY_RULES,
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,
                       ACTION_CHANGE_DETECTION_SETTINGS]

@@ -290,9 +290,6 @@ class GPKGConnector(DBConnector):
         self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models
 
-    def get_logic_validation_queries(self):
-        raise NotImplementedError
-
     def is_ladm_layer(self, layer):
         result = False
         if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
@@ -347,3 +344,19 @@ class GPKGConnector(DBConnector):
             return 3
         else:
             return 4  # ili2db 4 renamed such column to ColOwner
+
+    def execute_sql_query(self, query):
+        """
+        Generic function for executing SQL statements
+        :param query: SQL Statement
+        :return: List of RealDictRow
+        """
+        # self.conn.row_factory = lambda c, r: dict([(col[0], r[idx]) for idx, col in enumerate(c.description)])
+        #self.conn.row_factory = sqlite3.Row
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute(query)
+            return True, cursor.fetchall()
+        except sqlite3.ProgrammingError as e:
+            return False, e

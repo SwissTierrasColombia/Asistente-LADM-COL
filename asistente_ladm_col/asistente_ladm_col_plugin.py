@@ -128,7 +128,6 @@ from asistente_ladm_col.utils.utils import (Utils,
                                             show_plugin_help)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
-from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
@@ -167,7 +166,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def initGui(self):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
-        self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.ladm_data = LADMDATA(self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
@@ -230,11 +228,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
-
-        self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
-        self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
-        self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
@@ -791,7 +784,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
+        self.text, self.total_time = self.quality_dialog.get_log_dialog_quality_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), self.text, self.total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
@@ -1174,8 +1168,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        dlg = QualityDialog(self.get_db_connection(), self.qgis_utils, self.quality)
-        dlg.exec_()
+        self.quality_dialog = QualityDialog(self.get_db_connection(), self.qgis_utils)
+
+        self.quality_dialog.log_quality_show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_dialog.log_quality_show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_dialog.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_dialog.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+
+        self.quality_dialog.exec_()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
