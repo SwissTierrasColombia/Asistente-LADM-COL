@@ -27,16 +27,18 @@ import processing
 
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 
 
 class RightOfWay(QObject):
-    def __init__(self, iface, qgis_utils, names):
+    def __init__(self, iface, names):
         QObject.__init__(self)
         self.iface = iface
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
         self.names = names
+
+        self.app = AppInterface()
 
         self._layers = {
             self.names.OP_PLOT_T: None,
@@ -61,7 +63,7 @@ class RightOfWay(QObject):
         }
 
         # Load layers
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return None
 
@@ -69,7 +71,7 @@ class RightOfWay(QObject):
         restriction_right_of_way_t_id = [feature for feature in layers[self.names.OP_RESTRICTION_TYPE_D].getFeatures(exp)][0][self.names.T_ID_F]
 
         if layers[self.names.OP_PLOT_T].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount() == 0:
-            if self.qgis_utils.get_ladm_layer_from_qgis(db, self.names.OP_PLOT_T, EnumLayerRegistryType.IN_CANVAS) is None:
+            if self.app.core.get_ladm_layer_from_qgis(db, self.names.OP_PLOT_T, EnumLayerRegistryType.IN_CANVAS) is None:
                 self.logger.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                                "First load the layer {} into QGIS and select at least one plot!").format(self.names.OP_PLOT_T),

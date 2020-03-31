@@ -36,6 +36,7 @@ from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY
                                                                DICT_KEY_PARTY_T_RIGHT,
                                                                DICT_KEY_PLOT_T_AREA_F)
 from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
@@ -50,9 +51,9 @@ class LADMDATA():
     """
     High-level class to get related information from the LADM-COL database.
     """
-    def __init__(self, qgis_utils):
-        self.qgis_utils = qgis_utils
+    def __init__(self):
         self.logger = Logger()
+        self.app = AppInterface()
 
     def get_plots_related_to_parcels_supplies(self, db, t_ids, field_name, gc_plot_layer=None):
         """
@@ -71,7 +72,7 @@ class LADMDATA():
             del layers[db.names.GC_PLOT_T]
 
         if layers:
-            self.qgis_utils.get_layers(db, layers, load=True)
+            self.app.core.get_layers(db, layers, load=True)
             if not layers:
                 return None
 
@@ -112,7 +113,7 @@ class LADMDATA():
             del layers[db.names.GC_PARCEL_T]
 
         if layers:
-            self.qgis_utils.get_layers(db, layers, load=True)
+            self.app.core.get_layers(db, layers, load=True)
             if not layers:
                 return None
 
@@ -169,7 +170,7 @@ class LADMDATA():
             db.names.GC_PARCEL_TYPE_D: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        self.app.core.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
             return None
 
@@ -296,7 +297,7 @@ class LADMDATA():
             del layers[db.names.COL_UE_BAUNIT_T]
 
         if layers:
-            self.qgis_utils.get_layers(db, layers, load=True)
+            self.app.core.get_layers(db, layers, load=True)
             if not layers:
                 return None
 
@@ -360,7 +361,7 @@ class LADMDATA():
             del layers[db.names.COL_UE_BAUNIT_T]
 
         if layers:
-            self.qgis_utils.get_layers(db, layers, load=True)
+            self.app.core.get_layers(db, layers, load=True)
             if not layers:
                 return None
 
@@ -432,7 +433,7 @@ class LADMDATA():
             # layers[PROPERTY_RECORD_CARD_TABLE] = None
             pass
 
-        self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        self.app.core.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
             return None
 
@@ -758,7 +759,7 @@ class LADMDATA():
         # TODO: We could even cache all domain values from current table in the first call.
 
         if type(domain_table) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
+            domain_table = self.app.core.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
             domain_table_name = domain_table.name()
@@ -823,7 +824,7 @@ class LADMDATA():
         # TODO: We could even cache all domain values from current table in the first call.
 
         if type(domain_table) is str:
-            domain_table = self.qgis_utils.get_layer(db, domain_table, False, emit_map_freeze=False)
+            domain_table = self.app.core.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
             features = self.get_features_from_t_ids(domain_table, db.names.T_ID_F, [code], no_attributes=False, no_geometry=True)

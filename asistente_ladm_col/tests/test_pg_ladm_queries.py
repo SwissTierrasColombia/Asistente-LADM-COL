@@ -14,7 +14,6 @@ from asistente_ladm_col.tests.resources.expected_results.queries.ladm_legal_quer
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_physical_query_test_results import expected_result_ladm_physical_query
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_property_record_card_query_test_results import expected_result_ladm_property_record_card_query
 from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
 class TestPGLADMQueries(unittest.TestCase):
@@ -25,8 +24,7 @@ class TestPGLADMQueries(unittest.TestCase):
         restore_schema('test_ladm_col_queries')
         cls.db_pg = get_pg_conn('test_ladm_col_queries')
 
-        cls.qgis_utils = QGISUtils()
-        cls.ladm_queries = PGLADMQuery(cls.qgis_utils)
+        cls.ladm_queries = PGLADMQuery()
 
         # Standardize query results: id's are removed because it depends on the database test data
         standardize_query_results(expected_result_ladm_basic_query.copy())

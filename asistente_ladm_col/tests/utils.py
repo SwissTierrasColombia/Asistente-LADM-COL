@@ -207,7 +207,7 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     if model:
         automatic_fields_definition = True
 
-        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,

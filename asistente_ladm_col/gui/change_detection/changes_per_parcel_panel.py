@@ -317,7 +317,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             if plots_supplies and plots_collected:  # Otherwise the map swipe tool doesn't add any value :)
                 # Activate Swipe Tool
-                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T])
+                self.utils.app.gui.activate_layer(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T])
                 self.parent.activate_map_swipe_tool()
 
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas

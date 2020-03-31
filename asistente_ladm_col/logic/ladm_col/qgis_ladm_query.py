@@ -24,6 +24,7 @@ from qgis.core import (QgsFeatureRequest,
                        NULL,
                        QgsExpression)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.basic_query import get_igac_basic_query
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.legal_query import get_igac_legal_query
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.economic_query import get_igac_economic_query
@@ -49,9 +50,9 @@ from asistente_ladm_col.config.enums import (EnumSpatialOperationType,
 
 class QGISLADMQuery:
 
-    def __init__(self, qgis_utils):
-        self.qgis_utils = qgis_utils
-        self.ladm_data = LADMDATA(self.qgis_utils)
+    def __init__(self):
+        self.app = AppInterface()
+        self.ladm_data = LADMDATA()
 
     def get_igac_property_record_card_info(self, db, **kwargs):
         return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO, kwargs)
@@ -105,7 +106,7 @@ class QGISLADMQuery:
         if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL' or params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL' or params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
             layers = {db.names.OP_PARCEL_T: None,
                       db.names.COL_UE_BAUNIT_T: None}
-            self.qgis_utils.get_layers(db, layers, False)
+            self.app.core.get_layers(db, layers, False)
 
             if layers:
                 parcel_layer = layers[db.names.OP_PARCEL_T]
@@ -163,7 +164,7 @@ class QGISLADMQuery:
         """
         table_name = level_dict[QueryNames.LEVEL_TABLE_NAME]
         level_alias = level_dict[QueryNames.LEVEL_TABLE_ALIAS]
-        layer = self.qgis_utils.get_layer(db, table_name, False)
+        layer = self.app.core.get_layer(db, table_name, False)
         filter_sub_level = level_dict[QueryNames.FILTER_SUB_LEVEL]
         t_id_features = self._get_features_ids_sub_level(db, filter_sub_level, filter_field_values)
 
@@ -225,7 +226,7 @@ class QGISLADMQuery:
         :param filter_field_values: list of field values used to apply the filter
         return list of dict with required fields
         """
-        referenced_layer = self.qgis_utils.get_layer(db, field.referenced_layer, False)
+        referenced_layer = self.app.core.get_layer(db, field.referenced_layer, False)
         dict_fields_and_alias =  self._get_dict_fields_and_alias(field.required_fields_referenced_layer)
         field_names = list(dict_fields_and_alias.keys())
         field_names.append(db.names.T_ID_F)
@@ -262,7 +263,7 @@ class QGISLADMQuery:
         :param filter_field_values: list of field values used to apply the filter
         :return required field value
         """
-        referenced_layer = self.qgis_utils.get_layer(db, field.referenced_layer, False)
+        referenced_layer = self.app.core.get_layer(db, field.referenced_layer, False)
         required_field_referenced_layer = field.required_field_referenced_layer
         dict_fields_and_alias = self._get_dict_fields_and_alias([required_field_referenced_layer])
         field_names = list(dict_fields_and_alias.keys())
@@ -296,7 +297,7 @@ class QGISLADMQuery:
         """
         referenced_layer = filter_sub_level.referenced_layer
         required_field_referenced_layer = filter_sub_level.required_field_referenced_layer
-        sub_level_layer = self.qgis_utils.get_layer(db, referenced_layer, False)
+        sub_level_layer = self.app.core.get_layer(db, referenced_layer, False)
 
         if isinstance(filter_sub_level, FilterSubLevel):
             referenced_field = filter_sub_level.referenced_field
@@ -311,7 +312,7 @@ class QGISLADMQuery:
         elif isinstance(filter_sub_level, SpatialFilterSubLevel):
             referencing_layer = filter_sub_level.referencing_layer
             spatial_operation = filter_sub_level.spatial_operation
-            level_layer = self.qgis_utils.get_layer(db, referencing_layer, False)
+            level_layer = self.app.core.get_layer(db, referencing_layer, False)
             filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'memory:'})['OUTPUT']
 
             parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'memory:'}

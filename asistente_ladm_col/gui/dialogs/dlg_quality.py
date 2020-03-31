@@ -58,6 +58,7 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER,
                                                            CHECK_UEBAUNIT_PARCEL,
                                                            CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -65,14 +66,15 @@ DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
 
 class QualityDialog(QDialog, DIALOG_UI):
-    def __init__(self, db, qgis_utils, quality, parent=None):
+    def __init__(self, db, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self._db = db
-        self.qgis_utils = qgis_utils
         self.quality = quality
         self.names = self._db.names
         self.translatable_config_strings = TranslatableConfigStrings()
+
+        self.app = AppInterface()
 
         self.trw_quality_rules.setItemsExpandable(False)
         self.trw_quality_rules.itemSelectionChanged.connect(self.validate_selection_rules)
@@ -238,7 +240,7 @@ class QualityDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         # we erase the group error layer every time it runs because we assume that data set changes.
-        self.qgis_utils.remove_error_group_requested.emit()
+        self.app.gui.remove_error_group()
         self.quality.initialize_log_dialog_quality()
         selected_count = len(self.trw_quality_rules.selectedItems())
 
@@ -324,13 +326,13 @@ class QualityDialog(QDialog, DIALOG_UI):
         if selected_count > 0:
             self.quality.generate_log_button()
 
-        if self.qgis_utils.error_group_exists():
-            group = self.qgis_utils.get_error_layers_group()
+        if self.app.gui.error_group_exists():
+            group = self.app.gui.get_error_layers_group()
             # # Check if group layer is empty
             if group.findLayers():
-                self.qgis_utils.set_error_group_visibility(True)
+                self.app.gui.set_error_group_visibility(True)
             else:
-                self.qgis_utils.remove_error_group_requested.emit()
+                self.app.gui.remove_error_group()
 
     def rejected(self):
         pass

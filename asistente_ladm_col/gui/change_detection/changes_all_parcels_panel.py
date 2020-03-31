@@ -195,7 +195,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             base_db.names.COL_UE_BAUNIT_T: None
         }
 
-        self.utils.qgis_utils.get_layers(base_db, layers, load=True)
+        self.utils.app.core.get_layers(base_db, layers, load=True)
         if not layers:
             return None
 

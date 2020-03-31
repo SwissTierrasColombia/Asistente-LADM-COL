@@ -44,7 +44,7 @@ class DBFactory(ABC):
     def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
-    def get_ladm_queries(self, qgis_utils):
+    def get_ladm_queries(self):
         raise NotImplementedError
 
     def set_ili2db_configuration_params(self, params, configuration):

@@ -13,7 +13,6 @@ from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             import_processing)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
@@ -39,12 +38,11 @@ class TestGPKGLADMQueries(unittest.TestCase):
         cls.plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
         cls.conn_manager = cls.plugin.conn_manager
         cls.conn_manager.set_db_connector_for_source(cls.db_gpkg)
-        cls.qgis_utils = QGISUtils()
 
         result = cls.db_gpkg.test_connection()
         cls.assertTrue(result[0], 'The test connection is not working')
         cls.assertIsNotNone(cls.db_gpkg.names.T_ID_F, 'Names is None')
-        cls.ladm_queries = QGISLADMQuery(cls.qgis_utils)
+        cls.ladm_queries = QGISLADMQuery()
 
         # Maybe custom expression functions are not register in processing module
         QgsExpression.registerFunction(get_domain_code_from_value)

@@ -48,6 +48,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.java_utils import JavaUtils
@@ -56,7 +57,6 @@ from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
-from ...resources_rc import *  # Necessary to show icons
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 
@@ -70,13 +70,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, context, selected_models=list(), link_to_import_data=True):
+    def __init__(self, iface, conn_manager, context, selected_models=list(), link_to_import_data=True):
         QDialog.__init__(self)
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
         self.link_to_import_data = link_to_import_data
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
@@ -84,7 +85,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
-        self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self._dbs_supported = ConfigDBsSupported()
@@ -159,13 +159,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         unload the plugin, destroying dialogs and thus, leading to crashes.
         """
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         if self._db_was_changed:
             self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
 
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
         self.done(QDialog.Accepted)
@@ -221,11 +221,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 
-        # Connect signals (DBUtils, QgisUtils)
+        # Connect signals (DBUtils, Core)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
             self._schedule_layers_and_relations_refresh = True
