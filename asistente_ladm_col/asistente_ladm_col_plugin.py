@@ -800,7 +800,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def call_topological_editing(self, *args):
-        self.app.enable_topological_editing(self.get_db_connection())
+        self.app.core.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
