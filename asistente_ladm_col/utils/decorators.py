@@ -327,7 +327,7 @@ def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
         layers_modified = inst.app.core.get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(inst.get_db_connection())
         layers_names = [layer.name() for layer in layers_modified]
         if layers_modified:
-            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            inst.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.").format(', '.join(layers_names)),
                               Qgis.Info)
         else:

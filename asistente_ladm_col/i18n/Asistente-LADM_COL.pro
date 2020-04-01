@@ -64,6 +64,7 @@ SOURCES = ../__init__.py \
           ../config/task_steps_config.py \
           ../config/gui/change_detection_config.py \
           ../config/gui/gui_config.py \
+          ../config/layer_tree_indicator_config.py \
           ../config/transitional_system_config.py \
           ../config/translation_strings.py \
           ../config/wizard_config.py \

@@ -71,6 +71,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
@@ -156,6 +157,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session = STSession()
         task_steps_config = TaskStepsConfig()
         task_steps_config.set_slot_caller(self)
+        layer_tree_indicator_config = LayerTreeIndicatorConfig()
+        layer_tree_indicator_config.set_slot_caller(self)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -210,8 +213,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
 
-        self.logger.message_with_duration_emitted.connect(self.show_message)
-        self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
+        self.logger.message_with_duration_emitted.connect(self.app.gui.show_message)
+        self.logger.status_bar_message_emitted.connect(self.app.gui.show_status_bar_message)
         self.logger.clear_status_bar_emitted.connect(self.app.gui.clear_status_bar)
         self.logger.clear_message_bar_emitted.connect(self.app.gui.clear_message_bar)
         self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -223,6 +226,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_to_remove_report_dependency)
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
+
+        self.app.gui.add_indicators_requested.connect(self.add_indicators)
 
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
@@ -580,10 +585,6 @@ class AsistenteLADMCOLPlugin(QObject):
         elif action_name == ANNEX_17_REPORT:
             self._annex_17_action.setEnabled(enable)
 
-    def show_message(self, msg, level, duration=5):
-        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
-
     def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -629,9 +630,9 @@ class AsistenteLADMCOLPlugin(QObject):
             self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
             self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
         else:
-            self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "Report dependency download is in progress..."),
-                              Qgis.Info)
+            self.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "Report dependency download is in progress..."),
+                                     Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
@@ -675,9 +676,6 @@ class AsistenteLADMCOLPlugin(QObject):
         button.pressed.connect(self.close_wizard_if_opened)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 25)
-
-    def show_status_bar_message(self, msg, duration):
-        self.iface.statusBarIface().showMessage(msg, duration)
 
     def load_layer(self, layer):
         self.app.gui.clear_message_bar()
@@ -1365,3 +1363,10 @@ class AsistenteLADMCOLPlugin(QObject):
                 db.names.SNR_PARCEL_REGISTRY_T: None
             }
             self.app.core.get_layers(db, layers, load=True)
+
+    def add_indicators(self, node_name, node_type):
+        """Slot to inject the db object"""
+        self.app.add_indicators(self.get_db_connection(), node_name, node_type)
+
+    def export_error_group(self):
+        self.app.gui.export_error_group()

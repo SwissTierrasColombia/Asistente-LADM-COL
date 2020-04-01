@@ -31,8 +31,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QTextStream,
                               QIODevice,
                               QUrl)
-from qgis.PyQt.QtWidgets import (QProgressBar,
-                                 QDialog)
+from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QNetworkRequest)
 from qgis.core import (Qgis,
@@ -45,7 +44,6 @@ from qgis.core import (Qgis,
                        QgsExpression,
                        QgsExpressionContextUtils,
                        QgsFieldConstraints,
-                       QgsLayerTreeGroup,
                        QgsLayerTreeNode,
                        QgsMapLayer,
                        QgsOptionalExpression,
