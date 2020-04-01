@@ -18,7 +18,7 @@
 """
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.core import Qgis
-from .db_schema_db_panel import DbSchemaDbPanel
+from .db_schema_db_panel import DBSchemaDBPanel
 from ...lib.db.mssql_connector import MssqlConnector
 from QgisModelBaker.utils.mssql_utils import get_odbc_drivers
 from ...utils import get_ui_class
@@ -26,11 +26,11 @@ from ...utils import get_ui_class
 WIDGET_UI = get_ui_class('dialogs/settings_mssql.ui')
 
 
-class MssqlConfigPanel(DbSchemaDbPanel, WIDGET_UI):
+class MssqlConfigPanel(DBSchemaDBPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent):
-        DbSchemaDbPanel.__init__(self, parent)
+        DBSchemaDBPanel.__init__(self, parent)
         self.setupUi(self)
         self.init_schema()
 

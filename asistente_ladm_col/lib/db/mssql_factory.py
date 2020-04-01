@@ -16,21 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_factory import DbFactory
+from .db_factory import DBFactory
 
 from asistente_ladm_col.gui.db_panel.mssql_config_panel import MssqlConfigPanel
 from .mssql_connector import MssqlConnector
+from ...logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
 
-class MssqlFactory(DbFactory):
+class MssqlFactory(DBFactory):
+
     def __init__(self):
-        DbFactory.__init__(self)
+        DBFactory.__init__(self)
         self._engine = "mssql"
 
     def get_name(self):
         return "Ms SQL Server"
 
-    def get_mbaker_db_ili_mode(self):
+    def get_model_baker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2mssql
 
@@ -40,7 +42,7 @@ class MssqlFactory(DbFactory):
     def get_db_connector(self, parameters=dict()):
         return MssqlConnector(None, parameters)
 
-    def set_db_configuration_params(self, params, configuration):
+    def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'mssql'
         configuration.dbhost = params['host'] or "localhost"
         configuration.dbport = params['port']
@@ -50,3 +52,6 @@ class MssqlFactory(DbFactory):
         configuration.dbschema = params['schema']
         configuration.dbpwd = params['password']
         configuration.db_odbc_driver = params['db_odbc_driver']
+
+    def get_ladm_queries(self):
+        return QGISLADMQuery()
