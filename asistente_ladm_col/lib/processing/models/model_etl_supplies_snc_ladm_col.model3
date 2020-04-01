@@ -50,8 +50,8 @@
       <Option name="alg_config"/>
       <Option type="QString" name="alg_id" value="ladm_col:ConvertEmptyToNull"/>
       <Option type="QString" name="component_description" value="Convertir geometrías vacias a nulas TERRENOS_COMBINADOS_PREDIO"/>
-      <Option type="double" name="component_pos_x" value="1419.3530665775552"/>
-      <Option type="double" name="component_pos_y" value="232.34838281112638"/>
+      <Option type="double" name="component_pos_x" value="1420.3530665775552"/>
+      <Option type="double" name="component_pos_y" value="220.34838281112638"/>
       <Option name="dependencies"/>
       <Option type="QString" name="id" value="ladm_col:ConvertEmptyToNull_3"/>
       <Option name="outputs"/>
@@ -326,8 +326,8 @@
       <Option name="alg_config"/>
       <Option type="QString" name="alg_id" value="ladm_col:insertfeaturestolayer"/>
       <Option type="QString" name="component_description" value="Ingresando datos desde la capa TERRENOS_COMBINADOS_PREDIO_GC_PREDIO a la capa GC_TERRENO"/>
-      <Option type="double" name="component_pos_x" value="1426.3106506535678"/>
-      <Option type="double" name="component_pos_y" value="457.87132758597375"/>
+      <Option type="double" name="component_pos_x" value="1433.3106506535678"/>
+      <Option type="double" name="component_pos_y" value="517.8713275859737"/>
       <Option name="dependencies"/>
       <Option type="QString" name="id" value="ladm_col:insertfeaturestolayer_2"/>
       <Option name="outputs"/>
@@ -886,8 +886,8 @@
       <Option name="alg_config"/>
       <Option type="QString" name="alg_id" value="native:joinattributestable"/>
       <Option type="QString" name="component_description" value="Uniendo la capa TERRENOS_COMBINADOS_PREDIO con la capa GC_PREDIO"/>
-      <Option type="double" name="component_pos_x" value="1151.7179552176358"/>
-      <Option type="double" name="component_pos_y" value="287.6944959851342"/>
+      <Option type="double" name="component_pos_x" value="1427.7179552176358"/>
+      <Option type="double" name="component_pos_y" value="298.69449598513415"/>
       <Option type="StringList" name="dependencies">
         <Option type="QString" value="ladm_col:insertfeaturestolayer_1"/>
       </Option>
@@ -2514,6 +2514,39 @@
         </Option>
       </Option>
     </Option>
+    <Option type="Map" name="native:mergevectorlayers_8">
+      <Option type="bool" name="active" value="true"/>
+      <Option name="alg_config"/>
+      <Option type="QString" name="alg_id" value="native:mergevectorlayers"/>
+      <Option type="QString" name="component_description" value="Combinando la capa TERRENO_PREDIO con la capa TERRENO_GC_PREDIO"/>
+      <Option type="double" name="component_pos_x" value="1159.3106506535678"/>
+      <Option type="double" name="component_pos_y" value="297.31296454223684"/>
+      <Option name="dependencies"/>
+      <Option type="QString" name="id" value="native:mergevectorlayers_8"/>
+      <Option name="outputs"/>
+      <Option type="bool" name="outputs_collapsed" value="true"/>
+      <Option type="bool" name="parameters_collapsed" value="true"/>
+      <Option type="Map" name="params">
+        <Option type="List" name="CRS">
+          <Option type="Map">
+            <Option type="int" name="source" value="2"/>
+            <Option type="invalid" name="static_value"/>
+          </Option>
+        </Option>
+        <Option type="List" name="LAYERS">
+          <Option type="Map">
+            <Option type="QString" name="child_id" value="native:joinattributestable_2"/>
+            <Option type="QString" name="output_name" value="NON_MATCHING"/>
+            <Option type="int" name="source" value="1"/>
+          </Option>
+          <Option type="Map">
+            <Option type="QString" name="child_id" value="native:joinattributestable_1"/>
+            <Option type="QString" name="output_name" value="NON_MATCHING"/>
+            <Option type="int" name="source" value="1"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
     <Option type="Map" name="native:removeduplicatevertices_1">
       <Option type="bool" name="active" value="true"/>
       <Option name="alg_config"/>
@@ -2791,8 +2824,8 @@
       <Option name="alg_config"/>
       <Option type="QString" name="alg_id" value="native:removeduplicatevertices"/>
       <Option type="QString" name="component_description" value="Eliminar vértices duplicados GC_TERRENO"/>
-      <Option type="double" name="component_pos_x" value="1421.4420599697974"/>
-      <Option type="double" name="component_pos_y" value="386.6990483581334"/>
+      <Option type="double" name="component_pos_x" value="1429.4420599697974"/>
+      <Option type="double" name="component_pos_y" value="443.6990483581334"/>
       <Option name="dependencies"/>
       <Option type="QString" name="id" value="native:removeduplicatevertices_8"/>
       <Option name="outputs"/>
@@ -3502,35 +3535,35 @@
                 <Option type="int" name="type" value="6"/>
               </Option>
               <Option type="Map">
-                <Option type="QString" name="expression" value="Torre_No"/>
+                <Option type="QString" name="expression" value="TORRE"/>
                 <Option type="int" name="length" value="10"/>
                 <Option type="QString" name="name" value="torre_no"/>
                 <Option type="int" name="precision" value="-1"/>
                 <Option type="int" name="type" value="10"/>
               </Option>
               <Option type="Map">
-                <Option type="QString" name="expression" value="Total_Pisos_Torre"/>
+                <Option type="QString" name="expression" value="PISOS"/>
                 <Option type="int" name="length" value="-1"/>
                 <Option type="QString" name="name" value="total_pisos_torre"/>
                 <Option type="int" name="precision" value="0"/>
                 <Option type="int" name="type" value="2"/>
               </Option>
               <Option type="Map">
-                <Option type="QString" name="expression" value="Total_Unidades_Privadas"/>
+                <Option type="QString" name="expression" value="UNIDADES_PRIVADAS"/>
                 <Option type="int" name="length" value="-1"/>
                 <Option type="QString" name="name" value="total_unidades_privadas"/>
                 <Option type="int" name="precision" value="0"/>
                 <Option type="int" name="type" value="2"/>
               </Option>
               <Option type="Map">
-                <Option type="QString" name="expression" value="Total_Sotanos"/>
+                <Option type="QString" name="expression" value="SOTANOS"/>
                 <Option type="int" name="length" value="-1"/>
                 <Option type="QString" name="name" value="total_sotanos"/>
                 <Option type="int" name="precision" value="0"/>
                 <Option type="int" name="type" value="2"/>
               </Option>
               <Option type="Map">
-                <Option type="QString" name="expression" value="Total_Unidades_Sotano"/>
+                <Option type="QString" name="expression" value="UNIDADES_SOTANOS"/>
                 <Option type="int" name="length" value="-1"/>
                 <Option type="QString" name="name" value="total_unidades_sotano"/>
                 <Option type="int" name="precision" value="0"/>
@@ -3679,8 +3712,8 @@
       <Option name="alg_config"/>
       <Option type="QString" name="alg_id" value="qgis:refactorfields"/>
       <Option type="QString" name="component_description" value="Mapeando campos de la capa TERRENOS_COMBINADOS_PREDIO_GC_PREDIO"/>
-      <Option type="double" name="component_pos_x" value="1420.1832462651098"/>
-      <Option type="double" name="component_pos_y" value="309.297881228197"/>
+      <Option type="double" name="component_pos_x" value="1428.18324626511"/>
+      <Option type="double" name="component_pos_y" value="370.29788122819696"/>
       <Option name="dependencies"/>
       <Option type="QString" name="id" value="qgis:refactorfields_2"/>
       <Option name="outputs"/>
@@ -3754,8 +3787,8 @@
         <Option name="FIELDS_MAPPING"/>
         <Option type="List" name="INPUT">
           <Option type="Map">
-            <Option type="QString" name="child_id" value="native:joinattributestable_2"/>
-            <Option type="QString" name="output_name" value="NON_MATCHING"/>
+            <Option type="QString" name="child_id" value="native:mergevectorlayers_8"/>
+            <Option type="QString" name="output_name" value="OUTPUT"/>
             <Option type="int" name="source" value="1"/>
           </Option>
         </Option>
@@ -4651,8 +4684,8 @@
     </Option>
     <Option type="Map" name="gcterreno">
       <Option type="QString" name="component_description" value="gcterreno"/>
-      <Option type="double" name="component_pos_x" value="1427.6586957070226"/>
-      <Option type="double" name="component_pos_y" value="516.900855056298"/>
+      <Option type="double" name="component_pos_x" value="1693.6586957070226"/>
+      <Option type="double" name="component_pos_y" value="532.900855056298"/>
       <Option type="QString" name="name" value="gcterreno"/>
     </Option>
     <Option type="Map" name="gcunidadconstruccion">
