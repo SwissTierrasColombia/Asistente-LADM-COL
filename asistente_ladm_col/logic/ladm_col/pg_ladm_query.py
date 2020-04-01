@@ -8,8 +8,8 @@ from asistente_ladm_col.logic.ladm_col.config.queries.pg import (basic_query,
 
 
 class PGLADMQuery(QGISLADMQuery):
-    def __init__(self, qgis_utils):
-        super(PGLADMQuery, self).__init__(qgis_utils)
+    def __init__(self):
+        super(PGLADMQuery, self).__init__()
 
     @staticmethod
     def get_igac_basic_info(db, **kwargs):

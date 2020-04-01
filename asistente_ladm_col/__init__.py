@@ -20,8 +20,7 @@ from functools import partial
 
 from qgis.PyQt.QtWidgets import QPushButton
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
-                       Qgis)
+from qgis.core import Qgis
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,

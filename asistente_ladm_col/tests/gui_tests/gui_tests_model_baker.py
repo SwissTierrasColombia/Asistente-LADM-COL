@@ -29,7 +29,7 @@ def functionalTests():
 
     def get_models_in_cache():
         plugin = qgis.utils.plugins['asistente_ladm_col']
-        models = [record[QueryNames.MODEL] for record in plugin.qgis_utils._layers]
+        models = [record[QueryNames.MODEL] for record in plugin.app.core.get_cached_layers()]
         models = set(models)
         if None in models:
             models.remove(None)

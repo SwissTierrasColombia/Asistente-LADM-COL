@@ -34,8 +34,8 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        MultiPageWizardFactory.__init__(self, iface, db, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)
 
     def post_save(self, features):

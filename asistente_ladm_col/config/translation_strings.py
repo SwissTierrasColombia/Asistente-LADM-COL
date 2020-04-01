@@ -89,7 +89,8 @@ class TranslatableConfigStrings(QObject):
     def __init__(self):
         pass
 
-    def get_translatable_config_strings(self):
+    @staticmethod
+    def get_translatable_config_strings():
         return {
             ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
             CHECK_OVERLAPS_IN_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap"),

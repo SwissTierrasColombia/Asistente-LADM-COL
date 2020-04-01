@@ -27,8 +27,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings,
-                              pyqtSignal,
-                              pyqtSlot)
+                              pyqtSignal)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
@@ -47,7 +46,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
                                                       SUPPLIES_DB_SOURCE,
-                                                      PLUGIN_NAME,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
                                                       URL_REPORTS_LIBRARIES,
@@ -73,6 +71,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
@@ -86,6 +85,9 @@ from asistente_ladm_col.config.expression_functions import (get_domain_code_from
                                                             get_domain_value_from_code,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.core.app_core_interface import AppCoreInterface
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
@@ -126,7 +128,6 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _operation_model_required)
 from asistente_ladm_col.utils.utils import (Utils,
                                             show_plugin_help)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
@@ -156,6 +157,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session = STSession()
         task_steps_config = TaskStepsConfig()
         task_steps_config.set_slot_caller(self)
+        layer_tree_indicator_config = LayerTreeIndicatorConfig()
+        layer_tree_indicator_config.set_slot_caller(self)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -165,12 +168,15 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
 
     def initGui(self):
-        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.right_of_way = RightOfWay(self.iface, self.qgis_utils, self.get_db_connection().names)
-        self.quality = QualityUtils(self.qgis_utils)
-        self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.ladm_data = LADMDATA(self.qgis_utils)
-        self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
+        self.app = AppInterface()
+        self.app.set_core_interface(AppCoreInterface())
+        self.app.set_gui_interface(AppGUIInterface(self.iface))
+
+        self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
+        self.quality = QualityUtils()
+        self.toolbar = ToolBar(self.iface)
+        self.ladm_data = LADMDATA()
+        self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
         self.set_signal_slot_connections()
@@ -178,7 +184,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if not self.unit_tests:
             # Ask for role name before building the GUI, only the first time the plugin is run
             if self.gui_builder.show_welcome_screen():
-                dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+                dlg_welcome = WelcomeScreenDialog(self.main_window)
                 dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
@@ -207,10 +213,10 @@ class AsistenteLADMCOLPlugin(QObject):
     def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
 
-        self.logger.message_with_duration_emitted.connect(self.show_message)
-        self.logger.status_bar_message_emitted.connect(self.show_status_bar_message)
-        self.logger.clear_status_bar_emitted.connect(self.clear_status_bar)
-        self.logger.clear_message_bar_emitted.connect(self.clear_message_bar)
+        self.logger.message_with_duration_emitted.connect(self.app.gui.show_message)
+        self.logger.status_bar_message_emitted.connect(self.app.gui.show_status_bar_message)
+        self.logger.clear_status_bar_emitted.connect(self.app.gui.clear_status_bar)
+        self.logger.clear_message_bar_emitted.connect(self.app.gui.clear_message_bar)
         self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.logger.message_with_button_open_table_attributes_emitted.connect(
             self.show_message_with_open_table_attributes_button)
@@ -221,15 +227,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
-        self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
-        self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
-        self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
-        self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
-        self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
-        self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
-        self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
-        self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+        self.app.gui.add_indicators_requested.connect(self.add_indicators)
 
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
@@ -587,52 +585,8 @@ class AsistenteLADMCOLPlugin(QObject):
         elif action_name == ANNEX_17_REPORT:
             self._annex_17_action.setEnabled(enable)
 
-    def refresh_map(self):
-        self.iface.mapCanvas().refresh()
-
-    def freeze_map(self, frozen):
-        self.iface.mapCanvas().freeze(frozen)
-
-    def trigger_add_feature(self):
-        self.iface.actionAddFeature().trigger()
-
-    def trigger_vertex_tool(self):
-        self.iface.actionVertexTool().trigger()
-
-    def activate_layer(self, layer):
-        self.iface.layerTreeView().setCurrentLayer(layer)
-
-    def set_node_visibility(self, node, visible=True):
-        # Modes may eventually be layer_id, group_name, layer, group
-        if node is not None:
-            node.setItemVisibilityChecked(visible)
-
-    def remove_error_group(self):
-        group = self.qgis_utils.get_error_layers_group()
-        parent = group.parent()
-        parent.removeChildNode(group)
-
-    def clear_status_bar(self):
-        self.iface.statusBarIface().clearMessage()
-
-    @pyqtSlot()
-    def clear_message_bar(self):
-        self.iface.messageBar().clearWidgets()
-
-    def create_progress_message_bar(self, text, progress):
-        progressMessageBar = self.iface.messageBar().createMessage(PLUGIN_NAME, text)
-        progressMessageBar.layout().addWidget(progress)
-        self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
-
-    def refresh_layer_symbology(self, layer_id):
-        self.iface.layerTreeView().refreshLayerSymbology(layer_id)
-
-    def show_message(self, msg, level, duration=5):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
-
     def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -641,7 +595,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -650,7 +604,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_open_about_dialog(self, msg):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -673,15 +627,15 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       "Download and install dependency"))
             button.pressed.connect(self.download_report_dependency)
             widget.layout().addWidget(button)
-            self.clear_message_bar()  # Remove previous messages before showing a new one
+            self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
             self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
         else:
-            self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "Report dependency download is in progress..."),
-                              Qgis.Info)
+            self.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "Report dependency download is in progress..."),
+                                     Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
@@ -690,7 +644,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
 
         btn_query_per_parcel = QPushButton(widget)
@@ -706,7 +660,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Success, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -715,7 +669,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 25)
 
     def show_message_with_close_wizard_button(self, msg, button_text, level):
-        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -723,15 +677,12 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 25)
 
-    def show_status_bar_message(self, msg, duration):
-        self.iface.statusBarIface().showMessage(msg, duration)
-
     def load_layer(self, layer):
-        self.clear_message_bar()
-        self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
+        self.app.gui.clear_message_bar()
+        self.app.core.get_layer(self.get_db_connection(), layer, load=True)
 
     def load_layers(self, layers):
-        self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
+        self.app.core.get_layers(self.get_db_connection(), layers, True)
 
     def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
         if t_ids:
@@ -806,7 +757,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.qgis_utils, self.text)
+        dlg = LogExcelDialog(self.text)
         dlg.exec_()
 
     @_db_connection_required
@@ -819,7 +770,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        wiz = SuppliesETLWizard(self.qgis_utils, self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        wiz = SuppliesETLWizard(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             wiz.on_result.connect(context.get_slot_on_result())
         wiz.exec_()
@@ -832,7 +783,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = MissingCobolSupplies(self.qgis_utils, self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        dlg = MissingCobolSupplies(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
@@ -849,7 +800,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def call_topological_editing(self, *args):
-        self.qgis_utils.enable_topological_editing(self.get_db_connection())
+        self.app.core.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -893,7 +844,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
-        self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection())
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
         self._dlg.exec_()
 
@@ -918,13 +869,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
         dlg.set_db_source(db_source)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
         if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
-            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
         elif db_source == SUPPLIES_DB_SOURCE:
             dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])  # Only show connection tab for supplies
@@ -957,7 +908,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_qgis_model_baker_required
     def load_layers_from_qgis_model_baker(self, *args):
-        dlg = LoadLayersDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg = LoadLayersDialog(self.get_db_connection())
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -969,7 +920,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._dock_widget_queries = DockWidgetQueries(self.iface,
                                                       self.get_db_connection(),
-                                                      self.qgis_utils,
                                                       self.ladm_data)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
         self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
@@ -1007,7 +957,7 @@ class AsistenteLADMCOLPlugin(QObject):
         selected_models_import_schema = params['selected_models'] if 'selected_models' in params else list()
         link_to_import_data = params['link_to_import_data'] if 'link_to_import_data' in params else True
 
-        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, context, selected_models_import_schema, link_to_import_data)
+        dlg = DialogImportSchema(self.iface, self.conn_manager, context, selected_models_import_schema, link_to_import_data)
         dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
 
         if isinstance(context, TaskContext):
@@ -1026,7 +976,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        dlg = DialogImportData(self.iface, self.conn_manager, context)
         dlg.open_dlg_import_schema.connect(partial(self.show_dlg_import_schema, context))
 
         if isinstance(context, TaskContext):
@@ -1045,7 +995,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager, context)
+        dlg = DialogExportData(self.iface, self.conn_manager, context)
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
@@ -1057,7 +1007,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_wiz_point_cad(self, *args):
-        self.wiz = CreatePointsOperationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreatePointsOperationWizard(self.iface, self.get_db_connection())
         self.exec_wizard(self.wiz)
 
     @_db_connection_required
@@ -1131,7 +1081,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                    Qgis.Info)
             return
 
-        dlg = CreateGroupPartyOperation(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg = CreateGroupPartyOperation(self.iface, self.get_db_connection())
 
         # Check if required layers are available
         if dlg.required_layers_are_available():
@@ -1166,7 +1116,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def upload_source_files(self, *args):
-        self.qgis_utils.upload_source_files(self.get_db_connection())
+        self.app.core.upload_source_files(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1174,7 +1124,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        dlg = QualityDialog(self.get_db_connection(), self.qgis_utils, self.quality)
+        dlg = QualityDialog(self.get_db_connection(), self.quality)
         dlg.exec_()
 
     def show_wiz_property_record_card(self):
@@ -1233,7 +1183,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
                                                                        self.get_db_connection(),
                                                                        self.get_db_connection(SUPPLIES_DB_SOURCE),
-                                                                       self.qgis_utils,
                                                                        self.ladm_data,
                                                                        all_parcels_mode)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
@@ -1242,18 +1191,18 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
-        dlg = ChangeDetectionSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = ChangeDetectionSettingsDialog(self.conn_manager)
         dlg.exec_()
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
 
     def download_report_dependency(self):
-        self.clear_message_bar()  # Remove messages
+        self.app.gui.clear_message_bar()  # Remove messages
         self.report_generator.download_report_dependency()
 
     def remove_report_dependency(self):
-        self.clear_message_bar()  # Remove messages
+        self.app.gui.clear_message_bar()  # Remove messages
         Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
 
     def show_about_dialog(self):
@@ -1280,11 +1229,10 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
-        if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
+        if self.app.core.required_layers_are_available(self.get_db_connection(),
                                                          wiz_settings[WIZARD_LAYERS],
                                                          wiz_settings[WIZARD_TOOL_NAME]):
-            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
-                                                  wiz_settings)
+            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), wiz_settings)
             if wiz_settings[WIZARD_TYPE] & EnumWizardType.SPATIAL_WIZARD:
                 # Required signal for wizard geometry creating
                 self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
@@ -1414,4 +1362,11 @@ class AsistenteLADMCOLPlugin(QObject):
                 db.names.GC_PARCEL_T: None,
                 db.names.SNR_PARCEL_REGISTRY_T: None
             }
-            self.qgis_utils.get_layers(db, layers, load=True)
+            self.app.core.get_layers(db, layers, load=True)
+
+    def add_indicators(self, node_name, node_type):
+        """Slot to inject the db object"""
+        self.app.add_indicators(self.get_db_connection(), node_name, node_type)
+
+    def export_error_group(self):
+        self.app.gui.export_error_group()

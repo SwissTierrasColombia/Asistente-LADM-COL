@@ -5,9 +5,10 @@ from qgis.core import (QgsWkbTypes,
 from qgis.testing import (start_app,
                           unittest)
 
+from asistente_ladm_col.app_interface import AppInterface
+
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
@@ -31,8 +32,8 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             print('The test connection is not working')
             return
 
-        cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADMDATA(cls.qgis_utils)
+        cls.app = AppInterface()
+        cls.ladm_data = LADMDATA()
 
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")
@@ -62,7 +63,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id) with preloaded tables...")
 
         layers = {self.db_pg.names.GC_PLOT_T: None}
-        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
+        self.app.core.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
@@ -102,7 +103,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots in supplies model (Case: t_id) with preloaded tables...")
 
         layers = {self.db_pg.names.GC_PARCEL_T: None}
-        self.qgis_utils.get_layers(self.db_pg, layers, load=True)
+        self.app.core.get_layers(self.db_pg, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0

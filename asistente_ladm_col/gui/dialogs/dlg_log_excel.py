@@ -19,17 +19,18 @@
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 from qgis.PyQt.QtCore import QCoreApplication
-from ...utils import get_ui_class
-from ...utils.qt_utils import save_pdf_format
+
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import save_pdf_format
 
 DIALOG_LOG_EXCEL_UI = get_ui_class('dialogs/dlg_log_excel.ui')
 
 
 class LogExcelDialog(QDialog, DIALOG_LOG_EXCEL_UI):
-    def __init__(self, qgis_utils, text, parent=None):
+    def __init__(self, text, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
+
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogExcelDialog", "Export to PDF"))
         self.txt_log_excel.setHtml(text)

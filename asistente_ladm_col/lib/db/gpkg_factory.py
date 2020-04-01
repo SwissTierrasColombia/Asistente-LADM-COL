@@ -40,8 +40,8 @@ class GPKGFactory(DBFactory):
     def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
-    def get_ladm_queries(self, qgis_utils):
-        return GPKGLADMQuery(qgis_utils)
+    def get_ladm_queries(self):
+        return GPKGLADMQuery()
 
     def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'

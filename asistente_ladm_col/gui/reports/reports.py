@@ -47,6 +47,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TEST_SERVER,
                                                       REPORTS_REQUIRED_VERSION,
                                                       URL_REPORTS_LIBRARIES)
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 from asistente_ladm_col.utils.java_utils import JavaUtils
@@ -58,11 +59,11 @@ class ReportGenerator(QObject):
 
     enable_action_requested = pyqtSignal(str, bool)
 
-    def __init__(self, qgis_utils, ladm_data):
+    def __init__(self, ladm_data):
         QObject.__init__(self)
-        self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.logger = Logger()
+        self.app = AppInterface()
         self.java_utils = JavaUtils()
         self.java_utils.download_java_completed.connect(self.download_java_complete)
 
@@ -194,7 +195,7 @@ class ReportGenerator(QObject):
                                                                          "Java is a prerequisite. Since it was not found, it is being configured..."))
             return
 
-        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(db, db.names.OP_PLOT_T, load=True)
         if not plot_layer:
             return
 
@@ -249,7 +250,7 @@ class ReportGenerator(QObject):
         else:
             progress.setRange(0, 100)
         progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.qgis_utils.create_progress_message_bar_emitted.emit(
+        self.app.gui.create_progress_message_bar(
             QCoreApplication.translate("ReportGenerator", "Generating {} report{}...").format(total, '' if total == 1 else 's'),
             progress)
 

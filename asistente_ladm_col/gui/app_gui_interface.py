@@ -1,0 +1,226 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-03-30
+        git sha              : :%H$
+        copyright            : (C) 2020 by Germán Carrillo (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
+from qgis.PyQt.QtCore import (QObject,
+                              pyqtSlot,
+                              pyqtSignal,
+                              QCoreApplication)
+from qgis.PyQt.QtWidgets import QFileDialog
+
+from qgis.core import (Qgis,
+                       QgsLayerTreeGroup,
+                       QgsProject,
+                       QgsLayerTreeNode,
+                       QgsProcessingException)
+from qgis.gui import QgsLayerTreeViewIndicator
+import processing
+
+from asistente_ladm_col.config.general_config import PLUGIN_NAME
+from asistente_ladm_col.config.layer_tree_indicator_config import (INDICATOR_TOOLTIP,
+                                                                   INDICATOR_ICON,
+                                                                   INDICATOR_SLOT, LayerTreeIndicatorConfig)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_LAYER_GROUP)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
+
+
+class AppGUIInterface(QObject):
+    add_indicators_requested = pyqtSignal(str, QgsLayerTreeNode.NodeType)  # node name, node type
+
+    def __init__(self, iface):
+        QObject.__init__(self)
+        self.iface = iface
+
+        self.logger = Logger()
+
+    def trigger_add_feature(self):
+        self.iface.actionAddFeature().trigger()
+
+    def trigger_vertex_tool(self):
+        self.iface.actionVertexTool().trigger()
+
+    def create_progress_message_bar(self, text, progress):
+        progressMessageBar = self.iface.messageBar().createMessage(PLUGIN_NAME, text)
+        progressMessageBar.layout().addWidget(progress)
+        self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
+
+    def refresh_layer_symbology(self, layer_id):
+        self.iface.layerTreeView().refreshLayerSymbology(layer_id)
+
+    def refresh_map(self):
+        self.iface.mapCanvas().refresh()
+
+    def freeze_map(self, frozen):
+        self.iface.mapCanvas().freeze(frozen)
+
+    def activate_layer(self, layer):
+        self.iface.layerTreeView().setCurrentLayer(layer)
+
+    def set_node_visibility(self, node, visible=True):
+        # Modes may eventually be layer_id, group_name, layer, group
+        if node is not None:
+            node.setItemVisibilityChecked(visible)
+
+    def remove_error_group(self):
+        group = self.get_error_layers_group()
+        parent = group.parent()
+        parent.removeChildNode(group)
+
+    def clear_status_bar(self):
+        self.iface.statusBarIface().clearMessage()
+
+    def get_error_layers_group(self):
+        """
+        Get the topology errors group. If it exists but is placed in another
+        position rather than the top, it moves the group to the top.
+        """
+        root = QgsProject.instance().layerTreeRoot()
+        translated_strings = TranslatableConfigStrings.get_translatable_config_strings()
+        group = root.findGroup(translated_strings[ERROR_LAYER_GROUP])
+        if group is None:
+            group = root.insertGroup(0, translated_strings[ERROR_LAYER_GROUP])
+            self.add_indicators_requested.emit(translated_strings[ERROR_LAYER_GROUP], QgsLayerTreeNode.NodeGroup)
+        elif not self.iface.layerTreeView().layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
+            group_clone = group.clone()
+            root.insertChildNode(0, group_clone)
+            parent = group.parent()
+            parent.removeChildNode(group)
+            group = group_clone
+        return group
+
+    def add_indicators(self, node_name, node_type, payload):
+        """
+        Adds all indicators for a node in layer tree. It searches for the proper node and its config.
+
+        :param node_name: Key to get the config and possibly, the node (see payload)
+        :param node_type: QgsLayerTreeNode.NodeType
+        :param payload: If the node is a LADM layer, we need the layer object, as the name is not enough to disambiguate
+                        between layers from different connections
+        """
+        # First get the node
+        node = None
+        root = QgsProject.instance().layerTreeRoot()
+        if node_type == QgsLayerTreeNode.NodeGroup:
+            node = root.findGroup(node_name)
+        elif node_type == QgsLayerTreeNode.NodeLayer:
+            if payload:
+                node = root.findLayer(payload)  # Search by QgsMapLayer
+            else:  # Get the first layer matching the node name
+                layers = QgsProject.instance().mapLayersByName(node_name)
+                if layers:
+                    node = root.findLayer(layers[0])
+
+        if not node:
+            self.logger.warning(__name__, "Node not found for adding indicators! ({}, {})".format(node_name, node_type))
+            return  # No node, no party
+
+        # Then, get the config
+        indicators_config = LayerTreeIndicatorConfig().get_indicators_config(node_name, node_type)
+        if not indicators_config:
+            self.logger.warning(__name__, "Configuration for indicators not found for node '{}'!".format(node_name))
+
+        # And finally...
+        for config in indicators_config:
+            self.add_indicator(node, config)
+
+    def add_indicator(self, node, config):
+        """
+        Adds a single indicator for the node, based on a config dict
+
+        :param node: Layer tree node
+        :param config: Dictionary with required data to set the indicator
+        """
+        indicator = QgsLayerTreeViewIndicator(self.iface.layerTreeView())
+        indicator.setToolTip(config[INDICATOR_TOOLTIP])
+        indicator.setIcon(config[INDICATOR_ICON])
+        indicator.clicked.connect(config[INDICATOR_SLOT])
+        self.iface.layerTreeView().addIndicator(node, indicator)
+
+    def export_error_group(self):
+        """Exports the error group to GeoPackage"""
+        group = self.get_error_layers_group()
+        if group:
+            layers = group.findLayerIds()
+            if not layers:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppGUIInterface",
+                                                                             "There are no error layers to export!"))
+                return
+
+            filename, matched_filter = QFileDialog.getSaveFileName(self.iface.mainWindow(),
+                                           QCoreApplication.translate("AppGUIInterface", "Where do you want to save your GeoPackage?"),
+                                           ".",
+                                           QCoreApplication.translate("AppGUIInterface", "GeoPackage (*.gpkg)"))
+
+            if filename:
+                if not filename.endswith(".gpkg") and filename:
+                    filename = filename + ".gpkg"
+
+                feedback = CustomFeedbackWithErrors()
+                try:
+                    msg = QCoreApplication.translate("AppGUIInterface", "Exporting queality errors to GeoPackage...")
+                    with ProcessWithStatus(msg):
+                        processing.run("native:package", {
+                            'LAYERS': layers,
+                            'OUTPUT': filename,
+                            'OVERWRITE': False,
+                            'SAVE_STYLES': True},
+                                       feedback=feedback)
+                except QgsProcessingException as e:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("AppGUIInterface",
+                                                                                 "The quality errors could not be exported. Details: {}".format(feedback.msg)))
+                    return
+
+                self.logger.success_msg(__name__, QCoreApplication.translate("AppGUIInterface",
+                                    "The quality errors have been exported to GeoPackage!"))
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppGUIInterface",
+                                             "Export to GeoPackage was cancelled. No output file was selected."), 5)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppGUIInterface",
+                                             "There is no quality error group to export!"), 5)
+
+    def set_error_group_visibility(self, visible):
+        self.set_node_visibility(self.get_error_layers_group(), visible)
+
+    def set_layer_visibility(self, layer, visible):
+        node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        self.set_node_visibility(node, visible)
+
+    def error_group_exists(self):
+        root = QgsProject.instance().layerTreeRoot()
+        translated_strings = TranslatableConfigStrings.get_translatable_config_strings()
+        return root.findGroup(translated_strings[ERROR_LAYER_GROUP]) is not None
+
+    @pyqtSlot()
+    def clear_message_bar(self):
+        self.iface.messageBar().clearWidgets()
+
+    def zoom_full(self):
+        self.iface.zoom_full()
+
+    def zoom_to_selected(self):
+        self.iface.actionZoomToSelected().trigger()
+
+    def show_message(self, msg, level, duration=5):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
+
+    def show_status_bar_message(self, msg, duration):
+        self.iface.statusBarIface().showMessage(msg, duration)

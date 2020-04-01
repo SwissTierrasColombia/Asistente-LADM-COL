@@ -40,8 +40,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_READ_ONLY_FIELDS)
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.ui import load_ui
 
@@ -50,13 +50,15 @@ class AbsWizardFactory(QWizard):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
+    def __init__(self, iface, db, wizard_settings):
         super(AbsWizardFactory, self).__init__()
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.wizard_config = wizard_settings
+
         self.logger = Logger()
+        self.app = AppInterface()
+
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
@@ -169,4 +171,4 @@ class AbsWizardFactory(QWizard):
         if self._layers[self.EDITING_LAYER_NAME] is not None:
             for field in self.wizard_config[WIZARD_READ_ONLY_FIELDS]:
                 # Not validate field that are read only
-                QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME], field, read_only)
+                self.app.core.set_read_only_field(self._layers[self.EDITING_LAYER_NAME], field, read_only)

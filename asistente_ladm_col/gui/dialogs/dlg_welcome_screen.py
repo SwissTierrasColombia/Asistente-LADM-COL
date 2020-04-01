@@ -31,10 +31,9 @@ DIALOG_UI = get_ui_class('dialogs/dlg_welcome_screen.ui')
 
 
 class WelcomeScreenDialog(QDialog, DIALOG_UI):
-    def __init__(self, qgis_utils, parent):
+    def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)

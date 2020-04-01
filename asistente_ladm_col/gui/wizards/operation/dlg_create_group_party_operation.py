@@ -35,6 +35,7 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -47,13 +48,14 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
     WIZARD_NAME = "CreateGroupPartyOperationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+
+        self.app = AppInterface()
         self.names = self._db.names
         self.help_strings = HelpStrings()
 
@@ -70,7 +72,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         }
 
         # Fill combo of types
-        col_group_party_type_table = self.qgis_utils.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, True)
+        col_group_party_type_table = self.app.core.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, True)
         if not col_group_party_type_table:
             return
 
@@ -107,7 +109,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         pass
 
     def required_layers_are_available(self):
-        layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
+        layers_are_available = self.app.core.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
         return layers_are_available
 
     def load_parties_data(self):

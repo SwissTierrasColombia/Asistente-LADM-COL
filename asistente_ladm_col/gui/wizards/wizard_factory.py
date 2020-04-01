@@ -36,8 +36,8 @@ class WizardFactory(AbsWizardFactory):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(WizardFactory, self).__init__(iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        super(WizardFactory, self).__init__(iface, db, wizard_settings)
 
     def init_gui(self):
         raise NotImplementedError
@@ -51,7 +51,7 @@ class WizardFactory(AbsWizardFactory):
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
                 field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                res_etl_model = self.app.core.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
                                                                self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
@@ -59,9 +59,9 @@ class WizardFactory(AbsWizardFactory):
                     # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
                     # previous mapping used (we give preference to the latest used mapping)
                     if field_mapping:
-                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+                        self.app.core.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
+                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
@@ -121,7 +121,7 @@ class WizardFactory(AbsWizardFactory):
         self.exec_form(layer)
 
     def get_feature_exec_form(self, layer):
-        return self.qgis_utils.get_new_feature(layer)
+        return self.app.core.get_new_feature(layer)
 
     def exec_form_advanced(self, layer):
         raise NotImplementedError

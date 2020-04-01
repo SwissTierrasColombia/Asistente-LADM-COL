@@ -1,11 +1,15 @@
 from qgis.PyQt.QtCore import QSettings
 
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 
 
 class RefactorFieldsMappings:
 
-    def get_refactor_fields_mapping(self, names, layer_name, qgis_utils):
+    def __init__(self):
+        self.app = AppInterface()
+
+    def get_refactor_fields_mapping(self, names, layer_name):
         mapping = []
 
         # --------------------------------
@@ -333,11 +337,11 @@ class RefactorFieldsMappings:
 
         # If the user wants to enable automatic fields...
         if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-            self.set_automatic_values(names, mapping, layer_name, qgis_utils)
+            self.set_automatic_values(names, mapping, layer_name)
 
         return mapping
 
-    def get_refactor_fields_mapping_resolve_domains(self, names, layer_name, qgis_utils):
+    def get_refactor_fields_mapping_resolve_domains(self, names, layer_name):
         mapping = []
 
         # --------------------------------
@@ -394,14 +398,14 @@ class RefactorFieldsMappings:
 
         # If the user wants to enable automatic fields...
         if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-            self.set_automatic_values(names, mapping, layer_name, qgis_utils)
+            self.set_automatic_values(names, mapping, layer_name)
 
         return mapping
 
-    def set_automatic_values(self, names, mapping, layer_name, qgis_utils):
+    def set_automatic_values(self, names, mapping, layer_name):
         # Now see if we can adjust the mapping depending on user settings
-        ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(names, layer_name)
-        lid_enabled, lid_field, lid_value = qgis_utils.get_local_id_field_and_value(names, layer_name)
+        ns_enabled, ns_field, ns_value = self.app.core.get_namespace_field_and_value(names, layer_name)
+        lid_enabled, lid_field, lid_value = self.app.core.get_local_id_field_and_value(names, layer_name)
 
         for field in mapping:
             if ns_enabled and ns_field:

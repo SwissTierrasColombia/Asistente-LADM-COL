@@ -39,6 +39,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
                                  QFileDialog)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
 from asistente_ladm_col.config.help_strings import HelpStrings
@@ -93,13 +94,15 @@ EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 class ImportFromExcelDialog(QDialog, DIALOG_UI):
     log_excel_show_message_emitted = pyqtSignal(str)
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
+
         self.logger = Logger()
+        self.app = AppInterface()
+
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
@@ -217,7 +220,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             self.names.OP_ADMINISTRATIVE_SOURCE_T: None
         }
 
-        self.qgis_utils.get_layers(self._db, layers, load=True)
+        self.app.core.get_layers(self._db, layers, load=True)
         if not layers:
             return None
 
@@ -246,9 +249,9 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                   'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
                   'parcel': layers[self.names.OP_PARCEL_T]}
 
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
+        self.app.core.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
+        self.app.core.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
+        self.app.core.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
 
         processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
 

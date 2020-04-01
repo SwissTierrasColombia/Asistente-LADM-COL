@@ -35,6 +35,7 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -51,13 +52,14 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreatePointsOperationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Point")
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, db):
         QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
+
         self.names = self._db.names
         self.help_strings = HelpStrings()
 
@@ -173,7 +175,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.button(self.CancelButton).setEnabled(enabled)
 
     def check_z_in_geometry(self):
-        self.target_layer = self.qgis_utils.get_layer(self._db, self.current_point_name(), load=True)
+        self.target_layer = self.app.core.get_layer(self._db, self.current_point_name(), load=True)
         if not self.target_layer:
             return
 
@@ -193,7 +195,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
     def adjust_page_2_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.current_point_name()))
+        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.current_point_name()))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -237,16 +239,16 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
             if self.mMapLayerComboBox.currentLayer() is not None:
                 field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                res_etl_model = self.app.core.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
                                                                output_layer_name,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
-                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+                        self.app.core.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(output_layer_name)
+                    self.app.core.save_field_mapping(output_layer_name)
 
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
@@ -283,18 +285,18 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         target_layer_name = self.current_point_name()
 
         with OverrideCursor(Qt.WaitCursor):
-            csv_layer = self.qgis_utils.csv_to_layer(csv_path,
-                                                     self.txt_delimiter.text(),
-                                                     self.cbo_longitude.currentText(),
-                                                     self.cbo_latitude.currentText(),
-                                                     self.epsg,
-                                                     self.cbo_elevation.currentText() or None,
-                                                     self.detect_decimal_point(csv_path))
+            csv_layer = self.app.core.csv_to_layer(csv_path,
+                                                   self.txt_delimiter.text(),
+                                                   self.cbo_longitude.currentText(),
+                                                   self.cbo_latitude.currentText(),
+                                                   self.epsg,
+                                                   self.cbo_elevation.currentText() or None,
+                                                   self.detect_decimal_point(csv_path))
 
-            self.qgis_utils.copy_csv_to_db(csv_layer, self._db, target_layer_name)
+            self.app.core.copy_csv_to_db(csv_layer, self._db, target_layer_name)
 
     def required_layers_are_available(self):
-        layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
+        layers_are_available = self.app.core.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
         return layers_are_available
 
     def file_path_changed(self):
