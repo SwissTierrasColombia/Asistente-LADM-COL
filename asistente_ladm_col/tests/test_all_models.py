@@ -6,7 +6,9 @@ from qgis.testing import (start_app,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_required_fields,
-                                            get_required_tables)
+                                            get_required_tables,
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
                                                       T_ID_KEY,
                                                       DESCRIPTION_KEY,
@@ -20,20 +22,21 @@ class TestAllModels(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("INFO: Restoring databases to be used")
+        import_qgis_model_baker()
         restore_schema('test_ladm_all_models')
         cls.db_pg = get_pg_conn('test_ladm_all_models')
         cls.db_gpkg = get_gpkg_conn('test_ladm_all_models_gpkg')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for all models in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_pg)
 
     def test_required_models_gpkg(self):
         print("\nINFO: Validate if the schema for all models in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_gpkg)
 
     def check_required_models(self, db_connection):
@@ -48,8 +51,8 @@ class TestAllModels(unittest.TestCase):
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for all model in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 215)
@@ -85,8 +88,8 @@ class TestAllModels(unittest.TestCase):
 
     def test_names_from_model_gpkg(self):
         print("\nINFO: Validate names for all model in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 215)
@@ -122,14 +125,14 @@ class TestAllModels(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_pg)
 
     def test_required_table_names_gpkg(self):
         print("\nINFO: Validate minimum required tables from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
@@ -141,14 +144,14 @@ class TestAllModels(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_pg)
 
     def test_required_field_names_gpkg(self):
         print("\nINFO: Validate minimum required fields from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):
@@ -163,6 +166,7 @@ class TestAllModels(unittest.TestCase):
         print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
         cls.db_gpkg.conn.close()
+        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':
