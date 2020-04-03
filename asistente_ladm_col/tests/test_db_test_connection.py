@@ -120,7 +120,7 @@ class TestDBTestConnection(unittest.TestCase):
         db = get_gpkg_conn('no_interlis_gpkg')
         res, code, msg = db.test_connection(EnumTestLevel.SCHEMA_IMPORT)
         self.assertTrue(res, msg)
-        self.assertEqual(code, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL)
+        self.assertEqual(code, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL)
 
     def test_gpkg_test_connection_interlis_no_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for GeoPackage (Interlis, no LADM-COL models)...")

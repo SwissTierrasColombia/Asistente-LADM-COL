@@ -14,7 +14,7 @@ class EnumTestLevel(IntFlag):
     _CHECK_SCHEMA = 4
     _CHECK_LADM = 8
 
-    SERVER = 1
+    SERVER_OR_FILE = 1
     DB = _CHECK_DB  # 2
     DB_SCHEMA = _CHECK_DB|_CHECK_SCHEMA  # 6
     DB_FILE = _CHECK_DB|_CHECK_SCHEMA  # 6

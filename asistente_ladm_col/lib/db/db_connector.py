@@ -208,7 +208,7 @@ class DBConnector(QObject):
     def get_ladm_layer_name(self, layer, validate_is_ladm=False):
         raise NotImplementedError
 
-    def get_interlis_version(self):
+    def get_ili2db_version(self):
         raise NotImplementedError
 
     def get_table_and_field_names(self):  # TODO: Add test
@@ -288,3 +288,93 @@ class DBConnector(QObject):
         :return: Whether the connection is opened after calling this method or not
         """
         raise NotImplementedError
+
+    def _test_connection_to_db(self):
+        raise NotImplementedError
+
+    def _test_connection_to_ladm(self, required_models):
+        raise NotImplementedError
+
+
+class FilesDB(DBConnector):
+
+    def _test_db_file(self, is_schema_import=False):
+        raise NotImplementedError
+
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
+        """We check several levels in order:
+            1. FILE SERVER
+            2. DB
+            #  We don't check SCHEMAs
+            3. LADM
+            4. SCHEMA_IMPORT
+
+        :param test_level: (EnumTestLevel) level of connection with postgres
+        :param user_level: (EnumUserLevel) level of permissions a user has
+        :param required_models: A list of model prefixes that are mandatory for this DB connection
+        :return Triple: boolean result, message code, message text
+        """
+        is_schema_import = bool(test_level & EnumTestLevel.SCHEMA_IMPORT)
+        res, conn_msg, msg = self._test_db_file(is_schema_import)
+        if not res or test_level == EnumTestLevel.SERVER_OR_FILE or is_schema_import:
+            return res, conn_msg, msg
+
+        res, conn_msg, msg = self._test_connection_to_db()
+
+        if not res or test_level == EnumTestLevel.DB or test_level == EnumTestLevel.DB_SCHEMA:
+            return res, conn_msg, msg
+
+        res, conn_msg, msg = self._test_connection_to_ladm(required_models)
+
+        if not res or test_level == EnumTestLevel.LADM:
+            return res, conn_msg, msg
+
+        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("FilesDB",
+                                                                                                 "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
+
+
+class ClientServerDB(DBConnector):
+
+    def _test_connection_to_schema(self, user_level):
+        raise NotImplementedError
+
+    def _test_connection_to_server(self):
+        raise NotImplementedError
+
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
+        """We check several levels in order:
+            1. SERVER
+            2. DB
+            3. SCHEMA
+            4. LADM
+            5. SCHEMA_IMPORT
+
+        :param test_level: (EnumTestLevel) level of connection with postgres
+        :param user_level: (EnumUserLevel) level of permissions a user has
+        :param required_models: A list of model prefixes that are mandatory for this DB connection
+        :return Triple: boolean result, message code, message text
+        """
+
+        if test_level == EnumTestLevel.SERVER_OR_FILE:
+            return self._test_connection_to_server()
+
+        res, conn_msg, msg = self._test_connection_to_db()
+
+        if not res or test_level == EnumTestLevel.DB:
+            return res, conn_msg, msg
+
+        res, conn_msg, msg = self._test_connection_to_schema(user_level)
+
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate("ClientServerDB", "Connection successful!")
+
+        if not res or test_level == EnumTestLevel.DB_SCHEMA:
+            return res, conn_msg, msg
+
+        res, conn_msg, msg = self._test_connection_to_ladm(required_models)
+
+        if not res or test_level == EnumTestLevel.LADM:
+            return res, conn_msg, msg
+
+        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("ClientServerDB",
+                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
