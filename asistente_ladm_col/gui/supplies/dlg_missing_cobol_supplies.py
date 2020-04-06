@@ -43,12 +43,12 @@ from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
 
 class MissingCobolSupplies(CobolBaseDialog):
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
-        CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
-        self.qgis_utils = qgis_utils
+    def __init__(self, db, conn_manager, parent=None):
+        CobolBaseDialog.__init__(self, db, conn_manager, parent)
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.names_gpkg = ''
         self.progress_configuration(0, 2)  # Start from: 0, number of steps: 2
         self._running_tool = False

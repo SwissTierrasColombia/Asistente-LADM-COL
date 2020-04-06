@@ -3,17 +3,17 @@ import nose2
 from qgis.core import (NULL,
                        QgsVectorLayer)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
 from qgis.testing import (unittest,
                           start_app)
 
-start_app() # need to start before asistente_ladm_col.tests.utils
+start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_copy_gpkg_conn)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.logic.ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 
 
 class TestGetDomains(unittest.TestCase):
@@ -25,8 +25,8 @@ class TestGetDomains(unittest.TestCase):
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 
-        cls.qgis_utils = QGISUtils()
-        cls.ladm_data = LADM_DATA(cls.qgis_utils)
+        cls.app = AppInterface()
+        cls.ladm_data = LADMDATA()
 
     def test_get_domain_value_from_code(self):
         print('\nINFO: Validating get domain value from code ...')
@@ -38,7 +38,7 @@ class TestGetDomains(unittest.TestCase):
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, 1, value_is_ilicode=False)
         self.assertEqual(value, 'No propiedad horizontal')
 
-        domain_layer = self.qgis_utils.get_layer(self.db_gpkg, self.db_gpkg.names.OP_RIGHT_TYPE_D, load=True)
+        domain_layer = self.app.core.get_layer(self.db_gpkg, self.db_gpkg.names.OP_RIGHT_TYPE_D, load=True)
         value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, domain_layer, 5, value_is_ilicode=True)
         self.assertEqual(value, 'Dominio')
 
@@ -95,7 +95,7 @@ class TestGetDomains(unittest.TestCase):
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.OP_CONDITION_PARCEL_TYPE_D, 'No propiedad horizontal', value_is_ilicode=False)
         self.assertEqual(value, 1)
 
-        domain_layer = self.qgis_utils.get_layer(self.db_gpkg, self.db_gpkg.names.OP_RIGHT_TYPE_D, load=True)
+        domain_layer = self.app.core.get_layer(self.db_gpkg, self.db_gpkg.names.OP_RIGHT_TYPE_D, load=True)
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, domain_layer, 'Dominio', value_is_ilicode=True)
         self.assertEqual(value, 5)
 

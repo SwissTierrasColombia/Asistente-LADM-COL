@@ -35,6 +35,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE,
                                                       LAYER)
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.core.supplies.etl_cobol import ETLCobol
 from asistente_ladm_col.core.supplies.etl_snc import ETLSNC
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -53,14 +54,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
+    def __init__(self, db, conn_manager, parent=None):
         QWizard.__init__(self)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.names = self._db.names
         self.help_strings = HelpStrings()
@@ -324,12 +326,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         show_plugin_help('supplies')
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         dlg.set_db_source(self.db_source)
 
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
-            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):
@@ -358,7 +360,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self._db_was_changed = True
 
     def load_model_layers(self, layers):
-        self.qgis_utils.get_layers(self._db, layers, load=True)
+        self.app.core.get_layers(self._db, layers, load=True)
         if not layers:
             return False, QCoreApplication.translate("SuppliesETLWizard",
                                                      "There was a problem loading layers from the 'Supplies' model!")

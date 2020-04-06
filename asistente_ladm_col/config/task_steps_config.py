@@ -4,7 +4,7 @@ from qgis.PyQt.QtCore import (QObject,
 from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
 from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_SUPPLIES
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.enums import (STStepTypeEnum,
+from asistente_ladm_col.config.enums import (EnumSTStepType,
                                              EnumUserLevel)
 from asistente_ladm_col.lib.context import TaskContext
 from asistente_ladm_col.utils.singleton import SingletonQObject
@@ -55,7 +55,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
             steps_config = [
                 {STEP_NUMBER: 1,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Create supplies structure in DB"),
-                 STEP_TYPE: STStepTypeEnum.SCHEMA_IMPORT,
+                 STEP_TYPE: EnumSTStepType.SCHEMA_IMPORT,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
                                                               "Choose a DB connection to create there the Supplies model structure."),
                  STEP_CUSTOM_ACTION_SLOT: {
@@ -66,7 +66,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  },
                 {STEP_NUMBER: 2,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),
-                 STEP_TYPE: STStepTypeEnum.RUN_ETL_COBOL,
+                 STEP_TYPE: EnumSTStepType.RUN_ETL_COBOL,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
                                                               "Migrate SNC or Cobol data to the LADM-COL (supplies model)."),
                  STEP_CUSTOM_ACTION_SLOT: {
@@ -76,7 +76,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  },
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate XTF"),
-                 STEP_TYPE: STStepTypeEnum.EXPORT_DATA,
+                 STEP_TYPE: EnumSTStepType.EXPORT_DATA,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Export the data from the DB to a transfer file (.xtf)."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_export_data,
@@ -86,7 +86,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  },
                 {STEP_NUMBER: 4,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
-                 STEP_TYPE: STStepTypeEnum.UPLOAD_FILE,
+                 STEP_TYPE: EnumSTStepType.UPLOAD_FILE,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the XTF file to the Transitional System."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
@@ -100,7 +100,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
             steps_config = [
                 {STEP_NUMBER: 1,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Connect to remote DB"),
-                 STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
+                 STEP_TYPE: EnumSTStepType.CONNECT_TO_DB,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
                                                               "Establish and test the connection to a remote DB, which will be used to integrate data in an assisted manner."),
                  STEP_CUSTOM_ACTION_SLOT: {
@@ -112,7 +112,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                 {STEP_NUMBER: 2,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig",
                                                        "Explore data from Cadastre and Land Registry"),
-                 STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
+                 STEP_TYPE: EnumSTStepType.CONNECT_TO_DB,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Load parcel data from cadastre and registry into QGIS."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.task_step_explore_data_cadastre_registry,
@@ -122,7 +122,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  },
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Start assisted integration"),
-                 STEP_TYPE: STStepTypeEnum.CONNECT_TO_DB,
+                 STEP_TYPE: EnumSTStepType.CONNECT_TO_DB,
                  STEP_ACTION: ACTION_RUN_ETL_SUPPLIES,  # TODO: functionality to integrate in assisted manner
                  STEP_DESCRIPTION: "Not implemented yet."
                  }]

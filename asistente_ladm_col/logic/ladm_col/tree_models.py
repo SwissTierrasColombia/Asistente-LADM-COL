@@ -140,10 +140,14 @@ class TreeModel(QAbstractItemModel):
         self.names = names
         super(TreeModel, self).__init__(parent)
 
+        self._extra_words_to_ignore = [" externos",
+                                       " internos"]
+
         rootData = ("",) # [header for header in headers]
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data, self.rootItem)
-        self.pixmapIndexList = list()
+        self._collapseIndexList = list()
+        self._pixmapIndexList = list()
 
     def columnCount(self, parent=QModelIndex()):
         return self.rootItem.columnCount()
@@ -157,8 +161,29 @@ class TreeModel(QAbstractItemModel):
         else:
             return QVariant()
 
+    def getCollapseIndexList(self, index=QModelIndex()):
+        self._collapseIndexList = list()
+        return self._getCollapseIndexList(index)
+
+    def _getCollapseIndexList(self, index):
+        """
+        Recursive function to traverse the whole model looking for items that should be collapsed
+
+        :param index:
+        :return: index list
+        """
+        item = self.getItem(index)
+        if item.data(index.column(), Qt.UserRole) is not None and 'collapse' in item.data(index.column(), Qt.UserRole):
+            if item.data(index.column(), Qt.UserRole)['collapse'] and index not in self._collapseIndexList:
+                self._collapseIndexList.append(index)
+
+        for row in range(item.childCount()):
+            self._getCollapseIndexList(self.index(row, 0, index))
+
+        return self._collapseIndexList
+
     def getPixmapIndexList(self, index=QModelIndex()):
-        self.pixmapIndexList = list()
+        self._pixmapIndexList = list()
         return self._getPixmapIndexList(index)
 
     def _getPixmapIndexList(self, index):
@@ -168,18 +193,18 @@ class TreeModel(QAbstractItemModel):
         :param index:
         :return: index list
         """
-        parent = self.getItem(index)
-        if parent.data(index.column(), Qt.UserRole) is not None and \
-                'url' in parent.data(index.column(), Qt.UserRole) and \
-                'type' in parent.data(index.column(), Qt.UserRole) and \
-                parent.data(index.column(), Qt.UserRole)['type'] == 'img':
-            if index not in self.pixmapIndexList:
-                self.pixmapIndexList.append(index)
+        item = self.getItem(index)
+        if item.data(index.column(), Qt.UserRole) is not None and \
+                'url' in item.data(index.column(), Qt.UserRole) and \
+                'type' in item.data(index.column(), Qt.UserRole) and \
+                item.data(index.column(), Qt.UserRole)['type'] == 'img':
+            if index not in self._pixmapIndexList:
+                self._pixmapIndexList.append(index)
 
-        for row in range(parent.childCount()):
+        for row in range(item.childCount()):
             self._getPixmapIndexList(self.index(row, 0, index))
 
-        return self.pixmapIndexList
+        return self._pixmapIndexList
 
     def flags(self, index):
         if not index.isValid():
@@ -293,17 +318,13 @@ class TreeModel(QAbstractItemModel):
         if parent is None:
             parent = self.rootItem
 
-        if data is None:
-            return
-
-        for record in data:
-            self.fill_model(record, parent)
+        self.fill_model(data, parent)
 
     def fill_model(self, record, parent):
         """
         Fill data in the treeview depending on the structure. It expects JSON data. The JSON data may contain LADM_COL
         object collections in the form:
-            "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 8, "records":{k,v pairs}}, ...]
+            "ladm_col_table_name" : [{"id": 5, "attributes":{k,v pairs}}, {"id": 8, "attributes":{k,v pairs}}, ...]
         """
         plural = LayerConfig.get_dict_plural(self.names)
         icons = LayerConfig.get_dict_package_icon()
@@ -311,8 +332,7 @@ class TreeModel(QAbstractItemModel):
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
                 if not len(values):  # Empty object
-                    parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-                    kv_item = parent.child(parent.childCount() - 1)
+                    kv_item = self._create_new_item(parent)
                     kv_item.setData(0, "{} (0)".format(plural[key] if key in plural else key))
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
                     kv_item.setData(0, {"type": key}, Qt.UserRole)
@@ -332,14 +352,12 @@ class TreeModel(QAbstractItemModel):
                     self.fill_model(values, parent)
                 else:
                     # Non-LADM object (e.g., external boundaries)
-                    parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-                    kv_item = parent.child(parent.childCount() - 1)
+                    kv_item = self._create_new_item(parent)
                     kv_item.setData(0, "{}:".format(key))
                     self.fill_model(values, kv_item)
             else:
                 # Simple key-value pair
-                parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-                kv_item = parent.child(parent.childCount() - 1)
+                kv_item = self._create_new_item(parent)
                 kv_item.setData(0, "{}: {}".format(key, values))
                 value_user_role = {"value": values}
                 if key.startswith("Archivo fuente"):
@@ -352,18 +370,18 @@ class TreeModel(QAbstractItemModel):
                 if key.startswith("Archivo fuente"):
                     if values:
                         if values.startswith(DEFAULT_ENDPOINT_SOURCE_SERVICE):  # We want the thumbnail
-                            kv_item.insertChildren(kv_item.childCount(), 1, self.rootItem.columnCount())
-                            kv_subitem = kv_item.child(kv_item.childCount() - 1)
+                            kv_subitem = self._create_new_item(kv_item)
                             kv_subitem.setData(0, {'type': 'img', 'url': values}, Qt.UserRole)
 
     def fill_collection(self, key, collection, parent, plural, icons):
         """
         Fill a collection of LADM_COL objects
         """
-        parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-        collection_parent = parent.child(parent.childCount() - 1)
-        collection_parent.setData(0, "{} ({})".format(plural[key] if key in plural else key, len(collection)))
-        collection_parent.setData(0, {"type": key}, Qt.UserRole)
+        display_name = self._normalize_display(key, plural)
+        key = self._normalize_key(key)
+        collection_parent = self._create_new_item(parent)
+        collection_parent.setData(0, "{} ({})".format(display_name, len(collection)))
+        collection_parent.setData(0, {"type": key, "collapse": key not in [self.names.OP_PLOT_T, self.names.OP_PARCEL_T]}, Qt.UserRole)
         dict_table_package = LayerConfig.get_dict_table_package(self.names)
 
         res = collection_parent.setData(0, QIcon(
@@ -371,8 +389,7 @@ class TreeModel(QAbstractItemModel):
 
         for object in collection:
             # Fill LADM_COL object
-            collection_parent.insertChildren(collection_parent.childCount(), 1, self.rootItem.columnCount())
-            object_parent = collection_parent.child(collection_parent.childCount() - 1)
+            object_parent = self._create_new_item(collection_parent)
             object_parent.setData(0, "t_id: {}".format(object['id']))
             object_parent.setData(0, {"type": key, "id": object['id'], "value": object['id']}, Qt.UserRole)
             object_parent.setData(0, key, Qt.ToolTipRole)
@@ -380,3 +397,22 @@ class TreeModel(QAbstractItemModel):
             font.setBold(True)
             object_parent.setData(0, font, Qt.FontRole)
             self.fill_model(object['attributes'], object_parent)
+
+    def _create_new_item(self, parent):
+        parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+        return parent.child(parent.childCount() - 1)
+
+    def _normalize_key(self, key):
+        # Get rid of extra words, we need the table name, a.k.a. key
+        for word in self._extra_words_to_ignore:
+            key = key.replace(word, "")
+        return key
+
+    def _normalize_display(self, key, plural):
+        # Check if the key has extra words, in that case, we need to filter them (we expect 0 or 1 extra word in key)
+        for word in self._extra_words_to_ignore:
+            parts = key.split(word)
+            if len(parts) == 2:  # parts[0] is the key (e.g. 'op_lindero externo' --> 0: 'op_lindero', 1:'')
+                return "{}{}".format(plural[parts[0]] if parts[0] in plural else parts[0], word)
+
+        return plural[key] if key in plural else key

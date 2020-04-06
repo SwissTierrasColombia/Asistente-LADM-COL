@@ -22,7 +22,6 @@ import os.path
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtCore import (QEventLoop,
                               QUrl,
-                              pyqtSignal,
                               QObject,
                               QTextStream,
                               QIODevice,
@@ -36,13 +35,12 @@ from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QHttpMultiPart,
                                  QHttpPart)
 from qgis.core import (QgsProject,
-                       Qgis,
                        NULL)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from ..utils.qt_utils import OverrideCursor
 from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                     PLUGIN_NAME,
                                      SOURCE_SERVICE_UPLOAD_SUFFIX)
 from ..gui.dialogs.dlg_upload_progress import UploadProgressDialog
 
@@ -53,10 +51,10 @@ class SourceHandler(QObject):
     is configured in Settings Dialog. The server returns a file URL that is
     then stored in the source table.
     """
-    def __init__(self, qgis_utils):
+    def __init__(self):
         QObject.__init__(self)
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
 
     def upload_files(self, layer, field_index, features):
         """
@@ -70,7 +68,7 @@ class SourceHandler(QObject):
             return dict()
 
         # Test if we have Internet connection and a valid service
-        res, msg = self.qgis_utils.is_source_service_valid()  # TODO: Bring this method from qgis_utils
+        res, msg = self.app.core.is_source_service_valid()
 
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",

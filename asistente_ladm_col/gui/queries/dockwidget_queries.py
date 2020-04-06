@@ -34,8 +34,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QAction, 
                                  QApplication, 
                                  QLabel)
-from qgis.core import (QgsWkbTypes,
-                       Qgis,
+from qgis.core import (Qgis,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -43,19 +42,19 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (TEST_SERVER,
-                                                      LAYER,
                                                       SUFFIX_GET_THUMBNAIL)
-from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import is_connected
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus,
                                                OverrideCursor)
 
-from asistente_ladm_col.logic.ladm_col.data.tree_models import TreeModel
+from asistente_ladm_col.logic.ladm_col.tree_models import TreeModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidgets/dockwidget_queries.ui')
 
@@ -64,18 +63,22 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
-    def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
+    def __init__(self, iface, db, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.logger = Logger()
+
+        self.app = AppInterface()
+
         self.canvas = iface.mapCanvas()
         self.active_map_tool_before_custom = None
         self.names = self._db.names
+
+        self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries()
 
         self.clipboard = QApplication.clipboard()
 
@@ -106,8 +109,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self._layers[self.names.OP_PARCEL_T][LAYER])
-        idx = self._layers[self.names.OP_PARCEL_T][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self._layers[self.names.OP_PARCEL_T])
+        idx = self._layers[self.names.OP_PARCEL_T].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def _set_context_menus(self):
@@ -128,59 +131,70 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def restart_dict_of_layers(self):
         self._layers = {
-            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: None,
+            self.names.OP_PARCEL_T: None,
+            self.names.COL_UE_BAUNIT_T: None
         }
 
     def add_layers(self):
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        self.app.core.get_layers(self._db, self._layers, load=True)
         if not self._layers:
             self.restart_dict_of_layers()  # Let it ready for the next call
             return None
 
         # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
         try:
-            self._layers[self.names.OP_PLOT_T][LAYER].willBeDeleted.disconnect(self.layer_removed)
+            self._layers[self.names.OP_PLOT_T].willBeDeleted.disconnect(self.layer_removed)
         except TypeError as e:
             pass
-        self._layers[self.names.OP_PLOT_T][LAYER].willBeDeleted.connect(self.layer_removed)
+        self._layers[self.names.OP_PLOT_T].willBeDeleted.connect(self.layer_removed)
 
         # Layer was found, listen to its removal so that we can update the variable properly
         try:
-            self._layers[self.names.OP_PARCEL_T][LAYER].willBeDeleted.disconnect(self.parcel_layer_removed)
+            self._layers[self.names.OP_PARCEL_T].willBeDeleted.disconnect(self.parcel_layer_removed)
         except TypeError as e:
             pass
-        self._layers[self.names.OP_PARCEL_T][LAYER].willBeDeleted.connect(self.parcel_layer_removed)
+        self._layers[self.names.OP_PARCEL_T].willBeDeleted.connect(self.parcel_layer_removed)
 
         # Layer was found, listen to its removal so that we can update the variable properly
         try:
-            self._layers[self.names.COL_UE_BAUNIT_T][LAYER].willBeDeleted.disconnect(self.uebaunit_table_removed)
+            self._layers[self.names.COL_UE_BAUNIT_T].willBeDeleted.disconnect(self.uebaunit_table_removed)
         except TypeError as e:
             pass
-        self._layers[self.names.COL_UE_BAUNIT_T][LAYER].willBeDeleted.connect(self.uebaunit_table_removed)
+        self._layers[self.names.COL_UE_BAUNIT_T].willBeDeleted.connect(self.uebaunit_table_removed)
 
     def initialize_tool(self):
-        self._layers[self.names.OP_PLOT_T][LAYER] = None
+        self._layers[self.names.OP_PLOT_T] = None
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
         self.btn_plot_toggled()
 
     def update_db_connection(self, db, ladm_col_db, db_source):
-        self._db = db
-        self.initialize_tool()
+        self.close_dock_widget()
 
-        if not ladm_col_db:
-            self.setVisible(False)
+    def close_dock_widget(self):
+
+        try:
+            self._layers[self.names.OP_PLOT_T].willBeDeleted.disconnect(self.layer_removed)
+        except:
+            pass
+
+        try:
+            self._layers[self.names.OP_PARCEL_T].willBeDeleted.disconnect(self.parcel_layer_removed)
+        except:
+            pass
+
+        self.initialize_tool()
+        self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def layer_removed(self):
-        # The required layer was removed, deactivate custom tool
-        self.initialize_tool()
+        # The required layer was removed, deactivate custom tool and close dockwidget
+        self.close_dock_widget()
 
     def parcel_layer_removed(self):
-        self._layers[self.names.OP_PARCEL_T][LAYER] = None
+        self._layers[self.names.OP_PARCEL_T] = None
 
     def uebaunit_table_removed(self):
-        self._layers[self.names.COL_UE_BAUNIT_T][LAYER] = None
+        self._layers[self.names.COL_UE_BAUNIT_T] = None
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
@@ -218,10 +232,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.canvas.mapToolSet.connect(self.initialize_tools)
 
-        if self._layers[self.names.OP_PLOT_T][LAYER] is None:
+        if self._layers[self.names.OP_PLOT_T] is None:
             self.add_layers()
 
-        self.maptool_identify.setLayer(self._layers[self.names.OP_PLOT_T][LAYER])
+        self.maptool_identify.setLayer(self._layers[self.names.OP_PLOT_T])
         cursor = QCursor()
         cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
@@ -235,7 +249,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[self.names.T_ID_F]
-        self.canvas.flashFeatureIds(self._layers[self.names.OP_PLOT_T][LAYER],
+        self.canvas.flashFeatureIds(self._layers[self.names.OP_PLOT_T],
                                     [plot_feature.id()],
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),
@@ -246,11 +260,11 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             if not self.isVisible():
                 self.show()
 
-            self.search_data_by_component(plot_t_id=plot_t_id, zoom_and_select=False)
-            self._layers[self.names.OP_PLOT_T][LAYER].selectByIds([plot_feature.id()])
+            self.search_data_by_component(plot_t_ids=[plot_t_id], zoom_and_select=False)
+            self._layers[self.names.OP_PLOT_T].selectByIds([plot_feature.id()])
 
     def search_data_by_component(self, **kwargs):
-        self._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
+        self._layers[self.names.OP_PLOT_T].removeSelection()
 
         # Read zoom_and_select parameter and remove it from kwargs
         bZoom = False
@@ -258,28 +272,28 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             bZoom = kwargs['zoom_and_select']
             del kwargs['zoom_and_select']
 
-        records = self._db.get_igac_basic_info(**kwargs)
+        records = self._ladm_queries.get_igac_basic_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_basic, records)
 
         if bZoom:
             # Zoom to resulting plots
             plot_t_ids = self.get_plot_t_ids_from_basic_info(records)
             if plot_t_ids:
-                features = self.ladm_data.get_features_from_t_ids(self._layers[self.names.OP_PLOT_T][LAYER], self.names.T_ID_F, plot_t_ids, True, True)
+                features = self.ladm_data.get_features_from_t_ids(self._layers[self.names.OP_PLOT_T], self.names.T_ID_F, plot_t_ids, True, True)
                 plot_ids = [feature.id() for feature in features]
-                self.zoom_to_features_requested.emit(self._layers[self.names.OP_PLOT_T][LAYER], plot_ids, dict(), 500)
-                self._layers[self.names.OP_PLOT_T][LAYER].selectByIds(plot_ids)
+                self.zoom_to_features_requested.emit(self._layers[self.names.OP_PLOT_T], plot_ids, dict(), 500)
+                self._layers[self.names.OP_PLOT_T].selectByIds(plot_ids)
 
-        records = self._db.get_igac_legal_info(**kwargs)
+        records = self._ladm_queries.get_igac_legal_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_legal, records)
 
-        records = self._db.get_igac_property_record_card_info(**kwargs)
+        records = self._ladm_queries.get_igac_property_record_card_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_property_record_card, records)
 
-        records = self._db.get_igac_physical_info(**kwargs)
+        records = self._ladm_queries.get_igac_physical_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_physical, records)
 
-        records = self._db.get_igac_economic_info(**kwargs)
+        records = self._ladm_queries.get_igac_economic_info(self._db, **kwargs)
         self.setup_tree_view(self.tree_view_economic, records)
 
     def setup_tree_view(self, tree_view, records):
@@ -290,10 +304,18 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         :return:
         """
         tree_view.setModel(TreeModel(self.names, data=records))
-        tree_view.expandAll()
-        self.add_thumbnails_to_tree_view(tree_view)
+        self._collapse_tree_view_items(tree_view)
+        self._add_thumbnails_to_tree_view(tree_view)
 
-    def add_thumbnails_to_tree_view(self, tree_view):
+    def _collapse_tree_view_items(self, tree_view):
+        """
+        Collapse tree view items based on a property
+        """
+        tree_view.expandAll()
+        for idx in tree_view.model().getCollapseIndexList():
+            tree_view.collapse(idx)
+
+    def _add_thumbnails_to_tree_view(self, tree_view):
         """
         Gets a list of model indexes corresponding to extFiles objects to show a preview
 
@@ -301,8 +323,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         :return:
         """
         model = tree_view.model()
-        indexes = model.getPixmapIndexList()
-        for idx in indexes:
+        for idx in model.getPixmapIndexList():
             url = model.data(idx, Qt.UserRole)['url']
             res, image = self.download_image("{}{}".format(url, SUFFIX_GET_THUMBNAIL))
             if res:
@@ -315,10 +336,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
     def get_plot_t_ids_from_basic_info(self, records):
         res = []
         if records:
-            for record in records:
-                if self.names.OP_PLOT_T in record:
-                    for element in record[self.names.OP_PLOT_T]:
-                        res.append(element['id'])
+            if self.names.OP_PLOT_T in records:
+                for element in records[self.names.OP_PLOT_T]:
+                    res.append(element['id'])
 
         return res
 
@@ -367,18 +387,14 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             table_name = index_data["type"]
             table_package = LayerConfig.get_dict_table_package(self.names)
             t_id = index_data["id"]
-            geometry_type = None
-            if table_name in table_package and table_package[table_name] == LADMNames.SPATIAL_UNIT_PACKAGE:
-                # Layers in Spatial Unit package have double geometry, we need the polygon one
-                geometry_type=QgsWkbTypes.PolygonGeometry
 
             if table_name == self.names.OP_PARCEL_T:
-                if self._layers[self.names.OP_PARCEL_T][LAYER] is None or self._layers[self.names.OP_PLOT_T][LAYER] is None or self._layers[self.names.COL_UE_BAUNIT_T][LAYER] is None:
+                if self._layers[self.names.OP_PARCEL_T] is None or self._layers[self.names.OP_PLOT_T] is None or self._layers[self.names.COL_UE_BAUNIT_T] is None:
                     self.add_layers()
-                layer = self._layers[self.names.OP_PARCEL_T][LAYER]
+                layer = self._layers[self.names.OP_PARCEL_T]
                 self.iface.layerTreeView().setCurrentLayer(layer)
             else:
-                layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
+                layer = self.app.core.get_layer(self._db, table_name, True)
 
             if layer is not None:
                 if layer.isSpatial():
@@ -388,7 +404,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == self.names.OP_PARCEL_T:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._layers[self.names.OP_PLOT_T][LAYER], self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._layers[self.names.OP_PLOT_T], self._layers[self.names.COL_UE_BAUNIT_T])
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
@@ -435,8 +451,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         return None
 
     def zoom_to_plots(self, plot_ids):
-        self.iface.mapCanvas().zoomToFeatureIds(self._layers[self.names.OP_PLOT_T][LAYER], plot_ids)
-        self.canvas.flashFeatureIds(self._layers[self.names.OP_PLOT_T][LAYER],
+        self.iface.mapCanvas().zoomToFeatureIds(self._layers[self.names.OP_PLOT_T], plot_ids)
+        self.canvas.flashFeatureIds(self._layers[self.names.OP_PLOT_T],
                                     plot_ids,
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),

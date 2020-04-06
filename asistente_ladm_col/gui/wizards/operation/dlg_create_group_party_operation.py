@@ -34,8 +34,8 @@ from qgis.core import (QgsVectorLayerUtils,
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -48,13 +48,14 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
     WIZARD_NAME = "CreateGroupPartyOperationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+
+        self.app = AppInterface()
         self.names = self._db.names
         self.help_strings = HelpStrings()
 
@@ -63,15 +64,15 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         self.parties_to_group = {} # {t_id: [denominator, numerator]}
 
         self._layers = {
-            self.names.OP_GROUP_PARTY_T: {'name': self.names.OP_GROUP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.OP_PARTY_T: {'name': self.names.OP_PARTY_T, 'geometry': None, LAYER: None},
-            self.names.MEMBERS_T: {'name': self.names.MEMBERS_T, 'geometry': None, LAYER: None},
-            self.names.FRACTION_S: {'name': self.names.FRACTION_S, 'geometry': None, LAYER: None},
-            self.names.COL_GROUP_PARTY_TYPE_D: {'name': self.names.COL_GROUP_PARTY_TYPE_D, 'geometry': None, LAYER: None}
+            self.names.OP_GROUP_PARTY_T: None,
+            self.names.OP_PARTY_T: None,
+            self.names.MEMBERS_T: None,
+            self.names.FRACTION_S: None,
+            self.names.COL_GROUP_PARTY_TYPE_D: None
         }
 
         # Fill combo of types
-        col_group_party_type_table = self.qgis_utils.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, None, True)
+        col_group_party_type_table = self.app.core.get_layer(self._db, self.names.COL_GROUP_PARTY_TYPE_D, True)
         if not col_group_party_type_table:
             return
 
@@ -108,14 +109,14 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         pass
 
     def required_layers_are_available(self):
-        layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
+        layers_are_available = self.app.core.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
         return layers_are_available
 
     def load_parties_data(self):
         expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names)[self.names.OP_PARTY_T])
         context = QgsExpressionContext()
         data = dict()
-        for feature in self._layers[self.names.OP_PARTY_T][LAYER].getFeatures():
+        for feature in self._layers[self.names.OP_PARTY_T].getFeatures():
             context.setFeature(feature)
             expression.prepare(context)
             value = expression.evaluate(context)
@@ -344,10 +345,10 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
         for group in params:
             # Create connections to react when a group party is stored to the DB
-            self._layers[self.names.OP_GROUP_PARTY_T][LAYER].committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
+            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
 
             # First save the group party
-            new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.OP_GROUP_PARTY_T][LAYER])
+            new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.OP_GROUP_PARTY_T])
             new_feature.setAttribute(self.names.COL_GROUP_PARTY_T_TYPE_F, group[self.names.COL_GROUP_PARTY_T_TYPE_F])
             new_feature.setAttribute(self.names.COL_PARTY_T_NAME_F, group[self.names.COL_PARTY_T_NAME_F])
 
@@ -361,12 +362,12 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             #new_feature.setAttribute("comienzo_vida_util_version", 'now()')
 
             self.logger.info(__name__, "Saving Group Party: {}".format(group))
-            with edit(self._layers[self.names.OP_GROUP_PARTY_T][LAYER]):
-                self._layers[self.names.OP_GROUP_PARTY_T][LAYER].addFeature(new_feature)
+            with edit(self._layers[self.names.OP_GROUP_PARTY_T]):
+                self._layers[self.names.OP_GROUP_PARTY_T].addFeature(new_feature)
 
     def finish_group_party_saving(self, members, layer_id, features):
         try:
-            self._layers[self.names.OP_GROUP_PARTY_T][LAYER].committedFeaturesAdded.disconnect()
+            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 
@@ -378,23 +379,23 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             self.logger.warning(__name__, "We should have got only one group party... We cannot do anything with {} group parties".format(len(features)))
         else:
             fid = features[0].id()
-            if not self._layers[self.names.OP_GROUP_PARTY_T][LAYER].getFeature(fid).isValid():
+            if not self._layers[self.names.OP_GROUP_PARTY_T].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in table Group Party...")
             else:
-                group_party_id = self._layers[self.names.OP_GROUP_PARTY_T][LAYER].getFeature(fid)[self.names.T_ID_F]
+                group_party_id = self._layers[self.names.OP_GROUP_PARTY_T].getFeature(fid)[self.names.T_ID_F]
 
                 # Now save members
                 party_ids = list()
                 for party_id, fraction in members.items():
                     # Create connections to react when a group party is stored to the DB
-                    self._layers[self.names.MEMBERS_T][LAYER].committedFeaturesAdded.connect(partial(self.finish_member_saving, fraction))
+                    self._layers[self.names.MEMBERS_T].committedFeaturesAdded.connect(partial(self.finish_member_saving, fraction))
 
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.MEMBERS_T][LAYER])
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.MEMBERS_T])
                     new_feature.setAttribute(self.names.MEMBERS_T_GROUP_PARTY_F, group_party_id)
                     new_feature.setAttribute(self.names.MEMBERS_T_PARTY_F, party_id)
                     self.logger.info(__name__, "Saving group party's member ({}: {}).".format(group_party_id, party_id))
-                    with edit(self._layers[self.names.MEMBERS_T][LAYER]):
-                        self._layers[self.names.MEMBERS_T][LAYER].addFeature(new_feature)
+                    with edit(self._layers[self.names.MEMBERS_T]):
+                        self._layers[self.names.MEMBERS_T].addFeature(new_feature)
                         party_ids.append(party_id)
 
                 if len(party_ids):
@@ -407,7 +408,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
     def finish_member_saving(self, fraction, layer_id, features):
         try:
-            self._layers[self.names.MEMBERS_T][LAYER].committedFeaturesAdded.disconnect()
+            self._layers[self.names.MEMBERS_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 
@@ -415,22 +416,22 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             self.logger.warning(__name__, "We should have got only one member... We cannot do anything with {} members".format(len(features)))
         else:
             fid = features[0].id()
-            if not self._layers[self.names.MEMBERS_T][LAYER].getFeature(fid).isValid():
+            if not self._layers[self.names.MEMBERS_T].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in table Members...")
             else:
-                member_id = self._layers[self.names.MEMBERS_T][LAYER].getFeature(fid)[self.names.T_ID_F]
+                member_id = self._layers[self.names.MEMBERS_T].getFeature(fid)[self.names.T_ID_F]
 
                 if fraction == [0, 0]:
                     return
 
                 # And finally save fractions
-                new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.FRACTION_S][LAYER])
+                new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.FRACTION_S])
                 new_feature.setAttribute(self.names.FRACTION_S_MEMBER_F, member_id)
                 new_feature.setAttribute(self.names.FRACTION_S_NUMERATOR_F, fraction[0])
                 new_feature.setAttribute(self.names.FRACTION_S_DENOMINATOR_F, fraction[1])
-                with edit(self._layers[self.names.FRACTION_S][LAYER]):
+                with edit(self._layers[self.names.FRACTION_S]):
                     self.logger.info(__name__, "Saving member's fraction ({}: {}).".format(member_id, fraction))
-                    self._layers[self.names.FRACTION_S][LAYER].addFeature(new_feature)
+                    self._layers[self.names.FRACTION_S].addFeature(new_feature)
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
@@ -442,11 +443,11 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
     def disconnect_signals(self):
         try:
-            self._layers[self.names.OP_GROUP_PARTY_T][LAYER].committedFeaturesAdded.disconnect()
+            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
         try:
-            self._layers[self.names.MEMBERS_T][LAYER].committedFeaturesAdded.disconnect()
+            self._layers[self.names.MEMBERS_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 

@@ -30,8 +30,10 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import QgsMapLayerProxyModel
 
-from asistente_ladm_col.config.general_config import LAYER, WIZARD_HELP_PAGES, WIZARD_HELP1, WIZARD_HELP2, \
-    WIZARD_MAP_LAYER_PROXY_MODEL
+from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.gui.wizards.wizard_factory import WizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -43,8 +45,8 @@ class MultiPageWizardFactory(WizardFactory):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(MultiPageWizardFactory, self).__init__(iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        super(MultiPageWizardFactory, self).__init__(iface, db, wizard_settings)
 
     def init_gui(self):
         self.restore_settings()
@@ -60,7 +62,7 @@ class MultiPageWizardFactory(WizardFactory):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -70,7 +72,7 @@ class MultiPageWizardFactory(WizardFactory):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)

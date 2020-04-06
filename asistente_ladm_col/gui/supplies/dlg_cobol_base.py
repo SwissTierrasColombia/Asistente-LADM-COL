@@ -27,14 +27,11 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
-                       QgsWkbTypes,
                        QgsVectorLayer)
 from qgis.gui import QgsMessageBar
 
-import processing
-
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      BLO_LIS_FILE_PATH)
+from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -50,14 +47,15 @@ DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
+    def __init__(self, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.logger = Logger()
+        self.app = AppInterface()
 
         self._dialog_mode = None
         self._running_tool = False
@@ -141,21 +139,21 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def initialize_layers(self):
         self._layers = {
-            self.names.GC_PARCEL_T: {'name': self.names.GC_PARCEL_T, 'geometry': None, LAYER: None},
-            self.names.GC_OWNER_T: {'name': self.names.GC_OWNER_T, 'geometry': None, LAYER: None},
-            self.names.GC_ADDRESS_T: {'name': self.names.GC_ADDRESS_T, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
-            self.names.GC_BUILDING_UNIT_T: {'name': self.names.GC_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BUILDING_T: {'name': self.names.GC_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PLOT_T: {'name': self.names.GC_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_DIVISION_T: {'name': self.names.GC_RURAL_DIVISION_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_URBAN_SECTOR_T: {'name': self.names.GC_URBAN_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_RURAL_SECTOR_T: {'name': self.names.GC_RURAL_SECTOR_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_PERIMETER_T: {'name': self.names.GC_PERIMETER_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_BLOCK_T: {'name': self.names.GC_BLOCK_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_NEIGHBOURHOOD_T: {'name': self.names.GC_NEIGHBOURHOOD_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_T: {'name': self.names.GC_COMMISSION_BUILDING_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_PLOT_T: {'name': self.names.GC_COMMISSION_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: {'name': self.names.GC_COMMISSION_BUILDING_UNIT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.GC_PARCEL_T: None,
+            self.names.GC_OWNER_T: None,
+            self.names.GC_ADDRESS_T: None,
+            self.names.GC_BUILDING_UNIT_T: None,
+            self.names.GC_BUILDING_T: None,
+            self.names.GC_PLOT_T: None,
+            self.names.GC_RURAL_DIVISION_T: None,
+            self.names.GC_URBAN_SECTOR_T: None,
+            self.names.GC_RURAL_SECTOR_T: None,
+            self.names.GC_PERIMETER_T: None,
+            self.names.GC_BLOCK_T: None,
+            self.names.GC_NEIGHBOURHOOD_T: None,
+            self.names.GC_COMMISSION_BUILDING_T: None,
+            self.names.GC_COMMISSION_PLOT_T: None,
+            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
         }
 
     def reject(self):
@@ -285,7 +283,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         return True, ''
 
     def load_model_layers(self):
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        self.app.core.get_layers(self._db, self._layers, load=True)
         if not self._layers:
             return False, QCoreApplication.translate("CobolBaseDialog",
                                                      "There was a problem loading layers from the 'Supplies' model!")

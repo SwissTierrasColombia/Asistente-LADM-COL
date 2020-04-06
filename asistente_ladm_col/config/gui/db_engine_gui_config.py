@@ -4,7 +4,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.config.gui.common_keys import *
 
 
-class DB_Engine_GUI_Config(QObject):
+class DBEngineGUIConfig(QObject):
     """
     Action configuration for each DB engine.
     """
@@ -46,7 +46,7 @@ class DB_Engine_GUI_Config(QObject):
                       ACTION_LOAD_LAYERS,
                       ACTION_CHANGE_DETECTION_PER_PARCEL,
                       ACTION_CHANGE_DETECTION_ALL_PARCELS,
-                      # ACTION_PARCEL_QUERY,
+                      ACTION_PARCEL_QUERY,
                       # ACTION_CHECK_QUALITY_RULES,
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,

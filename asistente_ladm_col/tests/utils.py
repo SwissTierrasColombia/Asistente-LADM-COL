@@ -27,7 +27,7 @@ from qgis.core import (QgsApplication,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
-from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
+from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
@@ -207,7 +207,7 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     if model:
         automatic_fields_definition = True
 
-        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
@@ -260,3 +260,17 @@ def delete_features(layer):
     with edit(layer):
         list_ids = [feat.id() for feat in layer.getFeatures()]
         layer.deleteFeatures(list_ids)
+
+
+def standardize_query_results(result):
+    if isinstance(result, (list, dict)):
+        if isinstance(result, dict):
+            result.pop('id', None)
+            for item in result:
+                standardize_query_results(result[item])
+
+        elif isinstance(result, list):
+            for item in result:
+                if isinstance(item, dict):
+                    standardize_query_results(item)
+    return result

@@ -28,13 +28,14 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
@@ -50,20 +51,21 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
+    def __init__(self, conn_manager=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.conn_manager = conn_manager
+        self.app = AppInterface()
+
         self._db = None
-        self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE  # default db source
         self._required_models = list()
         self._tab_pages_list = list()
         self.init_db_engine = None
 
         self._action_type = None
-        self.dbs_supported = ConfigDbSupported()
+        self.dbs_supported = ConfigDBsSupported()
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -322,7 +324,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
            current_namespace_prefix != self.txt_namespace.text() or \
            current_local_id_enabled != self.chk_local_id.isChecked():
             if self._db is not None:
-                self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
+                self.app.core.automatic_namespace_local_id_configuration_changed(self._db)
 
     def restore_db_source_settings(self):
         settings = QSettings()
@@ -417,14 +419,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_service(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.qgis_utils.is_source_service_valid(self.txt_service_endpoint.text().strip())
+        res, msg = self.app.core.is_source_service_valid(self.txt_service_endpoint.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 
     def test_service_transitional_system(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.qgis_utils.is_transitional_system_service_valid(self.txt_service_transitional_system.text().strip())
+        res, msg = self.app.core.is_transitional_system_service_valid(self.txt_service_transitional_system.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 

@@ -96,6 +96,9 @@ class DBConnector(QObject):
             self._uri,
             'schema:{}'.format(self.schema) if self.schema else '')
 
+    def get_ladm_units(self):
+        raise NotImplementedError
+
     def get_models(self, schema=None):
         raise NotImplementedError
 

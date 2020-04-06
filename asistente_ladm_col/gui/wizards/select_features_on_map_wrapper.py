@@ -24,7 +24,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QPushButton)
 
-from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
@@ -97,13 +96,13 @@ class SelectFeaturesOnMapWrapper:
 
     def connect_on_removing_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name][LAYER]:
+            if self._layers[layer_name]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate("WizardTranslations",
@@ -120,7 +119,7 @@ class SelectFeaturesOnMapWrapper:
 
         for layer_name in self._layers:
             try:
-                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 

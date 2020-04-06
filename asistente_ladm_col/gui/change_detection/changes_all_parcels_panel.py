@@ -24,24 +24,22 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QTableWidgetItem,
                                  QMenu,
                                  QAction)
-from qgis.core import (QgsWkbTypes,
-                       NULL,
+from qgis.core import (NULL,
                        QgsRectangle,
                        QgsApplication,
                        QgsVectorLayer)
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      SOURCE_DB,
+from asistente_ladm_col.config.general_config import (SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.change_detection_config import (STATUS_COLORS,
-                                                                   PARCEL_STATUS_DISPLAY,
-                                                                   PARCEL_STATUS,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
-                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                                   CHANGE_DETECTION_NEW_PARCEL)
+from asistente_ladm_col.config.change_detection_config import (STATUS_COLORS,
+                                                               PARCEL_STATUS_DISPLAY,
+                                                               PARCEL_STATUS,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               CHANGE_DETECTION_MISSING_PARCEL,
+                                                               CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                               CHANGE_DETECTION_NEW_PARCEL)
 
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.utils import get_ui_class
@@ -76,8 +74,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_table(dict_parcels, types_change_detection)
 
     def deselect_plots(self):
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
+        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
 
     def fill_table(self, dict_parcels, types_change_detection):
         num_rows = 0
@@ -143,8 +141,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.utils._db,
                 parcel_ids_collected,
                 None,  # Get QGIS plot ids
-                self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER],
-                self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T][LAYER])
+                self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T])
 
         plot_ids_supplies = list()
         if parcel_ids_supplies:
@@ -152,20 +150,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.utils._supplies_db,
                 parcel_ids_supplies,
                 None,  # Get QGIS plot ids
-                self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER])
+                self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T])
 
         # Now that we've got plot ids, select them and zoom to them (combining the extent from both plot layers)
         if plot_ids_collected:
-            self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].selectByIds(plot_ids_collected)
+            self.utils._layers[self.utils._db.names.OP_PLOT_T].selectByIds(plot_ids_collected)
 
         if plot_ids_supplies:
-            self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].selectByIds(plot_ids_supplies)
+            self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].selectByIds(plot_ids_supplies)
 
         self.zoom_to_selected_plots()
 
     def zoom_to_selected_plots(self):
-        plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
-        supplies_plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
+        plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T]
+        supplies_plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T]
         bbox_selected_features = QgsRectangle()
 
         if plot_layer.selectedFeatureCount():
@@ -192,20 +190,21 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             return
 
         layers = {
-            base_db.names.OP_PLOT_T: {'name': base_db.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            base_db.names.OP_PARCEL_T: {'name': base_db.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
-            base_db.names.COL_UE_BAUNIT_T: {'name': base_db.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
+            base_db.names.OP_PLOT_T: None,
+            base_db.names.OP_PARCEL_T: None,
+            base_db.names.COL_UE_BAUNIT_T: None
+        }
 
-        self.utils.qgis_utils.get_layers(base_db, layers, load=True)
+        self.utils.app.core.get_layers(base_db, layers, load=True)
         if not layers:
             return None
 
-        layers[base_db.names.OP_PLOT_T][LAYER].setSubsetString("")
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(base_db, parcels_t_ids, None, plot_layer=layers[base_db.names.OP_PLOT_T][LAYER], uebaunit_table=layers[base_db.names.COL_UE_BAUNIT_T][LAYER])
+        layers[base_db.names.OP_PLOT_T].setSubsetString("")
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(base_db, parcels_t_ids, None, plot_layer=layers[base_db.names.OP_PLOT_T], uebaunit_table=layers[base_db.names.COL_UE_BAUNIT_T])
 
         if plot_ids:
             action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
-            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, layers[base_db.names.OP_PLOT_T][LAYER], plot_ids, dict()))
+            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, layers[base_db.names.OP_PLOT_T], plot_ids, dict()))
             context_menu.addAction(action_zoom)
 
         action_view_changes = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "View changes for this parcel number"))
@@ -258,14 +257,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.select_related_plots(parcels_t_ids_collected, False)
 
             if zoom_to_selected:
-                plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER]
+                plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T]
                 bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
 
         if parcels_t_ids_supplies:
             self.select_related_plots(parcels_t_ids_supplies, True, True)
 
             if zoom_to_selected: # Bajas
-                plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER]
+                plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T]
                 bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
 
         if zoom_to_selected:
@@ -274,14 +273,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def select_related_plots(self, parcels_t_ids, inverse, add_to_selection=False):
         base_db = self.utils._supplies_db if inverse else self.utils._db
 
-        plot_layer = self.utils._supplies_layers[base_db.names.GC_PLOT_T][LAYER] if inverse else self.utils._layers[base_db.names.OP_PLOT_T][LAYER]
+        plot_layer = self.utils._supplies_layers[base_db.names.GC_PLOT_T] if inverse else self.utils._layers[base_db.names.OP_PLOT_T]
         if inverse:
             plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
                                                                                   parcels_t_ids,
                                                                                   None,  # Get QGIS ids
                                                                                   plot_layer)
         else:
-            uebaunit_table = self.utils._layers[base_db.names.COL_UE_BAUNIT_T][LAYER]
+            uebaunit_table = self.utils._layers[base_db.names.COL_UE_BAUNIT_T]
             plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                          parcels_t_ids,
                                                                          None,  # Get QGIS ids

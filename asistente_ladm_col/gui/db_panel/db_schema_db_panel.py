@@ -20,14 +20,14 @@ from qgis.core import Qgis
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 
-from .db_config_panel import DbConfigPanel
+from .db_config_panel import DBConfigPanel
 from ...gui.dialogs.dlg_get_db_or_schema_name import GetDBOrSchemaNameDialog
 from ...lib.db.db_connector import EnumTestLevel
 
 
-class DbSchemaDbPanel(DbConfigPanel):
+class DBSchemaDBPanel(DBConfigPanel):
     def __init__(self, parent):
-        DbConfigPanel.__init__(self, parent)
+        DBConfigPanel.__init__(self, parent)
 
     def init_schema(self):
         self.create_db_button.clicked.connect(self.show_create_db_dialog)

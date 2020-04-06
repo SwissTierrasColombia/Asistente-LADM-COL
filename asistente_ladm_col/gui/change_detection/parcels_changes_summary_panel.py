@@ -22,19 +22,18 @@ from qgis.gui import QgsPanelWidget
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import (LAYER,
-                                                      SOURCE_DB,
+from asistente_ladm_col.config.general_config import (SOURCE_DB,
                                                       COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
-                                                                   CHANGE_DETECTION_PARCEL_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                                                   CHANGE_DETECTION_PARCEL_REMAINS,
-                                                                   CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                                   CHANGE_DETECTION_NULL_PARCEL,
-                                                                   DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-                                                                   PARCEL_STATUS)
+from asistente_ladm_col.config.change_detection_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                                               CHANGE_DETECTION_MISSING_PARCEL,
+                                                               CHANGE_DETECTION_PARCEL_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                                               CHANGE_DETECTION_PARCEL_REMAINS,
+                                                               CHANGE_DETECTION_SEVERAL_PARCELS,
+                                                               CHANGE_DETECTION_NULL_PARCEL,
+                                                               DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+                                                               PARCEL_STATUS)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.utils import get_ui_class
 
@@ -136,7 +135,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                   CHANGE_DETECTION_NULL_PARCEL]))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER].removeSelection()
-        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T][LAYER].removeSelection()
-        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T][LAYER])
+        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
+        self.utils.app.gui.activate_layer(self.utils._layers[self.utils._db.names.OP_PLOT_T])
         self.utils.iface.zoomToActiveLayer()

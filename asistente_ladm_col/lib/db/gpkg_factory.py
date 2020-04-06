@@ -16,28 +16,32 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_factory import DbFactory
-from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
-from ...lib.db.gpkg_connector import GPKGConnector
+from asistente_ladm_col.lib.db.db_factory import DBFactory
+from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GPKGConfigPanel
+from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GPKGLADMQuery
 
 
-class GpkgFactory(DbFactory):
+class GPKGFactory(DBFactory):
     def __init__(self):
-        DbFactory.__init__(self)
+        DBFactory.__init__(self)
         self._engine = "gpkg"
 
     def get_name(self):
         return 'GeoPackage'
 
-    def get_mbaker_db_ili_mode(self):
+    def get_model_baker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2gpkg
 
     def get_config_panel(self, parent):
-        return GpkgConfigPanel(parent)
+        return GPKGConfigPanel(parent)
 
     def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
+
+    def get_ladm_queries(self):
+        return GPKGLADMQuery()
 
     def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'

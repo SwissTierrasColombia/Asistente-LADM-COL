@@ -30,10 +30,11 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -42,13 +43,14 @@ DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
 
 
 class LoadLayersDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
+
+        self.app = AppInterface()
         self.names = self._db.names
+
         self.models_tree = dict()
         self.selected_items_dict = dict()
         self.icon_names = ['points.png', 'lines.png', 'polygons.png', 'tables.png', 'domains.png', 'structures.png', 'relationships.svg']
@@ -83,7 +85,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
     def load_available_layers(self):
         # Call qgis model baker tables_info and fill the tree
-        tables_info = self.qgis_utils._layers
+        tables_info = self.app.core.get_cached_layers()
         self.models_tree = dict()
 
         for record in tables_info:
@@ -92,18 +94,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                     self.models_tree[record[QueryNames.MODEL]] = {
                         record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]: record}
                 else:
-                    if (record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]) in self.models_tree[record[QueryNames.MODEL]]: # Multiple geometry columns
-                        # First geometry
-                        tmp_record = self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]]
-                        del self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]]
-                        tmp_name = "{} ({})".format((tmp_record[QueryNames.TABLE_ALIAS] or tmp_record[QueryNames.TABLE_NAME_MODEL_BAKER]), tmp_record[QueryNames.GEOMETRY_COLUMN_MODEL_BAKER])
-                        self.models_tree[record[QueryNames.MODEL]][tmp_name] = tmp_record
-
-                        # Second geometry
-                        tmp_name = "{} ({})".format((record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]), record[QueryNames.GEOMETRY_COLUMN_MODEL_BAKER])
-                        self.models_tree[record[QueryNames.MODEL]][tmp_name] = record
-                    else:
-                        self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
+                    self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
 
         self.update_available_layers()
 
@@ -147,8 +138,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])) if current_table_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER] else None
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
-                # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_layer_tree(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], geometry_type) is not None:
+                # Is the layer already loaded in canvas?
+                if self.app.core.get_ladm_layer_from_qgis(self._db, current_table_info[QueryNames.TABLE_NAME_MODEL_BAKER], EnumLayerRegistryType.IN_LAYER_TREE) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
@@ -237,14 +228,10 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
             # Load selected layers
             layers_dict = {}
             for item_text, data in self.selected_items_dict.items():
-                layers_dict[item_text] = {
-                    'name': data[QueryNames.TABLE_NAME_MODEL_BAKER],
-                    'geometry': QgsWkbTypes().geometryType(QgsWkbTypes().parseType(data[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])) if data[QueryNames.GEOMETRY_TYPE_MODEL_BAKER] else None,
-                    LAYER: None
-                }
+                layers_dict[data[QueryNames.TABLE_NAME_MODEL_BAKER]] = None
 
             self.selected_items_dict = dict() # Reset
-            self.qgis_utils.get_layers(self._db, layers_dict, load=True)
+            self.app.core.get_layers(self._db, layers_dict, load=True)
             if not layers_dict:
                 return None
 

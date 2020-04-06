@@ -252,11 +252,27 @@ class GPKGConnector(DBConnector):
 
         return bool(cursor.fetchall())
 
-    def get_uri_for_layer(self, layer_name, geometry_type=None):
+    def get_uri_for_layer(self, layer_name):
         return (True, '{uri}|layername={table}'.format(
                 uri=self._uri,
                 table=layer_name.lower()
             ))
+
+    def get_ladm_units(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return dict()
+
+        cursor = self.conn.cursor()
+        result = cursor.execute("""SELECT DISTINCT tablename || '..' || columnname AS unit_key, ' [' || setting || ']' AS unit_value FROM t_ili2db_column_prop WHERE tag LIKE 'ch.ehi.ili2db.unit'""")
+        dict_units = dict()
+        if result is not None:
+            for unit in result:
+                dict_units[unit['unit_key']] = unit['unit_value']
+        #self.logger.debug(__name__, "Units found: {}".format(dict_units))
+        return dict_units
 
     def get_models(self):
         if self.conn is None:

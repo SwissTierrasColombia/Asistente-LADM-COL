@@ -16,28 +16,32 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_factory import DbFactory
-from ...gui.db_panel.pg_config_panel import PgConfigPanel
-from ...lib.db.pg_connector import PGConnector
+from asistente_ladm_col.lib.db.db_factory import DBFactory
+from asistente_ladm_col.gui.db_panel.pg_config_panel import PGConfigPanel
+from asistente_ladm_col.lib.db.pg_connector import PGConnector
+from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
 
 
-class PgFactory(DbFactory):
+class PGFactory(DBFactory):
     def __init__(self):
-        DbFactory.__init__(self)
+        DBFactory.__init__(self)
         self._engine = "pg"
 
     def get_name(self):
         return "PostgreSQL/PostGIS"
 
-    def get_mbaker_db_ili_mode(self):
+    def get_model_baker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2pg
 
     def get_config_panel(self, parent):
-        return PgConfigPanel(parent)
+        return PGConfigPanel(parent)
 
     def get_db_connector(self, parameters=dict()):
         return PGConnector(None, parameters)
+
+    def get_ladm_queries(self):
+        return PGLADMQuery()
 
     def set_ili2db_configuration_params(self, params, configuration):
         """

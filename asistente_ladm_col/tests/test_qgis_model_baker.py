@@ -4,6 +4,9 @@ import tempfile
 from xml.dom.minidom import parse
 
 from qgis.testing import unittest, start_app
+
+from asistente_ladm_col.app_interface import AppInterface
+
 start_app()
 from QgisModelBaker.libqgsprojectgen.db_factory.gpkg_command_config_manager import GpkgCommandConfigManager
 from QgisModelBaker.libqgsprojectgen.generator.generator import Generator
@@ -15,7 +18,6 @@ from QgisModelBaker.libili2db import (iliimporter,
                                       iliexporter)
 from QgisModelBaker.libili2db.globals import DbIliMode
 
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.general_config import (TOML_FILE_DIR,
                                                       DEFAULT_EPSG)
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -34,7 +36,8 @@ class TestQgisModelBaker(unittest.TestCase):
     def setUpClass(cls):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
         print("INFO: Restoring databases to be used")
-        cls.qgis_utils = QGISUtils()
+
+        cls.app = AppInterface()
         cls.base_test_path = tempfile.mkdtemp()
         import_qgis_model_baker()
 
@@ -179,7 +182,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
         res, code, msg = db_pg.test_connection()
         self.assertTrue(res, msg)
-        test_layer = self.qgis_utils.get_layer(db_pg, db_pg.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.app.core.get_layer(db_pg, db_pg.names.OP_BOUNDARY_POINT_T, load=True)
 
         self.assertEqual(test_layer.featureCount(), 390)
         db_pg.conn.close()
@@ -227,7 +230,7 @@ class TestQgisModelBaker(unittest.TestCase):
         db_gpkg = get_gpkg_conn_from_path(config_manager.get_uri())
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
-        test_layer = self.qgis_utils.get_layer(db_gpkg, db_gpkg.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.app.core.get_layer(db_gpkg, db_gpkg.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(test_layer.featureCount(), 390)
         db_gpkg.conn.close()
 

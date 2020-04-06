@@ -58,14 +58,18 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
+          ../app_interface.py \
           ../config/help_strings.py \
           ../config/mapping_config.py \
           ../config/task_steps_config.py \
           ../config/gui/change_detection_config.py \
           ../config/gui/gui_config.py \
+          ../config/layer_tree_indicator_config.py \
           ../config/transitional_system_config.py \
           ../config/translation_strings.py \
           ../config/wizard_config.py \
+          ../core/app_core_interface.py \
+          ../gui/app_gui_interface.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
           ../gui/change_detection/changes_per_parcel_panel.py \
           ../gui/change_detection/dlg_change_detection_settings.py \
@@ -137,7 +141,6 @@ SOURCES = ../__init__.py \
           ../logic/quality/logic_checks.py \
           ../logic/quality/quality.py \
           ../utils/decorators.py \
-          ../utils/qgis_utils.py \
           ../utils/qt_utils.py \
           ../utils/java_utils.py \
           ../utils/model_parser.py \
