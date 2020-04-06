@@ -1,7 +1,6 @@
 import os.path
 import platform
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
