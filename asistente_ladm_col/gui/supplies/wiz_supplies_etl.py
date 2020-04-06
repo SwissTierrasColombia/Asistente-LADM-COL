@@ -216,11 +216,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 self.button(self.CustomButton1).setEnabled(False)
                 with OverrideCursor(Qt.WaitCursor):
                     res_alpha, msg_alpha = etl.load_alphanumeric_layers()
+
                     if res_alpha:
                         res_spatial, msg_spatial = etl.load_spatial_layers()
+
                         if res_spatial:
                             res_model, msg_model = self.load_model_layers(etl.layers)
+
                             if res_model:
+                                layers_feature_count_before = {name: layer.featureCount() for name, layer in etl.layers.items()}
                                 self._running_tool = True
                                 self.progress.setVisible(True)
                                 etl.run_etl_model(self.custom_feedback)
@@ -234,6 +238,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                                                       Qgis.Success, 0)
 
                                     self.logger.clear_status()
+                                    self.fill_summary(layers_feature_count_before, etl.layers)
                                     etl_result = True
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
@@ -282,6 +287,20 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
     def show_message(self, message, level, duration=10):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, duration)
+
+    def fill_summary(self, layers_feature_count_before, etl_layers):
+        layers_feature_count_after = {name: layer.featureCount() for name, layer in etl_layers.items()}
+        summary = """<html><head/><body><p>"""
+        summary += QCoreApplication.translate("SuppliesETLWizard", "<h4>{} report</h4>").format(self.tool_name)
+        summary += QCoreApplication.translate("SuppliesETLWizard", "Number of features loaded to the LADM-COL cadastral supplies model:<br/>")
+
+        for name, before_count in layers_feature_count_before.items():
+            summary += QCoreApplication.translate("SuppliesETLWizard", '<br/><b>{}</b> : {}'.format(
+                name, layers_feature_count_after[name] - before_count))
+
+        summary += """<hr>"""
+        summary += """</body></html>"""    
+        self.txt_log.setText(summary)
 
     def save_settings(self):
         settings = QSettings()

@@ -1,7 +1,6 @@
 import os.path
 import platform
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
@@ -36,6 +35,10 @@ TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 PREDIO_SANCION_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_sancion.csv')  # Default SNC predio_sancion.csv file
+FICHA_MATRIZ_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz.csv')  # Default SNC ficha_matriz.csv file
+FICHA_MATRIZ_PREDIO_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_predio.csv')  # Default SNC ficha_matriz_predio.csv file
+FICHA_MATRIZ_TORRE_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_torre.csv')  # Default SNC ficha_matriz_torre.csv file
+BUILDING_UNIT_CSVT_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'unidad_construccion.csvt')  # Default SNC unidad_construccion.csvt file
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
