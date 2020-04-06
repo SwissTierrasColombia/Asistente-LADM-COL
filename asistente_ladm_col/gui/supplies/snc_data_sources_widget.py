@@ -70,7 +70,7 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
         self.btn_browse_file_persona_predio.clicked.connect(
             make_file_selector(self.txt_file_path_persona_predio, QCoreApplication.translate("SNCDataSourceWidget",
-                                                                                      "Select the persona predio.csv file with SNC data "),
+                                                                                      "Select the persona predio .csv file with SNC data "),
                                QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
 
         self.btn_browse_file_ficha_m.clicked.connect(
@@ -92,19 +92,19 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
             make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
                 "SNCDataSourceWidget", "Open GDB folder"), parent=None))
 
-        file_validator_optionals = FileValidator(pattern='*.csv', allow_empty=True)
+        file_validator_optional = FileValidator(pattern='*.csv', allow_empty=True)
         file_validator_csv = FileValidator(pattern='*.csv', allow_non_existing=False)
         dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
 
-        self.txt_file_path_predio_sancion.setValidator(file_validator_optionals)
+        self.txt_file_path_predio_sancion.setValidator(file_validator_optional)
         self.txt_file_path_predio.setValidator(file_validator_csv)
         self.txt_file_path_direccion.setValidator(file_validator_csv)
         self.txt_file_path_uni.setValidator(file_validator_csv)
         self.txt_file_path_persona.setValidator(file_validator_csv)
         self.txt_file_path_persona_predio.setValidator(file_validator_csv)
-        self.txt_file_path_ficha_m.setValidator(file_validator_optionals)
-        self.txt_file_path_ficha_m_predio.setValidator(file_validator_optionals)
-        self.txt_file_path_ficha_m_torre.setValidator(file_validator_optionals)
+        self.txt_file_path_ficha_m.setValidator(file_validator_optional)
+        self.txt_file_path_ficha_m_predio.setValidator(file_validator_optional)
+        self.txt_file_path_ficha_m_torre.setValidator(file_validator_optional)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
 
         self.txt_file_path_predio_sancion.textChanged.connect(self.validators.validate_line_edits)

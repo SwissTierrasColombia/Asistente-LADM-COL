@@ -95,7 +95,8 @@ class ETLSNC(ETLSupplies):
                 alphanumeric_group.addLayer(layer)
             else:
                 if name in optional_layers.keys():
-                    # predio_sancion, ficha_matriz, ficha_matriz_predio and ficha_matriz_torre are kind of optional, if it is not given, we pass a default one
+                    # predio_sancion, ficha_matriz, ficha_matriz_predio and ficha_matriz_torre
+                    # are optional, if they are not given, we pass default values
                     layer = QgsVectorLayer(optional_layers[name], name, 'ogr')
                     self.alphanumeric_file_paths[name] = layer
                     if layer.isValid():
@@ -104,7 +105,11 @@ class ETLSNC(ETLSupplies):
                 else:
                     return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the CSV file called '{}'.".format(name))
 
-        os.remove('{}.{}'.format(filename, 'csvt'))
+        try:
+            os.remove('{}.{}'.format(filename, 'csvt'))
+        except:
+            pass
+
         return True, ''
 
     def run_etl_model(self, custom_feedback):
