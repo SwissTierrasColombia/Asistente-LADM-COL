@@ -13,7 +13,7 @@ class LayerConfig:
 
     @staticmethod
     def get_layer_constraints(names):
-        return  {
+        return {
             names.OP_PARCEL_T: {
                 names.OP_PARCEL_T_PARCEL_TYPE_F: {
                     'expression': """
