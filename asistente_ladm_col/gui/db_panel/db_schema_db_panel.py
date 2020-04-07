@@ -130,7 +130,7 @@ class DBSchemaDBPanel(DBConfigPanel):
     def show_create_db_dialog(self):
         tmp_db_conn = self.get_connector()
         tmp_db_conn.open_connection()
-        res, code, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER)
+        res, code, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER_OR_FILE)
 
         if res:
             create_db_dlg = GetDBOrSchemaNameDialog(tmp_db_conn, tmp_db_conn.uri, 'database', parent=self)
