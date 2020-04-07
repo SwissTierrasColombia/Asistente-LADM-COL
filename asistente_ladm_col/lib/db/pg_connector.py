@@ -26,7 +26,8 @@ from qgis.core import QgsDataSourceUri
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
-from asistente_ladm_col.lib.db.db_connector import (ClientServerDB, DBConnector,
+from asistente_ladm_col.lib.db.db_connector import (ClientServerDB,
+                                                    DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.logic.ladm_col.config.queries.pg import logic_validation_queries
 from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_neighbouring_change_query,

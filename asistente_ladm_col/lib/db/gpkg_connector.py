@@ -22,22 +22,21 @@ import sqlite3
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from asistente_ladm_col.config.enums import (EnumTestLevel,
-                                             EnumUserLevel,
-                                             EnumTestConnectionMsg)
+from asistente_ladm_col.config.enums import EnumTestConnectionMsg
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.lib.db.db_connector import (FilesDB, DBConnector,
+from asistente_ladm_col.lib.db.db_connector import (FileDB,
+                                                    DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 
 
-class GPKGConnector(FilesDB):
+class GPKGConnector(FileDB):
 
     _PROVIDER_NAME = 'ogr'
     _DEFAULT_VALUES = {
@@ -246,15 +245,39 @@ class GPKGConnector(FilesDB):
         else:
             return 4  # ili2db 4 renamed such column to ColOwner
 
+    def _test_db_file(self, is_schema_import=False):
+        uri = self._uri
+
+        # The most basic check first :)
+        if not os.path.splitext(uri)[1] == ".gpkg":
+            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
+                                                                                                 "The file should have the '.gpkg' extension!")
+
+        # First we do a very basic check, looking that the directory or file exists
+        if is_schema_import:
+            # file does not exist, but directory must exist
+            directory = os.path.dirname(uri)
+
+            if not os.path.exists(directory):
+                return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
+                                                                                              "GeoPackage directory not found.")
+        else:
+            if not os.path.exists(uri):
+                return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
+                                                                                                    "GeoPackage file not found.")
+
+        return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate(
+            "GPKGConnector",
+            "Connection to server was successful.")
+
     def _test_connection_to_db(self):
-        uri = self.get_connection_uri(self._dict_conn_params, 0)
         res, msg = self.open_connection()
         if res:
             return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate(
                 "GPKGConnector",
                 "Connection to db was successful.")
         else:
-            return False, EnumTestConnectionMsg.CONNECTION_TO_SERVER_FAILED, msg
+            return False, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
     def _test_connection_to_ladm(self, required_models):
         database = os.path.basename(self._dict_conn_params['dbfile'])
@@ -288,29 +311,3 @@ class GPKGConnector(FilesDB):
 
         return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector",
                                                                                                     "The database '{}' has a valid LADM_COL structure!").format(database)
-
-    def _test_db_file(self, is_schema_import=False):
-        uri = self._uri
-        database = os.path.basename(self._dict_conn_params['dbfile'])
-
-        # The most basic check first :)
-        if not os.path.splitext(uri)[1] == ".gpkg":
-            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
-                                                                                                 "The file should have the '.gpkg' extension!")
-
-        # First we do a very basic check, looking that the directory or file exists
-        if is_schema_import:
-            # file does not exist, but directory must exist
-            directory = os.path.dirname(uri)
-
-            if not os.path.exists(directory):
-                return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                              "GeoPackage directory not found.")
-        else:
-            if not os.path.exists(uri):
-                return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                                    "GeoPackage file not found.")
-
-        return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate(
-            "GPKGConnector",
-            "Connection to server was successful.")
