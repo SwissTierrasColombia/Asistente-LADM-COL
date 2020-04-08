@@ -56,7 +56,7 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(res, msg)
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 215)
+        self.assertEqual(len(dict_names), 216)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
