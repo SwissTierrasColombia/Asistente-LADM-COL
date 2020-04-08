@@ -32,7 +32,9 @@ from qgis.core import (edit,
                        QgsProject,
                        QgsVectorLayerUtils,
                        QgsVectorLayer,
-                       QgsFeatureSink)
+                       QgsFeatureSink,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils)
 
 
 class InsertFeaturesToLayer(QgsProcessingAlgorithm):
@@ -89,9 +91,14 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         #feedback.setProgress(int(current * total))
 
         features = QgsVectorLayerUtils().makeFeaturesCompatible(source.getFeatures(), target)
+        eval_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(target))
         for feature in features:
             for idx in target_provider.pkAttributeIndexes():
-                feature.setAttribute(idx, target_provider.defaultValue(idx))
+                # Get the PK from client expressions, if any, or from the provider itself
+                if target.defaultValueDefinition(idx).isValid():
+                    feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))
+                else:  # Provider
+                    feature.setAttribute(idx, target_provider.defaultValue(idx))
 
         if self.save_features(target, features, 'provider', feedback):
             feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(
