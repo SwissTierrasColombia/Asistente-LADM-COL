@@ -602,7 +602,7 @@ class AppCoreInterface(QObject):
             list_dicts_field_expression.append({db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"})
 
         if layer.fields().indexFromName(db.names.T_ILI_TID_F) != -1:
-            list_dicts_field_expression.append({db.names.T_ILI_TID_F: "uuid()"})
+            list_dicts_field_expression.append({db.names.T_ILI_TID_F: "substr(uuid(), 2, 36)"})
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db.names)
         if layer_name in dict_automatic_values:
