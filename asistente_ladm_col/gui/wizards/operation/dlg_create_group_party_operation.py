@@ -352,11 +352,11 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             new_feature.setAttribute(self.names.COL_GROUP_PARTY_T_TYPE_F, group[self.names.COL_GROUP_PARTY_T_TYPE_F])
             new_feature.setAttribute(self.names.COL_PARTY_T_NAME_F, group[self.names.COL_PARTY_T_NAME_F])
 
-            # TODO: Remove when local id and working space are defined
-            new_feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
-            new_feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_GROUP_PARTY_T)
+            # TODO: Remove when local id and namespace are defined
+            #new_feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
+            #new_feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_GROUP_PARTY_T)
 
-            # TODO: Gui should allow users to ented namespace, local_id and date values
+            # TODO: Gui should allow users to enter namespace, local_id and date values
             #new_feature.setAttribute("p_espacio_de_nombres", self.names.OP_GROUP_PARTY_T)
             #new_feature.setAttribute("p_local_id", '0')
             #new_feature.setAttribute("comienzo_vida_util_version", 'now()')

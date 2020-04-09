@@ -581,50 +581,75 @@ class AppCoreInterface(QObject):
 
             irc.addChildElement(new_general_tab)
 
-    def configure_automatic_fields(self, db, layer, list_dicts_field_expression):
-        for dict_field_expression in list_dicts_field_expression:
-            for field, expression in dict_field_expression.items(): # There should be one key and one value
-                index = layer.fields().indexFromName(field)
-                default_value = QgsDefaultValue(expression, True) # Calculate on update
+    def configure_automatic_fields(self, layer, dict_field_expression, names=None):
+        for field, expression in dict_field_expression.items():
+            index = layer.fields().indexFromName(field)
+            if index != -1:
+                if names and field == names.T_ILI_TID_F:
+                    # PG uuid fields are calculated by the server, we skip them here. Some models in PG, like supplies,
+                    # may have t_ili_tid fields that are not uuid but string, for them we need the automatic value.
+                    if layer.fields().field(field).typeName() == 'uuid':
+                        continue
+
+                default_value = QgsDefaultValue(expression, True)  # Calculate on update
                 layer.setDefaultValueDefinition(index, default_value)
                 self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
                     layer.name(), field, expression))
 
-    def reset_automatic_field(self, db, layer, field):
-        self.configure_automatic_fields(db, layer, [{field: ""}])
+    def reset_automatic_fields(self, layer, list_fields):
+        self.configure_automatic_fields(layer, {field: "" for field in list_fields})
 
     def set_automatic_fields(self, db, layer, layer_name):
-        self.set_automatic_fields_namespace_local_id(db, layer_name, layer)
+        """
+        Set all automatic fields for a layer. That includes both,
+        those enabled in Settings dialog, and those from layer config
+        """
+        self.set_automatic_fields_settings(db, layer_name, layer)
 
-        list_dicts_field_expression = list()
+        dict_field_expression = dict()
 
         if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
-            list_dicts_field_expression.append({db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"})
-
-        if layer.fields().indexFromName(db.names.T_ILI_TID_F) != -1:
-            list_dicts_field_expression.append({db.names.T_ILI_TID_F: "substr(uuid(), 2, 36)"})
+            dict_field_expression[db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F] = "now()"
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db.names)
         if layer_name in dict_automatic_values:
-            list_dicts_field_expression.extend(dict_automatic_values[layer_name])
+            dict_field_expression.update(dict_automatic_values[layer_name])
 
-        self.configure_automatic_fields(db, layer, list_dicts_field_expression)
+        self.configure_automatic_fields(layer, dict_field_expression, db.names)
 
-    def set_automatic_fields_namespace_local_id(self, db, layer_name, layer):
+    def set_automatic_fields_settings(self, db, layer_name, layer):
+        """
+        Sets the automatic fields configured from Settings dialog.
+        """
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(db.names, layer_name)
-        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(db.names, layer_name)
+        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(db.names)
+        t_ili_tid_enabled, t_ili_tid_field, t_ili_tid_value = self.get_t_ili_tid_field_and_value(db.names)
+
+        dict_field_expression = dict()
+        list_fields = list()
 
         if ns_enabled and ns_field:
-            self.configure_automatic_fields(db, layer, [{ns_field: ns_value}])
+            dict_field_expression[ns_field] = ns_value
         elif not ns_enabled and ns_field:
-            self.reset_automatic_field(db, layer, ns_field)
+            list_fields.append(ns_field)
 
         if lid_enabled and lid_field:
-            self.configure_automatic_fields(db, layer, [{lid_field: lid_value}])
+            dict_field_expression[lid_field] = lid_value
         elif not lid_enabled and lid_field:
-            self.reset_automatic_field(db, layer, lid_field)
+            list_fields.append(lid_field)
+
+        if t_ili_tid_enabled and t_ili_tid_field:
+            dict_field_expression[t_ili_tid_field] = t_ili_tid_value
+        elif not t_ili_tid_enabled and t_ili_tid_field:
+            list_fields.append(t_ili_tid_field)
+
+        if dict_field_expression:
+            self.configure_automatic_fields(layer, dict_field_expression, db.names)
+        if list_fields:
+            self.reset_automatic_fields(layer, list_fields)
 
     def get_namespace_field_and_value(self, names, layer_name):
+        """Handy function to get up-to-date configuration of namespace field"""
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
         namespace_field = names.OID_T_NAMESPACE_F
 
@@ -636,7 +661,8 @@ class AppCoreInterface(QObject):
 
         return (namespace_enabled, namespace_field, namespace_value)
 
-    def get_local_id_field_and_value(self, names, layer_name):
+    def get_local_id_field_and_value(self, names):
+        """Handy function to get up-to-date configuration of local_id field"""
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
         local_id_field = names.OID_T_LOCAL_ID_F
 
@@ -649,44 +675,51 @@ class AppCoreInterface(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
-    def check_if_and_disable_automatic_fields(self, db, layer_name):
+    def get_t_ili_tid_field_and_value(self, names):
+        """Handy function to get up-to-date configuration of t_ili_tid field"""
+        t_ili_tid_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        t_ili_tid_field = names.T_ILI_TID_F
+
+        if t_ili_tid_field is not None:
+            t_ili_tid_value = "substr(uuid(), 2, 36)"
+        else:
+            t_ili_tid_value = None
+
+        return (t_ili_tid_enabled, t_ili_tid_field, t_ili_tid_value)
+
+    def check_if_and_disable_automatic_fields(self, layer):
         """
         Check settings to see if the user wants to calculate automatic values
         when in batch mode. If not, disable automatic fields and return
         expressions so that they can be restored after the batch load.
+
+        Note that all default values are disabled for the given layer, not only namespace, local_id and t_ili_tid.
         """
-        settings = QSettings()
         automatic_fields_definition = {}
-        if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-            automatic_fields_definition = self.disable_automatic_fields(db, layer_name)
+        if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+            automatic_fields_definition = self.disable_automatic_fields(layer)
 
         return automatic_fields_definition
 
-    def disable_automatic_fields(self, db, layer_name):
-        layer = self.get_layer(db, layer_name, True)
-        automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
-
-        for field in layer.fields():
-            self.reset_automatic_field(db, layer, field.name())
+    def disable_automatic_fields(self, layer):
+        """Disable all default values in a layer"""
+        automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList() if layer.defaultValueDefinition(idx).isValid()}
+        self.reset_automatic_fields(layer, [layer.fields().field(idx).name() for idx in automatic_fields_definition.keys()])
 
         return automatic_fields_definition
 
-    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
+    def check_if_and_enable_automatic_fields(self, layer, automatic_fields_definition):
         """
         Once the batch load is done, check whether the user wanted to calculate
         automatic values in batch mode or not. If not, restore the expressions
         we saved before running the batch load.
         """
         if automatic_fields_definition:
-            settings = QSettings()
-            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-                self.enable_automatic_fields(db,
-                                             automatic_fields_definition,
-                                             layer_name)
+            if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+                self.enable_automatic_fields(layer, automatic_fields_definition)
 
-    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name):
-        layer = self.get_layer(db, layer_name, True)
-
+    def enable_automatic_fields(self, layer, automatic_fields_definition):
+        """Enable all default values in a layer"""
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
 
@@ -715,9 +748,9 @@ class AppCoreInterface(QObject):
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
-    def automatic_namespace_local_id_configuration_changed(self, db):
+    def automatic_fields_settings_changed(self, db):
         for layer_name, layer in self.get_ladm_layers_from_qgis(db).items():
-            self.set_automatic_fields_namespace_local_id(db, layer_name, layer)
+            self.set_automatic_fields_settings(db, layer_name, layer)
 
     @staticmethod
     def is_source_service_valid(url=None):
@@ -981,7 +1014,7 @@ class AppCoreInterface(QObject):
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
-            automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
+            automatic_fields_definition = self.check_if_and_disable_automatic_fields(output_layer)
             field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(db.names,
                                                                                              ladm_col_layer_name, self)
             self.activate_layer_requested.emit(input_layer)
@@ -989,7 +1022,7 @@ class AppCoreInterface(QObject):
             res = processing.run("model:ETL-model",
                                  {'INPUT': input_layer, 'mapping': field_mapping, 'output': output_layer})
 
-            self.check_if_and_enable_automatic_fields(db, automatic_fields_definition, ladm_col_layer_name)
+            self.check_if_and_enable_automatic_fields(output_layer, automatic_fields_definition)
             finish_feature_count = output_layer.featureCount()
 
             return finish_feature_count > start_feature_count
@@ -1012,7 +1045,7 @@ class AppCoreInterface(QObject):
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
-            automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
+            automatic_fields_definition = self.check_if_and_disable_automatic_fields(output)
 
             # Get the mapping we'll use, it might come from stored recent mappings or from the default mapping
             mapping = None
@@ -1040,9 +1073,7 @@ class AppCoreInterface(QObject):
             res = dlg.exec_()
             finish_feature_count = output.featureCount()
 
-            self.check_if_and_enable_automatic_fields(db,
-                                                      automatic_fields_definition,
-                                                      ladm_col_layer_name)
+            self.check_if_and_enable_automatic_fields(output, automatic_fields_definition)
 
             return finish_feature_count > start_feature_count
         else:

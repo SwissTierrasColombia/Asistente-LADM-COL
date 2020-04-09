@@ -405,7 +405,7 @@ class RefactorFieldsMappings:
     def set_automatic_values(self, names, mapping, layer_name):
         # Now see if we can adjust the mapping depending on user settings
         ns_enabled, ns_field, ns_value = self.app.core.get_namespace_field_and_value(names, layer_name)
-        lid_enabled, lid_field, lid_value = self.app.core.get_local_id_field_and_value(names, layer_name)
+        lid_enabled, lid_field, lid_value = self.app.core.get_local_id_field_and_value(names)
 
         for field in mapping:
             if ns_enabled and ns_field:

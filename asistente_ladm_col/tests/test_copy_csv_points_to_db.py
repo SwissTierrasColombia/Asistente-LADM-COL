@@ -54,7 +54,8 @@ class TestCopy(unittest.TestCase):
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
-        self.app.core.disable_automatic_fields(self.db_pg, self.names.OP_BOUNDARY_POINT_T)
+        layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, True)
+        self.app.core.disable_automatic_fields(layer)
 
         csv_path = get_test_path('csv/puntos_fixed_v296.csv')
         txt_delimiter = ';'
@@ -93,7 +94,8 @@ class TestCopy(unittest.TestCase):
 
     def test_upload_points_from_csv_crs_wgs84(self):
         print("\nINFO: Copying CSV data with EPSG:4326...")
-        self.app.core.disable_automatic_fields(self.db_pg, self.names.OP_BOUNDARY_POINT_T)
+        layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, True)
+        self.app.core.disable_automatic_fields(layer)
 
         csv_path = get_test_path('csv/puntos_crs_4326_wgs84_v296.csv')
         txt_delimiter = ';'
@@ -130,7 +132,8 @@ class TestCopy(unittest.TestCase):
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
-        self.app.core.disable_automatic_fields(self.db_pg, self.names.OP_BOUNDARY_POINT_T)
+        layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, True)
+        self.app.core.disable_automatic_fields(layer)
 
         csv_path = get_test_path('csv/puntos_fixed_v296.csv')
         txt_delimiter = ';'

@@ -1616,8 +1616,8 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1122"/>
-        <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
-        <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
+        <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
+        <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1124"/>

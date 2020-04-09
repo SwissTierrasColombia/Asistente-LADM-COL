@@ -404,8 +404,8 @@ class LayerConfig:
     @staticmethod
     def get_dict_automatic_values(names):
         return {
-            names.OP_BOUNDARY_T: [{names.OP_BOUNDARY_T_LENGTH_F: "$length"}],
-            names.OP_PARTY_T: [{
+            names.OP_BOUNDARY_T: {names.OP_BOUNDARY_T_LENGTH_F: "$length"},
+            names.OP_PARTY_T: {
                 names.COL_PARTY_T_NAME_F: """
                     CASE
                         WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
@@ -422,10 +422,11 @@ class LayerConfig:
                            business_name=names.OP_PARTY_T_BUSINESS_NAME_F,
                            OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                            OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
-            }],
-            names.OP_PARCEL_T: [
-                {names.OP_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F)},
-                {names.OP_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F)}]
+            },
+            names.OP_PARCEL_T: {
+                names.OP_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F),
+                names.OP_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F)
+            }
         }
 
     @staticmethod
