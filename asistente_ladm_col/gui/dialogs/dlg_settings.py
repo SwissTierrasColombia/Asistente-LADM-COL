@@ -298,7 +298,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
         settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
@@ -309,22 +308,27 @@ class SettingsDialog(QDialog, DIALOG_UI):
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
-        # Changes in automatic namespace or local_id configuration?
+        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
+
+        # Changes in automatic namespace, local_id or t_ili_tid configuration?
         current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
         current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
         current_local_id_enabled = settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+        current_t_ili_tid_enabled = settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
 
         settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
         if self.namespace_collapsible_group_box.isChecked():
             settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
         settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+        settings.setValue('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', self.chk_t_ili_tid.isChecked())
 
         if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
            current_namespace_prefix != self.txt_namespace.text() or \
-           current_local_id_enabled != self.chk_local_id.isChecked():
+           current_local_id_enabled != self.chk_local_id.isChecked() or \
+           current_t_ili_tid_enabled != self.chk_t_ili_tid.isChecked():
             if self._db is not None:
-                self.app.core.automatic_namespace_local_id_configuration_changed(self._db)
+                self.app.core.automatic_fields_settings_changed(self._db)
 
     def restore_db_source_settings(self):
         settings = QSettings()
@@ -369,6 +373,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.connection_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
+        self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool))

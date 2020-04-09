@@ -249,9 +249,9 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                   'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
                   'parcel': layers[self.names.OP_PARCEL_T]}
 
-        self.app.core.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
-        self.app.core.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
-        self.app.core.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
+        self.app.core.disable_automatic_fields(layers[self.names.OP_GROUP_PARTY_T])
+        self.app.core.disable_automatic_fields(layers[self.names.OP_RIGHT_T])
+        self.app.core.disable_automatic_fields(layers[self.names.OP_ADMINISTRATIVE_SOURCE_T])
 
         processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
 

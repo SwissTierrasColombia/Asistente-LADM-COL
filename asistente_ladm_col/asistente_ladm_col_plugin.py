@@ -1073,10 +1073,11 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_group_party(self, *args):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+        t_ili_tid_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
 
-        if not namespace_enabled or not local_id_enabled:
+        if not namespace_enabled or not local_id_enabled or not t_ili_tid_enabled:
             self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartyOperation",
-                                                       "First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog."),
+                                                       "First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog."),
                                                    QCoreApplication.translate("CreateGroupPartyOperation", "Open Settings"),
                                                    Qgis.Info)
             return

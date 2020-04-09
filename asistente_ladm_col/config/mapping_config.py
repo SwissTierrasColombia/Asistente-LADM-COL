@@ -3,6 +3,7 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 T_ID_KEY = 't_id'
+T_ILI_TID_KEY = "t_ili_tid",
 DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'
@@ -18,6 +19,7 @@ class TableAndFieldNames:
 
     ############################################ TABLE VARIABLES ###########################################################
     T_ID_F = None
+    T_ILI_TID_F = None
     ILICODE_F = None
     DESCRIPTION_F = None
     DISPLAY_NAME_F = None
@@ -1179,7 +1181,11 @@ class TableAndFieldNames:
         table_names_count = 0
         field_names_count = 0
         if dict_names:
-            if T_ID_KEY not in dict_names or DISPLAY_NAME_KEY not in dict_names or ILICODE_KEY not in dict_names or DESCRIPTION_KEY not in dict_names:
+            if T_ID_KEY not in dict_names \
+                    or T_ILI_TID_KEY not in dict_names \
+                    or DISPLAY_NAME_KEY not in dict_names \
+                    or ILICODE_KEY not in dict_names \
+                    or DESCRIPTION_KEY not in dict_names:
                 self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
                 return False
 
@@ -1195,6 +1201,7 @@ class TableAndFieldNames:
 
             # Required fields mapped in a custom way
             self.T_ID_F = dict_names[T_ID_KEY] if T_ID_KEY in dict_names else None
+            self.T_ILI_TID_F = dict_names[T_ILI_TID_KEY] if T_ILI_TID_KEY in dict_names else None
             self.ILICODE_F = dict_names[ILICODE_KEY] if ILICODE_KEY in dict_names else None
             self.DESCRIPTION_F = dict_names[DESCRIPTION_KEY] if DESCRIPTION_KEY in dict_names else None
             self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME_KEY] if DISPLAY_NAME_KEY in dict_names else None
@@ -1214,6 +1221,7 @@ class TableAndFieldNames:
                 setattr(self, field_variable, None)
 
         self.T_ID_F = None
+        self.T_ILI_TID_F = None
         self.ILICODE_F = None
         self.DESCRIPTION_F = None
         self.DISPLAY_NAME_F = None

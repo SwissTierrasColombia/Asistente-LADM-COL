@@ -27,6 +27,7 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
                                                       T_ID_KEY,
+                                                      T_ILI_TID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
@@ -244,7 +245,7 @@ class DBConnector(QObject):
         """
         # Fill table names
         for k,v in dict_names.items():
-            if k not in [T_ID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
+            if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
                 self._table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:

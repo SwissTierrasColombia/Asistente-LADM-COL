@@ -81,7 +81,7 @@ class ToolBar(QObject):
             for boundary_geom in new_boundary_geoms:
                 feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
 
-                # TODO: Remove when local id and working space are defined
+                # TODO: Remove when local id and namespace are defined
                 feature.setAttribute(db.names.OID_T_LOCAL_ID_F, 1)
                 feature.setAttribute(db.names.OID_T_NAMESPACE_F, db.names.OP_BOUNDARY_T)
 
