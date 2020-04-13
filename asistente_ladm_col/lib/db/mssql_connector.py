@@ -253,7 +253,7 @@ class MssqlConnector(ClientServerDB):
         return True, QCoreApplication.translate("MssqlConnector", "Database '{}' was successfully created!".format(db_name))
 
     def get_models(self, schema=None):
-        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        query = "SELECT distinct LEFT(iliname, CHARINDEX('.',iliname)-1) as modelname FROM {schema}.t_ili2db_trafo".format(schema=schema if schema else self.schema)
         res, result = self.execute_sql_query(query)
 
         lst_models = list()
