@@ -38,6 +38,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
+                                                      T_ILI_TID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
@@ -338,6 +339,7 @@ class PGConnector(DBConnector):
 
         # Add required key-value pairs that do not come from the DB query
         dict_names[T_ID_KEY] = "t_id"
+        dict_names[T_ILI_TID_KEY] = "t_ili_tid"
         dict_names[DISPLAY_NAME_KEY] = "dispname"
         dict_names[ILICODE_KEY] = "ilicode"
         dict_names[DESCRIPTION_KEY] = "description"

@@ -1,25 +1,41 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-03-06
+        git sha              : :%H$
+        copyright            : (C) 2020 by Leo Cardona (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules
 from asistente_ladm_col.logic.quality.line_quality_rules import LineQualityRules
 from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.logic.quality.logic_quality_rules import LogicQualityRules
-from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 
 
 class FacadeQualityRules:
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
-        self.translated_strings = TranslatableConfigStrings().get_translatable_config_strings()
-        self.point_quality_rules = PointQualityRules(self.qgis_utils, self.translated_strings)
-        self.line_quality_rules = LineQualityRules(self.qgis_utils, self.translated_strings)
-        self.polygon_quality_rules = PolygonQualityRules(self.qgis_utils, self.translated_strings)
-        self.logic_quality_rules = LogicQualityRules(self.qgis_utils, self.translated_strings)
+        self.point_quality_rules = PointQualityRules(self.qgis_utils)
+        self.line_quality_rules = LineQualityRules(self.qgis_utils)
+        self.polygon_quality_rules = PolygonQualityRules(self.qgis_utils)
+        self.logic_quality_rules = LogicQualityRules(self.qgis_utils)
 
     # POINTS QUALITY RULES
-    def validate_overlaps_in_boundary_points(self, db, point_layer_name):
-        return self.point_quality_rules.check_overlapping_points(db, point_layer_name)
+    def validate_overlaps_in_boundary_points(self, db):
+        return self.point_quality_rules.check_overlapping_boundary_point(db)
 
-    def validate_overlaps_in_control_points(self, db, point_layer_name):
-        return self.point_quality_rules.check_overlapping_points(db, point_layer_name)
+    def validate_overlaps_in_control_points(self, db):
+        return self.point_quality_rules.check_overlapping_control_point(db)
 
     def validate_boundary_points_covered_by_boundary_nodes(self, db):
         return self.point_quality_rules.check_boundary_points_covered_by_boundary_nodes(db)
@@ -44,14 +60,14 @@ class FacadeQualityRules:
         return self.line_quality_rules.check_dangles_in_boundaries(db)
 
     # POLYGONS QUALITY RULES
-    def validate_overlaps_in_plots(self, db, polygon_layer_name):
-        return self.polygon_quality_rules.check_overlapping_polygons(db, polygon_layer_name)
+    def validate_overlaps_in_plots(self, db):
+        return self.polygon_quality_rules.check_overlapping_plots(db)
 
-    def validate_overlaps_in_buildings(self, db, polygon_layer_name):
-        return self.polygon_quality_rules.check_overlapping_polygons(db, polygon_layer_name)
+    def validate_overlaps_in_buildings(self, db):
+        return self.polygon_quality_rules.check_overlapping_buildings(db)
 
-    def validate_overlaps_in_rights_of_way(self, db, polygon_layer_name):
-        return self.polygon_quality_rules.check_overlapping_polygons(db, polygon_layer_name)
+    def validate_overlaps_in_rights_of_way(self, db):
+        return self.polygon_quality_rules.check_overlapping_right_of_way(db)
 
     def validate_plots_covered_by_boundaries(self, db):
         return self.polygon_quality_rules.check_plots_covered_by_boundaries(db)

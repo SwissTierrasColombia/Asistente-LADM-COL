@@ -27,8 +27,6 @@ from qgis.core import (QgsFeatureRenderer,
                        QgsAbstractVectorLayerLabeling,
                        QgsReadWriteContext)
 
-from asistente_ladm_col.config.translator import (QGIS_LANG,
-                                                  DEFAULT_LANGUAGE)
 from asistente_ladm_col.config.general_config import STYLES_DIR
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.symbology import Symbology
@@ -42,40 +40,35 @@ class SymbologyUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
-        self.symbology = Symbology()
 
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):
-        style_group = self.symbology.get_default_style_group(db.names)
-        style_group_const = self.symbology.get_default_style_group(db.names)
+        style_group = Symbology().get_default_style_group(db.names)
+        style_group_const = Symbology().get_default_style_group(db.names)
+        style_custom_error_layers = Symbology().get_custom_error_layers()
+
         if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
             if layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]:
+                # By default symbology layer user default style group
+                # but it could be update if a layer modifiers it send
+                # e.g STYLE_GROUP_LAYER_MODIFIERS could be Symbology().get_supplies_style_group()
                 style_group = layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]
 
         qml_name = None
         if is_error_layer:
-            if layer.name() in self.symbology.get_custom_error_layers():
-                # Symbology is selected according to the language
-                if QGIS_LANG in self.symbology.get_custom_error_layers()[layer.name()]:
-                    qml_name = self.symbology.get_custom_error_layers()[layer.name()][QGIS_LANG]
-                else:
-                    qml_name = self.symbology.get_custom_error_layers()[layer.name()][DEFAULT_LANGUAGE]
+            if layer.name() in style_custom_error_layers:
+                qml_name = style_custom_error_layers.get(layer.name())
             else:
-                qml_name = style_group_const[self.symbology.get_error_layer_name()][layer.geometryType()]
+                qml_name = Symbology().get_default_error_style_layer().get(layer.geometryType())
         else:
             if db is None:
                 return
 
             layer_name = db.get_ladm_layer_name(layer)
+            qml_name = style_group.get(layer_name)
 
-            if layer_name in style_group:
-                if layer.geometryType() in style_group[layer_name]:
-                    qml_name = style_group[layer_name][layer.geometryType()]
-
-            # If style not in style group then we use default simbology
+            # If style not in style group then we use default symbology
             if qml_name is None:
-                if layer_name in style_group_const:
-                    if layer.geometryType() in style_group_const[layer_name]:
-                        qml_name = style_group_const[layer_name][layer.geometryType()]
+                qml_name = style_group_const.get(layer_name)
 
         if qml_name is not None:
             renderer, labeling = self.get_style_from_qml(qml_name)

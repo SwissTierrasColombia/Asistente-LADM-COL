@@ -1,7 +1,6 @@
 import os.path
 import platform
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
@@ -19,6 +18,7 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
+PREFIX_ERROR_CODE = 'E'
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False

@@ -554,7 +554,8 @@ class GeometryUtils(QObject):
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
         id_field_idx = boundary_layer.fields().indexFromName(names.T_ID_F)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        uuid_field_idx = boundary_layer.fields().indexFromName(names.T_ILI_TID_F)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx, uuid_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
@@ -943,3 +944,38 @@ class GeometryUtils(QObject):
                 buildings_with_no_plot.append(feature)
 
         return buildings_with_no_plot, buildings_not_within_a_single_plot
+
+    @staticmethod
+    def get_intersection_features(layer, geometries, id_field=None):
+        """
+        return a list of list, every list has the feature ids of features
+        that intersect with every geometry.
+        If id_field is None return id of QGIS
+        layer: QgsVectorLayer
+        geometries: list of QgsGeometries (Order is not modify)
+        """
+        if id_field:
+            id_field_idx = layer.fields().indexFromName(id_field)
+            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+            dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
+        else:
+            dict_features = {feature.id(): feature for feature in layer.getFeatures()}
+
+        index = QgsSpatialIndex(layer)
+
+        intersecting_ids = list()
+        for geometry in geometries:
+            bbox = geometry.boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            feature_ids = list()
+            for candidate_feature in candidate_features:
+                candidate_geometry = candidate_feature.geometry()
+                if geometry.intersects(candidate_geometry):
+                    if id_field:
+                        feature_ids.append(candidate_feature[id_field])
+                    else:
+                        feature_ids.append(candidate_feature.id())
+            intersecting_ids.append(feature_ids)
+        return intersecting_ids

@@ -1,59 +1,80 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-03-06
+        git sha              : :%H$
+        copyright            : (C) 2020 by Leo Cardona (BSF Swissphoto)
+                               (C) 2020 by Germán Carrillo (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+                               gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QVariant,
                               QSettings)
 from qgis.core import (Qgis,
-                       QgsField,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        QgsFeatureRequest)
 
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E300401,
+                                                            QUALITY_RULE_ERROR_CODE_E300402,
+                                                            QUALITY_RULE_ERROR_CODE_E300403,
+                                                            QUALITY_RULE_ERROR_CODE_E300404,
+                                                            QUALITY_RULE_ERROR_CODE_E300405,
+                                                            QUALITY_RULE_ERROR_CODE_E300901,
+                                                            QUALITY_RULE_ERROR_CODE_E300902,
+                                                            QUALITY_RULE_ERROR_CODE_E301001,
+                                                            QUALITY_RULE_ERROR_CODE_E301002)
 from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.config.translation_strings import (ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                                                           ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                           ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                           ERROR_NO_LESS_TABLE,
-                                                           ERROR_DUPLICATE_LESS_TABLE,
-                                                           ERROR_BUILDING_IS_NOT_OVER_A_PLOT,
-                                                           ERROR_BUILDING_CROSSES_A_PLOT_LIMIT,
-                                                           ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT,
-                                                           ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT)
 from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
+from asistente_ladm_col.utils.utils import get_uuid_dict
+from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
 class PolygonQualityRules:
-    def __init__(self, qgis_utils, translated_strings):
-        self.translated_strings = translated_strings
+    def __init__(self, qgis_utils):
+        self.quality_rules_manager = QualityRuleManager()
         self.qgis_utils = qgis_utils
         self.logger = Logger()
 
-    def check_overlapping_polygons(self, db, polygon_layer_name):
+    def check_overlapping_plots(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_PLOT_T)
+
+    def check_overlapping_buildings(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_BUILDING_T)
+
+    def check_overlapping_right_of_way(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_RIGHT_OF_WAY_T)
+
+    def __check_overlapping_polygons(self, db, rule, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, load=True)
         if not polygon_layer:
             return
 
         if polygon_layer:
-            error_layer_name = ''
-            if polygon_layer_name == db.names.OP_PLOT_T:
-                error_layer_name = self.translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS]
-            elif polygon_layer_name == db.names.OP_BUILDING_T:
-                error_layer_name = self.translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS]
-            elif polygon_layer_name == db.names.OP_RIGHT_OF_WAY_T:
-                error_layer_name = self.translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY]
-
-            error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()),
-                                         error_layer_name, "memory")
+            error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()), rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField("id_poligono", QVariant.Int),
-                                         QgsField("ids_superponen", QVariant.String),
-                                         QgsField("conteo_partes", QVariant.Int)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
-            if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and \
-                polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+            if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
                 polygon_layer = processing.run("native:multiparttosingleparts",
                                                {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -63,7 +84,7 @@ class PolygonQualityRules:
             flat_overlapping = list(set(flat_overlapping))  # unique values
 
             if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-                t_ids = {f.id(): f[db.names.T_ID_F] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+                dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
 
             features = []
 
@@ -76,10 +97,10 @@ class PolygonQualityRules:
                     new_feature = QgsVectorLayerUtils().createFeature(
                         error_layer,
                         polygon_intersection,
-                        {0: t_ids[polygon_id_field],
-                         1: t_ids[overlapping_id_field],
-                         2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
-
+                        {0: dict_uuids.get(polygon_id_field),
+                         1: dict_uuids.get(overlapping_id_field),
+                         2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                         3: rule.error_codes[0]})
                     features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(features)
@@ -90,12 +111,12 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
                                  added_layer.featureCount(), polygon_layer_name), Qgis.Critical)
-
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name), Qgis.Success)
 
     def check_plots_covered_by_boundaries(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
         # read data
         layers = {
             db.names.OP_PLOT_T: None,
@@ -103,6 +124,7 @@ class PolygonQualityRules:
             db.names.LESS_BFS_T: None,
             db.names.MORE_BFS_T: None
         }
+
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
@@ -112,13 +134,10 @@ class PolygonQualityRules:
                              "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Info)
         else:
             error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES],
-                                         "memory")
+                                         rule.table_name, "memory")
 
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_terreno', QVariant.Int),
-                                         QgsField('id_lindero', QVariant.Int),
-                                         QgsField('tipo_de_error', QVariant.String)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             features = self.get_plot_features_not_covered_by_boundaries(db,
@@ -140,7 +159,7 @@ class PolygonQualityRules:
                                  "All plots are covered by boundaries!"), Qgis.Success)
 
     def check_right_of_way_overlaps_buildings(self, db):
-
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)
         layers = {
             db.names.OP_RIGHT_OF_WAY_T: None,
             db.names.OP_BUILDING_T: None
@@ -159,12 +178,13 @@ class PolygonQualityRules:
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
         else:
+
+            dict_uuid_building = get_uuid_dict(layers[db.names.OP_BUILDING_T], db.names, db.names.T_ID_F)
+            dict_uuid_right_of_way = get_uuid_dict(layers[db.names.OP_RIGHT_OF_WAY_T], db.names, db.names.T_ID_F)
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS],
-                                         "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField("id_servidumbre", QVariant.Int)])
-            data_provider.addAttributes([QgsField("id_construccion", QVariant.Int)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(layers[db.names.OP_RIGHT_OF_WAY_T], layers[db.names.OP_BUILDING_T])
@@ -172,7 +192,12 @@ class PolygonQualityRules:
             if overlapping_polygons is not None:
                 new_features = list()
                 for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
-                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_of_way_id, building_id
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                      polygon,
+                                                                      {0: dict_uuid_right_of_way.get(key[0]),  # right_of_way_id
+                                                                       1: dict_uuid_building.get(key[1]),  # building_id
+                                                                       2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                       3: rule.error_codes[0]})
                     new_features.append(new_feature)
 
                 data_provider.addFeatures(new_features)
@@ -188,6 +213,7 @@ class PolygonQualityRules:
                                  "There are no Right of Way-Building overlaps."), Qgis.Success)
 
     def check_gaps_in_plots(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, True)
         if not plot_layer:
@@ -199,20 +225,28 @@ class PolygonQualityRules:
 
         else:
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(plot_layer.sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.GAPS_IN_PLOTS],
-                                         "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField("id", QVariant.Int)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
+            fids_list = GeometryUtils.get_intersection_features(plot_layer, gaps)  # List of lists of qgis ids
+
+            uuids_list = list()
+            for fids in fids_list:
+                uuids_list.append([f[db.names.T_ILI_TID_F] for f in plot_layer.getFeatures(fids)])
 
             if gaps is not None:
                 new_features = list()
-                for geom, id in zip(gaps, range(0, len(gaps))):
-                    feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
+                for geom, id_serial in zip(gaps, range(0, len(gaps))):
+                    feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom,
+                                                                  {0: id_serial,
+                                                                   1: ', '.join(uuids_list[id_serial]),  # list of geometries and ids are corresponding in order
+                                                                   2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   3: rule.error_codes[0]})
                     new_features.append(feature)
-
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
@@ -226,6 +260,7 @@ class PolygonQualityRules:
                                  "There are no gaps in layer Plot."), Qgis.Success)
 
     def check_multiparts_in_right_of_way(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)
         right_of_way_layer = self.qgis_utils.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
         if not right_of_way_layer:
             return
@@ -236,10 +271,9 @@ class PolygonQualityRules:
 
         else:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(right_of_way_layer.sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY],
-                                         "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField("id_original", QVariant.Int)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
@@ -247,9 +281,12 @@ class PolygonQualityRules:
             if multi_parts is not None:
                 new_features = list()
                 for geom, id in zip(multi_parts, ids):
-                    feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
+                    feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom,
+                                                                  {0: right_of_way_layer.getFeature(id)[db.names.T_ILI_TID_F],
+                                                                   1: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   2: rule.error_codes[0]})
                     new_features.append(feature)
-
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
@@ -264,6 +301,7 @@ class PolygonQualityRules:
                                  "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
 
     def check_plot_nodes_covered_by_boundary_points(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
         layers = {
             db.names.OP_PLOT_T: None,
             db.names.OP_BOUNDARY_POINT_T: None
@@ -277,15 +315,26 @@ class PolygonQualityRules:
                              "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Info)
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS],
+                                         rule.table_name,
                                          "memory")
 
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_terreno', QVariant.Int)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
-            topology_rule = 'plot_nodes_covered_by_boundary_points'
-            features = UtilsQualityRules.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(db, layers[db.names.OP_BOUNDARY_POINT_T], layers[db.names.OP_PLOT_T], error_layer, topology_rule, db.names.T_ID_F)
+            point_list = UtilsQualityRules.get_plot_nodes_features_not_covered_by_boundary_points(layers[db.names.OP_BOUNDARY_POINT_T],
+                                                                                                  layers[db.names.OP_PLOT_T],
+                                                                                                  db.names.T_ILI_TID_F)
+
+            features = list()
+            for point in point_list:
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  point[1],  # Geometry
+                                                                  {0: point[0],  # feature uuid
+                                                                   1: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   2: rule.error_codes[0]})
+                features.append(new_feature)
+
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -300,6 +349,7 @@ class PolygonQualityRules:
                                  "All plot nodes are covered by boundary points!"), Qgis.Success)
 
     def check_building_within_plots(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)
         layers = {
             db.names.OP_BUILDING_T: None,
             db.names.OP_PLOT_T: None
@@ -314,12 +364,9 @@ class PolygonQualityRules:
 
         else:
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS],
-                                        "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_construccion', QVariant.Int),
-                                        QgsField('tipo_de_error', QVariant.String)])
-
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[db.names.OP_BUILDING_T], layers[db.names.OP_PLOT_T], db.names.T_ID_F)
@@ -329,18 +376,19 @@ class PolygonQualityRules:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_with_no_plot.geometry(),
-                                {0: building_with_no_plot[db.names.T_ID_F],
-                                1: self.translated_strings[ERROR_BUILDING_IS_NOT_OVER_A_PLOT]})
+                                {0: building_with_no_plot[db.names.T_ILI_TID_F],
+                                 1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300901),
+                                 2: QUALITY_RULE_ERROR_CODE_E300901})
                 new_features.append(new_feature)
 
             for building_not_within_plot in buildings_not_within_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_not_within_plot.geometry(),
-                                {0: building_not_within_plot[db.names.T_ID_F],
-                                1: self.translated_strings[ERROR_BUILDING_CROSSES_A_PLOT_LIMIT]})
+                                {0: building_not_within_plot[db.names.T_ILI_TID_F],
+                                 1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300902),
+                                 2: QUALITY_RULE_ERROR_CODE_E300902})
                 new_features.append(new_feature)
-
             data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
@@ -354,6 +402,7 @@ class PolygonQualityRules:
                                  "All buildings are within a plot."), Qgis.Success)
 
     def check_building_unit_within_plots(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)
         layers = {
             db.names.OP_BUILDING_UNIT_T: None,
             db.names.OP_PLOT_T: None
@@ -369,12 +418,9 @@ class PolygonQualityRules:
 
         else:
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_UNIT_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS],
-                                        "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_unidad_construccion', QVariant.Int),
-                                        QgsField('tipo_de_error', QVariant.String)])
-
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[db.names.OP_BUILDING_UNIT_T], layers[db.names.OP_PLOT_T], db.names.T_ID_F)
@@ -384,16 +430,18 @@ class PolygonQualityRules:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_unit_with_no_plot.geometry(),
-                                {0: building_unit_with_no_plot[db.names.T_ID_F],
-                                1: self.translated_strings[ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT]})
+                                {0: building_unit_with_no_plot[db.names.T_ILI_TID_F],
+                                 1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E301001),
+                                 2: QUALITY_RULE_ERROR_CODE_E301001})
                 new_features.append(new_feature)
 
             for building_unit_not_within_plot in building_units_not_within_plot:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_unit_not_within_plot.geometry(),
-                                {0: building_unit_not_within_plot[db.names.T_ID_F],
-                                1: self.translated_strings[ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT]})
+                                {0: building_unit_not_within_plot[db.names.T_ILI_TID_F],
+                                 1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E301002),
+                                 2: QUALITY_RULE_ERROR_CODE_E301002})
                 new_features.append(new_feature)
 
             data_provider.addFeatures(new_features)
@@ -413,12 +461,8 @@ class PolygonQualityRules:
         Returns all plot features that have errors when checking if they are covered by boundaries.
         That is both geometric and alphanumeric (topology table) errors.
         """
-        type_tplg_error = {0: self.translated_strings[ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY],
-                           1: self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE],
-                           2: self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE],
-                           3: self.translated_strings[ERROR_NO_LESS_TABLE],
-                           4: self.translated_strings[ERROR_DUPLICATE_LESS_TABLE]}
-
+        dict_uuid_plots = get_uuid_dict(plot_layer, db.names, id_field)
+        dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, id_field)
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # create dict with layer data
@@ -610,8 +654,12 @@ class PolygonQualityRules:
         for plot_boundary_diff in errors_plot_boundary_diffs:
             plot_id = plot_boundary_diff['id']
             plot_geom = plot_boundary_diff['geometry']
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, plot_geom,
-                                                              {0: plot_id, 1: None, 2: type_tplg_error[0]})
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                              plot_geom,
+                                                              {0: dict_uuid_plots.get(plot_id),
+                                                               1: None,
+                                                               2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300401),
+                                                               3: QUALITY_RULE_ERROR_CODE_E300401})
             features.append(new_feature)
 
         # not registered more bfs
@@ -621,7 +669,10 @@ class PolygonQualityRules:
                 boundary_id = error_more_bfs[1]  # boundary_id
                 geom_plot = dict_plot_as_lines[plot_id].geometry()
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[1]})
+                                                                  {0: dict_uuid_plots.get(plot_id),
+                                                                   1: dict_uuid_boundary.get(boundary_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300404),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E300404})
                 features.append(new_feature)
 
         # Duplicate in more bfs
@@ -630,8 +681,12 @@ class PolygonQualityRules:
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
                 geom_plot = dict_plot_as_lines[plot_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_plot,
+                                                                  {0: dict_uuid_plots.get(plot_id),
+                                                                   1: dict_uuid_boundary.get(boundary_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300402),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E300402})
                 features.append(new_feature)
 
         # not registered less
@@ -641,8 +696,12 @@ class PolygonQualityRules:
                 plot_id = int(plot_ring_id.split('-')[0]) # plot_id
                 boundary_id = error_less[1]  # boundary_id
                 geom_ring = dict_inner_rings[plot_ring_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_ring,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[3]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_ring,
+                                                                  {0: dict_uuid_plots.get(plot_id),
+                                                                   1: dict_uuid_boundary.get(boundary_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300405),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E300405})
                 features.append(new_feature)
 
         # Duplicate in less
@@ -652,8 +711,12 @@ class PolygonQualityRules:
                 plot_id = int(plot_ring_id.split('-')[0]) # plot_id
                 boundary_id = error_less[1]  # boundary_id
                 geom_ring = dict_inner_rings[plot_ring_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_ring,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[4]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_ring,
+                                                                  {0: dict_uuid_plots.get(plot_id),
+                                                                   1: dict_uuid_boundary.get(boundary_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300403),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E300403})
                 features.append(new_feature)
 
         return features

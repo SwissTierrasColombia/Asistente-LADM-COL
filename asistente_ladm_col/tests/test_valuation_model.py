@@ -8,6 +8,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
 from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
+                                                      T_ILI_TID_KEY,
                                                       T_ID_KEY,
                                                       DESCRIPTION_KEY,
                                                       DISPLAY_NAME_KEY)
@@ -52,9 +53,10 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 158)
+        self.assertEqual(len(dict_names), 159)
 
         expected_dict = {T_ID_KEY: 't_id',
+                         T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
@@ -78,9 +80,10 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 158)
+        self.assertEqual(len(dict_names), 159)
 
         expected_dict = {T_ID_KEY: 'T_Id',
+                         T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',

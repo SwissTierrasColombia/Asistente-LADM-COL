@@ -44,7 +44,6 @@ from asistente_ladm_col.config.gui.change_detection_config import (CHANGE_DETECT
                                                                    CHANGE_DETECTION_PARCEL_REMAINS,
                                                                    CHANGE_DETECTION_SEVERAL_PARCELS,
                                                                    CHANGE_DETECTION_NULL_PARCEL,
-                                                                   CHANGE_DETECTION_MISSING_PARCEL,
                                                                    DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
                                                                    PARCEL_STATUS,
                                                                    PARCEL_STATUS_DISPLAY,
@@ -206,7 +205,6 @@ class ChangeDetectionUtils(QObject):
         self._supplies_db = supplies_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.symbology = Symbology()
 
         self._layers = dict()
         self._supplies_layers = dict()
@@ -245,7 +243,7 @@ class ChangeDetectionUtils(QObject):
             layer_modifiers = {
                 LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
                 LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_supplies_style_group(self._supplies_db.names)
             }
             self.qgis_utils.get_layers(self._supplies_db,
                                        self._supplies_layers,
@@ -304,7 +302,7 @@ class ChangeDetectionUtils(QObject):
         layer_modifiers = {
             LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
             LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_supplies_style_group(self._supplies_db.names)
         }
 
         if inverse:

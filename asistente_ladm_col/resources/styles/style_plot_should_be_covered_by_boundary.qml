@@ -1,16 +1,16 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="3.4.1-Madeira" styleCategories="Symbology">
-  <renderer-v2 type="categorizedSymbol" forceraster="0" symbollevels="0" enableorderby="0" attr="tipo_de_error">
+<qgis version="3.10.1-A Coruña" styleCategories="Symbology">
+  <renderer-v2 type="categorizedSymbol" enableorderby="0" forceraster="0" attr="codigo_error" symbollevels="0">
     <categories>
-      <category render="true" label="El terreno no está cubierto por linderos" value="El terreno no está cubierto por linderos" symbol="0"/>
-      <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" value="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" symbol="1"/>
-      <category render="true" label="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" value="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" symbol="2"/>
-      <category render="true" label="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" value="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" symbol="3"/>
-      <category render="true" label="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" value="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" symbol="4"/>
+      <category symbol="0" label="El terreno no está cubierto por linderos" value="E300401" render="true"/>
+      <category symbol="1" label="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" value="E300402" render="true"/>
+      <category symbol="2" label="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" value="E300403" render="true"/>
+      <category symbol="3" label="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" value="E300404" render="true"/>
+      <category symbol="4" label="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" value="E300405" render="true"/>
     </categories>
     <symbols>
-      <symbol name="0" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="0" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -24,17 +24,18 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="round"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -48,12 +49,15 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <effect type="effectStack" enabled="1">
             <effect type="outerGlow">
               <prop k="blend_mode" v="0"/>
-              <prop k="blur_level" v="3"/>
+              <prop k="blur_level" v="0.7935"/>
+              <prop k="blur_unit" v="MM"/>
+              <prop k="blur_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="color1" v="0,0,255,255"/>
               <prop k="color2" v="0,255,0,255"/>
               <prop k="color_type" v="0"/>
@@ -75,7 +79,9 @@
             </effect>
             <effect type="innerShadow">
               <prop k="blend_mode" v="13"/>
-              <prop k="blur_level" v="10"/>
+              <prop k="blur_level" v="2.645"/>
+              <prop k="blur_unit" v="MM"/>
+              <prop k="blur_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="color" v="0,0,0,255"/>
               <prop k="draw_mode" v="2"/>
               <prop k="enabled" v="1"/>
@@ -88,15 +94,15 @@
           </effect>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol name="1" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="1" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -110,19 +116,20 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol name="2" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="2" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -136,19 +143,20 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol name="3" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="3" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -162,19 +170,20 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol name="4" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="4" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -188,21 +197,22 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </symbols>
     <source-symbol>
-      <symbol name="0" type="line" alpha="1" clip_to_extent="1">
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+      <symbol clip_to_extent="1" type="line" name="0" force_rhr="0" alpha="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="square"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -216,17 +226,18 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
-        <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+        <layer class="SimpleLine" locked="0" enabled="1" pass="0">
           <prop k="capstyle" v="round"/>
           <prop k="customdash" v="5;2"/>
           <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -240,12 +251,15 @@
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
           <prop k="use_custom_dash" v="0"/>
           <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <effect type="effectStack" enabled="1">
             <effect type="outerGlow">
               <prop k="blend_mode" v="0"/>
-              <prop k="blur_level" v="3"/>
+              <prop k="blur_level" v="0.7935"/>
+              <prop k="blur_unit" v="MM"/>
+              <prop k="blur_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="color1" v="0,0,255,255"/>
               <prop k="color2" v="0,255,0,255"/>
               <prop k="color_type" v="0"/>
@@ -267,7 +281,9 @@
             </effect>
             <effect type="innerShadow">
               <prop k="blend_mode" v="13"/>
-              <prop k="blur_level" v="10"/>
+              <prop k="blur_level" v="2.645"/>
+              <prop k="blur_unit" v="MM"/>
+              <prop k="blur_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="color" v="0,0,0,255"/>
               <prop k="draw_mode" v="2"/>
               <prop k="enabled" v="1"/>
@@ -280,15 +296,14 @@
           </effect>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" type="QString" value=""/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </source-symbol>
-    <colorramp name="[source]" type="randomcolors"/>
     <rotation/>
     <sizescale/>
   </renderer-v2>

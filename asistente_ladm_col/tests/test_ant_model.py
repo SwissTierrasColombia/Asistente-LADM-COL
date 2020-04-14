@@ -9,6 +9,7 @@ from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
 from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
                                                       T_ID_KEY,
+                                                      T_ILI_TID_KEY,
                                                       DESCRIPTION_KEY,
                                                       DISPLAY_NAME_KEY)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
@@ -51,8 +52,9 @@ class TestANTModel(unittest.TestCase):
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 162)
+        self.assertEqual(len(dict_names), 163)
         expected_dict = {T_ID_KEY: 't_id',
+                         T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
@@ -72,8 +74,9 @@ class TestANTModel(unittest.TestCase):
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 162)
+        self.assertEqual(len(dict_names), 163)
         expected_dict = {T_ID_KEY: 'T_Id',
+                         T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',

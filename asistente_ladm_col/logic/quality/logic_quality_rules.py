@@ -1,42 +1,88 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-03-06
+        git sha              : :%H$
+        copyright            : (C) 2020 by Leo Cardona (BSF Swissphoto)
+                               (C) 2020 by Germán Carrillo (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+                               gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 from qgis.core import (Qgis,
-                       QgsField,
                        QgsGeometry,
                        QgsVectorLayer,
                        QgsVectorLayerUtils)
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QVariant)
+from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E400101,
+                                                            QUALITY_RULE_ERROR_CODE_E400102,
+                                                            QUALITY_RULE_ERROR_CODE_E400801,
+                                                            QUALITY_RULE_ERROR_CODE_E400802,
+                                                            QUALITY_RULE_ERROR_CODE_E400803,
+                                                            QUALITY_RULE_ERROR_CODE_E400804,
+                                                            QUALITY_RULE_ERROR_CODE_E400901,
+                                                            QUALITY_RULE_ERROR_CODE_E400902,
+                                                            QUALITY_RULE_ERROR_CODE_E400903,
+                                                            QUALITY_RULE_ERROR_CODE_E400904,
+                                                            QUALITY_RULE_ERROR_CODE_E401001,
+                                                            QUALITY_RULE_ERROR_CODE_E401002,
+                                                            QUALITY_RULE_ERROR_CODE_E401003,
+                                                            QUALITY_RULE_ERROR_CODE_E401004,
+                                                            QUALITY_RULE_ERROR_CODE_E401005,
+                                                            QUALITY_RULE_ERROR_CODE_E401006,
+                                                            QUALITY_RULE_ERROR_CODE_E401007,
+                                                            QUALITY_RULE_ERROR_CODE_E401008,
+                                                            QUALITY_RULE_ERROR_CODE_E401101,
+                                                            QUALITY_RULE_ERROR_CODE_E401102,
+                                                            QUALITY_RULE_ERROR_CODE_E401103,
+                                                            QUALITY_RULE_ERROR_CODE_E401104,
+                                                            QUALITY_RULE_ERROR_CODE_E401105,
+                                                            QUALITY_RULE_ERROR_CODE_E401106,
+                                                            QUALITY_RULE_ERROR_CODE_E401107,
+                                                            QUALITY_RULE_ERROR_CODE_E401108,
+                                                            QUALITY_RULE_ERROR_CODE_E401109,
+                                                            QUALITY_RULE_ERROR_CODE_E401110,
+                                                            QUALITY_RULE_ERROR_CODE_E401111)
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.translation_strings import (ERROR_PARCEL_WITH_NO_RIGHT,
-                                                           ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT)
 from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
+from asistente_ladm_col.utils.utils import get_uuid_dict
 
 
 class LogicQualityRules:
-    def __init__(self, qgis_utils, translated_strings):
-        self.translated_strings = translated_strings
+    def __init__(self, qgis_utils):
+        self.quality_rules_manager = QualityRuleManager()
         self.qgis_utils = qgis_utils
         self.logger = Logger()
 
     def check_parcel_right_relationship(self, db, query_manager):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP)
         error_layer = None
         error_layer_exist = False
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
         group = self.qgis_utils.get_error_layers_group()
         layers = group.findLayers()
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("id", QVariant.Int),
-                              QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         new_features = list()
@@ -45,8 +91,9 @@ class LogicQualityRules:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   QgsGeometry(),
-                                                                  {0: record[db.names.T_ID_F],
-                                                                   1: self.translated_strings[ERROR_PARCEL_WITH_NO_RIGHT]})
+                                                                  {0: record[db.names.T_ILI_TID_F],
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400102),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E400102})
                 new_features.append(new_feature)
 
         res, records = query_manager.get_parcels_with_repeated_domain_right(db)
@@ -54,19 +101,20 @@ class LogicQualityRules:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   QgsGeometry(),
-                                                                  {0: record[db.names.T_ID_F],
-                                                                   1: self.translated_strings[ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT]})
+                                                                  {0: record[db.names.T_ILI_TID_F],
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400101),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E400101})
                 new_features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(new_features)
-        return self.return_message(db, new_features, error_table_name, error_layer, error_layer_exist)
+        return self.return_message(db, new_features, rule.table_name, error_layer, error_layer_exist)
 
     def check_duplicate_records_in_a_table(self, db, query_manager, table, fields):
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Duplicate records in '{table}'").format(table=table)
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE)
+        error_table_name = rule.table_name.format(tabla=table)
         error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
         pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("ids_duplicados", QVariant.String),
-                          QgsField("conteo", QVariant.Int)])
+        pr.addAttributes(rule.table_fields)
         error_layer.updateFields()
         res, records = query_manager.get_duplicate_records_in_table(db, table, fields)
 
@@ -75,8 +123,10 @@ class LogicQualityRules:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   QgsGeometry(),
-                                                                  {0: record['duplicate_ids'],
-                                                                   1: record['duplicate_total']})
+                                                                  {0: record['duplicate_uuids'],
+                                                                   1: record['duplicate_total'],
+                                                                   2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   3: rule.error_codes[0]})
                 new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
@@ -85,14 +135,22 @@ class LogicQualityRules:
         return self.return_message(db, new_features, error_table_name, error_layer, False)
 
     def check_group_party_fractions_that_do_not_add_one(self, db, query_manager):
-        rule_name = self.translated_strings[EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Fractions do not add up to 1")
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS)
+        layers = {
+            db.names.MEMBERS_T: None,
+            db.names.OP_GROUP_PARTY_T: None
+        }
 
-        error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+        self.qgis_utils.get_layers(db, layers, load=False)
+        if not layers:
+            return None
+
+        dict_uuid_members = get_uuid_dict(layers[db.names.MEMBERS_T], db.names, db.names.T_ID_F)
+        dict_uuid_group_party = get_uuid_dict(layers[db.names.OP_GROUP_PARTY_T], db.names, db.names.T_ID_F)
+
+        error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
         pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("agrupacion", QVariant.Int),
-                          QgsField("miembros", QVariant.String),
-                          QgsField("suma_fracciones", QVariant.Double)])
+        pr.addAttributes(rule.table_fields)
         error_layer.updateFields()
 
         res, records = query_manager.get_group_party_fractions_that_do_not_add_one(db)
@@ -102,64 +160,59 @@ class LogicQualityRules:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   QgsGeometry(),
-                                                                  {0: record['agrupacion'], # Fields alias was defined in the sql query
-                                                                   1: ",".join([str(f) for f in record['miembros']]),
-                                                                   2: record['suma_fracciones']})
+                                                                  {0: dict_uuid_group_party.get(record['agrupacion']),  # Fields alias was defined in the sql query
+                                                                   1: ",".join([str(dict_uuid_members.get(int(t_id))) for t_id in record['miembros'].split(',')]),
+                                                                   2: record['suma_fracciones'],
+                                                                   3: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   4: rule.error_codes[0]})
                 new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
-            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule_name, records))
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, error_table_name, error_layer, False)
+        return self.return_message(db, new_features, rule.table_name, error_layer, False)
 
     def check_parcels_with_invalid_department_code(self, db, query_manager):
-        rule_name = self.translated_strings[EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
         res, records = query_manager.get_parcels_with_invalid_department_code(db)
         if res:
-            return self.basic_logic_validations(db, records, error_table_name, rule_name)
+            return self.basic_logic_validations(db, records, rule)
 
     def check_parcels_with_invalid_municipality_code(self, db, query_manager):
-        rule_name = self.translated_strings[EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS)
         res, records = query_manager.get_parcels_with_invalid_municipality_code(db)
         if res:
-            return self.basic_logic_validations(db, records, error_table_name, rule_name)
+            return self.basic_logic_validations(db, records, rule)
 
     def check_parcels_with_invalid_parcel_number(self, db, query_manager):
-        rule_name = self.translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS)
         res, records = query_manager.get_parcels_with_invalid_parcel_number(db)
         if res:
-            return self.basic_logic_validations(db, records, error_table_name, rule_name)
+            return self.basic_logic_validations(db, records, rule)
 
     def check_parcels_with_invalid_previous_parcel_number(self, db, query_manager):
-        rule_name = self.translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS)
         res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(db)
         if res:
-            return self.basic_logic_validations(db, records, error_table_name, rule_name)
+            return self.basic_logic_validations(db, records, rule)
 
     def check_invalid_col_party_type_natural(self, db, query_manager):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE)
         error_layer = None
         error_layer_exist = False
-        rule_name = self.translated_strings[EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Party table")
 
         group = self.qgis_utils.get_error_layers_group()  # Check if error layer exist
         layers = group.findLayers()  # Check if layer is loaded
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes(
-                [QgsField("id_interesado", QVariant.Int),
-                 QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         res, records = query_manager.get_invalid_col_party_type_natural(db)
@@ -167,55 +220,53 @@ class LogicQualityRules:
         if res:
             new_features = list()
             for record in records:
-                errors_list = list()
                 if record[db.names.OP_PARTY_T_BUSINESS_NAME_F] > 0:
-                    errors_list.append(
-                        QCoreApplication.translate("LogicQualityRules", "{business_name} must be NULL").format(
-                            business_name=db.names.OP_PARTY_T_BUSINESS_NAME_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                              {0: record[db.names.T_ILI_TID_F],
+                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400801),
+                               2: QUALITY_RULE_ERROR_CODE_E400801})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_SURNAME_1_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{surname_party} must not be NULL and It must be filled in").format(
-                        surname_party=db.names.OP_PARTY_T_SURNAME_1_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                              {0: record[db.names.T_ILI_TID_F],
+                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400802),
+                               2: QUALITY_RULE_ERROR_CODE_E400802})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_FIRST_NAME_1_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{first_name_party} must not be NULL and It must be filled in").format(
-                        first_name_party=db.names.OP_PARTY_T_FIRST_NAME_1_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                              {0: record[db.names.T_ILI_TID_F],
+                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400803),
+                               2: QUALITY_RULE_ERROR_CODE_E400803})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_DOCUMENT_TYPE_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{doc_type} must be different from NIT").format(
-                        doc_type=db.names.OP_PARTY_T_DOCUMENT_TYPE_F))
-
-                mgs_error = ', '.join(errors_list)
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                                                  {0: record[db.names.T_ID_F], 1: mgs_error})
-                new_features.append(new_feature)
-
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                              {0: record[db.names.T_ILI_TID_F],
+                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400804),
+                               2: QUALITY_RULE_ERROR_CODE_E400804})
+                    new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
-            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule_name, records))
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
 
     def check_invalid_col_party_type_no_natural(self, db, query_manager):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE)
         error_layer = None
         error_layer_exist = False
-        rule_name = self.translated_strings[EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Party table")
 
         group = self.qgis_utils.get_error_layers_group()  # Check if error layer exist
         layers = group.findLayers()  # Check if layer is loaded
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes(
-                [QgsField("id_interesado", QVariant.Int),
-                 QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         res, records = query_manager.get_invalid_col_party_type_no_natural(db)
@@ -223,54 +274,53 @@ class LogicQualityRules:
         new_features = list()
         if res:
             for record in records:
-                errors_list = list()
                 if record[db.names.OP_PARTY_T_BUSINESS_NAME_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{business_name} must not be NULL and It must be filled in").format(
-                        business_name=db.names.OP_PARTY_T_BUSINESS_NAME_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                      {0: record[db.names.T_ILI_TID_F],
+                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400901),
+                                       2: QUALITY_RULE_ERROR_CODE_E400901})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_SURNAME_1_F] > 0:
-                    errors_list.append(
-                        QCoreApplication.translate("LogicQualityRules", "{surname_party} must be NULL").format(
-                            surname_party=db.names.OP_PARTY_T_SURNAME_1_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                      {0: record[db.names.T_ILI_TID_F],
+                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400902),
+                                       2: QUALITY_RULE_ERROR_CODE_E400902})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_FIRST_NAME_1_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{first_name_party} must be NULL").format(
-                        first_name_party=db.names.OP_PARTY_T_FIRST_NAME_1_F))
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                      {0: record[db.names.T_ILI_TID_F],
+                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400903),
+                                       2: QUALITY_RULE_ERROR_CODE_E400903})
+                    new_features.append(new_feature)
                 if record[db.names.OP_PARTY_T_DOCUMENT_TYPE_F] > 0:
-                    errors_list.append(QCoreApplication.translate("LogicQualityRules",
-                                                                  "{doc_type} must be equal to NIT or Secuencial_IGAC or Secuencial_SNR").format(
-                        doc_type=db.names.OP_PARTY_T_DOCUMENT_TYPE_F))
-
-                mgs_error = ', '.join(errors_list)
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                                                  {0: record[db.names.T_ID_F], 1: mgs_error})
-                new_features.append(new_feature)
-
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                      {0: record[db.names.T_ILI_TID_F],
+                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400904),
+                                       2: QUALITY_RULE_ERROR_CODE_E400904})
+                    new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
-            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule_name, records))
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
 
     def check_parcels_with_invalid_parcel_type_and_22_position_number(self, db, query_manager):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER)
         error_layer = None
         error_layer_exist = False
-        rule_name = self.translated_strings[EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Logic Consistency Errors in Parcel table")
 
         group = self.qgis_utils.get_error_layers_group()
         layers = group.findLayers()
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("id_predio", QVariant.Int),
-                              QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(db)
@@ -278,55 +328,54 @@ class LogicQualityRules:
         new_features = list()
         if res:
             for record in records:
-                mgs_error =  None
+                error_code = None
                 if record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 0").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401005
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT):
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 9").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT + " or " + LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401007
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT, LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT):
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 8").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT + " or " + LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401002
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CEMETERY_PARENT, LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT):
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 7").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_CEMETERY_PARENT + " or " + LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401006
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 5").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401004
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 5").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401003
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 4").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_ROAD)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401008
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 3").format(table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F, parcel_type=LADMNames.PARCEL_TYPE_PUBLIC_USE)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401001
 
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(), {0: record[db.names.T_ID_F], 1: mgs_error})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                  QgsGeometry(),
+                                  {0: record[db.names.T_ILI_TID_F],
+                                   1: self.quality_rules_manager.get_error_message(error_code),
+                                   2: error_code})
                 new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)
         else:
-            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule_name, records))
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
 
     def check_uebaunit_parcel(self, db, query_manager):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.UEBAUNIT_PARCEL)
         error_layer = None
         error_layer_exist = False
-        rule_name = self.translated_strings[EnumQualityRule.Logic.UEBAUNIT_PARCEL]
-        error_table_name = QCoreApplication.translate("LogicQualityRules", "Errors in relationships between Spatial Units and Parcels")
 
         group = self.qgis_utils.get_error_layers_group()
         layers = group.findLayers()
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("id_predio", QVariant.Int),
-                              QgsField("terrenos_asociados", QVariant.Int),
-                              QgsField("construcciones_asociadas", QVariant.Int),
-                              QgsField("unidades_contruccion_asociadas", QVariant.Int),
-                              QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         res, records = query_manager.get_uebaunit_parcel(db)
@@ -334,105 +383,58 @@ class LogicQualityRules:
         new_features = list()
         if res:
             for record in records:
-                mgs_error = None
-
                 plot_count = record['sum_t']  # count of plots associated to the parcel
                 building_count = record['sum_c']  # count of buildings associated to the parcel
                 building_unit_count = record['sum_uc']  # count of building units associated to the parcel
 
                 if record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401111
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401108
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401102
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARENT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_CEMETERY_PARENT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401106
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_PUBLIC_USE)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401101
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_unit_count=building_unit_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401103
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count,
-                        table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_ROAD)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401110
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count,
-                        table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT)
-                elif record[
-                    db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 0 building but you have {plot_count} plot(s) and {building_count} building(s)").format(
-                        plot_count=plot_count, building_count=building_count, table=db.names.OP_PARCEL_T,
-                        parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401107
+                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
+                    error_code = QUALITY_RULE_ERROR_CODE_E401109
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 1 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count,
-                        table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401105
                 elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
-                    mgs_error = QCoreApplication.translate("LogicQualityRules",
-                                                           "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 1 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(
-                        plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count,
-                        table=db.names.OP_PARCEL_T, parcel_type_field=db.names.OP_PARCEL_T_PARCEL_TYPE_F,
-                        parcel_type=LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA)
+                    error_code = QUALITY_RULE_ERROR_CODE_E401104
 
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                                                  QgsGeometry(),
-                                                                  {0: record[db.names.T_ID_F],
-                                                                   1: plot_count,
-                                                                   2: building_count,
-                                                                   3: building_unit_count,
-                                                                   4: mgs_error})
+                                  QgsGeometry(),
+                                  {0: record[db.names.T_ILI_TID_F],
+                                   1: plot_count,
+                                   2: building_count,
+                                   3: building_unit_count,
+                                   4: self.quality_rules_manager.get_error_message(error_code),
+                                   5: error_code})
                 new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)
         else:
-            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule_name, records))
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule_name, error_layer, error_layer_exist)
-
+        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
 
     # UTILS METHODS
-    def basic_logic_validations(self, db, records, error_table_name, rule_name):
+    def basic_logic_validations(self, db, records, rule):
         """
         Create a error table with error found
         :param db: db connection
         :param records: Result of execute the query
-        :param error_table_name: Error table name
-        :param rule_name: Rule error description (Name of rule to show in log quality rules).
-
+        :param rule: Quality rule config
+        (has info like table_name: Error table name and
+        rule_name: Rule error description (Name of rule to show in log quality rules)).
         Note: rule_name is used by _log_quality_rules decorator
         """
         error_layer = None
@@ -444,27 +446,28 @@ class LogicQualityRules:
         # Check if layer is loaded
         layers = group.findLayers()
         for layer in layers:
-            if layer.name() == error_table_name:
+            if layer.name() == rule.table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
 
         if error_layer_exist is False:
-            error_layer = QgsVectorLayer("NoGeometry", error_table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("id", QVariant.Int),
-                              QgsField("tipo_de_error", QVariant.String)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
         new_features = []
         for record in records:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                               QgsGeometry(),
-                                                              {0: record[db.names.T_ID_F], 1: rule_name})
+                                                              {0: record[db.names.T_ILI_TID_F],
+                                                               1: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                               2: rule.error_codes[0]})
             new_features.append(new_feature)
         error_layer.dataProvider().addFeatures(new_features)
 
-        return self.return_message(db, new_features, rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
 
     def return_message(self, db, new_features, rule_name, error_layer, error_layer_exist):
         if len(new_features) > 0:

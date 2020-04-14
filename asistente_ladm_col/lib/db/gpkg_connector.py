@@ -26,6 +26,7 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
+                                                      T_ILI_TID_KEY,
                                                       DISPLAY_NAME_KEY,
                                                       ILICODE_KEY,
                                                       DESCRIPTION_KEY)
@@ -234,6 +235,7 @@ class GPKGConnector(DBConnector):
 
         # Custom names
         dict_names[T_ID_KEY] = "T_Id"
+        dict_names[T_ILI_TID_KEY] = "T_Ili_Tid"
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"

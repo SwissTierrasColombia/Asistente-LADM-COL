@@ -1,3 +1,23 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2020-03-06
+        git sha              : :%H$
+        copyright            : (C) 2020 by Leo Cardona (BSF Swissphoto)
+                               (C) 2020 by Germán Carrillo (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+                               gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QVariant)
@@ -11,28 +31,42 @@ from qgis.core import (Qgis,
                        NULL)
 
 from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.config.translation_strings import (ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                                                           ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                           ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                                                           ERROR_NO_LESS_TABLE,
-                                                           ERROR_DUPLICATE_LESS_TABLE,
-                                                           ERROR_NO_FOUND_POINT_BFS,
-                                                           ERROR_DUPLICATE_POINT_BFS,
-                                                           ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT)
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200301,
+                                                            QUALITY_RULE_ERROR_CODE_E200302,
+                                                            QUALITY_RULE_ERROR_CODE_E200303,
+                                                            QUALITY_RULE_ERROR_CODE_E200304,
+                                                            QUALITY_RULE_ERROR_CODE_E200305,
+                                                            QUALITY_RULE_ERROR_CODE_E200401,
+                                                            QUALITY_RULE_ERROR_CODE_E200402,
+                                                            QUALITY_RULE_ERROR_CODE_E200403)
 from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
+from asistente_ladm_col.utils.utils import get_uuid_dict
 
 
 class LineQualityRules:
-    def __init__(self, qgis_utils, translated_strings):
-        self.translated_strings = translated_strings
+    def __init__(self, qgis_utils):
+        self.quality_rules_manager = QualityRuleManager()
         self.qgis_utils = qgis_utils
         self.logger = Logger()
 
     def check_overlaps_in_boundaries(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
+
+        # Create error layers structure
+        error_point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "{} (puntos)".format(rule.table_name), "memory")
+        data_provider = error_point_layer.dataProvider()
+        data_provider.addAttributes(rule.table_fields)
+        error_point_layer.updateFields()
+
+        error_line_layer = QgsVectorLayer("MultiLineString?crs={}".format(boundary_layer.sourceCrs().authid()), "{} (líneas)".format(rule.table_name), "memory")
+        data_provider = error_line_layer.dataProvider()
+        data_provider.addAttributes(rule.table_fields)
+        error_line_layer.updateFields()
 
         if boundary_layer:
             overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
@@ -41,46 +75,56 @@ class LineQualityRules:
                                  "There are no boundaries to check for overlaps!"), Qgis.Info)
 
             else:
-                error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
-                error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
-                if type(error_point_layer) is QgsVectorLayer:
-                    error_point_layer.setName("{} (point intersections)".format(
-                        self.translated_strings[EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES]
-                    ))
-                if type(error_line_layer) is QgsVectorLayer:
-                    error_line_layer.setName("{} (line intersections)".format(
-                        self.translated_strings[EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES]
-                    ))
+                points_intersected = overlapping['native:saveselectedfeatures_3:Intersected_Points']
+                lines_intersected = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
 
-                if (type(error_point_layer) is not QgsVectorLayer and
-                    type(error_line_layer) is not QgsVectorLayer) or \
-                   (error_point_layer.featureCount() == 0 and
-                    error_line_layer.featureCount() == 0):
+                if isinstance(points_intersected, QgsVectorLayer):
+                    point_features = list()
+                    if points_intersected.featureCount() > 0:
+                        for feature in points_intersected.getFeatures():
+                            new_feature = QgsVectorLayerUtils().createFeature(
+                                error_point_layer,
+                                feature.geometry(),
+                                {0: feature[db.names.T_ILI_TID_F],
+                                 1: feature["{}_2".format(db.names.T_ILI_TID_F)],
+                                 2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                 3: rule.error_codes[0]})
+                            point_features.append(new_feature)
+                    error_point_layer.dataProvider().addFeatures(point_features)
 
-                    return (QCoreApplication.translate("LineQualityRules",
-                                     "There are no overlapping boundaries."), Qgis.Success)
+                if isinstance(lines_intersected, QgsVectorLayer):
+                    line_features = list()
+                    if lines_intersected.featureCount() > 0:
+                        for feature in lines_intersected.getFeatures():
+                            new_feature = QgsVectorLayerUtils().createFeature(
+                                error_line_layer,
+                                feature.geometry(),
+                                {0: feature[db.names.T_ILI_TID_F],
+                                 1: feature["{}_2".format(db.names.T_ILI_TID_F)],
+                                 2: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                 3: rule.error_codes[0]})
+                            line_features.append(new_feature)
 
+                    error_line_layer.dataProvider().addFeatures(line_features)
+
+                if error_point_layer.featureCount() == 0 and error_line_layer.featureCount() == 0:
+                    return QCoreApplication.translate("LineQualityRules", "There are no overlapping boundaries."), Qgis.Success
                 else:
-                    msg = ''
-
-                    if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
-                        added_point_layer = UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_point_layer)
+                    msg = ""
+                    if error_point_layer.featureCount() and error_line_layer.featureCount():
+                        UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_point_layer)
+                        UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_line_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
-                            "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
-
-                    if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
-                        added_line_layer = UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_line_layer)
+                                                         "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(error_point_layer.featureCount(), error_line_layer.featureCount())
+                    elif error_point_layer.featureCount():
+                        UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_point_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
-                            "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
-
-                    if type(error_point_layer) is QgsVectorLayer and \
-                       type(error_line_layer) is QgsVectorLayer and \
-                       error_point_layer.featureCount() > 0 and \
-                       error_line_layer.featureCount() > 0:
+                                                         "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(error_point_layer.featureCount())
+                    elif error_line_layer.featureCount():
+                        UtilsQualityRules.add_error_layer(db, self.qgis_utils, error_line_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
-                            "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
-
-                    return (msg, Qgis.Critical)
+                                                         "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(error_line_layer.featureCount())
+                    return msg, Qgis.Critical
 
     def check_boundaries_are_not_split(self, db):
         """
@@ -88,6 +132,8 @@ class LineQualityRules:
         a single boundary and therefore, they don't represent a change in
         boundary (colindancia).
         """
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)
+
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
@@ -105,15 +151,17 @@ class LineQualityRules:
                                  "There are no wrong boundaries!"), Qgis.Success)
             else:
                 error_layer = QgsVectorLayer("LineString?crs={}".format(boundary_layer.sourceCrs().authid()),
-                                             self.translated_strings[EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT],
-                                "memory")
+                                             rule.table_name, "memory")
                 pr = error_layer.dataProvider()
-                pr.addAttributes([QgsField("id_lindero", QVariant.Int)])
+                pr.addAttributes(rule.table_fields)
                 error_layer.updateFields()
 
                 for feature in wrong_boundaries:
-                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
-                                                                      {0: feature[db.names.T_ID_F]})
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                      feature.geometry(),
+                                                                      {0: feature[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                       2: rule.error_codes[0]})
                     features.append(new_feature)
 
                 error_layer.dataProvider().addFeatures(features)
@@ -126,6 +174,8 @@ class LineQualityRules:
                                      "There are no wrong boundaries."), Qgis.Success)
 
     def check_boundaries_covered_by_plots(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)
+
         # read data
         layers = {
             db.names.OP_PLOT_T: None,
@@ -144,13 +194,10 @@ class LineQualityRules:
                              "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Info)
         else:
             error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS],
-                                         "memory")
+                                         rule.table_name, "memory")
 
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_terreno', QVariant.Int),
-                                         QgsField('id_lindero', QVariant.Int),
-                                         QgsField('tipo_de_error', QVariant.String)])
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             features = self.get_boundary_features_not_covered_by_plots(db,
@@ -173,6 +220,7 @@ class LineQualityRules:
                                  "All boundaries are covered by plots!"), Qgis.Success)
 
     def check_boundary_nodes_covered_by_boundary_points(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
         layers = {
             db.names.OP_BOUNDARY_POINT_T: None,
             db.names.POINT_BFS_T: None,
@@ -188,16 +236,17 @@ class LineQualityRules:
                              "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Info)
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS],
-                                         "memory")
+                                         rule.table_name, "memory")
             data_provider = error_layer.dataProvider()
-            data_provider.addAttributes([QgsField('id_punto_lindero', QVariant.Int),
-                                         QgsField('id_lindero', QVariant.Int),
-                                         QgsField('tipo_de_error', QVariant.String)])
-
+            data_provider.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
-            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(db, layers[db.names.OP_BOUNDARY_POINT_T], layers[db.names.OP_BOUNDARY_T], layers[db.names.POINT_BFS_T], error_layer, db.names.T_ID_F)
+            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(db,
+                                                                                       layers[db.names.OP_BOUNDARY_POINT_T],
+                                                                                       layers[db.names.OP_BOUNDARY_T],
+                                                                                       layers[db.names.POINT_BFS_T],
+                                                                                       error_layer,
+                                                                                       db.names.T_ID_F)
             data_provider.addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -211,6 +260,7 @@ class LineQualityRules:
                                  "There are no missing boundary points in boundaries."), Qgis.Success)
 
     def check_dangles_in_boundaries(self, db):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return
@@ -221,17 +271,20 @@ class LineQualityRules:
 
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()),
-                                         self.translated_strings[EnumQualityRule.Line.DANGLES_IN_BOUNDARIES],
-                                "memory")
+                                         rule.table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("id_lindero", QVariant.Int)])
+            pr.addAttributes(rule.table_fields)
             error_layer.updateFields()
 
             end_points, dangle_ids = self.get_dangle_ids(boundary_layer)
 
             new_features = []
             for dangle in end_points.getFeatures(dangle_ids):
-                new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[db.names.T_ID_F]})
+                new_feature = QgsVectorLayerUtils().createFeature(end_points,
+                                                                  dangle.geometry(),
+                                                                  {0: dangle[db.names.T_ILI_TID_F],
+                                                                   1: self.quality_rules_manager.get_error_message(rule.error_codes[0]),
+                                                                   2: rule.error_codes[0]})
                 new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)
@@ -249,6 +302,8 @@ class LineQualityRules:
     # UTILS METHODS
 
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, db, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field):
+        dict_uuid_boundary_point = get_uuid_dict(boundary_point_layer, db.names, db.names.T_ID_F)
+        dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, db.names.T_ID_F)
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
@@ -334,7 +389,10 @@ class LineQualityRules:
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: None,  1: boundary_id, 2: self.translated_strings[ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT]})
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: None,
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200401),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200401})
                 features.append(new_feature)
 
         # Duplicate in point_bfs
@@ -345,7 +403,10 @@ class LineQualityRules:
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: self.translated_strings[ERROR_DUPLICATE_POINT_BFS]})
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_boundary_point.get(boundary_point_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200403),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200403})
                 features.append(new_feature)
 
         # No registered in point_bfs
@@ -356,7 +417,10 @@ class LineQualityRules:
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: self.translated_strings[ERROR_NO_FOUND_POINT_BFS]})
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_boundary_point.get(boundary_point_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200402),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200402})
                 features.append(new_feature)
 
         return features
@@ -366,12 +430,8 @@ class LineQualityRules:
         Return all boundary features that have errors when checking if they are covered by plots.
         This takes into account both geometric and alphanumeric (topology table) errors.
         """
-        type_tplg_error = {0: self.translated_strings[ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT],
-                           1: self.translated_strings[ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE],
-                           2: self.translated_strings[ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE],
-                           3: self.translated_strings[ERROR_NO_LESS_TABLE],
-                           4: self.translated_strings[ERROR_DUPLICATE_LESS_TABLE]}
-
+        dict_uuid_plot = get_uuid_dict(plot_layer, db.names, db.names.T_ID_F)
+        dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, db.names.T_ID_F)
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # create dict with layer data
@@ -583,7 +643,10 @@ class LineQualityRules:
             boundary_geom = boundary_plot_diff['geometry']
             plot_id = boundary_plot_diff['id_plot'] if 'id_plot' in boundary_plot_diff else None
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_geom,
-                                                              {0: plot_id, 1: boundary_id, 2: type_tplg_error[0]})
+                                                              {0: dict_uuid_boundary.get(boundary_id),
+                                                               1: dict_uuid_plot.get(plot_id),
+                                                               2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200301),
+                                                               3: QUALITY_RULE_ERROR_CODE_E200301})
             features.append(new_feature)
 
         # No registered more bfs
@@ -592,8 +655,12 @@ class LineQualityRules:
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
                 geom_boundary = dict_boundary[boundary_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[1]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_boundary,
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_plot.get(plot_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200304),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200304})
                 features.append(new_feature)
 
         # Duplicate in more bfs
@@ -602,8 +669,12 @@ class LineQualityRules:
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
                 geom_boundary = dict_boundary[boundary_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_boundary,
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_plot.get(plot_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200302),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200302})
                 features.append(new_feature)
 
         # No registered less
@@ -613,8 +684,12 @@ class LineQualityRules:
                 plot_id = int(plot_ring_id.split('-')[0]) # plot_id
                 boundary_id = error_less[1]  # boundary_id
                 geom_ring = dict_inner_rings[plot_ring_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_ring,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[3]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_ring,
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_plot.get(plot_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200305),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200305})
                 features.append(new_feature)
 
         # Duplicate in less
@@ -624,8 +699,12 @@ class LineQualityRules:
                 plot_id = int(plot_ring_id.split('-')[0]) # plot_id
                 boundary_id = error_less[1]  # boundary_id
                 geom_ring = dict_inner_rings[plot_ring_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_ring,
-                                                                  {0: plot_id, 1: boundary_id, 2: type_tplg_error[4]})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
+                                                                  geom_ring,
+                                                                  {0: dict_uuid_boundary.get(boundary_id),
+                                                                   1: dict_uuid_plot.get(plot_id),
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200303),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E200303})
                 features.append(new_feature)
 
         return features

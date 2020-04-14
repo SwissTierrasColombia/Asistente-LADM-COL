@@ -39,12 +39,12 @@ from asistente_ladm_col.config.general_config import (LOG_QUALITY_LIST_ITEM_ERRO
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CLOSE)
-from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.utils import Utils
 from asistente_ladm_col.utils.decorators import _log_quality_rules
+from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.lib.logger import Logger
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
@@ -61,11 +61,11 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.setupUi(self)
         self._db = db
         self.qgis_utils = qgis_utils
+        self.quality_rules_manager = QualityRuleManager()
         self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries(self.qgis_utils)
         self.utils = Utils()
         self.facade_quality_rules = FacadeQualityRules(self.qgis_utils)
         self.names = self._db.names
-        self.translatable_config_strings = TranslatableConfigStrings()
         self.log_dialog_quality_text = ""
         self.log_dialog_quality_text_content = ""
         self.total_time = 0
@@ -82,119 +82,20 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.btn_clear_selection.clicked.connect(self.clear_selection)
         Logger().clear_message_bar()
 
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
-
         self.items_dict = collections.OrderedDict()
-        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Points")] = {
-                'icon': 'points',
-                'rules': [{
-                    'id' : EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
-                    'text': translated_strings[EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS]
-                },{
-                    'id' : EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS,
-                    'text': translated_strings[EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS]
-                },{
-                    'id' : EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                    'text': translated_strings[EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES]
-                },{
-                    'id' : EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                    'text': translated_strings[EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES]
-                }]
-            }
-        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Lines")] = {
-                'icon' : 'lines',
-                'rules': [{
-                    'id': EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES,
-                    'text': translated_strings[EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES]
-                }, {
-                    'id': EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT,
-                    'text': translated_strings[EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT]
-                }, {
-                    'id': EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS,
-                    'text': translated_strings[EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS]
-                }, {
-                    'id': EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
-                    'text': translated_strings[EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]
-                }, {
-                    'id': EnumQualityRule.Line.DANGLES_IN_BOUNDARIES,
-                    'text': translated_strings[EnumQualityRule.Line.DANGLES_IN_BOUNDARIES]
-                }]
-            }
-        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Polygons")] = {
-                'icon': 'polygons',
-                'rules': [{
-                    'id': EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS,
-                    'text': translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS]
-                },{
-                    'id': EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS,
-                    'text': translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS]
-                },{
-                    'id': EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY,
-                    'text': translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY]
-                },{
-                    'id': EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES,
-                    'text': translated_strings[EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES]
-                #}, {
-                #    'id': 'check_missing_survey_points_in_buildings',
-                #    'text': QCoreApplication.translate("QualityDialog", "Buildings nodes should be covered by Survey Points")
-                }, {
-                    'id': EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
-                    'text': translated_strings[EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS]
-                }, {
-                    'id': EnumQualityRule.Polygon.GAPS_IN_PLOTS,
-                    'text': translated_strings[EnumQualityRule.Polygon.GAPS_IN_PLOTS]
-                }, {
-                    'id': EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY,
-                    'text': translated_strings[EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY]
-                }, {
-                    'id': EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
-                    'text': translated_strings[EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS]
-                },{
-                    'id': EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS,
-                    'text': translated_strings[EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS]
-                },{
-                    'id': EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS,
-                    'text': translated_strings[EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS]
-                }]
+        for quality_rule_group_code, quality_rule_group_name in self.quality_rules_manager.quality_rule_groups.items():
+            self.items_dict[quality_rule_group_name] = {
+                'rules': [{'id': rule_k, 'text': rule_v} for rule_k, rule_v in self.quality_rules_manager.get_rules(quality_rule_group_code).items()]
             }
 
-        self.items_dict[QCoreApplication.translate("QualityDialog", "Logic consistency rules")] = {
-                'icon': 'tables',
-                'rules': [{
-                    'id': EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP,
-                    'text': translated_strings[EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP]
-                }, {
-                    'id': EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE,
-                    'text': translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE]
-                }, {
-                    'id': EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS,
-                    'text': translated_strings[EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS]
-                }, {
-                    'id': EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS,
-                    'text': translated_strings[EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS]
-                }, {
-                    'id': EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS,
-                    'text': translated_strings[EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS]
-                }, {
-                    'id': EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS,
-                    'text': translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS]
-                }, {
-                    'id': EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS,
-                    'text': translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS]
-                }, {
-                    'id': EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE,
-                    'text': translated_strings[EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE]
-                }, {
-                    'id': EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE,
-                    'text': translated_strings[EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE]
-                }, {
-                    'id': EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER,
-                    'text': translated_strings[EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER]
-                }, {
-                    'id': EnumQualityRule.Logic.UEBAUNIT_PARCEL,
-                    'text': translated_strings[EnumQualityRule.Logic.UEBAUNIT_PARCEL]
-                }]
-            }
+            if quality_rule_group_code == EnumQualityRule.Point:
+                self.items_dict[quality_rule_group_name]['icon'] = 'points'
+            elif quality_rule_group_code == EnumQualityRule.Line:
+                self.items_dict[quality_rule_group_name]['icon'] = 'lines'
+            elif quality_rule_group_code == EnumQualityRule.Polygon:
+                self.items_dict[quality_rule_group_name]['icon'] = 'polygons'
+            elif quality_rule_group_code == EnumQualityRule.Logic:
+                self.items_dict[quality_rule_group_name]['icon'] = 'tables'
 
         self.load_items()
 
@@ -265,14 +166,13 @@ class QualityDialog(QDialog, DIALOG_UI):
 
     @_log_quality_rules
     def execute_quality_rule(self, id, rule_name):
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
         # NOTE: Do not remove the named parameters, this is needed for making a decorator that thinks they are
         # optional happy!
         # POINTS QUALITY RULES
         if id == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
-            result = self.facade_quality_rules.validate_overlaps_in_boundary_points(self._db, point_layer_name=self.names.OP_BOUNDARY_POINT_T)
+            result = self.facade_quality_rules.validate_overlaps_in_boundary_points(self._db)
         elif id == EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS:
-            result = self.facade_quality_rules.validate_overlaps_in_control_points(self._db, point_layer_name=self.names.OP_CONTROL_POINT_T)
+            result = self.facade_quality_rules.validate_overlaps_in_control_points(self._db)
         elif id == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES:
             result = self.facade_quality_rules.validate_boundary_points_covered_by_boundary_nodes(self._db)
         elif id == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES:
@@ -290,11 +190,11 @@ class QualityDialog(QDialog, DIALOG_UI):
             result = self.facade_quality_rules.validate_dangles_in_boundaries(self._db)
         # POLYGONS QUALITY RULES
         elif id == EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS:
-            result = self.facade_quality_rules.validate_overlaps_in_plots(self._db, self.names.OP_PLOT_T)
+            result = self.facade_quality_rules.validate_overlaps_in_plots(self._db)
         elif id == EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS:
-            result = self.facade_quality_rules.validate_overlaps_in_buildings(self._db, self.names.OP_BUILDING_T)
+            result = self.facade_quality_rules.validate_overlaps_in_buildings(self._db)
         elif id == EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY:
-            result = self.facade_quality_rules.validate_overlaps_in_rights_of_way(self._db, self.names.OP_RIGHT_OF_WAY_T)
+            result = self.facade_quality_rules.validate_overlaps_in_rights_of_way(self._db)
         elif id == EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES:
             result = self.facade_quality_rules.validate_plots_covered_by_boundaries(self._db)
         # elif id == 'check_missing_survey_points_in_buildings':

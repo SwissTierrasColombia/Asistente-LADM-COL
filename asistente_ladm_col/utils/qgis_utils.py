@@ -631,12 +631,19 @@ class QGISUtils(QObject):
     def set_automatic_fields(self, db, layer, layer_name):
         self.set_automatic_fields_namespace_local_id(db, layer_name, layer)
 
+        list_dicts_field_expression = list()
+
         if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
-            self.configure_automatic_fields(db, layer, [{db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
+            list_dicts_field_expression.append({db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"})
+
+        if layer.fields().indexFromName(db.names.T_ILI_TID_F) != -1:
+            list_dicts_field_expression.append({db.names.T_ILI_TID_F: "uuid()"})
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db.names)
         if layer_name in dict_automatic_values:
-            self.configure_automatic_fields(db, layer, dict_automatic_values[layer_name])
+            list_dicts_field_expression.extend(dict_automatic_values[layer_name])
+
+        self.configure_automatic_fields(db, layer, list_dicts_field_expression)
 
     def set_automatic_fields_namespace_local_id(self, db, layer_name, layer):
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(db.names, layer_name)

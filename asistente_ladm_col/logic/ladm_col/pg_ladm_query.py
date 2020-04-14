@@ -121,11 +121,12 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_invalid_department_code(db):
-        query = """SELECT {t_id}
+        query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE length({op_parcel_t_department_f}) !=2 OR
                          {op_parcel_t_department_f} ~ '^[0-9]*$' = FALSE
                  """.format(t_id=db.names.T_ID_F,
+                            t_ili_tid=db.names.T_ILI_TID_F,
                             schema=db.schema,
                             op_parcel_t=db.names.OP_PARCEL_T,
                             op_parcel_t_department_f=db.names.OP_PARCEL_T_DEPARTMENT_F)
@@ -133,11 +134,12 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_invalid_municipality_code(db):
-        query = """SELECT {t_id}
+        query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE length({op_parcel_t_municipality_f}) !=3 OR
                          {op_parcel_t_municipality_f} ~ '^[0-9]*$' = FALSE
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            op_parcel_t=db.names.OP_PARCEL_T,
                            op_parcel_t_municipality_f=db.names.OP_PARCEL_T_MUNICIPALITY_F)
@@ -145,11 +147,12 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_invalid_parcel_number(db):
-        query = """SELECT {t_id}
+        query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE length({op_parcel_t_parcel_number_f}) !=30 OR
                          {op_parcel_t_parcel_number_f} ~ '^[0-9]*$' = FALSE
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            op_parcel_t=db.names.OP_PARCEL_T,
                            op_parcel_t_parcel_number_f=db.names.OP_PARCEL_T_PARCEL_NUMBER_F)
@@ -157,11 +160,12 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_invalid_previous_parcel_number(db):
-        query = """SELECT {t_id}
+        query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE ({op_parcel_t_previous_parcel_number_f} IS NOT NULL AND (length({op_parcel_t_previous_parcel_number_f}) !=20
                    OR ({op_parcel_t_previous_parcel_number_f} ~ '^[0-9]*$') = FALSE))
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            op_parcel_t=db.names.OP_PARCEL_T,
                            op_parcel_t_previous_parcel_number_f=db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F)
@@ -169,7 +173,7 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_invalid_col_party_type_natural(db):
-        query = """SELECT {t_id},
+        query = """SELECT {t_id}, {t_ili_tid},
                           CASE WHEN {op_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
                           CASE WHEN {op_party_t_surname_1_f} IS NULL OR length(trim({op_party_t_surname_1_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
                           CASE WHEN {op_party_t_first_name_1_f} IS NULL OR length(trim({op_party_t_first_name_1_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
@@ -180,6 +184,7 @@ class PGLADMQuery(QGISLADMQuery):
                          OR {op_party_t_first_name_1_f} IS NULL OR length(trim({op_party_t_first_name_1_f})) > 0 is False
                          OR {op_party_t_document_type_f} = (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}'))
                """.format(t_id=db.names.T_ID_F,
+                          t_ili_tid=db.names.T_ILI_TID_F,
                           schema=db.schema,
                           ilicode=db.names.ILICODE_F,
                           op_party_t=db.names.OP_PARTY_T,
@@ -196,7 +201,7 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_invalid_col_party_type_no_natural(db):
-        query = """SELECT {t_id},
+        query = """SELECT {t_id}, {t_ili_tid},
                           CASE WHEN {op_party_t_business_name_f} IS NULL OR length(trim({op_party_t_business_name_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
                           CASE WHEN {op_party_t_surname_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
                           CASE WHEN {op_party_t_first_name_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
@@ -207,6 +212,7 @@ class PGLADMQuery(QGISLADMQuery):
                    {op_party_t_first_name_1_f} IS NOT NULL OR
                    {op_party_t_document_type_f} NOT IN ((select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}')))
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            ilicode=db.names.ILICODE_F,
                            op_party_t=db.names.OP_PARTY_T,
@@ -224,16 +230,16 @@ class PGLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_uebaunit_parcel(db):
         query = """
-            SELECT report.{t_id}, {ilicode} as {op_parcel_t_parcel_type_f}, sum_t, sum_c, sum_uc  FROM (
+            SELECT report.{t_id}, {t_ili_tid}, {ilicode} as {op_parcel_t_parcel_type_f}, sum_t, sum_c, sum_uc  FROM (
                    SELECT *
-                   FROM (SELECT {t_id}, {op_parcel_t_parcel_type_f}, sum(count_terreno) sum_t, sum(count_construccion) sum_c, sum(count_unidadconstruccion) sum_uc
-                         FROM (SELECT p.{t_id},
+                   FROM (SELECT {t_id}, {t_ili_tid}, {op_parcel_t_parcel_type_f}, sum(count_terreno) sum_t, sum(count_construccion) sum_c, sum(count_unidadconstruccion) sum_uc
+                         FROM (SELECT p.{t_id}, p.{t_ili_tid},
                                       p.{op_parcel_t_parcel_type_f},
                                       (CASE WHEN ue.{col_ue_baunit_t_op_plot_f} IS NOT NULL THEN 1 ELSE 0 END) count_terreno,
                                       (CASE WHEN ue.{col_ue_baunit_t_op_building_f} IS NOT NULL THEN 1 ELSE 0 END) count_construccion,
                                       (CASE WHEN ue.{col_ue_baunit_t_op_building_unit_f} IS NOT NULL THEN 1 ELSE 0 END) count_unidadconstruccion
                                FROM {schema}.{op_parcel_t} p left join {schema}.{col_ue_baunit_t} ue on p.{t_id} = ue.{col_ue_baunit_t_parcel_f}) AS p_ue
-                               GROUP BY {t_id}, {op_parcel_t_parcel_type_f}) AS report
+                               GROUP BY {t_id}, {t_ili_tid}, {op_parcel_t_parcel_type_f}) AS report
                    WHERE ({op_parcel_t_parcel_type_f} = (select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}')
                          AND (sum_t !=1 OR sum_uc != 0))
                          OR ({op_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}'))
@@ -246,6 +252,7 @@ class PGLADMQuery(QGISLADMQuery):
                          AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
             ) as report join {schema}.{op_condition_parcel_type_d} ON report.{op_parcel_t_parcel_type_f} = {op_condition_parcel_type_d}.{t_id}
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            ilicode=db.names.ILICODE_F,
                            op_parcel_t=db.names.OP_PARCEL_T,
@@ -272,9 +279,9 @@ class PGLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_parcels_with_invalid_parcel_type_and_22_position_number(db):
         query = """
-            SELECT report.{t_id}, {ilicode} as {op_parcel_t_parcel_type_f}
+            SELECT report.{t_id}, report.{t_ili_tid}, {ilicode} as {op_parcel_t_parcel_type_f}
             FROM (
-                   SELECT {t_id},
+                   SELECT {t_id}, {t_ili_tid},
                           {op_parcel_t_parcel_type_f}
                    FROM {schema}.{op_parcel_t}
                    WHERE ({op_parcel_t_parcel_number_f} IS NOT NULL
@@ -288,6 +295,7 @@ class PGLADMQuery(QGISLADMQuery):
                           OR (substring({op_parcel_t_parcel_number_f},22,1) != '3' AND {op_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} = '{parcel_type_public_use}')))
             ) AS report join {schema}.{op_condition_parcel_type_d} on report.{op_parcel_t_parcel_type_f} = {op_condition_parcel_type_d}.{t_id}
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            ilicode=db.names.ILICODE_F,
                            op_parcel_t=db.names.OP_PARCEL_T,
@@ -309,27 +317,22 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_duplicate_records_in_table(db, table_name, fields_to_check):
-        query = """SELECT array_to_string(duplicate_ids, ',') AS "duplicate_ids",
-                          duplicate_total
-                   FROM (SELECT unique_concat,
-                                array_agg({t_id}) duplicate_ids,
-                                array_length(array_agg({t_id}), 1) duplicate_total
-                         FROM (SELECT concat({fields}) unique_concat,
-                                      {t_id},
-                                      row_number() OVER(PARTITION BY {fields} ORDER BY {t_id} asc) AS row
-                               FROM {schema}.{table}) AS count_rows
-                               GROUP BY unique_concat) report
-                   WHERE duplicate_total > 1
+        query = """
+                    SELECT string_agg({t_ili_tid}::text, ',') as duplicate_uuids, COUNT({t_id}) as duplicate_total
+                    FROM {schema}.{table_name}
+                    GROUP BY {fields}
+                    HAVING COUNT({t_id}) > 1
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
-                           table=table_name,
+                           table_name=table_name,
                            fields=','.join(fields_to_check))
         return db.execute_sql_query(query)
 
     @staticmethod
     def get_group_party_fractions_that_do_not_add_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, array_agg({t_id}) as miembros, SUM(parte) suma_fracciones  FROM (
+                    SELECT {members_t_group_party_f} as agrupacion, string_agg({t_id}::text, ',') as miembros, SUM(parte) suma_fracciones  FROM (
                     SELECT {fraction_s_numerator_f}::float/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {schema}.{fraction_s}
                     ) AS fraccion_parte join {schema}.{members_t} on fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
                     GROUP BY {members_t_group_party_f}
@@ -346,10 +349,11 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_not_right(db):
-        query = """SELECT {t_id}
+        query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE {t_id} NOT IN (SELECT {col_baunit_rrr_t_unit_f} FROM {schema}.{op_right_t})
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            op_parcel_t=db.names.OP_PARCEL_T,
                            op_right_t=db.names.OP_RIGHT_T,
@@ -358,13 +362,14 @@ class PGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_repeated_domain_right(db):
-        query = """SELECT conteo.{col_baunit_rrr_t_unit_f} AS {t_id}
+        query = """SELECT conteo.{col_baunit_rrr_t_unit_f} AS {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}, (SELECT {col_baunit_rrr_t_unit_f}, count({op_right_t_type_f}) as dominios
                                                             FROM {schema}.{op_right_t}
                                                             WHERE {op_right_t_type_f} = (SELECT {t_id} FROM {schema}.{op_right_type_d} WHERE {ilicode} = '{op_right_type_d_ilicode_f_ownership_v}')
                                                             GROUP BY {col_baunit_rrr_t_unit_f}) as conteo
                    WHERE {t_id} = conteo.{col_baunit_rrr_t_unit_f} and conteo.dominios > 1
                 """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
                            ilicode=db.names.ILICODE_F,
                            op_parcel_t=db.names.OP_PARCEL_T,

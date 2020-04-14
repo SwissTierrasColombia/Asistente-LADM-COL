@@ -42,6 +42,7 @@ from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   PLUGIN_DIR)
 
+
 class Utils(QObject):
     """
     Utility methods are here to be able to use internationalization on some messages
@@ -221,3 +222,20 @@ def show_plugin_help(module='', offline=False):
         url = web_url
 
     webbrowser.open("{}/{}".format(url, section))
+
+
+def get_uuid_dict(layer, names, id_field=None):
+    """
+    Return dict with id_field as key and uuid field as value
+    When id_field is None the key value is the id (QGIS) of the feature
+    """
+    field_names = [field.name() for field in layer.fields()]
+    dict_uuid = dict()
+
+    if names.T_ILI_TID_F in field_names and id_field in field_names:
+        for feature in layer.getFeatures():
+            if id_field:
+                dict_uuid[feature[id_field]] = str(feature[names.T_ILI_TID_F])
+            else:
+                dict_uuid[feature.id()] = str(feature[names.T_ILI_TID_F])
+    return dict_uuid
