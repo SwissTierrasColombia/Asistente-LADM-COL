@@ -102,11 +102,8 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         # Update attribute values before saving
         for feature in features:
             for idx in target_provider.pkAttributeIndexes():
-                # Get the PK from client expressions, if any, or from the provider itself
-                if target.defaultValueDefinition(idx).isValid():
-                    feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))
-                else:  # Provider
-                    feature.setAttribute(idx, target_provider.defaultValue(idx))
+                # Get the PK from the provider itself
+                feature.setAttribute(idx, target_provider.defaultValue(idx))
 
             for idx in list_automatic_fields:
                 feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))

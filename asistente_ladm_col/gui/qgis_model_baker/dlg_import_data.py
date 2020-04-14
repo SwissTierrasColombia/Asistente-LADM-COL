@@ -451,6 +451,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.with_importtid = True
 
         full_java_exe_path = JavaUtils.get_full_java_exe_path()
         if full_java_exe_path:
