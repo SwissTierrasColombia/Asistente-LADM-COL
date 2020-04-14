@@ -50,7 +50,7 @@ class SymbologyUtils(QObject):
             if layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]:
                 # By default symbology layer user default style group
                 # but it could be update if a layer modifiers it send
-                # e.g STYLE_GROUP_LAYER_MODIFIERS could be Symbology().get_supplies_style_group()
+                # e.g STYLE_GROUP_LAYER_MODIFIERS could be Symbology().get_style_group_layer_modifiers()
                 style_group = layer_modifiers[LayerConfig.STYLE_GROUP_LAYER_MODIFIERS]
 
         qml_name = None

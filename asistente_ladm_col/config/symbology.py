@@ -11,18 +11,18 @@ class Symbology:
     @staticmethod
     def get_default_style_group(names):
          return {
-            names.OP_BOUNDARY_T: 'style_boundary',
-            names.OP_BOUNDARY_POINT_T: 'style_boundary_point',
-            names.OP_SURVEY_POINT_T: 'style_survey_point',
-            names.OP_CONTROL_POINT_T: 'style_control_point',
-            names.OP_PLOT_T: 'style_plot_polygon',
-            names.OP_BUILDING_T: 'style_building',
-            names.OP_BUILDING_UNIT_T: 'style_building_unit_25',
-            names.OP_RIGHT_OF_WAY_T: 'style_right_of_way'
+             names.OP_BOUNDARY_T: 'style_boundary',
+             names.OP_BOUNDARY_POINT_T: 'style_boundary_point',
+             names.OP_SURVEY_POINT_T: 'style_survey_point',
+             names.OP_CONTROL_POINT_T: 'style_control_point',
+             names.OP_PLOT_T: 'style_plot_polygon',
+             names.OP_BUILDING_T: 'style_building',
+             names.OP_BUILDING_UNIT_T: 'style_building_unit_25',
+             names.OP_RIGHT_OF_WAY_T: 'style_right_of_way'
         }
 
     @staticmethod
-    def get_supplies_style_group(names):
+    def get_style_group_layer_modifiers(names):
         return {
             names.GC_PLOT_T: 'style_supplies_plot_polygon'
         }
