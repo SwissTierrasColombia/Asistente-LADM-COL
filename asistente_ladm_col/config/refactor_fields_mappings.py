@@ -407,6 +407,7 @@ class RefactorFieldsMappings:
         # Now see if we can adjust the mapping depending on user settings
         ns_enabled, ns_field, ns_value = self.app.core.get_namespace_field_and_value(names, layer_name)
         lid_enabled, lid_field, lid_value = self.app.core.get_local_id_field_and_value(names)
+        t_ili_tid_enabled, t_ili_tid_field, t_ili_tid_value = self.app.core.get_t_ili_tid_field_and_value(names)
 
         for field in mapping:
             if ns_enabled and ns_field:
@@ -416,6 +417,10 @@ class RefactorFieldsMappings:
             if lid_enabled and lid_field:
                 if field['name'] == lid_field:
                     field['expression'] = '{}'.format(lid_value)
+
+            if t_ili_tid_enabled and t_ili_tid_field:
+                if field['name'] == t_ili_tid_field:
+                    field['expression'] = '{}'.format(t_ili_tid_value)
 
             if field['name'] == names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F:
                 field['expression'] = 'now()'
