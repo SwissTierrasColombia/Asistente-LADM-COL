@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 
 from qgis.core import (edit,
                        QgsEditError,
@@ -35,6 +35,8 @@ from qgis.core import (edit,
                        QgsFeatureSink,
                        QgsExpressionContext,
                        QgsExpressionContextUtils)
+
+from asistente_ladm_col.config.general_config import DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE
 
 
 class InsertFeaturesToLayer(QgsProcessingAlgorithm):
@@ -85,13 +87,19 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             ))
             return {self.OUTPUT: None}
 
-        # Copy and Paste
-        #total = 100.0 / source.featureCount() if source.featureCount() else 0
-        #count = 0
-        #feedback.setProgress(int(current * total))
-
         features = QgsVectorLayerUtils().makeFeaturesCompatible(source.getFeatures(), target)
         eval_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(target))
+
+        # Make sure automatic values are calculated if automatic_values_in_batch_mode
+        # is enabled and that they are not calculated otherwise
+        automatic_values_in_batch_mode = QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool)
+        list_automatic_fields = list()
+        if automatic_values_in_batch_mode:
+            # Get indexes that have an automatic value configured, except primary keys,
+            # since we deal with PK's values  differently (namely, directly with the provider)
+            list_automatic_fields = [idx for idx in target.attributeList() if target.defaultValueDefinition(idx).isValid() and idx not in target_provider.pkAttributeIndexes()]
+
+        # Update attribute values before saving
         for feature in features:
             for idx in target_provider.pkAttributeIndexes():
                 # Get the PK from client expressions, if any, or from the provider itself
@@ -99,6 +107,9 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                     feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))
                 else:  # Provider
                     feature.setAttribute(idx, target_provider.defaultValue(idx))
+
+            for idx in list_automatic_fields:
+                feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))
 
         if self.save_features(target, features, 'provider', feedback):
             feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(

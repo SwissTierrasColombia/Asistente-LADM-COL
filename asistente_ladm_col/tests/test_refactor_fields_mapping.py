@@ -1,4 +1,5 @@
 import nose2
+from qgis.PyQt.QtCore import QSettings
 
 from qgis.testing import (unittest,
                           start_app)
@@ -28,7 +29,7 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         cls.assertTrue(result_test[0], 'The test connection is not working for test data db')
 
     def test_refactor_field(self):
-        print('\nINFO: Validating refactor field for boundary layer ...')
+        print('\nINFO: Validating refactor fields...')
 
         dict_layers_to_check = {
             self.db_gpkg_test.names.OP_BOUNDARY_T: self.db_gpkg_empty.names.OP_BOUNDARY_T,
@@ -55,6 +56,8 @@ class TestRefactorFieldsMapping(unittest.TestCase):
             self.db_gpkg_test.names.OP_BUILDING_T: 17,
             self.db_gpkg_test.names.OP_BUILDING_UNIT_T: 29
         }
+
+        QSettings().setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', False)
 
         for layer_name_test, layer_name_empty in dict_layers_to_check.items():
             layer = self.app.core.get_layer(self.db_gpkg_test, layer_name_test, load=True)

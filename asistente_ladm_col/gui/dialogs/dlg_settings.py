@@ -33,7 +33,7 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR)
+                                                      DEFAULT_MODELS_DIR, DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
@@ -249,7 +249,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
         # Save settings from tabs other than database connection
-        self.save_settings()
+        self.save_settings(db)
         QDialog.accept(self)
 
         # If active role changed, refresh the GUI
@@ -284,7 +284,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def finished_slot(self, result):
         self.bar.clearWidgets()
 
-    def save_settings(self):
+    def save_settings(self, db):
         settings = QSettings()
         current_db_engine = self.cbo_db_engine.currentData()
         settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
@@ -327,8 +327,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
            current_namespace_prefix != self.txt_namespace.text() or \
            current_local_id_enabled != self.chk_local_id.isChecked() or \
            current_t_ili_tid_enabled != self.chk_t_ili_tid.isChecked():
-            if self._db is not None:
-                self.app.core.automatic_fields_settings_changed(self._db)
+            if db is not None:
+                self.logger.info(__name__, "Automatic values changed in Settings dialog. All LADM-COL layers are being updated...")
+                self.app.core.automatic_fields_settings_changed(db)
 
     def restore_db_source_settings(self):
         settings = QSettings()
@@ -369,7 +370,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)
 
-        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool))
+        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
         self.connection_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))

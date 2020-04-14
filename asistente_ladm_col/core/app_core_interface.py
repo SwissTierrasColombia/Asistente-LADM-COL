@@ -69,7 +69,8 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                                       TEST_SERVER,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                                      SOURCE_SERVICE_EXPECTED_ID)
+                                                      SOURCE_SERVICE_EXPECTED_ID,
+                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -619,7 +620,10 @@ class AppCoreInterface(QObject):
 
     def set_automatic_fields_settings(self, db, layer_name, layer):
         """
-        Sets the automatic fields configured from Settings dialog.
+        Sets the automatic fields configured from Settings dialog. Note that it can also deactivate automatic values.
+          1) Namespace
+          2) Local id
+          3) t_ili_tid
         """
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(db.names, layer_name)
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(db.names)
@@ -696,7 +700,7 @@ class AppCoreInterface(QObject):
         Note that all default values are disabled for the given layer, not only namespace, local_id and t_ili_tid.
         """
         automatic_fields_definition = {}
-        if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+        if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
             automatic_fields_definition = self.disable_automatic_fields(layer)
 
         return automatic_fields_definition
@@ -715,7 +719,7 @@ class AppCoreInterface(QObject):
         we saved before running the batch load.
         """
         if automatic_fields_definition:
-            if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+            if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
                 self.enable_automatic_fields(layer, automatic_fields_definition)
 
     def enable_automatic_fields(self, layer, automatic_fields_definition):
