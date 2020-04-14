@@ -33,7 +33,8 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR, DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
+                                                      DEFAULT_MODELS_DIR,
+                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
