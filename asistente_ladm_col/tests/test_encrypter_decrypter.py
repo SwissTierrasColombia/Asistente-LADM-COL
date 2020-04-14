@@ -24,11 +24,11 @@ class TestEncrypterDecrypter(unittest.TestCase):
         plain_text = "ultra_secret"
         encrypted1 = self.encrypter_decrypter.encrypt_with_AES(plain_text)
         decrypted1 = self.encrypter_decrypter.decrypt_with_AES(encrypted1)
-        self.assertEquals(plain_text, decrypted1)
+        self.assertEqual(plain_text, decrypted1)
 
         encrypted2 = self.encrypter_decrypter.encrypt_with_AES(plain_text)
         decrypted2 = self.encrypter_decrypter.decrypt_with_AES(encrypted2)
-        self.assertEquals(plain_text, decrypted2)
+        self.assertEqual(plain_text, decrypted2)
 
         self.assertNotEqual(encrypted1, encrypted2)
 
