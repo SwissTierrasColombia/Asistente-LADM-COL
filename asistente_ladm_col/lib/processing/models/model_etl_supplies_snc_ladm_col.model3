@@ -1341,7 +1341,7 @@
         <Option type="List" name="METHOD">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="0" type="int" name="static_value"/>
+            <Option value="1" type="int" name="static_value"/>
           </Option>
         </Option>
         <Option type="List" name="PREFIX">
