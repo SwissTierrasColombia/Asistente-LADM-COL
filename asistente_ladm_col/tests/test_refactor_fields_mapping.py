@@ -57,7 +57,7 @@ class TestRefactorFieldsMapping(unittest.TestCase):
             self.db_gpkg_test.names.OP_BUILDING_UNIT_T: 29
         }
 
-        QSettings().setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', False)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
 
         for layer_name_test, layer_name_empty in dict_layers_to_check.items():
             layer = self.app.core.get_layer(self.db_gpkg_test, layer_name_test, load=True)

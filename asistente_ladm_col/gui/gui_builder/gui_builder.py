@@ -32,7 +32,7 @@ from asistente_ladm_col.lib.logger import Logger
 
 class GUI_Builder(QObject):
     """
-    Build plugin GUI according to roles and LADM_COL models present in the current db connection
+    Build plugin GUI according to roles andLADM-COL models present in the current db connection
     """
     def __init__(self, iface):
         QObject.__init__(self)

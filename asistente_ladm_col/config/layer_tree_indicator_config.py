@@ -40,12 +40,12 @@ class LayerTreeIndicatorConfig(QObject, metaclass=SingletonQObject):
             if node_name == translated_strings[ERROR_LAYER_GROUP]:
                 indicators_config = [{
                     INDICATOR_TOOLTIP: QCoreApplication.translate("LayerTreeIndicatorConfig", "<b>Export</b><br>Export quality errors to GeoPackage"),
-                    INDICATOR_ICON: QIcon(":/Asistente-LADM_COL/resources/images/save.svg"),
+                    INDICATOR_ICON: QIcon(":/Asistente-LADM-COL/resources/images/save.svg"),
                     INDICATOR_SLOT: self._slot_caller.export_error_group
                 }, {
                     INDICATOR_TOOLTIP: QCoreApplication.translate("LayerTreeIndicatorConfig",
                                                                   "<b>Export</b><br>Export quality errors to PDF"),
-                    INDICATOR_ICON: QIcon(":/Asistente-LADM_COL/resources/images/pdf.svg"),
+                    INDICATOR_ICON: QIcon(":/Asistente-LADM-COL/resources/images/pdf.svg"),
                     INDICATOR_SLOT: self._slot_caller.show_log_quality_dialog
                 }]
         elif node_type == QgsLayerTreeNode.NodeLayer:

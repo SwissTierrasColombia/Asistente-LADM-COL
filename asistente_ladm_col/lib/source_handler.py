@@ -62,7 +62,7 @@ class SourceHandler(QObject):
         formatted as changeAttributeValues expects to update 'datos' attribute
         to a remote location.
         """
-        if not QSettings().value('Asistente-LADM_COL/sources/document_repository', False, bool):
+        if not QSettings().value('Asistente-LADM-COL/sources/document_repository', False, bool):
             self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
                    "The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."), 10)
             return dict()
@@ -110,7 +110,7 @@ class SourceHandler(QObject):
             multiPart.append(textPart)
 
             service_url = '/'.join([
-                QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
+                QSettings().value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
                 SOURCE_SERVICE_UPLOAD_SUFFIX])
             request = QNetworkRequest(QUrl(service_url))
             reply = nam.post(request, multiPart)
@@ -216,5 +216,5 @@ class SourceHandler(QObject):
         layer.committedFeaturesAdded.connect(features_added)
 
     def get_file_url(self, part):
-        endpoint = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        endpoint = QSettings().value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
         return '/'.join([endpoint, part[1:] if part.startswith('/') else part])

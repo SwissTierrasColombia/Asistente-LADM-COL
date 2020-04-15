@@ -1,14 +1,14 @@
-[![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
+[![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM-COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
-[![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
+[![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM-COL)
 [![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
-# LADM_COL Assistant
-[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM_COL](https://github.com/AgenciaImplementacion/LADM_COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
+# LADM-COL Assistant
+[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM-COL](https://github.com/AgenciaImplementacion/LADM-COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
 
-License: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
+License: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/blob/master/LICENSE)
 
-Links of interest: [Documentation](https://agenciaimplementacion.github.io/Asistente-LADM_COL/), [Gallery](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README_en.md#gallery)
+Links of interest: [Documentation](https://agenciaimplementacion.github.io/Asistente-LADM-COL/), [Gallery](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/blob/master/README_en.md#gallery)
 
 A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
@@ -18,7 +18,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) of the LADM_COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
+The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/2.99.2)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -31,11 +31,11 @@ The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
    - GeoPackage: quality validations, parcel queries and reports are not yet supported.
- - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
+ - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM-COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
  - Import/export data from/to transfer files (.XTF) disabling data validation.
- - Search for LADM_COL data by component:
+ - Search for LADM-COL data by component:
    - Basic information.
    - Legal information.
    - Property record card information.
@@ -129,7 +129,7 @@ The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente
  - Generate reports of missing supplies.
  - Detect parcel changes:
    - Compare a collected database versus the supplies database and show differences by batch or per parcel.
- - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
+ - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - Online/offline help.
@@ -137,7 +137,7 @@ The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente
 
 ## Minimum requirements
 
-To use the LADM_COL Assistant you need:
+To use the LADM-COL Assistant you need:
 
  - Operting System:
    - Windows 8 or Windows 10
@@ -147,7 +147,7 @@ To use the LADM_COL Assistant you need:
    - Java v1.8
    - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
    - PostGIS 2.4 or higher.
- - QGIS plugins (installing LADM_COL Assistant using QGIS Plugin Manager will also install these automatically):
+ - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
    - QGIS Model Baker v6.0.0
    - MapSwipe Tool v1.2
 
@@ -157,7 +157,7 @@ To use the LADM_COL Assistant you need:
 
 Unit tests are automatically executed after every commit made to the repository. Results are available for:
 
-- GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
+- GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM-COL
 
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
 - Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
@@ -175,7 +175,7 @@ docker-compose down --rmi local && docker-compose build
 
 ### Assisted tests (for the GUI)
 
-The LADM_COL Assistant uses *QGIS Tester* plugin to support assisted tests for GUI functionalities. 
+The LADM-COL Assistant uses *QGIS Tester* plugin to support assisted tests for GUI functionalities. 
 
 Prerrequisites:
 
@@ -186,23 +186,23 @@ In order to run the assisted tests, you need to install:
 
 See [the docs](https://github.com/planetfederal/qgis-tester-plugin/blob/master/docs/source/usage.rst) for usage instructions.
 
-If these prerrequisites are not met, the LADM_COL Assistant will continue running smoothly and will put a warning in the QGIS log. 
+If these prerrequisites are not met, the LADM-COL Assistant will continue running smoothly and will put a warning in the QGIS log. 
 
 
-## How to be notified of new relases of the LADM_COL Assistant?
+## How to be notified of new relases of the LADM-COL Assistant?
 
- + If you have a GitHub account or you can create one, go to https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ and click the `Watch` button in the upper part of the web page to follow changes on the repository.
+ + If you have a GitHub account or you can create one, go to https://github.com/AgenciaImplementacion/Asistente-LADM-COL/ and click the `Watch` button in the upper part of the web page to follow changes on the repository.
 
  + If you do not have a GitHub account, you have two options:
 
-   a) Sbscribe to the release feed: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+   a) Sbscribe to the release feed: https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases.atom
 
    b) Use gitpunch!
 
       + Go to https://gitpunch.com/
       + Wait until the animation ends or click on `Skip` (below in the page).
       + Sign in using your e-mail.
-      + Search for "Asistente LADM_COL" and choose the `AgenciaImplementacion/Asistente-LADM_COL` repository.
+      + Search for "Asistente LADM-COL" and choose the `AgenciaImplementacion/Asistente-LADM-COL` repository.
       + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.
 
 

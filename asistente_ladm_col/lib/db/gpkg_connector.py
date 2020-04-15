@@ -286,7 +286,7 @@ class GPKGConnector(FileDB):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
                 "GPKGConnector",
-                "The database '{}' is not a valid LADM_COL database. That is, the database doesn't have the structure of the LADM_COL model.").format(
+                "The database '{}' is not a valid LADM-COL database. That is, the database doesn't have the structure of the LADM-COL model.").format(
                 database)
 
         if self.get_ili2db_version() != 4:
@@ -312,4 +312,4 @@ class GPKGConnector(FileDB):
                 msg)
 
         return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector",
-                                                                                                    "The database '{}' has a valid LADM_COL structure!").format(database)
+                                                                                                    "The database '{}' has a valid LADM-COL structure!").format(database)

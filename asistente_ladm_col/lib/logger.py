@@ -26,7 +26,7 @@ from asistente_ladm_col.config.enums import (EnumLogHandler,
                                              EnumLogMode)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
-TAB_NAME_FOR_LOGS = "Asistente LADM_COL"
+TAB_NAME_FOR_LOGS = "Asistente LADM-COL"
 
 class Logger(QObject, metaclass=SingletonQObject):
     """

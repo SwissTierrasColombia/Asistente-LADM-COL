@@ -207,7 +207,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("SuppliesETLWizard", "Warning"),
-                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
+                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM-COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -255,7 +255,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM-COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -310,12 +310,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         elif self.rad_cobol_data.isChecked():
             etl_source = "cobol"
 
-        settings.setValue('Asistente-LADM_COL/supplies/etl_source', etl_source)
+        settings.setValue('Asistente-LADM-COL/supplies/etl_source', etl_source)
         self._data_source_widget.save_settings()
 
     def restore_settings(self):
         settings = QSettings()
-        etl_source = settings.value('Asistente-LADM_COL/supplies/etl_source') or 'snc'
+        etl_source = settings.value('Asistente-LADM-COL/supplies/etl_source') or 'snc'
         if etl_source == 'snc':
             self.rad_snc_data.setChecked(True)
         elif etl_source == 'cobol':

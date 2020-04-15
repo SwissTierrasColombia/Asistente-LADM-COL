@@ -298,7 +298,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>:/Asistente-LADM_COL/resources/images/without_roads.png</pixmap>
+             <pixmap>:/Asistente-LADM-COL/resources/images/without_roads.png</pixmap>
             </property>
            </widget>
           </item>
@@ -311,7 +311,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>:/Asistente-LADM_COL/resources/images/with_roads.png</pixmap>
+             <pixmap>:/Asistente-LADM-COL/resources/images/with_roads.png</pixmap>
             </property>
            </widget>
           </item>
@@ -408,7 +408,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Most of the classes in LADM_COL have two attributes that combined must be unique in the whole schema/database. They are called namespace and local_id. To make it easier to fill those attributes, the LADM_COL Assistant can set automatic values for them. Namely, namespace will correspond to an optional prefix (e.g., MY_ORGANIZATION) plus the class name (e.g., BOUNDARY): MY_ORGANIZATION_BOUNDARY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Most of the classes in LADM-COL have two attributes that combined must be unique in the whole schema/database. They are called namespace and local_id. To make it easier to fill those attributes, the LADM-COL Assistant can set automatic values for them. Namely, namespace will correspond to an optional prefix (e.g., MY_ORGANIZATION) plus the class name (e.g., BOUNDARY): MY_ORGANIZATION_BOUNDARY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Calculate Namespace automatically</string>

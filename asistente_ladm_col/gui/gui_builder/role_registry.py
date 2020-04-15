@@ -114,7 +114,7 @@ class Role_Registry(metaclass=Singleton):
         role_dict = {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "The basic role helps you to explore the LADM_COL assistant main functionalities."),
+                                                         "The basic role helps you to explore the LADM-COL assistant main functionalities."),
             ROLE_ACTIONS: [
                 ACTION_DOWNLOAD_GUIDE,
                 ACTION_CREATE_POINT,
@@ -352,7 +352,7 @@ class Role_Registry(metaclass=Singleton):
 
     def register_role(self, role_key, role_dict):
         """
-        Register roles for the LADM_COL assistant. Roles have access only to certain GUI controls.
+        Register roles for the LADM-COL assistant. Roles have access only to certain GUI controls.
 
         :param role_key: Role unique identifier
         :param role_dict: Dictionary with the following information:
@@ -371,7 +371,7 @@ class Role_Registry(metaclass=Singleton):
         return valid
 
     def get_active_role(self):
-        return QSettings().value("Asistente-LADM_COL/roles/current_role_key", self._default_role)
+        return QSettings().value("Asistente-LADM-COL/roles/current_role_key", self._default_role)
 
     def active_role_already_set(self):
         """
@@ -379,7 +379,7 @@ class Role_Registry(metaclass=Singleton):
 
         :return: True if the current_role_key variable is stored in QSettings. False otherwise.
         """
-        return QSettings().value("Asistente-LADM_COL/roles/current_role_key", False) is not False
+        return QSettings().value("Asistente-LADM-COL/roles/current_role_key", False) is not False
 
     def set_active_role(self, role_key):
         res = False
@@ -389,13 +389,13 @@ class Role_Registry(metaclass=Singleton):
             self.logger.warning(__name__, "Role '{}' was not found, the default role is now active.".format(role_key))
             role_key = self._default_role
 
-        QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", role_key)
+        QSettings().setValue("Asistente-LADM-COL/roles/current_role_key", role_key)
         self.logger.info(__name__, "Role '{}' is now active!".format(role_key))
 
         return res
 
     def set_active_default_role(self):
-        QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", self._default_role)
+        QSettings().setValue("Asistente-LADM-COL/roles/current_role_key", self._default_role)
         self.logger.info(__name__, "Default role '{}' is now active!".format(self._default_role))
         return True
 

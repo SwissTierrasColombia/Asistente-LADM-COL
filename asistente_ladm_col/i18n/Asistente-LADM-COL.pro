@@ -148,4 +148,4 @@ SOURCES = ../__init__.py \
           ../utils/st_utils.py \
           ../utils/utils.py
 
-TRANSLATIONS = Asistente-LADM_COL_es.ts
+TRANSLATIONS = Asistente-LADM-COL_es.ts

@@ -65,10 +65,10 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
     def name(self):
         """This is the localised full name.
         """
-        return 'LADM_COL'
+        return 'LADM-COL'
 
     def icon(self):
-        return QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
+        return QIcon(":/Asistente-LADM-COL/resources/images/icon.png")
 
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.

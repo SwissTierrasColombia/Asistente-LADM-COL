@@ -206,7 +206,7 @@ class ReportGenerator(QObject):
             return
 
         # Where to store the reports?
-        previous_folder = QSettings().value("Asistente-LADM_COL/reports/save_into_dir", ".")
+        previous_folder = QSettings().value("Asistente-LADM-COL/reports/save_into_dir", ".")
         save_into_folder = QFileDialog.getExistingDirectory(
                         None,
                         QCoreApplication.translate("ReportGenerator", "Select a folder to save the reports to be generated"),
@@ -215,7 +215,7 @@ class ReportGenerator(QObject):
             self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                     "You need to select a folder where to save the reports before continuing."))
             return
-        QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
+        QSettings().setValue("Asistente-LADM-COL/reports/save_into_dir", save_into_folder)
 
         config_path = os.path.join(base_path, report_type)
 

@@ -7,7 +7,7 @@ from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL')
+DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM-COL')
 DEPENDENCY_REPORTS_DIR_NAME = 'impresion'
 
 DEFAULT_LOG_MODE = EnumLogMode.DEV
@@ -22,7 +22,7 @@ ANT_MAP_REPORT = "Plano_ANT"
 DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
-HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM-COL"
 FIELD_MAPPING_PATH = os.path.join(DEPENDENCIES_BASE_PATH, 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
@@ -53,7 +53,7 @@ SETTINGS_ADVANCED_TAB_INDEX = 5
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 REPORTS_REQUIRED_VERSION = '0.6dev'
-URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -116,11 +116,11 @@ DICT_JAVA_DIR_NAME = {
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.1"
 
-# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
+# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
 QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
-# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
+# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
 QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip'  # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
@@ -151,7 +151,7 @@ GRAY_COLOR = QColor(219, 219, 219, 255)
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
 # About dialog
-RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/"
+RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/"
 
 # Endpoint for testing the Source Service (avoid last slash)
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
@@ -160,7 +160,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # Documentation
-HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
+HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM-COL-docs/releases/download'
 
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"

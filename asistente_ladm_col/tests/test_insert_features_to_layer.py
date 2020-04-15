@@ -41,7 +41,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         print('\nINFO: Validating automatic values in batch...')
 
         # Config settings
-        QSettings().setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
 
         source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
 
@@ -67,8 +67,8 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         print('\nINFO: Validating automatic values in batch, but setting is disabled...')
 
         # Config settings
-        QSettings().setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True)
-        QSettings().setValue('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', False)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', False)
 
         source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
 
@@ -94,7 +94,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         print('\nINFO: Validating do not calculate automatic values in batch mode...')
 
         # Config settings
-        QSettings().setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', False)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
 
         source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
 
