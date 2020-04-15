@@ -184,7 +184,7 @@ class AppCoreInterface(QObject):
                     # Required layers that are only in registry are removed, we reload them to get everything configured
                     self.remove_registry_layers(db, all_layers_to_load)
 
-                    self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
+                    self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
                     self.qgis_model_baker_utils.load_layers(db, all_layers_to_load)
                     ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
@@ -654,11 +654,11 @@ class AppCoreInterface(QObject):
 
     def get_namespace_field_and_value(self, names, layer_name):
         """Handy function to get up-to-date configuration of namespace field"""
-        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        namespace_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
         namespace_field = names.OID_T_NAMESPACE_F
 
         if namespace_field is not None:
-            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+            namespace = str(QSettings().value('Asistente-LADM-COL/automatic_values/namespace_prefix', ""))
             namespace_value = "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper()
         else:
             namespace_value = None
@@ -667,7 +667,7 @@ class AppCoreInterface(QObject):
 
     def get_local_id_field_and_value(self, names):
         """Handy function to get up-to-date configuration of local_id field"""
-        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+        local_id_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
         local_id_field = names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
@@ -681,7 +681,7 @@ class AppCoreInterface(QObject):
 
     def get_t_ili_tid_field_and_value(self, names):
         """Handy function to get up-to-date configuration of t_ili_tid field"""
-        t_ili_tid_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        t_ili_tid_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
         t_ili_tid_field = names.T_ILI_TID_F
 
         if t_ili_tid_field is not None:
@@ -700,7 +700,7 @@ class AppCoreInterface(QObject):
         Note that all default values are disabled for the given layer, not only namespace, local_id and t_ili_tid.
         """
         automatic_fields_definition = {}
-        if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+        if not QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
             automatic_fields_definition = self.disable_automatic_fields(layer)
 
         return automatic_fields_definition
@@ -719,7 +719,7 @@ class AppCoreInterface(QObject):
         we saved before running the batch load.
         """
         if automatic_fields_definition:
-            if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+            if not QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
                 self.enable_automatic_fields(layer, automatic_fields_definition)
 
     def enable_automatic_fields(self, layer, automatic_fields_definition):
@@ -761,7 +761,7 @@ class AppCoreInterface(QObject):
         res = False
         msg = {'text': '', 'level': Qgis.Warning}
         if url is None:
-            url = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+            url = QSettings().value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         if url:
             with ProcessWithStatus("Checking source service availability (this might take a while)..."):

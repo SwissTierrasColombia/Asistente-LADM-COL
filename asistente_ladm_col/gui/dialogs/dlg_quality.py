@@ -219,7 +219,7 @@ class QualityDialog(QDialog, DIALOG_UI):
             group_item = QTreeWidgetItem([group])
             group_item.setData(0, Qt.BackgroundRole, QBrush(QColor(219, 219, 219, 255)))
             group_item.setData(0, Qt.FontRole, font)
-            icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(items['icon']))
+            icon = QIcon(":/Asistente-LADM-COL/resources/images/{}.png".format(items['icon']))
             group_item.setData(0, Qt.DecorationRole, icon)
 
             for rule in items['rules']:

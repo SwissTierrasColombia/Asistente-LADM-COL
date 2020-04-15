@@ -100,7 +100,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.utils.add_layers()
 
     def layer_removed(self):
-        self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
+        self.utils.iface.messageBar().pushMessage("Asistente LADM-COL",
                                             QCoreApplication.translate("DockWidgetChangeDetection",
                                                                        "'Change detection' has been closed because you just removed a required layer."),
                                             Qgis.Info)

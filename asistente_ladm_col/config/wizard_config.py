@@ -90,7 +90,7 @@ class WizardConfig:
                 WIZARD_HELP: "party",
                 WIZARD_UI: "wizards/operation/wiz_create_col_party_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/col_party_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/col_party_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_COL_PARTY_OPERATION_PAGE_1_OPTION_FORM,
@@ -112,7 +112,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_admin_source",
                 WIZARD_UI: "wizards/operation/wiz_create_administrative_source_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/administrative_source_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/administrative_source_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM,
@@ -135,7 +135,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_boundaries",
                 WIZARD_UI: "wizards/operation/wiz_create_boundaries_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/boundary_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/boundary_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_DEFINE_BOUNDARIES_OPERATION_PAGE_1_OPTION_DIGITIZE,
@@ -158,7 +158,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_building",
                 WIZARD_UI: "wizards/operation/wiz_create_building_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/building_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_OPERATION_PAGE_1_OPTION_POINTS,
@@ -181,7 +181,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_building_unit",
                 WIZARD_UI: "wizards/operation/wiz_create_building_unit_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_unit_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/building_unit_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_UNIT_OPERATION_PAGE_1_OPTION_POINTS,
@@ -205,7 +205,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_right",
                 WIZARD_UI: "wizards/operation/wiz_create_right_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/right_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_RIGHT_OPERATION_PAGE_1_OPTION_FORM,
@@ -229,7 +229,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_restriction",
                 WIZARD_UI: "wizards/operation/wiz_create_restriction_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/restriction_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/restriction_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_RESTRICTION_OPERATION_PAGE_1_OPTION_FORM,
@@ -255,7 +255,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_spatial_source",
                 WIZARD_UI: "wizards/operation/wiz_create_spatial_source_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/spatial_source_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/spatial_source_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_SPATIAL_SOURCE_OPERATION_PAGE_1_OPTION_FORM,
@@ -286,8 +286,8 @@ class WizardConfig:
                 WIZARD_HELP: "create_parcel",
                 WIZARD_UI: "wizards/operation/wiz_create_parcel_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/parcel_load_data_type",
-                    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM_COL/wizards/type_of_parcel_selected"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/parcel_load_data_type",
+                    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM-COL/wizards/type_of_parcel_selected"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PARCEL_OPERATION_PAGE_1_OPTION_EXISTING_PLOT,
@@ -314,7 +314,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_plot",
                 WIZARD_UI: "wizards/operation/wiz_create_plot_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/plot_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/plot_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PLOT_OPERATION_PAGE_1_OPTION_BOUNDARIES,
@@ -337,7 +337,7 @@ class WizardConfig:
                 WIZARD_HELP: "associate_ext_address",
                 WIZARD_UI: "wizards/operation/wiz_associate_extaddress_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/ext_address_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/ext_address_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_OPERATION_PAGE_2_OPTION_1,
@@ -363,7 +363,7 @@ class WizardConfig:
                 WIZARD_HELP: "create_right_of_way",
                 WIZARD_UI: "wizards/operation/wiz_create_right_of_way_operation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_of_way_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/right_of_way_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_RIGHT_OF_WAY_OPERATION_PAGE_1_OPTION_POINTS,
@@ -391,7 +391,7 @@ class WizardConfig:
                 WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/geoeconomic_zone_valuation_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/geoeconomic_zone_valuation_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM,
@@ -411,7 +411,7 @@ class WizardConfig:
                 WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_physical_zone_valuation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/physical_zone_valuation_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/physical_zone_valuation_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM,
@@ -433,7 +433,7 @@ class WizardConfig:
                 WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_building_unit_valuation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_building_unit_load_data_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/valuation_building_unit_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM,
@@ -459,8 +459,8 @@ class WizardConfig:
                 WIZARD_HELP: "",
                 WIZARD_UI: "wizards/valuation/wiz_create_building_unit_qualification_valuation.ui",
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_unit_qualification_load_data_type",
-                    WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE: "Asistente-LADM_COL/wizards/building_unit_qualification_load_convention_type"
+                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/building_unit_qualification_load_data_type",
+                    WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE: "Asistente-LADM-COL/wizards/building_unit_qualification_load_convention_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_2_OPTION_CSV,

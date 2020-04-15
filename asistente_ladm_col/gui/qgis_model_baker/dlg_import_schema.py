@@ -329,26 +329,26 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/epsg', self.epsg)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/epsg', self.epsg)
 
     def restore_configuration(self):
         settings = QSettings()
 
         # CRS
-        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
+        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM-COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
         self.crsSelector.setCrs(crs)
         self.crs_changed()
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        value_show_log = settings.value('Asistente-LADM-COL/QgisModelBaker/show_log', False, type=bool)
         self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.use_local_models = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
         if self.crsSelector.crs().authid()[:5] != 'EPSG:':
@@ -380,8 +380,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
@@ -456,4 +456,4 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.enable()
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
+        self.bar.pushMessage("Asistente LADM-COL", message, level, duration = 0)

@@ -220,7 +220,7 @@ class AppGUIInterface(QObject):
 
     def show_message(self, msg, level, duration=5):
         self.clear_message_bar()  # Remove previous messages before showing a new one
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
+        self.iface.messageBar().pushMessage("Asistente LADM-COL", msg, level, duration)
 
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)

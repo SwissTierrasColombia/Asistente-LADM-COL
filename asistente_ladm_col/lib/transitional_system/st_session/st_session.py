@@ -32,7 +32,7 @@ from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
 class STSession(QObject, metaclass=SingletonQObject):
-    TOKEN_KEY = "Asistente-LADM_COL/transitional_system/token"
+    TOKEN_KEY = "Asistente-LADM-COL/transitional_system/token"
 
     login_status_changed = pyqtSignal(bool)  # Status of the login: True if a user is logged in, False otherwise
     logout_finished = pyqtSignal()

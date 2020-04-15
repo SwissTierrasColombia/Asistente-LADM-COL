@@ -288,41 +288,41 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def save_settings(self, db):
         settings = QSettings()
         current_db_engine = self.cbo_db_engine.currentData()
-        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
+        settings.setValue('Asistente-LADM-COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
         dict_conn = self._lst_panel[current_db_engine].read_connection_parameters()
 
         self._lst_db[current_db_engine].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
-        settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
-            settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
+            settings.setValue('Asistente-LADM-COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
-        settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
+        settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
+        settings.setValue('Asistente-LADM-COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
-        settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
+        settings.setValue('Asistente-LADM-COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
         endpoint = self.txt_service_endpoint.text().strip()
-        settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        settings.setValue('Asistente-LADM-COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
 
         # Changes in automatic namespace, local_id or t_ili_tid configuration?
-        current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-        current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
-        current_local_id_enabled = settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-        current_t_ili_tid_enabled = settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        current_namespace_enabled = settings.value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
+        current_namespace_prefix = settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")
+        current_local_id_enabled = settings.value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
+        current_t_ili_tid_enabled = settings.value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
         if self.namespace_collapsible_group_box.isChecked():
-            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
+            settings.setValue('Asistente-LADM-COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
-        settings.setValue('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', self.chk_t_ili_tid.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', self.chk_t_ili_tid.isChecked())
 
         if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
            current_namespace_prefix != self.txt_namespace.text() or \
@@ -336,7 +336,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings = QSettings()
         default_db_engine = self.dbs_supported.id_default_db
 
-        self.init_db_engine = settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), default_db_engine)
+        self.init_db_engine = settings.value('Asistente-LADM-COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), default_db_engine)
         index_db_engine = self.cbo_db_engine.findData(self.init_db_engine)
 
         if index_db_engine == -1:
@@ -355,10 +355,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Restore QSettings
         settings = QSettings()
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_directories_is_checked = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
-            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR))
+            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR))
             self.custom_model_directories_line_edit.setVisible(True)
             self.custom_models_dir_button.setVisible(True)
         else:
@@ -367,21 +367,21 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_model_directories_line_edit.setVisible(False)
             self.custom_models_dir_button.setVisible(False)
 
-        use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)
+        use_roads = settings.value('Asistente-LADM-COL/quality/use_roads', True, bool)
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)
 
-        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
-        self.connection_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
-        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
-        self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
-        self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool))
-        self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
+        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
+        self.connection_box.setChecked(settings.value('Asistente-LADM-COL/sources/document_repository', True, bool))
+        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool))
+        self.chk_local_id.setChecked(settings.value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool))
+        self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool))
+        self.txt_namespace.setText(str(settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")))
 
-        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool))
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool))
 
-        self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
-        self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
+        self.txt_service_transitional_system.setText(settings.value('Asistente-LADM-COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
+        self.txt_service_endpoint.setText(settings.value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_engine_changed(self):
         if self._db is not None:

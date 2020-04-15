@@ -374,12 +374,12 @@ class LayerConfig:
         """
         return {
             # Resources don't seem to be initialized at this point, so return path and build icon when needed
-            LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
-            LADMNames.SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
-            LADMNames.BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
-            LADMNames.RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
-            LADMNames.PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
-            LADMNames.SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
+            LADMNames.SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM-COL/resources/images/surveying.png",
+            LADMNames.SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM-COL/resources/images/spatial_unit.png",
+            LADMNames.BA_UNIT_PACKAGE: ":/Asistente-LADM-COL/resources/images/ba_unit.png",
+            LADMNames.RRR_PACKAGE: ":/Asistente-LADM-COL/resources/images/rrr.png",
+            LADMNames.PARTY_PACKAGE: ":/Asistente-LADM-COL/resources/images/party.png",
+            LADMNames.SOURCE_PACKAGE: ":/Asistente-LADM-COL/resources/images/source.png"
         }
 
     @staticmethod

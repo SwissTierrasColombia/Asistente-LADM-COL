@@ -215,19 +215,19 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path_blo.setText(settings.value('Asistente-LADM_COL/etl_cobol/blo_path', ''))
-        self.txt_file_path_uni.setText(settings.value('Asistente-LADM_COL/etl_cobol/uni_path', ''))
-        self.txt_file_path_ter.setText(settings.value('Asistente-LADM_COL/etl_cobol/ter_path', ''))
-        self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
-        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/etl_cobol/gdb_path', ''))
+        self.txt_file_path_blo.setText(settings.value('Asistente-LADM-COL/etl_cobol/blo_path', ''))
+        self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/etl_cobol/uni_path', ''))
+        self.txt_file_path_ter.setText(settings.value('Asistente-LADM-COL/etl_cobol/ter_path', ''))
+        self.txt_file_path_pro.setText(settings.value('Asistente-LADM-COL/etl_cobol/pro_path', ''))
+        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/etl_cobol/gdb_path', ''))
 
     def load_lis_files(self, lis_paths):
         self.lis_paths = lis_paths

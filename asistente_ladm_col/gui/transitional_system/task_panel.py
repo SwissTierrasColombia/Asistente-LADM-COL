@@ -114,7 +114,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             action_item = QTreeWidgetItem([step.get_name()])
             action_item.setData(0, Qt.UserRole, step.get_id())
-            action_item.setIcon(0, QIcon(":/Asistente-LADM_COL/resources/images/process.svg"))
+            action_item.setIcon(0, QIcon(":/Asistente-LADM-COL/resources/images/process.svg"))
             action_item.setToolTip(0, step.get_description())
             step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             children.append(action_item)
@@ -213,7 +213,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             steps_status[i+1] = self.trw_task_steps.topLevelItem(i).checkState(column) == Qt.Checked
 
         # Don't save if not necessary
-        status = QSettings().value("Asistente-LADM_COL/transitional_system/tasks/{}/step_status".format(self._task.get_id()), "{}")
+        status = QSettings().value("Asistente-LADM-COL/transitional_system/tasks/{}/step_status".format(self._task.get_id()), "{}")
         if status != json.dumps(steps_status):
             self._task.save_steps_status(steps_status)
 

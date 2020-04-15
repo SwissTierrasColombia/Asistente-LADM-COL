@@ -70,7 +70,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
 
         self.restore_settings()
-        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM_COL/etl_cobol/folder_path', ''))
+        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_cobol/folder_path', ''))
 
         # Trigger validations right now
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
@@ -83,7 +83,7 @@ class MissingCobolSupplies(CobolBaseDialog):
     def accepted(self):
         self.bar.clearWidgets()
         self.save_settings()
-        QSettings().setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
+        QSettings().setValue('Asistente-LADM-COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
         self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
@@ -121,7 +121,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
 
-                                    msg = QCoreApplication.translate("Asistente-LADM_COL",
+                                    msg = QCoreApplication.translate("Asistente-LADM-COL",
                                         "Missing supplies report successfully generated in folder <a href='file:///{normalized_path1}'>{path1}</a>! The output Geopackage database can be found in <a href='file:///{normalized_path2}'>{path2}</a>").format(
                                         normalized_path1=normalize_local_url(self.xlsx_path),
                                         path1=self.xlsx_path,

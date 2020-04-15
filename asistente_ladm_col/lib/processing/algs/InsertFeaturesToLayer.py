@@ -92,7 +92,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
         # Make sure automatic values are calculated if automatic_values_in_batch_mode
         # is enabled and that they are not calculated otherwise
-        automatic_values_in_batch_mode = QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool)
+        automatic_values_in_batch_mode = QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool)
         list_automatic_fields = list()
         if automatic_values_in_batch_mode:
             # Get indexes that have an automatic value configured, except primary keys,

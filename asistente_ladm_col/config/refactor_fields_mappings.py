@@ -337,7 +337,7 @@ class RefactorFieldsMappings:
             ]
 
         # If the user wants to enable automatic fields...
-        if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+        if QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
             self.set_automatic_values(names, mapping, layer_name)
 
         return mapping
@@ -398,7 +398,7 @@ class RefactorFieldsMappings:
             ]
 
         # If the user wants to enable automatic fields...
-        if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+        if QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
             self.set_automatic_values(names, mapping, layer_name)
 
         return mapping

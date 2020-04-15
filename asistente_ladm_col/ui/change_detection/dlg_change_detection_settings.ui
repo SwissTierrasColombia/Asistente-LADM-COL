@@ -121,7 +121,7 @@
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>:/Asistente-LADM_COL/resources/images/db_edit.svg</normaloff>:/Asistente-LADM_COL/resources/images/db_edit.svg</iconset>
+                     <normaloff>:/Asistente-LADM-COL/resources/images/db_edit.svg</normaloff>:/Asistente-LADM-COL/resources/images/db_edit.svg</iconset>
                    </property>
                   </widget>
                  </item>
@@ -202,7 +202,7 @@
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>:/Asistente-LADM_COL/resources/images/db_edit.svg</normaloff>:/Asistente-LADM_COL/resources/images/db_edit.svg</iconset>
+                     <normaloff>:/Asistente-LADM-COL/resources/images/db_edit.svg</normaloff>:/Asistente-LADM-COL/resources/images/db_edit.svg</iconset>
                    </property>
                   </widget>
                  </item>

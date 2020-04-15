@@ -18,21 +18,21 @@ class HelpStrings(QObject):
                 </ul>""")
 
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP = QCoreApplication.translate("HelpStrings", "\
-Choose this option to load points to <b>Boundary Points</b> layer from <i>LADM_COL</i> model.\
+Choose this option to load points to <b>Boundary Points</b> layer from <i>LADM-COL</i> model.\
 <br><br>\
 <b>Boundary Point</b> is a specialized class of <i>LA_Point</i> which stores points that define a boundary.\
 Boundary is an instance of <i>LA_BoundaryFaceString</i> class and its specializations.\
 ")
 
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_SP = QCoreApplication.translate("HelpStrings", "\
-Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL</i> model.\
+Choose this option to load points to <b>Survey Points</b> layer from <i>LADM-COL</i> model.\
 <br><br>\
 <b>Survey Point</b> is a specialized class of <i>LA_Point</i> which represents a building, right of way or auxiliary vertex.\
 ")
 
         # <b>Punto de Control</b> es una clase especializada de <i>LA_Punto</i> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.
         self.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_CP = QCoreApplication.translate("HelpStrings", "\
-Choose this option to load points to <b>Control Points</b> layer from <i>LADM_COL</i> model.\
+Choose this option to load points to <b>Control Points</b> layer from <i>LADM-COL</i> model.\
 <br><br>\
 <b>Control Point</b> is a specialized class of <i>LA_Point</i> which represents points belonging to the local network, used in operation operation for surveying physical information of the territorial objects.\
 ")
@@ -264,7 +264,7 @@ Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing
 ")
 
         self.DLG_IMPORT_FROM_EXCEL = QCoreApplication.translate("HelpStrings", "\
-Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM_COL.<br><br><a href='#template'>Click to download Excel template</a><br><br><a href='#data'>Click to download Excel sample data</a>\
+Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM-COL.<br><br><a href='#template'>Click to download Excel template</a><br><br><a href='#data'>Click to download Excel sample data</a>\
 ")
 
         self.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
@@ -320,9 +320,9 @@ p, li {{ white-space: pre-wrap; }}
         layer_name = db.get_ladm_layer_name(layer)
         layer_is_spatial = layer.isSpatial()
 
-        # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.
+        # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM-COL.
         return QCoreApplication.translate("HelpStrings", "\
-               Choose this option to open a window that allows you to import data from a source {type} into the LADM_COL <b>{name}</b> {type}. \
+               Choose this option to open a window that allows you to import data from a source {type} into the LADM-COL <b>{name}</b> {type}. \
                <br><br>\
                If the field structure of input and target {type}s differs, you can set a field mapping to define field transformations and correspondence.\
                <br><br>\

@@ -4074,7 +4074,7 @@
   </Option>
   <Option name="help"/>
   <Option name="modelVariables"/>
-  <Option value="LADM_COL" type="QString" name="model_group"/>
+  <Option value="LADM-COL" type="QString" name="model_group"/>
   <Option value="ETL_SNC" type="QString" name="model_name"/>
   <Option type="Map" name="parameterDefinitions">
     <Option type="Map" name="barrio">

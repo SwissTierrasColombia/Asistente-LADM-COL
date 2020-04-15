@@ -35,7 +35,7 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
         QObject.__init__(self)
 
     def get_domain(self):
-        return QSettings().value('Asistente-LADM_COL/sources/service_transitional_system', self.ST_DEFAULT_DOMAIN)
+        return QSettings().value('Asistente-LADM-COL/sources/service_transitional_system', self.ST_DEFAULT_DOMAIN)
 
     @property
     def ST_LOGIN_SERVICE_URL(self):

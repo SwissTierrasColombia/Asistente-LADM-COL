@@ -182,7 +182,7 @@
        <string/>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:white;padding:1px;background-position:right bottom;background-repeat:no-repeat;background-image:url(':/Asistente-LADM_COL/resources/images/icon_about_transparency.png');</string>
+       <string notr="true">background-color:white;padding:1px;background-position:right bottom;background-repeat:no-repeat;background-image:url(':/Asistente-LADM-COL/resources/images/icon_about_transparency.png');</string>
       </property>
       <property name="html">
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;

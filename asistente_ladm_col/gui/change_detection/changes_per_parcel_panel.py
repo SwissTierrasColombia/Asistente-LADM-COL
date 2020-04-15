@@ -82,7 +82,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.init_map_tool = self.utils.canvas.mapTool()
 
         self.active_map_tool_before_custom = None
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM-COL/resources/images/spatial_unit.png"))
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
 
         # Create maptool
@@ -466,7 +466,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.search_data(previous_parcel_number=query)
 
         else:
-            self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.utils.iface.messageBar().pushMessage("Asistente LADM-COL",
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):

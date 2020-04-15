@@ -1659,7 +1659,7 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_gaps_in_plots(self, db, rule_name, translated_strings):
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
+        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.app.core.get_layer(db, db.names.OP_PLOT_T, True)
         if not plot_layer:
             return
