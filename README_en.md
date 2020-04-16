@@ -18,7 +18,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/2.99.2)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) and allows users to:
+The current version ([2.99.3](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/2.99.3)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -30,7 +30,7 @@ The current version ([2.99.2](https://github.com/AgenciaImplementacion/Asistente
  - Create database structures for the LADM-COL v2.9.6 model.
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
-   - GeoPackage: quality validations, parcel queries and reports are not yet supported.
+   - GeoPackage: quality validations and reports are not yet supported.
  - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/AgenciaImplementacion/LADM-COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
@@ -145,10 +145,10 @@ To use the LADM-COL Assistant you need:
  - Base software:
    - QGIS v3.10.0-A Coruña or higher
    - Java v1.8
-   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). v12 is not supported yet.
+   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). Support for v12 is still experimental.
    - PostGIS 2.4 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.0.0
+   - QGIS Model Baker v6.1.1.1
    - MapSwipe Tool v1.2
 
 ## Testing

@@ -19,7 +19,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/2.99.2)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
+La versión actual ([2.99.3](https://github.com/AgenciaImplementacion/Asistente-LADM-COL/releases/tag/2.99.3)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) y permite:
 
  - Integración con el Sistema de Transición:
    - Autenticación.
@@ -31,7 +31,7 @@ La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-
  - Crear estructura de base de datos conforme con el modelo LADM-COL v2.9.6.
  - Soporte de dos motores para manejar datos de LADM-COL:
    - PostgreSQL/PostGIS: Soporte total.
-   - GeoPackage: Validaciones de calidad, consultas y reportes no están soportadas.
+   - GeoPackage: Validaciones de calidad y reportes no están soportados.
  - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
@@ -146,10 +146,10 @@ Para usar el Asistente LADM-COL se requiere:
  - Software base:
    - QGIS v3.10.0-A Coruña o superior
    - Java v1.8
-   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
+   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). El soporte de la versión 12 es todavía experimental.
    - PostGIS 2.4 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.0.0
+   - QGIS Model Baker v6.1.1.1
    - MapSwipe Tool v1.2
  
 ## Pruebas automatizadas y asistidas al software
