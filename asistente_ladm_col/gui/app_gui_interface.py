@@ -174,7 +174,7 @@ class AppGUIInterface(QObject):
 
                 feedback = CustomFeedbackWithErrors()
                 try:
-                    msg = QCoreApplication.translate("AppGUIInterface", "Exporting queality errors to GeoPackage...")
+                    msg = QCoreApplication.translate("AppGUIInterface", "Exporting quality errors to GeoPackage...")
                     with ProcessWithStatus(msg):
                         processing.run("native:package", {
                             'LAYERS': layers,
