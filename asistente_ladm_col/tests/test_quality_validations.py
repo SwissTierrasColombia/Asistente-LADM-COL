@@ -1,11 +1,15 @@
 import nose2
+import re
+
 from qgis.core import (QgsVectorLayer,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       Qgis)
 from qgis.testing import (unittest,
                           start_app)
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.logic.quality.facade_quality_rules import FacadeQualityRules
 from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
@@ -49,7 +53,7 @@ class TesQualityValidations(unittest.TestCase):
         cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
-        test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks']
+        test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_ladm_col_logic_checks', 'test_logic_quality_rules']
 
         print("INFO: Restoring databases to be used")
         for test_connection_db in test_connection_dbs:
@@ -1275,10 +1279,157 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
         self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
 
+    def test_no_error_quality_rule(self):
+        self.db_gpkg = get_gpkg_conn('test_valid_quality_rules_gpkg')
+        result = self.db_gpkg.test_connection()
+
+        # When the tests are run the REGEXP function does not find it sqlite, so it is necessary to register it
+        # sqlite3.OperationalError: no such function: REGEXP
+        self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)  # Create custom function because it not
+        self.assertTrue(result[0], 'The test connection is not working')
+        query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries(self.qgis_utils)
+
+        # Points rules
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_control_points(self.db_gpkg)[1], Qgis.Info)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.facade_quality_rules.validate_boundary_points_covered_by_boundary_nodes(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_boundary_points_covered_by_plot_nodes(self.db_gpkg)[1], Qgis.Success)
+
+        # Lines rules
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_boundaries_are_not_split(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_boundaries_covered_by_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_boundary_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_dangles_in_boundaries(self.db_gpkg)[1], Qgis.Success)
+
+        # Polygons rules
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_buildings(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_rights_of_way(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_plots_covered_by_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_right_of_way_overlaps_buildings(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_gaps_in_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_multipart_in_right_of_way(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_plot_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_buildings_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.facade_quality_rules.validate_building_units_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
+
+        # Logic rules
+        res, records = query_manager.get_parcels_with_not_right(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_group_party_fractions_that_do_not_add_one(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_parcels_with_invalid_department_code(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_parcels_with_invalid_municipality_code(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_parcels_with_invalid_parcel_number(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_invalid_col_party_type_natural(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_invalid_col_party_type_no_natural(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+        res, records = query_manager.get_uebaunit_parcel(self.db_gpkg)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 0)
+
+    def test_logic_quality_rules_pg(self):
+        db_pg = get_pg_conn('test_logic_quality_rules')
+        names = db_pg.names
+        result = db_pg.test_connection()
+
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertIsNotNone(names.OP_BOUNDARY_POINT_T, 'Names is None')
+
+        self.check_logic_quality_rules(db_pg)
+
+    def test_logic_quality_rules_gpkg(self):
+        db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
+        result = db_gpkg.test_connection()
+
+        # When the tests are run the REGEXP function does not find it sqlite, so it is necessary to register it
+        # sqlite3.OperationalError: no such function: REGEXP
+        db_gpkg.conn.create_function("REGEXP", 2, _regexp)  # Create custom function because it not
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_logic_quality_rules(db_gpkg)
+
+    def check_logic_quality_rules(self, db):
+
+        query_manager = ConfigDBsSupported().get_db_factory(db.engine).get_ladm_queries(self.qgis_utils)
+
+        # Logic rules
+        res, records = query_manager.get_parcels_with_not_right(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 2)
+
+        res, records = query_manager.get_group_party_fractions_that_do_not_add_one(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 1)
+
+        res, records = query_manager.get_parcels_with_invalid_department_code(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 4)
+
+        res, records = query_manager.get_parcels_with_invalid_municipality_code(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 3)
+
+        res, records = query_manager.get_parcels_with_invalid_parcel_number(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 6)
+
+        res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 4)
+
+        res, records = query_manager.get_invalid_col_party_type_natural(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 5)
+
+        res, records = query_manager.get_invalid_col_party_type_no_natural(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 3)
+
+        res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 17)
+
+        res, records = query_manager.get_uebaunit_parcel(db)
+        self.assertTrue(res)
+        self.assertEqual(len(records), 10)
+
     @classmethod
     def tearDownClass(cls):
         print("INFO: Unloading Model Baker...")
         unload_qgis_model_baker()
+
+
+def _regexp(pattern, value):
+    if value is None:
+        return None
+    return re.search(pattern, value) is not None
 
 if __name__ == '__main__':
     nose2.main()
