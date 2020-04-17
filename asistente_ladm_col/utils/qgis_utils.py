@@ -1182,3 +1182,21 @@ class QGISUtils(QObject):
             self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
                 "You can start moving nodes in layers {} and {}, simultaneously!").format(
                     ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)
+
+    def add_error_layer(self, db, error_layer):
+        group = self.get_error_layers_group()
+
+        # Check if layer is loaded and remove it
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == error_layer.name():
+                group.removeLayer(layer.layer())
+                break
+
+        added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+        index = QgisModelBakerUtils().get_suggested_index_for_layer(added_layer, group)
+        added_layer = group.insertLayer(index, added_layer).layer()
+        if added_layer.isSpatial():
+            # db connection is none because we are using a memory layer
+            self.symbology.set_layer_style_from_qml(db, added_layer, is_error_layer=True)
+        return added_layer

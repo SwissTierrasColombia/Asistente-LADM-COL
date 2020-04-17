@@ -979,3 +979,53 @@ class GeometryUtils(QObject):
                         feature_ids.append(candidate_feature.id())
             intersecting_ids.append(feature_ids)
         return intersecting_ids
+
+    @staticmethod
+    def get_polygon_nodes_layer(polygon_layer, id_field):
+        """
+        Layer is created with unique vertices. It is necessary because 'remove duplicate vertices' processing
+        algorithm does not filter the data as wee need them
+        """
+        tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        plot_nodes_layer = QgsVectorLayer("Point?crs={}".format(polygon_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
+        data_provider = plot_nodes_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.String)])
+        plot_nodes_layer.updateFields()
+
+        id_field_idx = tmp_plot_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = list()
+        fs = list()
+        for f in tmp_plot_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                new_feature = QgsVectorLayerUtils().createFeature(plot_nodes_layer, f.geometry(), {0: f[id_field]})
+                fs.append(new_feature)
+
+        plot_nodes_layer.dataProvider().addFeatures(fs)
+        return plot_nodes_layer
+
+    @staticmethod
+    def get_points_not_covered_by_points(input_layer, join_layer, id_field):
+        # get non matching features between input and join layer
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {'INPUT': input_layer,
+                                             'JOIN': join_layer,
+                                             'PREDICATE': [0],  # Intersects
+                                             'JOIN_FIELDS': [id_field],
+                                             'METHOD': 0,
+                                             'DISCARD_NONMATCHING': False,
+                                             'PREFIX': '',
+                                             'NON_MATCHING': 'memory:'})['NON_MATCHING']
+        features = list()
+
+        for feature in spatial_join_layer.getFeatures():
+            # When the two layers have the same attribute, the field of the layer
+            # that makes the join is rename and input layer conserve the same name
+            feature_id = feature[id_field]  # Whe use input layer field
+            feature_geom = feature.geometry()
+            features.append((feature_id, feature_geom))
+
+        return features

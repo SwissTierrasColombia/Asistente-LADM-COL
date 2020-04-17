@@ -32,18 +32,18 @@ from qgis.core import Qgis
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.logic.quality.facade_quality_rules import FacadeQualityRules
+from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 from asistente_ladm_col.config.general_config import (LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CLOSE)
-from asistente_ladm_col.config.layer_config import LayerConfig
+
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.utils import Utils
-from asistente_ladm_col.utils.decorators import _log_quality_rules
+from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.lib.logger import Logger
 
@@ -64,7 +64,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.quality_rules_manager = QualityRuleManager()
         self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries(self.qgis_utils)
         self.utils = Utils()
-        self.facade_quality_rules = FacadeQualityRules(self.qgis_utils)
+        self.quality_rules = QualityRules(self.qgis_utils)
         self.names = self._db.names
         self.log_dialog_quality_text = ""
         self.log_dialog_quality_text_content = ""
@@ -83,18 +83,18 @@ class QualityDialog(QDialog, DIALOG_UI):
         Logger().clear_message_bar()
 
         self.items_dict = collections.OrderedDict()
-        for quality_rule_group_code, quality_rule_group_name in self.quality_rules_manager.quality_rule_groups.items():
+        for enum_quality_rule_group, quality_rule_group_name in self.quality_rules_manager.quality_rule_groups.items():
             self.items_dict[quality_rule_group_name] = {
-                'rules': [{'id': rule_k, 'text': rule_v} for rule_k, rule_v in self.quality_rules_manager.get_rules(quality_rule_group_code).items()]
+                'rules': [{'id': k_rule, 'text': v_rule.rule_name} for k_rule, v_rule in self.quality_rules_manager.get_quality_rules_by_group(enum_quality_rule_group).items()]
             }
 
-            if quality_rule_group_code == EnumQualityRule.Point:
+            if enum_quality_rule_group == EnumQualityRule.Point:
                 self.items_dict[quality_rule_group_name]['icon'] = 'points'
-            elif quality_rule_group_code == EnumQualityRule.Line:
+            elif enum_quality_rule_group == EnumQualityRule.Line:
                 self.items_dict[quality_rule_group_name]['icon'] = 'lines'
-            elif quality_rule_group_code == EnumQualityRule.Polygon:
+            elif enum_quality_rule_group == EnumQualityRule.Polygon:
                 self.items_dict[quality_rule_group_name]['icon'] = 'polygons'
-            elif quality_rule_group_code == EnumQualityRule.Logic:
+            elif enum_quality_rule_group == EnumQualityRule.Logic:
                 self.items_dict[quality_rule_group_name]['icon'] = 'tables'
 
         self.load_items()
@@ -164,86 +164,13 @@ class QualityDialog(QDialog, DIALOG_UI):
             else:
                 self.qgis_utils.remove_error_group_requested.emit()
 
-    @_log_quality_rules
+    @_log_quality_rule_validations
     def execute_quality_rule(self, id, rule_name):
         # NOTE: Do not remove the named parameters, this is needed for making a decorator that thinks they are
         # optional happy!
-        # POINTS QUALITY RULES
-        if id == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
-            result = self.facade_quality_rules.validate_overlaps_in_boundary_points(self._db)
-        elif id == EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS:
-            result = self.facade_quality_rules.validate_overlaps_in_control_points(self._db)
-        elif id == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES:
-            result = self.facade_quality_rules.validate_boundary_points_covered_by_boundary_nodes(self._db)
-        elif id == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES:
-            result = self.facade_quality_rules.validate_boundary_points_covered_by_plot_nodes(self._db)
-        # LINES QUALITY RULES
-        elif id == EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES:
-            result = self.facade_quality_rules.validate_overlaps_in_boundaries(self._db)
-        elif id == EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT:
-            result = self.facade_quality_rules.validate_boundaries_are_not_split(self._db)
-        elif id == EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS:
-            result = self.facade_quality_rules.validate_boundaries_covered_by_plots(self._db)
-        elif id == EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS:
-            result = self.facade_quality_rules.validate_boundary_nodes_covered_by_boundary_points(self._db)
-        elif id == EnumQualityRule.Line.DANGLES_IN_BOUNDARIES:
-            result = self.facade_quality_rules.validate_dangles_in_boundaries(self._db)
-        # POLYGONS QUALITY RULES
-        elif id == EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS:
-            result = self.facade_quality_rules.validate_overlaps_in_plots(self._db)
-        elif id == EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS:
-            result = self.facade_quality_rules.validate_overlaps_in_buildings(self._db)
-        elif id == EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY:
-            result = self.facade_quality_rules.validate_overlaps_in_rights_of_way(self._db)
-        elif id == EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES:
-            result = self.facade_quality_rules.validate_plots_covered_by_boundaries(self._db)
-        # elif id == 'check_missing_survey_points_in_buildings':
-        #    self.facade_quality_rules.check_missing_survey_points_in_buildings(self._db)
-        elif id == EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS:
-            result = self.facade_quality_rules.validate_right_of_way_overlaps_buildings(self._db)
-        elif id == EnumQualityRule.Polygon.GAPS_IN_PLOTS:
-            result = self.facade_quality_rules.validate_gaps_in_plots(self._db)
-        elif id == EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY:
-            result = self.facade_quality_rules.validate_multipart_in_right_of_way(self._db)
-        elif id == EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS:
-            result = self.facade_quality_rules.validate_plot_nodes_covered_by_boundary_points(self._db)
-        elif id == EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS:
-            result = self.facade_quality_rules.validate_buildings_should_be_within_plots(self._db)
-        elif id == EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS:
-            result = self.facade_quality_rules.validate_building_units_should_be_within_plots(self._db)
-        # LOGIC QUALITY RULES
-        elif id == EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP:
-            result = self.facade_quality_rules.validate_parcel_right_relationship(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE:
+        list_result = self.quality_rules.validate_quality_rule(self._db, self._ladm_queries, id)
 
-            # Check a predifene list of tables   list of define table with
-            logic_consistency_tables = LayerConfig.get_logic_consistency_tables(self._db.names)
-            for table in logic_consistency_tables:
-                fields = logic_consistency_tables[table]
-                result = self.facade_quality_rules.validate_duplicate_records_in_a_table(self._db, self._ladm_queries, table, fields)
-                self.log_message(result[0], result[1])  # message, Qgis::MessageLevel
-
-        elif id == EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS:
-            result = self.facade_quality_rules.validate_fraction_sum_for_party_groups(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS:
-            result = self.facade_quality_rules.validate_department_code_has_two_numerical_characters(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS:
-            result = self.facade_quality_rules.validate_municipality_code_has_three_numerical_characters(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS:
-            result = self.facade_quality_rules.validate_parcel_number_has_30_numerical_characters(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS:
-            result = self.facade_quality_rules.validate_parcel_number_before_has_20_numerical_characters(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE:
-            result = self.facade_quality_rules.validate_col_party_natural_type(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE:
-            result = self.facade_quality_rules.validate_col_party_no_natural_type(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER:
-            result = self.facade_quality_rules.validate_parcel_type_and_22_position_of_parcel_number(self._db, self._ladm_queries)
-        elif id == EnumQualityRule.Logic.UEBAUNIT_PARCEL:
-            result = self.facade_quality_rules.validate_uebaunit_parcel(self._db, self._ladm_queries)
-
-        # It does not apply for duplicate table records because it was done before
-        if id != EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE:
+        for result in list_result:
             self.log_message(result[0], result[1])  # message, Qgis::MessageLevel
 
     def set_count_topology_rules(self, count):
@@ -266,7 +193,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         elif level == Qgis.Success:
             prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
-        else: # Qgis.Info
+        else: # Qgis.Warning
             prefix = LOG_QUALITY_LIST_ITEM_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CLOSE
 

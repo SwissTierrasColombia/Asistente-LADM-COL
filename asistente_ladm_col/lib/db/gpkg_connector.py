@@ -45,7 +45,7 @@ class GPKGConnector(DBConnector):
         'dbfile': ''
     }
 
-    def __init__(self, uri, conn_dict={}):
+    def __init__(self, uri, conn_dict=dict()):
         DBConnector.__init__(self, uri, conn_dict)
         self.engine = 'gpkg'
         self.conn = None
@@ -276,7 +276,7 @@ class GPKGConnector(DBConnector):
         #self.logger.debug(__name__, "Units found: {}".format(dict_units))
         return dict_units
 
-    def get_models(self):
+    def get_models(self, schema=None):
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:

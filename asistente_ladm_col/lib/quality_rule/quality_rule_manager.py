@@ -34,11 +34,7 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         self.__quality_rules_data = QualityRuleConfig.get_quality_rules_config()
         self.__translated_strings = TranslatableConfigStrings().get_translatable_config_strings()
         self._quality_rule_groups = dict()
-        self.__point_quality_rules = dict()
-        self.__line_quality_rules = dict()
-        self.__polygon_quality_rules = dict()
-        self.__logic_quality_rules = dict()
-        self.__all_quality_rules = dict()
+        self.__quality_rules = dict()
 
         self._initialize_quality_rule_manager()
 
@@ -48,42 +44,40 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
             self._quality_rule_groups[group_k] = group_v[QUALITY_GROUP_NAME]
 
             for rule_k, rule_v in group_v[QUALITY_RULES].items():
-                if group_k == EnumQualityRule.Point:
-                    self.__point_quality_rules[rule_k] = QualityRule(rule_v)
-                elif group_k == EnumQualityRule.Line:
-                    self.__line_quality_rules[rule_k] = QualityRule(rule_v)
-                elif group_k == EnumQualityRule.Polygon:
-                    self.__polygon_quality_rules[rule_k] = QualityRule(rule_v)
-                elif group_k == EnumQualityRule.Logic:
-                    self.__logic_quality_rules[rule_k] = QualityRule(rule_v)
-
-        for quality_rules in [self.__point_quality_rules, self.__line_quality_rules, self.__polygon_quality_rules, self.__logic_quality_rules]:
-            self.__all_quality_rules.update(quality_rules)
-            self.logger.info(__name__, "All quality rules were register...")
+                self.__quality_rules[rule_k] = QualityRule(rule_v)
+        self.logger.info(__name__, "All quality rules were register...")
 
     def get_quality_rule(self, rule_code):
-        return self.__all_quality_rules.get(rule_code)
+        return self.__quality_rules.get(rule_code)
 
     @property
     def quality_rule_groups(self):
         return self._quality_rule_groups
 
-    def get_rules(self, group_code):
-        if group_code == EnumQualityRule.Point:
-            return self.__get_rules(self.__point_quality_rules)
-        elif group_code == EnumQualityRule.Line:
-            return self.__get_rules(self.__line_quality_rules)
-        elif group_code == EnumQualityRule.Polygon:
-            return self.__get_rules(self.__polygon_quality_rules)
-        elif group_code == EnumQualityRule.Logic:
-            return self.__get_rules(self.__logic_quality_rules)
+    def get_quality_rules_by_group(self, enum_group=None):
+        return self.__get_quality_rules_by_group(enum_group)
 
-    @staticmethod
-    def __get_rules(quality_rules):
-        rules = dict()
-        for rule in quality_rules:
-            rules[quality_rules[rule].rule_id] = quality_rules[rule].rule_name
-        return rules
+    def __get_quality_rules_by_group(self, enum_group):
+        quality_rules_group = dict()
+        if enum_group:
+            quality_rules_group = {k_rule: v_rule for k_rule, v_rule in self.__quality_rules.items() if k_rule in enum_group}
+        else:
+            quality_rules_group[EnumQualityRule.Point] = dict()
+            quality_rules_group[EnumQualityRule.Line] = dict()
+            quality_rules_group[EnumQualityRule.Polygon] = dict()
+            quality_rules_group[EnumQualityRule.Logic] = dict()
+
+            for k_quality_rule, v_quality_rule in self.__quality_rules.items():
+                if k_quality_rule in EnumQualityRule.Point:
+                    quality_rules_group[EnumQualityRule.Point][k_quality_rule] = v_quality_rule
+                elif k_quality_rule in EnumQualityRule.Line:
+                    quality_rules_group[EnumQualityRule.Line][k_quality_rule] = v_quality_rule
+                elif k_quality_rule in EnumQualityRule.Polygon:
+                    quality_rules_group[EnumQualityRule.Polygon][k_quality_rule] = v_quality_rule
+                elif k_quality_rule in EnumQualityRule.Logic:
+                    quality_rules_group[EnumQualityRule.Logic][k_quality_rule] = v_quality_rule
+
+        return quality_rules_group
 
     def get_error_message(self, error_code):
         return self.__translated_strings.get(error_code)

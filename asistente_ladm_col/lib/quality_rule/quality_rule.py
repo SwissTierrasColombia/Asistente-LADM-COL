@@ -35,8 +35,8 @@ class QualityRule:
         self.logger = Logger()
         self._rule_id = None
         self._rule_name = None
-        self._table_name = None
-        self._table_fields = None
+        self._error_table_name = None
+        self._error_table_fields = None
         self._error_codes = None
 
         self._initialize_quality_rule()
@@ -49,11 +49,11 @@ class QualityRule:
         if self.__quality_rule_data:
             self._rule_id = self.__quality_rule_data.get(QUALITY_RULE_ID)
             self._rule_name = self.__quality_rule_data.get(QUALITY_RULE_NAME)
-            self._table_name = self.__quality_rule_data.get(QUALITY_RULE_TABLE_NAME)
-            self._table_fields = self.__quality_rule_data.get(QUALITY_RULE_TABLE_FIELDS)
+            self._error_table_name = self.__quality_rule_data.get(QUALITY_RULE_TABLE_NAME)
+            self._error_table_fields = self.__quality_rule_data.get(QUALITY_RULE_TABLE_FIELDS)
 
-            if self._table_fields:
-                self._table_fields.extend(common_fields)
+            if self._error_table_fields:
+                self._error_table_fields.extend(common_fields)
 
             self._error_codes = self.__quality_rule_data.get(QUALITY_RULE_DOMAIN_ERROR_CODES)
 
@@ -66,12 +66,12 @@ class QualityRule:
         return self._rule_name
 
     @property
-    def table_name(self):
-        return self._table_name
+    def error_table_name(self):
+        return self._error_table_name
 
     @property
-    def table_fields(self):
-        return self._table_fields
+    def error_table_fields(self):
+        return self._error_table_fields
 
     @property
     def error_codes(self):

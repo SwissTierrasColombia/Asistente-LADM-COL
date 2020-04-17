@@ -85,6 +85,9 @@ class DBConnector(QObject):
     def equals(self, db):
         return self.dict_conn_params == db.dict_conn_params
 
+    def _metadata_exists(self):
+        raise NotImplementedError
+
     def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
         raise NotImplementedError
 
@@ -206,7 +209,7 @@ class DBConnector(QObject):
     def get_ladm_layer_name(self, layer, validate_is_ladm=False):
         raise NotImplementedError
 
-    def get_interlis_version(self):
+    def get_ili2db_version(self):
         raise NotImplementedError
 
     def get_table_and_field_names(self):  # TODO: Add test
@@ -285,4 +288,7 @@ class DBConnector(QObject):
         """
         :return: Whether the connection is opened after calling this method or not
         """
+        raise NotImplementedError
+
+    def execute_sql_query(self, query):
         raise NotImplementedError

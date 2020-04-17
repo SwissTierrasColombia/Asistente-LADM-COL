@@ -10,8 +10,9 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
-from asistente_ladm_col.logic.quality.facade_quality_rules import FacadeQualityRules
-from asistente_ladm_col.logic.quality.utils_quality_rules import UtilsQualityRules
+from asistente_ladm_col.logic.quality.quality_rules import QualityRules
+from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules
+from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -49,7 +50,7 @@ class TesQualityValidations(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker()
         cls.qgis_utils = QGISUtils()
-        cls.facade_quality_rules = FacadeQualityRules(cls.qgis_utils)
+        cls.quality_rules = QualityRules(cls.qgis_utils)
         cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
@@ -134,7 +135,7 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        features = UtilsQualityRules.get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer,
+        features = PointQualityRules.get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer,
                                                                                             plot_layer,
                                                                                             self.names.T_ID_F)
         self.assertEqual(len(features), 14)
@@ -174,9 +175,9 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        features = UtilsQualityRules.get_plot_nodes_features_not_covered_by_boundary_points(boundary_point_layer,
-                                                                                            plot_layer,
-                                                                                            self.names.T_ID_F)
+        features = PolygonQualityRules.get_plot_nodes_features_not_covered_by_boundary_points(boundary_point_layer,
+                                                                                              plot_layer,
+                                                                                              self.names.T_ID_F)
         self.assertEqual(len(features), 10)
         result = [{'geom': f[1].asWkt(), 'id': f[0]} for f in features]
 
@@ -217,12 +218,12 @@ class TesQualityValidations(unittest.TestCase):
         point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.table_name, "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.error_table_name, "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.table_fields)
+        data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.facade_quality_rules.line_quality_rules.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.line_quality_rules.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
@@ -318,13 +319,13 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.table_name, "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.error_table_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.table_fields)
+        data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.facade_quality_rules.point_quality_rules.get_boundary_points_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.point_quality_rules.get_boundary_points_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -440,13 +441,13 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.table_name, "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.error_table_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.table_fields)
+        data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.facade_quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -531,12 +532,12 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.table_name, "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.error_table_name, "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.table_fields)
+        data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.facade_quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 11)
@@ -858,7 +859,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -888,7 +889,7 @@ class TesQualityValidations(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -928,7 +929,7 @@ class TesQualityValidations(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.facade_quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -1055,7 +1056,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 15)
 
-        end_points, dangle_ids = self.facade_quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
         boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
@@ -1073,7 +1074,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 8)
 
-        end_points, dangle_ids = self.facade_quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
     def test_boundaries_are_not_split(self):
@@ -1290,29 +1291,29 @@ class TesQualityValidations(unittest.TestCase):
         query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries(self.qgis_utils)
 
         # Points rules
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_control_points(self.db_gpkg)[1], Qgis.Info)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
-        self.assertEqual(self.facade_quality_rules.validate_boundary_points_covered_by_boundary_nodes(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_boundary_points_covered_by_plot_nodes(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_control_points(self.db_gpkg)[1], Qgis.Warning)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.quality_rules.validate_boundary_points_covered_by_boundary_nodes(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_boundary_points_covered_by_plot_nodes(self.db_gpkg)[1], Qgis.Success)
 
         # Lines rules
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_boundaries(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_boundaries_are_not_split(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_boundaries_covered_by_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_boundary_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_dangles_in_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_boundaries_are_not_split(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_boundaries_covered_by_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_boundary_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_dangles_in_boundaries(self.db_gpkg)[1], Qgis.Success)
 
         # Polygons rules
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_buildings(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_overlaps_in_rights_of_way(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_plots_covered_by_boundaries(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_right_of_way_overlaps_buildings(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_gaps_in_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_multipart_in_right_of_way(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_plot_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_buildings_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.facade_quality_rules.validate_building_units_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_buildings(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_overlaps_in_rights_of_way(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_plots_covered_by_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_right_of_way_overlaps_buildings(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_gaps_in_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_multipart_in_right_of_way(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_plot_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_buildings_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_building_units_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
 
         # Logic rules
         res, records = query_manager.get_parcels_with_not_right(self.db_gpkg)

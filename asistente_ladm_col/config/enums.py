@@ -113,7 +113,7 @@ class EnumLayerRegistryType(Enum):
 
 
 # https://www.notinventedhere.org/articles/python/how-to-use-strings-as-name-aliases-in-python-enums.html
-class EnumQualityRule(Enum):
+class EnumQualityRule:
     class Point(Enum):
         OVERLAPS_IN_BOUNDARY_POINTS = 1001
         OVERLAPS_IN_CONTROL_POINTS = 1002
@@ -151,11 +151,3 @@ class EnumQualityRule(Enum):
         COL_PARTY_NOT_NATURAL_TYPE = 4009
         PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER = 4010
         UEBAUNIT_PARCEL = 4011
-
-
-    # Avoid using "value" property when I want to access a Enum within another Enum
-    # https://stackoverflow.com/a/50261702/9802768
-    def __getattr__(self, item):
-        if item != '_value_':
-            return getattr(self.value, item).value
-        raise AttributeError
