@@ -923,7 +923,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       self.ladm_data)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
         self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_queries)
 
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
@@ -1188,7 +1188,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                        all_parcels_mode)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
@@ -1264,7 +1264,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self._dock_widget_transitional_system.logout_requested.connect(self.session_logout)
             self._dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
             self.session.logout_finished.connect(self._dock_widget_transitional_system.after_logout)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
+            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
 
     def session_logout_from_action(self):
         """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
