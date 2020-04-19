@@ -288,10 +288,9 @@ class AsistenteLADMCOLPlugin(QObject):
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
         self._fill_right_of_way_relations_action.triggered.connect(partial(self.call_fill_right_of_way_relations, self._context_collected))
 
-        self._import_from_intermediate_structure_action = QAction(
-            QIcon(":/Asistente-LADM-COL/resources/images/excel.svg"),
-            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-            self.main_window)
+        self._import_from_intermediate_structure_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/excel.svg"),
+                                                                  TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                                                                  self.main_window)
         self._import_from_intermediate_structure_action.triggered.connect(partial(self.call_import_from_intermediate_structure, self._context_collected))
 
         self.gui_builder.register_actions({
@@ -407,7 +406,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._quality_operation_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
+                self.main_window)
+
+        self._fix_ladm_col_relations_action = QAction(
+                QIcon(":/Asistente-LADM-COL/resources/images/relationships.svg"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fix LADM-COL relations"),
+                self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_point_cad, self._context_collected))
@@ -426,6 +431,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_source_operation_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
         self._upload_source_files_operation_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
         self._quality_operation_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
+        self._fix_ladm_col_relations_action.triggered.connect(partial(self.call_fix_ladm_col_relations, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_CREATE_POINT: self._point_surveying_and_representation_operation_action,
@@ -443,7 +449,8 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_UPLOAD_PENDING_SOURCE: self._upload_source_files_operation_action,
             ACTION_CREATE_RIGHT: self._right_rrr_operation_action,
             ACTION_CREATE_RESTRICTION: self._restriction_rrr_operation_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action})
+            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
+            ACTION_FIX_LADM_COL_RELATIONS: self._fix_ladm_col_relations_action})
 
     def create_cadastre_form_actions(self):
         self._property_record_card_action = QAction(
@@ -847,6 +854,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection())
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
         self._dlg.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def call_fix_ladm_col_relations(self, *args):
+        self.app.core.fix_ladm_col_relations(self.get_db_connection())  # Always for COLLECTED db
 
     def unload(self):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)

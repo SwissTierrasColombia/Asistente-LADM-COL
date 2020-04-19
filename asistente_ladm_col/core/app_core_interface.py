@@ -151,9 +151,12 @@ class AppCoreInterface(QObject):
         :param load: Whether to load layer in the layer tree/map canvas or not (if not, it'll only be added to registry)
         :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
         one could be interested in handling the map_freeze from the outside
-        :param layer_modifiers: is a dict that it have properties that modify the layer properties
-        like prefix_layer_name, suffix_layer_name, symbology_group
+        :param layer_modifiers: dict with properties that modify default layer properties
+                                like prefix_layer_name, suffix_layer_name and symbology_group
         """
+        if not layers:
+            return
+
         if emit_map_freeze:
             self.map_freeze_requested.emit(True)
 
@@ -220,6 +223,40 @@ class AppCoreInterface(QObject):
 
         if layer_not_loaded:  # If it is not possible to obtain the requested layers we make the variable layers None
             layers = None
+
+    def fix_ladm_col_relations(self, db):
+        """
+        Base on loaded ladm layers, find their related domains and layers, load
+        them to QGIS and configure missing relations. This is handy when users
+        removed some domain or related tables and would like their
+        configuration restored, or simply when they loaded some layers (which
+        loads related layers), and now they would like to continue working on
+        those related layers, but need their relations completely configured.
+
+        :param db: DB connector object
+        """
+        ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)
+        list_ladm_layers = list(ladm_layers.keys())
+        if ladm_layers:
+            layers_to_load = self.get_related_layers(list_ladm_layers, ladm_layers)
+            print(layers_to_load)
+            all_layers_to_load = list(set(list_ladm_layers + layers_to_load))
+
+            #self.remove_registry_layers(db, layers)  # Should we? WHICH ONES?
+
+            self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
+            self.qgis_model_baker_utils.load_layers(db, layers_to_load)
+            ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
+
+            # Now that all layers are loaded, fix relations in all layers
+            for layer_name, layer in ladm_layers.items():
+                self.configure_missing_relations(db, layer, layer_name)
+                self.configure_missing_bags_of_enum(db, layer, layer_name)
+                self.set_layer_visibility(layer, layer_name in list_ladm_layers)  # Turn off layer loaded as related layer
+
+            self.logger.success_msg(__name__, QCoreApplication.translate("AppCoreInterface", "Relations have been fixed for all LADM-COL loaded layers!"), 15)
+        else:
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface", "No layers to fix their relations."), 5)
 
     def get_related_layers(self, layer_names, ladm_layers):
         """
@@ -337,13 +374,12 @@ class AppCoreInterface(QObject):
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
         if layer.isSpatial():
-            SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+            self.set_layer_style(db, layer, layer_modifiers)
 
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
                 visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
-            node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
-            self.set_node_visibility_requested.emit(node, visible)
+            self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, db, layer, layer_name):
         """
@@ -455,6 +491,26 @@ class AppCoreInterface(QObject):
 
         if full_layer_name and full_layer_name != layer_name:
             layer.setName(full_layer_name)
+
+    def set_layer_style(self, db, layer, layer_modifiers):
+        """
+        Handy function to set the style for a layer
+
+        :param db: DB Connector object
+        :param layer: QgsMapLayer object
+        :param layer_modifiers: dict with symbology_group property that modifies default layer properties
+        """
+        SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+
+    def set_layer_visibility(self, layer, visible):
+        """
+        Handy function to turn on/off a layer
+
+        :param layer: QgsMapLayer object
+        :param visible: Whether the layer should be visible or not
+        """
+        node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        self.set_node_visibility_requested.emit(node, visible)
 
     def set_display_expressions(self, db, layer, layer_name):
         dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names)

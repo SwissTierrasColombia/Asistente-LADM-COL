@@ -150,7 +150,9 @@ class GUI_Config(QObject):
                         },
                         SEPARATOR,
                         ACTION_UPLOAD_PENDING_SOURCE,
-                        ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
+                        ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                        SEPARATOR,
+                        ACTION_FIX_LADM_COL_RELATIONS
                     ]
                 },
                 ACTION_LOAD_LAYERS,
