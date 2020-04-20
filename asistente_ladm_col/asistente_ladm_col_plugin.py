@@ -1313,6 +1313,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._st_login_action.setVisible(not login_activated)
         self._st_logout_action.setVisible(login_activated)
 
+        self._st_login_action.setEnabled(not login_activated)
+        self._st_logout_action.setEnabled(login_activated)
+
     def trigger_action_emitted(self, action_tag):
         action = self.gui_builder.get_action(action_tag)
         if action is not None:
