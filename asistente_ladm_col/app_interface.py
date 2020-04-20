@@ -39,6 +39,7 @@ class AppInterface(QObject, metaclass=SingletonQObject):
 
     def set_connections(self):
         if self.core and self.gui:
+            self.core.action_add_feature_requested.connect(self.gui.trigger_add_feature)
             self.core.action_vertex_tool_requested.connect(self.gui.trigger_vertex_tool)
             self.core.activate_layer_requested.connect(self.gui.activate_layer)
             self.core.map_refresh_requested.connect(self.gui.refresh_map)

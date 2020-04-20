@@ -84,6 +84,7 @@ from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
 class AppCoreInterface(QObject):
+    action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     map_refresh_requested = pyqtSignal()
