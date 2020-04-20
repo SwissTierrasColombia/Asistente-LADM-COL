@@ -258,7 +258,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("SettingsDialog", "Warning?"),
                                              QCoreApplication.translate("SettingsDialog",
-                                                                        "You have a ST connection opened and you want to change your role.\nIf you confirm that you want to change your role, you'll be logged out from the ST.\nDo you really want to change your role?"),
+                                                                        "You have a ST connection opened and you want to change your role.\nIf you confirm that you want to change your role, you'll be logged out from the ST.\n\nDo you really want to change your role?"),
                                              QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                 if reply == QMessageBox.Yes:
                     STSession().logout()
