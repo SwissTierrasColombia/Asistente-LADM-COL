@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               pyqtSignal,
@@ -24,7 +23,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QVBoxLayout,
-                                 QRadioButton)
+                                 QRadioButton,
+                                 QMessageBox)
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
@@ -42,6 +42,7 @@ from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -249,17 +250,31 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
             self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
+        # If active role is changed (a check and confirmation my be needed), refresh the GUI
+        selected_role = self.get_selected_role()
+        if self.roles.get_active_role() != selected_role:
+            b_change_role = True
+            if STSession().is_user_logged():
+                reply = QMessageBox.question(None,
+                                             QCoreApplication.translate("SettingsDialog", "Warning?"),
+                                             QCoreApplication.translate("SettingsDialog",
+                                                                        "You have a ST connection opened and you want to change your role.\nIf you confirm that you want to change your role, you'll be logged out from the ST.\nDo you really want to change your role?"),
+                                             QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
+                if reply == QMessageBox.Yes:
+                    STSession().logout()
+                elif reply == QMessageBox.Cancel:
+                    # No need to switch back selected role, the Settings Dialog gets it from role registry
+                    b_change_role = False
+
+            if b_change_role:
+                self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
+                    self.roles.get_active_role(), selected_role))
+                self.roles.set_active_role(selected_role)
+                self.active_role_changed.emit()
+
         # Save settings from tabs other than database connection
         self.save_settings(db)
         QDialog.accept(self)
-
-        # If active role changed, refresh the GUI
-        selected_role = self.get_selected_role()
-        if self.roles.get_active_role() != selected_role:
-            self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
-                self.roles.get_active_role(), selected_role))
-            self.roles.set_active_role(selected_role)
-            self.active_role_changed.emit()
 
         self.close()
 
