@@ -81,6 +81,10 @@ ACTION_CHANGE_DETECTION_SETTINGS = "action_change_detection_settings"
 
 ALL_ACTIONS = 'all_actions'
 
+DOCK_WIDGET_QUERIES = "dock_widget_queries"
+DOCK_WIDGET_CHANGE_DETECTION = "dock_widget_change_detection"
+DOCK_WIDGET_TRANSITION_SYSTEM = "dock_widget_transition_system"
+
 SURVEYING_ICON = ":/Asistente-LADM-COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM-COL/resources/images/create_db.png"
 DATA_CREATION_ICON = ":/Asistente-LADM-COL/resources/images/data_creation.svg"

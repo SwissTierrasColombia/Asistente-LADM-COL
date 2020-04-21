@@ -61,6 +61,8 @@ class DockWidgetTransitionalSystem(QgsDockWidget, DOCKWIDGET_UI):
         pass
 
     def after_logout(self):
+        self.setDisabled(True)
+        self.main_panel.tasks_widget.logout_user()
         self.close_dock_widget()
 
     def close_dock_widget(self):

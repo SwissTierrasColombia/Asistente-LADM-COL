@@ -142,9 +142,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.unit_tests = unit_tests
         self.main_window = self.iface.mainWindow()
         self._about_dialog = None
-        self._dock_widget_queries = None
-        self._dock_widget_change_detection = None
-        self._dock_widget_transitional_system = None
         self.toolbar = None
         self.wiz_address = None
         self.conn_manager = ConnectionManager()
@@ -179,6 +176,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
+        self.register_dock_widgets()
         self.set_signal_slot_connections()
 
         if not self.unit_tests:
@@ -209,6 +207,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_toolbar_actions()
         self.create_transitional_system_actions()
         self.create_generic_actions()
+
+    def register_dock_widgets(self):
+        """
+        We register them so that GUI Builder can delete them properly when unloading the GUI
+        """
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_TRANSITION_SYSTEM, None)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_CHANGE_DETECTION, None)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUERIES, None)
 
     def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
@@ -864,20 +870,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
-        self.close_dock_widgets([self._dock_widget_transitional_system,
-                                 self._dock_widget_change_detection,
-                                 self._dock_widget_queries])
         self.gui_builder.unload_gui()
 
         # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
-
-    def close_dock_widgets(self, dock_widgets):
-        for dock_widget in dock_widgets:
-            if dock_widget is not None:
-                dock_widget.close()
-                dock_widget = None
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
@@ -928,14 +925,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_queries(self, *args):
-        self.close_dock_widgets([self._dock_widget_queries])
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUERIES])
 
-        self._dock_widget_queries = DockWidgetQueries(self.iface,
-                                                      self.get_db_connection(),
-                                                      self.ladm_data)
-        self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
-        self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_queries)
+        dock_widget_queries = DockWidgetQueries(self.iface,
+                                                self.get_db_connection(),
+                                                self.ladm_data)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUERIES, dock_widget_queries)
+        self.conn_manager.db_connection_changed.connect(dock_widget_queries.update_db_connection)
+        dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_queries)
 
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
@@ -1191,16 +1189,17 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
-        self.close_dock_widgets([self._dock_widget_change_detection])
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_CHANGE_DETECTION])
 
-        self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
-                                                                       self.get_db_connection(),
-                                                                       self.get_db_connection(SUPPLIES_DB_SOURCE),
-                                                                       self.ladm_data,
-                                                                       all_parcels_mode)
-        self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
-        self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+        dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
+                                                                 self.get_db_connection(),
+                                                                 self.get_db_connection(SUPPLIES_DB_SOURCE),
+                                                                 self.ladm_data,
+                                                                 all_parcels_mode)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_CHANGE_DETECTION, dock_widget_change_detection)
+        self.conn_manager.db_connection_changed.connect(dock_widget_change_detection.update_db_connection)
+        dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_change_detection)
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
@@ -1268,7 +1267,9 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
         if self.session.is_user_logged():
-            self.close_dock_widgets([self._dock_widget_transitional_system])
+            # If the user didn't change the active role in the LADM-COL
+            # Assistant, the dock might not be deleted yet. Just in case...
+            self.gui_builder.close_dock_widgets([DOCK_WIDGET_TRANSITION_SYSTEM])
 
             # Update controls: It was to be a SIGNAL-SLOT, but since a GUI
             # refresh happens in between, the control update would be lost,
@@ -1277,12 +1278,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
             # Show Transitional System dock widget
             user = self.session.get_logged_st_user()
-            self._dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
-            self.conn_manager.db_connection_changed.connect(self._dock_widget_transitional_system.update_db_connection)
-            self._dock_widget_transitional_system.logout_requested.connect(self.session_logout)
-            self._dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
-            self.session.logout_finished.connect(self._dock_widget_transitional_system.after_logout)
-            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
+            dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
+            self.gui_builder.register_dock_widget(DOCK_WIDGET_TRANSITION_SYSTEM, dock_widget_transitional_system)
+            self.conn_manager.db_connection_changed.connect(dock_widget_transitional_system.update_db_connection)
+            dock_widget_transitional_system.logout_requested.connect(self.session_logout)
+            dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
+            self.session.logout_finished.connect(dock_widget_transitional_system.after_logout)
+            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_transitional_system)
 
     def session_logout_from_action(self):
         """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
