@@ -1264,10 +1264,16 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_st_login_dialog(self):
         dlg = LoginSTDialog(self.main_window)
+        dlg.active_role_changed.connect(self.call_refresh_gui)
         dlg.exec_()
 
         if self.session.is_user_logged():
             self.close_dock_widgets([self._dock_widget_transitional_system])
+
+            # Update controls: It was to be a SIGNAL-SLOT, but since a GUI
+            # refresh happens in between, the control update would be lost,
+            # so, now we call it directly.
+            self.set_login_controls_visibility(True)
 
             # Show Transitional System dock widget
             user = self.session.get_logged_st_user()

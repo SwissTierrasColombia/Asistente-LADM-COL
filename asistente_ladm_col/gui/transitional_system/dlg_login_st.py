@@ -16,7 +16,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication)
+                              QCoreApplication,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QRadioButton,
@@ -37,6 +38,8 @@ DIALOG_UI = get_ui_class('transitional_system/dlg_login_st.ui')
 
 
 class LoginSTDialog(QDialog, DIALOG_UI):
+    active_role_changed = pyqtSignal()
+
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -45,8 +48,7 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.logger = Logger()
         self.help_strings = HelpStrings()
 
-        #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)
-        #self.txt_help_page.anchorClicked.connect(self.save_template)
+        self.should_emit_role_changed = False
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.login)
@@ -66,9 +68,10 @@ class LoginSTDialog(QDialog, DIALOG_UI):
 
         msg = self.logger.status(QCoreApplication.translate("LoginSTDialog", "Connecting to login service..."))
         with ProcessWithStatus(msg):
-            res, msg = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
+            res, msg, change_role = self.session.login(self.txt_login_user.text(), self.txt_login_password.text())
 
         if res:
+            self.should_emit_role_changed = change_role
             self.logger.info(__name__, msg, EnumLogHandler.MESSAGE_BAR, 15)
             self.close()
         else:
@@ -80,3 +83,11 @@ class LoginSTDialog(QDialog, DIALOG_UI):
 
     def show_help(self):
         show_plugin_help('transitional_system')
+
+    def reject(self):
+        if self.should_emit_role_changed:
+            self.logger.info(__name__, "Emit active_role_changed.")
+            self.active_role_changed.emit()
+
+        self.logger.info(__name__, "Dialog closed.")
+        self.done(QDialog.Accepted)  # Any code, we don't use it anyways

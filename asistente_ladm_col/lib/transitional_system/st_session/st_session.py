@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
+from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
@@ -45,6 +46,7 @@ class STSession(QObject, metaclass=SingletonQObject):
 
     def login(self, user, password):
         msg = ""
+        should_emit_role_changed = False
         st_config = TransitionalSystemConfig()
         payload = st_config.ST_LOGIN_SERVICE_PAYLOAD.format(user, password)
         headers = {
@@ -64,21 +66,35 @@ class STSession(QObject, metaclass=SingletonQObject):
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}").format(e)
             self.logger.warning(__name__, msg)
-            return False, msg
+            return False, msg, False
 
         status_OK = response.status_code == 200
         self.logger.info(__name__, "Login response status code: {}".format(response.status_code))
         if status_OK:
-            msg = QCoreApplication.translate("STSession", "User logged in successfully in the Transitional System!")
             logged_data = json.loads(response.text)
+
+            # Check if ST role is recognized by LADM-COL Assistant. Otherwise, do not login.
+            st_role = logged_data['roles'][0]['id']
+            if st_role not in st_config.ROLE_MAPPING:
+                return status_OK, \
+                       QCoreApplication.translate("STSession",
+                           "The user cannot log-in into the Transitional System because the '{}' ST role has no tasks assigned in LADM-COL Assistant!".format(logged_data['roles'][0]['name'])), \
+                       False
+
+            msg = QCoreApplication.translate("STSession", "User logged in successfully in the Transitional System!")
             self.__logged_user = STLoggedUser("{} {}".format(logged_data['first_name'],
                                                              logged_data['last_name']),
                                               logged_data['email'],
                                               logged_data['roles'][0]['name'],
                                               logged_data['access_token'])
             QSettings().setValue(self.TOKEN_KEY, logged_data['access_token'])  # Register (login) the user
-            self.login_status_changed.emit(True)
+            # self.login_status_changed.emit(True) Don't emit now, a GUI refresh comes, so updates will be lost
             self.logger.info(__name__, msg)
+
+            # Make LADM-COL Assistant's current role correspond to the logged in user role in ST
+            if st_config.ROLE_MAPPING[st_role] != Role_Registry().get_active_role():
+                Role_Registry().set_active_role(st_config.ROLE_MAPPING[st_role])
+                should_emit_role_changed = True  # Safer to let the dialog deal with that SIGNAL (refreshes the GUI!)
         else:
             if response.status_code == 400:
                 msg = QCoreApplication.translate("STSession",
@@ -92,7 +108,7 @@ class STSession(QObject, metaclass=SingletonQObject):
                 msg = QCoreApplication.translate("STSession", "Unauthorized client! The server won't allow requests from this client.")
             self.logger.warning(__name__, msg)
 
-        return status_OK, msg
+        return status_OK, msg, should_emit_role_changed
 
     def logout(self):
         msg = ""

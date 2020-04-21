@@ -272,7 +272,7 @@ class GUI_Builder(QObject):
             menu.clear()
             menu.deleteLater()
 
-        for menu in self.toolbar_menus:  # Basically, a push button who has been received a menu
+        for menu in self.toolbar_menus:  # Basically, a push button who has received a menu
             menu.deleteLater()
 
         for toolbar in self.toolbars:
@@ -306,6 +306,7 @@ class GUI_Builder(QObject):
             if ICON in menu_def:
                 widget.setIcon(QIcon(menu_def[ICON]))
             widget.setMenu(menu)
+            self.menus.append(menu)  # Because menu ownership is not transferred to the push button!
 
         self._build_actions(menu_def[ACTIONS], menu)  # Now we have a normal menu, build actions on it
 
