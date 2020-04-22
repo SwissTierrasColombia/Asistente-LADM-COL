@@ -259,4 +259,4 @@ class AppGUIInterface(QObject):
             for idx in range(w.count()):
                 if w.tabText(idx) == tab_name:
                     w.setCurrentIndex(idx)
-                    break
+                    return
