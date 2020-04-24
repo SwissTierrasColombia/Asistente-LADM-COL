@@ -28,8 +28,13 @@ from asistente_ladm_col.core.model_parser import ModelParser
 from .db_connector import (DBConnector, ClientServerDB, EnumTestLevel)
 
 from asistente_ladm_col.config.enums import (EnumTestLevel,
-                                             EnumUserLevel,
                                              EnumTestConnectionMsg)
+from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
+                                                      T_ILI_TID_KEY,
+                                                      DISPLAY_NAME_KEY,
+                                                      ILICODE_KEY,
+                                                      DESCRIPTION_KEY)
 
 
 class MssqlConnector(ClientServerDB):
@@ -338,7 +343,6 @@ class MssqlConnector(ClientServerDB):
         return ';'.join(uri)
 
     def get_ili2db_version(self):
-        # this method not exist
         res, msg = self.check_and_fix_connection()
         if not res:
             return res, msg
@@ -368,10 +372,6 @@ class MssqlConnector(ClientServerDB):
         # return variables from logic_validation_queries for mssql
         pass
 
-    def get_table_and_field_names(self):
-        # Do queries that return the names of model tables
-        pass
-
     def _test_connection_to_schema(self, user_level):
         # TODO # is 'dbo' database valid?  self._dict_conn_params['schema'] == 'dbo':
         if not self._dict_conn_params['schema']:
@@ -387,6 +387,7 @@ class MssqlConnector(ClientServerDB):
                                                                                                        "Connection to the database schema was successful.")
 
     def _test_connection_to_server(self):
+        # why is this method called necessary?
         uri = self.get_connection_uri(self._dict_conn_params, 0)
         res, msg = self.open_connection()
         if res:
@@ -469,3 +470,54 @@ class MssqlConnector(ClientServerDB):
 
         return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
             "MSSQLConnector", "The schema '{}' has a valid LADM_COL structure!").format(self.schema)
+
+    def _get_fields_and_tables_ladm(self):
+        sql_query = """
+        SELECT 
+          iliclass.iliname AS {table_iliname},
+          tbls.TABLE_NAME AS {table_name},
+          ilicol.iliname AS {field_iliname},
+          ilicol.sqlname AS {field_name}
+        FROM INFORMATION_SCHEMA.TABLES AS tbls
+        INNER JOIN {schema}.t_ili2db_classname AS iliclass
+          ON tbls.TABLE_NAME=iliclass.SqlName
+          AND TABLE_TYPE = 'BASE TABLE'
+        LEFT JOIN {schema}.t_ili2db_attrname as ilicol
+          ON tbls.TABLE_NAME = ilicol.colowner
+          AND ilicol.Target IS NULL
+        WHERE TABLE_SCHEMA='{schema}'
+        ORDER BY tbls.TABLE_NAME, ilicol.sqlname
+        """.format(table_iliname=QueryNames.TABLE_ILINAME,
+                                                table_name=QueryNames.TABLE_NAME,
+                                                field_iliname=QueryNames.FIELD_ILINAME,
+                                                field_name=QueryNames.FIELD_NAME,
+                                                schema=self.schema)
+
+        is_success, res = self.execute_sql_query(sql_query)
+
+        return res if is_success else None
+
+    def _get_fk_fields(self):
+        sql_query = """
+        SELECT LEFT(a.iliname, LEN(a.iliname)-charindex('.', reverse(a.iliname))) as {table_iliname},
+                    a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
+            FROM {schema}.t_ili2db_attrname as a
+                INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
+                INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
+            ORDER BY a.iliname
+            """.format(table_iliname=QueryNames.TABLE_ILINAME, schema=self.schema)
+
+        is_success, res = self.execute_sql_query(sql_query)
+
+        return res if is_success else None
+
+    def _get_common_db_names(self):
+        dict_names = dict()
+        # Add required key-value pairs that do not come from the DB query
+        dict_names[T_ID_KEY] = "T_Id"
+        dict_names[T_ILI_TID_KEY] = "T_Ili_Tid"
+        dict_names[DISPLAY_NAME_KEY] = "dispName"
+        dict_names[ILICODE_KEY] = "iliCode"
+        dict_names[DESCRIPTION_KEY] = "description"
+
+        return dict_names
