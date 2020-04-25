@@ -21,7 +21,9 @@ import datetime
 import glob
 import json
 import os
+import sqlite3
 
+from qgis.utils import spatialite_connect
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               pyqtSignal,
@@ -52,11 +54,14 @@ from qgis.core import (Qgis,
                        QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsCoordinateReferenceSystem)
 
 import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
+from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import get_ctm12_exists_query, \
+    get_insert_ctm12_query, get_insert_cm12_bounds_query
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
@@ -1253,3 +1258,38 @@ class AppCoreInterface(QObject):
 
         self.suppress_form(layer, False)
         return new_feature
+
+    def initialize_ctm12(self):
+        """
+        Make sure CTM12 is in the QGIS SRS database
+
+        :return: Whether CTM12 is there or not after we checked and attempted to add it if not present
+        """
+        conn = spatialite_connect(QgsApplication.srsDatabaseFilePath())
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        ctm12_exists = self.ctm12_exists(cursor)
+        if not ctm12_exists:
+            self.logger.debug(__name__, "Adding CTM12 to QGIS SRS database...")
+            cursor.execute("BEGIN")
+            cursor.execute(get_insert_ctm12_query())
+            cursor.execute(get_insert_cm12_bounds_query())
+            cursor.execute("COMMIT")
+            conn.close()
+            QgsCoordinateReferenceSystem.invalidateCache()
+
+            # We need another connection for the next query to have actual data (otherwise ctm12_exists is always True)
+            conn = spatialite_connect(QgsApplication.srsDatabaseFilePath())
+            conn.row_factory = sqlite3.Row
+            ctm12_exists = self.ctm12_exists(conn.cursor())
+
+        conn.close()
+
+        return ctm12_exists
+
+    @staticmethod
+    def ctm12_exists(cursor):
+        cursor.execute(get_ctm12_exists_query())
+        return cursor.fetchone()[0] == 1
+

@@ -187,8 +187,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
+            self.iface.initializationCompleted.connect(self.initialize_requirements)
         else:
             self.call_refresh_gui()
+            self.initialize_requirements()
 
         # Add LADM-COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -249,6 +251,14 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsExpression.unregisterFunction('get_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_value_from_code')
         QgsExpression.unregisterFunction('get_domain_description_from_code')
+
+    def initialize_requirements(self):
+        """
+        Make sure all we need from QGIS is set
+        """
+        # We need CTM12 projection in the QGIS SRS database
+        res = self.app.core.initialize_ctm12()
+        self.logger.info_warning(__name__, res, "CTM12 is in the QGIS SRS database? {}!!!".format(res))
 
     def call_refresh_gui(self):
         """
