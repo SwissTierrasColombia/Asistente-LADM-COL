@@ -62,6 +62,7 @@ import processing
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import get_ctm12_exists_query, \
     get_insert_ctm12_query, get_insert_cm12_bounds_query
+from asistente_ladm_col.utils.crs_utils import get_ctm12_crs
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
@@ -69,13 +70,13 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.utils.utils import is_connected
-from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                                      FIELD_MAPPING_PATH,
+from asistente_ladm_col.config.general_config import (FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                                       TEST_SERVER,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID,
-                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
+                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
+                                                      DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -976,20 +977,20 @@ class AppCoreInterface(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
                                                                          "No CSV file given or file doesn't exist."))
             return False
 
         # Create QGIS vector layer
-        uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
+        uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs={}".format(
             csv_path,
             decimal_point,
             delimiter if delimiter != '\t' else '%5Ct',
             longitude,
             latitude,
-            epsg
+            crs
         )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
@@ -1001,14 +1002,15 @@ class AppCoreInterface(QObject):
             res = processing.run("qgis:setzvalue", parameters)
             csv_layer = res['OUTPUT']
 
-        if not epsg == DEFAULT_EPSG:
-            crs_dest = 'EPSG:{}'.format(DEFAULT_EPSG)
+        if not crs == DEFAULT_SRS_AUTHID:
             parameters = {'INPUT': csv_layer,
-                          'TARGET_CRS': crs_dest,
+                          'TARGET_CRS': get_ctm12_crs(),
                           'OUTPUT': 'memory:'}
 
             res = processing.run("native:reprojectlayer", parameters)
             csv_layer = res['OUTPUT']
+            if not csv_layer.crs().isValid():  # Fallback for CTM12
+                csv_layer.setCrs(get_ctm12_crs())
 
         if not csv_layer.isValid():
             self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",

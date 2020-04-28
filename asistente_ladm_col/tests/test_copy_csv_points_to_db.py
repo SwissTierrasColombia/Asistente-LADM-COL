@@ -22,7 +22,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema,
                                             clean_table)
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from asistente_ladm_col.config.general_config import DEFAULT_EPSG
+from asistente_ladm_col.config.general_config import DEFAULT_SRS_AUTHID
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 
@@ -61,7 +61,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID)
         self.upload_points_from_csv(csv_layer, SCHEMA_LADM_COL_EMPTY)
 
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY)
@@ -140,7 +140,7 @@ class TestCopy(unittest.TestCase):
         cbo_longitude = 'x'
         cbo_latitude = 'y'
         elevation = 'z'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG, elevation)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID, elevation)
 
         self.upload_points_from_csv_with_elevation(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY, with_z=True)
@@ -198,7 +198,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_EPSG)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID)
         self.upload_points_from_csv_overlapping(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_number_of_boundary_points_in_db(SCHEMA_LADM_COL_EMPTY, 0)
 

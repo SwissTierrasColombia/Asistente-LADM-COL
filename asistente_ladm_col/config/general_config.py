@@ -18,8 +18,11 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
+# CTM 12
+DEFAULT_SRS_AUTH = "STC"
+DEFAULT_SRS_CODE = "38820"
+DEFAULT_SRS_AUTHID = "INTERNAL:38820"
 
-DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM-COL"
@@ -32,6 +35,8 @@ HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
+CTM12_PG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_pg.sql')
+CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_gpkg.sql')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file

@@ -42,13 +42,14 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_MODELS_TAB_INDEX,
                                                       DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR)
+                                                      DEFAULT_MODELS_DIR,
+                                                      DEFAULT_SRS_CODE,
+                                                      DEFAULT_SRS_AUTH)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -446,7 +447,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False
 
-        configuration.epsg = QSettings().value('Asistente-LADM-COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)
+        configuration.srs_auth = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_auth', DEFAULT_SRS_AUTH, str)
+        configuration.srs_code = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_code', int(DEFAULT_SRS_CODE), int)
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID

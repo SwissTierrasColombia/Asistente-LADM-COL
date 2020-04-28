@@ -19,7 +19,8 @@ from QgisModelBaker.libili2db import (iliimporter,
 from QgisModelBaker.libili2db.globals import DbIliMode
 
 from asistente_ladm_col.config.general_config import (TOML_FILE_DIR,
-                                                      DEFAULT_EPSG)
+                                                      DEFAULT_SRS_AUTH,
+                                                      DEFAULT_SRS_CODE)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_test_copy_path,
@@ -148,7 +149,8 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.dbusr = 'usuario_ladm_col'
         configuration.dbpwd = 'clave_ladm_col'
         configuration.database = 'ladm_col'
-        configuration.epsg = DEFAULT_EPSG
+        configuration.srs_auth = DEFAULT_SRS_AUTH
+        configuration.srs_code = DEFAULT_SRS_CODE
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
@@ -201,7 +203,8 @@ class TestQgisModelBaker(unittest.TestCase):
 
         configuration.tool = DbIliMode.ili2gpkg
         configuration.dbfile = gpkg_path
-        configuration.epsg = DEFAULT_EPSG
+        configuration.srs_auth = DEFAULT_SRS_AUTH
+        configuration.srs_code = DEFAULT_SRS_CODE
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
@@ -249,7 +252,8 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.database = 'ladm_col'
         configuration.dbschema = 'test_import_schema'
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.srs_auth = DEFAULT_SRS_AUTH
+        configuration.srs_code = DEFAULT_SRS_CODE
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
@@ -290,7 +294,8 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.tool = DbIliMode.ili2gpkg
         configuration.dbfile = os.path.join(self.base_test_path, 'tmp_import_schema.gpkg')
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.srs_auth = DEFAULT_SRS_AUTH
+        configuration.srs_code = DEFAULT_SRS_CODE
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID

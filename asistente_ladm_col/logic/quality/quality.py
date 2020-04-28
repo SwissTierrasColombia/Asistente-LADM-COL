@@ -40,6 +40,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.quality.logic_checks import LogicChecks
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (DEFAULT_USE_ROADS_VALUE,
@@ -148,7 +149,7 @@ class QualityUtils(QObject):
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs())),
                                          translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES],
                                          "memory")
 
@@ -177,7 +178,7 @@ class QualityUtils(QObject):
 
         # layer is created with unique vertices
         # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
-        boundary_nodes_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
+        boundary_nodes_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), 'unique boundary nodes', "memory")
         data_provider = boundary_nodes_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
         boundary_nodes_layer.updateFields()
@@ -292,7 +293,7 @@ class QualityUtils(QObject):
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_BOUNDARY_T].sourceCrs())),
                                          translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS],
                                          "memory")
             data_provider = error_layer.dataProvider()
@@ -319,7 +320,7 @@ class QualityUtils(QObject):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
-        boundary_nodes_unique_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
+        boundary_nodes_unique_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), 'unique boundary nodes', "memory")
         data_provider = boundary_nodes_unique_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
         boundary_nodes_unique_layer.updateFields()
@@ -442,7 +443,7 @@ class QualityUtils(QObject):
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_PLOT_T].sourceCrs())),
                                          translated_strings[CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS],
                                          "memory")
 
@@ -481,7 +482,7 @@ class QualityUtils(QObject):
                              "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs())),
                                          translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES],
                                          "memory")
 
@@ -508,7 +509,7 @@ class QualityUtils(QObject):
 
         # layer is created with unique vertices
         # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as wee need them
-        plot_nodes_layer = QgsVectorLayer("Point?crs={}".format(plot_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
+        plot_nodes_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), 'unique boundary nodes', "memory")
         data_provider = plot_nodes_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
         plot_nodes_layer.updateFields()
@@ -579,7 +580,7 @@ class QualityUtils(QObject):
             elif point_layer_name == db.names.OP_CONTROL_POINT_T:
                 error_layer_name = translated_strings[CHECK_OVERLAPS_IN_CONTROL_POINTS]
 
-            error_layer = QgsVectorLayer("Point?crs={}".format(point_layer.sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(point_layer.sourceCrs())),
                                          error_layer_name, "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
@@ -628,7 +629,7 @@ class QualityUtils(QObject):
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(layers[db.names.OP_PLOT_T].sourceCrs())),
                                          translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES],
                                          "memory")
 
@@ -926,7 +927,7 @@ class QualityUtils(QObject):
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Info)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(layers[db.names.OP_BOUNDARY_T].sourceCrs())),
                                          translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS],
                                          "memory")
 
@@ -1240,7 +1241,7 @@ class QualityUtils(QObject):
             elif polygon_layer_name == db.names.OP_RIGHT_OF_WAY_T:
                 error_layer_name = translated_strings[CHECK_OVERLAPS_IN_RIGHTS_OF_WAY]
 
-            error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Polygon?crs={}".format(get_crs_authid(polygon_layer.sourceCrs())),
                                          error_layer_name, "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
@@ -1368,7 +1369,7 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "There are no wrong boundaries!"), Qgis.Success)
             else:
-                error_layer = QgsVectorLayer("LineString?crs={}".format(boundary_layer.sourceCrs().authid()),
+                error_layer = QgsVectorLayer("LineString?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())),
                                 translated_strings[CHECK_BOUNDARIES_ARE_NOT_SPLIT],
                                 "memory")
                 pr = error_layer.dataProvider()
@@ -1409,7 +1410,7 @@ class QualityUtils(QObject):
                                            "There are no boundaries to check 'missing boundary points in boundaries'."))
             return
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_BOUNDARY_T].sourceCrs())),
                                      translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS],
                                      "memory")
         data_provider = error_layer.dataProvider()
@@ -1489,7 +1490,7 @@ class QualityUtils(QObject):
                 "There are no buildings to check 'missing survey points in buildings'."))
             return
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(layers[db.names.OP_BUILDING_T].sourceCrs())),
                                      QCoreApplication.translate("QGISUtils", "Missing survey points in buildings"),
                                      "memory")
         data_provider = error_layer.dataProvider()
@@ -1526,7 +1527,7 @@ class QualityUtils(QObject):
                              "There are no boundaries to check for dangles."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())),
                                 translated_strings[CHECK_DANGLES_IN_BOUNDARIES],
                                 "memory")
             pr = error_layer.dataProvider()
@@ -1629,7 +1630,7 @@ class QualityUtils(QObject):
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(get_crs_authid(layers[db.names.OP_BUILDING_T].sourceCrs())),
                                          translated_strings[CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS],
                                          "memory")
             data_provider = error_layer.dataProvider()
@@ -1669,7 +1670,7 @@ class QualityUtils(QObject):
                              "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(plot_layer.sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(get_crs_authid(plot_layer.sourceCrs())),
                                          translated_strings[CHECK_GAPS_IN_PLOTS],
                                          "memory")
             data_provider = error_layer.dataProvider()
@@ -1707,7 +1708,7 @@ class QualityUtils(QObject):
                              "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Info)
 
         else:
-            error_layer = QgsVectorLayer("Polygon?crs={}".format(right_of_way_layer.sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Polygon?crs={}".format(get_crs_authid(right_of_way_layer.sourceCrs())),
                                          translated_strings[CHECK_MULTIPART_IN_RIGHT_OF_WAY],
                                          "memory")
             data_provider = error_layer.dataProvider()
@@ -1950,7 +1951,7 @@ class QualityUtils(QObject):
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(get_crs_authid(layers[db.names.OP_BUILDING_T].sourceCrs())),
                                         translated_strings[CHECK_BUILDING_WITHIN_PLOTS],
                                         "memory")
             data_provider = error_layer.dataProvider()
@@ -2006,7 +2007,7 @@ class QualityUtils(QObject):
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
         else:  
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_UNIT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(get_crs_authid(layers[db.names.OP_BUILDING_UNIT_T].sourceCrs())),
                                         translated_strings[CHECK_BUILDING_UNIT_WITHIN_PLOTS],
                                         "memory")
             data_provider = error_layer.dataProvider()

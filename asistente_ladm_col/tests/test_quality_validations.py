@@ -8,6 +8,7 @@ from qgis.testing import (unittest,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.geometry import GeometryUtils
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
@@ -161,7 +162,7 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_point_layer.sourceCrs().authid()), 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_point_layer.sourceCrs())), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
@@ -211,7 +212,7 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
@@ -264,7 +265,7 @@ class TesQualityValidations(unittest.TestCase):
         point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -368,7 +369,7 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -493,7 +494,7 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
@@ -589,7 +590,7 @@ class TesQualityValidations(unittest.TestCase):
        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
        self.assertEqual(less_layer.featureCount(), 6)
 
-       error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
+       error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), 'error layer', "memory")
 
        data_provider = error_layer.dataProvider()
        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
@@ -937,7 +938,7 @@ class TesQualityValidations(unittest.TestCase):
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
-        point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "Boundary points", "memory")
+        point_layer = QgsVectorLayer("MultiPoint?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), "Boundary points", "memory")
 
         boundary_features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(boundary_features), 8)

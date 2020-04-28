@@ -44,6 +44,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
 from asistente_ladm_col.config.translation_strings import RIGHT_OF_WAY_LINE_LAYER
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
 class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
@@ -167,7 +168,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             layer = self._layers[self.EDITING_LAYER_NAME]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            self.temporal_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[self.EDITING_LAYER_NAME].sourceCrs().authid()), translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(self._layers[self.EDITING_LAYER_NAME].sourceCrs())), translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
             layer = self.temporal_layer
             QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
