@@ -69,8 +69,13 @@ QUALITY_RULE_ERROR_CODE_E3007 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.
 QUALITY_RULE_ERROR_CODE_E3008 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS.value)
 QUALITY_RULE_ERROR_CODE_E300901 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E300902 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '02'
+QUALITY_RULE_ERROR_CODE_E300903 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '03'
 QUALITY_RULE_ERROR_CODE_E301001 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E301002 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '02'
+QUALITY_RULE_ERROR_CODE_E301003 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '03'
+QUALITY_RULE_ERROR_CODE_E301004 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '04'
+QUALITY_RULE_ERROR_CODE_E301005 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '05'
+QUALITY_RULE_ERROR_CODE_E301006 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS.value) + '06'
 
 #ERROR CODES FOR LOGIC QUALITY RULES
 QUALITY_RULE_ERROR_CODE_E400101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP.value) + '01'
@@ -368,7 +373,11 @@ class QualityRuleConfig:
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
                             QUALITY_RULE_ERROR_CODE_E301001,
-                            QUALITY_RULE_ERROR_CODE_E301002
+                            QUALITY_RULE_ERROR_CODE_E301002,
+                            QUALITY_RULE_ERROR_CODE_E301003,
+                            QUALITY_RULE_ERROR_CODE_E301004,
+                            QUALITY_RULE_ERROR_CODE_E301005,
+                            QUALITY_RULE_ERROR_CODE_E301006
                         ]
                     }
 
@@ -394,7 +403,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "{tabla}_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -417,7 +426,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_codigo_departamento"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
@@ -428,7 +437,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_codigo_municipio"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
@@ -439,7 +448,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_numero_predial"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
@@ -450,7 +459,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_numero_predial_anterior"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
@@ -461,7 +470,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_natural_inconsistente"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_interesado"), QVariant.String)
                         ],
@@ -475,7 +484,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_juridico_inconsistente"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_interesado"), QVariant.String)
                         ],
@@ -489,7 +498,7 @@ class QualityRuleConfig:
                     EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_sin_consistencia_logica"),
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_condicion_predio"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],

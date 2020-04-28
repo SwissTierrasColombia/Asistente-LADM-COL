@@ -239,3 +239,9 @@ def get_uuid_dict(layer, names, id_field=None):
             else:
                 dict_uuid[feature.id()] = str(feature[names.T_ILI_TID_F])
     return dict_uuid
+
+
+def remove_keys_from_dict(keys, dictionary):
+    for key in keys:
+        if key in dictionary:
+            del dictionary[key]

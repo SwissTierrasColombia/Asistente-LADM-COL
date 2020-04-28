@@ -21,6 +21,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema,
                                             unload_qgis_model_baker)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200401,
@@ -1260,25 +1261,17 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'plots', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 5)
 
-        buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(
-                    building_layer,
-                    plot_layer,
-                    "id")
+        buildings_disjoin, buildings_overlaps, building_within = GeometryUtils.get_polygon_relation_polygon(
+            building_layer,
+            plot_layer)
 
-        self.assertEqual(len(buildings_with_no_plot), 1)
-        self.assertEqual(len(buildings_not_within_plot), 2)
+        test_buildings_disjoin = [5]
+        test_buildings_overlaps = [2, 6]
+        test_building_within = [1, 3, 4]
 
-        self.assertEqual(buildings_with_no_plot[0]["id"], 5)
-        self.assertEqual(buildings_not_within_plot[0]["id"], 2)
-        self.assertEqual(buildings_not_within_plot[1]["id"], 6)
-
-        expected_geometry_no_plot = 'MultiPolygon (((-75.14985606919390193 9.50028842268738671, -75.14985606919390193 9.5006630929751168, -75.14922300560428425 9.50057265531945738, -75.14921008593918828 9.5001979850317273, -75.14985606919390193 9.50028842268738671)))'
-        expected_geometries_not_within_plot = [
-            'MultiPolygon (((-75.14258229774588926 9.49984915407418384, -75.14198799315154531 9.49982331474399544, -75.14192339482607963 9.49898353651287586, -75.14259521741097103 9.49881558086665123, -75.14258229774588926 9.49984915407418384)))',
-            'MultiPolygon (((-75.1430372948142633 9.49682077975437977, -75.14242022761496287 9.4980865586247436, -75.14136013781103429 9.49713722447197028, -75.14083800402700319 9.49791251403006953, -75.1406639594323309 9.49691571316965621, -75.1430372948142633 9.49682077975437977)))']
-        self.assertEqual(buildings_with_no_plot[0].geometry().asWkt(), expected_geometry_no_plot)
-        self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
-        self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
+        self.assertListEqual(list(set(buildings_disjoin)), test_buildings_disjoin)
+        self.assertListEqual(list(set(buildings_overlaps)), test_buildings_overlaps)
+        self.assertListEqual(list(set(building_within)), test_building_within)
 
     def test_no_error_quality_rule(self):
         self.db_gpkg = get_gpkg_conn('test_valid_quality_rules_gpkg')

@@ -908,42 +908,32 @@ class GeometryUtils(QObject):
 
         return merge_geometries, boundaries_to_del
 
-    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field):
-        building_within_plots = processing.run("qgis:joinattributesbylocation", {
-            'INPUT': building_layer,
-            'JOIN': plot_layer,
-            'PREDICATE':[5], # within
-            'JOIN_FIELDS':[id_field],
-            'METHOD':0, # 1:m
-            'DISCARD_NONMATCHING':False,
-            'PREFIX':'',
-            'OUTPUT':'memory:'})['OUTPUT']
+    @staticmethod
+    def get_polygon_relation_polygon(input_layer, intersect_layer):
 
-        # Get buildings that are not cointained in a single plot
-        # This give us buildings that intersect with 0 OR more than one plots
-        building_within_plots.selectByExpression('"{}_2" IS NOT NULL'.format(id_field))
-        building_within_plots.dataProvider().deleteFeatures(building_within_plots.selectedFeatureIds())
+        # Select buildings disjoin with plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [2],  # disjoin
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_disjoin = input_layer.selectedFeatureIds()
 
-        # Now we run an intersection to classify the subset of buildings in two groups
-        building_plots_with_errors = processing.run("qgis:joinattributesbylocation", {
-            'INPUT': building_within_plots,
-            'JOIN': plot_layer,
-            'PREDICATE':[0], # intersects
-            'JOIN_FIELDS':[id_field],
-            'METHOD':1, # 1:1 We just want to know whether building intersects plots or not
-            'DISCARD_NONMATCHING':False,
-            'PREFIX':'',
-            'OUTPUT':'memory:'})['OUTPUT']
+        # processing algorithm 'selectbylocation' by default remove the previous selection
+        # Select buildings overlaps with plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [5],  # overlaps
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_overlaps = input_layer.selectedFeatureIds()
 
-        buildings_with_no_plot = list()
-        buildings_not_within_a_single_plot = list()
-        for feature in building_plots_with_errors.getFeatures():
-            if feature['{}_3'.format(id_field)]:
-                buildings_not_within_a_single_plot.append(feature)
-            else:
-                buildings_with_no_plot.append(feature)
+        # Select buildings to are within by plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [6],  # are within
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_within = input_layer.selectedFeatureIds()
 
-        return buildings_with_no_plot, buildings_not_within_a_single_plot
+        return input_disjoin, input_overlaps, input_within
 
     @staticmethod
     def get_intersection_features(layer, geometries, id_field=None):
