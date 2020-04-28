@@ -165,6 +165,7 @@ Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *doc
 Se recomienda:
 - Descargar *docker* desde el [sitio oficial](https://hub.docker.com/search/?type=edition&offering=community). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
 - Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases).
+- NOTA: La [instalación](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) en el SO Ubuntu 20.04 es más sencilla.
 
 El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh

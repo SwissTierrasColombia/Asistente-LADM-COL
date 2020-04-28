@@ -162,6 +162,7 @@ Unit tests are automatically executed after every commit made to the repository.
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
 - Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
 - Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
+- NOTE: [installing Docker](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) on Ubuntu 20.04 is easier.
 
 The command to execute unit tests is (execute from the repository's root folder):
 ```sh
