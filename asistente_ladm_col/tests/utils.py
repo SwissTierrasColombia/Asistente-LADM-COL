@@ -274,3 +274,16 @@ def standardize_query_results(result):
                 if isinstance(item, dict):
                     standardize_query_results(item)
     return result
+
+def reproject_to_3116(layer):
+    # TODO: when we have tests for CTM12 instead of EPSG:3116, remove this method
+    if layer.crs().authid() != "EPSG:3116":
+        import_processing()
+        parameters = {'INPUT': layer,
+                      'TARGET_CRS': "EPSG:3116",
+                      'OUTPUT': 'memory:'}
+
+        res = processing.run("native:reprojectlayer", parameters)
+        return res['OUTPUT']
+
+    return layer

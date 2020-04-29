@@ -252,8 +252,7 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.database = 'ladm_col'
         configuration.dbschema = 'test_import_schema'
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.srs_auth = DEFAULT_SRS_AUTH
-        configuration.srs_code = DEFAULT_SRS_CODE
+        configuration.srs_code = 3116
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
@@ -294,8 +293,7 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.tool = DbIliMode.ili2gpkg
         configuration.dbfile = os.path.join(self.base_test_path, 'tmp_import_schema.gpkg')
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.srs_auth = DEFAULT_SRS_AUTH
-        configuration.srs_code = DEFAULT_SRS_CODE
+        configuration.srs_code = 3116
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID

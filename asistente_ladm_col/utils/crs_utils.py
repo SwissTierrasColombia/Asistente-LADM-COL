@@ -21,10 +21,13 @@ from qgis.core import QgsCoordinateReferenceSystem
 from asistente_ladm_col.config.general_config import DEFAULT_SRS_CODE
 
 
-ctm_12_crs = QgsCoordinateReferenceSystem(int(DEFAULT_SRS_CODE))
+ctm_12_crs = QgsCoordinateReferenceSystem()
 
 
 def get_ctm12_crs():
+    global ctm_12_crs
+    if not ctm_12_crs.isValid():
+        ctm_12_crs = QgsCoordinateReferenceSystem(int(DEFAULT_SRS_CODE))  # Initialize it
     return ctm_12_crs
 
 def get_crs_authid(crs):

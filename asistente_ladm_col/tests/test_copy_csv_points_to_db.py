@@ -20,9 +20,9 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             delete_features,
                                             get_test_path,
                                             restore_schema,
-                                            clean_table)
+                                            clean_table,
+                                            reproject_to_3116)
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from asistente_ladm_col.config.general_config import DEFAULT_SRS_AUTHID
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 
@@ -41,9 +41,11 @@ class TestCopy(unittest.TestCase):
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
-        cls.app = AppInterface()
-        cls.names = cls.db_pg.names
         import_asistente_ladm_col()
+        cls.app = AppInterface()
+        cls.app.core.initialize_ctm12()  # We need to initialize CTM12
+
+        cls.names = cls.db_pg.names
         cls.ladm_data = LADMDATA()
         cls.geometry = GeometryUtils()
 
@@ -61,7 +63,8 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:3116", reproject=False)
+
         self.upload_points_from_csv(csv_layer, SCHEMA_LADM_COL_EMPTY)
 
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY)
@@ -101,9 +104,9 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        epsg = '4326'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, epsg)
-
+        crs = 'EPSG:4326'
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, crs, reproject=False)
+        csv_layer = reproject_to_3116(csv_layer)
 
         self.upload_points_from_csv_crs_wgs84(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db_from_wgs84(SCHEMA_LADM_COL_EMPTY)
@@ -140,7 +143,7 @@ class TestCopy(unittest.TestCase):
         cbo_longitude = 'x'
         cbo_latitude = 'y'
         elevation = 'z'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID, elevation)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:3116", elevation, reproject=False)
 
         self.upload_points_from_csv_with_elevation(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY, with_z=True)
@@ -198,7 +201,8 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, DEFAULT_SRS_AUTHID)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:3116", reproject=False)
+
         self.upload_points_from_csv_overlapping(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_number_of_boundary_points_in_db(SCHEMA_LADM_COL_EMPTY, 0)
 

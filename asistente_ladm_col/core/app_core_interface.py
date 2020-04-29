@@ -977,7 +977,7 @@ class AppCoreInterface(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.', reproject=True):
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
                                                                          "No CSV file given or file doesn't exist."))
@@ -1002,7 +1002,7 @@ class AppCoreInterface(QObject):
             res = processing.run("qgis:setzvalue", parameters)
             csv_layer = res['OUTPUT']
 
-        if not crs == DEFAULT_SRS_AUTHID:
+        if reproject and crs != DEFAULT_SRS_AUTHID:
             parameters = {'INPUT': csv_layer,
                           'TARGET_CRS': get_ctm12_crs(),
                           'OUTPUT': 'memory:'}
@@ -1017,7 +1017,7 @@ class AppCoreInterface(QObject):
                                                                          "CSV layer not valid!"))
             return False
 
-        # Necessary export to have edit capabilities in the dataprovider
+        # Export needed to have edit capabilities in the dataprovider
         csv_layer.selectAll()
         csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         csv_layer.removeSelection()

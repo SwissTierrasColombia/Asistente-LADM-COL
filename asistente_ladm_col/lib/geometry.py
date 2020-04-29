@@ -607,7 +607,7 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
 
-        layer = QgsVectorLayer(get_crs_authid("LineString?crs={}".format(plot_layer.sourceCrs())), "rings", "memory")
+        layer = QgsVectorLayer("LineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), "rings", "memory")
         data_provider = layer.dataProvider()
         data_provider.addAttributes([QgsField(names.T_ID_F, QVariant.Int)])
         layer.updateFields()
