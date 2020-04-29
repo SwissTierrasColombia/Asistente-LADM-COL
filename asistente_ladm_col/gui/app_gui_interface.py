@@ -70,6 +70,9 @@ class AppGUIInterface(QObject):
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
+    def redraw_all_layers(self):
+        self.iface.mapCanvas().redrawAllLayers()
+
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
 

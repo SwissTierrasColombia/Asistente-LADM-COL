@@ -162,7 +162,7 @@ def _activate_processing_plugin(func_to_decorate):
             # Check in the plugin manager that the processing plugin was activated
             QSettings().setValue("PythonPlugins/processing", True)
 
-        func_to_decorate(*args, **kwargs)
+        return func_to_decorate(*args, **kwargs)
 
     return decorated_function
 
