@@ -39,25 +39,39 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         self._initialize_quality_rule_manager()
 
     def _initialize_quality_rule_manager(self):
-        self.logger.info(__name__, "Initialize quality rule manager...")
         for group_k, group_v in self.__quality_rules_data.items():
             self._quality_rule_groups[group_k] = group_v[QUALITY_GROUP_NAME]
 
             for rule_k, rule_v in group_v[QUALITY_RULES].items():
                 self.__quality_rules[rule_k] = QualityRule(rule_v)
-        self.logger.info(__name__, "All quality rules were register...")
+        self.logger.info(__name__, "{} quality rules registered!".format(len(self.__quality_rules)))
 
     def get_quality_rule(self, rule_code):
+        """
+        Returns the QualityRule object corresponding to a rule code.
+
+        :param rule_code: rule key
+        :return: QualityRule
+        """
         return self.__quality_rules.get(rule_code)
 
     @property
     def quality_rule_groups(self):
+        """
+        Returns a dict of quality rule groups.
+
+        :return: {group1 key: group1 value, ...}
+        """
         return self._quality_rule_groups
 
     def get_quality_rules_by_group(self, enum_group=None):
-        return self.__get_quality_rules_by_group(enum_group)
+        """
+        Returns all rules in a given group. If no enum_group is given,
+        it returns the whole set of rules classified by group.
 
-    def __get_quality_rules_by_group(self, enum_group):
+        :param enum_group:  EnumQualityRule.Point|Line|Polygon|Logic
+        :return: dict of rules
+        """
         quality_rules_group = dict()
         if enum_group:
             quality_rules_group = {k_rule: v_rule for k_rule, v_rule in self.__quality_rules.items() if k_rule in enum_group}

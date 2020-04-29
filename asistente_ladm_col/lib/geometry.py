@@ -974,7 +974,7 @@ class GeometryUtils(QObject):
     def get_polygon_nodes_layer(polygon_layer, id_field):
         """
         Layer is created with unique vertices. It is necessary because 'remove duplicate vertices' processing
-        algorithm does not filter the data as wee need them
+        algorithm does not filter the data as we need them
         """
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         plot_nodes_layer = QgsVectorLayer("Point?crs={}".format(polygon_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
@@ -1013,8 +1013,8 @@ class GeometryUtils(QObject):
 
         for feature in spatial_join_layer.getFeatures():
             # When the two layers have the same attribute, the field of the layer
-            # that makes the join is rename and input layer conserve the same name
-            feature_id = feature[id_field]  # Whe use input layer field
+            # that makes the join is renamed and input layer preserves the same name
+            feature_id = feature[id_field]  # We use input layer field
             feature_geom = feature.geometry()
             features.append((feature_id, feature_geom))
 

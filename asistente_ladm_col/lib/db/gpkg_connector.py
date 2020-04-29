@@ -276,7 +276,7 @@ class GPKGConnector(DBConnector):
         #self.logger.debug(__name__, "Units found: {}".format(dict_units))
         return dict_units
 
-    def get_models(self, schema=None):
+    def get_models(self):
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:

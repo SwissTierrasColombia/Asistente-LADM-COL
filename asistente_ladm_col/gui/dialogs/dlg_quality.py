@@ -166,12 +166,14 @@ class QualityDialog(QDialog, DIALOG_UI):
 
     @_log_quality_rule_validations
     def execute_quality_rule(self, id, rule_name):
-        # NOTE: Do not remove the named parameters, this is needed for making a decorator that thinks they are
-        # optional happy!
-        list_result = self.quality_rules.validate_quality_rule(self._db, self._ladm_queries, id)
+        """
+        Intermediate function to log quality rule execution.
 
-        for result in list_result:
-            self.log_message(result[0], result[1])  # message, Qgis::MessageLevel
+        :param id: rule id
+        :param rule_name: Rule name (needed for the logging decorator)
+        """
+        for msg, level in self.quality_rules.validate_quality_rule(self._db, self._ladm_queries, id):
+            self.log_message(msg, level)
 
     def set_count_topology_rules(self, count):
         self.log_quality_show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)

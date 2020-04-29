@@ -42,19 +42,17 @@ class SymbologyUtils(QObject):
         self.logger = Logger()
 
     def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):  # TODO: Add tests
-
         if db is None:
-            self.logger.critical(__name__, "DB connection is none not set style")
+            self.logger.critical(__name__, "DB connection is none. Style not set.")
             return
 
         qml_name = None
         if db.is_ladm_layer(layer):
             layer_name = db.get_ladm_layer_name(layer)
         else:
-            layer_name = layer.name()  # we identify some error layers styles using the error table names
+            layer_name = layer.name()  # we identify some error layer styles using the error table names
 
         if not is_error_layer:
-
             # Check if we should use modifier style group
             if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
                 style_group_modifiers = layer_modifiers.get(LayerConfig.STYLE_GROUP_LAYER_MODIFIERS)

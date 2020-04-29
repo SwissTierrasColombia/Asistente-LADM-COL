@@ -26,10 +26,8 @@ from asistente_ladm_col.logic.quality.logic_quality_rules import LogicQualityRul
 
 class QualityRules:
     """
-    This class implement a facade design pattern
-    This Facade class provides a simple interface to the complex logic of
-    several quality rules. The Facade delegates the client requests to the
-    appropriate quality rule class within the subsystem.
+    This facade class provides a simple interface to several quality rules.
+    The facade delegates client requests to appropriate quality rule classes.
     """
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
@@ -38,7 +36,7 @@ class QualityRules:
         self.polygon_quality_rules = PolygonQualityRules(self.qgis_utils)
         self.logic_quality_rules = LogicQualityRules(self.qgis_utils)
 
-    # POINTS QUALITY RULES
+    # POINT QUALITY RULES
     def validate_overlaps_in_boundary_points(self, db):
         return self.point_quality_rules.check_overlapping_boundary_point(db)
 
@@ -51,7 +49,7 @@ class QualityRules:
     def validate_boundary_points_covered_by_plot_nodes(self, db):
         return self.point_quality_rules.check_boundary_points_covered_by_plot_nodes(db)
 
-    # LINES QUALITY RULES
+    # LINE QUALITY RULES
     def validate_overlaps_in_boundaries(self, db):
         return self.line_quality_rules.check_overlaps_in_boundaries(db)
 
@@ -67,7 +65,7 @@ class QualityRules:
     def validate_dangles_in_boundaries(self, db):
         return self.line_quality_rules.check_dangles_in_boundaries(db)
 
-    # POLYGONS QUALITY RULES
+    # POLYGON QUALITY RULES
     def validate_overlaps_in_plots(self, db):
         return self.polygon_quality_rules.check_overlapping_plots(db)
 
@@ -133,81 +131,86 @@ class QualityRules:
         return self.logic_quality_rules.check_uebaunit_parcel(db, query_manager)
 
     def validate_quality_rule(self, db, ladm_queries, id_quality_rule):
-        # list of results
-        # result: it is a tuple with message and Qgis::MessageLevel (Qgis.Success, Qgis.Warning, Qgis.Critical)
-        # Usually this variable list_result should have only one tuple unless validate the quality rule that
-        # check check duplicate records in a table
-        list_result = list()
+        """
+        Single point of access to execute quality rules. It dispatches calls to
+        the appropriate quality rule classes.
 
-        # POINTS QUALITY RULES
+        :param db: DB Connector object
+        :param id_quality_rule: id of the quality rule
+        :return: A list of tuples. When the rule is check for duplicate records, the list has
+                 several tuples, otherwise it returns a single tuple.
+                 res = [(msg, Qgis.Success|Warning|Critical)), ...]
+        """
+        res = list()
+
+        # POINT QUALITY RULES
         if id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
-            list_result.append(self.validate_overlaps_in_boundary_points(db))
+            res.append(self.validate_overlaps_in_boundary_points(db))
         elif id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS:
-            list_result.append(self.validate_overlaps_in_control_points(db))
+            res.append(self.validate_overlaps_in_control_points(db))
         elif id_quality_rule == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES:
-            list_result.append(self.validate_boundary_points_covered_by_boundary_nodes(db))
+            res.append(self.validate_boundary_points_covered_by_boundary_nodes(db))
         elif id_quality_rule == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES:
-            list_result.append(self.validate_boundary_points_covered_by_plot_nodes(db))
-        # LINES QUALITY RULES
+            res.append(self.validate_boundary_points_covered_by_plot_nodes(db))
+
+        # LINE QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES:
-            list_result.append(self.validate_overlaps_in_boundaries(db))
+            res.append(self.validate_overlaps_in_boundaries(db))
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT:
-            list_result.append(self.validate_boundaries_are_not_split(db))
+            res.append(self.validate_boundaries_are_not_split(db))
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS:
-            list_result.append(self.validate_boundaries_covered_by_plots(db))
+            res.append(self.validate_boundaries_covered_by_plots(db))
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS:
-            list_result.append(self.validate_boundary_nodes_covered_by_boundary_points(db))
+            res.append(self.validate_boundary_nodes_covered_by_boundary_points(db))
         elif id_quality_rule == EnumQualityRule.Line.DANGLES_IN_BOUNDARIES:
-            list_result.append(self.validate_dangles_in_boundaries(db))
-        # POLYGONS QUALITY RULES
+            res.append(self.validate_dangles_in_boundaries(db))
+
+        # POLYGON QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS:
-            list_result.append(self.validate_overlaps_in_plots(db))
+            res.append(self.validate_overlaps_in_plots(db))
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS:
-            list_result.append(self.validate_overlaps_in_buildings(db))
+            res.append(self.validate_overlaps_in_buildings(db))
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY:
-            list_result.append(self.validate_overlaps_in_rights_of_way(db))
+            res.append(self.validate_overlaps_in_rights_of_way(db))
         elif id_quality_rule == EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES:
-            list_result.append(self.validate_plots_covered_by_boundaries(db))
+            res.append(self.validate_plots_covered_by_boundaries(db))
         elif id_quality_rule == EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS:
-            list_result.append(self.validate_right_of_way_overlaps_buildings(db))
+            res.append(self.validate_right_of_way_overlaps_buildings(db))
         elif id_quality_rule == EnumQualityRule.Polygon.GAPS_IN_PLOTS:
-            list_result.append(self.validate_gaps_in_plots(db))
+            res.append(self.validate_gaps_in_plots(db))
         elif id_quality_rule == EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY:
-            list_result.append(self.validate_multipart_in_right_of_way(db))
+            res.append(self.validate_multipart_in_right_of_way(db))
         elif id_quality_rule == EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS:
-            list_result.append(self.validate_plot_nodes_covered_by_boundary_points(db))
+            res.append(self.validate_plot_nodes_covered_by_boundary_points(db))
         elif id_quality_rule == EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS:
-            list_result.append(self.validate_buildings_should_be_within_plots(db))
+            res.append(self.validate_buildings_should_be_within_plots(db))
         elif id_quality_rule == EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS:
-            list_result.append(self.validate_building_units_should_be_within_plots(db))
+            res.append(self.validate_building_units_should_be_within_plots(db))
+
         # LOGIC QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP:
-            list_result.append(self.validate_parcel_right_relationship(db, ladm_queries))
+            res.append(self.validate_parcel_right_relationship(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE:
-
-            # Check a predifene list of tables   list of define table with
-            logic_consistency_tables = LayerConfig.get_logic_consistency_tables(db.names)
-            for table in logic_consistency_tables:
-                fields = logic_consistency_tables[table]
-                list_result.append(self.validate_duplicate_records_in_a_table(db, ladm_queries, table, fields))
-
+            # Check a predefined list of tables (and fields that define a duplicate record)
+            for table, fields in LayerConfig.get_logic_consistency_tables(db.names):
+                res.append(self.validate_duplicate_records_in_a_table(db, ladm_queries, table, fields))
         elif id_quality_rule == EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS:
-            list_result.append(self.validate_fraction_sum_for_party_groups(db, ladm_queries))
+            res.append(self.validate_fraction_sum_for_party_groups(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS:
-            list_result.append(self.validate_department_code_has_two_numerical_characters(db, ladm_queries))
+            res.append(self.validate_department_code_has_two_numerical_characters(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS:
-            list_result.append(self.validate_municipality_code_has_three_numerical_characters(db, ladm_queries))
+            res.append(self.validate_municipality_code_has_three_numerical_characters(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS:
-            list_result.append(self.validate_parcel_number_has_30_numerical_characters(db, ladm_queries))
+            res.append(self.validate_parcel_number_has_30_numerical_characters(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS:
-            list_result.append(self.validate_parcel_number_before_has_20_numerical_characters(db, ladm_queries))
+            res.append(self.validate_parcel_number_before_has_20_numerical_characters(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE:
-            list_result.append(self.validate_col_party_natural_type(db, ladm_queries))
+            res.append(self.validate_col_party_natural_type(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE:
-            list_result.append(self.validate_col_party_no_natural_type(db, ladm_queries))
+            res.append(self.validate_col_party_no_natural_type(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER:
-            list_result.append(self.validate_parcel_type_and_22_position_of_parcel_number(db, ladm_queries))
+            res.append(self.validate_parcel_type_and_22_position_of_parcel_number(db, ladm_queries))
         elif id_quality_rule == EnumQualityRule.Logic.UEBAUNIT_PARCEL:
-            list_result.append(self.validate_uebaunit_parcel(db, ladm_queries))
+            res.append(self.validate_uebaunit_parcel(db, ladm_queries))
 
-        return list_result
+        return res
