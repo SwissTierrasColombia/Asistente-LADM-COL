@@ -216,7 +216,10 @@ class AppGUIInterface(QObject):
         self.iface.messageBar().clearWidgets()
 
     def zoom_full(self):
-        self.iface.zoom_full()
+        self.iface.zoomFull()
+
+    def zoom_to_active_layer(self):
+        self.iface.zoomToActiveLayer()
 
     def zoom_to_selected(self):
         self.iface.actionZoomToSelected().trigger()
