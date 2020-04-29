@@ -45,6 +45,7 @@ class AppInterface(QObject, metaclass=SingletonQObject):
             self.core.map_refresh_requested.connect(self.gui.refresh_map)
             self.core.map_freeze_requested.connect(self.gui.freeze_map)
             self.core.zoom_full_requested.connect(self.gui.zoom_full)
+            self.core.zoom_to_active_layer_requested.connect(self.gui.zoom_to_active_layer)
             self.core.zoom_to_selected_requested.connect(self.gui.zoom_to_selected)
             self.core.set_node_visibility_requested.connect(self.gui.set_node_visibility)
 

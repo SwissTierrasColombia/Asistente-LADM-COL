@@ -90,6 +90,7 @@ class AppCoreInterface(QObject):
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     zoom_full_requested = pyqtSignal()
+    zoom_to_active_layer_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
 
@@ -131,6 +132,10 @@ class AppCoreInterface(QObject):
         self._bags_of_enum = list()
 
     def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+        """
+
+        :return: QgsVectorLayer
+        """
         # Handy function to get a single layer
         layer = {layer_name: None}
         self.get_layers(db, layer, load, emit_map_freeze, layer_modifiers=layer_modifiers)
@@ -1049,7 +1054,8 @@ class AppCoreInterface(QObject):
         new_features = target_point_layer.featureCount() - initial_feature_count
 
         if features_added:
-            self.zoom_full_requested.emit()
+            self.activate_layer_requested.emit(target_point_layer)
+            self.zoom_to_active_layer_requested.emit()
             self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
                 "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
@@ -1077,7 +1083,7 @@ class AppCoreInterface(QObject):
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(output_layer)
             field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(db.names,
-                                                                                             ladm_col_layer_name, self)
+                                                                                             ladm_col_layer_name)
             self.activate_layer_requested.emit(input_layer)
 
             res = processing.run("model:ETL-model",
@@ -1086,6 +1092,9 @@ class AppCoreInterface(QObject):
             self.check_if_and_enable_automatic_fields(output_layer, automatic_fields_definition)
             finish_feature_count = output_layer.featureCount()
 
+            if not finish_feature_count:
+                self.logger.warning(__name__, QCoreApplication.translate("QGISUtils",
+                                                                        "The output of the ETL-model has no features!"))
             return finish_feature_count > start_feature_count
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
