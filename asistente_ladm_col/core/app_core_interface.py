@@ -88,6 +88,7 @@ class AppCoreInterface(QObject):
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     map_refresh_requested = pyqtSignal()
+    redraw_all_layers_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     zoom_full_requested = pyqtSignal()
     zoom_to_active_layer_requested = pyqtSignal()
