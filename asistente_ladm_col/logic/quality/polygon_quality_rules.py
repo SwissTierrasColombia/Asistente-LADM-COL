@@ -386,19 +386,19 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            building_disjoin, building_overlaps, building_within = GeometryUtils.get_polygon_relation_polygon(layers[names.OP_BUILDING_T], layers[names.OP_PLOT_T])
+            building_disjoint, building_overlaps, building_within = GeometryUtils.get_relationships_among_polygons(layers[names.OP_BUILDING_T], layers[names.OP_PLOT_T])
 
-            tid_buildings = self.check_building_not_associate_correct_plot(building_within,
-                                                                           layers[names.OP_BUILDING_T],
-                                                                           layers[names.OP_PLOT_T],
-                                                                           layers[names.OP_PARCEL_T],
-                                                                           layers[names.COL_UE_BAUNIT_T],
-                                                                           layers[names.OP_CONDITION_PARCEL_TYPE_D],
-                                                                           names)
+            tid_buildings = self.check_building_not_associated_with_correct_plot(building_within,
+                                                                                 layers[names.OP_BUILDING_T],
+                                                                                 layers[names.OP_PLOT_T],
+                                                                                 layers[names.OP_PARCEL_T],
+                                                                                 layers[names.COL_UE_BAUNIT_T],
+                                                                                 layers[names.OP_CONDITION_PARCEL_TYPE_D],
+                                                                                 names)
 
             new_features = list()
             # Buildings that are not covered by a plot
-            for building_with_no_plot in layers[names.OP_BUILDING_T].getFeatures(building_disjoin):
+            for building_with_no_plot in layers[names.OP_BUILDING_T].getFeatures(building_disjoint):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 building_with_no_plot.geometry(),
@@ -407,7 +407,7 @@ class PolygonQualityRules:
                                  2: QUALITY_RULE_ERROR_CODE_E300901})
                 new_features.append(new_feature)
 
-            # Buildings that are not within by a plot
+            # Buildings that are not within a plot
             for building_not_within_plot in layers[names.OP_BUILDING_T].getFeatures(building_overlaps):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -419,7 +419,7 @@ class PolygonQualityRules:
             data_provider.addFeatures(new_features)
 
             exp = "{} in ({})".format(names.T_ID_F, ", ".join([str(tid) for tid in tid_buildings]))
-            # Building is withing by a plot but this is not the associate in the topology table
+            # Building is within a plot, but this is not the corresponding plot
             for building in layers[names.OP_BUILDING_T].getFeatures(exp):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -442,7 +442,7 @@ class PolygonQualityRules:
 
 
     @staticmethod
-    def check_building_not_associate_correct_plot(building_within, building_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
+    def check_building_not_associated_with_correct_plot(building_within, building_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
 
         buildings_bad_relation = list()
         buildings_to_check = {f[names.T_ID_F]: f for f in building_layer.getFeatures(building_within)}
@@ -460,17 +460,17 @@ class PolygonQualityRules:
                                                       'OUTPUT': 'memory:'})['OUTPUT']
         building_layer.removeSelection()  # Remove previous selection
 
-        # Get building units within by plots
+        # Get building units within plots
         building_within_plots = dict()
         for feature in building_within_plots_layer.getFeatures():
             if not building_within_plots.get(feature[names.T_ID_F]):
                 building_within_plots[feature[names.T_ID_F]] = feature[names.T_ID_F + '_2']
             else:
-                # error: building should only be within by one plot
+                # error: building should only be within one plot
                 buildings_bad_relation.append(feature[names.T_ID_F])
                 del building_within_plots[feature[names.T_ID_F]]
 
-        # Remove buildings that are within by more than one plot
+        # Remove buildings that are within more than one plot
         remove_keys_from_dict(buildings_bad_relation, buildings_to_check)
 
         # Relation building - parcel
@@ -487,7 +487,7 @@ class PolygonQualityRules:
             if not building_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]):
                 building_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
-                # error: building should only have one parcel associate
+                # error: building should only have one parcel associated
                 buildings_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F])
                 del building_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]]
 
@@ -563,9 +563,9 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            building_units_disjoin_plots, building_units_overlaps_plots, building_units_within_plots = GeometryUtils.get_polygon_relation_polygon(layers[names.OP_BUILDING_UNIT_T], layers[names.OP_PLOT_T])
+            building_units_disjoint_plots, building_units_overlaps_plots, building_units_within_plots = GeometryUtils.get_relationships_among_polygons(layers[names.OP_BUILDING_UNIT_T], layers[names.OP_PLOT_T])
 
-            tids_building_units_bad_relation_plots = self.check_building_unit_not_associate_correct_plot(
+            tids_building_units_bad_relation_plots = self.check_building_unit_not_associated_with_correct_plot(
                 building_units_within_plots,
                 layers[names.OP_BUILDING_UNIT_T],
                 layers[names.OP_PLOT_T],
@@ -579,14 +579,14 @@ class PolygonQualityRules:
             ids_building_units_bad_relation_plots = [f.id() for f in building_units_bad_relation_plots]
 
             # Check relations between building units and building
-            building_units_disjoin_buildings, building_units_overlaps_buildings, building_units_within_building = GeometryUtils.get_polygon_relation_polygon(layers[names.OP_BUILDING_UNIT_T], layers[names.OP_BUILDING_T])
-            missing_building_units_disjoin_buildings = list(set(building_units_disjoin_buildings) - set(ids_building_units_bad_relation_plots))
+            building_units_disjoint_buildings, building_units_overlaps_buildings, building_units_within_building = GeometryUtils.get_relationships_among_polygons(layers[names.OP_BUILDING_UNIT_T], layers[names.OP_BUILDING_T])
+            missing_building_units_disjoint_buildings = list(set(building_units_disjoint_buildings) - set(ids_building_units_bad_relation_plots))
             missing_building_units_overlaps_buildings = list(set(building_units_overlaps_buildings) - set(ids_building_units_bad_relation_plots))
             missing_building_units_within_building = list(set(building_units_within_building) - set(ids_building_units_bad_relation_plots))
 
             t_ids_building_units_bad_relation_buildings = list()
             if missing_building_units_within_building:
-                t_ids_building_units_bad_relation_buildings = self.check_building_unit_not_associate_correct_building(
+                t_ids_building_units_bad_relation_buildings = self.check_building_unit_not_associated_with_correct_building(
                     missing_building_units_within_building,
                     layers[names.OP_BUILDING_UNIT_T],
                     layers[names.OP_BUILDING_T],
@@ -598,17 +598,17 @@ class PolygonQualityRules:
             building_units_bad_relation_buildings = [f for f in layers[names.OP_BUILDING_UNIT_T].getFeatures(exp)]
 
             new_features = list()
-            # Building unit disjoin plots
-            for building_unit_disjoin_plot in layers[names.OP_BUILDING_UNIT_T].getFeatures(building_units_disjoin_plots):
+            # Building unit disjoint from plots
+            for building_unit_disjoint_plot in layers[names.OP_BUILDING_UNIT_T].getFeatures(building_units_disjoint_plots):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
-                                building_unit_disjoin_plot.geometry(),
-                                {0: building_unit_disjoin_plot[names.T_ILI_TID_F],
+                                building_unit_disjoint_plot.geometry(),
+                                {0: building_unit_disjoint_plot[names.T_ILI_TID_F],
                                  1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E301001),
                                  2: QUALITY_RULE_ERROR_CODE_E301001})
                 new_features.append(new_feature)
 
-            # Building unit not within by a plot
+            # Building unit not within a plot
             for building_unit_overlap_plot in layers[names.OP_BUILDING_UNIT_T].getFeatures(building_units_overlaps_plots):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -618,7 +618,7 @@ class PolygonQualityRules:
                                  2: QUALITY_RULE_ERROR_CODE_E301002})
                 new_features.append(new_feature)
 
-            # Building unit is withing by a plot but this is not the associate in the topology table
+            # Building unit is within a plot, but this is not the corresponding plot
             for building_unit_bad_relation_plot in building_units_bad_relation_plots:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -628,17 +628,17 @@ class PolygonQualityRules:
                                  2: QUALITY_RULE_ERROR_CODE_E301003})
                 new_features.append(new_feature)
 
-            # Building unit disjoin building
-            for building_unit_disjoin_building in layers[names.OP_BUILDING_UNIT_T].getFeatures(missing_building_units_disjoin_buildings):
+            # Building unit disjoint from building
+            for building_unit_disjoint_building in layers[names.OP_BUILDING_UNIT_T].getFeatures(missing_building_units_disjoint_buildings):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
-                                building_unit_disjoin_building.geometry(),
-                                {0: building_unit_disjoin_building[names.T_ILI_TID_F],
+                                building_unit_disjoint_building.geometry(),
+                                {0: building_unit_disjoint_building[names.T_ILI_TID_F],
                                  1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E301004),
                                  2: QUALITY_RULE_ERROR_CODE_E301004})
                 new_features.append(new_feature)
 
-            # Building unit not within by a building
+            # Building unit not within a building
             for building_unit_overlap_building in layers[names.OP_BUILDING_UNIT_T].getFeatures(missing_building_units_overlaps_buildings):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -648,7 +648,7 @@ class PolygonQualityRules:
                                  2: QUALITY_RULE_ERROR_CODE_E301005})
                 new_features.append(new_feature)
 
-            # Building unit is withing by a building but this is not the associate in the topology table
+            # Building unit is within a building, but this is not the corresponding building
             for building_units_bad_relation_building in building_units_bad_relation_buildings:
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
@@ -670,8 +670,7 @@ class PolygonQualityRules:
                                  "All building units are within a plot."), Qgis.Success)
 
     @staticmethod
-    def check_building_unit_not_associate_correct_plot(building_units_within_plots, building_unit_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
-
+    def check_building_unit_not_associated_with_correct_plot(building_units_within_plots, building_unit_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
         building_units_bad_relation = list()
         building_units_to_check = {f[names.T_ID_F]: f for f in building_unit_layer.getFeatures(building_units_within_plots)}
 
@@ -688,17 +687,17 @@ class PolygonQualityRules:
               'OUTPUT': 'memory:'})['OUTPUT']
         building_unit_layer.removeSelection()  # Remove previous selection
 
-        # Get building units within by plots
+        # Get building units within plots
         building_unit_within_plots = dict()
         for feature in building_unit_within_plot_layer.getFeatures():
             if not building_unit_within_plots.get(feature[names.T_ID_F]):
                 building_unit_within_plots[feature[names.T_ID_F]] = feature[names.T_ID_F + '_2']
             else:
-                # error: building unit should only be within by one plot
+                # error: building unit should only be within one plot
                 building_units_bad_relation.append(feature[names.T_ID_F])
                 del building_unit_within_plots[feature[names.T_ID_F]]
 
-        # Remove buildings units that are within by more than one plot
+        # Remove buildings units that are within more than one plot
         remove_keys_from_dict(building_units_bad_relation, building_units_to_check)
 
         # Relation building unit - parcel
@@ -715,7 +714,7 @@ class PolygonQualityRules:
             if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]):
                 building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
-                # error: building unit should only have one parcel associate
+                # error: building unit should only have one parcel associated
                 building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F])
                 del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]]
 
@@ -764,8 +763,7 @@ class PolygonQualityRules:
         return list(set(building_units_bad_relation))  # Uniques t_id
 
     @staticmethod
-    def check_building_unit_not_associate_correct_building(building_units_within_building, building_unit_layer, building_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
-
+    def check_building_unit_not_associated_with_correct_building(building_units_within_building, building_unit_layer, building_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
         building_units_bad_relation = list()
         building_units_to_check = {f[names.T_ID_F]: f for f in building_unit_layer.getFeatures(building_units_within_building)}
 
@@ -782,7 +780,7 @@ class PolygonQualityRules:
               'OUTPUT': 'memory:'})['OUTPUT']
         building_unit_layer.removeSelection()  # Remove previous selection
 
-        # Get building units within by buildings
+        # Get building units within buildings
         building_unit_within_building = dict()
         for feature in building_unit_within_building_layer.getFeatures():
             if not building_unit_within_building.get(feature[names.T_ID_F]):
@@ -792,11 +790,11 @@ class PolygonQualityRules:
                 else:
                     building_unit_within_building[feature[names.T_ID_F]] = feature[names.T_ID_F + '_2']
             else:
-                # error: building unit should only be within by one building
+                # error: building unit should only be within one building
                 building_units_bad_relation.append(feature[names.T_ID_F])
                 del building_unit_within_building[feature[names.T_ID_F]]
 
-        # Remove buildings units that are within by more than one building or
+        # Remove buildings units that are within more than one building or
         # alphanumeric relation between building and building unit should be equal to spatial relation
         remove_keys_from_dict(building_units_bad_relation, building_units_to_check)
 
@@ -814,11 +812,11 @@ class PolygonQualityRules:
             if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]):
                 building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
-                # error: building unit should only have one parcel associate
+                # error: building unit should only have one parcel associated
                 building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F])
                 del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]]
 
-        # Remove buildings units that are within by more than one plot
+        # Remove buildings units that are within more than one plot
         remove_keys_from_dict(building_units_bad_relation, building_units_to_check)
 
         # Get parcel condition
@@ -1130,4 +1128,4 @@ class PolygonQualityRules:
     @staticmethod
     def get_plot_nodes_features_not_covered_by_boundary_points(boundary_point_layer, plot_layer, id_field):
         plot_nodes_layer = GeometryUtils.get_polygon_nodes_layer(plot_layer, id_field)
-        return GeometryUtils.get_points_not_covered_by_points(plot_nodes_layer, boundary_point_layer, id_field)
+        return GeometryUtils.get_non_intersecting_geometries(plot_nodes_layer, boundary_point_layer, id_field)

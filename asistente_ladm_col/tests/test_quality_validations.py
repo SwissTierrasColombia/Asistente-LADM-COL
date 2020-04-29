@@ -1261,15 +1261,15 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'plots', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 5)
 
-        buildings_disjoin, buildings_overlaps, building_within = GeometryUtils.get_polygon_relation_polygon(
+        buildings_disjoint, buildings_overlaps, building_within = GeometryUtils.get_relationships_among_polygons(
             building_layer,
             plot_layer)
 
-        test_buildings_disjoin = [5]
+        test_buildings_disjoint = [5]
         test_buildings_overlaps = [2, 6]
         test_building_within = [1, 3, 4]
 
-        self.assertListEqual(list(set(buildings_disjoin)), test_buildings_disjoin)
+        self.assertListEqual(list(set(buildings_disjoint)), test_buildings_disjoint)
         self.assertListEqual(list(set(buildings_overlaps)), test_buildings_overlaps)
         self.assertListEqual(list(set(building_within)), test_building_within)
 
@@ -1277,9 +1277,8 @@ class TesQualityValidations(unittest.TestCase):
         self.db_gpkg = get_gpkg_conn('test_valid_quality_rules_gpkg')
         result = self.db_gpkg.test_connection()
 
-        # When the tests are run the REGEXP function does not find it sqlite, so it is necessary to register it
-        # sqlite3.OperationalError: no such function: REGEXP
-        self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)  # Create custom function because it not
+        # When the tests are run the REGEXP function is not found, so we register it
+        self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)
         self.assertTrue(result[0], 'The test connection is not working')
         query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries(self.qgis_utils)
 
@@ -1363,14 +1362,12 @@ class TesQualityValidations(unittest.TestCase):
         db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
         result = db_gpkg.test_connection()
 
-        # When the tests are run the REGEXP function does not find it sqlite, so it is necessary to register it
-        # sqlite3.OperationalError: no such function: REGEXP
-        db_gpkg.conn.create_function("REGEXP", 2, _regexp)  # Create custom function because it not
+        # When the tests are run the REGEXP function is not found, so we register it
+        db_gpkg.conn.create_function("REGEXP", 2, _regexp)
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_logic_quality_rules(db_gpkg)
 
     def check_logic_quality_rules(self, db):
-
         query_manager = ConfigDBsSupported().get_db_factory(db.engine).get_ladm_queries(self.qgis_utils)
 
         # Logic rules

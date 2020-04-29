@@ -909,14 +909,13 @@ class GeometryUtils(QObject):
         return merge_geometries, boundaries_to_del
 
     @staticmethod
-    def get_polygon_relation_polygon(input_layer, intersect_layer):
-
-        # Select buildings disjoin with plots
+    def get_relationships_among_polygons(input_layer, intersect_layer):
+        # Select buildings disjoint from plots
         processing.run("native:selectbylocation", {'INPUT': input_layer,
-                                                   'PREDICATE': [2],  # disjoin
+                                                   'PREDICATE': [2],  # disjoint
                                                    'INTERSECT': intersect_layer,
                                                    'METHOD': 0})
-        input_disjoin = input_layer.selectedFeatureIds()
+        input_disjoint = input_layer.selectedFeatureIds()
 
         # processing algorithm 'selectbylocation' by default remove the previous selection
         # Select buildings overlaps with plots
@@ -926,14 +925,14 @@ class GeometryUtils(QObject):
                                                    'METHOD': 0})
         input_overlaps = input_layer.selectedFeatureIds()
 
-        # Select buildings to are within by plots
+        # Select buildings to are within plots
         processing.run("native:selectbylocation", {'INPUT': input_layer,
                                                    'PREDICATE': [6],  # are within
                                                    'INTERSECT': intersect_layer,
                                                    'METHOD': 0})
         input_within = input_layer.selectedFeatureIds()
 
-        return input_disjoin, input_overlaps, input_within
+        return input_disjoint, input_overlaps, input_within
 
     @staticmethod
     def get_intersection_features(layer, geometries, id_field=None):
@@ -998,7 +997,7 @@ class GeometryUtils(QObject):
         return plot_nodes_layer
 
     @staticmethod
-    def get_points_not_covered_by_points(input_layer, join_layer, id_field):
+    def get_non_intersecting_geometries(input_layer, join_layer, id_field):
         # get non matching features between input and join layer
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
                                             {'INPUT': input_layer,
@@ -1013,7 +1012,7 @@ class GeometryUtils(QObject):
 
         for feature in spatial_join_layer.getFeatures():
             # When the two layers have the same attribute, the field of the layer
-            # that makes the join is renamed and input layer preserves the same name
+            # that makes the join is renamed and the input layer preserves the same name
             feature_id = feature[id_field]  # We use input layer field
             feature_geom = feature.geometry()
             features.append((feature_id, feature_geom))

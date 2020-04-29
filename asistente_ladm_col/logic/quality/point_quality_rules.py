@@ -495,4 +495,4 @@ class PointQualityRules:
     @staticmethod
     def get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer, plot_layer, id_field):
         plot_nodes_layer = GeometryUtils.get_polygon_nodes_layer(plot_layer, id_field)
-        return GeometryUtils.get_points_not_covered_by_points(boundary_point_layer, plot_nodes_layer, id_field)
+        return GeometryUtils.get_non_intersecting_geometries(boundary_point_layer, plot_nodes_layer, id_field)
