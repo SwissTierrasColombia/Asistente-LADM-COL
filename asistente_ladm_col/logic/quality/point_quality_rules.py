@@ -65,12 +65,12 @@ class PointQualityRules:
         Shows which points are overlapping
         :param db: db connection instance
         :param entity: points layer
-        :return:
+        :return: msg, Qgis.MessageLevel
         """
         features = []
         point_layer = self.qgis_utils.get_layer(db, layer_name, load=True)
         if not point_layer:
-            return
+            return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
 
         if point_layer.featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
@@ -123,7 +123,7 @@ class PointQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
         elif layers[db.names.OP_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
@@ -159,7 +159,7 @@ class PointQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
@@ -211,12 +211,12 @@ class PointQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_BOUNDARY_T].featureCount() == 0:
             self.logger.info_msg(__name__, QCoreApplication.translate("PointQualityRules",
                                            "There are no boundaries to check 'missing boundary points in boundaries'."))
-            return
+            return QCoreApplication.translate("PointQualityRules", "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Critical
 
         error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
                                      rule.error_table_name,
@@ -291,12 +291,12 @@ class PointQualityRules:
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (building, survey point) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_BUILDING_T].featureCount() == 0:
             self.logger.info_msg(__name__, QCoreApplication.translate("PointQualityRules",
                 "There are no buildings to check 'missing survey points in buildings'."))
-            return
+            return QCoreApplication.translate("PointQualityRules", "There are no buildings to check 'missing survey points in buildings'."), Qgis.Critical
 
         error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
                                      QCoreApplication.translate("PointQualityRules", "Missing survey points in buildings"),
@@ -324,9 +324,8 @@ class PointQualityRules:
             self.logger.info_msg(__name__, QCoreApplication.translate("PointQualityRules",
                 "There are no missing survey points in buildings."))
 
-    # UTILS METHODS
+    # UTILITY METHODS
     def get_boundary_points_not_covered_by_boundary_nodes(self, db, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field):
-
         dict_uuid_boundary = {f[id_field]: f[db.names.T_ILI_TID_F] for f in boundary_layer.getFeatures()}
         dict_uuid_boundary_point = {f[id_field]: f[db.names.T_ILI_TID_F] for f in boundary_point_layer.getFeatures()}
 

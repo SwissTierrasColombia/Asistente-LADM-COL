@@ -155,7 +155,7 @@ class LogicQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=False)
         if not layers:
-            return None
+            return QCoreApplication.translate("LogicQualityRules", "At lest one required layer (members, group party) was not found!"), Qgis.Critical
 
         dict_uuid_members = get_uuid_dict(layers[db.names.MEMBERS_T], db.names, db.names.T_ID_F)
         dict_uuid_group_party = get_uuid_dict(layers[db.names.OP_GROUP_PARTY_T], db.names, db.names.T_ID_F)

@@ -57,7 +57,7 @@ class LineQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
-            return
+            return QCoreApplication.translate("LineQualityRules", "'Boundary' layer not found!"), Qgis.Critical
 
         # Create error layers structure
         error_point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "{} (puntos)".format(rule.error_table_name), "memory")
@@ -139,7 +139,7 @@ class LineQualityRules:
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
-            return
+            return QCoreApplication.translate("LineQualityRules", "'Boundary' layer not found!"), Qgis.Critical
 
         if boundary_layer.featureCount() == 0:
             return (QCoreApplication.translate("LineQualityRules",
@@ -185,10 +185,9 @@ class LineQualityRules:
             db.names.LESS_BFS_T: None,
             db.names.MORE_BFS_T: None
         }
-
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("LineQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
         # validate data
         if layers[db.names.OP_BOUNDARY_T].featureCount() == 0:
@@ -228,10 +227,9 @@ class LineQualityRules:
             db.names.POINT_BFS_T: None,
             db.names.OP_BOUNDARY_T: None
         }
-
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("LineQualityRules", "At least one required layer (boundary point, boundary, point BFS) was not found!"), Qgis.Critical
 
         elif layers[db.names.OP_BOUNDARY_T].featureCount() == 0:
             return (QCoreApplication.translate("LineQualityRules",
@@ -265,7 +263,7 @@ class LineQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)
         boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
-            return
+            return QCoreApplication.translate("LineQualityRules", "'Boundary' layer was not found!"), Qgis.Critical
 
         if boundary_layer.featureCount() == 0:
             return (QCoreApplication.translate("LineQualityRules",
@@ -301,8 +299,8 @@ class LineQualityRules:
                 return (QCoreApplication.translate("LineQualityRules",
                                  "Boundaries have no dangles!"), Qgis.Success)
 
-    # UTILS METHODS
 
+    # UTILITY METHODS
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, db, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field):
         dict_uuid_boundary_point = get_uuid_dict(boundary_point_layer, db.names, db.names.T_ID_F)
         dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, db.names.T_ID_F)

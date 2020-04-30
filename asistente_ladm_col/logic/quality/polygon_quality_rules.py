@@ -79,7 +79,7 @@ class PolygonQualityRules:
     def __check_overlapping_polygons(self, db, rule, polygon_layer_name, error_code):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, load=True)
         if not polygon_layer:
-            return
+            return QCoreApplication.translate("PolygonQualityRules", "'{}' layer not found!").format(polygon_layer_name), Qgis.Critical
 
         if polygon_layer:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -140,7 +140,7 @@ class PolygonQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -180,7 +180,7 @@ class PolygonQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_RIGHT_OF_WAY_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -191,7 +191,6 @@ class PolygonQualityRules:
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
 
         else:
-
             dict_uuid_building = get_uuid_dict(layers[db.names.OP_BUILDING_T], db.names, db.names.T_ID_F)
             dict_uuid_right_of_way = get_uuid_dict(layers[db.names.OP_RIGHT_OF_WAY_T], db.names, db.names.T_ID_F)
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
@@ -230,7 +229,7 @@ class PolygonQualityRules:
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, True)
         if not plot_layer:
-            return
+            return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical
 
         if plot_layer.featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -276,7 +275,7 @@ class PolygonQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)
         right_of_way_layer = self.qgis_utils.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
         if not right_of_way_layer:
-            return
+            return QCoreApplication.translate("PolygonQualityRules", "'Right of way' layer not found!"), Qgis.Critical
 
         if right_of_way_layer.featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -321,7 +320,7 @@ class PolygonQualityRules:
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -373,7 +372,7 @@ class PolygonQualityRules:
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
 
         if layers[names.OP_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -443,7 +442,6 @@ class PolygonQualityRules:
 
     @staticmethod
     def check_building_not_associated_with_correct_plot(building_within, building_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
-
         buildings_bad_relation = list()
         buildings_to_check = {f[names.T_ID_F]: f for f in building_layer.getFeatures(building_within)}
 
@@ -550,7 +548,7 @@ class PolygonQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return None
+            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary, building unit, plot, ue_baunit, condition parcel type) was not found!"), Qgis.Critical
 
         if layers[names.OP_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
