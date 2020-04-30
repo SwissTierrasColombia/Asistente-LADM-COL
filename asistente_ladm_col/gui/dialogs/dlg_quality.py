@@ -62,7 +62,6 @@ class QualityDialog(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality_rules_manager = QualityRuleManager()
-        self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries(self.qgis_utils)
         self.utils = Utils()
         self.quality_rules = QualityRules(self.qgis_utils)
         self.names = self._db.names
@@ -172,8 +171,8 @@ class QualityDialog(QDialog, DIALOG_UI):
         :param id: rule id
         :param rule_name: Rule name (needed for the logging decorator)
         """
-        for msg, level in self.quality_rules.validate_quality_rule(self._db, self._ladm_queries, id):
-            self.log_message(msg, level)
+        msg, level = self.quality_rules.validate_quality_rule(self._db, id)
+        self.log_message(msg, level)
 
     def set_count_topology_rules(self, count):
         self.log_quality_show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)

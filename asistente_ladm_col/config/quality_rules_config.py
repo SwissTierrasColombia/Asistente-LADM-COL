@@ -34,16 +34,16 @@ QUALITY_RULE_DOMAIN_ERROR_CODES = "QUALITY_RULE_DOMAIN_ERROR_CODES"
 QUALITY_RULES_ERRORS = "QUALITY_RULES_ERRORS"
 
 #ERROR CODES FOR POINT QUALITY RULES
-QUALITY_RULE_ERROR_CODE_E1001 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS.value)
-QUALITY_RULE_ERROR_CODE_E1002 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS.value)
+QUALITY_RULE_ERROR_CODE_E100101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E100201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E100301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES.value) + '01'
 QUALITY_RULE_ERROR_CODE_E100302 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES.value) + '02'
 QUALITY_RULE_ERROR_CODE_E100303 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES.value) + '03'
-QUALITY_RULE_ERROR_CODE_E1004 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES.value)
+QUALITY_RULE_ERROR_CODE_E100401 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES.value) + '01'
 
 #ERROR CODES FOR LINE QUALITY RULES
-QUALITY_RULE_ERROR_CODE_E2001 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES.value)
-QUALITY_RULE_ERROR_CODE_E2002 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT.value)
+QUALITY_RULE_ERROR_CODE_E200101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES.value) + '01'
+QUALITY_RULE_ERROR_CODE_E200201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT.value) + '01'
 QUALITY_RULE_ERROR_CODE_E200301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E200302 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS.value) + '02'
 QUALITY_RULE_ERROR_CODE_E200303 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS.value) + '03'
@@ -52,21 +52,21 @@ QUALITY_RULE_ERROR_CODE_E200305 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.B
 QUALITY_RULE_ERROR_CODE_E200401 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E200402 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS.value) + '02'
 QUALITY_RULE_ERROR_CODE_E200403 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS.value) + '03'
-QUALITY_RULE_ERROR_CODE_E2005 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES.value)
+QUALITY_RULE_ERROR_CODE_E200501 = PREFIX_ERROR_CODE + str(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES.value) + '01'
 
 #ERROR CODES FOR POLYGON QUALITY RULES
-QUALITY_RULE_ERROR_CODE_E3001 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS.value)
-QUALITY_RULE_ERROR_CODE_E3002 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS.value)
-QUALITY_RULE_ERROR_CODE_E3003 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY.value)
+QUALITY_RULE_ERROR_CODE_E300101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E300201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E300301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY.value) + '01'
 QUALITY_RULE_ERROR_CODE_E300401 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES.value) + '01'
 QUALITY_RULE_ERROR_CODE_E300402 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES.value) + '02'
 QUALITY_RULE_ERROR_CODE_E300403 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES.value) + '03'
 QUALITY_RULE_ERROR_CODE_E300404 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES.value) + '04'
 QUALITY_RULE_ERROR_CODE_E300405 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES.value) + '05'
-QUALITY_RULE_ERROR_CODE_E3005 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS.value)
-QUALITY_RULE_ERROR_CODE_E3006 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.GAPS_IN_PLOTS.value)
-QUALITY_RULE_ERROR_CODE_E3007 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY.value)
-QUALITY_RULE_ERROR_CODE_E3008 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS.value)
+QUALITY_RULE_ERROR_CODE_E300501 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E300601 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.GAPS_IN_PLOTS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E300701 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY.value) + '01'
+QUALITY_RULE_ERROR_CODE_E300801 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E300901 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E300902 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '02'
 QUALITY_RULE_ERROR_CODE_E300903 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS.value) + '03'
@@ -80,12 +80,12 @@ QUALITY_RULE_ERROR_CODE_E301006 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygo
 #ERROR CODES FOR LOGIC QUALITY RULES
 QUALITY_RULE_ERROR_CODE_E400101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP.value) + '01'
 QUALITY_RULE_ERROR_CODE_E400102 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP.value) + '02'
-QUALITY_RULE_ERROR_CODE_E4002 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE.value)
-QUALITY_RULE_ERROR_CODE_E4003 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS.value)
-QUALITY_RULE_ERROR_CODE_E4004 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS.value)
-QUALITY_RULE_ERROR_CODE_E4005 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS.value)
-QUALITY_RULE_ERROR_CODE_E4006 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS.value)
-QUALITY_RULE_ERROR_CODE_E4007 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS.value)
+# QUALITY_RULE_ERROR_CODE_E400201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE.value) + '01'
+QUALITY_RULE_ERROR_CODE_E400301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E400401 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E400501 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E400601 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS.value) + '01'
+QUALITY_RULE_ERROR_CODE_E400701 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E400801 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '01'
 QUALITY_RULE_ERROR_CODE_E400802 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '02'
 QUALITY_RULE_ERROR_CODE_E400803 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '03'
@@ -113,6 +113,18 @@ QUALITY_RULE_ERROR_CODE_E401108 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.
 QUALITY_RULE_ERROR_CODE_E401109 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.UEBAUNIT_PARCEL.value) + '09'
 QUALITY_RULE_ERROR_CODE_E401110 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.UEBAUNIT_PARCEL.value) + '10'
 QUALITY_RULE_ERROR_CODE_E401111 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.UEBAUNIT_PARCEL.value) + '11'
+QUALITY_RULE_ERROR_CODE_E401201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401401 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401501 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401601 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401701 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401801 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E401901 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL.value) + '01'
+QUALITY_RULE_ERROR_CODE_E402001 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY.value) + '01'
+QUALITY_RULE_ERROR_CODE_E402101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT.value) + '01'
+QUALITY_RULE_ERROR_CODE_E402201 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION.value) + '01'
+QUALITY_RULE_ERROR_CODE_E402301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE.value) + '01'
 
 
 class QualityRuleConfig:
@@ -139,7 +151,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E1001
+                            QUALITY_RULE_ERROR_CODE_E100101
                         ]
                     },
                     EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
@@ -151,7 +163,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E1002
+                            QUALITY_RULE_ERROR_CODE_E100201
                         ]
                     },
                     EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: {
@@ -176,7 +188,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_punto_lindero"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E1004
+                            QUALITY_RULE_ERROR_CODE_E100401
                         ]
                     }
                 }
@@ -193,7 +205,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_lindero_superpone"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E2001
+                            QUALITY_RULE_ERROR_CODE_E200101
                         ]
                     },
                     EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT: {
@@ -204,7 +216,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_lindero"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E2002
+                            QUALITY_RULE_ERROR_CODE_E200201
                         ]
                     },
                     EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS: {
@@ -245,7 +257,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_lindero"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E2005
+                            QUALITY_RULE_ERROR_CODE_E200501
                         ]
                     }
 
@@ -263,7 +275,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_terreno_superpone"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3001
+                            QUALITY_RULE_ERROR_CODE_E300101
                         ]
                     },
                     EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
@@ -275,7 +287,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_construccion_superpone"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3002
+                            QUALITY_RULE_ERROR_CODE_E300201
                         ]
                     },
                     EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY: {
@@ -287,7 +299,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_servidumbre_superpone"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3003
+                            QUALITY_RULE_ERROR_CODE_E300301
                         ]
                     },
                     EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES: {
@@ -315,7 +327,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_construccion"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3005
+                            QUALITY_RULE_ERROR_CODE_E300501
                         ]
                     },
                     EnumQualityRule.Polygon.GAPS_IN_PLOTS: {
@@ -327,7 +339,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_terrenos"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3006
+                            QUALITY_RULE_ERROR_CODE_E300601
                         ]
                     },
                     EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {
@@ -338,7 +350,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_servidumbre_paso"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3007
+                            QUALITY_RULE_ERROR_CODE_E300701
                         ]
                     },
                     EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS: {
@@ -349,7 +361,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_terreno"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E3008
+                            QUALITY_RULE_ERROR_CODE_E300801
                         ]
                     },
                     EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS: {
@@ -398,18 +410,7 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E400102
                         ]
                     },
-                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE: {
-                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE,
-                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_A_TABLE],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "{tabla}_con_registro_repetido"),
-                        QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
-                        ],
-                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4002
-                        ]
-                    },
+                    # 4002 could be taken if needed, we used it in early stages of the model, but then discarded it
                     EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS],
@@ -420,7 +421,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "suma_participaciones"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4003
+                            QUALITY_RULE_ERROR_CODE_E400301
                         ]
                     },
                     EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: {
@@ -431,7 +432,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4004
+                            QUALITY_RULE_ERROR_CODE_E400401
                         ]
                     },
                     EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS: {
@@ -442,7 +443,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4005
+                            QUALITY_RULE_ERROR_CODE_E400501
                         ]
                     },
                     EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS: {
@@ -453,7 +454,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4006
+                            QUALITY_RULE_ERROR_CODE_E400601
                         ]
                     },
                     EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS: {
@@ -464,7 +465,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E4007
+                            QUALITY_RULE_ERROR_CODE_E400701
                         ]
                     },
                     EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE: {
@@ -536,8 +537,151 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E401110,
                             QUALITY_RULE_ERROR_CODE_E401111
                         ]
-                    }
-
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_lindero_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401201
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_levantamiento_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401301
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_control_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401401
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "lindero_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401501
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "terreno_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401601
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "construccion_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401701
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "unidad_construccion_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401801
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E401901
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E402001
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "derecho_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E402101
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "restriccion_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E402201
+                        ]
+                    },
+                    EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE: {
+                        QUALITY_RULE_ID: EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "fuente_administrativa_con_registro_repetido"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E402301
+                        ]
+                    },
                 }
             }
         }

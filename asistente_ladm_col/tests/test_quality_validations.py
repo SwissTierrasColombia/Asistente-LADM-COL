@@ -1283,29 +1283,29 @@ class TesQualityValidations(unittest.TestCase):
         query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries(self.qgis_utils)
 
         # Points rules
-        self.assertEqual(self.quality_rules.validate_overlaps_in_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_overlaps_in_control_points(self.db_gpkg)[1], Qgis.Warning)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
-        self.assertEqual(self.quality_rules.validate_boundary_points_covered_by_boundary_nodes(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_boundary_points_covered_by_plot_nodes(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)[1], Qgis.Warning)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)[1], Qgis.Success)
 
         # Lines rules
-        self.assertEqual(self.quality_rules.validate_overlaps_in_boundaries(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_boundaries_are_not_split(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_boundaries_covered_by_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_boundary_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_dangles_in_boundaries(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)[1], Qgis.Success)
 
         # Polygons rules
-        self.assertEqual(self.quality_rules.validate_overlaps_in_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_overlaps_in_buildings(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_overlaps_in_rights_of_way(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_plots_covered_by_boundaries(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_right_of_way_overlaps_buildings(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_gaps_in_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_multipart_in_right_of_way(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_plot_nodes_covered_by_boundary_points(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_buildings_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_building_units_should_be_within_plots(self.db_gpkg)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)[1], Qgis.Success)
 
         # Logic rules
         res, records = query_manager.get_parcels_with_not_right(self.db_gpkg)

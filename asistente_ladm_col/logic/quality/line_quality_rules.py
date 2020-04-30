@@ -31,8 +31,8 @@ from qgis.core import (Qgis,
                        NULL)
 
 from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E2001,
-                                                            QUALITY_RULE_ERROR_CODE_E2002,
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200101,
+                                                            QUALITY_RULE_ERROR_CODE_E200201,
                                                             QUALITY_RULE_ERROR_CODE_E200301,
                                                             QUALITY_RULE_ERROR_CODE_E200302,
                                                             QUALITY_RULE_ERROR_CODE_E200303,
@@ -41,7 +41,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E200401,
                                                             QUALITY_RULE_ERROR_CODE_E200402,
                                                             QUALITY_RULE_ERROR_CODE_E200403,
-                                                            QUALITY_RULE_ERROR_CODE_E2005)
+                                                            QUALITY_RULE_ERROR_CODE_E200501)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.utils import get_uuid_dict
@@ -89,8 +89,8 @@ class LineQualityRules:
                                 feature.geometry(),
                                 {0: feature[db.names.T_ILI_TID_F],
                                  1: feature["{}_2".format(db.names.T_ILI_TID_F)],
-                                 2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E2001),
-                                 3: QUALITY_RULE_ERROR_CODE_E2001})
+                                 2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200101),
+                                 3: QUALITY_RULE_ERROR_CODE_E200101})
                             point_features.append(new_feature)
                     error_point_layer.dataProvider().addFeatures(point_features)
 
@@ -103,8 +103,8 @@ class LineQualityRules:
                                 feature.geometry(),
                                 {0: feature[db.names.T_ILI_TID_F],
                                  1: feature["{}_2".format(db.names.T_ILI_TID_F)],
-                                 2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E2001),
-                                 3: QUALITY_RULE_ERROR_CODE_E2001})
+                                 2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200101),
+                                 3: QUALITY_RULE_ERROR_CODE_E200101})
                             line_features.append(new_feature)
 
                     error_line_layer.dataProvider().addFeatures(line_features)
@@ -162,8 +162,8 @@ class LineQualityRules:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                       feature.geometry(),
                                                                       {0: feature[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E2002),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E2002})
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200201),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E200201})
                     features.append(new_feature)
 
                 error_layer.dataProvider().addFeatures(features)
@@ -285,8 +285,8 @@ class LineQualityRules:
                 new_feature = QgsVectorLayerUtils().createFeature(end_points,
                                                                   dangle.geometry(),
                                                                   {0: dangle[db.names.T_ILI_TID_F],
-                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E2005),
-                                                                   2: QUALITY_RULE_ERROR_CODE_E2005})
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200501),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E200501})
                 new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)

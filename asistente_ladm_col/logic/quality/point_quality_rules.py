@@ -38,12 +38,12 @@ from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E1001,
-                                                            QUALITY_RULE_ERROR_CODE_E1002,
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E100101,
+                                                            QUALITY_RULE_ERROR_CODE_E100201,
                                                             QUALITY_RULE_ERROR_CODE_E100301,
                                                             QUALITY_RULE_ERROR_CODE_E100302,
                                                             QUALITY_RULE_ERROR_CODE_E100303,
-                                                            QUALITY_RULE_ERROR_CODE_E1004)
+                                                            QUALITY_RULE_ERROR_CODE_E100401)
 
 
 class PointQualityRules:
@@ -54,11 +54,11 @@ class PointQualityRules:
 
     def check_overlapping_boundary_point(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.OP_BOUNDARY_POINT_T, QUALITY_RULE_ERROR_CODE_E1001)
+        return self.__check_overlapping_points(db, rule, db.names.OP_BOUNDARY_POINT_T, QUALITY_RULE_ERROR_CODE_E100101)
 
     def check_overlapping_control_point(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.OP_CONTROL_POINT_T, QUALITY_RULE_ERROR_CODE_E1002)
+        return self.__check_overlapping_points(db, rule, db.names.OP_CONTROL_POINT_T, QUALITY_RULE_ERROR_CODE_E100201)
 
     def __check_overlapping_points(self, db, rule, layer_name, error_code):
         """
@@ -182,8 +182,8 @@ class PointQualityRules:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   point[1],  # Geometry
                                                                   {0: point[0],  # feature uuid
-                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E1004),
-                                                                   2: QUALITY_RULE_ERROR_CODE_E1004})
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E100401),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E100401})
                 features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(features)

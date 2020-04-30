@@ -28,18 +28,18 @@ from qgis.core import (Qgis,
                        QgsWkbTypes,
                        QgsFeatureRequest)
 
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E3001,
-                                                            QUALITY_RULE_ERROR_CODE_E3002,
-                                                            QUALITY_RULE_ERROR_CODE_E3003,
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E300101,
+                                                            QUALITY_RULE_ERROR_CODE_E300201,
+                                                            QUALITY_RULE_ERROR_CODE_E300301,
                                                             QUALITY_RULE_ERROR_CODE_E300401,
                                                             QUALITY_RULE_ERROR_CODE_E300402,
                                                             QUALITY_RULE_ERROR_CODE_E300403,
                                                             QUALITY_RULE_ERROR_CODE_E300404,
                                                             QUALITY_RULE_ERROR_CODE_E300405,
-                                                            QUALITY_RULE_ERROR_CODE_E3005,
-                                                            QUALITY_RULE_ERROR_CODE_E3006,
-                                                            QUALITY_RULE_ERROR_CODE_E3007,
-                                                            QUALITY_RULE_ERROR_CODE_E3008,
+                                                            QUALITY_RULE_ERROR_CODE_E300501,
+                                                            QUALITY_RULE_ERROR_CODE_E300601,
+                                                            QUALITY_RULE_ERROR_CODE_E300701,
+                                                            QUALITY_RULE_ERROR_CODE_E300801,
                                                             QUALITY_RULE_ERROR_CODE_E300901,
                                                             QUALITY_RULE_ERROR_CODE_E300902,
                                                             QUALITY_RULE_ERROR_CODE_E300903,
@@ -66,15 +66,15 @@ class PolygonQualityRules:
 
     def check_overlapping_plots(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_PLOT_T, QUALITY_RULE_ERROR_CODE_E3001)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_PLOT_T, QUALITY_RULE_ERROR_CODE_E300101)
 
     def check_overlapping_buildings(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_BUILDING_T, QUALITY_RULE_ERROR_CODE_E3002)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_BUILDING_T, QUALITY_RULE_ERROR_CODE_E300201)
 
     def check_overlapping_right_of_way(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_RIGHT_OF_WAY_T, QUALITY_RULE_ERROR_CODE_E3003)
+        return self.__check_overlapping_polygons(db, rule, db.names.OP_RIGHT_OF_WAY_T, QUALITY_RULE_ERROR_CODE_E300301)
 
     def __check_overlapping_polygons(self, db, rule, polygon_layer_name, error_code):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, load=True)
@@ -206,11 +206,11 @@ class PolygonQualityRules:
                 new_features = list()
                 for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                      polygon,
-                                      {0: dict_uuid_right_of_way.get(key[0]),  # right_of_way_id
-                                       1: dict_uuid_building.get(key[1]),  # building_id
-                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E3005),
-                                       3: QUALITY_RULE_ERROR_CODE_E3005})
+                                                                      polygon,
+                                                                      {0: dict_uuid_right_of_way.get(key[0]),  # right_of_way_id
+                                                                       1: dict_uuid_building.get(key[1]),  # building_id
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300501),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E300501})
                     new_features.append(new_feature)
 
                 data_provider.addFeatures(new_features)
@@ -254,11 +254,11 @@ class PolygonQualityRules:
                 new_features = list()
                 for geom, id_serial in zip(gaps, range(0, len(gaps))):
                     feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                  geom,
-                                  {0: id_serial,
-                                   1: ', '.join(uuids_list[id_serial]),  # list of geometries and ids are corresponding in order
-                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E3006),
-                                   3: QUALITY_RULE_ERROR_CODE_E3006})
+                                                                  geom,
+                                                                  {0: id_serial,
+                                                                   1: ', '.join(uuids_list[id_serial]),  # list of geometries and ids are corresponding in order
+                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300601),
+                                                                   3: QUALITY_RULE_ERROR_CODE_E300601})
                     new_features.append(feature)
                 data_provider.addFeatures(new_features)
 
@@ -295,10 +295,10 @@ class PolygonQualityRules:
                 new_features = list()
                 for geom, id in zip(multi_parts, ids):
                     feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                  geom,
-                                  {0: right_of_way_layer.getFeature(id)[db.names.T_ILI_TID_F],
-                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E3007),
-                                   2: QUALITY_RULE_ERROR_CODE_E3007})
+                                                                  geom,
+                                                                  {0: right_of_way_layer.getFeature(id)[db.names.T_ILI_TID_F],
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300701),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E300701})
                     new_features.append(feature)
                 data_provider.addFeatures(new_features)
 
@@ -342,10 +342,10 @@ class PolygonQualityRules:
             features = list()
             for point in point_list:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                  point[1],  # Geometry
-                                  {0: point[0],  # feature uuid
-                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E3008),
-                                   2: QUALITY_RULE_ERROR_CODE_E3008})
+                                                                  point[1],  # Geometry
+                                                                  {0: point[0],  # feature uuid
+                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300801),
+                                                                   2: QUALITY_RULE_ERROR_CODE_E300801})
                 features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(features)
