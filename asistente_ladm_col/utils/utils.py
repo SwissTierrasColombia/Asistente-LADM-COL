@@ -28,6 +28,7 @@ import webbrowser
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
+from qgis.core import QgsFeatureRequest
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
                                                       MODULE_HELP_MAPPING,
@@ -233,7 +234,12 @@ def get_uuid_dict(layer, names, id_field=None):
     dict_uuid = dict()
 
     if names.T_ILI_TID_F in field_names and id_field in field_names:
-        for feature in layer.getFeatures():
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        attrs = [names.T_ILI_TID_F]
+        if id_field:
+            attrs.append(id_field)
+        request.setSubsetOfAttributes(attrs)  # Note: this adds a new flag
+        for feature in layer.getFeatures(request):
             if id_field:
                 dict_uuid[feature[id_field]] = str(feature[names.T_ILI_TID_F])
             else:

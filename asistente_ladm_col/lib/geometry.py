@@ -22,6 +22,7 @@ import gc
 
 from qgis.PyQt.QtCore import (QObject,
                               QVariant)
+from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPolygon,
@@ -937,18 +938,19 @@ class GeometryUtils(QObject):
     @staticmethod
     def get_intersection_features(layer, geometries, id_field=None):
         """
-        return a list of list, every list has the feature ids of features
-        that intersect with every geometry.
-        If id_field is None return id of QGIS
+        Return a list of lists, every list has the feature ids of features
+        that intersect with every geometry. If id_field is None return QGIS id.
+
         layer: QgsVectorLayer
-        geometries: list of QgsGeometries (Order is not modify)
+        geometries: list of QgsGeometries (Order is not modified)
         """
         if id_field:
             id_field_idx = layer.fields().indexFromName(id_field)
             request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
             dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
         else:
-            dict_features = {feature.id(): feature for feature in layer.getFeatures()}
+            request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setNoAttributes()
+            dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
 
         index = QgsSpatialIndex(layer)
 
@@ -1018,3 +1020,24 @@ class GeometryUtils(QObject):
             features.append((feature_id, feature_geom))
 
         return features
+
+    def get_dangle_ids(self, boundary_layer):
+        # 1. Run extract specific vertices
+        # 2. Call to get_overlapping_points
+        # 3. Obtain dangle ids (those not present in overlapping points result)
+        res = processing.run("qgis:extractspecificvertices", {
+                'INPUT': boundary_layer,
+                'VERTICES': '0,-1', # First and last
+                'OUTPUT': 'memory:'
+            },
+            feedback=QgsProcessingFeedback()
+        )
+        end_points = res['OUTPUT']
+
+        end_point_ids = [point.id() for point in end_points.getFeatures()]
+        overlapping_points = self.get_overlapping_points(end_points)
+
+        # Unpack list of lists into single list
+        overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
+
+        return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))

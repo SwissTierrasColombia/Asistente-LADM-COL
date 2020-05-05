@@ -120,7 +120,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.setValidator(fileValidator)
         self.xtf_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
-        self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
+        self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.log_quality_validation_text())
 
         self.connection_setting_button.clicked.connect(self.show_settings)
 
@@ -280,10 +280,10 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         # If xtf browser was opened and the file exists, the user already chose
         # to overwrite the file
-        if os.path.isfile(self.xtf_file_line_edit.text().strip()) and not self.xtf_browser_was_opened:
+        if os.path.isfile(self.xtf_file_line_edit.log_quality_validation_text().strip()) and not self.xtf_browser_was_opened:
             self.msg = QMessageBox()
             self.msg.setIcon(QMessageBox.Warning)
-            self.msg.setText(QCoreApplication.translate("DialogExportData", "{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
+            self.msg.setText(QCoreApplication.translate("DialogExportData", "{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.log_quality_validation_text().strip())))
             self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"))
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msg_box = self.msg.exec_()
@@ -374,7 +374,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
-        configuration.xtffile = self.xtf_file_line_edit.text().strip()
+        configuration.xtffile = self.xtf_file_line_edit.log_quality_validation_text().strip()
         full_java_exe_path = JavaUtils.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path

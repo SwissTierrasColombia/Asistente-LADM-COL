@@ -163,7 +163,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         if self.mUpdateExistingGroupBox.isChecked():
             fieldName = self.mExistingFieldComboBox.currentText()
         else:
-            fieldName = self.mOutputFieldNameLineEdit.text()
+            fieldName = self.mOutputFieldNameLineEdit.log_quality_validation_text()
 
         layer = self.cmbInputLayer.currentLayer()
 

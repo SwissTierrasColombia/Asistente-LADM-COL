@@ -43,12 +43,12 @@ class PGConfigPanel(DBSchemaDBPanel, WIDGET_UI):
         """
         dict_conn = dict()
 
-        dict_conn['host'] = self.txt_host.text().strip()
-        dict_conn['port'] = self.txt_port.text().strip()
+        dict_conn['host'] = self.txt_host.log_quality_validation_text().strip()
+        dict_conn['port'] = self.txt_port.log_quality_validation_text().strip()
         dict_conn['database'] = self.selected_db_combobox.currentText().strip()
         dict_conn['schema'] = self.selected_schema_combobox.currentText().strip()
-        dict_conn['username'] = self.txt_user.text().strip()
-        dict_conn['password'] = self.txt_password.text().strip()
+        dict_conn['username'] = self.txt_user.log_quality_validation_text().strip()
+        dict_conn['password'] = self.txt_password.log_quality_validation_text().strip()
 
         return dict_conn
 
@@ -83,12 +83,12 @@ class PGConfigPanel(DBSchemaDBPanel, WIDGET_UI):
         result = True
 
         if self.state:
-            result = (self.state['host'] != self.txt_host.text().strip() or
-                      self.state['port'] != self.txt_port.text().strip() or
+            result = (self.state['host'] != self.txt_host.log_quality_validation_text().strip() or
+                      self.state['port'] != self.txt_port.log_quality_validation_text().strip() or
                       self.state['database'] != self.selected_db_combobox.currentText().strip() or
                       self.state['schema'] != self.selected_schema_combobox.currentText().strip() or
-                      self.state['username'] != self.txt_user.text().strip() or
-                      self.state['password'] != self.txt_password.text().strip())
+                      self.state['username'] != self.txt_user.log_quality_validation_text().strip() or
+                      self.state['password'] != self.txt_password.log_quality_validation_text().strip())
 
         return result
 

@@ -160,7 +160,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # Where to store the reports?
-        excel_path = self.txt_excel_path.text()
+        excel_path = self.txt_excel_path.log_quality_validation_text()
 
         if not excel_path:
             self.show_message(
@@ -563,7 +563,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/import_from_excel_dialog/excel_path', self.txt_excel_path.text())
+        settings.setValue('Asistente-LADM_COL/import_from_excel_dialog/excel_path', self.txt_excel_path.log_quality_validation_text())
 
     def restore_settings(self):
         settings = QSettings()

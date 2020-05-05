@@ -64,8 +64,8 @@ class CustomModelDirDialog(QDialog, DIALOG_UI):
     def accepted(self):
         items = [self.model_dir_list.item(
             x) for x in range(self.model_dir_list.count())]
-        new_paths = ";".join([i.text().strip()
-                              for i in items if i.text().strip()])
+        new_paths = ";".join([i.log_quality_validation_text().strip()
+                              for i in items if i.log_quality_validation_text().strip()])
         self.parent.custom_model_directories_line_edit.setText(new_paths)
 
     def browse_dir(self):

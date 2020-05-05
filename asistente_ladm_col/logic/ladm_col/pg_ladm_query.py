@@ -330,7 +330,7 @@ class PGLADMQuery(QGISLADMQuery):
         return db.execute_sql_query(query)
 
     @staticmethod
-    def get_group_party_fractions_that_do_not_add_one(db):
+    def get_group_party_fractions_that_do_not_make_one(db):
         query = """
                     SELECT {members_t_group_party_f} as agrupacion, string_agg({t_id}::text, ',') as miembros, SUM(parte) suma_fracciones  FROM (
                     SELECT {fraction_s_numerator_f}::float/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {schema}.{fraction_s}
@@ -348,7 +348,7 @@ class PGLADMQuery(QGISLADMQuery):
         return db.execute_sql_query(query)
 
     @staticmethod
-    def get_parcels_with_not_right(db):
+    def get_parcels_with_no_right(db):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
                    WHERE {t_id} NOT IN (SELECT {col_baunit_rrr_t_unit_f} FROM {schema}.{op_right_t})

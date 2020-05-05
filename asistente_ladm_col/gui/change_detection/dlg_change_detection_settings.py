@@ -181,7 +181,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
 
         # Update supplies db connection label
         if self.radio_button_same_db.isChecked():
-            self.db_supplies_connect_label.setText(self.db_collected_connect_label.text())
+            self.db_supplies_connect_label.setText(self.db_collected_connect_label.log_quality_validation_text())
             self.db_supplies_connect_label.setToolTip(self.db_collected_connect_label.toolTip())
         else:
             db_description = self._db_supplies.get_description_conn_string()

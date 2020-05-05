@@ -121,7 +121,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
             model_item = QTreeWidgetItem([model])
 
             # Filter by search text
-            list_tables = self.filter_tables_by_search_text(self.models_tree[model].keys(), self.txt_search_text.text())
+            list_tables = self.filter_tables_by_search_text(self.models_tree[model].keys(), self.txt_search_text.log_quality_validation_text())
             sorted_tables = sorted(list_tables)
 
             for table in sorted_tables:

@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QVariant)
 from qgis.core import (Qgis,
                        QgsField,
-                       QgsProcessingFeedback,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
@@ -42,6 +41,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E200402,
                                                             QUALITY_RULE_ERROR_CODE_E200403,
                                                             QUALITY_RULE_ERROR_CODE_E200501)
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.utils import get_uuid_dict
@@ -276,7 +276,7 @@ class LineQualityRules:
             pr.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            end_points, dangle_ids = self.get_dangle_ids(boundary_layer)
+            end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
 
             new_features = []
             for dangle in end_points.getFeatures(dangle_ids):
@@ -708,24 +708,3 @@ class LineQualityRules:
                 features.append(new_feature)
 
         return features
-
-    def get_dangle_ids(self, boundary_layer):
-        # 1. Run extract specific vertices
-        # 2. Call to get_overlapping_points
-        # 3. Obtain dangle ids (those not present in overlapping points result)
-        res = processing.run("qgis:extractspecificvertices", {
-                'INPUT': boundary_layer,
-                'VERTICES': '0,-1', # First and last
-                'OUTPUT': 'memory:'
-            },
-            feedback=QgsProcessingFeedback()
-        )
-        end_points = res['OUTPUT']
-
-        end_point_ids = [point.id() for point in end_points.getFeatures()]
-        overlapping_points = self.qgis_utils.geometry.get_overlapping_points(end_points)
-
-        # Unpack list of lists into single list
-        overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
-
-        return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))

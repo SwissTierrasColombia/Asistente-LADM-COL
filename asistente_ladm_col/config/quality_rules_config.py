@@ -131,11 +131,7 @@ class QualityRuleConfig:
 
     @staticmethod
     def get_quality_rules_config():
-        """
-        The import of the class is performed within the
-        function to avoid circular import. Key are not moved to
-        """
-        from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+        from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings  # To avoid circularity
         translated_strings = TranslatableConfigStrings().get_translatable_config_strings()
 
         return {

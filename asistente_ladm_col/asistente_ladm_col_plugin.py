@@ -744,27 +744,27 @@ class AsistenteLADMCOLPlugin(QObject):
                                                duration=duration)
 
     def show_log_quality_message(self, msg, count):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        self.progress = QProgressBar()
-        self.progress.setFixedWidth(80)
+        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.log_quality_validation_progress = QProgressBar()
+        self.log_quality_validation_progress.setFixedWidth(80)
         self.log_quality_total_rule_count = count
-        self.progress.setMaximum(self.log_quality_total_rule_count * 10)
-        self.progressMessageBar.layout().addWidget(self.progress)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
-        self.progress_count = 0
+        self.log_quality_validation_progress.setMaximum(self.log_quality_total_rule_count * 10)
+        self.progress_message_bar.layout().addWidget(self.log_quality_validation_progress)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Info)
+        self.log_quality_validation_progress_count = 0
         self.log_quality_current_rule_count = 0
 
     def show_log_quality_button(self):
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_quality_dialog)
         self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
-        self.progressMessageBar.layout().addWidget(self.button)
+        self.progress_message_bar.layout().addWidget(self.button)
         QCoreApplication.processEvents()
 
     def set_log_quality_initial_progress(self, msg):
-        self.progress_count += 2 # 20% of the current rule
-        self.progress.setValue(self.progress_count)
-        self.progressMessageBar.setText(
+        self.log_quality_validation_progress_count += 2 # 20% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
+        self.progress_message_bar.setText(
             QCoreApplication.translate("LogQualityDialog",
                                        "Checking {} out of {}: '{}'").format(
                                         self.log_quality_current_rule_count + 1,
@@ -773,34 +773,34 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def set_log_quality_final_progress(self, msg):
-        self.progress_count += 8 # 80% of the current rule
-        self.progress.setValue(self.progress_count)
+        self.log_quality_validation_progress_count += 8 # 80% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
         self.log_quality_current_rule_count += 1
         if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
-            self.progressMessageBar.setText(QCoreApplication.translate("LogQualityDialog",
+            self.progress_message_bar.setText(QCoreApplication.translate("LogQualityDialog",
                 "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
         else:
-            self.progressMessageBar.setText(msg)
+            self.progress_message_bar.setText(msg)
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        self.text, self.total_time = self.quality_dialog.get_log_dialog_quality_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), self.text, self.total_time)
+        self.log_quality_validation_text, self.log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), self.log_quality_validation_text, self.log_quality_validation_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
-            QCoreApplication.translate("ImportFromExcelDialog",
+        self.progress_message_bar = self.iface.messageBar().createMessage("Import from Excel",
+                                                                          QCoreApplication.translate("ImportFromExcelDialog",
                                        "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_excel_dialog)
         self.button.setText(QCoreApplication.translate("ImportFromExcelDialog", "Show errors found"))
-        self.progressMessageBar.layout().addWidget(self.button)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
-        self.text = text
+        self.progress_message_bar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Warning)
+        self.log_quality_validation_text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.qgis_utils, self.text)
+        dlg = LogExcelDialog(self.qgis_utils, self.log_quality_validation_text)
         dlg.exec_()
 
     @_db_connection_required

@@ -41,7 +41,7 @@ class GPKGConfigPanel(DBConfigPanel, WIDGET_UI):
 
     def read_connection_parameters(self):
         dict_conn = dict()
-        dict_conn['dbfile'] = self.txt_file.text().strip()
+        dict_conn['dbfile'] = self.txt_file.log_quality_validation_text().strip()
 
         return dict_conn
 
@@ -78,6 +78,6 @@ class GPKGConfigPanel(DBConfigPanel, WIDGET_UI):
         result = True
 
         if self.state:
-            result = self.state['dbfile'] != self.txt_file.text().strip()
+            result = self.state['dbfile'] != self.txt_file.log_quality_validation_text().strip()
 
         return result

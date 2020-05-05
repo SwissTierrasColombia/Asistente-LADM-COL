@@ -255,7 +255,7 @@ class PolygonQualityRules:
                     feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   geom,
                                                                   {0: id_serial,
-                                                                   1: ', '.join(uuids_list[id_serial]),  # list of geometries and ids are corresponding in order
+                                                                   1: ', '.join(uuids_list[id_serial]),  # Order of geometry and id correspond in their lists
                                                                    2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300601),
                                                                    3: QUALITY_RULE_ERROR_CODE_E300601})
                     new_features.append(feature)
@@ -320,7 +320,7 @@ class PolygonQualityRules:
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary point) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
         if layers[db.names.OP_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -372,7 +372,7 @@ class PolygonQualityRules:
         }
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
 
         if layers[names.OP_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -532,7 +532,7 @@ class PolygonQualityRules:
                 # error: building not register in uebaunit
                 buildings_bad_relation.append(t_id_building)
 
-        return list(set(buildings_bad_relation))  # Uniques t_id
+        return list(set(buildings_bad_relation))  # Unique t_ids
 
     def check_building_unit_within_plots(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)
@@ -548,7 +548,7 @@ class PolygonQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At lest one required layer (plot, boundary, building unit, plot, ue_baunit, condition parcel type) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, building unit, plot, ue_baunit, condition parcel type) was not found!"), Qgis.Critical
 
         if layers[names.OP_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -758,7 +758,7 @@ class PolygonQualityRules:
                 # error: building unit not register in uebaunit
                 building_units_bad_relation.append(t_id_building_unit)
 
-        return list(set(building_units_bad_relation))  # Uniques t_id
+        return list(set(building_units_bad_relation))  # Unique t_ids
 
     @staticmethod
     def check_building_unit_not_associated_with_correct_building(building_units_within_building, building_unit_layer, building_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
@@ -855,7 +855,7 @@ class PolygonQualityRules:
                 # error: building unit not register in uebaunit
                 building_units_bad_relation.append(t_id_building_unit)
 
-        return list(set(building_units_bad_relation))  # Uniques t_id
+        return list(set(building_units_bad_relation))  # Unique t_ids
 
     # UTILS METHODS
     def get_plot_features_not_covered_by_boundaries(self, db, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field):

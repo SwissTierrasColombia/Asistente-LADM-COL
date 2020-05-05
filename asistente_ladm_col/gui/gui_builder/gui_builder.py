@@ -52,14 +52,14 @@ class GUI_Builder(QObject):
 
     def register_action(self, key, action):
         self._registered_actions[key] = {ACTION: action,
-                                         DEFAULT_ACTION_TEXT: action.text(),
+                                         DEFAULT_ACTION_TEXT: action.log_quality_validation_text(),
                                          DEFAULT_ACTION_STATUS: action.isEnabled()}
 
     def register_actions(self, dict_key_action):
         new_dict = dict()
         for k,v in dict_key_action.items():
             new_dict[k] = {ACTION: v,
-                           DEFAULT_ACTION_TEXT: v.text(),
+                           DEFAULT_ACTION_TEXT: v.log_quality_validation_text(),
                            DEFAULT_ACTION_STATUS: v.isEnabled()}
 
         self._registered_actions.update(new_dict)

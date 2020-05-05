@@ -55,14 +55,14 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         """
         return self.__quality_rules.get(rule_code)
 
-    @property
-    def quality_rule_groups(self):
+    def get_quality_rule_group_name(self, group_key):
         """
-        Returns a dict of quality rule groups.
+        Returns a quality rule name.
 
-        :return: {group1 key: group1 value, ...}
+        :param group_key: Group key
+        :return: Group name if the group key is found. Otherwise, None.
         """
-        return self._quality_rule_groups
+        return self._quality_rule_groups.get(group_key)
 
     def get_quality_rules_by_group(self, enum_group=None):
         """

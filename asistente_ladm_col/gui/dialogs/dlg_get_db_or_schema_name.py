@@ -68,7 +68,7 @@ class GetDBOrSchemaNameDialog(QDialog, DIALOG_UI):
         self.parameter_line_edit.setValidator(validator)
         self.parameter_line_edit.setMaxLength(63)
         self.parameter_line_edit.textChanged.connect(self.validators.validate_line_edits_lower_case)
-        self.parameter_line_edit.textChanged.emit(self.parameter_line_edit.text())
+        self.parameter_line_edit.textChanged.emit(self.parameter_line_edit.log_quality_validation_text())
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -81,7 +81,7 @@ class GetDBOrSchemaNameDialog(QDialog, DIALOG_UI):
         self.buttonBox.addButton(QCoreApplication.translate("GetDBOrSchemaNameDialog", "Create {type}").format(type=self.type), QDialogButtonBox.AcceptRole)
 
     def accepted(self):
-        parameter_value = self.parameter_line_edit.text().strip()
+        parameter_value = self.parameter_line_edit.log_quality_validation_text().strip()
         if not parameter_value:
             if self.type == 'database':
                 self.show_message(QCoreApplication.translate("GetDBOrSchemaNameDialog", "The name of the database cannot be empty."), Qgis.Warning)

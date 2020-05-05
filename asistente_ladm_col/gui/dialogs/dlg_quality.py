@@ -82,19 +82,19 @@ class QualityDialog(QDialog, DIALOG_UI):
         Logger().clear_message_bar()
 
         self.items_dict = collections.OrderedDict()
-        for enum_quality_rule_group, quality_rule_group_name in self.quality_rules_manager.quality_rule_groups.items():
-            self.items_dict[quality_rule_group_name] = {
-                'rules': [{'id': k_rule, 'text': v_rule.rule_name} for k_rule, v_rule in self.quality_rules_manager.get_quality_rules_by_group(enum_quality_rule_group).items()]
+        for group_key, rules in self.quality_rules_manager.get_quality_rules_by_group().items():
+            group_name = self.quality_rules_manager.get_quality_rule_group_name(group_key)
+            self.items_dict[group_name] = {
+                'rules': [{'id': k_rule, 'text': v_rule.rule_name} for k_rule, v_rule in rules.items()]
             }
-
-            if enum_quality_rule_group == EnumQualityRule.Point:
-                self.items_dict[quality_rule_group_name]['icon'] = 'points'
-            elif enum_quality_rule_group == EnumQualityRule.Line:
-                self.items_dict[quality_rule_group_name]['icon'] = 'lines'
-            elif enum_quality_rule_group == EnumQualityRule.Polygon:
-                self.items_dict[quality_rule_group_name]['icon'] = 'polygons'
-            elif enum_quality_rule_group == EnumQualityRule.Logic:
-                self.items_dict[quality_rule_group_name]['icon'] = 'tables'
+            if group_key == EnumQualityRule.Point:
+                self.items_dict[group_name]['icon'] = 'points'
+            elif group_key == EnumQualityRule.Line:
+                self.items_dict[group_name]['icon'] = 'lines'
+            elif group_key == EnumQualityRule.Polygon:
+                self.items_dict[group_name]['icon'] = 'polygons'
+            elif group_key == EnumQualityRule.Logic:
+                self.items_dict[group_name]['icon'] = 'tables'
 
         self.load_items()
 

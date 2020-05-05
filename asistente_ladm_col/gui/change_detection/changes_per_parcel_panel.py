@@ -169,7 +169,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def call_party_panel(self, item):
         row = item.row()
-        if self.tbl_changes_per_parcel.item(row, 0).text() == DICT_ALIAS_KEYS_CHANGE_DETECTION[DICT_KEY_PARTIES]:
+        if self.tbl_changes_per_parcel.item(row, 0).log_quality_validation_text() == DICT_ALIAS_KEYS_CHANGE_DETECTION[DICT_KEY_PARTIES]:
             data = {SUPPLIES_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
                     COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
             self.parent.show_party_panel(data)

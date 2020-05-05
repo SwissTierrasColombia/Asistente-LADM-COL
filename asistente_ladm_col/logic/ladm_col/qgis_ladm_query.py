@@ -398,7 +398,7 @@ class QGISLADMQuery:
         raise NotImplementedError
 
     @staticmethod
-    def get_group_party_fractions_that_do_not_add_one(db):
+    def get_group_party_fractions_that_do_not_make_one(db):
         raise NotImplementedError
 
     @staticmethod
@@ -430,7 +430,7 @@ class QGISLADMQuery:
         raise NotImplementedError
 
     @staticmethod
-    def get_parcels_with_not_right(db):
+    def get_parcels_with_no_right(db):
         raise NotImplementedError
 
     @staticmethod

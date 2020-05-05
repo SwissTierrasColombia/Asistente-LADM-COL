@@ -39,7 +39,7 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
-    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.text(), file_filter)
+    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.log_quality_validation_text(), file_filter)
     line_edit_widget.setText(filename)
 
 
@@ -48,7 +48,7 @@ def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM_
     return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
 
 def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
-    filename, matched_filter = QFileDialog.getSaveFileName(parent, title, line_edit_widget.text(), file_filter)
+    filename, matched_filter = QFileDialog.getSaveFileName(parent, title, line_edit_widget.log_quality_validation_text(), file_filter)
     extension_valid = False
 
     if not extensions:
@@ -69,7 +69,7 @@ def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelB
                    extension=extension, extensions=extensions)
 
 def selectFolder(line_edit_widget, title, parent):
-    foldername = QFileDialog.getExistingDirectory(parent, title, line_edit_widget.text())
+    foldername = QFileDialog.getExistingDirectory(parent, title, line_edit_widget.log_quality_validation_text())
     line_edit_widget.setText(foldername)
 
 

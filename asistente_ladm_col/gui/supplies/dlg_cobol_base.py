@@ -192,8 +192,8 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         """
         :return: Boolean
         """
-        return self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0] == QValidator.Acceptable and \
-               self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
+        return self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.log_quality_validation_text().strip(), 0)[0] == QValidator.Acceptable and \
+               self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.log_quality_validation_text().strip(), 0)[0] == QValidator.Acceptable
 
     def initialize_feedback(self):
         self.progress.setValue(0)
@@ -215,11 +215,11 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.log_quality_validation_text())
 
     def restore_settings(self):
         settings = QSettings()
@@ -258,7 +258,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     def load_gdb_files(self, required_layers):
         self.gdb_paths = {}
 
-        gdb_path = self.txt_file_path_gdb.text()
+        gdb_path = self.txt_file_path_gdb.log_quality_validation_text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
 
         if not layer.isValid():

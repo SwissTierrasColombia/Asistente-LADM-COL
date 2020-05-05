@@ -178,7 +178,7 @@ def _log_quality_rule_validations(func_to_decorate):
             func_to_decorate(self, db, **args)
         end_time = time.time()
 
-        self.total_time = self.total_time + (end_time - start_time)
+        self.log_quality_validation_total_time = self.log_quality_validation_total_time + (end_time - start_time)
 
         self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
         self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR

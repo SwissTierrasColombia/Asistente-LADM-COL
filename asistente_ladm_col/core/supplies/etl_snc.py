@@ -57,13 +57,13 @@ class ETLSNC(ETLSupplies):
 
     def load_alphanumeric_layers(self):
         self.alphanumeric_file_paths = {
-            'predio_sancion': self.data_source_widget.txt_file_path_predio_sancion.text().strip(),
-            'predio': self.data_source_widget.txt_file_path_predio.text().strip(),
-            'direccion': self.data_source_widget.txt_file_path_direccion.text().strip(),
-            'unidad_construccion': self.data_source_widget.txt_file_path_uni.text().strip(),
-            'persona': self.data_source_widget.txt_file_path_persona.text().strip(),
-            'ficha_matriz': self.data_source_widget.txt_file_path_ficha_m.text().strip(),
-            'ficha_matriz_predio': self.data_source_widget.txt_file_path_ficha_m_predio.text().strip(),
+            'predio_sancion': self.data_source_widget.txt_file_path_predio_sancion.log_quality_validation_text().strip(),
+            'predio': self.data_source_widget.txt_file_path_predio.log_quality_validation_text().strip(),
+            'direccion': self.data_source_widget.txt_file_path_direccion.log_quality_validation_text().strip(),
+            'unidad_construccion': self.data_source_widget.txt_file_path_uni.log_quality_validation_text().strip(),
+            'persona': self.data_source_widget.txt_file_path_persona.log_quality_validation_text().strip(),
+            'ficha_matriz': self.data_source_widget.txt_file_path_ficha_m.log_quality_validation_text().strip(),
+            'ficha_matriz_predio': self.data_source_widget.txt_file_path_ficha_m_predio.log_quality_validation_text().strip(),
         }
 
         root = QgsProject.instance().layerTreeRoot()

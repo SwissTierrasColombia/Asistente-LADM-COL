@@ -121,7 +121,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         fileValidator = FileValidator(pattern=['*.xtf', '*.itf', '*.xml'])
         self.xtf_file_line_edit.setValidator(fileValidator)
         self.xtf_file_line_edit.textChanged.connect(self.update_import_models)
-        self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
+        self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.log_quality_validation_text())
 
         # db
         self.connection_setting_button.clicked.connect(self.show_settings)
@@ -143,9 +143,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def accepted_import_data(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
-            if button.text() == self.BUTTON_NAME_IMPORT_DATA:
+            if button.log_quality_validation_text() == self.BUTTON_NAME_IMPORT_DATA:
                 self.accepted()
-            elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
+            elif button.log_quality_validation_text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
                 self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models()})  # Emit signal to open import schema dialog
 
@@ -190,17 +190,17 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.clear_messages()
         error_msg = None
 
-        if not self.xtf_file_line_edit.text().strip():
+        if not self.xtf_file_line_edit.log_quality_validation_text().strip():
             color = '#ffd356'  # Light orange
             self.import_models_qmodel = QStandardItemModel()
             self.import_models_list_view.setModel(self.import_models_qmodel)
         else:
 
-            if os.path.isfile(self.xtf_file_line_edit.text().strip()):
+            if os.path.isfile(self.xtf_file_line_edit.log_quality_validation_text().strip()):
                 color = '#fff'  # White
 
                 self.import_models_qmodel = QStandardItemModel()
-                models_name = get_models_from_xtf(self.xtf_file_line_edit.text().strip())
+                models_name = get_models_from_xtf(self.xtf_file_line_edit.log_quality_validation_text().strip())
 
                 for model_name in models_name:
                     if not model_name in LADMNames.DEFAULT_HIDDEN_MODELS:
@@ -264,7 +264,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
-        if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
+        if not os.path.isfile(self.xtf_file_line_edit.log_quality_validation_text().strip()):
             self._running_tool = False
             error_msg = QCoreApplication.translate("DialogImportData", "Please set a valid XTF file before importing data. XTF file does not exist.")
             self.txtStdout.setText(error_msg)
@@ -344,7 +344,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             # button is removed to define order in GUI
             for button in self.buttonBox.buttons():
-                if button.text() == self.BUTTON_NAME_IMPORT_DATA:
+                if button.log_quality_validation_text() == self.BUTTON_NAME_IMPORT_DATA:
                     self.buttonBox.removeButton(button)
 
             # Check if button was previously added
@@ -412,7 +412,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def remove_create_structure_button(self):
         for button in self.buttonBox.buttons():
-            if button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
+            if button.log_quality_validation_text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.buttonBox.removeButton(button)
 
     def save_configuration(self, configuration):
@@ -444,7 +444,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
-        configuration.xtffile = self.xtf_file_line_edit.text().strip()
+        configuration.xtffile = self.xtf_file_line_edit.log_quality_validation_text().strip()
         configuration.delete_data = False
 
         configuration.epsg = QSettings().value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)

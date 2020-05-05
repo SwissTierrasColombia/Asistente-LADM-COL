@@ -98,7 +98,7 @@ class LogicQualityRules:
             error_layer.updateFields()
 
         new_features = list()
-        res, records = self.get_ladm_queries(db.engine).get_parcels_with_not_right(db)
+        res, records = self.get_ladm_queries(db.engine).get_parcels_with_no_right(db)
         if res:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
@@ -155,7 +155,7 @@ class LogicQualityRules:
 
         self.qgis_utils.get_layers(db, layers, load=False)
         if not layers:
-            return QCoreApplication.translate("LogicQualityRules", "At lest one required layer (members, group party) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("LogicQualityRules", "At least one required layer (members, group party) was not found!"), Qgis.Critical
 
         dict_uuid_members = get_uuid_dict(layers[db.names.MEMBERS_T], db.names, db.names.T_ID_F)
         dict_uuid_group_party = get_uuid_dict(layers[db.names.OP_GROUP_PARTY_T], db.names, db.names.T_ID_F)
@@ -165,7 +165,7 @@ class LogicQualityRules:
         pr.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        res, records = self.get_ladm_queries(db.engine).get_group_party_fractions_that_do_not_add_one(db)
+        res, records = self.get_ladm_queries(db.engine).get_group_party_fractions_that_do_not_make_one(db)
 
         if res:
             new_features = list()
@@ -441,13 +441,14 @@ class LogicQualityRules:
     # UTILS METHODS
     def basic_logic_validations(self, db, records, rule, error_code):
         """
-        Create a error table with error found
+        Create an error table with the errors found
+
         :param db: db connection
         :param records: Result of execute the query
         :param rule: Quality rule config
-        (has info like table_name: Error table name and
-        rule_name: Rule error description (Name of rule to show in log quality rules)).
-        Note: rule_name is used by _log_quality_rules decorator
+                     (Contains info like table_name: Error table name and
+                      rule_name: Rule error description (Name of rule to show in log quality rules)).
+                      Note: rule_name is used by _log_quality_rules decorator
         """
         error_layer = None
         error_layer_exist = False

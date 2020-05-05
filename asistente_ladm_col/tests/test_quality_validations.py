@@ -1057,7 +1057,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 15)
 
-        end_points, dangle_ids = self.quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
         boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
@@ -1075,7 +1075,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 8)
 
-        end_points, dangle_ids = self.quality_rules.line_quality_rules.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
     def test_boundaries_are_not_split(self):
@@ -1308,11 +1308,11 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)[1], Qgis.Success)
 
         # Logic rules
-        res, records = query_manager.get_parcels_with_not_right(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_no_right(self.db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_group_party_fractions_that_do_not_add_one(self.db_gpkg)
+        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(self.db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
@@ -1371,11 +1371,11 @@ class TesQualityValidations(unittest.TestCase):
         query_manager = ConfigDBsSupported().get_db_factory(db.engine).get_ladm_queries(self.qgis_utils)
 
         # Logic rules
-        res, records = query_manager.get_parcels_with_not_right(db)
+        res, records = query_manager.get_parcels_with_no_right(db)
         self.assertTrue(res)
         self.assertEqual(len(records), 2)
 
-        res, records = query_manager.get_group_party_fractions_that_do_not_add_one(db)
+        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(db)
         self.assertTrue(res)
         self.assertEqual(len(records), 1)
 

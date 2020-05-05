@@ -96,7 +96,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
         self.restore_settings()
 
-        self.txt_file_path.textChanged.emit(self.txt_file_path.text())
+        self.txt_file_path.textChanged.emit(self.txt_file_path.log_quality_validation_text())
 
         self.rad_boundary_point.toggled.connect(self.point_option_changed)
         self.rad_control_point.toggled.connect(self.point_option_changed)
@@ -273,7 +273,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             return self.names.OP_CONTROL_POINT_T
 
     def prepare_copy_csv_points_to_db(self):
-        csv_path = self.txt_file_path.text().strip()
+        csv_path = self.txt_file_path.log_quality_validation_text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
@@ -284,7 +284,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
         with OverrideCursor(Qt.WaitCursor):
             csv_layer = self.qgis_utils.csv_to_layer(csv_path,
-                                                     self.txt_delimiter.text(),
+                                                     self.txt_delimiter.log_quality_validation_text(),
                                                      self.cbo_longitude.currentText(),
                                                      self.cbo_latitude.currentText(),
                                                      self.epsg,
@@ -319,7 +319,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         return '.' # just use the default one
 
     def autodetect_separator(self):
-        csv_path = self.txt_file_path.text().strip()
+        csv_path = self.txt_file_path.log_quality_validation_text().strip()
         if os.path.exists(csv_path):
             with open(csv_path) as file:
                 first_line = file.readline()
@@ -340,7 +340,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.epsg = int(authid[5:])
 
     def fill_long_lat_combos(self, text):
-        csv_path = self.txt_file_path.text().strip()
+        csv_path = self.txt_file_path.log_quality_validation_text().strip()
         self.cbo_longitude.clear()
         self.cbo_latitude.clear()
         self.cbo_elevation.clear()
@@ -382,7 +382,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             self.button(QWizard.FinishButton).setEnabled(False)
 
     def get_fields_from_csv_file(self, csv_path):
-        if not self.txt_delimiter.text():
+        if not self.txt_delimiter.log_quality_validation_text():
             return []
 
         error_reading = False
@@ -395,7 +395,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         if not line:
             error_reading = True
         else:
-            return line.split(self.txt_delimiter.text())
+            return line.split(self.txt_delimiter.log_quality_validation_text())
 
         if error_reading:
             self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
@@ -431,7 +431,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
     def download_csv_file(self, filename):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.log_quality_validation_text().strip())
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
                                    QCoreApplication.translate("WizardTranslations",
@@ -480,8 +480,8 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
         settings.setValue('Asistente-LADM_COL/wizards/points_add_points_type', point_type)
         settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
-        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
-        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.log_quality_validation_text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.log_quality_validation_text().strip())
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_epsg', self.epsg)
 
     def restore_settings(self):

@@ -126,9 +126,9 @@ class TasksWidget(QWidget, WIDGET_UI):
         title_text = self.st_config.TASK_TITLE_TEXT_CSS
         normal_text = self.st_config.TASK_NORMAL_TEXT_CSS
         date_text = self.st_config.TASK_DATE_TEXT_CSS
-        if widget.lbl_status.text() == EnumSTTaskStatus.ASSIGNED.value:
+        if widget.lbl_status.log_quality_validation_text() == EnumSTTaskStatus.ASSIGNED.value:
             status_text = self.st_config.TASK_ASSIGNED_STATUS_TEXT_CSS
-        elif widget.lbl_status.text() == EnumSTTaskStatus.STARTED.value:
+        elif widget.lbl_status.log_quality_validation_text() == EnumSTTaskStatus.STARTED.value:
             status_text = self.st_config.TASK_STARTED_STATUS_SELECTED_TEXT_CSS if selected else self.st_config.TASK_STARTED_STATUS_TEXT_CSS
 
         if selected:
