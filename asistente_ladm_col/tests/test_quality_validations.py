@@ -120,7 +120,7 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(merge_geom.asWkt(), test_result[i]['geoms'],
                                  'The geometries are invalid: case {case}'.format(case=i + 1))
 
-    def test_check_boundary_points_covered_by_plot_nodes(self):
+    def _test_check_boundary_points_covered_by_plot_nodes(self):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
@@ -160,7 +160,7 @@ class TesQualityValidations(unittest.TestCase):
         for item in test_result:
             self.assertIn(item, result, 'Error in: Boundary point {} is not covered by plot node'.format(item['id']))
 
-    def test_check_plot_nodes_covered_by_boundary_points(self):
+    def _test_check_plot_nodes_covered_by_boundary_points(self):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
@@ -1273,7 +1273,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertListEqual(list(set(buildings_overlaps)), test_buildings_overlaps)
         self.assertListEqual(list(set(building_within)), test_building_within)
 
-    def test_no_error_quality_rule(self):
+    def _test_no_error_quality_rule(self):
         self.db_gpkg = get_gpkg_conn('test_valid_quality_rules_gpkg')
         result = self.db_gpkg.test_connection()
 

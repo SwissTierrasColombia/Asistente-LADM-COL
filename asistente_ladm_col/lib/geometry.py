@@ -978,25 +978,24 @@ class GeometryUtils(QObject):
         algorithm does not filter the data as we need them
         """
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        plot_nodes_layer = QgsVectorLayer("Point?crs={}".format(polygon_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
-        data_provider = plot_nodes_layer.dataProvider()
-        data_provider.addAttributes([QgsField(id_field, QVariant.String)])
-        plot_nodes_layer.updateFields()
 
-        id_field_idx = tmp_plot_nodes_layer.fields().indexFromName(id_field)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        duplicate_nodes_layer = processing.run("qgis:fieldcalculator", {
+            'INPUT': tmp_plot_nodes_layer,
+            'FIELD_NAME': 'wkt_geom',
+            'FIELD_TYPE': 2,  # String
+            'FIELD_LENGTH': 255,
+            'FIELD_PRECISION': 3,
+            'NEW_FIELD': True,
+            'FORMULA': 'geom_to_wkt( $geometry )',
+            'OUTPUT': 'memory:'
+        })['OUTPUT']
 
-        filter_fs = list()
-        fs = list()
-        for f in tmp_plot_nodes_layer.getFeatures(request):
-            item = [f[id_field], f.geometry().asWkt()]
-            if item not in filter_fs:
-                filter_fs.append(item)
-                new_feature = QgsVectorLayerUtils().createFeature(plot_nodes_layer, f.geometry(), {0: f[id_field]})
-                fs.append(new_feature)
+        unique_nodes_layer = processing.run("native:removeduplicatesbyattribute", {
+            'INPUT': duplicate_nodes_layer,
+            'FIELDS': [id_field, 'wkt_geom'],
+            'OUTPUT': 'memory:'})['OUTPUT']
 
-        plot_nodes_layer.dataProvider().addFeatures(fs)
-        return plot_nodes_layer
+        return unique_nodes_layer
 
     @staticmethod
     def get_non_intersecting_geometries(input_layer, join_layer, id_field):
