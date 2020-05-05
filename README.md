@@ -1,25 +1,25 @@
-[![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
-[![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
-[![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
+[![License](https://img.shields.io/github/license/SwissTierrasColombia/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
+[![Release](https://img.shields.io/github/release/SwissTierrasColombia/asistente-ladm_col.svg)](https://github.com/SwissTierrasColombia/asistente-ladm_col/releases)
+[![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM_COL)
 [![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 You can read the docs in [English](README_en.md).
 
 # Asistente LADM_COL
-Plugin de [QGIS](http://qgis.org) que ayuda a capturar y mantener datos conformes con [LADM_COL](https://github.com/AgenciaImplementacion/LADM_COL) y a generar archivos de intercambio de [INTERLIS](http://www.interlis.ch/index_e.htm) (.XTF).
+Plugin de [QGIS](http://qgis.org) que ayuda a capturar y mantener datos conformes con [LADM_COL](https://github.com/SwissTierrasColombia/LADM_COL) y a generar archivos de intercambio de [INTERLIS](http://www.interlis.ch/index_e.htm) (.XTF).
 
-Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
+Licencia: [GNU General Public License v3.0](https://github.com/SwissTierrasColombia/Asistente-LADM_COL/blob/master/LICENSE)
 
-Enlaces de interés: [Documentación](https://agenciaimplementacion.github.io/Asistente-LADM_COL), [Galería](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README.md#galería)
+Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asistente-LADM_COL), [Galería](https://github.com/SwissTierrasColombia/Asistente-LADM_COL/blob/master/README.md#galería)
 
-Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
+Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
  :arrow_right: Se recomienda utilizar la versión 3.10.x de QGIS, disponible en https://qgis.org/downloads/
 
 
 ## Funcionalidades
 
-La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.2)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
+La versión actual ([2.99.2](https://github.com/SwissTierrasColombia/Asistente-LADM_COL/releases/tag/2.99.2)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
 
  - Integración con el Sistema de Transición:
    - Autenticación.
@@ -32,7 +32,7 @@ La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-
  - Soporte de dos motores para manejar datos de LADM-COL:
    - PostgreSQL/PostGIS: Soporte total.
    - GeoPackage: Validaciones de calidad, consultas y reportes no están soportadas.
- - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
+ - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
  - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
@@ -131,7 +131,7 @@ La versión actual ([2.99.2](https://github.com/AgenciaImplementacion/Asistente-
  - Generar reporte de Omisiones y Comisiones.
  - Identificar novedades:
    - Comparar base de datos del barrido contra datos de insumos y mostrar diferencias masivas y por predio.
- - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
+ - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/SwissTierrasColombia/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Ayuda online y offline.
@@ -158,7 +158,7 @@ Para usar el Asistente LADM_COL se requiere:
 
 Éstas se ejecutan automáticamente luego de cada commit realizado al repositorio y los resultados están disponibles en:
 
-- GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
+- GNU/Linux: https://travis-ci.org/SwissTierrasColombia/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
 
 Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
@@ -206,18 +206,18 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
 
 ## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
 
- + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz clic en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/SwissTierrasColombia/Asistente-LADM_COL/ y haz clic en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
 
  + Si no tienes cuenta de GitHub, tienes dos opciones:
 
-   a) Subscríbete al *feed* de lanzamientos: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+   a) Subscríbete al *feed* de lanzamientos: https://github.com/SwissTierrasColombia/Asistente-LADM_COL/releases.atom
 
    b) Usa gitpunch!
 
       + Ve a la página https://gitpunch.com/
       + Espera a que termine la animación o haz clic en `Skip` (en la parte inferior de la página).
       + Regístrate usando tu correo electrónico.
-      + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
+      + Busca por "Asistente LADM_COL" y elige el repositorio `SwissTierrasColombia/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.
       
       

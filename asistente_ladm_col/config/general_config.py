@@ -22,7 +22,7 @@ PREFIX_ERROR_CODE = 'E'
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False
-HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(DEPENDENCIES_BASE_PATH, 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
@@ -49,7 +49,7 @@ SETTINGS_ADVANCED_TAB_INDEX = 5
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 REPORTS_REQUIRED_VERSION = '0.6dev'
-URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -119,7 +119,7 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # ''https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -147,7 +147,7 @@ GRAY_COLOR = QColor(219, 219, 219, 255)
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
 # About dialog
-RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/"
+RELEASE_URL = "https://github.com/SwissTierrasColombia/Asistente-LADM_COL/releases/tag/"
 
 # Endpoint for testing the Source Service (avoid last slash)
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
@@ -156,7 +156,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # Documentation
-HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
+HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM_COL-docs/releases/download'
 
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
