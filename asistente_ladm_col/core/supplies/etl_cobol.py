@@ -55,10 +55,10 @@ class ETLCobol(ETLSupplies):
 
     def load_alphanumeric_layers(self):
         self.alphanumeric_file_paths = {
-            'blo': self.data_source_widget.txt_file_path_blo.log_quality_validation_text().strip(),
-            'uni': self.data_source_widget.txt_file_path_uni.log_quality_validation_text().strip(),
-            'ter': self.data_source_widget.txt_file_path_ter.log_quality_validation_text().strip(),
-            'pro': self.data_source_widget.txt_file_path_pro.log_quality_validation_text().strip()
+            'blo': self.data_source_widget.txt_file_path_blo.text().strip(),
+            'uni': self.data_source_widget.txt_file_path_uni.text().strip(),
+            'ter': self.data_source_widget.txt_file_path_ter.text().strip(),
+            'pro': self.data_source_widget.txt_file_path_pro.text().strip()
         }
 
         root = QgsProject.instance().layerTreeRoot()

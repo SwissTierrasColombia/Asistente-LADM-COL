@@ -90,18 +90,18 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_gdb.textChanged.connect(self.emit_input_data_changed)
 
         # Trigger validations right now
-        self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.log_quality_validation_text())
-        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.log_quality_validation_text())
-        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.log_quality_validation_text())
-        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.log_quality_validation_text())
-        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.log_quality_validation_text())
+        self.txt_file_path_blo.textChanged.emit(self.txt_file_path_blo.text())
+        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
+        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
+        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def validate_inputs(self):
-        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.log_quality_validation_text().strip(), 0)[0]
-        state_ter = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.log_quality_validation_text().strip(), 0)[0]
-        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.log_quality_validation_text().strip(), 0)[0]
-        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.log_quality_validation_text().strip(), 0)[0]
-        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.log_quality_validation_text().strip(), 0)[0]
+        state_blo = self.txt_file_path_blo.validator().validate(self.txt_file_path_blo.text().strip(), 0)[0]
+        state_ter = self.txt_file_path_ter.validator().validate(self.txt_file_path_ter.text().strip(), 0)[0]
+        state_pro = self.txt_file_path_pro.validator().validate(self.txt_file_path_pro.text().strip(), 0)[0]
+        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
+        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
 
         if state_blo == QValidator.Acceptable and \
                 state_ter == QValidator.Acceptable and \
@@ -117,11 +117,11 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
+        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
 
     def restore_settings(self):
         settings = QSettings()

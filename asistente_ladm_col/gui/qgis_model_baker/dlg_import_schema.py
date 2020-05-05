@@ -139,9 +139,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def accepted_import_schema(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
-            if button.log_quality_validation_text() == self.BUTTON_NAME_CREATE_STRUCTURE:
+            if button.text() == self.BUTTON_NAME_CREATE_STRUCTURE:
                 self.accepted()
-            elif button.log_quality_validation_text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
+            elif button.text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
                 self.close()  # Close import schema dialog and open import open dialog
                 self.open_dlg_import_data.emit({"db_source": self.db_source})
 
@@ -197,7 +197,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def on_item_clicked_import_model(self, item):
         # disconnect signal to do changes in the items
         self.import_models_list_widget.itemChanged.disconnect(self.on_itemchanged_import_model)
-        if self.previous_item.log_quality_validation_text() != item.log_quality_validation_text():
+        if self.previous_item.text() != item.text():
             if item.checkState() == Qt.Checked:
                 item.setCheckState(Qt.Unchecked)
             else:
@@ -207,7 +207,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.previous_item = item
 
     def on_itemchanged_import_model(self, item):
-        if self.previous_item.log_quality_validation_text() != item.log_quality_validation_text():
+        if self.previous_item.text() != item.text():
             item.setSelected(True)
         self.previous_item = item
 
@@ -216,7 +216,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         for index in range(self.import_models_list_widget.count()):
             item = self.import_models_list_widget.item(index)
             if item.checkState() == Qt.Checked:
-                checked_models.append(item.log_quality_validation_text())
+                checked_models.append(item.text())
         return checked_models
 
     def show_settings(self):

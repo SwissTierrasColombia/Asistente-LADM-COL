@@ -190,8 +190,8 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         """
         # All parties
         self.lst_all_parties.clear()
-        if self.txt_search_party.log_quality_validation_text():
-            tmp_parties = {i:d for i,d in self.data.items() if self.txt_search_party.log_quality_validation_text().lower() in d[0].lower()}
+        if self.txt_search_party.text():
+            tmp_parties = {i:d for i,d in self.data.items() if self.txt_search_party.text().lower() in d[0].lower()}
         else:
             tmp_parties = copy.deepcopy(self.data) # Copy all!
 
@@ -234,13 +234,13 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         """
         if column != 0:
             party_id = self.tbl_selected_parties.item(row, 0).data(Qt.UserRole)
-            value_denominator = self.tbl_selected_parties.item(row, 1).log_quality_validation_text()
+            value_denominator = self.tbl_selected_parties.item(row, 1).text()
 
             # While creating a row and the second column is created, the third
             # one doesn't exist, so use the value already stored for that case
             value_numerator = self.parties_to_group[party_id][1] if party_id in self.parties_to_group else 0
             if self.tbl_selected_parties.item(row, 2) is not None:
-                value_numerator = self.tbl_selected_parties.item(row, 2).log_quality_validation_text()
+                value_numerator = self.tbl_selected_parties.item(row, 2).text()
 
             self.parties_to_group[party_id] = [value_denominator, value_numerator]
 
@@ -253,13 +253,13 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         for index in range(self.tbl_selected_parties.rowCount()):
              k = self.tbl_selected_parties.item(index, 0).data(Qt.UserRole)
              try:
-                 v_n = int(self.tbl_selected_parties.item(index, 1).log_quality_validation_text())
+                 v_n = int(self.tbl_selected_parties.item(index, 1).text())
              except ValueError as e:
                  self.show_message(QCoreApplication.translate("WizardTranslations",
                     "There are some invalid values in the numerator column. Fix them before continuing..."), Qgis.Warning)
                  return
              try:
-                 v_d = int(self.tbl_selected_parties.item(index, 2).log_quality_validation_text())
+                 v_d = int(self.tbl_selected_parties.item(index, 2).text())
              except ValueError as e:
                  self.show_message(QCoreApplication.translate("WizardTranslations",
                     "There are some invalid values in the denominator column. Fix them before continuing..."), Qgis.Warning)
@@ -267,7 +267,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
              self.parties_to_group[k] = [v_n, v_d]
 
-        name = self.txt_group_name.log_quality_validation_text()
+        name = self.txt_group_name.text()
         group_party_type = self.cbo_group_type.itemData(self.cbo_group_type.currentIndex())
         dict_params = {
             self.names.COL_PARTY_T_NAME_F: name,

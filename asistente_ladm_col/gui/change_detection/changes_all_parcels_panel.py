@@ -219,7 +219,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             inverse = item.data(Qt.UserRole)['inverse']
             base_db = self.utils._supplies_db if inverse else self.utils._db
-            parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).log_quality_validation_text()
+            parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
 
             # Obtain t_ids from parcels with NULL or duplicated parcel_number, before calling the per_parcel_panel
             parcels_t_ids = list()

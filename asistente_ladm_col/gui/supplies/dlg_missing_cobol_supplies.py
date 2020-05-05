@@ -73,19 +73,19 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM_COL/etl_cobol/folder_path', ''))
 
         # Trigger validations right now
-        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.log_quality_validation_text())
-        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.log_quality_validation_text())
-        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.log_quality_validation_text())
-        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.log_quality_validation_text())
-        self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.log_quality_validation_text())
+        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_ter.textChanged.emit(self.txt_file_path_ter.text())
+        self.txt_file_path_pro.textChanged.emit(self.txt_file_path_pro.text())
+        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
+        self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
 
     def accepted(self):
         self.bar.clearWidgets()
         self.save_settings()
-        QSettings().setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.log_quality_validation_text())
+        QSettings().setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
-        self.folder_path = self.target_data.txt_file_path_folder_supplies.log_quality_validation_text()
+        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
                 'MissingCobolSupplies', 'missing_supplies_cobol.gpkg'))
         self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
@@ -93,7 +93,7 @@ class MissingCobolSupplies(CobolBaseDialog):
 
         reply = self.validate_files_in_folder()
 
-        lis_paths = {'uni': self.txt_file_path_uni.log_quality_validation_text().strip()}
+        lis_paths = {'uni': self.txt_file_path_uni.text().strip()}
 
         required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
                             ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
@@ -294,7 +294,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.btn_browse_file_pro.setVisible(False)
 
     def validate_inputs(self):
-        state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.log_quality_validation_text().strip(), 0)[0]
+        state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
 
         if state_path == QValidator.Acceptable and self.validate_common_inputs():
             return True

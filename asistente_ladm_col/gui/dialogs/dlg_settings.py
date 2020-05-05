@@ -194,7 +194,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         return self._db
 
     def show_custom_model_dir(self):
-        dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.log_quality_validation_text(), self)
+        dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.text(), self)
         dlg.exec_()
 
     def accepted(self):
@@ -292,7 +292,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
-            settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.log_quality_validation_text())
+            settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
@@ -301,10 +301,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
-        endpoint_transitional_system = self.txt_service_transitional_system.log_quality_validation_text().strip()
+        endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
-        endpoint = self.txt_service_endpoint.log_quality_validation_text().strip()
+        endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         # Changes in automatic namespace or local_id configuration?
@@ -314,12 +314,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
         if self.namespace_collapsible_group_box.isChecked():
-            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.log_quality_validation_text())
+            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
         settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
 
         if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
-           current_namespace_prefix != self.txt_namespace.log_quality_validation_text() or \
+           current_namespace_prefix != self.txt_namespace.text() or \
            current_local_id_enabled != self.chk_local_id.isChecked():
             if self._db is not None:
                 self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
@@ -417,14 +417,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_service(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.qgis_utils.is_source_service_valid(self.txt_service_endpoint.log_quality_validation_text().strip())
+        res, msg = self.qgis_utils.is_source_service_valid(self.txt_service_endpoint.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 
     def test_service_transitional_system(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.qgis_utils.is_transitional_system_service_valid(self.txt_service_transitional_system.log_quality_validation_text().strip())
+        res, msg = self.qgis_utils.is_transitional_system_service_valid(self.txt_service_transitional_system.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
 

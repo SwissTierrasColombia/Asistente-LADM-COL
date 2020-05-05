@@ -93,10 +93,10 @@ class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
     def accepted(self):
         if self.rad_plots.isChecked():
             items = self.lst_plots.selectedItems()
-            self.selected_layers_info = {i.log_quality_validation_text(): self.plots[i.log_quality_validation_text()] for i in items}
+            self.selected_layers_info = {i.text(): self.plots[i.text()] for i in items}
         else:
             items = self.lst_buildings.selectedItems()
-            self.selected_layers_info = {i.log_quality_validation_text(): self.buildings[i.log_quality_validation_text()] for i in items}
+            self.selected_layers_info = {i.text(): self.buildings[i.text()] for i in items}
 
         self.done(1)
 

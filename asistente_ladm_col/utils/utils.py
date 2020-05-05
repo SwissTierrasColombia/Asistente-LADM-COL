@@ -238,7 +238,7 @@ def get_uuid_dict(layer, names, id_field=None):
         attrs = [names.T_ILI_TID_F]
         if id_field:
             attrs.append(id_field)
-        request.setSubsetOfAttributes(attrs)  # Note: this adds a new flag
+        request.setSubsetOfAttributes(attrs, layer.fields())  # Note: this adds a new flag
         for feature in layer.getFeatures(request):
             if id_field:
                 dict_uuid[feature[id_field]] = str(feature[names.T_ILI_TID_F])

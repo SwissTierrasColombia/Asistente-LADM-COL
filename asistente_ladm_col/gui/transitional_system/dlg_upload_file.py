@@ -72,7 +72,7 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.start_progress()
         self.enable_controls(False)
 
-        file_path = self.txt_file_path.log_quality_validation_text().strip()
+        file_path = self.txt_file_path.text().strip()
         if not self.txt_comments.toPlainText():
             res = False
             res_msg = QCoreApplication.translate("STUploadFileDialog", "File was not uploaded! Details: Comments are required.")
@@ -103,7 +103,7 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
 
     def store_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', self.txt_file_path.log_quality_validation_text().strip())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', self.txt_file_path.text().strip())
 
     def restore_settings(self):
         settings = QSettings()

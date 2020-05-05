@@ -762,7 +762,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def set_log_quality_initial_progress(self, msg):
-        self.log_quality_validation_progress_count += 2 # 20% of the current rule
+        self.log_quality_validation_progress_count += 2  # 20% of the current rule
         self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
         self.progress_message_bar.setText(
             QCoreApplication.translate("LogQualityDialog",
@@ -773,7 +773,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def set_log_quality_final_progress(self, msg):
-        self.log_quality_validation_progress_count += 8 # 80% of the current rule
+        self.log_quality_validation_progress_count += 8  # 80% of the current rule
         self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
         self.log_quality_current_rule_count += 1
         if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
@@ -797,10 +797,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.button.setText(QCoreApplication.translate("ImportFromExcelDialog", "Show errors found"))
         self.progress_message_bar.layout().addWidget(self.button)
         self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Warning)
-        self.log_quality_validation_text = text
+        self.log_excel_text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.qgis_utils, self.log_quality_validation_text)
+        dlg = LogExcelDialog(self.qgis_utils, self.log_excel_text)
         dlg.exec_()
 
     @_db_connection_required

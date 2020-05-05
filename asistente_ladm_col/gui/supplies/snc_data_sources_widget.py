@@ -114,24 +114,24 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_gdb.textChanged.connect(self.emit_input_data_changed)
 
         # Trigger validations right now
-        self.txt_file_path_predio_sancion.textChanged.emit(self.txt_file_path_predio_sancion.log_quality_validation_text())
-        self.txt_file_path_predio.textChanged.emit(self.txt_file_path_predio.log_quality_validation_text())
-        self.txt_file_path_direccion.textChanged.emit(self.txt_file_path_direccion.log_quality_validation_text())
-        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.log_quality_validation_text())
-        self.txt_file_path_persona.textChanged.emit(self.txt_file_path_persona.log_quality_validation_text())
-        self.txt_file_path_ficha_m.textChanged.emit(self.txt_file_path_ficha_m.log_quality_validation_text())
-        self.txt_file_path_ficha_m_predio.textChanged.emit(self.txt_file_path_ficha_m_predio.log_quality_validation_text())
-        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.log_quality_validation_text())
+        self.txt_file_path_predio_sancion.textChanged.emit(self.txt_file_path_predio_sancion.text())
+        self.txt_file_path_predio.textChanged.emit(self.txt_file_path_predio.text())
+        self.txt_file_path_direccion.textChanged.emit(self.txt_file_path_direccion.text())
+        self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_persona.textChanged.emit(self.txt_file_path_persona.text())
+        self.txt_file_path_ficha_m.textChanged.emit(self.txt_file_path_ficha_m.text())
+        self.txt_file_path_ficha_m_predio.textChanged.emit(self.txt_file_path_ficha_m_predio.text())
+        self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def validate_inputs(self):
-        state_predio_sancion = self.txt_file_path_predio_sancion.validator().validate(self.txt_file_path_predio_sancion.log_quality_validation_text().strip(), 0)[0]
-        state_predio = self.txt_file_path_predio.validator().validate(self.txt_file_path_predio.log_quality_validation_text().strip(), 0)[0]
-        state_direccion = self.txt_file_path_direccion.validator().validate(self.txt_file_path_direccion.log_quality_validation_text().strip(), 0)[0]
-        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.log_quality_validation_text().strip(), 0)[0]
-        state_persona = self.txt_file_path_persona.validator().validate(self.txt_file_path_persona.log_quality_validation_text().strip(), 0)[0]
-        state_ficha_m = self.txt_file_path_ficha_m.validator().validate(self.txt_file_path_ficha_m.log_quality_validation_text().strip(), 0)[0]
-        state_ficha_m_predio = self.txt_file_path_ficha_m_predio.validator().validate(self.txt_file_path_ficha_m_predio.log_quality_validation_text().strip(), 0)[0]
-        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.log_quality_validation_text().strip(), 0)[0]
+        state_predio_sancion = self.txt_file_path_predio_sancion.validator().validate(self.txt_file_path_predio_sancion.text().strip(), 0)[0]
+        state_predio = self.txt_file_path_predio.validator().validate(self.txt_file_path_predio.text().strip(), 0)[0]
+        state_direccion = self.txt_file_path_direccion.validator().validate(self.txt_file_path_direccion.text().strip(), 0)[0]
+        state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
+        state_persona = self.txt_file_path_persona.validator().validate(self.txt_file_path_persona.text().strip(), 0)[0]
+        state_ficha_m = self.txt_file_path_ficha_m.validator().validate(self.txt_file_path_ficha_m.text().strip(), 0)[0]
+        state_ficha_m_predio = self.txt_file_path_ficha_m_predio.validator().validate(self.txt_file_path_ficha_m_predio.text().strip(), 0)[0]
+        state_gdb = self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0]
 
         if state_predio_sancion == QValidator.Acceptable and \
                 state_predio == QValidator.Acceptable and \
@@ -150,14 +150,14 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/etl_snc/predio_sancion_path', self.txt_file_path_predio_sancion.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/predio_path', self.txt_file_path_predio.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/direccion_path', self.txt_file_path_direccion.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/uni_path', self.txt_file_path_uni.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/persona_path', self.txt_file_path_persona.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/ficha_m_path', self.txt_file_path_ficha_m.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/ficha_m_predio_path', self.txt_file_path_ficha_m_predio.log_quality_validation_text())
-        settings.setValue('Asistente-LADM_COL/etl_snc/gdb_path', self.txt_file_path_gdb.log_quality_validation_text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/predio_sancion_path', self.txt_file_path_predio_sancion.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/predio_path', self.txt_file_path_predio.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/direccion_path', self.txt_file_path_direccion.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/uni_path', self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/persona_path', self.txt_file_path_persona.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/ficha_m_path', self.txt_file_path_ficha_m.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/ficha_m_predio_path', self.txt_file_path_ficha_m_predio.text())
+        settings.setValue('Asistente-LADM_COL/etl_snc/gdb_path', self.txt_file_path_gdb.text())
 
     def restore_settings(self):
         settings = QSettings()

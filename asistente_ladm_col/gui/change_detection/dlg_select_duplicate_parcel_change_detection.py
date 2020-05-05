@@ -87,7 +87,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         selected_rows = [item.row() for item in self.tbl_changes_parcels.selectedItems()]
         if len(set(selected_rows)) == 1:  # Single row selected
             item = self.tbl_changes_parcels.selectedItems()[0]
-            parcel_t_id = int(self.tbl_changes_parcels.item(item.row(), 0).log_quality_validation_text())  # parcel t_id
+            parcel_t_id = int(self.tbl_changes_parcels.item(item.row(), 0).text())  # parcel t_id
             self.zoom_to_parcels([parcel_t_id])
 
         self.set_controls_enabled()
@@ -104,21 +104,21 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
 
     def set_controls_enabled(self):
         for button in self.buttonBox.buttons():
-            if button.log_quality_validation_text() == self.select_button_name:
+            if button.text() == self.select_button_name:
                 button.setEnabled(bool(self.tbl_changes_parcels.selectedItems()))
                 break
 
     def accepted(self):
         selected_row = self.tbl_changes_parcels.currentRow()
-        self.parcel_t_id = self.tbl_changes_parcels.item(selected_row, 0).log_quality_validation_text()
-        self.parcel_number = self.tbl_changes_parcels.item(selected_row, 3).log_quality_validation_text()
+        self.parcel_t_id = self.tbl_changes_parcels.item(selected_row, 0).text()
+        self.parcel_number = self.tbl_changes_parcels.item(selected_row, 3).text()
         self.close()
 
     def button_box_clicked(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
-            if button.log_quality_validation_text() == self.select_button_name:
+            if button.text() == self.select_button_name:
                 self.accepted()
-            elif button.log_quality_validation_text() == self.zoom_to_all_button_name:
+            elif button.text() == self.zoom_to_all_button_name:
                 # Zoom to all plots
                 self.zoom_to_parcels(self.parcels_t_ids)
                 self.tbl_changes_parcels.clearSelection()

@@ -35,7 +35,7 @@ class ETLSupplies(QObject):
         self.data_source_widget = data_source_widget
         self.logger = Logger()
 
-        self.gdb_path = self.data_source_widget.txt_file_path_gdb.log_quality_validation_text()
+        self.gdb_path = self.data_source_widget.txt_file_path_gdb.text()
 
         self.alphanumeric_file_paths = {}
         self.gdb_layer_paths = dict()
