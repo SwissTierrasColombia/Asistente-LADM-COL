@@ -169,6 +169,12 @@ def _activate_processing_plugin(func_to_decorate):
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
     def add_format_to_text(self, db, **args):
+        """
+        Decorator used for registering log quality info
+        :param self: QualityDialog instance
+        :param db: db connector
+        :param args: 'rule_name' is the executed quality rule name
+        """
         rule_name = args['rule_name']
         self.log_quality_set_initial_progress_emitted.emit(rule_name)
         self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN

@@ -67,7 +67,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.names = self._db.names
         self.log_dialog_quality_text = ""
         self.log_dialog_quality_text_content = ""
-        self.total_time = 0
+        self.log_quality_validation_total_time = 0
 
         self.trw_quality_rules.setItemsExpandable(False)
         self.trw_quality_rules.itemSelectionChanged.connect(self.validate_selection_rules)
@@ -181,11 +181,11 @@ class QualityDialog(QDialog, DIALOG_UI):
         self.log_quality_show_button_emitted.emit()
 
     def get_log_dialog_quality_text(self):
-        return self.log_dialog_quality_text, self.total_time
+        return self.log_dialog_quality_text, self.log_quality_validation_total_time
 
     def initialize_log_dialog_quality(self):
         self.log_dialog_quality_text = ""
-        self.total_time = 0
+        self.log_quality_validation_total_time = 0
 
     def log_message(self, msg, level):
         if level == Qgis.Critical:

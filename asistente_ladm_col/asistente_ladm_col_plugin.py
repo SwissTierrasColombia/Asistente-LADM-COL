@@ -784,8 +784,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        self.log_quality_validation_text, self.log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), self.log_quality_validation_text, self.log_quality_validation_total_time)
+        log_quality_validation_text, log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_quality_validation_text, log_quality_validation_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):

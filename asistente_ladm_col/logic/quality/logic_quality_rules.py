@@ -81,21 +81,10 @@ class LogicQualityRules:
 
     def check_parcel_right_relationship(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP)
-        error_layer = None
-        error_layer_exist = False
-        group = self.qgis_utils.get_error_layers_group()
-        layers = group.findLayers()
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         new_features = list()
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_no_right(db)
@@ -119,7 +108,7 @@ class LogicQualityRules:
                 new_features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(new_features)
-        return self.return_message(db, new_features, rule.error_table_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.error_table_name, error_layer)
 
     def check_duplicate_records_in_a_table(self, db, table, fields, rule_code):
         rule = self.quality_rules_manager.get_quality_rule(rule_code)
@@ -144,7 +133,7 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule check duplicate records in a table: {}".format(records))
 
-        return self.return_message(db, new_features, rule.error_table_name, error_layer, False)
+        return self.return_message(db, rule.error_table_name, error_layer)
 
     def check_group_party_fractions_that_do_not_add_one(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS)
@@ -182,7 +171,7 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule.error_table_name, error_layer, False)
+        return self.return_message(db, rule.error_table_name, error_layer)
 
     def check_parcels_with_invalid_department_code(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
@@ -210,22 +199,10 @@ class LogicQualityRules:
 
     def check_invalid_col_party_type_natural(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE)
-        error_layer = None
-        error_layer_exist = False
-
-        group = self.qgis_utils.get_error_layers_group()  # Check if error layer exist
-        layers = group.findLayers()  # Check if layer is loaded
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         res, records = self.get_ladm_queries(db.engine).get_invalid_col_party_type_natural(db)
 
@@ -260,26 +237,14 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.rule_name, error_layer)
 
     def check_invalid_col_party_type_no_natural(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE)
-        error_layer = None
-        error_layer_exist = False
-
-        group = self.qgis_utils.get_error_layers_group()  # Check if error layer exist
-        layers = group.findLayers()  # Check if layer is loaded
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         res, records = self.get_ladm_queries(db.engine).get_invalid_col_party_type_no_natural(db)
 
@@ -314,26 +279,14 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.rule_name, error_layer)
 
     def check_parcels_with_invalid_parcel_type_and_22_position_number(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER)
-        error_layer = None
-        error_layer_exist = False
-
-        group = self.qgis_utils.get_error_layers_group()
-        layers = group.findLayers()
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_invalid_parcel_type_and_22_position_number(db)
 
@@ -369,26 +322,14 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.rule_name, error_layer)
 
     def check_uebaunit_parcel(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.UEBAUNIT_PARCEL)
-        error_layer = None
-        error_layer_exist = False
-
-        group = self.qgis_utils.get_error_layers_group()
-        layers = group.findLayers()
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         res, records = self.get_ladm_queries(db.engine).get_uebaunit_parcel(db)
 
@@ -436,7 +377,7 @@ class LogicQualityRules:
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
 
-        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.rule_name, error_layer)
 
     # UTILS METHODS
     def basic_logic_validations(self, db, records, rule, error_code):
@@ -450,25 +391,10 @@ class LogicQualityRules:
                       rule_name: Rule error description (Name of rule to show in log quality rules)).
                       Note: rule_name is used by _log_quality_rules decorator
         """
-        error_layer = None
-        error_layer_exist = False
-
-        # Check if error layer exist
-        group = self.qgis_utils.get_error_layers_group()
-
-        # Check if layer is loaded
-        layers = group.findLayers()
-        for layer in layers:
-            if layer.name() == rule.error_table_name:
-                error_layer = layer.layer()
-                error_layer_exist = True
-                break
-
-        if error_layer_exist is False:
-            error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
+        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes(rule.error_table_fields)
+        error_layer.updateFields()
 
         new_features = []
         for record in records:
@@ -480,14 +406,14 @@ class LogicQualityRules:
             new_features.append(new_feature)
         error_layer.dataProvider().addFeatures(new_features)
 
-        return self.return_message(db, new_features, rule.rule_name, error_layer, error_layer_exist)
+        return self.return_message(db, rule.rule_name, error_layer)
 
-    def return_message(self, db, new_features, rule_name, error_layer, error_layer_exist):
-        if len(new_features) > 0:
-            if not error_layer_exist:
-                self.qgis_utils.add_error_layer(db, error_layer)
+    def return_message(self, db, rule_name, error_layer):
+        feature_count = error_layer.featureCount()
+        if feature_count>0:
+            self.qgis_utils.add_error_layer(db, error_layer)
             return (QCoreApplication.translate("LogicQualityRules",
-                                               "A memory layer with {error_count} errors has been added to the map after checking the '{rule_name}' logic consistency rule.").format(error_count=len(new_features), rule_name=rule_name),
+                                               "A memory layer with {error_count} errors has been added to the map after checking the '{rule_name}' logic consistency rule.").format(error_count=feature_count, rule_name=rule_name),
                     Qgis.Critical)
         else:
             return (QCoreApplication.translate("LogicQualityRules",
