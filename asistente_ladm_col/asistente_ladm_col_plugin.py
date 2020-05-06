@@ -1211,7 +1211,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def download_report_dependency(self):
         self.app.gui.clear_message_bar()  # Remove messages
-        self.report_generator.download_report_dependency()
+        self.report_generator.download_reports_dependency()
 
     def remove_report_dependency(self):
         self.app.gui.clear_message_bar()  # Remove messages
