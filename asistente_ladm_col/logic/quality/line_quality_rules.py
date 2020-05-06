@@ -480,15 +480,15 @@ class LineQualityRules:
                                                                   'PREFIX': '',
                                                                   'OUTPUT': 'memory:'})['OUTPUT']
 
-        # The id field has the same name for both layers
-        # This list is only used to check plot's inner rings without boundaries
-        list_spatial_join_boundary_inner_rings = [{'plot_ring_id': '{}-{}'.format(feature[id_field + '_2'], feature['AUTO']), 'boundary_id': feature[id_field]}
-                                                  for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
+        list_spatial_join_boundary_inner_rings = list()
+        list_spatial_join_boundary_plot_ring = list()
+        for feature in spatial_join_inner_rings_boundary_layer.getFeatures():
+            # The id field has the same name for both layers
+            # This list is only used to check plot's inner rings without boundaries
+            list_spatial_join_boundary_inner_rings.append({'plot_ring_id': '{}-{}'.format(feature[id_field + '_2'], feature['AUTO']), 'boundary_id': feature[id_field]})
 
-        # list create for filter inner rings from spatial join with between plot and boundary
-        list_spatial_join_boundary_plot_ring = [{'plot_id': feature[id_field + '_2'],
-                                                 'boundary_id': feature[id_field]}
-                                                for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
+            # list create for filter inner rings from spatial join with between plot and boundary
+            list_spatial_join_boundary_plot_ring.append({'plot_id': feature[id_field + '_2'], 'boundary_id': feature[id_field]})
 
         # Spatial join between boundary and plots as lines
         spatial_join_boundary_plot_layer = processing.run("qgis:joinattributesbylocation",
