@@ -33,6 +33,7 @@ printf "\n"
 pushd /usr/src/asistente_ladm_col
 make
 cd ..
+/usr/bin/qgis --version
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 xvfb-run nose2-3  # asistente_ladm_col.tests.test_change_geometries_in_load
 popd

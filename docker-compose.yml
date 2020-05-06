@@ -8,7 +8,11 @@ services:
       - POSTGRES_PASS="clave_ladm_col"
       - POSTGRES_DBNAME="ladm_col"
   qgis:
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        QGIS_TEST_VERSION: ${QGIS_TEST_VERSION}
     tty: true
     volumes:
       - ${TRAVIS_BUILD_DIR}:/usr/src
