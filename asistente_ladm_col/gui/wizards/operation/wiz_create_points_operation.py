@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QFile)
 from qgis.PyQt.QtWidgets import (QWizard,
+                                 QMessageBox,
                                  QFileDialog,
                                  QSizePolicy,
                                  QGridLayout)
@@ -238,22 +239,27 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
             output_layer_name = self.current_point_name()
 
             if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               output_layer_name,
-                                                               field_mapping=field_mapping)
+                # If source and target layers have different SRS it should be reproject first
+                if self.is_valid_layer_proyection():
+                    field_mapping = self.cbo_mapping.currentText()
+                    res_etl_model = self.app.core.show_etl_model(self._db,
+                                                                 self.mMapLayerComboBox.currentLayer(),
+                                                                 output_layer_name,
+                                                                 field_mapping=field_mapping)
 
-                if res_etl_model:
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
+                    if res_etl_model:
+                        self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
 
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
+                        # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
+                        # previous mapping used (we give preference to the latest used mapping)
+                        if field_mapping:
+                            self.app.core.delete_old_field_mapping(field_mapping)
 
-                    self.app.core.save_field_mapping(output_layer_name)
-
+                        self.app.core.save_field_mapping(output_layer_name)
+                else:
+                    message = QCoreApplication.translate("WizardTranslations",
+                                                         "'{}' tool has been closed because you will reproject your data first.").format(self.WIZARD_TOOL_NAME)
+                    self.close_wizard(message)
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(output_layer_name))
@@ -515,3 +521,17 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
     def show_help(self):
         show_plugin_help("create_points")
+
+    def is_valid_layer_proyection(self):
+        if self.mMapLayerComboBox.currentLayer().crs() != self._layers[self.current_point_name()].crs():
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Question)
+            msg.setText(QCoreApplication.translate("WizardTranslations", "Your source and target layers have different CRSs. Should you reproject your data first?"))
+            msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "Different CRSs"))
+            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "Continue with no reprojection"))
+            reply = msg.exec_()
+
+            if reply == QMessageBox.Yes:
+                return False
+        return True

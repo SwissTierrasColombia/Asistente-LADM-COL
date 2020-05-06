@@ -26,8 +26,8 @@
  """
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
-from qgis.core import (QgsProject,
-                       Qgis)
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.core import QgsProject
 
 from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
@@ -56,20 +56,26 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
+                # If source and target layers have different SRS it should be reproject first
+                if self.is_valid_layer_proyection():
+                    field_mapping = self.cbo_mapping.currentText()
+                    res_etl_model = self.app.core.show_etl_model(self._db,
+                                                                 self.mMapLayerComboBox.currentLayer(),
+                                                                 self.EDITING_LAYER_NAME,
+                                                                 field_mapping=field_mapping)
+                    if res_etl_model:  # Features were added?
+                        self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
 
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
+                        # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
+                        # previous mapping used (we give preference to the latest used mapping)
+                        if field_mapping:
+                            self.app.core.delete_old_field_mapping(field_mapping)
 
-                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
+                        self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
+                else:
+                    message = QCoreApplication.translate("WizardTranslations",
+                                                         "'{}' tool has been closed because you will reproject your data first.").format(self.WIZARD_TOOL_NAME)
+                    self.close_wizard(message)
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
                     "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
@@ -152,3 +158,17 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
     def exec_form_advanced(self, layer):
         raise NotImplementedError
+
+    def is_valid_layer_proyection(self):
+        if self.mMapLayerComboBox.currentLayer().crs() != self._layers[self.EDITING_LAYER_NAME].crs():
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Question)
+            msg.setText(QCoreApplication.translate("WizardTranslations", "Your source and target layers have different CRSs. Should you reproject your data first?"))
+            msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "Different CRSs"))
+            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "Continue with no reprojection"))
+            reply = msg.exec_()
+
+            if reply == QMessageBox.Yes:
+                return False
+        return True
