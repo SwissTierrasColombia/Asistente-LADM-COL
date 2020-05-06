@@ -45,7 +45,7 @@ class TestEncrypterDecrypter(unittest.TestCase):
 
         self.assertNotEqual(encrypted1, encrypted2)
 
-    def _test_encrypter_decrypter_none(self):
+    def test_encrypter_decrypter_none(self):
         encrypted = self.encrypter_decrypter.encrypt_with_AES('mLiodFJacH4aIzCKaLRP32J6qZy3qylg5D/NOdvuFOE=')
         self.assertEqual('', encrypted)
         decrypted = self.encrypter_decrypter.decrypt_with_AES('asistente_ladm_col')
