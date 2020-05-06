@@ -23,6 +23,7 @@ from functools import partial
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
+from processing.script import ScriptUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
@@ -164,6 +165,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_collected_supplies = Context()
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
 
+        self.ladm_col_provider = LADMCOLAlgorithmProvider()
+        self.__processing_resources_installed = list()
+
     def initGui(self):
         self.app = AppInterface()
         self.app.set_core_interface(AppCoreInterface())
@@ -192,13 +196,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.call_refresh_gui()
             self.initialize_requirements()
 
-        # Add LADM-COL provider and models to QGIS
-        self.ladm_col_provider = LADMCOLAlgorithmProvider()
-        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
-        if QgsApplication.processingRegistry().providerById('model'):
-            self.add_processing_models(None)
-        else: # We need to wait until processing is initialized
-            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+        # Add LADM-COL provider, models and sripts to QGIS
+        self.initialize_processing_resources()
 
     def create_actions(self):
         self.create_supplies_actions()
@@ -580,27 +579,73 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_ABOUT: self._about_action
         })
 
-    def add_processing_models(self, provider_id):
-        if not (provider_id == 'model' or provider_id is None):
+    def initialize_processing_resources(self):
+        """
+        Add custom provider, models and scripts to QGIS
+        """
+        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
+
+        connect_provider_added = False
+        if QgsApplication.processingRegistry().providerById('model'):
+            self.add_processing_resources('model')
+        else:
+            connect_provider_added = True
+
+        if QgsApplication.processingRegistry().providerById('script'):
+            self.add_processing_resources('script')
+        else:
+            connect_provider_added = True
+
+        if connect_provider_added:  # We need to wait until processing is initialized
+            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_resources)
+
+    def add_processing_resources(self, provider_id):
+        if provider_id not in ['model', 'script']:
             return
 
-        if provider_id is not None: # If method acted as slot
-            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_models)
+        if sorted(self.__processing_resources_installed) == ["models", "script"]:  # We are done, disconnect.
+            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_resources)
 
-        # Add ladm_col models
-        basepath = os.path.dirname(os.path.abspath(__file__))
-        plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
+        if provider_id == 'model':
+            # Add LADM-COL models
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
-        for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
-            alg = QgsProcessingModelAlgorithm()
-            if not alg.fromFile(filename):
-                self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
-                return
+            count = 0
+            for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
+                alg = QgsProcessingModelAlgorithm()
+                if not alg.fromFile(filename):
+                    self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
+                    return
 
-            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
-            shutil.copyfile(filename, destFilename)
+                destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
+                shutil.copyfile(filename, destFilename)
+                count += 1
 
-        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+            if count:
+                QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+                self.logger.debug(__name__, "{} LADM-COL models were installed!".format(count))
+
+            self.__processing_resources_installed.append('model')
+        elif provider_id == 'script':
+            # Add LADM-COL scripts
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            plugin_scripts_dir = os.path.join(basepath, "lib", "processing", "scripts")
+
+            count = 0
+            scripts_dir = ScriptUtils.defaultScriptsFolder()
+            for filename in glob.glob(os.path.join(plugin_scripts_dir, '*.py')):
+                try:
+                    shutil.copy(filename, scripts_dir)
+                    count += 1
+                except OSError as e:
+                    self.logger.critical(__name__, "Couldn't install LADM-COL script '{}'!".format(filename))
+
+            if count:
+                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
+                self.logger.debug(__name__, "{} LADM-COL scripts were installed!".format(count))
+
+            self.__processing_resources_installed.append('script')
 
     def enable_action(self, action_name, enable):
         if action_name == ANT_MAP_REPORT:
