@@ -8,7 +8,7 @@ from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
 DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM-COL')
-DEPENDENCY_REPORTS_DIR_NAME = 'impresion'
+DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
 
 DEFAULT_LOG_MODE = EnumLogMode.DEV
 DEFAULT_LOG_FILE = ''
@@ -49,6 +49,12 @@ SETTINGS_AUTOMATIC_VALUES_TAB_INDEX = 3
 SETTINGS_SOURCES_TAB_INDEX = 4
 SETTINGS_ADVANCED_TAB_INDEX = 5
 
+# Crypto
+CRYPTO_LIBRARY_NAME = "CryptoUtils.jar"
+DEPENDENCY_CRYPTO_DIR = os.path.join(DEPENDENCIES_BASE_PATH, "CRYPTO")
+CRYPTO_LIBRARY_PATH = os.path.join(DEPENDENCY_CRYPTO_DIR, CRYPTO_LIBRARY_NAME)
+URL_CRYPTO_LIBRARY = 'https://github.com/SwissTierrasColombia/Crypto_Utils/releases/download/v1.0.0/Crypto_Utils-0.0.1-SNAPSHOT.jar'
+CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
