@@ -28,6 +28,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes,
                        QgsFeatureRequest)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E300101,
                                                             QUALITY_RULE_ERROR_CODE_E300201,
                                                             QUALITY_RULE_ERROR_CODE_E300301,
@@ -59,10 +60,11 @@ from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
 class PolygonQualityRules:
-    def __init__(self, qgis_utils):
-        self.quality_rules_manager = QualityRuleManager()
-        self.qgis_utils = qgis_utils
+    def __init__(self):
+        self.app = AppInterface()
         self.logger = Logger()
+        self.geometry = GeometryUtils()
+        self.quality_rules_manager = QualityRuleManager()
 
     def check_overlapping_plots(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)
@@ -77,7 +79,7 @@ class PolygonQualityRules:
         return self.__check_overlapping_polygons(db, rule, db.names.OP_RIGHT_OF_WAY_T, QUALITY_RULE_ERROR_CODE_E300301)
 
     def __check_overlapping_polygons(self, db, rule, polygon_layer_name, error_code):
-        polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, load=True)
+        polygon_layer = self.app.core.get_layer(db, polygon_layer_name, load=True)
         if not polygon_layer:
             return QCoreApplication.translate("PolygonQualityRules", "'{}' layer not found!").format(polygon_layer_name), Qgis.Critical
 
@@ -91,7 +93,7 @@ class PolygonQualityRules:
                 polygon_layer = processing.run("native:multiparttosingleparts",
                                                {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
-            overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
+            overlapping = self.geometry.get_overlapping_polygons(polygon_layer)
 
             flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
             flat_overlapping = list(set(flat_overlapping))  # unique values
@@ -104,7 +106,7 @@ class PolygonQualityRules:
             for overlapping_item in overlapping:
                 polygon_id_field = overlapping_item[0]
                 overlapping_id_field = overlapping_item[1]
-                polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
+                polygon_intersection = self.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
 
                 if polygon_intersection is not None:
                     new_feature = QgsVectorLayerUtils().createFeature(
@@ -119,7 +121,7 @@ class PolygonQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
@@ -138,7 +140,7 @@ class PolygonQualityRules:
             db.names.MORE_BFS_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
@@ -162,7 +164,7 @@ class PolygonQualityRules:
                                                                         db.names.T_ID_F)
             if features:
                 error_layer.dataProvider().addFeatures(features)
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -178,7 +180,7 @@ class PolygonQualityRules:
             db.names.OP_BUILDING_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical
 
@@ -199,7 +201,7 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(layers[db.names.OP_RIGHT_OF_WAY_T], layers[db.names.OP_BUILDING_T])
+            ids, overlapping_polygons = self.geometry.get_inner_intersections_between_polygons(layers[db.names.OP_RIGHT_OF_WAY_T], layers[db.names.OP_BUILDING_T])
 
             if overlapping_polygons is not None:
                 new_features = list()
@@ -215,7 +217,7 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
@@ -227,7 +229,7 @@ class PolygonQualityRules:
     def check_gaps_in_plots(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = self.qgis_utils.get_layer(db, db.names.OP_PLOT_T, True)
+        plot_layer = self.app.core.get_layer(db, db.names.OP_PLOT_T, True)
         if not plot_layer:
             return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical
 
@@ -242,7 +244,7 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
+            gaps = self.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
             fids_list = GeometryUtils.get_intersection_features(plot_layer, gaps)  # List of lists of qgis ids
 
             uuids_list = list()
@@ -262,7 +264,7 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -273,7 +275,7 @@ class PolygonQualityRules:
 
     def check_multiparts_in_right_of_way(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)
-        right_of_way_layer = self.qgis_utils.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
+        right_of_way_layer = self.app.core.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
         if not right_of_way_layer:
             return QCoreApplication.translate("PolygonQualityRules", "'Right of way' layer not found!"), Qgis.Critical
 
@@ -288,7 +290,7 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
+            multi_parts, ids = self.geometry.get_multipart_geoms(right_of_way_layer)
 
             if multi_parts is not None:
                 new_features = list()
@@ -302,7 +304,7 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
@@ -318,7 +320,7 @@ class PolygonQualityRules:
             db.names.OP_PLOT_T: None,
             db.names.OP_BOUNDARY_POINT_T: None
         }
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
@@ -350,7 +352,7 @@ class PolygonQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
                 return (QCoreApplication.translate(
                                  "PolygonQualityRules",
                                  "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
@@ -370,7 +372,7 @@ class PolygonQualityRules:
             names.COL_UE_BAUNIT_T: None,
             names.OP_CONDITION_PARCEL_TYPE_D: None
         }
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
 
@@ -430,7 +432,7 @@ class PolygonQualityRules:
             data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -546,7 +548,7 @@ class PolygonQualityRules:
             names.OP_CONDITION_PARCEL_TYPE_D: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, building unit, plot, ue_baunit, condition parcel type) was not found!"), Qgis.Critical
 
@@ -659,7 +661,7 @@ class PolygonQualityRules:
             data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -884,7 +886,7 @@ class PolygonQualityRules:
         list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
+        tmp_inner_rings_layer = self.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -942,7 +944,7 @@ class PolygonQualityRules:
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
         # and inner_rings and boundary. No need to check further topological rules for plots
 
-        errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(db.names, plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
+        errors_plot_boundary_diffs = self.geometry.difference_plot_boundary(db.names, plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
             # All plots with geometric errors are eliminated. It is not necessary check more

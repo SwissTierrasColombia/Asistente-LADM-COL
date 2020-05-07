@@ -47,8 +47,8 @@ from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import Si
 
 
 class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(CreateRightOfWayOperationWizard, self).__init__(iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        super(CreateRightOfWayOperationWizard, self).__init__(iface, db, wizard_settings)
         self.type_geometry_creation = None
         self.temporal_layer = None
 
@@ -71,7 +71,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_width.setEnabled(False)
@@ -110,17 +110,19 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             self.type_geometry_creation = None
             if self.mMapLayerComboBox.currentLayer() is not None:
                 field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                res_etl_model = self.app.core.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
                                                                self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
                 if res_etl_model: # Features were added?
+                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
+
                     # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
                     # previous mapping used (we give preference to the latest used mapping)
                     if field_mapping:
-                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+                        self.app.core.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
+                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
 
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
@@ -181,7 +183,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             QgsProject.instance().setAutoTransaction(False)
 
             # Activate snapping
-            self.qgis_utils.active_snapping_all_layers(tolerance=9)
+            self.app.core.active_snapping_all_layers(tolerance=9)
             self.open_form(layer)
 
             self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
@@ -220,7 +222,7 @@ class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
             if not layer.isEditable():
                 layer.startEditing()
 
-            self.qgis_utils.suppress_form(layer, True)
+            self.app.core.suppress_form(layer, True)
             layer.addFeature(feature)
 
         dialog = self.iface.getFeatureForm(layer, feature)

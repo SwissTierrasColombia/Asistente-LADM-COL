@@ -24,6 +24,7 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E400101,
                                                             QUALITY_RULE_ERROR_CODE_E400102,
@@ -67,15 +68,15 @@ from asistente_ladm_col.utils.utils import get_uuid_dict
 
 
 class LogicQualityRules:
-    def __init__(self, qgis_utils):
+    def __init__(self):
         self.quality_rules_manager = QualityRuleManager()
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
         self._ladm_queries = dict()
 
     def get_ladm_queries(self, engine):
         if engine not in self._ladm_queries:
-            self._ladm_queries[engine] = ConfigDBsSupported().get_db_factory(engine).get_ladm_queries(self.qgis_utils)
+            self._ladm_queries[engine] = ConfigDBsSupported().get_db_factory(engine).get_ladm_queries()
 
         return self._ladm_queries[engine]
 
@@ -142,7 +143,7 @@ class LogicQualityRules:
             db.names.OP_GROUP_PARTY_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=False)
+        self.app.core.get_layers(db, layers, load=False)
         if not layers:
             return QCoreApplication.translate("LogicQualityRules", "At least one required layer (members, group party) was not found!"), Qgis.Critical
 
@@ -411,7 +412,7 @@ class LogicQualityRules:
     def return_message(self, db, rule_name, error_layer):
         feature_count = error_layer.featureCount()
         if feature_count:
-            self.qgis_utils.add_error_layer(db, error_layer)
+            self.app.gui.add_error_layer(db, error_layer)
             return (QCoreApplication.translate("LogicQualityRules",
                                                "A memory layer with {error_count} errors has been added to the map after checking the '{rule_name}' logic consistency rule.").format(error_count=feature_count, rule_name=rule_name),
                     Qgis.Critical)

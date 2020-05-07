@@ -1,19 +1,17 @@
 import nose2
+from qgis.PyQt.QtCore import QSettings
 
-from qgis.core import (QgsVectorLayer,
-                       QgsWkbTypes)
 from qgis.testing import (unittest,
                           start_app)
+
+from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_copy_gpkg_conn,
-                                            get_gpkg_conn,
-                                            delete_features,
                                             run_etl_model)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
 class TestRefactorFieldsMapping(unittest.TestCase):
@@ -23,7 +21,7 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         import_qgis_model_baker()
         cls.db_gpkg_empty = get_copy_gpkg_conn('test_empty_ladm_gpkg')
         cls.db_gpkg_test = get_copy_gpkg_conn('test_export_data_qpkg')
-        cls.qgis_utils = QGISUtils()
+        cls.app = AppInterface()
 
         result_empty = cls.db_gpkg_empty.test_connection()
         result_test = cls.db_gpkg_test.test_connection()
@@ -31,7 +29,7 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         cls.assertTrue(result_test[0], 'The test connection is not working for test data db')
 
     def test_refactor_field(self):
-        print('\nINFO: Validating refactor field for boundary layer ...')
+        print('\nINFO: Validating refactor fields...')
 
         dict_layers_to_check = {
             self.db_gpkg_test.names.OP_BOUNDARY_T: self.db_gpkg_empty.names.OP_BOUNDARY_T,
@@ -59,9 +57,11 @@ class TestRefactorFieldsMapping(unittest.TestCase):
             self.db_gpkg_test.names.OP_BUILDING_UNIT_T: 29
         }
 
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
+
         for layer_name_test, layer_name_empty in dict_layers_to_check.items():
-            layer = self.qgis_utils.get_layer(self.db_gpkg_test, layer_name_test, load=True)
-            test_layer = self.qgis_utils.get_layer(self.db_gpkg_empty, layer_name_empty, load=True)
+            layer = self.app.core.get_layer(self.db_gpkg_test, layer_name_test, load=True)
+            test_layer = self.app.core.get_layer(self.db_gpkg_empty, layer_name_empty, load=True)
             self.assertEqual(layer.featureCount(), feature_count_test[layer_name_test], 'Error in {}'.format(layer_name_test))
             self.assertEqual(test_layer.featureCount(), 0, 'Error in {}'.format(layer_name_test))
 

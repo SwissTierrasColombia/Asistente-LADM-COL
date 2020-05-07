@@ -44,7 +44,7 @@ class DBFactory(ABC):
     def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
-    def get_ladm_queries(self, qgis_utils):
+    def get_ladm_queries(self):
         raise NotImplementedError
 
     def set_ili2db_configuration_params(self, params, configuration):
@@ -60,18 +60,18 @@ class DBFactory(ABC):
 
     def save_parameters_conn(self, dict_conn, db_source):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=db_source), self._engine)
+        settings.setValue('Asistente-LADM-COL/db/{db_source}/db_connection_engine'.format(db_source=db_source), self._engine)
 
         for parameter, value in dict_conn.items():
                 settings.setValue(
-                    'Asistente-LADM_COL/db/{db_source}/{engine}/{parameter}'.format(db_source=db_source,
+                    'Asistente-LADM-COL/db/{db_source}/{engine}/{parameter}'.format(db_source=db_source,
                                                                                    engine=self._engine,
                                                                                    parameter=parameter), value)
 
     def get_parameters_conn(self, db_source):
         dict_conn = dict()
         settings = QSettings()
-        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{engine}/'.format(db_source=db_source, engine=self._engine))
+        settings.beginGroup('Asistente-LADM-COL/db/{db_source}/{engine}/'.format(db_source=db_source, engine=self._engine))
         for key in settings.allKeys():
             dict_conn[key] = settings.value(key)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2020-02-12
         copyright            : (C) 2020 by Andrés Acosta (BSF Swissphoto)
@@ -15,26 +15,37 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+from qgis.PyQt.QtCore import QProcess
 
-from PyQt5.QtCore import QProcess
+from asistente_ladm_col.config.general_config import (CRYPTO_LIBRARY_PATH,
+                                                      URL_CRYPTO_LIBRARY)
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
+from asistente_ladm_col.lib.dependency.crypto_dependency import CryptoDependency
+from asistente_ladm_col.lib.logger import Logger
 
-from asistente_ladm_col.config.translator import PLUGIN_DIR
-from asistente_ladm_col.utils.java_utils import JavaUtils
 
 class EncrypterDecrypter():
     def __init__(self):
         self._secret_key = 'dnREVzd3Y1NMaA=='  # 'c2VjcmV0MTIz'
         self._salt = 'bGpEVzM2dU8='  # 'c2FsdDEyMw=='
-        self.java_utils = JavaUtils()
+        self.logger = Logger()
+
+        self.java_dependency = JavaDependency()
+        self.crypto_dependency = CryptoDependency()
 
     def run(self, mode, value):
-        java_home_set = self.java_utils.set_java_home()
-        if not java_home_set:
-            self.java_utils.get_java_on_demand()
 
-        java_path = self.java_utils.get_full_java_exe_path()
-        args = ["-jar", os.path.join(PLUGIN_DIR, 'lib/crypto_utils/CryptoUtils.jar')]
+        java_home_set = self.java_dependency.set_java_home()
+        if not java_home_set:
+            self.java_dependency.get_java_on_demand()
+            return
+
+        if not self.crypto_dependency.check_if_dependency_is_valid():
+            self.crypto_dependency.download_dependency(URL_CRYPTO_LIBRARY)
+            return
+
+        java_path = self.java_dependency.get_full_java_exe_path()
+        args = ["-jar", CRYPTO_LIBRARY_PATH]
         args += [mode, self._secret_key, self._salt, value]
 
         proc = QProcess()
@@ -44,7 +55,7 @@ class EncrypterDecrypter():
         output = bytearray(proc.readAllStandardOutput())
         output = output.decode("ascii")
 
-        return output.strip()   
+        return output.strip()
 
     def encrypt_with_AES(self, value):
         return self.run('--encrypt', value)

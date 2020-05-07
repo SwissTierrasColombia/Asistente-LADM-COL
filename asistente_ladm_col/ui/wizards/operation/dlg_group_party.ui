@@ -116,7 +116,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/Asistente-LADM_COL/resources/images/select_all.png</normaloff>:/Asistente-LADM_COL/resources/images/select_all.png</iconset>
+           <normaloff>:/Asistente-LADM-COL/resources/images/select_all.png</normaloff>:/Asistente-LADM-COL/resources/images/select_all.png</iconset>
          </property>
         </widget>
        </item>
@@ -130,7 +130,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/Asistente-LADM_COL/resources/images/select.png</normaloff>:/Asistente-LADM_COL/resources/images/select.png</iconset>
+           <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
          </property>
         </widget>
        </item>
@@ -144,7 +144,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/Asistente-LADM_COL/resources/images/deselect.png</normaloff>:/Asistente-LADM_COL/resources/images/deselect.png</iconset>
+           <normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</iconset>
          </property>
         </widget>
        </item>
@@ -158,7 +158,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>:/Asistente-LADM_COL/resources/images/deselect_all.png</normaloff>:/Asistente-LADM_COL/resources/images/deselect_all.png</iconset>
+           <normaloff>:/Asistente-LADM-COL/resources/images/deselect_all.png</normaloff>:/Asistente-LADM-COL/resources/images/deselect_all.png</iconset>
          </property>
         </widget>
        </item>

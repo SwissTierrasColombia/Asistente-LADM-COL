@@ -1985,7 +1985,7 @@
   </Option>
   <Option name="help"/>
   <Option name="modelVariables"/>
-  <Option value="LADM_COL" name="model_group" type="QString"/>
+  <Option value="LADM-COL" name="model_group" type="QString"/>
   <Option value="ETL_O_M_Cobol" name="model_name" type="QString"/>
   <Option name="parameterDefinitions" type="Map">
     <Option name="qgis:refactorfields_10:OMISIONES_VR" type="Map">

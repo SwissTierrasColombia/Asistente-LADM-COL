@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/Asistente-LADM_COL">
+  <qresource prefix="/Asistente-LADM-COL">
     <file>resources/images/powered_by.png</file>
     <file>resources/images/icon_about_transparency.png</file>
     <file>resources/images/st_black.png</file>
@@ -65,6 +65,8 @@
     <file>resources/images/report_ant.svg</file>
     <file>resources/images/missing_supplies.svg</file>
     <file>resources/images/process.svg</file>
+    <file>resources/images/save.svg</file>
+    <file>resources/images/pdf.svg</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

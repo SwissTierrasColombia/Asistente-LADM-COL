@@ -30,7 +30,7 @@ DOCKWIDGET_UI = get_ui_class('transitional_system/dockwidget_transitional_system
 
 class DockWidgetTransitionalSystem(QgsDockWidget, DOCKWIDGET_UI):
     """
-    Main UI for the Transitional System in the LADM_COL Assistant. It holds other panels.
+    Main UI for the Transitional System in the LADM-COL Assistant. It holds other panels.
     """
     logout_requested = pyqtSignal()
     trigger_action_emitted = pyqtSignal(str)  # action tag
@@ -61,6 +61,8 @@ class DockWidgetTransitionalSystem(QgsDockWidget, DOCKWIDGET_UI):
         pass
 
     def after_logout(self):
+        self.setDisabled(True)
+        self.main_panel.tasks_widget.logout_user()
         self.close_dock_widget()
 
     def close_dock_widget(self):

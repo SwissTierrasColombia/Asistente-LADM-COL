@@ -239,7 +239,7 @@
     </Option>
   </Option>
   <Option name="help"/>
-  <Option type="QString" value="LADM_COL" name="model_group"/>
+  <Option type="QString" value="LADM-COL" name="model_group"/>
   <Option type="QString" value="Group_Points" name="model_name"/>
   <Option type="Map" name="parameterDefinitions">
     <Option type="Map" name="bufferdistance">

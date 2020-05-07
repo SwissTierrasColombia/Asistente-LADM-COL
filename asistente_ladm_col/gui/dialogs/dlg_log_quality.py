@@ -48,4 +48,5 @@ class LogQualityDialog(QDialog, DIALOG_LOG_QUALITY_UI):
                 time.strftime("%d/%m/%y %H:%M:%S"), self.db.get_description_conn_string(),
                 Utils.set_time_format(self.execution_total_time))
 
-        save_pdf_format('Asistente-LADM_COL/log_quality_dialog/save_path', title, self.text)
+        save_pdf_format('Asistente-LADM-COL/log_quality_dialog/save_path', title, self.text)
+

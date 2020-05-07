@@ -72,6 +72,7 @@ ACTION_SCHEMA_IMPORT = 'action_schema_import'
 ACTION_IMPORT_DATA = 'action_import_data'
 ACTION_EXPORT_DATA = 'action_export_data'
 ACTION_LOAD_LAYERS = 'action_load_layers'
+ACTION_FIX_LADM_COL_RELATIONS = 'action_fix_ladm_col_relations'
 ACTION_REPORT_ANNEX_17 = 'action_report_annex_17'
 ACTION_REPORT_ANT = 'action_report_ant'
 ACTION_CHANGE_DETECTION_PER_PARCEL = 'action_change_detection_per_parcel'
@@ -80,20 +81,24 @@ ACTION_CHANGE_DETECTION_SETTINGS = "action_change_detection_settings"
 
 ALL_ACTIONS = 'all_actions'
 
-SURVEYING_ICON = ":/Asistente-LADM_COL/resources/images/surveying.png"
-DATA_MANAGEMENT_ICON = ":/Asistente-LADM_COL/resources/images/create_db.png"
-DATA_CREATION_ICON = ":/Asistente-LADM_COL/resources/images/data_creation.svg"
-ST_ICON = ":/Asistente-LADM_COL/resources/images/st.svg"
-OPERATION_ICON = ":/Asistente-LADM_COL/resources/images/icon.png"
-STRUCTURING_TOOLS_ICON = ":/Asistente-LADM_COL/resources/images/structuring_tools.svg"
+DOCK_WIDGET_QUERIES = "dock_widget_queries"
+DOCK_WIDGET_CHANGE_DETECTION = "dock_widget_change_detection"
+DOCK_WIDGET_TRANSITION_SYSTEM = "dock_widget_transition_system"
+
+SURVEYING_ICON = ":/Asistente-LADM-COL/resources/images/surveying.png"
+DATA_MANAGEMENT_ICON = ":/Asistente-LADM-COL/resources/images/create_db.png"
+DATA_CREATION_ICON = ":/Asistente-LADM-COL/resources/images/data_creation.svg"
+ST_ICON = ":/Asistente-LADM-COL/resources/images/st.svg"
+OPERATION_ICON = ":/Asistente-LADM-COL/resources/images/icon.png"
+STRUCTURING_TOOLS_ICON = ":/Asistente-LADM-COL/resources/images/structuring_tools.svg"
 SUPPLIES_ICON = ""
-SPATIAL_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/spatial_unit.png"
-BA_UNIT_ICON = ":/Asistente-LADM_COL/resources/images/ba_unit.png"
-RRR_ICON = ":/Asistente-LADM_COL/resources/images/rrr.png"
-PARTY_ICON = ":/Asistente-LADM_COL/resources/images/party.png"
-SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
-REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/reports.svg"
-CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
+SPATIAL_UNIT_ICON = ":/Asistente-LADM-COL/resources/images/spatial_unit.png"
+BA_UNIT_ICON = ":/Asistente-LADM-COL/resources/images/ba_unit.png"
+RRR_ICON = ":/Asistente-LADM-COL/resources/images/rrr.png"
+PARTY_ICON = ":/Asistente-LADM-COL/resources/images/party.png"
+SOURCE_ICON = ":/Asistente-LADM-COL/resources/images/source.png"
+REPORTS_ICON = ":/Asistente-LADM-COL/resources/images/reports.svg"
+CHANGE_DETECTION_ICON = ":/Asistente-LADM-COL/resources/images/change_detection.svg"
 
 # MENU OBJECTNAMES
 MENU_OPERATION_OBJECTNAME = "ladm_col_operation_menu"

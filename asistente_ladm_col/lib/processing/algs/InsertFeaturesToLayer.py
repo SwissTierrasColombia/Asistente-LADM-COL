@@ -16,20 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 
 from qgis.core import (edit,
                        QgsEditError,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingFeedback,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingOutputVectorLayer,
                        QgsProject,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsVectorLayer,
+                       QgsFeatureSink,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils)
+
+from asistente_ladm_col.config.general_config import DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE
+
 
 class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
@@ -70,111 +78,72 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         target = self.parameterAsVectorLayer(parameters, self.OUTPUT, context)
-        target.dataProvider().clearErrors()
+        target_provider = target.dataProvider()
+        target_provider.clearErrors()
 
-        editable_before = False
         if target.isEditable():
-            editable_before = True
             feedback.reportError("\nWARNING: You need to close the edit session on layer '{}' before running this algorithm.".format(
                 target.name()
             ))
             return {self.OUTPUT: None}
 
-        # Define a mapping between source and target layer
-        mapping = dict()
-        for target_idx in target.fields().allAttributesList():
-            target_field = target.fields().field(target_idx)
-            source_idx = source.fields().indexOf(target_field.name())
-            if source_idx != -1:
-                mapping[target_idx] = source_idx
+        features = QgsVectorLayerUtils().makeFeaturesCompatible(source.getFeatures(), target)
+        eval_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(target))
 
-        # Copy and Paste
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        features = source.getFeatures()
-        destType = target.geometryType()
-        destIsMulti = QgsWkbTypes.isMultiType(target.wkbType())
+        # Make sure automatic values are calculated if automatic_values_in_batch_mode
+        # is enabled and that they are not calculated otherwise
+        automatic_values_in_batch_mode = QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool)
+        list_automatic_fields = list()
+        if automatic_values_in_batch_mode:
+            # Get indexes that have an automatic value configured, except primary keys,
+            # since we deal with PK's values  differently (namely, directly with the provider)
+            list_automatic_fields = [idx for idx in target.attributeList() if target.defaultValueDefinition(idx).isValid() and idx not in target_provider.pkAttributeIndexes()]
 
-        #  Check if layer has Z or M values.
-        drop_coordinates = list()
-        add_coordinates = list()
-        if QgsWkbTypes().hasM(source.wkbType()):
-            # In ladm we don't use M values, so drop them if present
-            drop_coordinates.append("M")
-        if not QgsWkbTypes().hasZ(source.wkbType()) and QgsWkbTypes().hasZ(target.wkbType()):
-            add_coordinates.append("Z")
-        if QgsWkbTypes().hasZ(source.wkbType()) and not QgsWkbTypes().hasZ(target.wkbType()):
-            drop_coordinates.append("Z")
+        # Update attribute values before saving
+        for feature in features:
+            for idx in target_provider.pkAttributeIndexes():
+                # Get the PK from the provider itself
+                feature.setAttribute(idx, target_provider.defaultValue(idx))
 
-        new_features = []
-        display_target_geometry = QgsWkbTypes.displayString(target.wkbType())
-        display_source_geometry = QgsWkbTypes.displayString(source.wkbType())
+            for idx in list_automatic_fields:
+                feature.setAttribute(idx, target.defaultValue(idx, feature, eval_context))
 
-        for current, in_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            attrs = {target_idx: in_feature[source_idx] for target_idx, source_idx in mapping.items()}
-
-            geom = QgsGeometry()
-
-            if in_feature.hasGeometry() and target.isSpatial():
-                # Convert geometry to match destination layer
-                # Adapted from QGIS qgisapp.cpp, pasteFromClipboard()
-                geom = in_feature.geometry()
-
-                if destType != QgsWkbTypes.UnknownGeometry:
-                    newGeometry = geom.convertToType(destType, destIsMulti)
-                    if newGeometry.isNull():
-                        feedback.reportError("\nERROR: Geometry type from the source layer ('{}') could not be converted to '{}'.".format(
-                            display_source_geometry,
-                            display_target_geometry
-                        ))
-                        return {self.OUTPUT: None}
-                    newGeometry = self.transform_geom(newGeometry, drop_coordinates, add_coordinates)
-                    geom = newGeometry
-
-                # Avoid intersection if enabled in digitize settings
-                geom.avoidIntersections(QgsProject.instance().avoidIntersectionsLayers())
-
-            new_feature = QgsVectorLayerUtils().createFeature(target, geom, attrs)
-            new_features.append(new_feature)
-
-            feedback.setProgress(int(current * total))
-
-        try:
-            # This might print error messages... But, hey! That's what we want!
-            res = target.dataProvider().addFeatures(new_features)
-        except QgsEditError as e:
-            if not editable_before:
-                # Let's close the edit session to prepare for a next run
-                target.rollBack()
-
-            feedback.reportError("\nERROR: No features could be copied into '{}', because of the following error:\n{}\n".format(
-                target.name(),
-                repr(e)
-            ))
-            return {self.OUTPUT: None}
-
-        if res[0]:
+        if self.save_features(target, features, 'provider', feedback):
             feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(
-                    len(new_features),
+                    len(features),
                     source.featureCount(),
                     target.name()
-            ))         
-        else:
-            if target.dataProvider().hasErrors():
-                feedback.reportError("\nERROR: The data could not be copied! Details: {}.".format(target.dataProvider().errors()[0]))
-            else:
-                feedback.reportError("\nERROR: The data could not be copied! No more details from the provider.")
+            ))
+        else:  # Messages are handled by save_features method
+            return {self.OUTPUT: None}
             
         return {self.OUTPUT: target}
 
-    def transform_geom(self, geom, drop_coordinates, add_coordinates):
-        """Add/remove Z and remove M values"""
-        if "Z" in drop_coordinates:
-            geom.get().dropZValue()
-        if "M" in drop_coordinates:
-            geom.get().dropMValue()
-        if "Z" in add_coordinates:
-            geom.get().addZValue()
-        return geom
+    def save_features(self, layer, features, mode='provider', feedback=QgsProcessingFeedback()):
+        res = False
+        if mode == 'provider':
+            feedback.pushInfo("Saving features using data provider...")
+            layer.dataProvider().clearErrors()
+            res = layer.dataProvider().addFeatures(features, QgsFeatureSink.FastInsert)[0]
+            if not res:
+                if layer.dataProvider().hasErrors():
+                    feedback.reportError(
+                        "\nERROR: The data could not be copied! Details: {}.".format(layer.dataProvider().errors()))
+                else:
+                    feedback.reportError("\nERROR: The data could not be copied! No more details from the provider.")
+        elif mode == 'edit_session':
+            feedback.pushInfo("Saving features using edit session...")
+            try:
+                with edit(layer):
+                    res = layer.addFeatures(features, QgsFeatureSink.FastInsert)
+            except QgsEditError as e:
+                # Let's close the edit session to prepare for a next run
+                layer.rollBack()
+                feedback.reportError(
+                    "\nERROR: No features could be copied into '{}', because of the following error:\n{}\n".format(
+                        layer.name(),
+                        repr(e)
+                    ))
+                res = False
+
+        return res

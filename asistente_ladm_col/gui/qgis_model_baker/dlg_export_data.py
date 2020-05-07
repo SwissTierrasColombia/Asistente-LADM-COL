@@ -49,9 +49,10 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_MODELS_TAB_INDEX,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.java_utils import JavaUtils
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -59,7 +60,6 @@ from asistente_ladm_col.utils.qt_utils import (Validators,
                                                make_save_file_selector,
                                                OverrideCursor)
 
-from ...resources_rc import * # Necessary to show icons
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
 from asistente_ladm_col.config.enums import EnumDbActionType
@@ -71,7 +71,7 @@ class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
-    def __init__(self, iface, qgis_utils, conn_manager, context):
+    def __init__(self, iface, conn_manager, context):
         QDialog.__init__(self)
         self.setupUi(self)
 
@@ -80,12 +80,12 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.conn_manager = conn_manager
         self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
 
-        self.java_utils = JavaUtils()
-        self.java_utils.download_java_completed.connect(self.download_java_complete)
-        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_dependency = JavaDependency()
+        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
+        self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
 
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -183,14 +183,14 @@ class DialogExportData(QDialog, DIALOG_UI):
         unload the plugin, destroying dialogs and thus, leading to crashes.
         """
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         if self._db_was_changed:
             # If the db was changed, it implies it complies with ladm_col, hence the second parameter
             self.conn_manager.db_connection_changed.emit(self.db, True, self.db_source)
 
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
         self.done(QDialog.Accepted)
@@ -204,11 +204,11 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 
-        # Connect signals (DBUtils, QgisUtils)
+        # Connect signals (DBUtils, Core)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
             self._schedule_layers_and_relations_refresh = True
@@ -230,13 +230,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
-        java_home_set = self.java_utils.set_java_home()
+        java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             message_java = QCoreApplication.translate("DialogExportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)
-            self.java_utils.get_java_on_demand()
+            self.java_dependency.get_java_on_demand()
             self.disable()
             return
 
@@ -347,22 +347,22 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
 
     def restore_configuration(self):
         settings = QSettings()
-        self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export'))
+        self.xtf_file_line_edit.setText(settings.value('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export'))
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        value_show_log = settings.value('Asistente-LADM-COL/QgisModelBaker/show_log', False, type=bool)
         self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_is_checked =  settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if custom_model_is_checked:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def update_configuration(self):
         """
@@ -375,13 +375,14 @@ class DialogExportData(QDialog, DIALOG_UI):
         db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
-        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        configuration.with_exporttid = True
+        full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
@@ -396,7 +397,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             configuration.iliexportmodels = ';'.join(self.get_ili_models())
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
-        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool)
+        configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -468,7 +469,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.enable()
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
+        self.bar.pushMessage("Asistente LADM-COL", message, level, duration=0)
 
     def xtf_browser_opened_to_true(self):
         """

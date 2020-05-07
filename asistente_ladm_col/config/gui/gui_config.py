@@ -17,7 +17,7 @@ class GUI_Config(QObject):
     DEFAULT_GUI_CONFIG_DICT = {
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
-            WIDGET_NAME: "LAD&M_COL",
+            WIDGET_NAME: "LAD&M-COL",
             OBJECT_NAME: MENU_LADM_COL_OBJECTNAME,
             ACTIONS: [
                 {
@@ -58,7 +58,7 @@ class GUI_Config(QObject):
     TEMPLATE_GUI_CONFIG_DICT = {
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
-            WIDGET_NAME: "LAD&M_COL",
+            WIDGET_NAME: "LAD&M-COL",
             OBJECT_NAME: MENU_LADM_COL_OBJECTNAME,
             ACTIONS: [
                 ACTION_DOWNLOAD_GUIDE,
@@ -150,7 +150,9 @@ class GUI_Config(QObject):
                         },
                         SEPARATOR,
                         ACTION_UPLOAD_PENDING_SOURCE,
-                        ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE
+                        ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                        SEPARATOR,
+                        ACTION_FIX_LADM_COL_RELATIONS
                     ]
                 },
                 ACTION_LOAD_LAYERS,

@@ -24,22 +24,23 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
 class ToolBar(QObject):
 
-    def __init__(self, iface, qgis_utils):
+    def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
         self.geometry = GeometryUtils()
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
-        layer = self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_LAYER_TREE)
+        layer = self.app.core.get_ladm_layer_from_qgis(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_LAYER_TREE)
         use_selection = True
 
         if layer is None:
@@ -80,7 +81,7 @@ class ToolBar(QObject):
             for boundary_geom in new_boundary_geoms:
                 feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
 
-                # TODO: Remove when local id and working space are defined
+                # TODO: Remove when local id and namespace are defined
                 feature.setAttribute(db.names.OID_T_LOCAL_ID_F, 1)
                 feature.setAttribute(db.names.OID_T_NAMESPACE_F, db.names.OP_BOUNDARY_T)
 
@@ -101,13 +102,13 @@ class ToolBar(QObject):
             db.names.OP_BOUNDARY_POINT_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return None
 
         if use_selection:
             if layers[db.names.OP_BOUNDARY_T].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_LAYER_TREE) is None:
+                if self.app.core.get_ladm_layer_from_qgis(db, db.names.OP_BOUNDARY_T, EnumLayerRegistryType.IN_LAYER_TREE) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one boundary!").format(
@@ -186,13 +187,13 @@ class ToolBar(QObject):
             db.names.OP_BOUNDARY_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return None
 
         if use_selection:
             if layers[db.names.OP_PLOT_T].selectedFeatureCount() == 0:
-                if self.qgis_utils.get_ladm_layer_from_qgis(db, db.names.OP_PLOT_T, EnumLayerRegistryType.IN_LAYER_TREE) is None:
+                if self.app.core.get_ladm_layer_from_qgis(db, db.names.OP_PLOT_T, EnumLayerRegistryType.IN_LAYER_TREE) is None:
                     self.logger.message_with_button_load_layer_emitted.emit(
                         QCoreApplication.translate("ToolBar",
                                                    "First load the layer {} into QGIS and select at least one plot!").format(

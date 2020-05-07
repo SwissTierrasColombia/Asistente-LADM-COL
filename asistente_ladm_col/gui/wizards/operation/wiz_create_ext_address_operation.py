@@ -51,8 +51,8 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageSpatialWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        MultiPageSpatialWizardFactory.__init__(self, iface, db, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)
         self._current_layer = None
 
@@ -260,7 +260,7 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             QgsProject.instance().setAutoTransaction(False)
 
             # Activate snapping
-            self.qgis_utils.active_snapping_all_layers()
+            self.app.core.active_snapping_all_layers()
             self.open_form(self._layers[self.EDITING_LAYER_NAME])
 
             self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
