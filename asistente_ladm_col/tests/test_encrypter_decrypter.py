@@ -10,7 +10,7 @@ from asistente_ladm_col.tests.utils import (get_iface)
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import (DEPENDENCY_CRYPTO_DIR,
                                                       CRYPTO_LIBRARY_NAME,
-                                                      CRYPTO_LIBRARY)
+                                                      CRYPTO_LIBRARY_PATH)
 from asistente_ladm_col.core.encrypter_decrypter import EncrypterDecrypter
 from asistente_ladm_col.tests.utils import get_test_path
 
@@ -29,7 +29,7 @@ class TestEncrypterDecrypter(unittest.TestCase):
         if not os.path.exists(DEPENDENCY_CRYPTO_DIR):
             os.makedirs(DEPENDENCY_CRYPTO_DIR)
         test_dependency = get_test_path('lib/crypto_utils/{}'.format(CRYPTO_LIBRARY_NAME))
-        shutil.copyfile(test_dependency, CRYPTO_LIBRARY)
+        shutil.copyfile(test_dependency, CRYPTO_LIBRARY_PATH)
 
         self.encrypter_decrypter = EncrypterDecrypter()
 

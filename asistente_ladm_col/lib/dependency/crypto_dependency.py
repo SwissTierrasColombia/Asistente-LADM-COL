@@ -25,13 +25,13 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.config.general_config import (DEPENDENCY_CRYPTO_DIR,
                                                       CYPTO_MD5SUM,
-                                                      CRYPTO_LIBRARY)
+                                                      CRYPTO_LIBRARY_PATH)
 from asistente_ladm_col.lib.dependency.dependency import Dependency
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 from asistente_ladm_col.utils.utils import md5sum
 
 
-class CrytoDependency(Dependency):
+class CryptoDependency(Dependency):
     download_dependency_completed = pyqtSignal()
     download_dependency_progress_changed = pyqtSignal(int)  # progress
 
@@ -46,7 +46,7 @@ class CrytoDependency(Dependency):
                     os.makedirs(DEPENDENCY_CRYPTO_DIR)
 
                 # Write response to tmp file
-                out_file = QFile(CRYPTO_LIBRARY)
+                out_file = QFile(CRYPTO_LIBRARY_PATH)
                 out_file.open(QIODevice.WriteOnly)
                 out_file.write(fetcher_task.reply().readAll())
                 out_file.close()
@@ -61,10 +61,10 @@ class CrytoDependency(Dependency):
         self._downloading = False
 
     def check_if_dependency_is_valid(self):
-        if os.path.exists(CRYPTO_LIBRARY):
-            if md5sum(CRYPTO_LIBRARY) == CYPTO_MD5SUM:
+        if os.path.exists(CRYPTO_LIBRARY_PATH):
+            if md5sum(CRYPTO_LIBRARY_PATH) == CYPTO_MD5SUM:
                 return True
             else:
-                os.remove(CRYPTO_LIBRARY)
+                os.remove(CRYPTO_LIBRARY_PATH)
                 return False
         return False

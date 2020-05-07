@@ -92,7 +92,7 @@ class JavaDependency(Dependency):
     def get_java_on_demand(self):
 
         if self.check_if_dependency_is_valid():
-            return  # java dependency is valid and it is valid
+            return
 
         # Create required directories
         Path(DEPENDENCIES_BASE_PATH).mkdir(parents=True, exist_ok=True)
