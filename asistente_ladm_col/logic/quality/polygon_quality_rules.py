@@ -193,8 +193,8 @@ class PolygonQualityRules:
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
 
         else:
-            dict_uuid_building = get_uuid_dict(layers[db.names.OP_BUILDING_T], db.names, db.names.T_ID_F)
-            dict_uuid_right_of_way = get_uuid_dict(layers[db.names.OP_RIGHT_OF_WAY_T], db.names, db.names.T_ID_F)
+            dict_uuid_building = get_uuid_dict(layers[db.names.OP_BUILDING_T], db.names)
+            dict_uuid_right_of_way = get_uuid_dict(layers[db.names.OP_RIGHT_OF_WAY_T], db.names)
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
             data_provider = error_layer.dataProvider()

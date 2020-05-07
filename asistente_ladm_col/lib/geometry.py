@@ -948,7 +948,7 @@ class GeometryUtils(QObject):
             request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
             dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
         else:
-            request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setNoAttributes()
+            request = QgsFeatureRequest().setNoAttributes()
             dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
 
         index = QgsSpatialIndex(layer)

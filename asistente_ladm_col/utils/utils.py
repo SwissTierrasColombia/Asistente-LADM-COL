@@ -233,7 +233,7 @@ def get_uuid_dict(layer, names, id_field=None):
     field_names = [field.name() for field in layer.fields()]
     dict_uuid = dict()
 
-    if names.T_ILI_TID_F in field_names and id_field in field_names:
+    if names.T_ILI_TID_F in field_names and (id_field in field_names or id_field is None):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         attrs = [names.T_ILI_TID_F]
         if id_field:
