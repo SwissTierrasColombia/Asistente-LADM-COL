@@ -16,7 +16,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+                              QObject,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
@@ -32,13 +33,14 @@ from asistente_ladm_col.lib.logger import Logger
 
 class GUI_Builder(QObject):
     """
-    Build plugin GUI according to roles and LADM_COL models present in the current db connection
+    Build plugin GUI according to roles andLADM-COL models present in the current db connection
     """
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
         self.logger = Logger()
         self._registered_actions = dict()
+        self._registered_dock_widgets = dict()
 
         self.menus = list()
         self.toolbar_menus = list()
@@ -66,6 +68,9 @@ class GUI_Builder(QObject):
 
     def get_action(self, action_key):
         return self._get_and_configure_action(action_key)
+
+    def register_dock_widget(self, key, dock_widget):
+        self._registered_dock_widgets[key] = dock_widget
 
     def set_db_connection(self, db, test_conn_result=None):
         """
@@ -272,7 +277,7 @@ class GUI_Builder(QObject):
             menu.clear()
             menu.deleteLater()
 
-        for menu in self.toolbar_menus:  # Basically, a push button who has been received a menu
+        for menu in self.toolbar_menus:  # Basically, a push button who has received a menu
             menu.deleteLater()
 
         for toolbar in self.toolbars:
@@ -283,7 +288,22 @@ class GUI_Builder(QObject):
         self.toolbar_menus = list()
         self.toolbars = list()
 
+        # Make sure dock widgets are deleted properly
+        self.close_dock_widgets(list(self._registered_dock_widgets.keys()))
+
         self.logger.info(__name__, "GUI unloaded (not a final_unload)")
+
+    def close_dock_widgets(self, dock_widget_keys):
+        """
+        Deletes properly registered dock widgets by key
+        :param dock_widget_keys: List of dock widget keys to delete
+        """
+        for dock_widget_key in dock_widget_keys:
+            if dock_widget_key in self._registered_dock_widgets:
+                if self._registered_dock_widgets[dock_widget_key] is not None:
+                    self.logger.info(__name__, "Deleting dock widget '{}'...".format(dock_widget_key))
+                    self._registered_dock_widgets[dock_widget_key].close()
+                    self._registered_dock_widgets[dock_widget_key] = None
 
     def _build_menu(self, menu_def):
         menu = self.iface.mainWindow().findChild(QMenu, menu_def[OBJECT_NAME])
@@ -306,6 +326,7 @@ class GUI_Builder(QObject):
             if ICON in menu_def:
                 widget.setIcon(QIcon(menu_def[ICON]))
             widget.setMenu(menu)
+            self.menus.append(menu)  # Because menu ownership is not transferred to the push button!
 
         self._build_actions(menu_def[ACTIONS], menu)  # Now we have a normal menu, build actions on it
 

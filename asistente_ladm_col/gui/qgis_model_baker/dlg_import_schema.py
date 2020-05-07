@@ -48,15 +48,15 @@ from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.java_utils import JavaUtils
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                OverrideCursor)
 
-from ...resources_rc import *  # Necessary to show icons
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 
@@ -70,21 +70,21 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, qgis_utils, conn_manager, context, selected_models=list(), link_to_import_data=True):
+    def __init__(self, iface, conn_manager, context, selected_models=list(), link_to_import_data=True):
         QDialog.__init__(self)
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
         self.link_to_import_data = link_to_import_data
         self.logger = Logger()
+        self.app = AppInterface()
 
-        self.java_utils = JavaUtils()
-        self.java_utils.download_java_completed.connect(self.download_java_complete)
-        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_dependency = JavaDependency()
+        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
+        self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
 
         self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
-        self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self._dbs_supported = ConfigDBsSupported()
@@ -159,13 +159,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         unload the plugin, destroying dialogs and thus, leading to crashes.
         """
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         if self._db_was_changed:
             self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
 
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+            self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
         self.done(QDialog.Accepted)
@@ -221,11 +221,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 
-        # Connect signals (DBUtils, QgisUtils)
+        # Connect signals (DBUtils, Core)
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
             self._schedule_layers_and_relations_refresh = True
@@ -248,13 +248,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.progress_bar.setValue(0)
         self.bar.clearWidgets()
 
-        java_home_set = self.java_utils.set_java_home()
+        java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             message_java = QCoreApplication.translate("DialogImportSchema", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)
-            self.java_utils.get_java_on_demand()
+            self.java_dependency.get_java_on_demand()
             self.disable()
             return
 
@@ -329,26 +329,26 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/epsg', self.epsg)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/epsg', self.epsg)
 
     def restore_configuration(self):
         settings = QSettings()
 
         # CRS
-        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
+        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM-COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
         self.crsSelector.setCrs(crs)
         self.crs_changed()
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        value_show_log = settings.value('Asistente-LADM-COL/QgisModelBaker/show_log', False, type=bool)
         self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.use_local_models = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
         if self.crsSelector.crs().authid()[:5] != 'EPSG:':
@@ -375,13 +375,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
 
-        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
@@ -456,4 +456,4 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.enable()
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
+        self.bar.pushMessage("Asistente LADM-COL", message, level, duration = 0)

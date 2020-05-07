@@ -103,11 +103,11 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
 
     def store_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', self.txt_file_path.text().strip())
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export', self.txt_file_path.text().strip())
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export'))
+        self.txt_file_path.setText(settings.value('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export'))
 
     def start_progress(self):
         self.progress.setVisible(True)

@@ -7,8 +7,8 @@ from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
-DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL')
-DEPENDENCY_REPORTS_DIR_NAME = 'impresion'
+DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM-COL')
+DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
 
 DEFAULT_LOG_MODE = EnumLogMode.DEV
 DEFAULT_LOG_FILE = ''
@@ -22,7 +22,8 @@ PREFIX_ERROR_CODE = 'E'
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_USE_ROADS_VALUE = False
-HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM_COL"
+DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
+HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM-COL"
 FIELD_MAPPING_PATH = os.path.join(DEPENDENCIES_BASE_PATH, 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
@@ -36,6 +37,10 @@ TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
 PREDIO_SANCION_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_sancion.csv')  # Default SNC predio_sancion.csv file
+FICHA_MATRIZ_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz.csv')  # Default SNC ficha_matriz.csv file
+FICHA_MATRIZ_PREDIO_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_predio.csv')  # Default SNC ficha_matriz_predio.csv file
+FICHA_MATRIZ_TORRE_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_torre.csv')  # Default SNC ficha_matriz_torre.csv file
+BUILDING_UNIT_CSVT_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'unidad_construccion.csvt')  # Default SNC unidad_construccion.csvt file
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
@@ -45,11 +50,17 @@ SETTINGS_AUTOMATIC_VALUES_TAB_INDEX = 3
 SETTINGS_SOURCES_TAB_INDEX = 4
 SETTINGS_ADVANCED_TAB_INDEX = 5
 
+# Crypto
+CRYPTO_LIBRARY_NAME = "CryptoUtils.jar"
+DEPENDENCY_CRYPTO_DIR = os.path.join(DEPENDENCIES_BASE_PATH, "CRYPTO")
+CRYPTO_LIBRARY_PATH = os.path.join(DEPENDENCY_CRYPTO_DIR, CRYPTO_LIBRARY_NAME)
+URL_CRYPTO_LIBRARY = 'https://github.com/SwissTierrasColombia/Crypto_Utils/releases/download/v1.0.0/Crypto_Utils-0.0.1-SNAPSHOT.jar'
+CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 REPORTS_REQUIRED_VERSION = '0.6dev'
-URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -110,16 +121,16 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.0.0"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.1"
 
-# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
+# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
-# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
+# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # ''https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip'  # ''https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -147,7 +158,7 @@ GRAY_COLOR = QColor(219, 219, 219, 255)
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
 # About dialog
-RELEASE_URL = "https://github.com/SwissTierrasColombia/Asistente-LADM_COL/releases/tag/"
+RELEASE_URL = "https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/"
 
 # Endpoint for testing the Source Service (avoid last slash)
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
@@ -156,7 +167,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # Documentation
-HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM_COL-docs/releases/download'
+HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
 
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"

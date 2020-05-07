@@ -46,7 +46,7 @@ class QgisModelBakerUtils(QObject):
             return generator
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
             return None
 
     def get_model_baker_db_connection(self, db):
@@ -64,7 +64,7 @@ class QgisModelBakerUtils(QObject):
         loaded has a relation or is part of a bag of enum. For
         that case, we use a cached set of relations and bags of
         enums that we get only once per session and configure in
-        the Asistente LADM_COL.
+        the Asistente LADM-COL.
         """
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
@@ -80,7 +80,7 @@ class QgisModelBakerUtils(QObject):
             QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
 
     def get_required_layers_without_load(self, layer_list, db):
         """
@@ -104,7 +104,7 @@ class QgisModelBakerUtils(QObject):
                 layers.append(layer)
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
 
         return layers
 
@@ -112,7 +112,7 @@ class QgisModelBakerUtils(QObject):
         """
         Called once per session, this is used to get information
         of all relations and bags of enums in the DB and cache it
-        in the Asistente LADM_COL.
+        in the Asistente LADM-COL.
         """
         if 'QgisModelBaker' in qgis.utils.plugins:
             generator = self.get_generator(db)
@@ -125,8 +125,8 @@ class QgisModelBakerUtils(QObject):
             return (layers, relations, {})
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
-            return (None, None)
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            return (None, None, None)
 
     def filter_relations(self, relations):
         """
@@ -149,7 +149,7 @@ class QgisModelBakerUtils(QObject):
             return generator.get_tables_info_without_ignored_tables()
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."))
+                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'QgisModelBaker' in qgis.utils.plugins:

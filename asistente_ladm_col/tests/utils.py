@@ -27,7 +27,7 @@ from qgis.core import (QgsApplication,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
-from asistente_ladm_col.config.gui.change_detection_config import PLOT_GEOMETRY_KEY
+from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
@@ -42,7 +42,7 @@ from qgis.testing.mocked import get_iface
 
 from .config.test_config import TEST_SCHEMAS_MAPPING
 
-# PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
+# PostgreSQL connection to schema with a LADM-COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
 DB_NAME = "ladm_col"
@@ -207,7 +207,7 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     if model:
         automatic_fields_definition = True
 
-        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,

@@ -34,6 +34,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.core.supplies.etl_cobol import ETLCobol
 from asistente_ladm_col.core.supplies.etl_snc import ETLSNC
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -52,14 +53,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
+    def __init__(self, db, conn_manager, parent=None):
         QWizard.__init__(self)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.names = self._db.names
         self.help_strings = HelpStrings()
@@ -205,7 +207,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("SuppliesETLWizard", "Warning"),
-                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
+                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM-COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -214,11 +216,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 self.button(self.CustomButton1).setEnabled(False)
                 with OverrideCursor(Qt.WaitCursor):
                     res_alpha, msg_alpha = etl.load_alphanumeric_layers()
+
                     if res_alpha:
                         res_spatial, msg_spatial = etl.load_spatial_layers()
+
                         if res_spatial:
                             res_model, msg_model = self.load_model_layers(etl.layers)
+
                             if res_model:
+                                layers_feature_count_before = {name: layer.featureCount() for name, layer in etl.layers.items()}
                                 self._running_tool = True
                                 self.progress.setVisible(True)
                                 etl.run_etl_model(self.custom_feedback)
@@ -232,6 +238,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                                                       Qgis.Success, 0)
 
                                     self.logger.clear_status()
+                                    self.fill_summary(layers_feature_count_before, etl.layers)
                                     etl_result = True
                                 else:
                                     self.initialize_feedback()  # Get ready for an eventual new execution
@@ -248,7 +255,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM-COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -281,6 +288,20 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, duration)
 
+    def fill_summary(self, layers_feature_count_before, etl_layers):
+        layers_feature_count_after = {name: layer.featureCount() for name, layer in etl_layers.items()}
+        summary = """<html><head/><body><p>"""
+        summary += QCoreApplication.translate("SuppliesETLWizard", "<h4>{} report</h4>").format(self.tool_name)
+        summary += QCoreApplication.translate("SuppliesETLWizard", "Number of features loaded to the LADM-COL cadastral supplies model:<br/>")
+
+        for name, before_count in layers_feature_count_before.items():
+            summary += QCoreApplication.translate("SuppliesETLWizard", '<br/><b>{}</b> : {}'.format(
+                name, layers_feature_count_after[name] - before_count))
+
+        summary += """<hr>"""
+        summary += """</body></html>"""    
+        self.txt_log.setText(summary)
+
     def save_settings(self):
         settings = QSettings()
         etl_source = "snc"
@@ -289,12 +310,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         elif self.rad_cobol_data.isChecked():
             etl_source = "cobol"
 
-        settings.setValue('Asistente-LADM_COL/supplies/etl_source', etl_source)
+        settings.setValue('Asistente-LADM-COL/supplies/etl_source', etl_source)
         self._data_source_widget.save_settings()
 
     def restore_settings(self):
         settings = QSettings()
-        etl_source = settings.value('Asistente-LADM_COL/supplies/etl_source') or 'snc'
+        etl_source = settings.value('Asistente-LADM-COL/supplies/etl_source') or 'snc'
         if etl_source == 'snc':
             self.rad_snc_data.setChecked(True)
         elif etl_source == 'cobol':
@@ -304,12 +325,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         show_plugin_help('supplies')
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager)
         dlg.set_db_source(self.db_source)
 
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
-            dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+            dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         # We only need those tabs related to Model Baker/ili2db operations
         for i in reversed(range(dlg.tabWidget.count())):
@@ -338,7 +359,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self._db_was_changed = True
 
     def load_model_layers(self, layers):
-        self.qgis_utils.get_layers(self._db, layers, load=True)
+        self.app.core.get_layers(self._db, layers, load=True)
         if not layers:
             return False, QCoreApplication.translate("SuppliesETLWizard",
                                                      "There was a problem loading layers from the 'Supplies' model!")

@@ -22,10 +22,10 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem,
 from qgis.core import NULL
 from qgis.gui import QgsPanelWidget
 
-from asistente_ladm_col.config.gui.change_detection_config import (DICT_KEY_PARTY_T_NAME_F,
-                                                                   DICT_KEY_PARTY_T_DOCUMENT_ID_F,
-                                                                   DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
-                                                                   DICT_KEY_PARTY_T_RIGHT)
+from asistente_ladm_col.config.change_detection_config import (DICT_KEY_PARTY_T_NAME_F,
+                                                               DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+                                                               DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+                                                               DICT_KEY_PARTY_T_RIGHT)
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.utils import get_ui_class

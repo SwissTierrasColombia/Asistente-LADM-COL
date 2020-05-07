@@ -30,6 +30,7 @@ from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -43,18 +44,19 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
     CHANGE_DETECTIONS_MODE_SUPPLIES_MODEL = "CHANGE_DETECTIONS_MODE_SUPPLIES_MODEL"
     CHANGE_DETECTIONS_MODES = {CHANGE_DETECTIONS_MODE_SUPPLIES_MODEL: QCoreApplication.translate("ChangeDetectionSettingsDialog", "Change detection supplies model")}
 
-    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
+    def __init__(self, conn_manager=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.conn_manager = conn_manager
+
         self.logger = Logger()
+        self.app = AppInterface()
+
         self.help_strings = HelpStrings()
         self.txt_help_page.setHtml(self.help_strings.CHANGE_DETECTION_SETTING_DIALOG_HELP)
 
-        self.conn_manager = conn_manager
-        self.qgis_utils = qgis_utils
-
         # we will use a unique instance of setting dialog
-        self.settings_dialog = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        self.settings_dialog = SettingsDialog(self.conn_manager)
         # The database configuration is saved if it becomes necessary
         # to restore the configuration when the user rejects the dialog
         self.init_db_collected = None
@@ -294,7 +296,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         """
         if result == QDialog.Accepted:
             if self._schedule_layers_and_relations_refresh:
-                self.conn_manager.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+                self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
             if self._db_collected_was_changed:
                 self.conn_manager.db_connection_changed.emit(self._db_collected,
@@ -307,7 +309,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
                                                              SUPPLIES_DB_SOURCE)
 
             if self._schedule_layers_and_relations_refresh:
-                self.conn_manager.db_connection_changed.disconnect(self.qgis_utils.cache_layers_and_relations)
+                self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
 
         elif result == QDialog.Rejected:
             # Go back to initial connections and don't emit db_connection_changed

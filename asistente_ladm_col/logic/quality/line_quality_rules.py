@@ -29,6 +29,7 @@ from qgis.core import (Qgis,
                        QgsFeatureRequest,
                        NULL)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200101,
                                                             QUALITY_RULE_ERROR_CODE_E200201,
@@ -48,14 +49,15 @@ from asistente_ladm_col.utils.utils import get_uuid_dict
 
 
 class LineQualityRules:
-    def __init__(self, qgis_utils):
-        self.quality_rules_manager = QualityRuleManager()
-        self.qgis_utils = qgis_utils
+    def __init__(self):
+        self.app = AppInterface()
         self.logger = Logger()
+        self.geometry = GeometryUtils()
+        self.quality_rules_manager = QualityRuleManager()
 
     def check_overlaps_in_boundaries(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)
-        boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return QCoreApplication.translate("LineQualityRules", "'Boundary' layer not found!"), Qgis.Critical
 
@@ -71,7 +73,7 @@ class LineQualityRules:
         error_line_layer.updateFields()
 
         if boundary_layer:
-            overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
+            overlapping = self.geometry.get_overlapping_lines(boundary_layer)
             if overlapping is None:
                 return (QCoreApplication.translate("LineQualityRules",
                                  "There are no boundaries to check for overlaps!"), Qgis.Warning)
@@ -114,16 +116,16 @@ class LineQualityRules:
                 else:
                     msg = ""
                     if error_point_layer.featureCount() and error_line_layer.featureCount():
-                        self.qgis_utils.add_error_layer(db, error_point_layer)
-                        self.qgis_utils.add_error_layer(db, error_line_layer)
+                        self.app.gui.add_error_layer(db, error_point_layer)
+                        self.app.gui.add_error_layer(db, error_line_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
                                                          "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(error_point_layer.featureCount(), error_line_layer.featureCount())
                     elif error_point_layer.featureCount():
-                        self.qgis_utils.add_error_layer(db, error_point_layer)
+                        self.app.gui.add_error_layer(db, error_point_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
                                                          "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(error_point_layer.featureCount())
                     elif error_line_layer.featureCount():
-                        self.qgis_utils.add_error_layer(db, error_line_layer)
+                        self.app.gui.add_error_layer(db, error_line_layer)
                         msg = QCoreApplication.translate("LineQualityRules",
                                                          "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(error_line_layer.featureCount())
                     return msg, Qgis.Critical
@@ -137,7 +139,7 @@ class LineQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)
 
         features = []
-        boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return QCoreApplication.translate("LineQualityRules", "'Boundary' layer not found!"), Qgis.Critical
 
@@ -146,7 +148,7 @@ class LineQualityRules:
                              "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Warning)
 
         else:
-            wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(db.names, boundary_layer)
+            wrong_boundaries = self.geometry.get_boundaries_connected_to_single_boundary(db.names, boundary_layer)
 
             if wrong_boundaries is None:
                 return (QCoreApplication.translate("LineQualityRules",
@@ -168,7 +170,7 @@ class LineQualityRules:
 
                 error_layer.dataProvider().addFeatures(features)
                 if error_layer.featureCount() > 0:
-                    added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                    added_layer = self.app.gui.add_error_layer(db, error_layer)
                     return (QCoreApplication.translate("LineQualityRules",
                                      "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
                 else:
@@ -185,7 +187,7 @@ class LineQualityRules:
             db.names.LESS_BFS_T: None,
             db.names.MORE_BFS_T: None
         }
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("LineQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
@@ -211,7 +213,7 @@ class LineQualityRules:
 
             if features:
                 error_layer.dataProvider().addFeatures(features)
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("LineQualityRules",
                                  "A memory layer with {} boundaries not covered by plots has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -227,7 +229,7 @@ class LineQualityRules:
             db.names.POINT_BFS_T: None,
             db.names.OP_BOUNDARY_T: None
         }
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("LineQualityRules", "At least one required layer (boundary point, boundary, point BFS) was not found!"), Qgis.Critical
 
@@ -250,7 +252,7 @@ class LineQualityRules:
             data_provider.addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("LineQualityRules",
                     "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -261,7 +263,7 @@ class LineQualityRules:
 
     def check_dangles_in_boundaries(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)
-        boundary_layer = self.qgis_utils.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(db, db.names.OP_BOUNDARY_T, load=True)
         if not boundary_layer:
             return QCoreApplication.translate("LineQualityRules", "'Boundary' layer was not found!"), Qgis.Critical
 
@@ -276,7 +278,7 @@ class LineQualityRules:
             pr.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
+            end_points, dangle_ids = self.geometry.get_dangle_ids(boundary_layer)
 
             new_features = []
             for dangle in end_points.getFeatures(dangle_ids):
@@ -290,7 +292,7 @@ class LineQualityRules:
             error_layer.dataProvider().addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("LineQualityRules",
                                  "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -451,7 +453,7 @@ class LineQualityRules:
         list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
+        tmp_inner_rings_layer = self.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -514,7 +516,7 @@ class LineQualityRules:
         # and inner_rings and boundary. If the geometry fails, there is no need to check further topological rules for
         # plots
 
-        errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(db.names, boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
+        errors_boundary_plot_diffs = self.geometry.difference_boundary_plot(db.names, boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
         for error_diff in errors_boundary_plot_diffs:
             boundary_id = error_diff['id']
             # All boundaries with geometric errors are eliminated. It is not necessary check more

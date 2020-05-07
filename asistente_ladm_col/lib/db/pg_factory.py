@@ -40,8 +40,8 @@ class PGFactory(DBFactory):
     def get_db_connector(self, parameters=dict()):
         return PGConnector(None, parameters)
 
-    def get_ladm_queries(self, qgis_utils):
-        return PGLADMQuery(qgis_utils)
+    def get_ladm_queries(self):
+        return PGLADMQuery()
 
     def set_ili2db_configuration_params(self, params, configuration):
         """

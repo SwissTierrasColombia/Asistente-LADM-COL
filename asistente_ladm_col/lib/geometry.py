@@ -804,7 +804,6 @@ class GeometryUtils(QObject):
         return geoms
 
     def fix_selected_boundaries(self, names, boundary_layer, id_field, selected_ids=list()):
-
         selected_features = list()
         if len(selected_ids) == 0:
             selected_features = [feature for feature in boundary_layer.selectedFeatures()]

@@ -122,7 +122,8 @@ class TranslatableConfigStrings(QObject):
     def __init__(self):
         pass
 
-    def get_translatable_config_strings(self):
+    @staticmethod
+    def get_translatable_config_strings():
         return {
             EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap"),
             EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap"),

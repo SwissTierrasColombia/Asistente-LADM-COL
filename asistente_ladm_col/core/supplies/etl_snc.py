@@ -18,13 +18,20 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+import shutil
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsProject,
                        QgsVectorLayer)
 import processing
 
-from asistente_ladm_col.config.general_config import PREDIO_SANCION_FILE_PATH
+from asistente_ladm_col.config.general_config import (PREDIO_SANCION_FILE_PATH,
+                                                      FICHA_MATRIZ_FILE_PATH,
+                                                      FICHA_MATRIZ_PREDIO_FILE_PATH,
+                                                      FICHA_MATRIZ_TORRE_FILE_PATH,
+                                                      BUILDING_UNIT_CSVT_FILE_PATH)
 from asistente_ladm_col.core.supplies.etl_supplies import ETLSupplies
 
 
@@ -62,12 +69,22 @@ class ETLSNC(ETLSupplies):
             'direccion': self.data_source_widget.txt_file_path_direccion.text().strip(),
             'unidad_construccion': self.data_source_widget.txt_file_path_uni.text().strip(),
             'persona': self.data_source_widget.txt_file_path_persona.text().strip(),
+            'persona_predio': self.data_source_widget.txt_file_path_persona_predio.text().strip(),
             'ficha_matriz': self.data_source_widget.txt_file_path_ficha_m.text().strip(),
             'ficha_matriz_predio': self.data_source_widget.txt_file_path_ficha_m_predio.text().strip(),
+            'ficha_matriz_torre': self.data_source_widget.txt_file_path_ficha_m_torre.text().strip()
         }
 
+        filename, file_extension = os.path.splitext(self.data_source_widget.txt_file_path_uni.text().strip())
+        shutil.copyfile(BUILDING_UNIT_CSVT_FILE_PATH, '{}.{}'.format(filename, 'csvt'))
+        
         root = QgsProject.instance().layerTreeRoot()
         alphanumeric_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alphanumeric Supplies"))
+
+        optional_layers = {'predio_sancion':PREDIO_SANCION_FILE_PATH,
+                           'ficha_matriz':FICHA_MATRIZ_FILE_PATH,
+                           'ficha_matriz_predio':FICHA_MATRIZ_PREDIO_FILE_PATH,
+                           'ficha_matriz_torre':FICHA_MATRIZ_TORRE_FILE_PATH,}
 
         for name in self.alphanumeric_file_paths:
             layer = QgsVectorLayer(self.alphanumeric_file_paths[name], name, 'ogr')
@@ -76,15 +93,21 @@ class ETLSNC(ETLSupplies):
                 QgsProject.instance().addMapLayer(layer, False)
                 alphanumeric_group.addLayer(layer)
             else:
-                if name == 'predio_sancion':
-                    # predio_sancion is kind of optional, if it is not given, we pass a default one
-                    layer = QgsVectorLayer(PREDIO_SANCION_FILE_PATH, name, 'ogr')
+                if name in optional_layers.keys():
+                    # predio_sancion, ficha_matriz, ficha_matriz_predio and ficha_matriz_torre
+                    # are optional, if they are not given, we pass default values
+                    layer = QgsVectorLayer(optional_layers[name], name, 'ogr')
                     self.alphanumeric_file_paths[name] = layer
                     if layer.isValid():
                         QgsProject.instance().addMapLayer(layer, False)
                         alphanumeric_group.addLayer(layer)
                 else:
                     return False, QCoreApplication.translate(self.CLASS_NAME, "There were troubles loading the CSV file called '{}'.".format(name))
+
+        try:
+            os.remove('{}.{}'.format(filename, 'csvt'))
+        except:
+            pass
 
         return True, ''
 
@@ -94,6 +117,7 @@ class ETLSNC(ETLSupplies):
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
                         'fichamatriz': self.alphanumeric_file_paths['ficha_matriz'],
                         'fichamatrizpredio': self.alphanumeric_file_paths['ficha_matriz_predio'],
+                        'fichamatriztorre': self.alphanumeric_file_paths['ficha_matriz_torre'],
                         'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
                         'gccomisionesconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
                         'gccomisionesterreno': self.layers[self.names.GC_COMMISSION_PLOT_T],
@@ -113,6 +137,7 @@ class ETLSNC(ETLSupplies):
                         'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T],
                         'manzana': self.gdb_layer_paths['U_MANZANA'],
                         'persona': self.alphanumeric_file_paths['persona'],
+                        'personapredio': self.alphanumeric_file_paths['persona_predio'],
                         'predio': self.alphanumeric_file_paths['predio'],
                         'prediodireccion': self.alphanumeric_file_paths['direccion'],
                         'rconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],

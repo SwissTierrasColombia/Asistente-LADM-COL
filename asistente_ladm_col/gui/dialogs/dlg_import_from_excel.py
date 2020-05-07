@@ -39,6 +39,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
                                  QFileDialog)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
 from asistente_ladm_col.config.help_strings import HelpStrings
@@ -93,13 +94,15 @@ EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 class ImportFromExcelDialog(QDialog, DIALOG_UI):
     log_excel_show_message_emitted = pyqtSignal(str)
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
+
         self.logger = Logger()
+        self.app = AppInterface()
+
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
         self.group_parties_exists = False
@@ -217,7 +220,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             self.names.OP_ADMINISTRATIVE_SOURCE_T: None
         }
 
-        self.qgis_utils.get_layers(self._db, layers, load=True)
+        self.app.core.get_layers(self._db, layers, load=True)
         if not layers:
             return None
 
@@ -246,9 +249,9 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
                   'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
                   'parcel': layers[self.names.OP_PARCEL_T]}
 
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_GROUP_PARTY_T)
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_RIGHT_T)
-        self.qgis_utils.disable_automatic_fields(self._db, self.names.OP_ADMINISTRATIVE_SOURCE_T)
+        self.app.core.disable_automatic_fields(layers[self.names.OP_GROUP_PARTY_T])
+        self.app.core.disable_automatic_fields(layers[self.names.OP_RIGHT_T])
+        self.app.core.disable_automatic_fields(layers[self.names.OP_ADMINISTRATIVE_SOURCE_T])
 
         processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
 
@@ -260,7 +263,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         else:
             self.initialize_feedback() 
 
-        # Print summary getting feature count in involved LADM_COL tables...
+        # Print summary getting feature count in involvedLADM-COL tables...
         summary = """<html><head/><body><p>"""
         summary += QCoreApplication.translate("ImportFromExcelDialog", "Import done!!!<br/>")
         for table in ladm_tables:
@@ -273,7 +276,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         summary += """</body></html>"""
         self.txt_log.setText(summary)
         self.logger.success_msg(__name__, QCoreApplication.translate("ImportFromExcelDialog",
-            "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
+            "Data successfully imported to LADM-COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
         self._running_tool = False
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
@@ -512,13 +515,13 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         new_filename, filter = QFileDialog.getSaveFileName(self,
                                    QCoreApplication.translate("ImportFromExcelDialog",
                                                               "Save File"),
-                                   os.path.join(settings.value('Asistente-LADM_COL/import_from_excel_dialog/template_save_path', '.'), filename),
+                                   os.path.join(settings.value('Asistente-LADM-COL/import_from_excel_dialog/template_save_path', '.'), filename),
                                    QCoreApplication.translate("ImportFromExcelDialog",
                                                               "Excel File (*.xlsx *.xls)"))
 
         if new_filename:
-            settings.setValue('Asistente-LADM_COL/import_from_excel_dialog/template_save_path', os.path.dirname(new_filename))
-            template_file = QFile(":/Asistente-LADM_COL/resources/excel/" + filename)
+            settings.setValue('Asistente-LADM-COL/import_from_excel_dialog/template_save_path', os.path.dirname(new_filename))
+            template_file = QFile(":/Asistente-LADM-COL/resources/excel/" + filename)
 
             if not template_file.exists():
                 self.logger.critical(__name__, "Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...")
@@ -563,11 +566,11 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/import_from_excel_dialog/excel_path', self.txt_excel_path.text())
+        settings.setValue('Asistente-LADM-COL/import_from_excel_dialog/excel_path', self.txt_excel_path.text())
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_excel_path.setText(settings.value('Asistente-LADM_COL/import_from_excel_dialog/excel_path', ''))
+        self.txt_excel_path.setText(settings.value('Asistente-LADM-COL/import_from_excel_dialog/excel_path', ''))
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

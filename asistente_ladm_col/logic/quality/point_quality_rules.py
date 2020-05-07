@@ -33,6 +33,7 @@ from qgis.core import (Qgis,
                        NULL,
                        QgsRectangle)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
@@ -47,10 +48,11 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
 
 
 class PointQualityRules:
-    def __init__(self, qgis_utils):
+    def __init__(self):
         self.quality_rules_manager = QualityRuleManager()
-        self.qgis_utils = qgis_utils
         self.logger = Logger()
+        self.app = AppInterface()
+        self.geometry = GeometryUtils()
 
     def check_overlapping_boundary_point(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)
@@ -68,7 +70,7 @@ class PointQualityRules:
         :return: msg, Qgis.MessageLevel
         """
         features = []
-        point_layer = self.qgis_utils.get_layer(db, layer_name, load=True)
+        point_layer = self.app.core.get_layer(db, layer_name, load=True)
         if not point_layer:
             return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
 
@@ -82,7 +84,7 @@ class PointQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
+            overlapping = self.geometry.get_overlapping_points(point_layer)
             flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
 
             dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in point_layer.getFeatures(flat_overlapping)}
@@ -103,7 +105,7 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
                 return (QCoreApplication.translate("PointQualityRules",
                                                    "A memory layer with {} overlapping points in '{}' has been added to the map!").format(added_layer.featureCount(), layer_name),
                         Qgis.Critical)
@@ -121,7 +123,7 @@ class PointQualityRules:
             db.names.OP_BOUNDARY_POINT_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
@@ -140,7 +142,7 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate(
                                  "PointQualityRules", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
@@ -157,7 +159,7 @@ class PointQualityRules:
             db.names.OP_BOUNDARY_POINT_T: None
         }
 
-        self.qgis_utils.get_layers(db, layers, load=True)
+        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
@@ -189,7 +191,7 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.qgis_utils.add_error_layer(db, error_layer)
+                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PointQualityRules",
                     "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
@@ -317,7 +319,7 @@ class PointQualityRules:
         extracted_vertices_layer = extracted_vertices['OUTPUT']
 
         # From vertices layer, get points with no overlap
-        overlapping_points = self.qgis_utils.geometry.get_overlapping_points(extracted_vertices_layer)
+        overlapping_points = self.geometry.get_overlapping_points(extracted_vertices_layer)
 
         extracted_vertices_ids = [feature.id() for feature in extracted_vertices_layer.getFeatures()]
 

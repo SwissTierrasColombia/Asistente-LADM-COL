@@ -58,7 +58,7 @@
     </Option>
   </Option>
   <Option name="help"/>
-  <Option type="QString" name="model_group" value="LADM_COL"/>
+  <Option type="QString" name="model_group" value="LADM-COL"/>
   <Option type="QString" name="model_name" value="ETL-model"/>
   <Option type="Map" name="parameterDefinitions">
     <Option type="Map" name="INPUT">

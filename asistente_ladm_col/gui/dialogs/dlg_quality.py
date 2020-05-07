@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItemIterator)
 from qgis.core import Qgis
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
@@ -56,18 +57,19 @@ class QualityDialog(QDialog, DIALOG_UI):
     log_quality_set_initial_progress_emitted = pyqtSignal(str)
     log_quality_set_final_progress_emitted = pyqtSignal(str)
 
-    def __init__(self, db, qgis_utils, parent=None):
+    def __init__(self, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self._db = db
-        self.qgis_utils = qgis_utils
         self.quality_rules_manager = QualityRuleManager()
         self.utils = Utils()
-        self.quality_rules = QualityRules(self.qgis_utils)
+        self.quality_rules = QualityRules()
         self.names = self._db.names
         self.log_dialog_quality_text = ""
         self.log_dialog_quality_text_content = ""
         self.log_quality_validation_total_time = 0
+
+        self.app = AppInterface()
 
         self.trw_quality_rules.setItemsExpandable(False)
         self.trw_quality_rules.itemSelectionChanged.connect(self.validate_selection_rules)
@@ -114,7 +116,7 @@ class QualityDialog(QDialog, DIALOG_UI):
             group_item = QTreeWidgetItem([group])
             group_item.setData(0, Qt.BackgroundRole, QBrush(QColor(219, 219, 219, 255)))
             group_item.setData(0, Qt.FontRole, font)
-            icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(items['icon']))
+            icon = QIcon(":/Asistente-LADM-COL/resources/images/{}.png".format(items['icon']))
             group_item.setData(0, Qt.DecorationRole, icon)
 
             for rule in items['rules']:
@@ -135,7 +137,7 @@ class QualityDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         # we erase the group error layer every time it runs because we assume that data set changes.
-        self.qgis_utils.remove_error_group_requested.emit()
+        self.app.gui.remove_error_group()
         self.initialize_log_dialog_quality()
         selected_count = len(self.trw_quality_rules.selectedItems())
 
@@ -155,13 +157,13 @@ class QualityDialog(QDialog, DIALOG_UI):
         if selected_count > 0:
             self.generate_log_button()
 
-        if self.qgis_utils.error_group_exists():
-            group = self.qgis_utils.get_error_layers_group()
+        if self.app.gui.error_group_exists():
+            group = self.app.gui.get_error_layers_group()
             # # Check if group layer is empty
             if group.findLayers():
-                self.qgis_utils.set_error_group_visibility(True)
+                self.app.gui.set_error_group_visibility(True)
             else:
-                self.qgis_utils.remove_error_group_requested.emit()
+                self.app.gui.remove_error_group()
 
     @_log_quality_rule_validations
     def execute_quality_rule(self, id, rule_name):

@@ -22,9 +22,7 @@ import sqlite3
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from asistente_ladm_col.config.enums import (EnumTestLevel,
-                                             EnumUserLevel,
-                                             EnumTestConnectionMsg)
+from asistente_ladm_col.config.enums import EnumTestConnectionMsg
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       T_ILI_TID_KEY,
                                                       DISPLAY_NAME_KEY,
@@ -32,13 +30,14 @@ from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DESCRIPTION_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+from asistente_ladm_col.lib.db.db_connector import (FileDB,
+                                                    DBConnector,
                                                     COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.utils.utils import normalize_iliname
 
 
-class GPKGConnector(DBConnector):
+class GPKGConnector(FileDB):
 
     _PROVIDER_NAME = 'ogr'
     _DEFAULT_VALUES = {
@@ -55,108 +54,6 @@ class GPKGConnector(DBConnector):
     def uri(self, value):
         self._dict_conn_params = {'dbfile': value}
         self._uri = value
-
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
-        """
-        WARNING: We check several levels in order:
-            1. SERVER
-            2. DB
-            #  We don't check SCHEMAs for GPKG
-            3. LADM
-            4. SCHEMA_IMPORT
-          If you need to modify this method, be careful and preserve the order!!!
-
-        :param test_level: (EnumTestLevel) level of connection with postgres
-        :param user_level: (EnumUserLevel) level of permissions a user has
-        :param required_models: A list of model prefixes that are mandatory for this DB connection
-        :return Triple: boolean result, message code, message text
-        """
-        uri = self._uri
-        database = os.path.basename(self._dict_conn_params['dbfile'])
-
-        # The most basic check first :)
-        if not os.path.splitext(uri)[1] == ".gpkg":
-            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
-                                                                                                 "The file should have the '.gpkg' extension!")
-
-        # First we do a very basic check, looking that the directory or file exists
-        if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            # file does not exist, but directory must exist
-            directory = os.path.dirname(uri)
-
-            if not os.path.exists(directory):
-                return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                              "GeoPackage directory not found.")
-        else:
-            if not os.path.exists(uri):
-                return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
-                                                                                                    "GeoPackage file not found.")
-
-        # Now we can proceed in the order given in the docs
-        if test_level & EnumTestLevel.SERVER:
-            uri = self.get_connection_uri(self._dict_conn_params, 0)
-            res, msg = self.open_connection()
-            if res:
-                return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate(
-                    "GPKGConnector",
-                    "Connection to server was successful.")
-            else:
-                return False, EnumTestConnectionMsg.CONNECTION_TO_SERVER_FAILED, msg
-
-        if test_level == EnumTestLevel.DB:  # Just in the DB case
-            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("GPKGConnector",
-                                                                                                       "Connection to the database was successful.")
-
-        if test_level & EnumTestLevel.SCHEMA_IMPORT:
-            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL_NO_LADM_COL, QCoreApplication.translate(
-                "PGConnector", "Connection successful!")
-
-        if self.conn is None:
-            res, msg = self.open_connection()
-            if not res:
-                return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
-
-        #  No schemas in GPKG, skipping EnumTestLevel.CHECK_SCHEMA
-
-        if test_level == EnumTestLevel.DB_SCHEMA:  # Test connection stops here
-            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("GPKGConnector",
-                                                                                                       "Connection to the database was successful.")
-
-        if test_level & EnumTestLevel._CHECK_LADM:
-            if not self._metadata_exists():
-                return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
-                    "GPKGConnector",
-                    "The database '{}' is not a valid LADM_COL database. That is, the database doesn't have the structure of the LADM_COL model.").format(
-                    database)
-
-            if self.get_ili2db_version() != 4:
-                return False, EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, QCoreApplication.translate("GPKGConnector",
-                                                                                                       "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
-                    database)
-
-            if self.model_parser is None:
-                self.model_parser = ModelParser(self)
-
-            res, code, msg = self.check_db_models(required_models)
-            if not res:
-                return res, code, msg
-
-            # Validate table and field names
-            if not self._table_and_field_names:
-                self._initialize_names()
-
-            res, msg = self.names.test_names(self._table_and_field_names)
-            if not res:
-                return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
-                                                                                                    "Table/field names from the DB are not correct. Details: {}.").format(
-                    msg)
-
-        if test_level == EnumTestLevel.LADM:
-            return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector", "The database '{}' has a valid LADM_COL structure!").format(
-                database)
-
-        return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("GPKGConnector",
-                                                                                                 "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
 
     def get_table_and_field_names(self):
         """
@@ -347,14 +244,80 @@ class GPKGConnector(DBConnector):
         else:
             return 4  # ili2db 4 renamed such column to ColOwner
 
+    def _test_db_file(self, is_schema_import=False):
+        uri = self._uri
+
+        # The most basic check first :)
+        if not os.path.splitext(uri)[1] == ".gpkg":
+            return False, EnumTestConnectionMsg.WRONG_FILE_EXTENSION, QCoreApplication.translate("GPKGConnector",
+                                                                                                 "The file should have the '.gpkg' extension!")
+
+        # First we do a very basic check, looking that the directory or file exists
+        if is_schema_import:
+            # file does not exist, but directory must exist
+            directory = os.path.dirname(uri)
+
+            if not os.path.exists(directory):
+                return False, EnumTestConnectionMsg.DIR_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
+                                                                                              "GeoPackage directory not found.")
+        else:
+            if not os.path.exists(uri):
+                return False, EnumTestConnectionMsg.GPKG_FILE_NOT_FOUND, QCoreApplication.translate("GPKGConnector",
+                                                                                                    "GeoPackage file not found.")
+
+        return True, EnumTestConnectionMsg.CONNECTION_TO_SERVER_SUCCESSFUL, QCoreApplication.translate(
+            "GPKGConnector",
+            "Connection to server was successful.")
+
+    def _test_connection_to_db(self):
+        res, msg = self.open_connection()
+        if res:
+            return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate(
+                "GPKGConnector",
+                "Connection to db was successful.")
+        else:
+            return False, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
+
+    def _test_connection_to_ladm(self, required_models):
+        database = os.path.basename(self._dict_conn_params['dbfile'])
+        if not self._metadata_exists():
+            return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
+                "GPKGConnector",
+                "The database '{}' is not a valid LADM-COL database. That is, the database doesn't have the structure of the LADM-COL model.").format(
+                database)
+
+        if self.get_ili2db_version() != 4:
+            return False, EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, QCoreApplication.translate("GPKGConnector",
+                                                                                                   "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
+                database)
+
+        if self.model_parser is None:
+            self.model_parser = ModelParser(self)
+
+        res, code, msg = self.check_db_models(required_models)
+        if not res:
+            return res, code, msg
+
+        # Validate table and field names
+        if not self._table_and_field_names:
+            self._initialize_names()
+
+        res, msg = self.names.test_names(self._table_and_field_names)
+        if not res:
+            return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
+                                                                                                "Table/field names from the DB are not correct. Details: {}.").format(
+                msg)
+
+        return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector",
+                                                                                                    "The database '{}' has a valid LADM-COL structure!").format(database)
+
     def execute_sql_query(self, query):
         """
         Generic function for executing SQL statements
+
         :param query: SQL Statement
         :return: List of RealDictRow
         """
-        # self.conn.row_factory = lambda c, r: dict([(col[0], r[idx]) for idx, col in enumerate(c.description)])
-        #self.conn.row_factory = sqlite3.Row
         cursor = self.conn.cursor()
 
         try:

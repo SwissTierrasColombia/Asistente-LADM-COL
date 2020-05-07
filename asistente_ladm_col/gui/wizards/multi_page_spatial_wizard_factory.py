@@ -44,8 +44,8 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(MultiPageSpatialWizardFactory, self).__init__(iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        super(MultiPageSpatialWizardFactory, self).__init__(iface, db, wizard_settings)
 
     def init_gui(self):
         self.restore_settings()
@@ -61,7 +61,7 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)

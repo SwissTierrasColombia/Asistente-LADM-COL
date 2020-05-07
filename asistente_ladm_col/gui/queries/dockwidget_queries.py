@@ -43,6 +43,7 @@ from qgis.gui import (QgsDockWidget,
                       QgsMapToolIdentifyFeature)
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import (TEST_SERVER,
@@ -62,20 +63,22 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, dict, int)  # layer, ids, t_ids, duration
 
-    def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
+    def __init__(self, iface, db, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self._db = db
-        self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.logger = Logger()
+
+        self.app = AppInterface()
+
         self.canvas = iface.mapCanvas()
         self.active_map_tool_before_custom = None
         self.names = self._db.names
 
-        self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries(self.qgis_utils)
+        self._ladm_queries = ConfigDBsSupported().get_db_factory(self._db.engine).get_ladm_queries()
 
         self.clipboard = QApplication.clipboard()
 
@@ -87,7 +90,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.add_layers()
         self.fill_combos()
 
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM-COL/resources/images/spatial_unit.png"))
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
@@ -134,7 +137,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         }
 
     def add_layers(self):
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        self.app.core.get_layers(self._db, self._layers, load=True)
         if not self._layers:
             self.restart_dict_of_layers()  # Let it ready for the next call
             return None
@@ -353,7 +356,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             else: # previous_parcel_number
                 self.search_data_by_component(previous_parcel_number=query, zoom_and_select=True)
         else:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.iface.messageBar().pushMessage("Asistente LADM-COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
 
     def show_context_menu(self, point):
@@ -391,7 +394,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 layer = self._layers[self.names.OP_PARCEL_T]
                 self.iface.layerTreeView().setCurrentLayer(layer)
             else:
-                layer = self.qgis_utils.get_layer(self._db, table_name, True)
+                layer = self.app.core.get_layer(self._db, table_name, True)
 
             if layer is not None:
                 if layer.isSpatial():

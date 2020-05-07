@@ -30,9 +30,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayer)
 from qgis.gui import QgsMessageBar
 
-import processing
-
 from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
@@ -48,14 +47,15 @@ DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
 class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
+    def __init__(self, db, conn_manager, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.qgis_utils = qgis_utils
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.logger = Logger()
+        self.app = AppInterface()
 
         self._dialog_mode = None
         self._running_tool = False
@@ -215,19 +215,19 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
-        settings.setValue('Asistente-LADM_COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
+        settings.setValue('Asistente-LADM-COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path_blo.setText(settings.value('Asistente-LADM_COL/etl_cobol/blo_path', ''))
-        self.txt_file_path_uni.setText(settings.value('Asistente-LADM_COL/etl_cobol/uni_path', ''))
-        self.txt_file_path_ter.setText(settings.value('Asistente-LADM_COL/etl_cobol/ter_path', ''))
-        self.txt_file_path_pro.setText(settings.value('Asistente-LADM_COL/etl_cobol/pro_path', ''))
-        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/etl_cobol/gdb_path', ''))
+        self.txt_file_path_blo.setText(settings.value('Asistente-LADM-COL/etl_cobol/blo_path', ''))
+        self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/etl_cobol/uni_path', ''))
+        self.txt_file_path_ter.setText(settings.value('Asistente-LADM-COL/etl_cobol/ter_path', ''))
+        self.txt_file_path_pro.setText(settings.value('Asistente-LADM-COL/etl_cobol/pro_path', ''))
+        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/etl_cobol/gdb_path', ''))
 
     def load_lis_files(self, lis_paths):
         self.lis_paths = lis_paths
@@ -283,7 +283,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         return True, ''
 
     def load_model_layers(self):
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        self.app.core.get_layers(self._db, self._layers, load=True)
         if not self._layers:
             return False, QCoreApplication.translate("CobolBaseDialog",
                                                      "There was a problem loading layers from the 'Supplies' model!")

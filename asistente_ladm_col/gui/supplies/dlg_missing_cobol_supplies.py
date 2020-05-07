@@ -43,12 +43,12 @@ from asistente_ladm_col.gui.supplies.dlg_cobol_base import CobolBaseDialog
 
 
 class MissingCobolSupplies(CobolBaseDialog):
-    def __init__(self, qgis_utils, db, conn_manager, parent=None):
-        CobolBaseDialog.__init__(self, qgis_utils, db, conn_manager, parent)
-        self.qgis_utils = qgis_utils
+    def __init__(self, db, conn_manager, parent=None):
+        CobolBaseDialog.__init__(self, db, conn_manager, parent)
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
+
         self.names_gpkg = ''
         self.progress_configuration(0, 2)  # Start from: 0, number of steps: 2
         self._running_tool = False
@@ -70,7 +70,7 @@ class MissingCobolSupplies(CobolBaseDialog):
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
 
         self.restore_settings()
-        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM_COL/etl_cobol/folder_path', ''))
+        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_cobol/folder_path', ''))
 
         # Trigger validations right now
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
@@ -83,7 +83,7 @@ class MissingCobolSupplies(CobolBaseDialog):
     def accepted(self):
         self.bar.clearWidgets()
         self.save_settings()
-        QSettings().setValue('Asistente-LADM_COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
+        QSettings().setValue('Asistente-LADM-COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
         self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
@@ -121,7 +121,7 @@ class MissingCobolSupplies(CobolBaseDialog):
                                     self.buttonBox.setEnabled(True)
                                     self.buttonBox.addButton(QDialogButtonBox.Close)
 
-                                    msg = QCoreApplication.translate("Asistente-LADM_COL",
+                                    msg = QCoreApplication.translate("Asistente-LADM-COL",
                                         "Missing supplies report successfully generated in folder <a href='file:///{normalized_path1}'>{path1}</a>! The output Geopackage database can be found in <a href='file:///{normalized_path2}'>{path2}</a>").format(
                                         normalized_path1=normalize_local_url(self.xlsx_path),
                                         path1=self.xlsx_path,

@@ -44,9 +44,9 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
+    def __init__(self, iface, db, wizard_settings):
         self.iface = iface
-        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
+        MultiPageWizardFactory.__init__(self, iface, db, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)
         SelectFeaturesOnMapWrapper.__init__(self)
 
@@ -101,7 +101,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -129,7 +129,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         if self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount() > 0:
             # Open Form
             self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
-            self.qgis_utils.active_snapping_all_layers()
+            self.app.core.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations", "First select boundaries!"))

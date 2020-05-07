@@ -7,7 +7,9 @@ from qgis.core import (QgsVectorLayer,
 from qgis.testing import (unittest,
                           start_app)
 
-start_app() # need to start before asistente_ladm_col.tests.utils
+from asistente_ladm_col.app_interface import AppInterface
+
+start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
@@ -20,7 +22,6 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_gpkg_conn,
                                             restore_schema,
                                             unload_qgis_model_baker)
-from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
@@ -50,8 +51,9 @@ class TesQualityValidations(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_qgis_model_baker()
-        cls.qgis_utils = QGISUtils()
-        cls.quality_rules = QualityRules(cls.qgis_utils)
+        cls.app = AppInterface()
+        cls.quality_rules = QualityRules()
+        cls.geometry = GeometryUtils()
         cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
@@ -84,7 +86,7 @@ class TesQualityValidations(unittest.TestCase):
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             test_selected_ids = test_result[i]['selected_ids']
             #boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(self.names, boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.geometry.fix_selected_boundaries(self.names, boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:
@@ -118,7 +120,7 @@ class TesQualityValidations(unittest.TestCase):
             uri = gpkg_path + '|layername=boundary_case_{case}'.format(case=i+1)
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             self.assertEqual(boundary_layer.featureCount(), len(test_result[i]['boundaries_to_del']), 'Invalid number of features: case {case}'.format(case=i+1))
-            merge_geoms, boundaries_to_del = self.qgis_utils.geometry.fix_boundaries(boundary_layer, self.names.T_ID_F)
+            merge_geoms, boundaries_to_del = self.geometry.fix_boundaries(boundary_layer, self.names.T_ID_F)
             self.assertEqual(boundaries_to_del, test_result[i]['boundaries_to_del'], 'The boundaries to delete are invalid: case {case}'.format(case=i + 1))
 
             for merge_geom in merge_geoms:
@@ -218,16 +220,16 @@ class TesQualityValidations(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
         error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -313,22 +315,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -435,22 +437,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -526,22 +528,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.qgis_utils.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.qgis_utils.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.qgis_utils.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -626,7 +628,7 @@ class TesQualityValidations(unittest.TestCase):
             '286, 285': 'Point (963166.65579999983310699 1077249.80199999921023846)'
         }
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_points(overlapping_points_layer)
+        overlapping = self.geometry.get_overlapping_points(overlapping_points_layer)
         self.assertTrue(len(overlapping), 1) # One list of overlapping ids
 
         for overlapping_ids in overlapping:
@@ -653,7 +655,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_overlap_layer.getFeatures()]
         self.assertEqual(len(features), 15)
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_overlap_layer)
+        overlapping = self.geometry.get_overlapping_lines(boundary_overlap_layer)
 
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
@@ -731,7 +733,7 @@ class TesQualityValidations(unittest.TestCase):
         expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62], [63, 64], [63, 65], [64, 65], [66, 68], [67, 68]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer)
+        overlapping = self.geometry.get_overlapping_polygons(polygons_overlap_layer)
         flat_overlapping = list(set([id for items in overlapping for id in items]))
 
         # checks
@@ -763,12 +765,12 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             # We don't want to overwrite the original layer
-            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            clone_polygons = self.geometry.clone_layer(polygon_layer)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer, self.names.T_ID_F)
+            self.geometry.add_topological_vertices(clone_polygons, lines_layer, self.names.T_ID_F)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -800,7 +802,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(self.names, polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = self.geometry.difference_plot_boundary(self.names, polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -831,7 +833,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(self.names, lines_layer, polygon_as_lines_layer, 'fid')
+            diff_boundary_plot = self.geometry.difference_boundary_plot(self.names, lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:
@@ -848,7 +850,7 @@ class TesQualityValidations(unittest.TestCase):
 
         polygon_id = 61
         overlapping_id = 62
-        polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygons_intersection_layer,
+        polygon_intersection = self.geometry.get_intersection_polygons(polygons_intersection_layer,
                                                                                   polygon_id,
                                                                                   overlapping_id)
         self.assertEqual(polygon_intersection, None)
@@ -983,7 +985,7 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
+        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
             boundary_point_id = point_selected[self.names.T_ID_F]
@@ -1013,7 +1015,7 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
+        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
             boundary_point_id = point_selected[self.names.T_ID_F]
@@ -1044,7 +1046,7 @@ class TesQualityValidations(unittest.TestCase):
         right_of_way_features = [feature for feature in right_of_way_layer.getFeatures()]
         self.assertEqual(len(right_of_way_features), 6)
 
-        ids, over_pol = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
+        ids, over_pol = self.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
 
         geometries = [v.asWkt() for v in over_pol.asGeometryCollection()]
 
@@ -1068,7 +1070,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 15)
 
-        end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.geometry.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
         boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
@@ -1086,7 +1088,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(features), 8)
 
-        end_points, dangle_ids = self.qgis_utils.geometry.get_dangle_ids(boundary_layer)
+        end_points, dangle_ids = self.geometry.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
     def test_boundaries_are_not_split(self):
@@ -1103,17 +1105,17 @@ class TesQualityValidations(unittest.TestCase):
         bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
         good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
 
-        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bad_boundary_layer)
+        bad_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
         self.assertEqual(len(bad_boundary_errors_list), 4)
         self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
-        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, bbox_boundary_layer)
+        bbox_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
         self.assertEqual(len(bbox_boundary_errors_list), 9)
         self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
-        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(self.names, good_boundary_layer)
+        good_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
         self.assertEqual(len(good_boundary_errors_list), 0)
 
@@ -1129,7 +1131,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer = QgsVectorLayer(uri, 'check_gaps_in_plots', 'ogr')
 
         print('\nINFO: Validating Gaps in Plots using roads and multiple geometries...')
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
 
         expected_list = [
@@ -1147,7 +1149,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating Gaps in Plots using roads for one geometry...')
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(2)
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -1159,7 +1161,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.rollBack()
 
         print('\nINFO: Validating Gaps in Plots without using roads and multiple geometries...')
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -1172,7 +1174,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating Gaps in Plots without using roads for one geometry...')
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(2)
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -1188,7 +1190,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(2)
         test_plots_layer.deleteFeature(3)
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
@@ -1200,7 +1202,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(2)
         test_plots_layer.deleteFeature(3)
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
@@ -1211,7 +1213,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(3)
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001889.87381352134980261 1013447.93530169036239386, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001889.87381352134980261 1013447.93530169036239386))',
@@ -1224,7 +1226,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(3 )
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
@@ -1239,7 +1241,7 @@ class TesQualityValidations(unittest.TestCase):
 
         self.assertEqual(right_of_way.featureCount(), 6)
 
-        single_parts, single_ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way)
+        single_parts, single_ids = self.geometry.get_multipart_geoms(right_of_way)
         unique_single_ids = set(single_ids)
         self.assertEqual(len(single_parts), 8)
         self.assertEqual(len(unique_single_ids), 3)
@@ -1291,7 +1293,7 @@ class TesQualityValidations(unittest.TestCase):
         # When the tests are run the REGEXP function is not found, so we register it
         self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)
         self.assertTrue(result[0], 'The test connection is not working')
-        query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries(self.qgis_utils)
+        query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries()
 
         # Points rules
         self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)[1], Qgis.Success)
@@ -1379,7 +1381,7 @@ class TesQualityValidations(unittest.TestCase):
         self.check_logic_quality_rules(db_gpkg)
 
     def check_logic_quality_rules(self, db):
-        query_manager = ConfigDBsSupported().get_db_factory(db.engine).get_ladm_queries(self.qgis_utils)
+        query_manager = ConfigDBsSupported().get_db_factory(db.engine).get_ladm_queries()
 
         # Logic rules
         res, records = query_manager.get_parcels_with_no_right(db)

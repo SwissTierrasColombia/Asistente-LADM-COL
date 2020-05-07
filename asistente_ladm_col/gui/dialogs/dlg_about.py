@@ -59,9 +59,9 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.tb_changelog.setOpenExternalLinks(True)
 
         if QGIS_LANG == 'en':
-            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog_en.html")
+            file = QFile(":/Asistente-LADM-COL/resources/html/Changelog_en.html")
         else:
-            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog.html")
+            file = QFile(":/Asistente-LADM-COL/resources/html/Changelog.html")
 
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
             raise Exception(file.errorString())

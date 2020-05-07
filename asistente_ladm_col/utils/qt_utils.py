@@ -43,8 +43,8 @@ def selectFileName(line_edit_widget, title, file_filter, parent):
     line_edit_widget.setText(filename)
 
 
-def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open File"),
-                       file_filter=QCoreApplication.translate("Asistente-LADM_COL", "Any file(*)"), parent=None):
+def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM-COL", "Open File"),
+                       file_filter=QCoreApplication.translate("Asistente-LADM-COL", "Any file(*)"), parent=None):
     return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
 
 def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
@@ -73,7 +73,7 @@ def selectFolder(line_edit_widget, title, parent):
     line_edit_widget.setText(foldername)
 
 
-def make_folder_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open Folder"), parent=None):
+def make_folder_selector(widget, title=QCoreApplication.translate("Asistente-LADM-COL", "Open Folder"), parent=None):
     return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent)
 
 
@@ -128,7 +128,7 @@ class NetworkError(RuntimeError):
 def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
-                                                       QCoreApplication.translate("Asistente-LADM_COL", "Export to PDF"),
+                                                       QCoreApplication.translate("Asistente-LADM-COL", "Export to PDF"),
                                                        settings.value(settings_path, '.'),
                                                        filter="PDF (*.pdf)")
 
@@ -145,7 +145,7 @@ def save_pdf_format(settings_path, title, text):
         printer.setOutputFileName(new_filename)
         txt_log.print(printer)
 
-        msg = QCoreApplication.translate("Asistente-LADM_COL", 
+        msg = QCoreApplication.translate("Asistente-LADM-COL",
             "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
             normalized_path=normalize_local_url(new_filename),
             path=new_filename)

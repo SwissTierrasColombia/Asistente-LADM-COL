@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>768</height>
+    <width>365</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>541</width>
-    <height>651</height>
+    <width>365</width>
+    <height>543</height>
    </size>
   </property>
   <property name="floating">
@@ -52,7 +52,7 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>6</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
         <number>6</number>
@@ -222,7 +222,7 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>6</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
         <number>6</number>

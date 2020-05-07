@@ -1329,7 +1329,7 @@
   </Option>
   <Option name="help"/>
   <Option name="modelVariables"/>
-  <Option name="model_group" value="LADM_COL" type="QString"/>
+  <Option name="model_group" value="LADM-COL" type="QString"/>
   <Option name="model_name" value="ETL_intermediate_structure" type="QString"/>
   <Option name="parameterDefinitions" type="Map">
     <Option name="agrupacion" type="Map">

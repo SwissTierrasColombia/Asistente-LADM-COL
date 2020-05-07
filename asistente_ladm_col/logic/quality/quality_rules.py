@@ -28,15 +28,13 @@ from asistente_ladm_col.logic.quality.logic_quality_rules import LogicQualityRul
 
 class QualityRules:
     """
-    This facade class provides a simple interface to several quality rules.
-    The facade delegates client requests to appropriate quality rule classes.
+    This facade class provides a simple interface to several quality rule classes.
     """
-    def __init__(self, qgis_utils):
-        self.qgis_utils = qgis_utils
-        self.point_quality_rules = PointQualityRules(self.qgis_utils)
-        self.line_quality_rules = LineQualityRules(self.qgis_utils)
-        self.polygon_quality_rules = PolygonQualityRules(self.qgis_utils)
-        self.logic_quality_rules = LogicQualityRules(self.qgis_utils)
+    def __init__(self):
+        self.point_quality_rules = PointQualityRules()
+        self.line_quality_rules = LineQualityRules()
+        self.polygon_quality_rules = PolygonQualityRules()
+        self.logic_quality_rules = LogicQualityRules()
 
     def validate_quality_rule(self, db, id_quality_rule):
         """

@@ -40,7 +40,7 @@ build_repo() {
 
 push_tag() {
   pushd ${REMOTE_REPO_NAME}
-  git commit --allow-empty -m "Release version $TRAVIS_TAG of Asistente-LADM_COL" -m 'Commited from https://github.com/SwissTierrasColombia/Asistente-LADM_COL'
+  git commit --allow-empty -m "Release version $TRAVIS_TAG of Asistente-LADM-COL" -m 'Commited from https://github.com/SwissTierrasColombia/Asistente-LADM-COL'
   git tag "$TRAVIS_TAG"
   git push origin-token master # the release branch to be commited
   git push origin-token "$TRAVIS_TAG"

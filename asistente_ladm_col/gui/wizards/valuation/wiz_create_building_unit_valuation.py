@@ -14,8 +14,8 @@ from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import Select
 class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                                         SelectFeatureByExpressionDialogWrapper,
                                         SelectFeaturesOnMapWrapper):
-    def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
+    def __init__(self, iface, db, wizard_settings):
+        MultiPageWizardFactory.__init__(self, iface, db, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)
         SelectFeaturesOnMapWrapper.__init__(self)
 

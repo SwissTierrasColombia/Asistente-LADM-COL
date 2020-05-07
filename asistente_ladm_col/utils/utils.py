@@ -213,10 +213,10 @@ def show_plugin_help(module='', offline=False):
             url = os.path.join("file://", help_path)
         else:
             if _is_connected:
-                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
                     "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
             else:
-                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
                     "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
             return
     else:

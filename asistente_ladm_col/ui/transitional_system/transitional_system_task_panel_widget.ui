@@ -155,7 +155,7 @@ selection-color: rgb(255, 255, 255);</string>
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources.qrc">:/Asistente-LADM_COL/resources/images/tasks.png</pixmap>
+        <pixmap resource="../../resources.qrc">:/Asistente-LADM-COL/resources/images/tasks.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
