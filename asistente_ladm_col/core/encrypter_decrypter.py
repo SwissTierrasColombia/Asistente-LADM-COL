@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2020-02-12
         copyright            : (C) 2020 by Andrés Acosta (BSF Swissphoto)
@@ -15,14 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+from qgis.PyQt.QtCore import QProcess
 
-from asistente_ladm_col.config.general_config import (CRYPTO_LIBRARY,
+from asistente_ladm_col.config.general_config import (CRYPTO_LIBRARY_PATH,
                                                       URL_CRYPTO_LIBRARY)
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
-from asistente_ladm_col.lib.dependency.crypto_dependency import CrytoDependency
+from asistente_ladm_col.lib.dependency.crypto_dependency import CryptoDependency
 from asistente_ladm_col.lib.logger import Logger
-from qgis.PyQt.QtCore import QProcess
 
 
 class EncrypterDecrypter():
@@ -32,7 +31,7 @@ class EncrypterDecrypter():
         self.logger = Logger()
 
         self.java_dependency = JavaDependency()
-        self.cryto_dependency = CrytoDependency()
+        self.crypto_dependency = CryptoDependency()
 
     def run(self, mode, value):
 
@@ -41,12 +40,12 @@ class EncrypterDecrypter():
             self.java_dependency.get_java_on_demand()
             return
 
-        if not self.cryto_dependency.check_if_dependency_is_valid():
-            self.cryto_dependency.download_dependency(URL_CRYPTO_LIBRARY)
+        if not self.crypto_dependency.check_if_dependency_is_valid():
+            self.crypto_dependency.download_dependency(URL_CRYPTO_LIBRARY)
             return
 
         java_path = self.java_dependency.get_full_java_exe_path()
-        args = ["-jar", CRYPTO_LIBRARY]
+        args = ["-jar", CRYPTO_LIBRARY_PATH]
         args += [mode, self._secret_key, self._salt, value]
 
         proc = QProcess()
