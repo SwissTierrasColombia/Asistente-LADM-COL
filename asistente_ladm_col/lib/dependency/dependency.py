@@ -44,6 +44,7 @@ class Dependency(QObject):
         self._downloading = False
         self._show_cursor = True
         self.dependency_name = ""
+        self.fetcher_task = None
 
     def download_dependency(self, uri):
         self.logger.clear_message_bar()
@@ -57,12 +58,12 @@ class Dependency(QObject):
                 self._downloading = True
                 self.logger.clear_message_bar()
                 self.logger.info_msg(__name__, QCoreApplication.translate("Dependency", "A {} dependency will be downloaded...".format(self.dependency_name)))
-                fetcher_task = QgsNetworkContentFetcherTask(QUrl(uri))
-                fetcher_task.begun.connect(self.task_begun)
-                fetcher_task.progressChanged.connect(self.task_progress_changed)
-                fetcher_task.fetched.connect(partial(self.save_dependency_file, fetcher_task))
-                fetcher_task.taskCompleted.connect(self.task_completed)
-                QgsApplication.taskManager().addTask(fetcher_task)
+                self.fetcher_task = QgsNetworkContentFetcherTask(QUrl(uri))
+                self.fetcher_task.begun.connect(self.task_begun)
+                self.fetcher_task.progressChanged.connect(self.task_progress_changed)
+                self.fetcher_task.fetched.connect(partial(self.save_dependency_file, self.fetcher_task))
+                self.fetcher_task.taskCompleted.connect(self.task_completed)
+                QgsApplication.taskManager().addTask(self.fetcher_task)
             else:
                 self.logger.clear_message_bar()
                 self.logger.warning_msg(__name__, QCoreApplication.translate("Dependency", "There was a problem connecting to Internet."))
