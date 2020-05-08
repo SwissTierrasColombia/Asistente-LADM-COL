@@ -37,9 +37,7 @@ from qgis.core import QgsDataSourceUri
 
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       URL_REPORTS_LIBRARIES,
-                                                      DEPENDENCIES_BASE_PATH,
-                                                      DEPENDENCY_REPORTS_DIR_NAME,
-                                                      REPORTS_REQUIRED_VERSION)
+                                                      DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
@@ -158,30 +156,8 @@ class ReportGenerator(QObject):
     def generate_report(self, db, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
-        base_path = os.path.join(DEPENDENCIES_BASE_PATH, DEPENDENCY_REPORTS_DIR_NAME)
-        bin_path = os.path.join(base_path, 'bin')
-        if not os.path.exists(bin_path):
-            self.logger.message_with_button_download_report_dependency_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                   "The dependency library to generate reports is not installed. Click on the button to download and install it."))
-            return
-
-        # Check version
-        required_version_found = True
-        version_path = os.path.join(base_path, 'version')
-        if not os.path.exists(version_path):
-            required_version_found = False
-        else:
-            version_found = ''
-            with open(version_path) as f:
-                version_found = f.read()
-            if version_found.strip() != REPORTS_REQUIRED_VERSION:
-                required_version_found = False
-
-        if not required_version_found:
-            self.logger.message_with_button_remove_report_dependency_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                    "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
+        if not self.report_dependency.check_if_dependency_is_valid():
+            self.report_dependency.download_dependency(URL_REPORTS_LIBRARIES)
             return
 
         java_home_set = self.java_dependency.set_java_home()
@@ -213,8 +189,7 @@ class ReportGenerator(QObject):
             return
         QSettings().setValue("Asistente-LADM-COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(base_path, report_type)
-
+        config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''
@@ -223,7 +198,7 @@ class ReportGenerator(QObject):
         elif os.name == 'nt':
             script_name = 'print.bat'
 
-        script_path = os.path.join(bin_path, script_name)
+        script_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, 'bin', script_name)
         if not os.path.isfile(script_path):
             self.logger.warning(__name__, "Script file for reports wasn't found! {}".format(script_path))
             return
@@ -346,7 +321,3 @@ class ReportGenerator(QObject):
     def download_report_complete(self):
         self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                   "Report dependency was successfully configured!"), 5)
-
-    def download_report_dependency(self):
-        if not self.report_dependency.check_if_dependency_is_valid():
-            self.report_dependency.download_dependency(URL_REPORTS_LIBRARIES)

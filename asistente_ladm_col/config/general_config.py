@@ -8,7 +8,6 @@ from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
 DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM-COL')
-DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
 
 DEFAULT_LOG_MODE = EnumLogMode.DEV
 DEFAULT_LOG_FILE = ''
@@ -59,8 +58,10 @@ CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
+DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
 REPORTS_REQUIRED_VERSION = '0.6dev'
 URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+REPORTS_LIBRARIES_MD5SUM = 'ce7176136d9cd9847b3da0b4e29c755c'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
