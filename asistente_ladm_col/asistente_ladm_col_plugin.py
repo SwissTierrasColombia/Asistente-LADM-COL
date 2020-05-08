@@ -48,8 +48,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
-                                                      URL_REPORTS_LIBRARIES,
-                                                      DEPENDENCY_REPORTS_DIR_NAME,
                                                       COLLECTED_DB_SOURCE,
                                                       WIZARD_CLASS,
                                                       WIZARD_TOOL_NAME, 
@@ -126,8 +124,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
-from asistente_ladm_col.utils.utils import (Utils,
-                                            show_plugin_help)
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
@@ -171,7 +168,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMDATA()
-        self.report_generator = ReportGenerator(self.ladm_data)
+        self.reports_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
         self.register_dock_widgets()
@@ -224,17 +221,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.logger.message_with_button_open_table_attributes_emitted.connect(
             self.show_message_with_open_table_attributes_button)
-        self.logger.message_with_button_download_report_dependency_emitted.connect(
-            self.show_message_to_download_report_dependency)
-        self.logger.message_with_button_remove_report_dependency_emitted.connect(
-            self.show_message_to_remove_report_dependency)
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-
-        self.report_generator.enable_action_requested.connect(self.enable_action)
-
+        self.reports_generator.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -619,36 +610,6 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
-    def show_message_to_download_report_dependency(self, msg):
-        download_in_process = False
-        # Check if report dependency downloading is in process
-        for task in QgsApplication.taskManager().activeTasks():
-            if URL_REPORTS_LIBRARIES in task.description():
-                download_in_process = True
-
-        if not download_in_process:
-            widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                      "Download and install dependency"))
-            button.pressed.connect(self.download_report_dependency)
-            widget.layout().addWidget(button)
-            self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-        else:
-            self.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                "Report dependency download is in progress..."),
-                                     Qgis.Info)
-
-    def show_message_to_remove_report_dependency(self, msg):
-        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
-        button.pressed.connect(self.remove_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-
     def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
@@ -836,14 +797,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def call_ant_map_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
+        self.reports_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_operation_model_required
     def call_annex_17_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
+        self.reports_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1208,14 +1169,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
-
-    def download_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        self.report_generator.download_report_dependency()
-
-    def remove_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
 
     def show_about_dialog(self):
         if self._about_dialog is None:

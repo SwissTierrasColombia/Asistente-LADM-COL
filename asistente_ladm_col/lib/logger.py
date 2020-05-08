@@ -53,8 +53,6 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     message_with_button_load_layer_emitted = pyqtSignal(str, str, str, int)  # Message, button_text, layer_name, level
     message_with_button_open_table_attributes_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button_text, level, layer, filter
-    message_with_button_download_report_dependency_emitted = pyqtSignal(str)  # Message
-    message_with_button_remove_report_dependency_emitted = pyqtSignal(str)  # Message
     message_with_buttons_change_detection_all_and_per_parcel_emitted = pyqtSignal(str)  # Message
 
     def __init__(self):
@@ -65,8 +63,6 @@ class Logger(QObject, metaclass=SingletonQObject):
 
         self.message_with_button_load_layer_emitted.connect(self._log_load_layer_emitted)
         self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
-        self.message_with_button_download_report_dependency_emitted.connect(self._log_download_report_dependency_emitted)
-        self.message_with_button_remove_report_dependency_emitted.connect(self._log_remove_report_emitted)
         self.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(self._log_change_detection_all_and_per_parcel_emitted)
 
 
@@ -156,12 +152,6 @@ class Logger(QObject, metaclass=SingletonQObject):
 
     def _log_open_table_attributes_emitted(self, message, button_text, level, layer, filter):
         self.debug("", "A message with button open_table_attributes ({}) was shown!".format(layer.name()))
-
-    def _log_download_report_dependency_emitted(self, message):
-        self.debug("", "A message with button download_report_dependency was shown!")
-
-    def _log_remove_report_emitted(self, message):
-        self.debug("", "A message with button remove_report was shown!")
 
     def _log_change_detection_all_and_per_parcel_emitted(self, message):
         self.debug("", "A message with buttons for change detection all and per parcel was shown!")

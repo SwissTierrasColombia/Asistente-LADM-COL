@@ -29,10 +29,12 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
+                                                      REPORTS_LIBRARIES_MD5SUM,
                                                       REPORTS_REQUIRED_VERSION,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.lib.dependency.dependency import Dependency
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
+from asistente_ladm_col.utils.utils import md5sum
 
 
 class ReportDependency(Dependency):
@@ -44,6 +46,7 @@ class ReportDependency(Dependency):
         self.dependency_name = QCoreApplication.translate("ReportDependency", "reports")
 
     def save_dependency_file(self, fetcher_task):
+        self._downloading = False
         if fetcher_task.reply() is not None:
             # Write response to tmp file
             tmp_file = tempfile.mktemp()
@@ -55,25 +58,27 @@ class ReportDependency(Dependency):
             if not os.path.exists(DEPENDENCIES_BASE_PATH):
                 os.makedirs(DEPENDENCIES_BASE_PATH)
 
-            try:
-                with zipfile.ZipFile(tmp_file, "r") as zip_ref:
-                    zip_ref.extractall(DEPENDENCIES_BASE_PATH)
-            except zipfile.BadZipFile as e:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "There was an error with the download. The downloaded file is invalid."))
-            except PermissionError as e:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_REPORTS_DIR_NAME)))
+            if md5sum(tmp_file) == REPORTS_LIBRARIES_MD5SUM:
+                try:
+                    with zipfile.ZipFile(tmp_file, "r") as zip_ref:
+                        zip_ref.extractall(DEPENDENCIES_BASE_PATH)
+                except zipfile.BadZipFile as e:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                        "There was an error with the download. The downloaded file is invalid."))
+                except PermissionError as e:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                        "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_REPORTS_DIR_NAME)))
+                else:
+                    self.logger.clear_message_bar()
+                    self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
             else:
-                self.logger.clear_message_bar()
-                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                             "There was an error with the download. The downloaded file is invalid."))
 
             try:
                 os.remove(tmp_file)
             except:
                 pass
-
-        self._downloading = False
 
     def check_if_dependency_is_valid(self):
         if os.path.exists(DEPENDENCY_REPORTS_DIR_NAME):
