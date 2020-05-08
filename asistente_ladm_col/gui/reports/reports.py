@@ -315,9 +315,19 @@ class ReportGenerator(QObject):
             self.logger.warning_msg(__name__, msg)
 
     def download_java_complete(self):
-        self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                  "Java was successfully configured!"), 5)
+        if self.java_dependency.fetcher_task and not self.java_dependency.fetcher_task.isCanceled():
+            if self.java_dependency.check_if_dependency_is_valid():
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                          "Java was successfully configured!"), 5)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "You have just canceled the Java dependency download."), 5)
 
     def download_report_complete(self):
-        self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                  "Report dependency was successfully configured!"), 5)
+        if self.report_dependency.fetcher_task and not self.report_dependency.fetcher_task.isCanceled():
+            if self.report_dependency.check_if_dependency_is_valid():
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                          "Report dependency was successfully configured!"), 5)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "You have just canceled the report dependency download."), 5)

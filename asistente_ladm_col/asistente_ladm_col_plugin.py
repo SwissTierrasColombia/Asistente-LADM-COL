@@ -168,7 +168,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMDATA()
-        self.reports_generator = ReportGenerator(self.ladm_data)
+        self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
         self.register_dock_widgets()
@@ -225,7 +225,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-        self.reports_generator.enable_action_requested.connect(self.enable_action)
+        self.report_generator.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -797,14 +797,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def call_ant_map_report_generation(self, *args):
-        self.reports_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
+        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_operation_model_required
     def call_annex_17_report_generation(self, *args):
-        self.reports_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
+        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
