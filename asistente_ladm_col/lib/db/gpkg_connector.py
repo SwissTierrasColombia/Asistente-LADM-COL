@@ -44,7 +44,7 @@ class GPKGConnector(FileDB):
         'dbfile': ''
     }
 
-    def __init__(self, uri, conn_dict={}):
+    def __init__(self, uri, conn_dict=dict()):
         DBConnector.__init__(self, uri, conn_dict)
         self.engine = 'gpkg'
         self.conn = None
@@ -189,9 +189,6 @@ class GPKGConnector(FileDB):
         self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models
 
-    def get_logic_validation_queries(self):
-        raise NotImplementedError
-
     def is_ladm_layer(self, layer):
         result = False
         if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
@@ -313,3 +310,18 @@ class GPKGConnector(FileDB):
 
         return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector",
                                                                                                     "The database '{}' has a valid LADM-COL structure!").format(database)
+
+    def execute_sql_query(self, query):
+        """
+        Generic function for executing SQL statements
+
+        :param query: SQL Statement
+        :return: List of RealDictRow
+        """
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute(query)
+            return True, cursor.fetchall()
+        except sqlite3.ProgrammingError as e:
+            return False, e

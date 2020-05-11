@@ -3,7 +3,7 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 T_ID_KEY = 't_id'
-T_ILI_TID_KEY = "t_ili_tid",
+T_ILI_TID_KEY = 't_ili_tid'
 DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'

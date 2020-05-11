@@ -60,8 +60,9 @@ from qgis.core import (Qgis,
 import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
-from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import get_ctm12_exists_query, \
-    get_insert_ctm12_query, get_insert_cm12_bounds_query
+from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
+                                                                                 get_insert_ctm12_query, 
+                                                                                 get_insert_cm12_bounds_query)
 from asistente_ladm_col.utils.crs_utils import get_ctm12_crs
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
@@ -94,6 +95,7 @@ class AppCoreInterface(QObject):
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     map_refresh_requested = pyqtSignal()
+    redraw_all_layers_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     zoom_full_requested = pyqtSignal()
     zoom_to_active_layer_requested = pyqtSignal()
@@ -199,7 +201,7 @@ class AppCoreInterface(QObject):
                     # Required layers that are only in registry are removed, we reload them to get everything configured
                     self.remove_registry_layers(db, all_layers_to_load)
 
-                    self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
+                    self.logger.status(QCoreApplication.translate("AppCoreInterface", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
                     self.qgis_model_baker_utils.load_layers(db, all_layers_to_load)
                     ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
@@ -228,7 +230,7 @@ class AppCoreInterface(QObject):
         for layer_name, layer in layers.items():
             if layer is None:
                 layer_not_loaded = True
-                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                     "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
                         description=db.get_display_conn_string()))
@@ -256,7 +258,7 @@ class AppCoreInterface(QObject):
 
             #self.remove_registry_layers(db, layers)  # Should we? WHICH ONES?
 
-            self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
+            self.logger.status(QCoreApplication.translate("AppCoreInterface", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
             self.qgis_model_baker_utils.load_layers(db, layers_to_load)
             ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
@@ -984,7 +986,7 @@ class AppCoreInterface(QObject):
 
     def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.', reproject=True):
         if not csv_path or not os.path.exists(csv_path):
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "No CSV file given or file doesn't exist."))
             return False
 
@@ -1018,7 +1020,7 @@ class AppCoreInterface(QObject):
                 csv_layer.setCrs(get_ctm12_crs())
 
         if not csv_layer.isValid():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "CSV layer not valid!"))
             return False
 
@@ -1042,7 +1044,7 @@ class AppCoreInterface(QObject):
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
             if overlapping:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                     "There are overlapping points, we cannot import them into the DB! See selected points."))
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
@@ -1063,10 +1065,10 @@ class AppCoreInterface(QObject):
         if features_added:
             self.activate_layer_requested.emit(target_point_layer)
             self.zoom_to_active_layer_requested.emit()
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "No point was added to '{}'.").format(target_layer_name))
             return False
 
@@ -1081,7 +1083,7 @@ class AppCoreInterface(QObject):
             return False
 
         if output_layer.isEditable():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "You need to close the edit session on layer '{}' before using this tool!").format(
                 ladm_col_layer_name))
             return False
@@ -1100,11 +1102,11 @@ class AppCoreInterface(QObject):
             finish_feature_count = output_layer.featureCount()
 
             if not finish_feature_count:
-                self.logger.warning(__name__, QCoreApplication.translate("QGISUtils",
+                self.logger.warning(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                         "The output of the ETL-model has no features!"))
             return finish_feature_count > start_feature_count
         else:
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                       "Model ETL-model was not found and cannot be opened!"))
             return False
 
@@ -1115,7 +1117,7 @@ class AppCoreInterface(QObject):
             return False
 
         if output.isEditable():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "You need to close the edit session on layer '{}' before using this tool!").format(
                 ladm_col_layer_name))
             return False
@@ -1154,7 +1156,7 @@ class AppCoreInterface(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                       "Model ETL-model was not found and cannot be opened!"))
             return False
 
@@ -1252,7 +1254,7 @@ class AppCoreInterface(QObject):
             self.activate_layer_requested.emit(list_layers[0])
             self.action_vertex_tool_requested.emit()
 
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "You can start moving nodes in layers {} and {}, simultaneously!").format(
                     ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)
 

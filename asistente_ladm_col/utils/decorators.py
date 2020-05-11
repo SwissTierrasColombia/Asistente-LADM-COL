@@ -162,13 +162,19 @@ def _activate_processing_plugin(func_to_decorate):
             # Check in the plugin manager that the processing plugin was activated
             QSettings().setValue("PythonPlugins/processing", True)
 
-        func_to_decorate(*args, **kwargs)
+        return func_to_decorate(*args, **kwargs)
 
     return decorated_function
 
-def _log_quality_checks(func_to_decorate):
+def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
     def add_format_to_text(self, db, **args):
+        """
+        Decorator used for registering log quality info
+        :param self: QualityDialog instance
+        :param db: db connector
+        :param args: 'rule_name' is the executed quality rule name
+        """
         rule_name = args['rule_name']
         self.log_quality_set_initial_progress_emitted.emit(rule_name)
         self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
@@ -178,7 +184,7 @@ def _log_quality_checks(func_to_decorate):
             func_to_decorate(self, db, **args)
         end_time = time.time()
 
-        self.total_time = self.total_time + (end_time - start_time)
+        self.log_quality_validation_total_time = self.log_quality_validation_total_time + (end_time - start_time)
 
         self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
         self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR

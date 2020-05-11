@@ -63,7 +63,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.utils = utils
         self.logger = Logger()
-        self.symbology = Symbology()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
@@ -351,7 +350,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         layer_modifiers = {
             LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
             LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self.utils._supplies_db.names)
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_style_group_layer_modifiers(self.utils._supplies_db.names)
         }
         dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes_supplies(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 

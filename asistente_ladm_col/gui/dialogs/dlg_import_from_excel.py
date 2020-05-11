@@ -275,8 +275,8 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         summary += """</body></html>"""
         self.txt_log.setText(summary)
-        self.logger.success_msg(__name__, QCoreApplication.translate("QGISUtils",
-            "Data successfully imported toLADM-COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
+        self.logger.success_msg(__name__, QCoreApplication.translate("ImportFromExcelDialog",
+            "Data successfully imported to LADM-COL from intermediate structure (Excel file: '{}')!!!").format(excel_path))
         self._running_tool = False
 
     def check_layer_from_excel_sheet(self, excel_path, sheetname):

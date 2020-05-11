@@ -49,8 +49,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
-                                                      URL_REPORTS_LIBRARIES,
-                                                      DEPENDENCY_REPORTS_DIR_NAME,
                                                       COLLECTED_DB_SOURCE,
                                                       WIZARD_CLASS,
                                                       WIZARD_TOOL_NAME, 
@@ -127,10 +125,9 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
-from asistente_ladm_col.utils.utils import (Utils,
-                                            show_plugin_help)
-from asistente_ladm_col.utils.qt_utils import ProcessWithStatus, normalize_local_url
-from asistente_ladm_col.logic.quality.quality import QualityUtils
+from asistente_ladm_col.utils.utils import show_plugin_help
+from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
+                                               normalize_local_url)
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
@@ -174,7 +171,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.set_gui_interface(AppGUIInterface(self.iface))
 
         self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
-        self.quality = QualityUtils()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMDATA()
         self.report_generator = ReportGenerator(self.ladm_data)
@@ -227,22 +223,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.logger.message_with_button_open_table_attributes_emitted.connect(
             self.show_message_with_open_table_attributes_button)
-        self.logger.message_with_button_download_report_dependency_emitted.connect(
-            self.show_message_to_download_report_dependency)
-        self.logger.message_with_button_remove_report_dependency_emitted.connect(
-            self.show_message_to_remove_report_dependency)
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-
-        self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
-        self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
-        self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-
         self.report_generator.enable_action_requested.connect(self.enable_action)
-
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -266,7 +251,7 @@ class AsistenteLADMCOLPlugin(QObject):
             msg_box.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL Assistant - Warning"))
             msg_box.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                        "The spatial reference database is not editable. Therefore, CTM12 cannot be configured.<br><br>" \
-                                                       "Go to <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over '<b>{filename}</b>' file.<br><br>" \
+                                                       "Go to the folder <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over that folder and over the '<b>{filename}</b>' file.<br><br>" \
                                                        "Once you're done, click <b>Ok</b> to continue loading <i>LADM-COL Assistant</i>. " \
                                                        "If you click <b>Cancel</b>, the <i>LADM-COL Assistant</i> won't be available, as the CTM12 projection is a prerequisite.".format(normalized_folder=normalize_local_url(folder), folder=folder, filename=filename)))
             msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -702,36 +687,6 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
-    def show_message_to_download_report_dependency(self, msg):
-        download_in_process = False
-        # Check if report dependency downloading is in process
-        for task in QgsApplication.taskManager().activeTasks():
-            if URL_REPORTS_LIBRARIES in task.description():
-                download_in_process = True
-
-        if not download_in_process:
-            widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                      "Download and install dependency"))
-            button.pressed.connect(self.download_report_dependency)
-            widget.layout().addWidget(button)
-            self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-        else:
-            self.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                "Report dependency download is in progress..."),
-                                     Qgis.Info)
-
-    def show_message_to_remove_report_dependency(self, msg):
-        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
-        button.pressed.connect(self.remove_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-
     def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
@@ -791,27 +746,27 @@ class AsistenteLADMCOLPlugin(QObject):
                                                duration=duration)
 
     def show_log_quality_message(self, msg, count):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-        self.progress = QProgressBar()
-        self.progress.setFixedWidth(80)
+        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.log_quality_validation_progress = QProgressBar()
+        self.log_quality_validation_progress.setFixedWidth(80)
         self.log_quality_total_rule_count = count
-        self.progress.setMaximum(self.log_quality_total_rule_count * 10)
-        self.progressMessageBar.layout().addWidget(self.progress)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
-        self.progress_count = 0
+        self.log_quality_validation_progress.setMaximum(self.log_quality_total_rule_count * 10)
+        self.progress_message_bar.layout().addWidget(self.log_quality_validation_progress)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Info)
+        self.log_quality_validation_progress_count = 0
         self.log_quality_current_rule_count = 0
 
     def show_log_quality_button(self):
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_quality_dialog)
         self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
-        self.progressMessageBar.layout().addWidget(self.button)
+        self.progress_message_bar.layout().addWidget(self.button)
         QCoreApplication.processEvents()
 
     def set_log_quality_initial_progress(self, msg):
-        self.progress_count += 2 # 20% of the current rule
-        self.progress.setValue(self.progress_count)
-        self.progressMessageBar.setText(
+        self.log_quality_validation_progress_count += 2  # 20% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
+        self.progress_message_bar.setText(
             QCoreApplication.translate("LogQualityDialog",
                                        "Checking {} out of {}: '{}'").format(
                                         self.log_quality_current_rule_count + 1,
@@ -820,33 +775,34 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def set_log_quality_final_progress(self, msg):
-        self.progress_count += 8 # 80% of the current rule
-        self.progress.setValue(self.progress_count)
+        self.log_quality_validation_progress_count += 8  # 80% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
         self.log_quality_current_rule_count += 1
         if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
-            self.progressMessageBar.setText(QCoreApplication.translate("LogQualityDialog",
+            self.progress_message_bar.setText(QCoreApplication.translate("LogQualityDialog",
                 "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
         else:
-            self.progressMessageBar.setText(msg)
+            self.progress_message_bar.setText(msg)
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
+        log_quality_validation_text, log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_quality_validation_text, log_quality_validation_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
-            QCoreApplication.translate("ImportFromExcelDialog",
+        self.progress_message_bar = self.iface.messageBar().createMessage("Import from Excel",
+                                                                          QCoreApplication.translate("ImportFromExcelDialog",
                                        "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_excel_dialog)
         self.button.setText(QCoreApplication.translate("ImportFromExcelDialog", "Show errors found"))
-        self.progressMessageBar.layout().addWidget(self.button)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
-        self.text = text
+        self.progress_message_bar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Warning)
+        self.log_excel_text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.text)
+        dlg = LogExcelDialog(self.log_excel_text)
         dlg.exec_()
 
     @_db_connection_required
@@ -1211,8 +1167,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        dlg = QualityDialog(self.get_db_connection(), self.quality)
-        dlg.exec_()
+        self.quality_dialog = QualityDialog(self.get_db_connection())
+
+        self.quality_dialog.log_quality_show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_dialog.log_quality_show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_dialog.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_dialog.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+
+        self.quality_dialog.exec_()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
@@ -1284,14 +1246,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
-
-    def download_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        self.report_generator.download_report_dependency()
-
-    def remove_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
 
     def show_about_dialog(self):
         if self._about_dialog is None:

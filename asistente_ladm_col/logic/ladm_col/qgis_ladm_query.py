@@ -393,3 +393,51 @@ class QGISLADMQuery:
 
         params.update(kwargs)
         return params
+
+    @staticmethod
+    def get_duplicate_records_in_table(db, table_name, fields_to_check):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_group_party_fractions_that_do_not_make_one(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_invalid_col_party_type_natural(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_invalid_col_party_type_no_natural(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_invalid_department_code(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_invalid_municipality_code(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_invalid_parcel_number(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_invalid_parcel_type_and_22_position_number(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_invalid_previous_parcel_number(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_no_right(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_parcels_with_repeated_domain_right(db):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_uebaunit_parcel(db):
+        raise NotImplementedError

@@ -55,7 +55,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.java_utils import JavaUtils
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -88,9 +88,9 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.logger = Logger()
         self.app = AppInterface()
 
-        self.java_utils = JavaUtils()
-        self.java_utils.download_java_completed.connect(self.download_java_complete)
-        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_dependency = JavaDependency()
+        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
+        self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
 
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -272,13 +272,13 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-        java_home_set = self.java_utils.set_java_home()
+        java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             message_java = QCoreApplication.translate("DialogImportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)
-            self.java_utils.get_java_on_demand()
+            self.java_dependency.get_java_on_demand()
             self.disable()
             return
 
@@ -455,7 +455,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
         configuration.with_importtid = True
 
-        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 

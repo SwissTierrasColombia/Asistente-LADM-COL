@@ -41,7 +41,9 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
+from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
+from asistente_ladm_col.utils.symbology import SymbologyUtils
 
 
 class AppGUIInterface(QObject):
@@ -70,6 +72,9 @@ class AppGUIInterface(QObject):
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
+    def redraw_all_layers(self):
+        self.iface.mapCanvas().redrawAllLayers()
+
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
 
@@ -88,6 +93,24 @@ class AppGUIInterface(QObject):
 
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
+
+    def add_error_layer(self, db, error_layer):
+        group = self.get_error_layers_group()
+
+        # Check if layer is loaded and remove it
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == error_layer.name():
+                group.removeLayer(layer.layer())
+                break
+
+        added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+        index = QgisModelBakerUtils().get_suggested_index_for_layer(added_layer, group)
+        added_layer = group.insertLayer(index, added_layer).layer()
+        if added_layer.isSpatial():
+            # db connection is none because we are using a memory layer
+            SymbologyUtils().set_layer_style_from_qml(db, added_layer, is_error_layer=True)
+        return added_layer
 
     def get_error_layers_group(self):
         """

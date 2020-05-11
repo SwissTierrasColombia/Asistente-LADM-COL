@@ -246,6 +246,10 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
+                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
+
+                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
+                    # previous mapping used (we give preference to the latest used mapping)
                     if field_mapping:
                         self.app.core.delete_old_field_mapping(field_mapping)
 

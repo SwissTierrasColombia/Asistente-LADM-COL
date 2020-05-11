@@ -85,6 +85,9 @@ class DBConnector(QObject):
     def equals(self, db):
         return self.dict_conn_params == db.dict_conn_params
 
+    def _metadata_exists(self):
+        raise NotImplementedError
+
     def close_connection(self):
         raise NotImplementedError
 
@@ -98,9 +101,6 @@ class DBConnector(QObject):
         raise NotImplementedError
 
     def get_models(self, schema=None):
-        raise NotImplementedError
-
-    def get_logic_validation_queries(self):
         raise NotImplementedError
 
     def get_display_conn_string(self):
@@ -393,3 +393,5 @@ class ClientServerDB(DBConnector):
 
         return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("ClientServerDB",
                                                                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
+    def execute_sql_query(self, query):
+        raise NotImplementedError

@@ -15,7 +15,6 @@
 #*   (at your option) any later version.                                   *
 #*                                                                         *
 #***************************************************************************
-
 set -e
 # rationale: Wait for postgres container to become available
 # link: https://cstan.io/?p=8620&lang=en
@@ -34,5 +33,5 @@ pushd /usr/src/asistente_ladm_col
 make
 cd ..
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
-xvfb-run nose2-3  # asistente_ladm_col.tests.test_copy_csv_points_to_db
+xvfb-run nose2-3  # asistente_ladm_col.tests.test_quality_validations
 popd

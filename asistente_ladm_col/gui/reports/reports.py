@@ -23,35 +23,26 @@ import os
 import stat
 import tempfile
 import time
-import zipfile
 
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings,
-                              QUrl,
-                              QFile,
                               QProcess,
                               QEventLoop,
-                              QIODevice,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QProgressBar)
-from qgis.core import (QgsDataSourceUri,
-                       QgsNetworkContentFetcherTask,
-                       QgsApplication)
+from qgis.core import QgsDataSourceUri
 
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
-                                                      DEPENDENCIES_BASE_PATH,
-                                                      DEPENDENCY_REPORTS_DIR_NAME,
-                                                      TEST_SERVER,
-                                                      REPORTS_REQUIRED_VERSION,
-                                                      URL_REPORTS_LIBRARIES)
+                                                      URL_REPORTS_LIBRARIES,
+                                                      DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
-from asistente_ladm_col.utils.java_utils import JavaUtils
-from asistente_ladm_col.utils.utils import is_connected
+from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
 
 class ReportGenerator(QObject):
@@ -64,8 +55,11 @@ class ReportGenerator(QObject):
         self.ladm_data = ladm_data
         self.logger = Logger()
         self.app = AppInterface()
-        self.java_utils = JavaUtils()
-        self.java_utils.download_java_completed.connect(self.download_java_complete)
+        self.java_dependency = JavaDependency()
+        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
+
+        self.report_dependency = ReportDependency()
+        self.report_dependency.download_dependency_completed.connect(self.download_report_complete)
 
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -162,35 +156,13 @@ class ReportGenerator(QObject):
     def generate_report(self, db, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
-        base_path = os.path.join(DEPENDENCIES_BASE_PATH, DEPENDENCY_REPORTS_DIR_NAME)
-        bin_path = os.path.join(base_path, 'bin')
-        if not os.path.exists(bin_path):
-            self.logger.message_with_button_download_report_dependency_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                   "The dependency library to generate reports is not installed. Click on the button to download and install it."))
+        if not self.report_dependency.check_if_dependency_is_valid():
+            self.report_dependency.download_dependency(URL_REPORTS_LIBRARIES)
             return
 
-        # Check version
-        required_version_found = True
-        version_path = os.path.join(base_path, 'version')
-        if not os.path.exists(version_path):
-            required_version_found = False
-        else:
-            version_found = ''
-            with open(version_path) as f:
-                version_found = f.read()
-            if version_found.strip() != REPORTS_REQUIRED_VERSION:
-                required_version_found = False
-
-        if not required_version_found:
-            self.logger.message_with_button_remove_report_dependency_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                    "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
-            return
-
-        java_home_set = self.java_utils.set_java_home()
+        java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
-            self.java_utils.get_java_on_demand()
+            self.java_dependency.get_java_on_demand()
             self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                          "Java is a prerequisite. Since it was not found, it is being configured..."))
             return
@@ -217,8 +189,7 @@ class ReportGenerator(QObject):
             return
         QSettings().setValue("Asistente-LADM-COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(base_path, report_type)
-
+        config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''
@@ -227,7 +198,7 @@ class ReportGenerator(QObject):
         elif os.name == 'nt':
             script_name = 'print.bat'
 
-        script_path = os.path.join(bin_path, script_name)
+        script_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, 'bin', script_name)
         if not os.path.isfile(script_path):
             self.logger.warning(__name__, "Script file for reports wasn't found! {}".format(script_path))
             return
@@ -344,50 +315,19 @@ class ReportGenerator(QObject):
             self.logger.warning_msg(__name__, msg)
 
     def download_java_complete(self):
-        self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                  "Java was successfully configured!"), 5)
+        if self.java_dependency.fetcher_task and not self.java_dependency.fetcher_task.isCanceled():
+            if self.java_dependency.check_if_dependency_is_valid():
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                          "Java was successfully configured!"), 5)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "You have just canceled the Java dependency download."), 5)
 
-    def save_dependency_file(self, fetcher_task):
-        if fetcher_task.reply() is not None:
-            # Write response to tmp file
-            tmp_file = tempfile.mktemp()
-            out_file = QFile(tmp_file)
-            out_file.open(QIODevice.WriteOnly)
-            out_file.write(fetcher_task.reply().readAll())
-            out_file.close()
-
-            if not os.path.exists(DEPENDENCIES_BASE_PATH):
-                os.makedirs(DEPENDENCIES_BASE_PATH)
-
-            try:
-                with zipfile.ZipFile(tmp_file, "r") as zip_ref:
-                    zip_ref.extractall(DEPENDENCIES_BASE_PATH)
-            except zipfile.BadZipFile as e:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "There was an error with the download. The downloaded file is invalid."))
-            except PermissionError as e:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH), DEPENDENCY_REPORTS_DIR_NAME)))
-            else:
-                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
-
-            try:
-                os.remove(tmp_file)
-            except:
-                pass
-
-        self._downloading = False
-
-    def download_report_dependency(self):
-        self.logger.clear_message_bar()
-        if not self._downloading: # Already downloading report dependency?
-            if is_connected(TEST_SERVER):
-                self._downloading = True
-                fetcher_task = QgsNetworkContentFetcherTask(QUrl(URL_REPORTS_LIBRARIES))
-                fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
-                QgsApplication.taskManager().addTask(fetcher_task)
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                        "There was a problem connecting to Internet."))
-                self._downloading = False
-
+    def download_report_complete(self):
+        if self.report_dependency.fetcher_task and not self.report_dependency.fetcher_task.isCanceled():
+            if self.report_dependency.check_if_dependency_is_valid():
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                          "Report dependency was successfully configured!"), 5)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "You have just canceled the report dependency download."), 5)

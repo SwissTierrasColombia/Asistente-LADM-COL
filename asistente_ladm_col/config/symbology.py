@@ -1,83 +1,46 @@
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
-                                                           CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                                           CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                                           CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                                           CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
+from asistente_ladm_col.config.enums import EnumQualityRule
+from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_TABLE_NAME,
+                                                            QUALITY_RULES,
+                                                            QualityRuleConfig)
 
 
 class Symbology:
-    ERROR_LAYER = 'error_layer'
 
-    def __init__(self):
-        self.translatable_config_strings = TranslatableConfigStrings()
-
-    def get_default_style_group(self, names):
+    @staticmethod
+    def get_default_style_group(names):
          return {
-            names.OP_BOUNDARY_T: {
-                QgsWkbTypes.LineGeometry: 'style_boundary'
-            },
-            names.OP_BOUNDARY_POINT_T: {
-                QgsWkbTypes.PointGeometry: 'style_boundary_point'
-            },
-            names.OP_SURVEY_POINT_T: {
-                QgsWkbTypes.PointGeometry: 'style_survey_point'
-            },
-            names.OP_CONTROL_POINT_T: {
-                QgsWkbTypes.PointGeometry: 'style_control_point'
-            },
-            names.OP_PLOT_T: {
-                QgsWkbTypes.PointGeometry: 'style_plot_point',
-                QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
-            },
-            names.OP_BUILDING_T: {
-                QgsWkbTypes.PointGeometry: 'style_building_point',
-                QgsWkbTypes.PolygonGeometry: 'style_building'
-            },
-            names.OP_BUILDING_UNIT_T: {
-                QgsWkbTypes.PointGeometry: 'style_building_unit_point',
-                QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
-            },
-            names.OP_RIGHT_OF_WAY_T: {
-                QgsWkbTypes.PointGeometry: 'style_right_of_way_point',
-                QgsWkbTypes.PolygonGeometry: 'style_right_of_way'
-            },
-            self.ERROR_LAYER: {
-                QgsWkbTypes.PointGeometry: 'style_point_error',
-                QgsWkbTypes.LineGeometry: 'style_line_error',
-                QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
-            }
+             names.OP_BOUNDARY_T: 'style_boundary',
+             names.OP_BOUNDARY_POINT_T: 'style_boundary_point',
+             names.OP_SURVEY_POINT_T: 'style_survey_point',
+             names.OP_CONTROL_POINT_T: 'style_control_point',
+             names.OP_PLOT_T: 'style_plot_polygon',
+             names.OP_BUILDING_T: 'style_building',
+             names.OP_BUILDING_UNIT_T: 'style_building_unit_25',
+             names.OP_RIGHT_OF_WAY_T: 'style_right_of_way'
         }
 
-    def get_supplies_style_group(self, names):
+    @staticmethod
+    def get_style_group_layer_modifiers(names):
         return {
-            names.GC_PLOT_T: {
-                QgsWkbTypes.PolygonGeometry: 'style_supplies_plot_polygon'
-            }
+            names.GC_PLOT_T: 'style_supplies_plot_polygon'
         }
 
-    def get_custom_error_layers(self):
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
-
+    @staticmethod
+    def get_default_error_style_layer():
         return {
-            translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS]: {
-                'es': 'style_boundary_should_be_covered_by_plot_es',
-                'en': 'style_boundary_should_be_covered_by_plot_en'
-            },
-            translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES]: {
-                'es': 'style_plot_should_be_covered_by_boundary_es',
-                'en': 'style_plot_should_be_covered_by_boundary_en'
-            },
-            translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES]: {
-                'es': 'style_boundary_points_should_be_covered_by_boundary_nodes_es',
-                'en': 'style_boundary_points_should_be_covered_by_boundary_nodes_en'
-            },
-            translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]: {
-                'es': 'style_boundary_nodes_should_be_covered_by_boundary_points_es',
-                'en': 'style_boundary_nodes_should_be_covered_by_boundary_points_en'
-             }
+            QgsWkbTypes.PointGeometry: 'style_point_error',
+            QgsWkbTypes.LineGeometry: 'style_line_error',
+            QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
         }
 
-    def get_error_layer_name(self):
-        return self.ERROR_LAYER
+    @staticmethod
+    def get_custom_error_layers():
+        quality_rules_data = QualityRuleConfig.get_quality_rules_config()
+        return {
+            quality_rules_data[EnumQualityRule.Line][QUALITY_RULES][EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS][QUALITY_RULE_TABLE_NAME]: 'style_boundary_should_be_covered_by_plot',
+            quality_rules_data[EnumQualityRule.Polygon][QUALITY_RULES][EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES][QUALITY_RULE_TABLE_NAME]: 'style_plot_should_be_covered_by_boundary',
+            quality_rules_data[EnumQualityRule.Point][QUALITY_RULES][EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES][QUALITY_RULE_TABLE_NAME]: 'style_boundary_points_should_be_covered_by_boundary_nodes',
+            quality_rules_data[EnumQualityRule.Line][QUALITY_RULES][EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS][QUALITY_RULE_TABLE_NAME]: 'style_boundary_nodes_should_be_covered_by_boundary_points'
+        }

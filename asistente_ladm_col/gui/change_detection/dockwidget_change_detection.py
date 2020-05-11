@@ -207,7 +207,6 @@ class ChangeDetectionUtils(QObject):
         self.ladm_data = ladm_data
 
         self.app = AppInterface()
-        self.symbology = Symbology()
 
         self._layers = dict()
         self._supplies_layers = dict()
@@ -246,7 +245,7 @@ class ChangeDetectionUtils(QObject):
             layer_modifiers = {
                 LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
                 LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+                LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_style_group_layer_modifiers(self._supplies_db.names)
             }
             self.app.core.get_layers(self._supplies_db,
                                      self._supplies_layers,
@@ -305,7 +304,7 @@ class ChangeDetectionUtils(QObject):
         layer_modifiers = {
             LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
             LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self._supplies_db.names)
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_style_group_layer_modifiers(self._supplies_db.names)
         }
 
         if inverse:
