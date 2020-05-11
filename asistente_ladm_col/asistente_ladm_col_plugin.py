@@ -129,7 +129,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _operation_model_required)
 from asistente_ladm_col.utils.utils import (Utils,
                                             show_plugin_help)
-from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus, normalize_local_url
 from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
@@ -258,6 +258,27 @@ class AsistenteLADMCOLPlugin(QObject):
         # We need CTM12 projection in the QGIS SRS database
         res = self.app.core.initialize_ctm12()
         self.logger.info_warning(__name__, res, "CTM12 is in the QGIS SRS database? {}!!!".format(res))
+        if not res and not self.unit_tests:
+            folder, filename = os.path.split(QgsApplication.srsDatabaseFilePath())
+            msg_box = QMessageBox(self.main_window)
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setTextFormat(Qt.RichText)
+            msg_box.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL Assistant - Warning"))
+            msg_box.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                       "The spatial reference database is not editable. Therefore, CTM12 cannot be configured.<br><br>" \
+                                                       "Go to <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over '<b>{filename}</b>' file.<br><br>" \
+                                                       "Once you're done, click <b>Ok</b> to continue loading <i>LADM-COL Assistant</i>. " \
+                                                       "If you click <b>Cancel</b>, the <i>LADM-COL Assistant</i> won't be available, as the CTM12 projection is a prerequisite.".format(normalized_folder=normalize_local_url(folder), folder=folder, filename=filename)))
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg_box.setDefaultButton(QMessageBox.Ok)
+            reply = msg_box.exec_()
+
+            if reply == QMessageBox.Ok:
+                self.initialize_requirements()
+            else:
+                self.unload()
+                self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                    "CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
 
     def call_refresh_gui(self):
         """

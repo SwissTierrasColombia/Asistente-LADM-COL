@@ -1283,10 +1283,16 @@ class AppCoreInterface(QObject):
         ctm12_exists = self.ctm12_exists(cursor)
         if not ctm12_exists:
             self.logger.debug(__name__, "Adding CTM12 to QGIS SRS database...")
-            cursor.execute("BEGIN")
-            cursor.execute(get_insert_ctm12_query())
-            cursor.execute(get_insert_cm12_bounds_query())
-            cursor.execute("COMMIT")
+
+            try:
+                cursor.execute("BEGIN")
+                cursor.execute(get_insert_ctm12_query())
+                cursor.execute(get_insert_cm12_bounds_query())
+                cursor.execute("COMMIT")
+            except sqlite3.OperationalError as e:
+                # We couldn't write in srs.db
+                return False
+
             conn.close()
             QgsCoordinateReferenceSystem.invalidateCache()
 
