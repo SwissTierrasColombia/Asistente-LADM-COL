@@ -477,10 +477,10 @@ VERSION "2019-07-04"  =
       ant_conflictos -- {0..*} ANT_Conflictos;
     END ant_conflictos_predio;
 
-    ASSOCIATION ant_interesado_caracterizacion =
+    ASSOCIATION ant_interesado_interesadocaracterizacion =
       op_interesado (EXTERNAL) -- {1} Operacion_V2_9_6.Operacion.OP_Interesado;
       ant_interesado_caracterizacion -- {0..1} ANT_Interesado_Caracterizacion;
-    END ant_interesado_caracterizacion;
+    END ant_interesado_interesadocaracterizacion;
 
     ASSOCIATION ant_interesado_nucleofamiliar =
       ant_interesado_caracterizacion -- {1} ANT_Interesado_Caracterizacion;

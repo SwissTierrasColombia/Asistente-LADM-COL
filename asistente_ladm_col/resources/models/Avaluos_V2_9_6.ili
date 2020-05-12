@@ -351,7 +351,7 @@ VERSION "V2.2.1"  // 2018-02-01 // =
       !!@ ili2db.dispName = "Uso"
       Uso : TEXT;
       !!@ ili2db.dispName = "Valor unitario"
-      Valor_Unitario : 0 .. 100000000000000000000000000000000000000000000000000 [LADM_COL_V1_3.COP];
+      Valor_Unitario : 0 .. 100000000000000000000000000000 [LADM_COL_V1_3.COP];
     END AV_Tipologia_Construccion;
 
     /** Esta clase permite gestionar las zonas físicamente homogéneas definidas para el avalúo y que delimitan las zonas que tienen características físicas similares. REVISAR DOCUMENTACIÓN

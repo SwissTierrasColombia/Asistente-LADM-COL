@@ -812,10 +812,10 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Tipo : MANDATORY Operacion_V2_9_6.OP_RestriccionTipo;
     END OP_Restriccion;
 
-    ASSOCIATION op_interesado_contacto =
+    ASSOCIATION op_interesado_interesadocontacto =
       op_contacto -- {0..*} OP_Interesado_Contacto;
       op_interesado -- {1} OP_Interesado;
-    END op_interesado_contacto;
+    END op_interesado_interesadocontacto;
 
     ASSOCIATION op_predio_copropiedad =
       predio -- {0..*} OP_Predio;
