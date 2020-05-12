@@ -27,7 +27,8 @@ from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_pg_conn,
                                             restore_schema,
                                             import_qgis_model_baker,
-                                            unload_qgis_model_baker)
+                                            unload_qgis_model_baker,
+                                            MODELS_PATH)
 
 
 class TestQgisModelBaker(unittest.TestCase):
@@ -47,7 +48,7 @@ class TestQgisModelBaker(unittest.TestCase):
         db_pg = get_pg_conn('test_export_data')
 
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = ExportConfiguration()
@@ -80,7 +81,7 @@ class TestQgisModelBaker(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/test_export_data.gpkg')
 
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = ExportConfiguration()
@@ -139,7 +140,7 @@ class TestQgisModelBaker(unittest.TestCase):
         db_pg = get_pg_conn('test_import_data')
 
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = ImportDataConfiguration()
@@ -193,7 +194,7 @@ class TestQgisModelBaker(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/test_import_data.gpkg')
 
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = ImportDataConfiguration()
@@ -237,7 +238,7 @@ class TestQgisModelBaker(unittest.TestCase):
     def test_import_schema_in_pg(self):
         print("\nINFO: Validate Import Schema in PG...")
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('xtf') +';' +testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path('xtf') +';' +testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = SchemaImportConfiguration()
@@ -282,7 +283,7 @@ class TestQgisModelBaker(unittest.TestCase):
     def test_import_schema_in_gpkg(self):
         print("\nINFO: Validate Import Schema in GPKG...")
         base_config = BaseConfiguration()
-        base_config.custom_model_directories = testdata_path('models/LADM_COL')
+        base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
         configuration = SchemaImportConfiguration()

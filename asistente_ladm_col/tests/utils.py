@@ -53,6 +53,8 @@ asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, True)
 asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 
+MODELS_PATH = '../../resources/models/'
+
 
 def get_pg_conn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
