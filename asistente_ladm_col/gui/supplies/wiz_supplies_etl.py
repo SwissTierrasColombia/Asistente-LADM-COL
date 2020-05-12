@@ -73,6 +73,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
 
         self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate("SuppliesETLWizard", "Run ETL"))
+        self.wizardPage1.setButtonText(QWizard.CancelButton, QCoreApplication.translate("SuppliesETLWizard", "Close"))
+        self.wizardPage2.setButtonText(QWizard.CancelButton, QCoreApplication.translate("SuppliesETLWizard", "Close"))
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -131,6 +133,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.bar.clearWidgets()
             button_list.remove(QWizard.CustomButton1)
             button_list.remove(QWizard.NextButton)
+            button_list.remove(QWizard.BackButton)
             self.wizardPage3.setFinalPage(True)
 
         self.setButtonLayout(button_list)
@@ -214,6 +217,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 self.set_gui_controls_enabled(False)
                 self.button(self.BackButton).setEnabled(False)
                 self.button(self.CustomButton1).setEnabled(False)
+                self.button(self.CancelButton).setText(QCoreApplication.translate("SuppliesETLWizard", "Cancel"))
+
                 with OverrideCursor(Qt.WaitCursor):
                     res_alpha, msg_alpha = etl.load_alphanumeric_layers()
 
@@ -233,6 +238,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
                                     self.button(self.NextButton).setVisible(True)
                                     self.button(self.CustomButton1).setVisible(False)
+                                    self.button(self.CancelButton).setText(QCoreApplication.translate("SuppliesETLWizard", "Close"))
                                     self.show_message(QCoreApplication.translate("SuppliesETLWizard",
                                                         "The {} has finished successfully!").format(self.tool_name),
                                                       Qgis.Success, 0)
