@@ -52,6 +52,9 @@ class SettingsContext(Context):
     def get_tab_pages_list(self):
         return self._tab_pages_list
 
+    def set_tab_pages_list(self, tab_pages_list):
+        self._tab_pages_list = tab_pages_list
+
     def get_required_models(self):
         return self._required_models
 
