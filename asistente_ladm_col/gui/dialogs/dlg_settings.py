@@ -56,6 +56,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def __init__(self, conn_manager=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.parent = parent
         self.logger = Logger()
         self.conn_manager = conn_manager
         self.app = AppInterface()
@@ -64,6 +65,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_source = COLLECTED_DB_SOURCE  # default db source
         self._required_models = list()
         self._tab_pages_list = list()
+        self._blocking_mode = True  # Whether the dialog can only be accepted on valid DB connections or not
         self.init_db_engine = None
 
         self._action_type = None
@@ -129,6 +131,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def set_required_models(self, required_models):
         self._required_models = required_models
+
+    def set_blocking_mode(self, block):
+        self._blocking_mode = block
 
     def show_tabs(self, tab_pages_list):
         """
@@ -227,12 +232,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
                                                                 required_models=self._required_models)
 
             if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                self.show_message(msg, Qgis.Warning)
-                return  # Do not close the dialog
+                if self._blocking_mode:
+                    self.show_message(msg, Qgis.Warning)
+                    return  # Do not close the dialog
 
         else:
-            self.show_message(msg, Qgis.Warning)
-            return  # Do not close the dialog
+            if self._blocking_mode:
+                self.show_message(msg, Qgis.Warning)
+                return  # Do not close the dialog
 
         # Connection is valid and complies with LADM
         current_db_engine = self.cbo_db_engine.currentData()
@@ -250,13 +257,20 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
             self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
-        # If active role is changed (a check and confirmation my be needed), refresh the GUI
+        if not ladm_col_schema and self._action_type == EnumDbActionType.CONFIG:
+            QMessageBox.information(self.parent,
+                                    QCoreApplication.translate("SettingsDialog", "Information"),
+                                    QCoreApplication.translate("SettingsDialog",
+                                                               "No LADM-COL DB has been configured!\n\nYou'll continue with a limited functionality until you configure an LADM-COL DB connection!"),
+                                    QMessageBox.Ok)
+
+        # If active role is changed (a check and confirmation may be needed), refresh the GUI
         selected_role = self.get_selected_role()
         if self.roles.get_active_role() != selected_role:
             b_change_role = True
             if STSession().is_user_logged():
-                reply = QMessageBox.question(None,
-                                             QCoreApplication.translate("SettingsDialog", "Warning?"),
+                reply = QMessageBox.question(self.parent,
+                                             QCoreApplication.translate("SettingsDialog", "Warning"),
                                              QCoreApplication.translate("SettingsDialog",
                                                                         "You have a ST connection opened and you want to change your role.\nIf you confirm that you want to change your role, you'll be logged out from the ST.\n\nDo you really want to change your role?"),
                                              QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
@@ -272,7 +286,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self.roles.set_active_role(selected_role)
                 self.active_role_changed.emit()
 
-        # Save settings from tabs other than database connection
         self.save_settings(db)
         QDialog.accept(self)
 
