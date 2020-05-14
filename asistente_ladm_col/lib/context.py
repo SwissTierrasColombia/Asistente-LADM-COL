@@ -1,7 +1,9 @@
 from PyQt5.QtCore import QObject
 
+from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
-                                                      SUPPLIES_DB_SOURCE)
+                                                      SUPPLIES_DB_SOURCE,
+                                                      SETTINGS_CONNECTION_TAB_INDEX)
 
 
 class Context(QObject):
@@ -18,6 +20,43 @@ class Context(QObject):
     def set_db_sources(self, db_sources):
         self._db_sources = db_sources
 
+class SettingsContext(Context):
+    """
+    Store parameters that together represent a context for running the Settings dialog
+    """
+    def __init__(self, db_source=COLLECTED_DB_SOURCE):
+        Context.__init__(self, [db_source] if db_source else [COLLECTED_DB_SOURCE])
+
+        self._action_type = EnumDbActionType.CONFIG
+        self._blocking_mode = True  # Allow to save configurations even if DB connection is invalid
+        self._required_models = list()
+
+        # Only show connection tab for supplies
+        self._tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX] if db_source == SUPPLIES_DB_SOURCE else list()
+
+        # TODO: Set active tab!
+        # TODO: Set dialog title!
+
+    def get_db_source(self):
+        return self.get_db_sources()[0]
+
+    def get_action_type(self):
+        return self._action_type
+
+    def get_blocking_mode(self):
+        return self._blocking_mode
+
+    def set_blocking_mode(self, block):
+        self._blocking_mode = block
+
+    def get_tab_pages_list(self):
+        return self._tab_pages_list
+
+    def get_required_models(self):
+        return self._required_models
+
+    def set_required_models(self, models):
+        self._required_models = models
 
 class TaskContext(Context):
     """

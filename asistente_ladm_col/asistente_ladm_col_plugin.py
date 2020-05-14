@@ -90,8 +90,9 @@ from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
-from asistente_ladm_col.lib.context import (Context, 
-                                            TaskContext)
+from asistente_ladm_col.lib.context import (Context,
+                                            TaskContext,
+                                            SettingsContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -159,6 +160,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_supplies.set_db_sources([SUPPLIES_DB_SOURCE])
         self._context_collected_supplies = Context()
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
+        self._context_settings = SettingsContext()
+        self._context_settings.set_blocking_mode(False)  # Settings dialog should not block if called from the action
 
     def initGui(self):
         self.app = AppInterface()
@@ -536,7 +539,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
-        self._settings_action.triggered.connect(self.show_settings)
+        self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
         self._help_action.triggered.connect(partial(show_plugin_help, ''))
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -833,23 +836,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
-        dlg = SettingsDialog(self.conn_manager)
-        db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
-        dlg.set_db_source(db_source)
-        dlg.set_blocking_mode(False)  # Allow to save configurations even if DB connection is invalid
+        if args and isinstance(args[0], SettingsContext):
+            context = args[0]
+        else:
+            context = SettingsContext()  # Context with default configuration for the Settings Dialog
+
+        dlg = SettingsDialog(self.conn_manager, context)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
-        if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
+        if context.get_db_source() == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
-        elif db_source == SUPPLIES_DB_SOURCE:
-            dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])  # Only show connection tab for supplies
 
-        dlg.set_action_type(EnumDbActionType.CONFIG)
         dlg.exec_()
 
-    def show_settings_clear_message_bar(self, db_source):
-        self.show_settings(db_source)
+    def show_settings_clear_message_bar(self, context):
+        self.show_settings(context)
         self.iface.messageBar().popWidget()  # Display the next message in the stack if any or hide the bar
 
     def use_current_db_connection(self, db_source):

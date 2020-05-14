@@ -39,6 +39,7 @@ from asistente_ladm_col.config.transitional_system_config import TransitionalSys
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.lib.context import SettingsContext
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
@@ -50,10 +51,16 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
+    """
+    Customizable dialog to configure LADM-COL Assistant.
+
+    It can be created passing a SettingsContext with specific params
+    or it can be instantiated and then set params one by one.
+    """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
 
-    def __init__(self, conn_manager=None, parent=None):
+    def __init__(self, conn_manager=None, context=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.parent = parent
@@ -61,14 +68,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.conn_manager = conn_manager
         self.app = AppInterface()
 
-        self._db = None
-        self.db_source = COLLECTED_DB_SOURCE  # default db source
-        self._required_models = list()
-        self._tab_pages_list = list()
-        self._blocking_mode = True  # Whether the dialog can only be accepted on valid DB connections or not
-        self.init_db_engine = None
+        context = context if context else SettingsContext()
 
-        self._action_type = None
+        self.db_source = context.get_db_source()  # default db source is COLLECTED_DB_SOURCE
+        self._required_models = context.get_required_models()
+        self._tab_pages_list = context.get_tab_pages_list()
+        self._blocking_mode = context.get_blocking_mode()  # Whether the dialog can only be accepted on valid DB connections or not
+        self._action_type = context.get_action_type()  # By default "config"
+
+        self._db = None
+        self.init_db_engine = None
         self.dbs_supported = ConfigDBsSupported()
 
         self.online_models_radio_button.setChecked(True)
