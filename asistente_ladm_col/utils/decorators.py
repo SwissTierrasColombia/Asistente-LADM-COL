@@ -11,6 +11,7 @@ from qgis.utils import (isPluginLoaded,
                         loadPlugin,
                         startPlugin)
 
+from asistente_ladm_col.lib.context import SettingsContext
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
@@ -75,7 +76,8 @@ def _db_connection_required(func_to_decorate):
                                                                                             "The {} DB connection is not valid. Details: {}").format(db_source, msg))
                     button = QPushButton(widget)
                     button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-                    button.pressed.connect(partial(inst.show_settings_clear_message_bar, db_source))
+                    context = SettingsContext(db_source)
+                    button.pressed.connect(partial(inst.show_settings_clear_message_bar, context))
                     widget.layout().addWidget(button)
                     inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                     inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
