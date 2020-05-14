@@ -130,13 +130,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)
         self.rejected.connect(self.close_dialog)
 
+        self._update_tabs()
+
     def set_db_source(self, db_source):
         self.db_source = db_source
         self.restore_db_source_settings()
 
     def set_tab_pages_list(self, tab_pages_list):
         self._tab_pages_list = tab_pages_list
-        self.show_tabs(tab_pages_list)
+        self._update_tabs()
 
     def set_required_models(self, required_models):
         self._required_models = required_models
@@ -144,13 +146,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def set_blocking_mode(self, block):
         self._blocking_mode = block
 
-    def show_tabs(self, tab_pages_list):
+    def _update_tabs(self):
         """
         Show only those tabs that are listed in tab_pages_list, if any. If it's an empty list, show all tabs.
         """
-        if tab_pages_list:
+        if self._tab_pages_list:
             for i in reversed(range(self.tabWidget.count())):
-                if i not in tab_pages_list:
+                if i not in self._tab_pages_list:
                     self.tabWidget.removeTab(i)
 
     def load_roles(self):
