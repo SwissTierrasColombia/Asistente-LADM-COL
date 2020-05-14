@@ -836,6 +836,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = SettingsDialog(self.conn_manager)
         db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
         dlg.set_db_source(db_source)
+        dlg.set_blocking_mode(False)  # Allow to save configurations even if DB connection is invalid
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
         if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
