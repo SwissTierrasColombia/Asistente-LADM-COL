@@ -216,13 +216,17 @@ class GPKGConnector(FileDB):
         return dict_conn['dbfile']
 
     def open_connection(self):
-        if os.path.exists(self._uri):
+        if os.path.exists(self._uri) and os.path.isfile(self._uri):
             self.conn = qgis.utils.spatialite_connect(self._uri)
             self.conn.row_factory = sqlite3.Row
             return (True, QCoreApplication.translate("GPKGConnector", "Connection is open!"))
-        else:
+        elif not os.path.exists(self._uri):
             return (False, QCoreApplication.translate("GPKGConnector",
                            "Connection could not be open! The file ('{}') does not exist!".format(self._uri)))
+        elif os.path.isdir(self._uri):
+            return (False, QCoreApplication.translate("GPKGConnector",
+                                                      "Connection could not be open! The URI ('{}') is not a file!".format(
+                                                          self._uri)))
 
     def close_connection(self):
         if self.conn:
