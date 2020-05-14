@@ -16,7 +16,7 @@ Para usar el Asistente LADM_COL se requiere:
    - PostGIS 2.4 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM_COL usando el Administrador de Complementos de QGIS,
    las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.0.0
+   - `QGIS Model Baker v6.1.1.1 <https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip>`_.
    - MapSwipe Tool v1.2
 
 Proceso de instalación

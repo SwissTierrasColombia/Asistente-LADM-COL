@@ -13,7 +13,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([2.99.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.1)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.0.0](https://github.com/opengisch/QgisModelBaker/releases/download/v6.0.0/qgis-model-baker.v6.0.0.zip) y permite:
+La versión actual ([2.99.4](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.4)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) y permite:
 
  - Integración con el Sistema de Transición:
    - Autenticación.
