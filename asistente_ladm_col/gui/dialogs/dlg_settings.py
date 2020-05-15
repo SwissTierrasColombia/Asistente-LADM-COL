@@ -134,7 +134,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._update_tabs()
 
         if context.tip:
-            self.show_message(context.tip, Qgis.Info, 0)  # Don't show counter for the tip message
+            self.show_tip(context.tip)
 
     def set_db_source(self, db_source):
         self.db_source = db_source
@@ -489,6 +489,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def show_message(self, message, level, duration=10):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, duration)
+
+    def show_tip(self, tip):
+        self.show_message(tip, Qgis.Info, 0)  # Don't show counter for the tip message
 
     def update_images_state(self, checked):
         self.img_with_roads.setEnabled(checked)

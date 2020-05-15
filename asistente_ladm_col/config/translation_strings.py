@@ -1,6 +1,8 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 from asistente_ladm_col.config.enums import EnumQualityRule
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E100101,
                                                             QUALITY_RULE_ERROR_CODE_E100201,
                                                             QUALITY_RULE_ERROR_CODE_E100301,
@@ -121,6 +123,13 @@ class TranslatableConfigStrings(QObject):
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def tr_db_source(source):
+        if source == COLLECTED_DB_SOURCE:
+            return QCoreApplication.translate("TranslatableConfigStrings", "COLLECTED")
+        elif source == SUPPLIES_DB_SOURCE:
+            return QCoreApplication.translate("TranslatableConfigStrings", "SUPPLIES")
 
     @staticmethod
     def get_translatable_config_strings():

@@ -332,6 +332,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
     def show_settings(self):
         dlg = SettingsDialog(self.conn_manager)
+        dlg.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "Target DB Connection Settings"))
+        dlg.show_tip(QCoreApplication.translate("SuppliesETLWizard", "Configure where do you want the data to be imported."))
         dlg.set_db_source(self.db_source)
 
         dlg.db_connection_changed.connect(self.db_connection_changed)
