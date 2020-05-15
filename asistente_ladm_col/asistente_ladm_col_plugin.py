@@ -161,7 +161,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_collected_supplies = Context()
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
         self._context_settings = SettingsContext()
-        self._context_settings.set_blocking_mode(False)  # Settings dialog should not block if called from the action
+        self._context_settings.blocking_mode = False  # Settings dialog should not block if called from the action
 
     def initGui(self):
         self.app = AppInterface()
@@ -844,7 +844,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = SettingsDialog(self.conn_manager, context)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
-        if context.get_db_source() == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
+        if context.db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
 
