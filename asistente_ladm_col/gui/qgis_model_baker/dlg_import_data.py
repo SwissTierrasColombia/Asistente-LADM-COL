@@ -239,6 +239,8 @@ class DialogImportData(QDialog, DIALOG_UI):
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
         dlg = SettingsDialog(self.conn_manager)
+        dlg.setWindowTitle(QCoreApplication.translate("DialogImportData", "Target DB Connection Settings"))
+        dlg.show_tip(QCoreApplication.translate("DialogImportData", "Configure where do you want the XTF data to be imported."))
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 
