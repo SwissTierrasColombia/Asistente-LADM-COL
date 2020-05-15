@@ -19,7 +19,7 @@ Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF
 
 ## Funcionalidades
 
-La versión actual ([2.99.3](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/2.99.3)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) y permite:
+La versión actual ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/2.99.4)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) y permite:
 
  - Integración con el Sistema de Transición:
    - Autenticación.
@@ -31,7 +31,7 @@ La versión actual ([2.99.3](https://github.com/SwissTierrasColombia/Asistente-L
  - Crear estructura de base de datos conforme con el modelo LADM-COL v2.9.6.
  - Soporte de dos motores para manejar datos de LADM-COL:
    - PostgreSQL/PostGIS: Soporte total.
-   - GeoPackage: Validaciones de calidad y reportes no están soportados.
+   - GeoPackage: Soporte total, exceptuando el módulo de reportes.
  - Capturar datos para el modelo `OPERACIÓN v2.9.6` ([descargar](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).

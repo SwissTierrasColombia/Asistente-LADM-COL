@@ -4,25 +4,24 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>2.99.3</b></p>
+<p>Cambios en la version <b>2.99.4</b></p>
 <ul>
-    <li>Plugin renombrado a "Asistente LADM-COL".</li>
-    <li>Consultas:
+    <li>Soporte de validación de <b>reglas de calidad</b> para GeoPackage.</li>
+    <li>Nueva herramienta para <b>arreglar relaciones rotas</b> de LADM-COL. Si los usuarios remueven capas relacionadas, esta herramienta las configura de nuevo.</li>
+    <li><b>Sistema de Transición (ST)</b>:
         <ul>
-            <li>Soporte de consultas a LADM-COL usando objetos de QGIS.</li>
-            <li>Soporte de consultas para el motor GeoPackage.</li>
+            <li>Cambio de rol automático en el Asistente LADM-COL en el momento de ingreso al ST. Esto es, la interfaz del Asistente LADM-COL, siempre coincidirá con el rol activo en el ST.</li>
+            <li>Solo se puede cambiar de rol en el Asistente LADM-COL si no hay sesión activa del ST.</li>
+            <li>La librería para encriptar/desencriptar (algo pesada) ahora se descarga por demanda, solo si el usuario utiliza una funcionalidad que la requiera.</li>
         </ul>
     </li>
-    <li>ETL:
+    <li>Usabilidad:
         <ul>
-            <li>Optimizaciones en rendimiento. Ahora los ETLs deben correr mucho más rápido.</li>
-            <li>Se agrega resumen de la ejecución de un ETL: número de registro agregados por tabla/capa.</li>
+            <li>Los <b>paneles del plugin</b> (ST, Consultas, Identificación de novedades) se agregan como pestañas en la región derecha, evitando que aparezcan divididos y por ende, incompletos. (<a href="https://github.com/qgis/QGIS/pull/35933" target="_blank">¡mejora en QGIS!</a>).</li>
+            <li>El diálogo de <b>Configuración</b> ya no bloquea si la BD no es LADM-COL, en cuyo caso avisa al usuario que las funcionalidades serán limitadas hasta configurar una BD válida. Esto evita perder configuraciones.</li>
+            <li>El diálogo de <b>Configuración</b> se personaliza para los diferentes contextos en los que se muestra. En cada contexto se agrega título y descripción al usuario, removiendo además pestañas del diálogo que no serán útiles en el contexto actual.</li>
         </ul>
-    <li>Reglas de Calidad:
-        <ul>
-           <li>Botones par exportar errores de calidad a GeoPackage y a PDF en el panel de capas.</li>
-        </ul>
-    <li>Uso obligatorio de la columna t_ili_tid (identificador de sistema para los objetos) para exportar e importar XTFs. El plugin soporta calcular dicho campo de manera automática.</li>
+    </li>
 </ul>
 </body>
 </html>

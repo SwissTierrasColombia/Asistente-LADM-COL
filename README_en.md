@@ -18,7 +18,7 @@ A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-S
 
 ## Functionalities
 
-The current version ([2.99.3](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/2.99.3)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) and allows users to:
+The current version ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/2.99.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -30,7 +30,7 @@ The current version ([2.99.3](https://github.com/SwissTierrasColombia/Asistente-
  - Create database structures for the LADM-COL v2.9.6 model.
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
-   - GeoPackage: quality validations and reports are not yet supported.
+   - GeoPackage: Total support (except reports).
  - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/SwissTierrasColombia/LADM-COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
