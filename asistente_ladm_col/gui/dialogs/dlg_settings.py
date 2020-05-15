@@ -70,11 +70,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         context = context if context else SettingsContext()
 
-        self.db_source = context.get_db_source()  # default db source is COLLECTED_DB_SOURCE
-        self._required_models = context.get_required_models()
-        self._tab_pages_list = context.get_tab_pages_list()
-        self._blocking_mode = context.get_blocking_mode()  # Whether the dialog can only be accepted on valid DB connections or not
-        self._action_type = context.get_action_type()  # By default "config"
+        self.db_source = context.db_source  # default db source is COLLECTED_DB_SOURCE
+        self._required_models = context.required_models
+        self._tab_pages_list = context.tab_pages_list
+        self._blocking_mode = context.blocking_mode  # Whether the dialog can only be accepted on valid DB connections or not
+        self._action_type = context.action_type  # By default "config"
+        self.setWindowTitle(context.title)
 
         self._db = None
         self.init_db_engine = None
@@ -131,6 +132,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.rejected.connect(self.close_dialog)
 
         self._update_tabs()
+
+        if context.tip:
+            self.show_message(context.tip, Qgis.Info, 0)  # Don't show counter for the tip message
 
     def set_db_source(self, db_source):
         self.db_source = db_source
@@ -482,9 +486,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def set_default_value_transitional_system_service(self):
         self.txt_service_transitional_system.setText(TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
-    def show_message(self, message, level):
+    def show_message(self, message, level, duration=10):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage(message, level, 10)
+        self.bar.pushMessage(message, level, duration)
 
     def update_images_state(self, checked):
         self.img_with_roads.setEnabled(checked)

@@ -1,4 +1,5 @@
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import (QObject,
+                          QCoreApplication)
 
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
@@ -20,6 +21,7 @@ class Context(QObject):
     def set_db_sources(self, db_sources):
         self._db_sources = db_sources
 
+
 class SettingsContext(Context):
     """
     Store parameters that together represent a context for running the Settings dialog
@@ -27,39 +29,72 @@ class SettingsContext(Context):
     def __init__(self, db_source=COLLECTED_DB_SOURCE):
         Context.__init__(self, [db_source] if db_source else [COLLECTED_DB_SOURCE])
 
-        self._action_type = EnumDbActionType.CONFIG
-        self._blocking_mode = True  # Allow to save configurations even if DB connection is invalid
-        self._required_models = list()
+        self.db_source = db_source
+        self.action_type = EnumDbActionType.CONFIG
+        self.blocking_mode = True  # Allow to save configurations even if DB connection is invalid
+        self.required_models = list()
+        self.title = QCoreApplication.translate("SettingsDialog", "Settings")
+        self.tip = QCoreApplication.translate("SettingsDialog", "")
 
         # Only show connection tab for supplies
-        self._tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX] if db_source == SUPPLIES_DB_SOURCE else list()
+        self.tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX] if db_source == SUPPLIES_DB_SOURCE else list()
 
-        # TODO: Set active tab!
-        # TODO: Set dialog title!
-
-    def get_db_source(self):
+    @property
+    def db_source(self):
         return self.get_db_sources()[0]
 
-    def get_action_type(self):
-        return self._action_type
+    @db_source.setter
+    def db_source(self, db_source):
+        self.__db_source = db_source
 
-    def get_blocking_mode(self):
-        return self._blocking_mode
+    @property
+    def action_type(self):
+        return self.__action_type
 
-    def set_blocking_mode(self, block):
-        self._blocking_mode = block
+    @action_type.setter
+    def action_type(self, action_type):
+        self.__action_type = action_type
 
-    def get_tab_pages_list(self):
-        return self._tab_pages_list
+    @property
+    def blocking_mode(self):
+        return self.__blocking_mode
 
-    def set_tab_pages_list(self, tab_pages_list):
-        self._tab_pages_list = tab_pages_list
+    @blocking_mode.setter
+    def blocking_mode(self, block):
+        self.__blocking_mode = block
 
-    def get_required_models(self):
-        return self._required_models
+    @property
+    def tab_pages_list(self):
+        return self.__tab_pages_list
 
-    def set_required_models(self, models):
-        self._required_models = models
+    @tab_pages_list.setter
+    def tab_pages_list(self, tab_pages_list):
+        self.__tab_pages_list = tab_pages_list
+
+    @property
+    def required_models(self):
+        return self.__required_models
+
+    @required_models.setter
+    def required_models(self, models):
+        self.__required_models = models
+
+    @property
+    def title(self):
+        return self.__title
+
+    @title.setter
+    def title(self, title):
+        self.__title = title
+
+    @property
+    def tip(self):
+        return self.__tip
+
+    @tip.setter
+    def tip(self, tip):
+        self.__tip = tip
+
 
 class TaskContext(Context):
     """
