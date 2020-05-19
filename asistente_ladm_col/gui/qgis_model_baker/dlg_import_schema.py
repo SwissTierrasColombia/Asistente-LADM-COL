@@ -48,7 +48,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR,
                                                       CTM12_PG_SCRIPT_PATH,
-                                                      CTM12_GPKG_SCRIPT_PATH)
+                                                      CTM12_GPKG_SCRIPT_PATH, DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -360,7 +360,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         srs_auth, srs_code = self.crsSelector.crs().authid().split(":")
         if srs_auth == 'USER':
             self.crs_label.setStyleSheet('color: orange')
-            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "USER crs are only valid for one machine. We'll use the default STC:38820"))
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "USER crs are only valid for one machine. We'll use the default {}").format(DEFAULT_SRS_AUTHID))
             self.srs_auth = DEFAULT_SRS_AUTH
             self.srs_code = int(DEFAULT_SRS_CODE)
         else:

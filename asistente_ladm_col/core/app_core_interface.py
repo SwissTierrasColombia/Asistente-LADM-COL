@@ -1016,8 +1016,6 @@ class AppCoreInterface(QObject):
 
             res = processing.run("native:reprojectlayer", parameters)
             csv_layer = res['OUTPUT']
-            if not csv_layer.crs().isValid():  # Fallback for CTM12
-                csv_layer.setCrs(get_ctm12_crs())
 
         if not csv_layer.isValid():
             self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
