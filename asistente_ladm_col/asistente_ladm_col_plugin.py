@@ -848,6 +848,9 @@ class AsistenteLADMCOLPlugin(QObject):
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
 
+        if context.action_type == EnumDbActionType.CONFIG:
+            dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
+
         dlg.exec_()
 
     def show_settings_clear_message_bar(self, context):
@@ -903,7 +906,7 @@ class AsistenteLADMCOLPlugin(QObject):
         Can be called from 1) an action, 2) from a signal or 3) directly.
 
         In 1) args has a Context argument and then a False argument from QAction.triggered.
-        In 2) either args comes with a dict inside (hence the "if args" below) from import_data.
+        In 2) args comes with a dict inside (hence the "if args" below) from import_data.
         In 3) **{} is passed, hence the "if kwargs" below.
         """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema

@@ -39,7 +39,8 @@ from asistente_ladm_col.config.transitional_system_config import TransitionalSys
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
-from asistente_ladm_col.lib.context import SettingsContext
+from asistente_ladm_col.lib.context import (SettingsContext,
+                                            Context)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
@@ -59,6 +60,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
+    open_dlg_import_schema = pyqtSignal(Context)  # Context for the import schema dialog
 
     def __init__(self, conn_manager=None, context=None, parent=None):
         QDialog.__init__(self, parent)
@@ -80,6 +82,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.init_db_engine = None
         self.dbs_supported = ConfigDBsSupported()
+        self._open_dlg_import_schema = False  # After accepting, if non-valid DB is configured, we can go to import schema
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -273,11 +276,19 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
         if not ladm_col_schema and self._action_type == EnumDbActionType.CONFIG:
-            QMessageBox.information(self.parent,
-                                    QCoreApplication.translate("SettingsDialog", "Information"),
-                                    QCoreApplication.translate("SettingsDialog",
-                                                               "No LADM-COL DB has been configured!\n\nYou'll continue with a limited functionality until you configure an LADM-COL DB connection!"),
-                                    QMessageBox.Ok)
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Question)
+            msg_box.setText(QCoreApplication.translate("SettingsDialog",
+                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
+            msg_box.setWindowTitle(QCoreApplication.translate("SettingsDialog", "Important"))
+            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Ignore)
+            msg_box.setDefaultButton(QMessageBox.Ignore)
+            msg_box.button(QMessageBox.Yes).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, go to create structure"))
+            msg_box.button(QMessageBox.Ignore).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, I'll do it later"))
+            reply = msg_box.exec_()
+
+            if reply == QMessageBox.Yes:
+                self._open_dlg_import_schema = True  # We will open it when we've closed this Settings dialog
 
         # If active role is changed (a check and confirmation may be needed), refresh the GUI
         selected_role = self.get_selected_role()
@@ -302,9 +313,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self.active_role_changed.emit()
 
         self.save_settings(db)
-        QDialog.accept(self)
 
+        QDialog.accept(self)
         self.close()
+
+        if self._open_dlg_import_schema:
+            # After Settings dialog has been closed, we could call Import Schema depending on user's answer above
+            self.open_dlg_import_schema.emit(Context())
+            self.logger.debug(__name__, "Settings dialog emitted a show Import Schema dialog.")
 
     def get_selected_role(self):
         selected_role = None
