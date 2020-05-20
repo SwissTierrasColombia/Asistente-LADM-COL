@@ -54,14 +54,14 @@ class TestChangeDetectionsCollected(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg, parcel_ids_test, self.names.OP_PLOT_T_PLOT_AREA_F)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg, parcel_ids_test, self.names.LC_PLOT_T_PLOT_AREA_F)
             self.assertCountEqual(plot_custom_field_ids, plot_custom_field_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
         print("\nINFO: Validating get plots related to parcels (Case: t_id) with preloaded tables...")
 
         layers = {
-            self.names.OP_PLOT_T: None,
+            self.names.LC_PLOT_T: None,
             self.names.COL_UE_BAUNIT_T: None
         }
         self.app.core.get_layers(self.db_pg, layers, load=True)
@@ -72,7 +72,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_pg,
                                                                    parcel_ids_test,
                                                                    self.names.T_ID_F,
-                                                                   plot_layer=layers[self.names.OP_PLOT_T],
+                                                                   plot_layer=layers[self.names.LC_PLOT_T],
                                                                    uebaunit_table=layers[self.names.COL_UE_BAUNIT_T])
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
@@ -100,7 +100,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         for plot_ids_test in plot_ids_tests:
             parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg,
                                                                                   plot_ids_test,
-                                                                                  self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
+                                                                                  self.names.LC_PARCEL_T_PARCEL_NUMBER_F)
             self.assertCountEqual(parcel_custom_field_ids, parcel_custom_field_ids_tests[count],
                                   "Failure with data set {}".format(count + 1))
             count += 1
@@ -108,7 +108,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots (Case: t_id) with preloaded tables...")
 
         layers = {
-            self.names.OP_PARCEL_T: None,
+            self.names.LC_PARCEL_T: None,
             self.names.COL_UE_BAUNIT_T: None
         }
         self.app.core.get_layers(self.db_pg, layers, load=True)
@@ -119,7 +119,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_pg,
                                                                      plot_ids_test,
                                                                      self.names.T_ID_F,
-                                                                     parcel_table=layers[self.names.OP_PARCEL_T],
+                                                                     parcel_table=layers[self.names.LC_PARCEL_T],
                                                                      uebaunit_table=layers[self.names.COL_UE_BAUNIT_T])
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
@@ -1117,7 +1117,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             ]
         }
 
-        search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
+        search_criterion = {self.names.LC_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
         normalize_response(features)
         self.assertEqual(features, features_test)
@@ -1367,7 +1367,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
             ]
         }
 
-        search_criterion = {self.names.OP_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230241000000000'}
+        search_criterion = {self.names.LC_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230241000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
         normalize_response(features)
         self.assertEqual(features, features_test)

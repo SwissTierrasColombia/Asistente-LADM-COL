@@ -57,45 +57,45 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
         self._current_layer = None
 
     def check_selected_features(self):
-        self.rad_to_plot.setText(QCoreApplication.translate("WizardTranslations", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T].selectedFeatureCount()))
-        self.rad_to_building.setText(QCoreApplication.translate("WizardTranslations", "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T].selectedFeatureCount()))
-        self.rad_to_building_unit.setText(QCoreApplication.translate("WizardTranslations", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount()))
+        self.rad_to_plot.setText(QCoreApplication.translate("WizardTranslations", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
+        self.rad_to_building.setText(QCoreApplication.translate("WizardTranslations", "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_T].selectedFeatureCount()))
+        self.rad_to_building_unit.setText(QCoreApplication.translate("WizardTranslations", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()))
 
         if self._current_layer is None:
-            if self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.OP_PLOT_T:
+            if self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_PLOT_T:
                 self.rad_to_plot.setChecked(True)
-                self._current_layer = self._layers[self.names.OP_PLOT_T]
-            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.OP_BUILDING_T:
+                self._current_layer = self._layers[self.names.LC_PLOT_T]
+            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_BUILDING_T:
                 self.rad_to_building.setChecked(True)
-                self._current_layer = self._layers[self.names.OP_BUILDING_T]
-            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.OP_BUILDING_UNIT_T:
+                self._current_layer = self._layers[self.names.LC_BUILDING_T]
+            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_BUILDING_UNIT_T:
                 self.rad_to_building_unit.setChecked(True)
-                self._current_layer = self._layers[self.names.OP_BUILDING_UNIT_T]
+                self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
             else:
                 # Select layer that have least one feature selected
                 # as current layer when current layer is not defined
-                if self._layers[self.names.OP_PLOT_T].selectedFeatureCount():
+                if self._layers[self.names.LC_PLOT_T].selectedFeatureCount():
                     self.rad_to_plot.setChecked(True)
-                    self._current_layer = self._layers[self.names.OP_PLOT_T]
-                elif self._layers[self.names.OP_BUILDING_T].selectedFeatureCount():
+                    self._current_layer = self._layers[self.names.LC_PLOT_T]
+                elif self._layers[self.names.LC_BUILDING_T].selectedFeatureCount():
                     self.rad_to_building.setChecked(True)
-                    self._current_layer = self._layers[self.names.OP_BUILDING_T]
-                elif self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount():
+                    self._current_layer = self._layers[self.names.LC_BUILDING_T]
+                elif self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount():
                     self.rad_to_building_unit.setChecked(True)
-                    self._current_layer = self._layers[self.names.OP_BUILDING_UNIT_T]
+                    self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
                 else:
                     # By default current_layer will be plot layer
                     self.rad_to_plot.setChecked(True)
-                    self._current_layer = self._layers[self.names.OP_PLOT_T]
+                    self._current_layer = self._layers[self.names.LC_PLOT_T]
 
         if self.rad_to_plot.isChecked():
             self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
             self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in plot layer
-            if self._layers[self.names.OP_PLOT_T].selectedFeatureCount() == 1:
+            if self._layers[self.names.LC_PLOT_T].selectedFeatureCount() == 1:
                 self.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[self.names.OP_PLOT_T].selectedFeatureCount() > 1:
+            elif self._layers[self.names.LC_PLOT_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
                 self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -107,9 +107,9 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building layer
-            if self._layers[self.names.OP_BUILDING_T].selectedFeatureCount() == 1:
+            if self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() == 1:
                 self.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[self.names.OP_BUILDING_T].selectedFeatureCount() > 1:
+            elif self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
                 self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -121,9 +121,9 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building unit layer
-            if self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount() == 1:
+            if self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() == 1:
                 self.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount() > 1:
+            elif self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one features selected
                 self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -134,11 +134,11 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
         self.canvas.zoomToSelected(self._current_layer)
 
         # Condition for enabling the finish button
-        if self.rad_to_plot.isChecked() and self._layers[self.names.OP_PLOT_T].selectedFeatureCount() == 1:
+        if self.rad_to_plot.isChecked() and self._layers[self.names.LC_PLOT_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building.isChecked() and self._layers[self.names.OP_BUILDING_T].selectedFeatureCount() == 1:
+        elif self.rad_to_building.isChecked() and self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building_unit.isChecked() and self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount() == 1:
+        elif self.rad_to_building_unit.isChecked() and self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)
@@ -173,12 +173,12 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
             feature_id = self._current_layer.selectedFeatures()[0][self.names.T_ID_F]
             fid = feature.id()
 
-            if self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_PLOT_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_PLOT_F)
-            elif self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_BUILDING_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_BUILDING_F)
-            elif self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_BUILDING_UNIT_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
+            if self._db.get_ladm_layer_name(self._current_layer) == self.names.LC_PLOT_T:
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_LC_PLOT_F)
+            elif self._db.get_ladm_layer_name(self._current_layer) == self.names.LC_BUILDING_T:
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_LC_BUILDING_F)
+            elif self._db.get_ladm_layer_name(self._current_layer) == self.names.LC_BUILDING_UNIT_T:
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_LC_BUILDING_UNIT_F)
 
         if spatial_unit_field_idx:
             # assign the relation with the spatial unit
@@ -213,14 +213,14 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_PLOT_T]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_T]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_UNIT_T]))
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_PLOT_T]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_T]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_UNIT_T]))
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_T]))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     #############################################################################
     # Override methods
@@ -310,21 +310,21 @@ class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
 
         if self.rad_to_plot.isChecked():
             self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
-            self._current_layer = self._layers[self.names.OP_PLOT_T]
+            self._current_layer = self._layers[self.names.LC_PLOT_T]
 
             self.btn_plot_map.setEnabled(True)
             self.btn_plot_expression.setEnabled(True)
 
         elif self.rad_to_building.isChecked():
             self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
-            self._current_layer = self._layers[self.names.OP_BUILDING_T]
+            self._current_layer = self._layers[self.names.LC_BUILDING_T]
 
             self.btn_building_map.setEnabled(True)
             self.btn_building_expression.setEnabled(True)
 
         elif self.rad_to_building_unit.isChecked():
             self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
-            self._current_layer = self._layers[self.names.OP_BUILDING_UNIT_T]
+            self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
 
             self.btn_building_unit_map.setEnabled(True)
             self.btn_building_unit_expression.setEnabled(True)

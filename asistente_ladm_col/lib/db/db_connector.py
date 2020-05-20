@@ -219,9 +219,9 @@ class DBConnector(QObject):
 
             "LADM_COL.LADM_Nucleo.col_masCcl": {
                 'table_name': 'col_masccl',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
                 'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
             }
         """

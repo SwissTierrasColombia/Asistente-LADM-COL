@@ -61,12 +61,11 @@ class TestReferenceCartographyModel(unittest.TestCase):
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
                          'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas_op_lindero',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal': 'ccl_mas_crf_estructuralineal',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno': 'ue_mas_op_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion': 'ue_mas_op_unidadconstruccion'}}
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Terreno': 'ue_mas_lc_terreno',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_UnidadConstruccion': 'ue_mas_lc_unidadconstruccion'}}
 
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
@@ -86,12 +85,11 @@ class TestReferenceCartographyModel(unittest.TestCase):
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',
                          'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas_op_lindero',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal': 'ccl_mas_crf_estructuralineal',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno': 'ue_mas_op_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion': 'ue_mas_op_unidadconstruccion'}}
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Terreno': 'ue_mas_lc_terreno',
+                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_UnidadConstruccion': 'ue_mas_lc_unidadconstruccion'}}
 
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
@@ -110,7 +108,7 @@ class TestReferenceCartographyModel(unittest.TestCase):
         self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
-        test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D']
+        test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'LC_BUILDING_TYPE_D', 'LC_DOMAIN_BUILDING_TYPE_D', 'LC_BUILDING_UNIT_TYPE_D', 'LC_GROUP_PARTY_T', 'LC_BUILDING_UNIT_T', 'LC_BUILDING_T', 'LC_RIGHT_T', 'LC_ADMINISTRATIVE_SOURCE_T', 'LC_SPATIAL_SOURCE_T', 'LC_PARTY_T', 'LC_BOUNDARY_T', 'LC_PARCEL_T', 'LC_BOUNDARY_POINT_T', 'LC_RESTRICTION_T', 'LC_RIGHT_OF_WAY_T', 'LC_PLOT_T', 'LC_ADMINISTRATIVE_SOURCE_TYPE_D', 'LC_PARTY_TYPE_D', 'LC_PARCEL_TYPE_D', 'LC_CONTROL_POINT_TYPE_D', 'LC_SURVEY_POINT_TYPE_D', 'LC_POINT_TYPE_D']
         required_tables = get_required_tables(db_connection)
 
         for test_required_table in test_required_tables:
@@ -129,7 +127,7 @@ class TestReferenceCartographyModel(unittest.TestCase):
         self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):
-        test_required_fields = ['MORE_BFS_T_CRF_LINEAR_STRUCTURE_F', 'LESS_BFS_T_CRF_LINEAR_STRUCTURE_F', 'POINT_BFS_T_CRF_LINEAR_STRUCTURE_F']
+        test_required_fields = [] # TODO: Update list with correct values
         required_fields = get_required_fields(db_connection)
 
         for test_required_field in test_required_fields:

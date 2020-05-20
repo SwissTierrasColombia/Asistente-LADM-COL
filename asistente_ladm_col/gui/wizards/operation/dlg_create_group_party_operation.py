@@ -64,8 +64,8 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         self.parties_to_group = {} # {t_id: [denominator, numerator]}
 
         self._layers = {
-            self.names.OP_GROUP_PARTY_T: None,
-            self.names.OP_PARTY_T: None,
+            self.names.LC_GROUP_PARTY_T: None,
+            self.names.LC_PARTY_T: None,
             self.names.MEMBERS_T: None,
             self.names.FRACTION_S: None,
             self.names.COL_GROUP_PARTY_TYPE_D: None
@@ -113,10 +113,10 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
         return layers_are_available
 
     def load_parties_data(self):
-        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names)[self.names.OP_PARTY_T])
+        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names)[self.names.LC_PARTY_T])
         context = QgsExpressionContext()
         data = dict()
-        for feature in self._layers[self.names.OP_PARTY_T].getFeatures():
+        for feature in self._layers[self.names.LC_PARTY_T].getFeatures():
             context.setFeature(feature)
             expression.prepare(context)
             value = expression.evaluate(context)
@@ -327,7 +327,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
     def save_group_party(self, db, params):
         """
-        Save group party data into associated tables: self.names.OP_GROUP_PARTY_T,
+        Save group party data into associated tables: self.names.LC_GROUP_PARTY_T,
         self.names.MEMBERS_T and self.names.FRACTION_S.
 
         params: List of dicts, where each dict is an independent group party:
@@ -345,29 +345,29 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
         for group in params:
             # Create connections to react when a group party is stored to the DB
-            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
+            self._layers[self.names.LC_GROUP_PARTY_T].committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
 
             # First save the group party
-            new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.OP_GROUP_PARTY_T])
+            new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.LC_GROUP_PARTY_T])
             new_feature.setAttribute(self.names.COL_GROUP_PARTY_T_TYPE_F, group[self.names.COL_GROUP_PARTY_T_TYPE_F])
             new_feature.setAttribute(self.names.COL_PARTY_T_NAME_F, group[self.names.COL_PARTY_T_NAME_F])
 
             # TODO: Remove when local id and namespace are defined
             #new_feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
-            #new_feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_GROUP_PARTY_T)
+            #new_feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.LC_GROUP_PARTY_T)
 
             # TODO: Gui should allow users to enter namespace, local_id and date values
-            #new_feature.setAttribute("p_espacio_de_nombres", self.names.OP_GROUP_PARTY_T)
+            #new_feature.setAttribute("p_espacio_de_nombres", self.names.LC_GROUP_PARTY_T)
             #new_feature.setAttribute("p_local_id", '0')
             #new_feature.setAttribute("comienzo_vida_util_version", 'now()')
 
             self.logger.info(__name__, "Saving Group Party: {}".format(group))
-            with edit(self._layers[self.names.OP_GROUP_PARTY_T]):
-                self._layers[self.names.OP_GROUP_PARTY_T].addFeature(new_feature)
+            with edit(self._layers[self.names.LC_GROUP_PARTY_T]):
+                self._layers[self.names.LC_GROUP_PARTY_T].addFeature(new_feature)
 
     def finish_group_party_saving(self, members, layer_id, features):
         try:
-            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
+            self._layers[self.names.LC_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 
@@ -379,10 +379,10 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
             self.logger.warning(__name__, "We should have got only one group party... We cannot do anything with {} group parties".format(len(features)))
         else:
             fid = features[0].id()
-            if not self._layers[self.names.OP_GROUP_PARTY_T].getFeature(fid).isValid():
+            if not self._layers[self.names.LC_GROUP_PARTY_T].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in table Group Party...")
             else:
-                group_party_id = self._layers[self.names.OP_GROUP_PARTY_T].getFeature(fid)[self.names.T_ID_F]
+                group_party_id = self._layers[self.names.LC_GROUP_PARTY_T].getFeature(fid)[self.names.T_ID_F]
 
                 # Now save members
                 party_ids = list()
@@ -443,7 +443,7 @@ class CreateGroupPartyOperation(QDialog, DIALOG_UI):
 
     def disconnect_signals(self):
         try:
-            self._layers[self.names.OP_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
+            self._layers[self.names.LC_GROUP_PARTY_T].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
         try:

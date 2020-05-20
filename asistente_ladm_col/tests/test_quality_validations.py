@@ -218,15 +218,15 @@ class TesQualityValidations(unittest.TestCase):
 
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
         point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
@@ -313,15 +313,15 @@ class TesQualityValidations(unittest.TestCase):
 
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
         point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
@@ -435,15 +435,15 @@ class TesQualityValidations(unittest.TestCase):
 
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
         point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
@@ -526,15 +526,15 @@ class TesQualityValidations(unittest.TestCase):
 
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.OP_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
         point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
@@ -1370,7 +1370,7 @@ class TesQualityValidations(unittest.TestCase):
         result = db_pg.test_connection()
 
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         self.check_logic_quality_rules(db_pg)
 

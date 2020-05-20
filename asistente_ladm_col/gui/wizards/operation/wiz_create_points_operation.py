@@ -64,9 +64,9 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            self.names.OP_BOUNDARY_POINT_T: None,
-            self.names.OP_SURVEY_POINT_T: None,
-            self.names.OP_CONTROL_POINT_T: None
+            self.names.LC_BOUNDARY_POINT_T: None,
+            self.names.LC_SURVEY_POINT_T: None,
+            self.names.LC_CONTROL_POINT_T: None
         }
 
         self.target_layer = None
@@ -272,11 +272,11 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
     def current_point_name(self):
         if self.rad_boundary_point.isChecked():
-            return self.names.OP_BOUNDARY_POINT_T
+            return self.names.LC_BOUNDARY_POINT_T
         elif self.rad_survey_point.isChecked():
-            return self.names.OP_SURVEY_POINT_T
+            return self.names.LC_SURVEY_POINT_T
         else:
-            return self.names.OP_CONTROL_POINT_T
+            return self.names.LC_CONTROL_POINT_T
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()

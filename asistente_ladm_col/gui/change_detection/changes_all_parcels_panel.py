@@ -74,7 +74,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_table(dict_parcels, types_change_detection)
 
     def deselect_plots(self):
-        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._layers[self.utils._db.names.LC_PLOT_T].removeSelection()
         self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
 
     def fill_table(self, dict_parcels, types_change_detection):
@@ -141,7 +141,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.utils._db,
                 parcel_ids_collected,
                 None,  # Get QGIS plot ids
-                self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                self.utils._layers[self.utils._db.names.LC_PLOT_T],
                 self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T])
 
         plot_ids_supplies = list()
@@ -154,7 +154,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Now that we've got plot ids, select them and zoom to them (combining the extent from both plot layers)
         if plot_ids_collected:
-            self.utils._layers[self.utils._db.names.OP_PLOT_T].selectByIds(plot_ids_collected)
+            self.utils._layers[self.utils._db.names.LC_PLOT_T].selectByIds(plot_ids_collected)
 
         if plot_ids_supplies:
             self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].selectByIds(plot_ids_supplies)
@@ -162,7 +162,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.zoom_to_selected_plots()
 
     def zoom_to_selected_plots(self):
-        plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T]
+        plot_layer = self.utils._layers[self.utils._db.names.LC_PLOT_T]
         supplies_plot_layer = self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T]
         bbox_selected_features = QgsRectangle()
 
@@ -190,8 +190,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             return
 
         layers = {
-            base_db.names.OP_PLOT_T: None,
-            base_db.names.OP_PARCEL_T: None,
+            base_db.names.LC_PLOT_T: None,
+            base_db.names.LC_PARCEL_T: None,
             base_db.names.COL_UE_BAUNIT_T: None
         }
 
@@ -199,12 +199,12 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if not layers:
             return None
 
-        layers[base_db.names.OP_PLOT_T].setSubsetString("")
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(base_db, parcels_t_ids, None, plot_layer=layers[base_db.names.OP_PLOT_T], uebaunit_table=layers[base_db.names.COL_UE_BAUNIT_T])
+        layers[base_db.names.LC_PLOT_T].setSubsetString("")
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(base_db, parcels_t_ids, None, plot_layer=layers[base_db.names.LC_PLOT_T], uebaunit_table=layers[base_db.names.COL_UE_BAUNIT_T])
 
         if plot_ids:
             action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
-            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, layers[base_db.names.OP_PLOT_T], plot_ids, dict()))
+            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, layers[base_db.names.LC_PLOT_T], plot_ids, dict()))
             context_menu.addAction(action_zoom)
 
         action_view_changes = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "View changes for this parcel number"))
@@ -257,7 +257,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.select_related_plots(parcels_t_ids_collected, False)
 
             if zoom_to_selected:
-                plot_layer = self.utils._layers[self.utils._db.names.OP_PLOT_T]
+                plot_layer = self.utils._layers[self.utils._db.names.LC_PLOT_T]
                 bbox_selected_features.combineExtentWith(plot_layer.boundingBoxOfSelected())
 
         if parcels_t_ids_supplies:
@@ -273,7 +273,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def select_related_plots(self, parcels_t_ids, inverse, add_to_selection=False):
         base_db = self.utils._supplies_db if inverse else self.utils._db
 
-        plot_layer = self.utils._supplies_layers[base_db.names.GC_PLOT_T] if inverse else self.utils._layers[base_db.names.OP_PLOT_T]
+        plot_layer = self.utils._supplies_layers[base_db.names.GC_PLOT_T] if inverse else self.utils._layers[base_db.names.LC_PLOT_T]
         if inverse:
             plot_ids = self.utils.ladm_data.get_plots_related_to_parcels_supplies(self.utils._supplies_db,
                                                                                   parcels_t_ids,

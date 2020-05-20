@@ -57,11 +57,11 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount()))
+        self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount()))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         _color = CSS_COLOR_OKAY_LABEL
-        has_selected_boundaries = self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount() > 0
+        has_selected_boundaries = self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount() > 0
         if not has_selected_boundaries:
             _color = CSS_COLOR_ERROR_LABEL
         self.lb_info.setStyleSheet(_color)
@@ -79,8 +79,8 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BOUNDARY_T]))
-        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.OP_BOUNDARY_T]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
+        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.LC_BOUNDARY_T]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
@@ -92,7 +92,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BOUNDARY_T]))
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BOUNDARY_T]))
 
     #############################################################################
     # Override methods
@@ -126,7 +126,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def edit_feature(self):
-        if self._layers[self.names.OP_BOUNDARY_T].selectedFeatureCount() > 0:
+        if self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount() > 0:
             # Open Form
             self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
             self.app.core.active_snapping_all_layers()
@@ -143,7 +143,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
         self.check_selected_features()
 
     def create_plots_from_boundaries(self):
-        selected_boundaries = self._layers[self.names.OP_BOUNDARY_T].selectedFeatures()
+        selected_boundaries = self._layers[self.names.LC_BOUNDARY_T].selectedFeatures()
 
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
@@ -163,7 +163,7 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             button_text = QCoreApplication.translate("WizardTranslations", "Open table of attributes")
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME]
-            filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
+            filter = '"{}" is Null'.format(self.names.LC_PLOT_T_PLOT_AREA_F)
             self.logger.message_with_button_open_table_attributes_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:

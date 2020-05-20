@@ -208,7 +208,7 @@ the association will not be activated.\
         self.WIZ_CREATE_RESTRICTION_OPERATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Restriction</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
-<b>OP_Restriction</b> are the restrictions on a parcel that affect rights that parties may have over it.\
+<b>LC_Restriction</b> are the restrictions on a parcel that affect rights that parties may have over it.\
 ")
 
         self.WIZ_CREATE_RESTRICTION_OPERATION_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
@@ -225,7 +225,7 @@ the association will not be activated.\
         self.WIZ_CREATE_RIGHT_OPERATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Right</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
-<b>OP_Right</b> is a class that stores right instances that a party has over a parcel. It is a specialization of the class OP_RRR.\
+<b>LC_Right</b> is a class that stores right instances that a party has over a parcel. It is a specialization of the class LC_RRR.\
 ")
 
         self.WIZ_CREATE_RIGHT_OPERATION_PAGE_2 = QCoreApplication.translate("HelpStrings", "\

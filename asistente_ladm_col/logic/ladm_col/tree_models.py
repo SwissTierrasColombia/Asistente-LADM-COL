@@ -381,7 +381,7 @@ class TreeModel(QAbstractItemModel):
         key = self._normalize_key(key)
         collection_parent = self._create_new_item(parent)
         collection_parent.setData(0, "{} ({})".format(display_name, len(collection)))
-        collection_parent.setData(0, {"type": key, "collapse": key not in [self.names.OP_PLOT_T, self.names.OP_PARCEL_T]}, Qt.UserRole)
+        collection_parent.setData(0, {"type": key, "collapse": key not in [self.names.LC_PLOT_T, self.names.LC_PARCEL_T]}, Qt.UserRole)
         dict_table_package = LayerConfig.get_dict_table_package(self.names)
 
         res = collection_parent.setData(0, QIcon(

@@ -135,7 +135,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                   CHANGE_DETECTION_NULL_PARCEL]))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._layers[self.utils._db.names.LC_PLOT_T].removeSelection()
         self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
-        self.utils.app.gui.activate_layer(self.utils._layers[self.utils._db.names.OP_PLOT_T])
+        self.utils.app.gui.activate_layer(self.utils._layers[self.utils._db.names.LC_PLOT_T])
         self.utils.iface.zoomToActiveLayer()

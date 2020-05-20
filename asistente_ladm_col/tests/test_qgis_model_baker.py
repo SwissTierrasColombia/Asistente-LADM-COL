@@ -182,7 +182,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
         res, code, msg = db_pg.test_connection()
         self.assertTrue(res, msg)
-        test_layer = self.app.core.get_layer(db_pg, db_pg.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.app.core.get_layer(db_pg, db_pg.names.LC_BOUNDARY_POINT_T, load=True)
 
         self.assertEqual(test_layer.featureCount(), 390)
         db_pg.conn.close()
@@ -230,7 +230,7 @@ class TestQgisModelBaker(unittest.TestCase):
         db_gpkg = get_gpkg_conn_from_path(config_manager.get_uri())
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
-        test_layer = self.app.core.get_layer(db_gpkg, db_gpkg.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.app.core.get_layer(db_gpkg, db_gpkg.names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(test_layer.featureCount(), 390)
         db_gpkg.conn.close()
 

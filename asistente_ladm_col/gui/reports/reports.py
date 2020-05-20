@@ -167,7 +167,7 @@ class ReportGenerator(QObject):
                                                                          "Java is a prerequisite. Since it was not found, it is being configured..."))
             return
 
-        plot_layer = self.app.core.get_layer(db, db.names.OP_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(db, db.names.LC_PLOT_T, load=True)
         if not plot_layer:
             return
 
@@ -255,7 +255,7 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.OP_PARCEL_T_PARCEL_NUMBER_F) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
             current_report_path = os.path.join(save_into_folder, file_name)

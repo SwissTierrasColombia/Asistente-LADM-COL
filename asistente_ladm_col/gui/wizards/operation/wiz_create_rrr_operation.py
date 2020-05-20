@@ -47,7 +47,7 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
-            administrative_source_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T].selectedFeatures()]
+            administrative_source_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
@@ -61,10 +61,10 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_RRR_SOURCE_T])
 
                     new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_F, administrative_source_id)
-                    if self.EDITING_LAYER_NAME == self.names.OP_RIGHT_T:
-                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RIGHT_F, feature_rrr_id)
-                    elif self.EDITING_LAYER_NAME == self.names.OP_RESTRICTION_T:
-                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F, feature_rrr_id)
+                    if self.EDITING_LAYER_NAME == self.names.LC_RIGHT_T:
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_LC_RIGHT_F, feature_rrr_id)
+                    elif self.EDITING_LAYER_NAME == self.names.LC_RESTRICTION_T:
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_LC_RESTRICTION_F, feature_rrr_id)
 
                     self.logger.info(__name__, "Saving Administrative_source-{}: {}-{}".format(self.WIZARD_FEATURE_NAME, administrative_source_id, feature_rrr_id))
                     new_features.append(new_feature)
@@ -79,8 +79,8 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
 
     def check_selected_features(self):
         # Check selected features in administrative source layer
-        if self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount()))
+        if self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount():
+            self.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount()))
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: 0 Features Selected"))
@@ -96,4 +96,4 @@ class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpression
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T]))

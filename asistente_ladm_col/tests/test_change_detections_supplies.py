@@ -40,7 +40,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
-        self.assertIsNotNone(self.db_pg.names.OP_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(self.db_pg.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         parcel_ids_tests = [list(), [1000], [1000, 1001, 1002]]
         plot_ids_tests = [list(), [1112], [1112, 1102, 1086]]

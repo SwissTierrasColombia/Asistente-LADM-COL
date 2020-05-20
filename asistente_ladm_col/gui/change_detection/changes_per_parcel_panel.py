@@ -74,7 +74,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_combos()
 
         # Remove selection in plot layers
-        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._layers[self.utils._db.names.LC_PLOT_T].removeSelection()
         self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
 
         # Map tool before activate map swipe tool
@@ -269,8 +269,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             request = QgsFeatureRequest(expression_collected)
             request.setFlags(QgsFeatureRequest.NoGeometry)
             request.setSubsetOfAttributes([self.utils._db.names.T_ID_F],
-                                          self.utils._layers[self.utils._db.names.OP_PARCEL_T].fields())  # Note this adds a new flag
-            collected_parcels = self.utils._layers[self.utils._db.names.OP_PARCEL_T].getFeatures(request)
+                                          self.utils._layers[self.utils._db.names.LC_PARCEL_T].fields())  # Note this adds a new flag
+            collected_parcels = self.utils._layers[self.utils._db.names.LC_PARCEL_T].getFeatures(request)
             collected_parcels_t_ids = [feature[self.utils._db.names.T_ID_F] for feature in collected_parcels]
 
             if collected_parcels_t_ids:
@@ -295,12 +295,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                            [collected_parcel_t_id],
                                                                            self.utils._db.names.T_ID_F,
-                                                                           plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                                                                           plot_layer=self.utils._layers[self.utils._db.names.LC_PLOT_T],
                                                                            uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T])
 
             if plot_t_ids:
                 self._current_substring = "{} IN ('{}')".format(self.utils._db.names.T_ID_F, "','".join([str(t_id) for t_id in plot_t_ids]))
-                plots_collected = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                plots_collected = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[self.utils._db.names.LC_PLOT_T],
                                                                                self.utils._db.names.T_ID_F,
                                                                                plot_t_ids,
                                                                                True)
@@ -475,7 +475,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             pass
 
         try:
-            self.utils._layers[self.utils._db.names.OP_PLOT_T].setSubsetString(self._current_substring if not state else "")
+            self.utils._layers[self.utils._db.names.LC_PLOT_T].setSubsetString(self._current_substring if not state else "")
         except RuntimeError:  # If the layer was previously removed
             pass
 
