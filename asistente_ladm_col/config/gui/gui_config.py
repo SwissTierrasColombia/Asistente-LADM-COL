@@ -81,8 +81,8 @@ class GUI_Config(QObject):
                     ACTIONS: [
                         {
                             WIDGET_TYPE: MENU,
-                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operation"),
-                            OBJECT_NAME: MENU_OPERATION_OBJECTNAME,
+                            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Survey"),
+                            OBJECT_NAME: MENU_SURVEY_OBJECTNAME,
                             ICON: OPERATION_ICON,
                             ACTIONS: [
                                 {
@@ -222,8 +222,8 @@ class GUI_Config(QObject):
                 SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
-                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Survey objects"),
+                    OBJECT_NAME: "ladm_col_survey_toolbar",
                     ICON: OPERATION_ICON,
                     ACTIONS: [
                         ACTION_CREATE_POINT,

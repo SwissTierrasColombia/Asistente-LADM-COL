@@ -30,7 +30,7 @@ from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWi
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 
 
-class CreateRRROperationWizard(MultiPageWizardFactory, SelectFeatureByExpressionDialogWrapper):
+class CreateRRRSurveyWizard(MultiPageWizardFactory, SelectFeatureByExpressionDialogWrapper):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 

@@ -37,20 +37,20 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/transitional_system/tasks_widget.ui \
         ../ui/transitional_system/transitional_system_initial_panel_widget.ui \
         ../ui/transitional_system/transitional_system_task_panel_widget.ui \
-        ../ui/wizards/operation/dlg_group_party.ui \
-	    ../ui/wizards/operation/wiz_associate_extaddress_operation.ui \
-        ../ui/wizards/operation/wiz_create_administrative_source_operation.ui \
-        ../ui/wizards/operation/wiz_create_boundaries_operation.ui \
-        ../ui/wizards/operation/wiz_create_building_operation.ui \
-        ../ui/wizards/operation/wiz_create_building_unit_operation.ui \
-        ../ui/wizards/operation/wiz_create_col_party_operation.ui \
-        ../ui/wizards/operation/wiz_create_parcel_operation.ui \
-        ../ui/wizards/operation/wiz_create_plot_operation.ui \
-        ../ui/wizards/operation/wiz_create_points_operation.ui \
-        ../ui/wizards/operation/wiz_create_restriction_operation.ui \
-        ../ui/wizards/operation/wiz_create_right_of_way_operation.ui \
-        ../ui/wizards/operation/wiz_create_right_operation.ui \
-        ../ui/wizards/operation/wiz_create_spatial_source_operation.ui \
+        ../ui/wizards/survey/dlg_group_party.ui \
+	    ../ui/wizards/survey/wiz_associate_extaddress_survey.ui \
+        ../ui/wizards/survey/wiz_create_administrative_source_survey.ui \
+        ../ui/wizards/survey/wiz_create_boundaries_survey.ui \
+        ../ui/wizards/survey/wiz_create_building_survey.ui \
+        ../ui/wizards/survey/wiz_create_building_unit_survey.ui \
+        ../ui/wizards/survey/wiz_create_col_party_survey.ui \
+        ../ui/wizards/survey/wiz_create_parcel_survey.ui \
+        ../ui/wizards/survey/wiz_create_plot_survey.ui \
+        ../ui/wizards/survey/wiz_create_points_survey.ui \
+        ../ui/wizards/survey/wiz_create_restriction_survey.ui \
+        ../ui/wizards/survey/wiz_create_right_of_way_survey.ui \
+        ../ui/wizards/survey/wiz_create_right_survey.ui \
+        ../ui/wizards/survey/wiz_create_spatial_source_survey.ui \
         ../ui/wizards/valuation/wiz_create_building_unit_qualification_valuation.ui \
         ../ui/wizards/valuation/wiz_create_building_unit_valuation.ui \
         ../ui/wizards/valuation/wiz_create_geoeconomic_zone_valuation.ui \
@@ -106,14 +106,14 @@ SOURCES = ../__init__.py \
           ../gui/transitional_system/task_panel.py \
           ../gui/transitional_system/tasks_widget.py \
           ../gui/transitional_system/transitional_system_initial_panel.py \
-          ../gui/wizards/operation/dlg_create_group_party_operation.py \
-          ../gui/wizards/operation/wiz_create_ext_address_operation.py \
-          ../gui/wizards/operation/wiz_create_parcel_operation.py \
-          ../gui/wizards/operation/wiz_create_plot_operation.py \
-          ../gui/wizards/operation/wiz_create_points_operation.py \
-          ../gui/wizards/operation/wiz_create_right_of_way_operation.py \
-          ../gui/wizards/operation/wiz_create_rrr_operation.py \
-          ../gui/wizards/operation/wiz_create_spatial_source_operation.py \
+          ../gui/wizards/survey/dlg_create_group_party_survey.py \
+          ../gui/wizards/survey/wiz_create_ext_address_survey.py \
+          ../gui/wizards/survey/wiz_create_parcel_survey.py \
+          ../gui/wizards/survey/wiz_create_plot_survey.py \
+          ../gui/wizards/survey/wiz_create_points_survey.py \
+          ../gui/wizards/survey/wiz_create_right_of_way_survey.py \
+          ../gui/wizards/survey/wiz_create_rrr_survey.py \
+          ../gui/wizards/survey/wiz_create_spatial_source_survey.py \
           ../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py \
           ../gui/wizards/valuation/wiz_create_building_unit_valuation.py \
           ../gui/wizards/abs_wizard_factory.py \

@@ -41,11 +41,10 @@ class TestIntegrationSuppliesModel(unittest.TestCase):
         self.assertTrue(db_connection.supplies_model_exists())
         self.assertTrue(db_connection.snr_data_model_exists())
         self.assertTrue(db_connection.supplies_integration_model_exists())
-        self.assertFalse(db_connection.operation_model_exists())
+        self.assertFalse(db_connection.survey_model_exists())
         self.assertFalse(db_connection.valuation_model_exists())
-        self.assertFalse(db_connection.cadastral_form_model_exists())
         self.assertFalse(db_connection.ant_model_exists())
-        self.assertFalse(db_connection.reference_cartography_model_exists())
+        self.assertFalse(db_connection.reference_cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Integration Supplies model in PG...")

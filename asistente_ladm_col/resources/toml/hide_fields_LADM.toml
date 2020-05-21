@@ -1,17 +1,11 @@
-["LADM_COL_V1_1.LADM_Nucleo.ueJerarquia.uej2"]
+["LADM_COL_V1_7.LADM_Nucleo.col_puntoReferencia.ue"]
 hidden="True"
 
-["LADM_COL_V1_1.LADM_Nucleo.puntoReferencia.ue"]
+["LADM_COL_V1_7.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"]
 hidden="True"
 
-["LADM_COL_V1_1.LADM_Nucleo.LA_UnidadEspacial.Punto_Referencia"]
+["LADM_COL_V1_7.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID"]
 hidden="True"
 
-["LADM_COL_V1_1.LADM_Nucleo.LA_UnidadEspacial.Ext_Direccion_ID"]
-hidden="True"
-
-["LADM_COL_V1_1.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID"]
-hidden="True"
-
-["LADM_COL_V1_1.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"]
+["LADM_COL_V1_7.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"]
 hidden="True"

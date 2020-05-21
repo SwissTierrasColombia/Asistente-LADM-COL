@@ -45,11 +45,11 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                disable_next_wizard,
                                                normalize_local_url)
 
-WIZARD_UI = get_ui_class('wizards/operation/wiz_create_points_operation.ui')
+WIZARD_UI = get_ui_class('wizards/survey/wiz_create_points_survey.ui')
 
 
-class CreatePointsOperationWizard(QWizard, WIZARD_UI):
-    WIZARD_NAME = "CreatePointsOperationWizard"
+class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
+    WIZARD_NAME = "CreatePointsSurveyWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Point")
 
     def __init__(self, iface, db):
@@ -109,12 +109,12 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
 
-        self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_2_OPTION_CSV)
+        self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_2_OPTION_CSV)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("WizardTranslations",
                                             "Import"))
-        self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_3_OPTION_CSV)
+        self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_3_OPTION_CSV)
         self.txt_help_page_3.anchorClicked.connect(self.save_template)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
@@ -215,21 +215,21 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
-            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_2_OPTION_CSV)
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_2_OPTION_CSV)
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
             self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Boundary Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Boundary Points..."))
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_BP)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_1_OPTION_BP)
         elif self.rad_survey_point.isChecked(): # self.rad_survey_point is checked
             self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Survey Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Survey Points..."))
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_SP)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_1_OPTION_SP)
         else: # self.rad_control_point is checked
             self.gbx_page_2.setTitle(QCoreApplication.translate("WizardTranslations", "Load data to Control Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("WizardTranslations", "Configure CSV data source for Control Points..."))
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_OPERATION_PAGE_1_OPTION_CP)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_1_OPTION_CP)
 
     def finished_dialog(self):
         self.save_settings()

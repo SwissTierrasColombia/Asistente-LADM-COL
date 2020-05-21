@@ -101,17 +101,15 @@ REPORTS_ICON = ":/Asistente-LADM-COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM-COL/resources/images/change_detection.svg"
 
 # MENU OBJECTNAMES
-MENU_OPERATION_OBJECTNAME = "ladm_col_operation_menu"
+MENU_SURVEY_OBJECTNAME = "ladm_col_survey_menu"
 MENU_LADM_COL_OBJECTNAME = "ladm_col_menu"
 MENU_REPORTS_OBJECTNAME = "ladm_col_reports_menu"
 
 
 # Nowadays just an example, it is not being used, although initially planned
 MODELS_GUI_DICT = {
-    LADMNames.OPERATION_MODEL_PREFIX: [
+    LADMNames.SURVEY_MODEL_PREFIX: [
         ACTION_CHECK_QUALITY_RULES
-    ],
-    LADMNames.CADASTRAL_FORM_MODEL_PREFIX: [
     ],
     LADMNames.VALUATION_MODEL_PREFIX: [
     ],

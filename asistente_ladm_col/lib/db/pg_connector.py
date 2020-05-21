@@ -199,7 +199,7 @@ class PGConnector(ClientServerDB):
 
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-        #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        #   Key: "LADM_COL_V1_7.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
         #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
         sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as {table_iliname},
             a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner

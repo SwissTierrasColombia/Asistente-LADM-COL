@@ -124,21 +124,15 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def operation_model_exists(self):
+    def survey_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.operation_model_exists()
+            return self.model_parser.survey_model_exists()
 
         return False
 
     def valuation_model_exists(self):
         if self.read_model_parser():
             return self.model_parser.valuation_model_exists()
-
-        return False
-
-    def cadastral_form_model_exists(self):
-        if self.read_model_parser():
-            return self.model_parser.cadastral_form_model_exists()
 
         return False
 
@@ -154,9 +148,9 @@ class DBConnector(QObject):
 
         return False
 
-    def reference_cartography_model_exists(self):
+    def reference_cadastral_cartography_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.reference_cartography_model_exists()
+            return self.model_parser.reference_cadastral_cartography_model_exists()
 
         return False
 

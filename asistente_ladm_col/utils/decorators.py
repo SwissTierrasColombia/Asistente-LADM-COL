@@ -198,7 +198,7 @@ def _log_quality_rule_validations(func_to_decorate):
 
     return add_format_to_text
 
-def _operation_model_required(func_to_decorate):
+def _survey_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -209,10 +209,10 @@ def _operation_model_required(func_to_decorate):
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
         
-            if not db.operation_model_exists():
+            if not db.survey_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
-                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(db_source, LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.OPERATION_MODEL_PREFIX]))
+                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(db_source, LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.SURVEY_MODEL_PREFIX]))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
                 button.pressed.connect(inst.show_settings)

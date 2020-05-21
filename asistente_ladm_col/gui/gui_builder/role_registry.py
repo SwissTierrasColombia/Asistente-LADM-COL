@@ -64,8 +64,8 @@ class Role_Registry(metaclass=Singleton):
                 SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
-                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Survey objects"),
+                    OBJECT_NAME: "ladm_col_survey_toolbar",
                     ICON: OPERATION_ICON,
                     ACTIONS: [
                         ACTION_CREATE_POINT,
@@ -302,8 +302,8 @@ class Role_Registry(metaclass=Singleton):
                 SEPARATOR,
                 {
                     WIDGET_TYPE: MENU,
-                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Operation objects"),
-                    OBJECT_NAME: "ladm_col_operation_toolbar",
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Survey objects"),
+                    OBJECT_NAME: "ladm_col_survey_toolbar",
                     ICON: OPERATION_ICON,
                     ACTIONS: [
                         ACTION_CREATE_POINT,

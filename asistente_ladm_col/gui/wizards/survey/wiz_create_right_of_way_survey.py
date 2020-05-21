@@ -46,9 +46,9 @@ from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import Select
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 
 
-class CreateRightOfWayOperationWizard(SinglePageSpatialWizardFactory):
+class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
     def __init__(self, iface, db, wizard_settings):
-        super(CreateRightOfWayOperationWizard, self).__init__(iface, db, wizard_settings)
+        super(CreateRightOfWaySurveyWizard, self).__init__(iface, db, wizard_settings)
         self.type_geometry_creation = None
         self.temporal_layer = None
 

@@ -8,9 +8,9 @@ from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
-class CreateSpatialSourceOperationWizard(MultiPageWizardFactory,
-                                        SelectFeatureByExpressionDialogWrapper,
-                                        SelectFeaturesOnMapWrapper):
+class CreateSpatialSourceSurveyWizard(MultiPageWizardFactory,
+                                      SelectFeatureByExpressionDialogWrapper,
+                                      SelectFeaturesOnMapWrapper):
     def __init__(self, iface, db, wizard_settings):
         MultiPageWizardFactory.__init__(self, iface, db, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)

@@ -26,13 +26,13 @@ class TestOperationModel(unittest.TestCase):
         cls.db_gpkg = get_gpkg_conn('test_ladm_operation_model_gpkg')
 
     def test_required_models_pg(self):
-        print("\nINFO: Validate if the schema for operation model in PG...")
+        print("\nINFO: Validate if the schema for survey model in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_models(self.db_pg)
 
     def test_required_models_gpkg(self):
-        print("\nINFO: Validate if the schema for operation model in GPKG...")
+        print("\nINFO: Validate if the schema for survey model in GPKG...")
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_required_models(self.db_gpkg)
@@ -41,14 +41,13 @@ class TestOperationModel(unittest.TestCase):
         self.assertTrue(db_connection.supplies_model_exists())
         self.assertTrue(db_connection.snr_data_model_exists())
         self.assertTrue(db_connection.supplies_integration_model_exists())
-        self.assertTrue(db_connection.operation_model_exists())
+        self.assertTrue(db_connection.survey_model_exists())
         self.assertFalse(db_connection.valuation_model_exists())
-        self.assertFalse(db_connection.cadastral_form_model_exists())
         self.assertFalse(db_connection.ant_model_exists())
-        self.assertFalse(db_connection.reference_cartography_model_exists())
+        self.assertFalse(db_connection.reference_cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
-        print("\nINFO: Validate names for Operation data model (the expected common DB case) in PG...")
+        print("\nINFO: Validate names for Survey data model (the expected common DB case) in PG...")
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
@@ -73,7 +72,7 @@ class TestOperationModel(unittest.TestCase):
 
 
     def test_names_from_model_gpkg(self):
-        print("\nINFO: Validate names for Operation data model (the expected common DB case) in GPKG...")
+        print("\nINFO: Validate names for Survey data model (the expected common DB case) in GPKG...")
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 

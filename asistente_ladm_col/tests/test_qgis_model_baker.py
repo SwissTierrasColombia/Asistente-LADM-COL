@@ -62,9 +62,8 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         exporter = iliexporter.Exporter()
@@ -89,9 +88,8 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
         configuration.dbfile = gpkg_path
 
@@ -110,7 +108,6 @@ class TestQgisModelBaker(unittest.TestCase):
         test_xtf_gc = test_xtf_dom.getElementsByTagName('Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral')[0]
         test_xtf_integration = test_xtf_dom.getElementsByTagName('Datos_Integracion_Insumos_V2_9_6.Datos_Integracion_Insumos')[0]
         test_xtf_ant = test_xtf_dom.getElementsByTagName('ANT_V2_9_6.Fiso')[0]
-        test_xtf_cadastral_form = test_xtf_dom.getElementsByTagName('Formulario_Catastro_V2_9_6.Formulario_Catastro')[0]
         test_xtf_valuation = test_xtf_dom.getElementsByTagName('Avaluos_V2_9_6.Avaluos')[0]
 
         xtf_dom = parse(testdata_path(xtf_path))
@@ -120,7 +117,6 @@ class TestQgisModelBaker(unittest.TestCase):
         xtf_gc = xtf_dom.getElementsByTagName('Datos_Gestor_Catastral_V2_9_6.Datos_Gestor_Catastral')[0]
         xtf_integration = xtf_dom.getElementsByTagName('Datos_Integracion_Insumos_V2_9_6.Datos_Integracion_Insumos')[0]
         xtf_ant = xtf_dom.getElementsByTagName('ANT_V2_9_6.Fiso')[0]
-        xtf_cadastral_form = xtf_dom.getElementsByTagName('Formulario_Catastro_V2_9_6.Formulario_Catastro')[0]
         xtf_valuation = xtf_dom.getElementsByTagName('Avaluos_V2_9_6.Avaluos')[0]
 
         self.assertEqual(xtf_op_building_count, test_xtf_op_building_count)
@@ -129,7 +125,6 @@ class TestQgisModelBaker(unittest.TestCase):
         self.assertEqual(xtf_gc.toxml(), test_xtf_gc.toxml())
         self.assertEqual(xtf_integration.toxml(), test_xtf_integration.toxml())
         self.assertEqual(xtf_ant.toxml(), test_xtf_ant.toxml())
-        self.assertEqual(xtf_cadastral_form.toxml(), test_xtf_cadastral_form.toxml())
         self.assertEqual(xtf_valuation.toxml(), test_xtf_valuation.toxml())
 
     def test_import_data_in_pg(self):
@@ -159,9 +154,8 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         importer = iliimporter.Importer(dataImport=True)
@@ -211,9 +205,8 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = DbIliMode.ili2gpkg
@@ -258,10 +251,9 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
-                                            LADMNames.SUPPORTED_REFERENCE_CARTOGRAPHY,
+                                            LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         importer = iliimporter.Importer()
@@ -299,10 +291,9 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_OPERATION_MODEL,
+                                            LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
-                                            LADMNames.SUPPORTED_REFERENCE_CARTOGRAPHY,
+                                            LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         importer = iliimporter.Importer()

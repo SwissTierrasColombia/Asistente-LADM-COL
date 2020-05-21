@@ -14,7 +14,7 @@ class RefactorFieldsMappings:
         mapping = []
 
         # --------------------------------
-        # OPERATION MODEL
+        # SURVEY MODEL
         # --------------------------------
         if layer_name == names.LC_BOUNDARY_POINT_T:
             mapping = [
@@ -359,7 +359,7 @@ class RefactorFieldsMappings:
         mapping = []
 
         # --------------------------------
-        # OPERATION MODEL
+        # SURVEY MODEL
         # --------------------------------
         if layer_name == names.LC_BOUNDARY_POINT_T:
             mapping = [

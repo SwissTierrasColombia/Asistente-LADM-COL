@@ -41,11 +41,11 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from qgis.core import NULL
 
-DIALOG_UI = get_ui_class('wizards/operation/dlg_group_party.ui')
+DIALOG_UI = get_ui_class('wizards/survey/dlg_group_party.ui')
 
 
-class CreateGroupPartyOperation(QDialog, DIALOG_UI):
-    WIZARD_NAME = "CreateGroupPartyOperationWizard"
+class CreateGroupPartySurvey(QDialog, DIALOG_UI):
+    WIZARD_NAME = "CreateGroupPartySurveyWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
 
     def __init__(self, iface, db, parent=None):

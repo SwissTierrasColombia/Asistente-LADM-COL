@@ -428,11 +428,6 @@ class LADMDATA():
             db.names.LC_PARTY_DOCUMENT_TYPE_D: None
         }
 
-        if db.cadastral_form_model_exists():
-            # TODO: Replace property record card for correct table model
-            # layers[PROPERTY_RECORD_CARD_TABLE] = None
-            pass
-
         self.app.core.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
             return None
@@ -610,24 +605,6 @@ class LADMDATA():
                     else:
                         item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
 
-        # =====================  Start add record card info ==================================================
-        # TODO: Replace property record card for correct table model
-        # if db.cadastral_form_model_exists():
-        #     expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-        #     property_record_card_features = self.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE], db.names.T_ID_F, expr_property_record_card_features, with_attributes=True)
-        #
-        #     dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
-        #
-        #     for feature in dict_features:
-        #         for item in dict_features[feature]:
-        #             if item[db.names.T_ID_F] in dict_property_record_card_features:
-        #                 property_record_card_feature = dict_property_record_card_features[item[db.names.T_ID_F]]
-        #                 for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
-        #                     if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
-        #                         item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
-        #                     else:
-        #                         item[PROPERTY_RECORD_CARD_FIELD] = NULL
-
         return dict_features
 
     def get_features_by_search_criterion(self, layer, t_id_name, search_criterion=None, with_attributes=False, with_geometry=False):
@@ -670,7 +647,7 @@ class LADMDATA():
         return [feature for feature in layer.getFeatures(request)]
 
 
-    # Two different models (supplies and operation), different field names
+    # Two different models (supplies and survey), different field names
     # in each model, so we need to map them to a common key for each field
 
     @staticmethod

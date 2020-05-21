@@ -76,7 +76,7 @@ class TestDBTestConnection(unittest.TestCase):
         db_pg.conn.close()
 
     def test_gpkg_test_connection(self):
-        print("\nINFO: Validate test_connection() for GeoPackage (model operation: OK!)...")
+        print("\nINFO: Validate test_connection() for GeoPackage (survey model: OK!)...")
         db = get_gpkg_conn('test_ladm_operation_model_gpkg')
         res, code, msg = db.test_connection()
         self.assertTrue(res, msg)
@@ -131,9 +131,9 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
 
     def test_gpkg_test_connection_required_models_success(self):
-        print("\nINFO: Validate test_connection() for GeoPackage (required models (success): operation and snr)...")
+        print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
         db = get_gpkg_conn('test_ladm_operation_model_gpkg')
-        res, code, msg = db.test_connection(required_models=[LADMNames.OPERATION_MODEL_PREFIX,
+        res, code, msg = db.test_connection(required_models=[LADMNames.SURVEY_MODEL_PREFIX,
                                                              LADMNames.SNR_DATA_MODEL_PREFIX])
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)

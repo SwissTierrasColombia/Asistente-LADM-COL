@@ -45,9 +45,9 @@ from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import Select
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
-class CreateExtAddressOperationWizard(MultiPageSpatialWizardFactory,
-                                     SelectFeaturesOnMapWrapper,
-                                     SelectFeatureByExpressionDialogWrapper):
+class CreateExtAddressSurveyWizard(MultiPageSpatialWizardFactory,
+                                   SelectFeaturesOnMapWrapper,
+                                   SelectFeatureByExpressionDialogWrapper):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 

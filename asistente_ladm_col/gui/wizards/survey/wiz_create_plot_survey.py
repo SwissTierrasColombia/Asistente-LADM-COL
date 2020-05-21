@@ -38,9 +38,9 @@ from asistente_ladm_col.utils.qt_utils import (enable_next_wizard,
                                                disable_next_wizard)
 
 
-class CreatePlotOperationWizard(MultiPageWizardFactory,
-                               SelectFeatureByExpressionDialogWrapper,
-                               SelectFeaturesOnMapWrapper):
+class CreatePlotSurveyWizard(MultiPageWizardFactory,
+                             SelectFeatureByExpressionDialogWrapper,
+                             SelectFeaturesOnMapWrapper):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
