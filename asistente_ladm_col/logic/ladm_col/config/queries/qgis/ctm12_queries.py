@@ -16,6 +16,8 @@ def get_insert_ctm12_query():
                       0
               );"""
 
+def get_ctm12_bounds_exist_query():
+    return "SELECT count(srid) FROM tbl_bounds WHERE srid=38820;"
 
 def get_insert_cm12_bounds_query():
     return """INSERT INTO tbl_bounds (srid, west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat)

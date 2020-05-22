@@ -61,8 +61,9 @@ import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
-                                                                                 get_insert_ctm12_query, 
-                                                                                 get_insert_cm12_bounds_query)
+                                                                                 get_insert_ctm12_query,
+                                                                                 get_insert_cm12_bounds_query,
+                                                                                 get_ctm12_bounds_exist_query)
 from asistente_ladm_col.utils.crs_utils import get_ctm12_crs
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
@@ -1287,7 +1288,8 @@ class AppCoreInterface(QObject):
             try:
                 cursor.execute("BEGIN")
                 cursor.execute(get_insert_ctm12_query())
-                cursor.execute(get_insert_cm12_bounds_query())
+                if not self.ctm12_bounds_exist(cursor):
+                    cursor.execute(get_insert_cm12_bounds_query())
                 cursor.execute("COMMIT")
             except sqlite3.OperationalError as e:
                 # We couldn't write in srs.db
@@ -1310,3 +1312,7 @@ class AppCoreInterface(QObject):
         cursor.execute(get_ctm12_exists_query())
         return cursor.fetchone()[0] == 1
 
+    @staticmethod
+    def ctm12_bounds_exist(cursor):
+        cursor.execute(get_ctm12_bounds_exist_query())
+        return cursor.fetchone()[0] == 1
