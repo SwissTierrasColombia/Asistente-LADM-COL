@@ -440,8 +440,9 @@ class TableAndFieldNames:
     # "LADM_COL_V1_7.LADM_Nucleo.COL_VolumenValor.Tipo"
     # "LADM_COL_V1_7.LADM_Nucleo.COL_VolumenValor.Volumen_Medicion"
 
-    # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.agrupacion..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.LC_AgrupacionInteresados"  --> agrupacion
-    MEMBERS_T_GROUP_PARTY_F = None  # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.interesado..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.LC_AgrupacionInteresados"  --> interesado_lc_agrupacioninteresados
+
+    # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.interesado..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.LC_AgrupacionInteresados"  --> interesado_lc_agrupacioninteresados
+    MEMBERS_T_GROUP_PARTY_F = None  # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.agrupacion..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.LC_AgrupacionInteresados"  --> agrupacion
     MEMBERS_T_PARTY_F = None  # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.interesado..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.LC_Interesado"  --> interesado_lc_interesado
     FRACTION_S_MEMBER_F = None  # "LADM_COL_V1_7.LADM_Nucleo.col_miembros.participacion..LADM_COL_V1_7.LADM_Nucleo.col_miembros"  --> col_miembros_participacion
     FRACTION_S_COPROPERTY_COEFFICIENT_F = None  # "Levantamiento_Catastral_V2_11.Levantamiento_Catastral.lc_predio_copropiedad.coeficiente..Levantamiento_Catastral_V2_11.Levantamiento_Catastral.lc_predio_copropiedad"  --> lc_predio_copropiedad_coeficiente
@@ -883,7 +884,7 @@ class TableAndFieldNames:
         }},
         "LADM_COL.LADM_Nucleo.col_miembros": {VARIABLE_NAME: "MEMBERS_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F",
-            "LADM_COL.LADM_Nucleo.col_miembros.interesado..Levantamiento_Catastral.Levantamiento_Catastral.LC_AgrupacionInteresados": "MEMBERS_T_GROUP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.col_miembros.agrupacion..Levantamiento_Catastral.Levantamiento_Catastral.LC_AgrupacionInteresados": "MEMBERS_T_GROUP_PARTY_F",
             "LADM_COL.LADM_Nucleo.col_miembros.interesado..Levantamiento_Catastral.Levantamiento_Catastral.LC_Interesado": "MEMBERS_T_PARTY_F"
         }},
         "LADM_COL.LADM_Nucleo.col_puntoCcl": {VARIABLE_NAME: "POINT_BFS_T", FIELDS_DICT: {
