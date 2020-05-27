@@ -22,6 +22,7 @@ from shutil import copyfile
 from sys import platform
 
 import psycopg2
+import pyodbc
 import qgis.utils
 from qgis.core import (QgsApplication,
                        edit)
@@ -276,3 +277,54 @@ def standardize_query_results(result):
                 if isinstance(item, dict):
                     standardize_query_results(item)
     return result
+
+
+def reset_db_mssql(schema):
+    print("\nReseting db {}...".format(schema))
+    db_connection = get_mssql_conn(schema, 'ladm_col')
+    db_connection.conn.autocommit = True
+
+    cur = db_connection.conn.cursor()
+
+    try:
+        print("deleting database {}".format(schema))
+        cur.execute("""Drop database {};""".format(schema))
+    except pyodbc.ProgrammingError as e:
+        if e.args[0] != '42S02':
+            raise e
+
+    print("creating database {}".format(schema))
+    cur.execute("""create database {};""".format(schema))
+
+    cur.close()
+
+
+def restore_schema_mssql(schema):
+    sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null"
+    dir_file = get_test_path("sql")
+    sql_file = dir_file + "/{}.sql".format(schema)
+
+    print(sql_cmd.format(schema, sql_file))
+    process = os.popen(sql_cmd.format(schema, sql_file))
+    output = process.readlines()
+    process.close()
+    print("Done restoring ladm_col database.")
+    if len(output) > 0:
+        print("Warning:", output)
+
+
+def get_mssql_conn(schema, database=None):
+
+    dict_conn = dict()
+    dict_conn['host'] = 'mssql'
+    dict_conn['port'] = '1433'
+    dict_conn['database'] = schema if database is None else database
+    dict_conn['schema'] = schema
+    dict_conn['username'] = 'sa'
+    dict_conn['password'] = '<YourStrong!Passw0rd>'
+    dict_conn['db_odbc_driver'] = 'ODBC Driver 17 for SQL Server'
+
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('mssql', dict_conn)
+
+    return db
+

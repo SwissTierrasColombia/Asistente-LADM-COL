@@ -344,8 +344,8 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       Complemento : TEXT*255;
       !!@ ili2db.dispName = "Nombre del predio"
       Nombre_Predio : TEXT*255;
-      SET CONSTRAINT WHERE Tipo_Direccion == #No_Estructurada: 
-        Nombre_Predio <> UNDEFINED;
+      !!SET CONSTRAINT WHERE Tipo_Direccion == #No_Estructurada:
+      !!  Nombre_Predio <> UNDEFINED;
     END ExtDireccion;
 
     /** Estructura para la definición de un tipo de dato personalizado que permite indicar una fracción o quebrado cona serie específica de condiciones.
