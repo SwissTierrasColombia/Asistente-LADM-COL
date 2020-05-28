@@ -349,13 +349,16 @@ class MssqlConnector(ClientServerDB):
 
         # Borrowed from Model Baker
         cur = self.conn.cursor()
-        cur.execute("""SELECT *
+        cur.execute("""SELECT count(COLUMN_NAME)
                        FROM information_schema.columns
                        WHERE table_schema = '{schema}'
                        AND(table_name='t_ili2db_attrname' OR table_name='t_ili2db_model' )
                        AND(column_name='owner' OR column_name = 'file' )
                     """.format(schema=self.schema))
-        if cur.rowcount > 1:
+
+        columns_count = cur.fetchone()[0]
+
+        if columns_count > 0:
             return 3
         else:
             return 4
