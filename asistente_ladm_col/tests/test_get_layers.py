@@ -11,7 +11,10 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_pg_conn,
                                             get_copy_gpkg_conn,
-                                            restore_schema)
+                                            restore_schema,
+                                            get_mssql_conn,
+                                            restore_schema_mssql,
+                                            reset_db_mssql)
 
 
 class TestGetLayers(unittest.TestCase):
@@ -25,6 +28,11 @@ class TestGetLayers(unittest.TestCase):
         print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')
         cls.db_pg = get_pg_conn('test_ladm_col')
+
+        schema = 'test_ladm_col'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        cls.db_mssql = get_mssql_conn(schema)
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")
@@ -49,6 +57,18 @@ class TestGetLayers(unittest.TestCase):
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_get_layers(self.db_gpkg)
+
+    def test_get_layer_in_mssql(self):
+        print("\nINFO: Validating get_layer() method in SQL Server...")
+        result = self.db_mssql.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_get_layer(self.db_mssql)
+
+    def test_get_layers_in_mssql(self):
+        print("\nINFO: Validating get_layers() method in SQL Server...")
+        result = self.db_mssql.test_connection()
+        self.assertTrue(result[0], 'The test connection is not working')
+        self.check_get_layers(self.db_mssql)
 
     def check_get_layer(self, db):
         self.assertIsNotNone(db.names.OP_BOUNDARY_POINT_T, 'Names is None')
