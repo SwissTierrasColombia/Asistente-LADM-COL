@@ -1,304 +1,306 @@
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.logic.ladm_col.config.queries.pg.pg_queries_config_utils import (get_custom_filter_parcels,
                                                                                          get_custom_filter_plots)
 
 
-def get_igac_legal_query(schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number):
-    custom_filter_plots = get_custom_filter_plots(schema, plot_t_ids)
-    custom_filter_parcels = get_custom_filter_parcels(schema, plot_t_ids)
+def get_igac_legal_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, previous_parcel_number):
+    custom_filter_plots = get_custom_filter_plots(names, schema, plot_t_ids)
+    custom_filter_parcels = get_custom_filter_parcels(names, schema, plot_t_ids)
 
     query = """
-                WITH
-                 unidad_area_terreno AS (
-                     SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'op_terreno' AND columnname = 'area_terreno' LIMIT 1
-                 ),
-                 terrenos_seleccionados AS (
-                    {custom_filter_plots}
-                    SELECT col_uebaunit.ue_op_terreno FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON op_predio.t_id = col_uebaunit.baunit  WHERE col_uebaunit.ue_op_terreno IS NOT NULL AND CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE (op_predio.codigo_orip || '-'|| op_predio.matricula_inmobiliaria) = '{parcel_fmi}' END
-                        UNION
-                    SELECT col_uebaunit.ue_op_terreno FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON op_predio.t_id = col_uebaunit.baunit  WHERE col_uebaunit.ue_op_terreno IS NOT NULL AND CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE op_predio.numero_predial = '{parcel_number}' END
-                        UNION
-                    SELECT col_uebaunit.ue_op_terreno FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON op_predio.t_id = col_uebaunit.baunit  WHERE col_uebaunit.ue_op_terreno IS NOT NULL AND CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE op_predio.numero_predial_anterior = '{previous_parcel_number}' END
-                 ),
-                 predios_seleccionados AS (
-                    {custom_filter_parcels}
-                    SELECT t_id FROM {schema}.op_predio WHERE CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE (op_predio.codigo_orip || '-'|| op_predio.matricula_inmobiliaria) = '{parcel_fmi}' END
-                        UNION
-                    SELECT t_id FROM {schema}.op_predio WHERE CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE op_predio.numero_predial = '{parcel_number}' END
-                        UNION
-                    SELECT t_id FROM {schema}.op_predio WHERE CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE op_predio.numero_predial_anterior = '{previous_parcel_number}' END
-                 ),
-                 derechos_seleccionados AS (
-                     SELECT DISTINCT op_derecho.t_id FROM {schema}.op_derecho WHERE op_derecho.unidad IN (SELECT * FROM predios_seleccionados)
-                 ),
-                 derecho_interesados AS (
-                     SELECT DISTINCT op_derecho.interesado_op_interesado, op_derecho.t_id FROM {schema}.op_derecho WHERE op_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND op_derecho.interesado_op_interesado IS NOT NULL
-                 ),
-                 derecho_agrupacion_interesados AS (
-                     SELECT DISTINCT op_derecho.interesado_op_agrupacion_interesados, col_miembros.interesado_op_interesado
-                     FROM {schema}.op_derecho LEFT JOIN {schema}.col_miembros ON op_derecho.interesado_op_agrupacion_interesados = col_miembros.agrupacion
-                     WHERE op_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND op_derecho.interesado_op_agrupacion_interesados IS NOT NULL
-                 ),
-                  restricciones_seleccionadas AS (
-                     SELECT DISTINCT op_restriccion.t_id FROM {schema}.op_restriccion WHERE op_restriccion.unidad IN (SELECT * FROM predios_seleccionados)
-                 ),
-                 restriccion_interesados AS (
-                     SELECT DISTINCT op_restriccion.interesado_op_interesado, op_restriccion.t_id FROM {schema}.op_restriccion WHERE op_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas) AND op_restriccion.interesado_op_interesado IS NOT NULL
-                 ),
-                 restriccion_agrupacion_interesados AS (
-                     SELECT DISTINCT op_restriccion.interesado_op_agrupacion_interesados, col_miembros.interesado_op_interesado
-                     FROM {schema}.op_restriccion LEFT JOIN {schema}.col_miembros ON op_restriccion.interesado_op_agrupacion_interesados = col_miembros.agrupacion
-                     WHERE op_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas) AND op_restriccion.interesado_op_agrupacion_interesados IS NOT NULL
-                 ),
-                 info_contacto_interesados_derecho AS (
-                        SELECT op_interesado_contacto.op_interesado,
-                          json_agg(
-                                json_build_object('id', op_interesado_contacto.t_id,
-                                                       'attributes', json_build_object('Teléfono 1', op_interesado_contacto.telefono1,
-                                                                                       'Teléfono 2', op_interesado_contacto.telefono2,
-                                                                                       'Domicilio notificación', op_interesado_contacto.domicilio_notificacion,
-                                                                                       'Correo electrónico', op_interesado_contacto.correo_electronico,
-                                                                                       'Origen de datos', (SELECT dispname FROM {schema}.op_instituciontipo WHERE t_id = op_interesado_contacto.origen_datos))) ORDER BY op_interesado_contacto.t_id)
-                        FILTER(WHERE op_interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
-                        FROM {schema}.op_interesado_contacto
-                        WHERE op_interesado_contacto.op_interesado IN (SELECT derecho_interesados.interesado_op_interesado FROM derecho_interesados)
-                        GROUP BY op_interesado_contacto.op_interesado
-                 ),
-                 info_interesados_derecho AS (
-                     SELECT derecho_interesados.t_id,
-                      json_agg(
-                        json_build_object('id', op_interesado.t_id,
-                                          'attributes', json_build_object('Tipo', (SELECT dispname FROM {schema}.op_interesadotipo WHERE t_id = op_interesado.tipo),
-                                                                          op_interesadodocumentotipo.dispname, op_interesado.documento_identidad,
-                                                                          'Nombre', op_interesado.nombre,
-                                                                          CASE WHEN op_interesado.tipo = 9 THEN 'Tipo interesado jurídico' ELSE 'Género' END,
-                                                                          CASE WHEN op_interesado.tipo = 9 THEN (SELECT dispname FROM {schema}.op_interesadotipo WHERE t_id = op_interesado.tipo) ELSE (SELECT dispname FROM {schema}.op_sexotipo WHERE t_id = op_interesado.sexo) END,
-                                                                          'op_interesado_contacto', COALESCE(info_contacto_interesados_derecho.interesado_contacto, '[]')))
-                     ORDER BY op_interesado.t_id) FILTER (WHERE op_interesado.t_id IS NOT NULL) AS op_interesado
-                     FROM derecho_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = derecho_interesados.interesado_op_interesado
-                   LEFT JOIN {schema}.op_interesadodocumentotipo ON op_interesadodocumentotipo.t_id = op_interesado.tipo_documento
-                     LEFT JOIN info_contacto_interesados_derecho ON info_contacto_interesados_derecho.op_interesado = op_interesado.t_id
-                     GROUP BY derecho_interesados.t_id
-                 ),
-                 info_contacto_interesado_agrupacion_interesados_derecho AS (
-                        SELECT op_interesado_contacto.op_interesado,
-                          json_agg(
-                                json_build_object('id', op_interesado_contacto.t_id,
-                                                       'attributes', json_build_object('Teléfono 1', op_interesado_contacto.telefono1,
-                                                                                       'Teléfono 2', op_interesado_contacto.telefono2,
-                                                                                       'Domicilio notificación', op_interesado_contacto.domicilio_notificacion,
-                                                                                       'Correo electrónico', op_interesado_contacto.correo_electronico,
-                                                                                       'Origen de datos', (SELECT dispname FROM {schema}.op_instituciontipo WHERE t_id = op_interesado_contacto.origen_datos))) ORDER BY op_interesado_contacto.t_id)
-                        FILTER(WHERE op_interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
-                        FROM {schema}.op_interesado_contacto LEFT JOIN derecho_interesados ON derecho_interesados.interesado_op_interesado = op_interesado_contacto.op_interesado
-                        WHERE op_interesado_contacto.op_interesado IN (SELECT DISTINCT derecho_agrupacion_interesados.interesado_op_interesado FROM derecho_agrupacion_interesados)
-                        GROUP BY op_interesado_contacto.op_interesado
-                 ),
-                 info_interesados_agrupacion_interesados_derecho AS (
-                     SELECT derecho_agrupacion_interesados.interesado_op_agrupacion_interesados,
-                      json_agg(
-                        json_build_object('id', op_interesado.t_id,
-                                          'attributes', json_build_object('Tipo', (SELECT dispname FROM {schema}.op_interesadotipo WHERE t_id = op_interesado.tipo),
-                                                                          op_interesadodocumentotipo.dispname, op_interesado.documento_identidad,
-                                                                          'Nombre', op_interesado.nombre,
-                                                                          'Género', (SELECT dispname FROM {schema}.op_sexotipo WHERE t_id = op_interesado.sexo),
-                                                                          'op_interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_derecho.interesado_contacto, '[]'),
-                                                                          'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
-                     ORDER BY op_interesado.t_id) FILTER (WHERE op_interesado.t_id IS NOT NULL) AS op_interesado
-                     FROM derecho_agrupacion_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = derecho_agrupacion_interesados.interesado_op_interesado
-                   LEFT JOIN {schema}.op_interesadodocumentotipo ON op_interesadodocumentotipo.t_id = op_interesado.tipo_documento
-                     LEFT JOIN info_contacto_interesado_agrupacion_interesados_derecho ON info_contacto_interesado_agrupacion_interesados_derecho.op_interesado = op_interesado.t_id
-                     LEFT JOIN {schema}.col_miembros ON (col_miembros.agrupacion::text || col_miembros.interesado_op_interesado::text) = (derecho_agrupacion_interesados.interesado_op_agrupacion_interesados::text|| op_interesado.t_id::text)
-                     LEFT JOIN {schema}.fraccion ON col_miembros.t_id = fraccion.col_miembros_participacion
-                     GROUP BY derecho_agrupacion_interesados.interesado_op_agrupacion_interesados
-                 ),
-                 info_agrupacion_interesados AS (
-                     SELECT op_derecho.t_id,
-                     json_agg(
-                        json_build_object('id', op_agrupacion_interesados.t_id,
-                                          'attributes', json_build_object('Tipo de agrupación de interesados', (SELECT dispname FROM {schema}.col_grupointeresadotipo WHERE t_id = op_agrupacion_interesados.tipo),
-                                                                          'Nombre', op_agrupacion_interesados.nombre,
-                                                                          'op_interesado', COALESCE(info_interesados_agrupacion_interesados_derecho.op_interesado, '[]')))
-                     ORDER BY op_agrupacion_interesados.t_id) FILTER (WHERE op_agrupacion_interesados.t_id IS NOT NULL) AS op_agrupacion_interesados
-                     FROM {schema}.op_agrupacion_interesados LEFT JOIN {schema}.op_derecho ON op_agrupacion_interesados.t_id = op_derecho.interesado_op_agrupacion_interesados
-                     LEFT JOIN info_interesados_agrupacion_interesados_derecho ON info_interesados_agrupacion_interesados_derecho.interesado_op_agrupacion_interesados = op_agrupacion_interesados.t_id
-                     WHERE op_agrupacion_interesados.t_id IN (SELECT DISTINCT derecho_agrupacion_interesados.interesado_op_agrupacion_interesados FROM derecho_agrupacion_interesados)
-                     AND op_derecho.t_id IN (SELECT derechos_seleccionados.t_id FROM derechos_seleccionados)
-                     GROUP BY op_derecho.t_id
-                 ),
-                 info_fuentes_administrativas_derecho AS (
-                    SELECT op_derecho.t_id,
-                     json_agg(
-                        json_build_object('id', op_fuenteadministrativa.t_id,
-                                          'attributes', json_build_object('Tipo de fuente administrativa', (SELECT dispname FROM {schema}.op_fuenteadministrativatipo WHERE t_id = op_fuenteadministrativa.tipo),
-                                                                          'Ente emisor', op_fuenteadministrativa.ente_emisor,
-                                                                          'Estado disponibilidad', (SELECT dispname FROM {schema}.col_estadodisponibilidadtipo WHERE t_id = op_fuenteadministrativa.estado_disponibilidad),
-                                                                          'Archivo fuente', extarchivo.datos))
-                     ORDER BY op_fuenteadministrativa.t_id) FILTER (WHERE op_fuenteadministrativa.t_id IS NOT NULL) AS op_fuenteadministrativa
-                    FROM {schema}.op_derecho
-                    LEFT JOIN {schema}.col_rrrfuente ON op_derecho.t_id = col_rrrfuente.rrr_op_derecho
-                    LEFT JOIN {schema}.op_fuenteadministrativa ON col_rrrfuente.fuente_administrativa = op_fuenteadministrativa.t_id
-                    LEFT JOIN {schema}.extarchivo ON extarchivo.op_fuenteadministrtiva_ext_archivo_id = op_fuenteadministrativa.t_id
-                    WHERE op_derecho.t_id IN (SELECT derechos_seleccionados.t_id FROM derechos_seleccionados)
-                    GROUP BY op_derecho.t_id
-                 ),
-                info_derecho AS (
-                  SELECT op_derecho.unidad,
-                    json_agg(
-                        json_build_object('id', op_derecho.t_id,
-                                          'attributes', json_build_object('Tipo de derecho', (SELECT dispname FROM {schema}.op_derechotipo WHERE t_id = op_derecho.tipo),
-                                                                          'Descripción', op_derecho.descripcion,
-                                                                          'op_fuenteadministrativa', COALESCE(info_fuentes_administrativas_derecho.op_fuenteadministrativa, '[]'),
-                                                                          'op_interesado', COALESCE(info_interesados_derecho.op_interesado, '[]'),
-                                                                          'op_agrupacion_interesados', COALESCE(info_agrupacion_interesados.op_agrupacion_interesados, '[]')))
-                     ORDER BY op_derecho.t_id) FILTER (WHERE op_derecho.t_id IS NOT NULL) AS op_derecho
-                  FROM {schema}.op_derecho LEFT JOIN info_fuentes_administrativas_derecho ON op_derecho.t_id = info_fuentes_administrativas_derecho.t_id
-                  LEFT JOIN info_interesados_derecho ON op_derecho.t_id = info_interesados_derecho.t_id
-                  LEFT JOIN info_agrupacion_interesados ON op_derecho.t_id = info_agrupacion_interesados.t_id
-                  WHERE op_derecho.t_id IN (SELECT * FROM derechos_seleccionados)
-                  GROUP BY op_derecho.unidad
-                ),
-                 info_contacto_interesados_restriccion AS (
-                        SELECT op_interesado_contacto.op_interesado,
-                          json_agg(
-                                json_build_object('id', op_interesado_contacto.t_id,
-                                                       'attributes', json_build_object('Teléfono 1', op_interesado_contacto.telefono1,
-                                                                                       'Teléfono 2', op_interesado_contacto.telefono2,
-                                                                                       'Domicilio notificación', op_interesado_contacto.domicilio_notificacion,
-                                                                                       'Correo electrónico', op_interesado_contacto.correo_electronico,
-                                                                                       'Origen de datos', (SELECT dispname FROM {schema}.op_instituciontipo WHERE t_id = op_interesado_contacto.origen_datos))) ORDER BY op_interesado_contacto.t_id)
-                        FILTER(WHERE op_interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
-                        FROM {schema}.op_interesado_contacto
-                        WHERE op_interesado_contacto.op_interesado IN (SELECT restriccion_interesados.interesado_op_interesado FROM restriccion_interesados)
-                        GROUP BY op_interesado_contacto.op_interesado
-                 ),
-                 info_interesados_restriccion AS (
-                     SELECT restriccion_interesados.t_id,
-                      json_agg(
-                        json_build_object('id', op_interesado.t_id,
-                                          'attributes', json_build_object('Tipo', op_interesado.tipo,
-                                                                          op_interesadodocumentotipo.dispname, op_interesado.documento_identidad,
-                                                                          'Nombre', op_interesado.nombre,
-                                                                          CASE WHEN op_interesado.tipo = (SELECT t_id FROM {schema}.op_interesadotipo WHERE ilicode LIKE 'Persona_Juridica') THEN 'Tipo interesado jurídico' ELSE 'Género' END,
-                                                                          CASE WHEN op_interesado.tipo = (SELECT t_id FROM {schema}.op_interesadotipo WHERE ilicode LIKE 'Persona_Juridica') THEN (SELECT dispname FROM {schema}.op_interesadotipo WHERE t_id = op_interesado.tipo) ELSE (SELECT dispname FROM {schema}.op_sexotipo WHERE t_id = op_interesado.sexo) END,
-                                                                          'op_interesado_contacto', COALESCE(info_contacto_interesados_restriccion.interesado_contacto, '[]')))
-                     ORDER BY op_interesado.t_id) FILTER (WHERE op_interesado.t_id IS NOT NULL) AS op_interesado
-                     FROM restriccion_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = restriccion_interesados.interesado_op_interesado
-                     LEFT JOIN {schema}.op_interesadodocumentotipo ON op_interesadodocumentotipo.t_id = op_interesado.tipo_documento
-                     LEFT JOIN info_contacto_interesados_restriccion ON info_contacto_interesados_restriccion.op_interesado = op_interesado.t_id
-                     GROUP BY restriccion_interesados.t_id
-                 ),
-                 info_contacto_interesado_agrupacion_interesados_restriccion AS (
-                        SELECT op_interesado_contacto.op_interesado,
-                          json_agg(
-                                json_build_object('id', op_interesado_contacto.t_id,
-                                                       'attributes', json_build_object('Teléfono 1', op_interesado_contacto.telefono1,
-                                                                                       'Teléfono 2', op_interesado_contacto.telefono2,
-                                                                                       'Domicilio notificación', op_interesado_contacto.domicilio_notificacion,
-                                                                                       'Correo electrónico', op_interesado_contacto.correo_electronico,
-                                                                                       'Origen de datos', (SELECT dispname FROM {schema}.op_instituciontipo WHERE t_id = op_interesado_contacto.origen_datos))) ORDER BY op_interesado_contacto.t_id)
-                        FILTER(WHERE op_interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
-                        FROM {schema}.op_interesado_contacto LEFT JOIN restriccion_interesados ON restriccion_interesados.interesado_op_interesado = op_interesado_contacto.op_interesado
-                        WHERE op_interesado_contacto.op_interesado IN (SELECT DISTINCT restriccion_agrupacion_interesados.interesado_op_interesado FROM restriccion_agrupacion_interesados)
-                        GROUP BY op_interesado_contacto.op_interesado
-                 ),
-                 info_interesados_agrupacion_interesados_restriccion AS (
-                     SELECT restriccion_agrupacion_interesados.interesado_op_agrupacion_interesados,
-                      json_agg(
-                        json_build_object('id', op_interesado.t_id,
-                                          'attributes', json_build_object('Tipo', (SELECT dispname FROM {schema}.op_interesadotipo WHERE t_id = op_interesado.tipo),
-                                                                          op_interesadodocumentotipo.dispname, op_interesado.documento_identidad,
-                                                                          'Nombre', op_interesado.nombre,
-                                                                          'Género', (SELECT dispname FROM {schema}.op_sexotipo WHERE t_id = op_interesado.sexo),
-                                                                          'op_interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_restriccion.interesado_contacto, '[]'),
-                                                                          'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
-                     ORDER BY op_interesado.t_id) FILTER (WHERE op_interesado.t_id IS NOT NULL) AS op_interesado
-                     FROM restriccion_agrupacion_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = restriccion_agrupacion_interesados.interesado_op_interesado
-                   LEFT JOIN {schema}.op_interesadodocumentotipo ON op_interesadodocumentotipo.t_id = op_interesado.tipo_documento
-                     LEFT JOIN info_contacto_interesado_agrupacion_interesados_restriccion ON info_contacto_interesado_agrupacion_interesados_restriccion.op_interesado = op_interesado.t_id
-                     LEFT JOIN {schema}.col_miembros ON (col_miembros.agrupacion::text || col_miembros.interesado_op_interesado::text) = (restriccion_agrupacion_interesados.interesado_op_agrupacion_interesados::text|| op_interesado.t_id::text)
-                     LEFT JOIN {schema}.fraccion ON col_miembros.t_id = fraccion.col_miembros_participacion
-                     GROUP BY restriccion_agrupacion_interesados.interesado_op_agrupacion_interesados
-                 ),
-                 info_agrupacion_interesados_restriccion AS (
-                     SELECT op_restriccion.t_id,
-                     json_agg(
-                        json_build_object('id', op_agrupacion_interesados.t_id,
-                                          'attributes', json_build_object('Tipo de agrupación de interesados', (SELECT dispname FROM {schema}.col_grupointeresadotipo WHERE t_id = op_agrupacion_interesados.tipo),
-                                                                          'Nombre', op_agrupacion_interesados.nombre,
-                                                                          'op_interesado', COALESCE(info_interesados_agrupacion_interesados_restriccion.op_interesado, '[]')))
-                     ORDER BY op_agrupacion_interesados.t_id) FILTER (WHERE op_agrupacion_interesados.t_id IS NOT NULL) AS op_agrupacion_interesados
-                     FROM {schema}.op_agrupacion_interesados LEFT JOIN {schema}.op_restriccion ON op_agrupacion_interesados.t_id = op_restriccion.interesado_op_agrupacion_interesados
-                     LEFT JOIN info_interesados_agrupacion_interesados_restriccion ON info_interesados_agrupacion_interesados_restriccion.interesado_op_agrupacion_interesados = op_agrupacion_interesados.t_id
-                     WHERE op_agrupacion_interesados.t_id IN (SELECT DISTINCT restriccion_agrupacion_interesados.interesado_op_agrupacion_interesados FROM restriccion_agrupacion_interesados)
-                     AND op_restriccion.t_id IN (SELECT restricciones_seleccionadas.t_id FROM restricciones_seleccionadas)
-                     GROUP BY op_restriccion.t_id
-                 ),
-                 info_fuentes_administrativas_restriccion AS (
-                    SELECT op_restriccion.t_id,
-                     json_agg(
-                        json_build_object('id', op_fuenteadministrativa.t_id,
-                                          'attributes', json_build_object('Tipo de fuente administrativa', (SELECT dispname FROM {schema}.op_fuenteadministrativatipo WHERE t_id = op_fuenteadministrativa.tipo),
-                                                                          'Ente emisor', op_fuenteadministrativa.ente_emisor,
-                                                                          'Estado disponibilidad', (SELECT dispname FROM {schema}.col_estadodisponibilidadtipo WHERE t_id = op_fuenteadministrativa.estado_disponibilidad),
-                                                                          'Archivo fuente', extarchivo.datos))
-                     ORDER BY op_fuenteadministrativa.t_id) FILTER (WHERE op_fuenteadministrativa.t_id IS NOT NULL) AS op_fuenteadministrativa
-                    FROM {schema}.op_restriccion
-                    LEFT JOIN {schema}.col_rrrfuente ON op_restriccion.t_id =col_rrrfuente.rrr_op_restriccion
-                    LEFT JOIN {schema}.op_fuenteadministrativa ON col_rrrfuente.fuente_administrativa = op_fuenteadministrativa.t_id
-                    LEFT JOIN {schema}.extarchivo ON extarchivo.op_fuenteadministrtiva_ext_archivo_id = op_fuenteadministrativa.t_id
-                    WHERE op_restriccion.t_id IN (SELECT restricciones_seleccionadas.t_id FROM restricciones_seleccionadas)
-                    GROUP BY op_restriccion.t_id
-                 ),
-                info_restriccion AS (
-                  SELECT op_restriccion.unidad,
-                    json_agg(
-                        json_build_object('id', op_restriccion.t_id,
-                                          'attributes', json_build_object('Tipo de restricción', (SELECT dispname FROM {schema}.op_restricciontipo WHERE t_id = op_restriccion.tipo),
-                                                                          'Descripción', op_restriccion.descripcion,
-                                                                          'op_fuenteadministrativa', COALESCE(info_fuentes_administrativas_restriccion.op_fuenteadministrativa, '[]'),
-                                                                          'op_interesado', COALESCE(info_interesados_restriccion.op_interesado, '[]'),
-                                                                          'op_agrupacion_interesados', COALESCE(info_agrupacion_interesados_restriccion.op_agrupacion_interesados, '[]')))
-                     ORDER BY op_restriccion.t_id) FILTER (WHERE op_restriccion.t_id IS NOT NULL) AS op_restriccion
-                  FROM {schema}.op_restriccion LEFT JOIN info_fuentes_administrativas_restriccion ON op_restriccion.t_id = info_fuentes_administrativas_restriccion.t_id
-                  LEFT JOIN info_interesados_restriccion ON op_restriccion.t_id = info_interesados_restriccion.t_id
-                  LEFT JOIN info_agrupacion_interesados_restriccion ON op_restriccion.t_id = info_agrupacion_interesados_restriccion.t_id
-                  WHERE op_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas)
-                  GROUP BY op_restriccion.unidad
-                ),
-                 info_predio AS (
-                     SELECT col_uebaunit.ue_op_terreno,
-                            json_agg(json_build_object('id', op_predio.t_id,
-                                              'attributes', json_build_object('Nombre', op_predio.nombre,
-                                                                              'NUPRE', op_predio.nupre,
-                                                                              'FMI', (op_predio.codigo_orip || '-'|| op_predio.matricula_inmobiliaria),
-                                                                              'Número predial', op_predio.numero_predial,
-                                                                              'Número predial anterior', op_predio.numero_predial_anterior,
-                                                                              'op_derecho', COALESCE(info_derecho.op_derecho, '[]'),
-                                                                              'op_restriccion', COALESCE(info_restriccion.op_restriccion, '[]')
-                                                                             )) ORDER BY op_predio.t_id) FILTER(WHERE op_predio.t_id IS NOT NULL) as predio
-                     FROM {schema}.op_predio LEFT JOIN {schema}.col_uebaunit ON col_uebaunit.baunit = op_predio.t_id
-                     LEFT JOIN info_derecho ON info_derecho.unidad = op_predio.t_id
-                     LEFT JOIN info_restriccion ON info_restriccion.unidad = op_predio.t_id
-                     WHERE op_predio.t_id IN (SELECT * FROM predios_seleccionados)
-                        AND col_uebaunit.ue_op_terreno IS NOT NULL
-                        AND col_uebaunit.ue_op_construccion IS NULL
-                        AND col_uebaunit.ue_op_unidadconstruccion IS NULL
-                     GROUP BY col_uebaunit.ue_op_terreno
-                 ),
-                 info_terreno AS (
-                     SELECT op_terreno.t_id,
-                     json_build_object('id', op_terreno.t_id,
-                                        'attributes', json_build_object(CONCAT('Área' , (SELECT * FROM unidad_area_terreno)), op_terreno.area_terreno,
-                                                                        'op_predio', COALESCE(info_predio.predio, '[]')
-                                                                       )) as terreno
-                     FROM {schema}.op_terreno LEFT JOIN info_predio ON op_terreno.t_id = info_predio.ue_op_terreno
-                     WHERE op_terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
-                     ORDER BY op_terreno.t_id
-                 )
-                SELECT json_build_object('op_terreno', json_agg(info_terreno.terreno)) FROM info_terreno
-
+            WITH
+             _unidad_area_terreno AS (
+                 SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_PLOT_T}' AND columnname = '{LC_PLOT_T_PLOT_AREA_F}' LIMIT 1
+             ),
+             _terrenos_seleccionados AS (
+                {custom_filter_plots}
+                SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} FROM {schema}.{LC_PARCEL_T} LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON {LC_PARCEL_T}.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F}  WHERE {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IS NOT NULL AND CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE ({LC_PARCEL_T}.{LC_PARCEL_T_ORIP_CODE_F} || '-'|| {LC_PARCEL_T}.{LC_PARCEL_T_FMI_F}) = '{parcel_fmi}' END
+                    UNION
+                SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} FROM {schema}.{LC_PARCEL_T} LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON {LC_PARCEL_T}.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F}  WHERE {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IS NOT NULL AND CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F} = '{parcel_number}' END
+                    UNION
+                SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} FROM {schema}.{LC_PARCEL_T} LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON {LC_PARCEL_T}.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F}  WHERE {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IS NOT NULL AND CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE {LC_PARCEL_T}.{LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F} = '{previous_parcel_number}' END
+             ),
+             _predios_seleccionados AS (
+                {custom_filter_parcels}
+                SELECT {T_ID_F} FROM {schema}.{LC_PARCEL_T} WHERE CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE ({LC_PARCEL_T}.{LC_PARCEL_T_ORIP_CODE_F} || '-'|| {LC_PARCEL_T}.{LC_PARCEL_T_FMI_F}) = '{parcel_fmi}' END
+                    UNION
+                SELECT {T_ID_F} FROM {schema}.{LC_PARCEL_T} WHERE CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F} = '{parcel_number}' END
+                    UNION
+                SELECT {T_ID_F} FROM {schema}.{LC_PARCEL_T} WHERE CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE {LC_PARCEL_T}.{LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F} = '{previous_parcel_number}' END
+             ),
+             _derechos_seleccionados AS (
+                 SELECT DISTINCT {LC_RIGHT_T}.{T_ID_F} FROM {schema}.{LC_RIGHT_T} WHERE {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F} IN (SELECT * FROM _predios_seleccionados)
+             ),
+             _derecho_interesados AS (
+                 SELECT DISTINCT {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_PARTY_F}, {LC_RIGHT_T}.{T_ID_F} FROM {schema}.{LC_RIGHT_T} WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT * FROM _derechos_seleccionados) AND {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_PARTY_F} IS NOT NULL
+             ),
+             _derecho_agrupacion_interesados AS (
+                 SELECT DISTINCT {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}, {MEMBERS_T}.{MEMBERS_T_PARTY_F}
+                 FROM {schema}.{LC_RIGHT_T} LEFT JOIN {schema}.{MEMBERS_T} ON {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} = {MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}
+                 WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT * FROM _derechos_seleccionados) AND {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} IS NOT NULL
+             ),
+              _restricciones_seleccionadas AS (
+                 SELECT DISTINCT {LC_RESTRICTION_T}.{T_ID_F} FROM {schema}.{LC_RESTRICTION_T} WHERE {LC_RESTRICTION_T}.{COL_BAUNIT_RRR_T_UNIT_F} IN (SELECT * FROM _predios_seleccionados)
+             ),
+             _restriccion_interesados AS (
+                 SELECT DISTINCT {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_PARTY_F}, {LC_RESTRICTION_T}.{T_ID_F} FROM {schema}.{LC_RESTRICTION_T} WHERE {LC_RESTRICTION_T}.{T_ID_F} IN (SELECT * FROM _restricciones_seleccionadas) AND {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_PARTY_F} IS NOT NULL
+             ),
+             _restriccion_agrupacion_interesados AS (
+                 SELECT DISTINCT {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}, {MEMBERS_T}.{MEMBERS_T_PARTY_F}
+                 FROM {schema}.{LC_RESTRICTION_T} LEFT JOIN {schema}.{MEMBERS_T} ON {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} = {MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}
+                 WHERE {LC_RESTRICTION_T}.{T_ID_F} IN (SELECT * FROM _restricciones_seleccionadas) AND {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} IS NOT NULL
+             ),
+             _info_contacto_interesados_derecho AS (
+                    SELECT {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F},
+                      JSON_AGG(
+                            JSON_BUILD_OBJECT('id', {LC_PARTY_CONTACT_T}.{T_ID_F},
+                                                   'attributes', JSON_BUILD_OBJECT('Teléfono 1', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F},
+                                                                                   'Teléfono 2', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F},
+                                                                                   'Domicilio notificación', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F},
+                                                                                   'Correo electrónico', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_EMAIL_F})) ORDER BY {LC_PARTY_CONTACT_T}.{T_ID_F})
+                    FILTER(WHERE {LC_PARTY_CONTACT_T}.{T_ID_F} IS NOT NULL) AS _interesado_contacto_
+                    FROM {schema}.{LC_PARTY_CONTACT_T}
+                    WHERE {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F} IN (SELECT _derecho_interesados.{COL_RRR_PARTY_T_LC_PARTY_F} FROM _derecho_interesados)
+                    GROUP BY {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+             ),
+             _info_interesados_derecho AS (
+                 SELECT _derecho_interesados.{T_ID_F},
+                  JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_TYPE_F}),
+                                                                      {LC_PARTY_DOCUMENT_TYPE_D}.{DISPLAY_NAME_F}, {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_ID_F},
+                                                                      'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      CASE WHEN {LC_PARTY_T}.{LC_PARTY_T_TYPE_F} = 9 THEN 'Tipo interesado jurídico' ELSE 'Género' END,
+                                                                      CASE WHEN {LC_PARTY_T}.{LC_PARTY_T_TYPE_F} = 9 THEN (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_TYPE_F}) ELSE (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}) END,
+                                                                      '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesados_derecho._interesado_contacto_, '[]')))
+                 ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
+                 FROM _derecho_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _derecho_interesados.{COL_RRR_PARTY_T_LC_PARTY_F}
+               LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
+                 LEFT JOIN _info_contacto_interesados_derecho ON _info_contacto_interesados_derecho.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
+                 GROUP BY _derecho_interesados.{T_ID_F}
+             ),
+             _info_contacto_interesado_agrupacion_interesados_derecho AS (
+                    SELECT {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F},
+                      JSON_AGG(
+                            JSON_BUILD_OBJECT('id', {LC_PARTY_CONTACT_T}.{T_ID_F},
+                                                   'attributes', JSON_BUILD_OBJECT('Teléfono 1', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F},
+                                                                                   'Teléfono 2', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F},
+                                                                                   'Domicilio notificación', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F},
+                                                                                   'Correo electrónico', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_EMAIL_F})) ORDER BY {LC_PARTY_CONTACT_T}.{T_ID_F})
+                    FILTER(WHERE {LC_PARTY_CONTACT_T}.{T_ID_F} IS NOT NULL) AS _interesado_contacto_
+                    FROM {schema}.{LC_PARTY_CONTACT_T} LEFT JOIN _derecho_interesados ON _derecho_interesados.{COL_RRR_PARTY_T_LC_PARTY_F} = {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+                    WHERE {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F} IN (SELECT DISTINCT _derecho_agrupacion_interesados.{MEMBERS_T_PARTY_F} FROM _derecho_agrupacion_interesados)
+                    GROUP BY {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+             ),
+             _info_interesados_agrupacion_interesados_derecho AS (
+                 SELECT _derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F},
+                  JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_TYPE_F}),
+                                                                      {LC_PARTY_DOCUMENT_TYPE_D}.{DISPLAY_NAME_F}, {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_ID_F},
+                                                                      'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      'Género', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}),
+                                                                      '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesado_agrupacion_interesados_derecho._interesado_contacto_, '[]'),
+                                                                      '{FRACTION_S}', ROUND(({FRACTION_S}.{FRACTION_S_NUMERATOR_F}::numeric/{FRACTION_S}.{FRACTION_S_DENOMINATOR_F}::numeric)*100,2) ))
+                 ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
+                 FROM _derecho_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _derecho_agrupacion_interesados.{MEMBERS_T_PARTY_F}
+               LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
+                 LEFT JOIN _info_contacto_interesado_agrupacion_interesados_derecho ON _info_contacto_interesado_agrupacion_interesados_derecho.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
+                 LEFT JOIN {schema}.{MEMBERS_T} ON ({MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}::text || {MEMBERS_T}.{MEMBERS_T_PARTY_F}::text) = (_derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}::text|| {LC_PARTY_T}.{T_ID_F}::text)
+                 LEFT JOIN {schema}.{FRACTION_S} ON {MEMBERS_T}.{T_ID_F} = {FRACTION_S}.{FRACTION_S_MEMBER_F}
+                 GROUP BY _derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
+             ),
+             _info_agrupacion_interesados AS (
+                 SELECT {LC_RIGHT_T}.{T_ID_F},
+                 JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_GROUP_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de agrupación de interesados', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_GROUP_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_GROUP_PARTY_T}.{COL_GROUP_PARTY_T_TYPE_F}),
+                                                                      'Nombre', {LC_GROUP_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      '{LC_PARTY_T}', COALESCE(_info_interesados_agrupacion_interesados_derecho._interesado_, '[]')))
+                 ORDER BY {LC_GROUP_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_GROUP_PARTY_T}.{T_ID_F} IS NOT NULL) AS _agrupacioninteresados_
+                 FROM {schema}.{LC_GROUP_PARTY_T} LEFT JOIN {schema}.{LC_RIGHT_T} ON {LC_GROUP_PARTY_T}.{T_ID_F} = {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
+                 LEFT JOIN _info_interesados_agrupacion_interesados_derecho ON _info_interesados_agrupacion_interesados_derecho.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} = {LC_GROUP_PARTY_T}.{T_ID_F}
+                 WHERE {LC_GROUP_PARTY_T}.{T_ID_F} IN (SELECT DISTINCT _derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} FROM _derecho_agrupacion_interesados)
+                 AND {LC_RIGHT_T}.{T_ID_F} IN (SELECT _derechos_seleccionados.{T_ID_F} FROM _derechos_seleccionados)
+                 GROUP BY {LC_RIGHT_T}.{T_ID_F}
+             ),
+             _info_fuentes_administrativas_derecho AS (
+                SELECT {LC_RIGHT_T}.{T_ID_F},
+                 JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
+                                                                      'Ente emisor', {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F},
+                                                                      'Estado disponibilidad', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_AVAILABILITY_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{COL_SOURCE_T_AVAILABILITY_STATUS_F}),
+                                                                      'Archivo fuente', {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_DATA_F}))
+                 ORDER BY {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}) FILTER (WHERE {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F} IS NOT NULL) AS _fuenteadministrativa_
+                FROM {schema}.{LC_RIGHT_T}
+                LEFT JOIN {schema}.{COL_RRR_SOURCE_T} ON {LC_RIGHT_T}.{T_ID_F} = {COL_RRR_SOURCE_T}.{COL_RRR_SOURCE_T_LC_RIGHT_F}
+                LEFT JOIN {schema}.{LC_ADMINISTRATIVE_SOURCE_T} ON {COL_RRR_SOURCE_T}.{COL_RRR_SOURCE_T_SOURCE_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}
+                LEFT JOIN {schema}.{EXT_ARCHIVE_S} ON {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_LC_ADMINISTRATIVE_SOURCE_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}
+                WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT _derechos_seleccionados.{T_ID_F} FROM _derechos_seleccionados)
+                GROUP BY {LC_RIGHT_T}.{T_ID_F}
+             ),
+            _info_derecho AS (
+              SELECT {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F},
+                JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_RIGHT_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de derecho', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_RIGHT_TYPE_D} WHERE {T_ID_F} = {LC_RIGHT_T}.{LC_RIGHT_T_TYPE_F}),
+                                                                      'Descripción', {LC_RIGHT_T}.{COL_RRR_T_DESCRIPTION_F},
+                                                                      '{LC_ADMINISTRATIVE_SOURCE_T}', COALESCE(_info_fuentes_administrativas_derecho._fuenteadministrativa_, '[]'),
+                                                                      '{LC_PARTY_T}', COALESCE(_info_interesados_derecho._interesado_, '[]'),
+                                                                      '{LC_GROUP_PARTY_T}', COALESCE(_info_agrupacion_interesados._agrupacioninteresados_, '[]')))
+                 ORDER BY {LC_RIGHT_T}.{T_ID_F}) FILTER (WHERE {LC_RIGHT_T}.{T_ID_F} IS NOT NULL) AS _derecho_
+              FROM {schema}.{LC_RIGHT_T} LEFT JOIN _info_fuentes_administrativas_derecho ON {LC_RIGHT_T}.{T_ID_F} = _info_fuentes_administrativas_derecho.{T_ID_F}
+              LEFT JOIN _info_interesados_derecho ON {LC_RIGHT_T}.{T_ID_F} = _info_interesados_derecho.{T_ID_F}
+              LEFT JOIN _info_agrupacion_interesados ON {LC_RIGHT_T}.{T_ID_F} = _info_agrupacion_interesados.{T_ID_F}
+              WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT * FROM _derechos_seleccionados)
+              GROUP BY {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F}
+            ),
+             _info_contacto_interesados_restriccion AS (
+                    SELECT {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F},
+                      JSON_AGG(
+                            JSON_BUILD_OBJECT('id', {LC_PARTY_CONTACT_T}.{T_ID_F},
+                                                   'attributes', JSON_BUILD_OBJECT('Teléfono 1', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F},
+                                                                                   'Teléfono 2', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F},
+                                                                                   'Domicilio notificación', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F},
+                                                                                   'Correo electrónico', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_EMAIL_F})) ORDER BY {LC_PARTY_CONTACT_T}.{T_ID_F})
+                    FILTER(WHERE {LC_PARTY_CONTACT_T}.{T_ID_F} IS NOT NULL) AS _interesado_contacto_
+                    FROM {schema}.{LC_PARTY_CONTACT_T}
+                    WHERE {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F} IN (SELECT _restriccion_interesados.{COL_RRR_PARTY_T_LC_PARTY_F} FROM _restriccion_interesados)
+                    GROUP BY {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+             ),
+             _info_interesados_restriccion AS (
+                 SELECT _restriccion_interesados.{T_ID_F},
+                  JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo', {LC_PARTY_T}.{LC_PARTY_T_TYPE_F},
+                                                                      {LC_PARTY_DOCUMENT_TYPE_D}.{DISPLAY_NAME_F}, {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_ID_F},
+                                                                      'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      CASE WHEN {LC_PARTY_T}.{LC_PARTY_T_TYPE_F} = (SELECT {T_ID_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {ILICODE_F} LIKE '{LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}') THEN 'Tipo interesado jurídico' ELSE 'Género' END,
+                                                                      CASE WHEN {LC_PARTY_T}.{LC_PARTY_T_TYPE_F} = (SELECT {T_ID_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {ILICODE_F} LIKE '{LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}') THEN (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_TYPE_F}) ELSE (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}) END,
+                                                                      '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesados_restriccion._interesado_contacto_, '[]')))
+                 ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
+                 FROM _restriccion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _restriccion_interesados.{COL_RRR_PARTY_T_LC_PARTY_F}
+                 LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
+                 LEFT JOIN _info_contacto_interesados_restriccion ON _info_contacto_interesados_restriccion.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
+                 GROUP BY _restriccion_interesados.{T_ID_F}
+             ),
+             _info_contacto_interesado_agrupacion_interesados_restriccion AS (
+                    SELECT {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F},
+                      JSON_AGG(
+                            JSON_BUILD_OBJECT('id', {LC_PARTY_CONTACT_T}.{T_ID_F},
+                                                   'attributes', JSON_BUILD_OBJECT('Teléfono 1', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F},
+                                                                                   'Teléfono 2', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F},
+                                                                                   'Domicilio notificación', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F},
+                                                                                   'Correo electrónico', {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_EMAIL_F})) ORDER BY {LC_PARTY_CONTACT_T}.{T_ID_F})
+                    FILTER(WHERE {LC_PARTY_CONTACT_T}.{T_ID_F} IS NOT NULL) AS _interesado_contacto_
+                    FROM {schema}.{LC_PARTY_CONTACT_T} LEFT JOIN _restriccion_interesados ON _restriccion_interesados.{COL_RRR_PARTY_T_LC_PARTY_F} = {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+                    WHERE {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F} IN (SELECT DISTINCT _restriccion_agrupacion_interesados.{MEMBERS_T_PARTY_F} FROM _restriccion_agrupacion_interesados)
+                    GROUP BY {LC_PARTY_CONTACT_T}.{LC_PARTY_CONTACT_T_LC_PARTY_F}
+             ),
+             _info_interesados_agrupacion_interesados_restriccion AS (
+                 SELECT _restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F},
+                  JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_TYPE_F}),
+                                                                      {LC_PARTY_DOCUMENT_TYPE_D}.{DISPLAY_NAME_F}, {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_ID_F},
+                                                                      'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      'Género', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}),
+                                                                      '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesado_agrupacion_interesados_restriccion._interesado_contacto_, '[]'),
+                                                                      '{FRACTION_S}', ROUND(({FRACTION_S}.{FRACTION_S_NUMERATOR_F}::numeric/{FRACTION_S}.{FRACTION_S_DENOMINATOR_F}::numeric)*100,2) ))
+                 ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
+                 FROM _restriccion_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _restriccion_agrupacion_interesados.{MEMBERS_T_PARTY_F}
+               LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
+                 LEFT JOIN _info_contacto_interesado_agrupacion_interesados_restriccion ON _info_contacto_interesado_agrupacion_interesados_restriccion.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
+                 LEFT JOIN {schema}.{MEMBERS_T} ON ({MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}::text || {MEMBERS_T}.{MEMBERS_T_PARTY_F}::text) = (_restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}::text|| {LC_PARTY_T}.{T_ID_F}::text)
+                 LEFT JOIN {schema}.{FRACTION_S} ON {MEMBERS_T}.{T_ID_F} = {FRACTION_S}.{FRACTION_S_MEMBER_F}
+                 GROUP BY _restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
+             ),
+             _info_agrupacion_interesados_restriccion AS (
+                 SELECT {LC_RESTRICTION_T}.{T_ID_F},
+                 JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_GROUP_PARTY_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de agrupación de interesados', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_GROUP_PARTY_TYPE_D} WHERE {T_ID_F} = {LC_GROUP_PARTY_T}.{COL_GROUP_PARTY_T_TYPE_F}),
+                                                                      'Nombre', {LC_GROUP_PARTY_T}.{COL_BAUNIT_T_NAME_F},
+                                                                      '{LC_PARTY_T}', COALESCE(_info_interesados_agrupacion_interesados_restriccion._interesado_, '[]')))
+                 ORDER BY {LC_GROUP_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_GROUP_PARTY_T}.{T_ID_F} IS NOT NULL) AS _agrupacioninteresados_
+                 FROM {schema}.{LC_GROUP_PARTY_T} LEFT JOIN {schema}.{LC_RESTRICTION_T} ON {LC_GROUP_PARTY_T}.{T_ID_F} = {LC_RESTRICTION_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
+                 LEFT JOIN _info_interesados_agrupacion_interesados_restriccion ON _info_interesados_agrupacion_interesados_restriccion.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} = {LC_GROUP_PARTY_T}.{T_ID_F}
+                 WHERE {LC_GROUP_PARTY_T}.{T_ID_F} IN (SELECT DISTINCT _restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} FROM _restriccion_agrupacion_interesados)
+                 AND {LC_RESTRICTION_T}.{T_ID_F} IN (SELECT _restricciones_seleccionadas.{T_ID_F} FROM _restricciones_seleccionadas)
+                 GROUP BY {LC_RESTRICTION_T}.{T_ID_F}
+             ),
+             _info_fuentes_administrativas_restriccion AS (
+                SELECT {LC_RESTRICTION_T}.{T_ID_F},
+                 JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
+                                                                      'Ente emisor', {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F},
+                                                                      'Estado disponibilidad', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_AVAILABILITY_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{COL_SOURCE_T_AVAILABILITY_STATUS_F}),
+                                                                      'Archivo fuente', {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_DATA_F}))
+                 ORDER BY {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}) FILTER (WHERE {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F} IS NOT NULL) AS _fuenteadministrativa_
+                FROM {schema}.{LC_RESTRICTION_T}
+                LEFT JOIN {schema}.{COL_RRR_SOURCE_T} ON {LC_RESTRICTION_T}.{T_ID_F} ={COL_RRR_SOURCE_T}.{COL_RRR_SOURCE_T_LC_RESTRICTION_F}
+                LEFT JOIN {schema}.{LC_ADMINISTRATIVE_SOURCE_T} ON {COL_RRR_SOURCE_T}.{COL_RRR_SOURCE_T_SOURCE_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}
+                LEFT JOIN {schema}.{EXT_ARCHIVE_S} ON {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_LC_ADMINISTRATIVE_SOURCE_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F}
+                WHERE {LC_RESTRICTION_T}.{T_ID_F} IN (SELECT _restricciones_seleccionadas.{T_ID_F} FROM _restricciones_seleccionadas)
+                GROUP BY {LC_RESTRICTION_T}.{T_ID_F}
+             ),
+            _info_restriccion AS (
+              SELECT {LC_RESTRICTION_T}.{COL_BAUNIT_RRR_T_UNIT_F},
+                JSON_AGG(
+                    JSON_BUILD_OBJECT('id', {LC_RESTRICTION_T}.{T_ID_F},
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de restricción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_RESTRICTION_TYPE_D} WHERE {T_ID_F} = {LC_RESTRICTION_T}.{LC_RESTRICTION_T_TYPE_F}),
+                                                                      'Descripción', {LC_RESTRICTION_T}.{COL_RRR_T_DESCRIPTION_F},
+                                                                      '{LC_ADMINISTRATIVE_SOURCE_T}', COALESCE(_info_fuentes_administrativas_restriccion._fuenteadministrativa_, '[]'),
+                                                                      '{LC_PARTY_T}', COALESCE(_info_interesados_restriccion._interesado_, '[]'),
+                                                                      '{LC_GROUP_PARTY_T}', COALESCE(_info_agrupacion_interesados_restriccion._agrupacioninteresados_, '[]')))
+                 ORDER BY {LC_RESTRICTION_T}.{T_ID_F}) FILTER (WHERE {LC_RESTRICTION_T}.{T_ID_F} IS NOT NULL) AS _restriccion_
+              FROM {schema}.{LC_RESTRICTION_T} LEFT JOIN _info_fuentes_administrativas_restriccion ON {LC_RESTRICTION_T}.{T_ID_F} = _info_fuentes_administrativas_restriccion.{T_ID_F}
+              LEFT JOIN _info_interesados_restriccion ON {LC_RESTRICTION_T}.{T_ID_F} = _info_interesados_restriccion.{T_ID_F}
+              LEFT JOIN _info_agrupacion_interesados_restriccion ON {LC_RESTRICTION_T}.{T_ID_F} = _info_agrupacion_interesados_restriccion.{T_ID_F}
+              WHERE {LC_RESTRICTION_T}.{T_ID_F} IN (SELECT * FROM _restricciones_seleccionadas)
+              GROUP BY {LC_RESTRICTION_T}.{COL_BAUNIT_RRR_T_UNIT_F}
+            ),
+             _info_predio AS (
+                 SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F},
+                        JSON_AGG(JSON_BUILD_OBJECT('id', {LC_PARCEL_T}.{T_ID_F},
+                                          'attributes', JSON_BUILD_OBJECT('Nombre', {LC_PARCEL_T}.{COL_BAUNIT_T_NAME_F},
+                                                                          'Id operación', {LC_PARCEL_T}.{LC_PARCEL_T_ID_OPERATION_F},
+                                                                          'FMI', ({LC_PARCEL_T}.{LC_PARCEL_T_ORIP_CODE_F} || '-'|| {LC_PARCEL_T}.{LC_PARCEL_T_FMI_F}),
+                                                                          'Número predial', {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F},
+                                                                          'Número predial anterior', {LC_PARCEL_T}.{LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F},
+                                                                          '{LC_RIGHT_T}', COALESCE(_info_derecho._derecho_, '[]'),
+                                                                          '{LC_RESTRICTION_T}', COALESCE(_info_restriccion._restriccion_, '[]')
+                                                                         )) ORDER BY {LC_PARCEL_T}.{T_ID_F}) FILTER(WHERE {LC_PARCEL_T}.{T_ID_F} IS NOT NULL) AS _predio_
+                 FROM {schema}.{LC_PARCEL_T} LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = {LC_PARCEL_T}.{T_ID_F}
+                 LEFT JOIN _info_derecho ON _info_derecho.{COL_BAUNIT_RRR_T_UNIT_F} = {LC_PARCEL_T}.{T_ID_F}
+                 LEFT JOIN _info_restriccion ON _info_restriccion.{COL_BAUNIT_RRR_T_UNIT_F} = {LC_PARCEL_T}.{T_ID_F}
+                 WHERE {LC_PARCEL_T}.{T_ID_F} IN (SELECT * FROM _predios_seleccionados)
+                    AND {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IS NOT NULL
+                    AND {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_BUILDING_F} IS NULL
+                    AND {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F} IS NULL
+                 GROUP BY {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F}
+             ),
+             _info_terreno AS (
+                 SELECT {LC_PLOT_T}.{T_ID_F},
+                 JSON_BUILD_OBJECT('id', {LC_PLOT_T}.{T_ID_F},
+                                    'attributes', JSON_BUILD_OBJECT(CONCAT('Área' , (SELECT * FROM _unidad_area_terreno)), {LC_PLOT_T}.{LC_PLOT_T_PLOT_AREA_F},
+                                                                    '{LC_PARCEL_T}', COALESCE(_info_predio._predio_, '[]')
+                                                                   )) AS _terreno_
+                 FROM {schema}.{LC_PLOT_T} LEFT JOIN _info_predio ON {LC_PLOT_T}.{T_ID_F} = _info_predio.{COL_UE_BAUNIT_T_LC_PLOT_F}
+                 WHERE {LC_PLOT_T}.{T_ID_F} IN (SELECT * FROM _terrenos_seleccionados)
+                 ORDER BY {LC_PLOT_T}.{T_ID_F}
+             )
+            SELECT JSON_BUILD_OBJECT('{LC_PLOT_T}', JSON_AGG(_info_terreno._terreno_)) FROM _info_terreno
     """
 
-    query = query.format(schema= schema, custom_filter_plots=custom_filter_plots, custom_filter_parcels=custom_filter_parcels, parcel_fmi=parcel_fmi, parcel_number=parcel_number, previous_parcel_number=previous_parcel_number)
-
+    query = query.format(**vars(names),  # Custom keys are search in Table And Field Names object
+                         schema= schema,
+                         custom_filter_plots=custom_filter_plots,
+                         custom_filter_parcels=custom_filter_parcels,
+                         parcel_fmi=parcel_fmi,
+                         parcel_number=parcel_number,
+                         LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                         previous_parcel_number=previous_parcel_number)
     return query

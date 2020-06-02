@@ -24,7 +24,8 @@ class PGLADMQuery(QGISLADMQuery):
         :return:
         """
         params = QGISLADMQuery._get_parameters(kwargs)
-        query = basic_query.get_igac_basic_query(schema=db.schema,
+        query = basic_query.get_igac_basic_query(names=db.names,
+                                                 schema=db.schema,
                                                  plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
@@ -43,7 +44,8 @@ class PGLADMQuery(QGISLADMQuery):
         :return:
         """
         params = QGISLADMQuery._get_parameters(kwargs)
-        query = legal_query.get_igac_legal_query(schema=db.schema,
+        query = legal_query.get_igac_legal_query(names=db.names,
+                                                 schema=db.schema,
                                                  plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                  parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                  parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
@@ -62,7 +64,8 @@ class PGLADMQuery(QGISLADMQuery):
         :return:
         """
         params = QGISLADMQuery._get_parameters(kwargs)
-        query = property_record_card_query.get_igac_property_record_card_query(schema=db.schema,
+        query = property_record_card_query.get_igac_property_record_card_query(names=db.names,
+                                                                               schema=db.schema,
                                                                                plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                                                parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                                                parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
@@ -81,7 +84,8 @@ class PGLADMQuery(QGISLADMQuery):
         :return:
         """
         params = QGISLADMQuery._get_parameters(kwargs)
-        query = physical_query.get_igac_physical_query(schema=db.schema,
+        query = physical_query.get_igac_physical_query(names=db.names,
+                                                       schema=db.schema,
                                                        plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
@@ -100,7 +104,8 @@ class PGLADMQuery(QGISLADMQuery):
         :return:
         """
         params = QGISLADMQuery._get_parameters(kwargs)
-        query = economic_query.get_igac_economic_query(schema=db.schema,
+        query = economic_query.get_igac_economic_query(names=db.names,
+                                                       schema=db.schema,
                                                        plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
                                                        parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
                                                        parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
