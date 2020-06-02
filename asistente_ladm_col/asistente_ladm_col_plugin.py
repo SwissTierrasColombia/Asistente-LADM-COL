@@ -116,6 +116,7 @@ from asistente_ladm_col.gui.wizards.operation.wiz_create_points_operation import
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
+from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
@@ -712,8 +713,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        log_quality_validation_text, log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_quality_validation_text, log_quality_validation_total_time)
+        log_text, log_total_time = self.quality_rule_engine.quality_rule_logger.get_log_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, log_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
@@ -1096,14 +1097,23 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        self.quality_dialog = QualityDialog(self.get_db_connection())
+        quality_dialog = QualityDialog()
+        quality_dialog.exec_()
 
-        self.quality_dialog.log_quality_show_message_emitted.connect(self.show_log_quality_message)
-        self.quality_dialog.log_quality_show_button_emitted.connect(self.show_log_quality_button)
-        self.quality_dialog.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality_dialog.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+        self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        self.quality_rule_engine.validate_quality_rules()
 
-        self.quality_dialog.exec_()
+        # if self.app.gui.error_group_exists():
+        #     group = self.app.gui.get_error_layers_group()
+        #     # # Check if group layer is empty
+        #     if group.findLayers():
+        #         self.app.gui.set_error_group_visibility(True)
+        #     else:
+        #         self.app.gui.remove_error_group()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

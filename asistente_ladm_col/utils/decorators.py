@@ -14,7 +14,8 @@ from qgis.utils import (isPluginLoaded,
 from asistente_ladm_col.lib.context import SettingsContext
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from asistente_ladm_col.utils.utils import is_plugin_version_valid
+from asistente_ladm_col.utils.utils import (is_plugin_version_valid,
+                                            Utils)
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
                                                       QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
@@ -29,7 +30,13 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
                                                       LOG_QUALITY_LIST_CONTAINER_CLOSE,
                                                       LOG_QUALITY_CONTENT_SEPARATOR,
                                                       COLLECTED_DB_SOURCE,
-                                                      SETTINGS_CONNECTION_TAB_INDEX)
+                                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_CLOSE)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
 
@@ -185,25 +192,35 @@ def _log_quality_rule_validations(func_to_decorate):
         :param args: 'rule_name' is the executed quality rule name
         """
         rule_name = args['rule_name']
-        self.log_quality_set_initial_progress_emitted.emit(rule_name)
-        self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
+        self.quality_rule_logger.set_initial_progress_emitted.emit(rule_name)
+        log_text_content = LOG_QUALITY_LIST_CONTAINER_OPEN
 
         start_time = time.time()
         with OverrideCursor(Qt.WaitCursor):
-            func_to_decorate(self, db, **args)
+            msg, level = func_to_decorate(self, db, **args)
         end_time = time.time()
 
-        self.log_quality_validation_total_time = self.log_quality_validation_total_time + (end_time - start_time)
+        if level == Qgis.Critical:
+            prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
+        elif level == Qgis.Success:
+            prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
+        else:  # Qgis.Warning
+            prefix = LOG_QUALITY_LIST_ITEM_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_CLOSE
+        log_text_content += "{}{}{}".format(prefix, msg, suffix)
 
-        self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
-        self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR
+        self.quality_rule_logger.log_total_time = self.quality_rule_logger.log_total_time + (end_time - start_time)
 
-        self.log_dialog_quality_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                                              rule_name, self.utils.set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
-        self.log_dialog_quality_text += self.log_dialog_quality_text_content
-        self.log_dialog_quality_text_content = ""
+        log_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
+        log_text_content += LOG_QUALITY_CONTENT_SEPARATOR
 
-        self.log_quality_set_final_progress_emitted.emit(rule_name)
+        self.quality_rule_logger.log_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
+                                                              rule_name, Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+        self.quality_rule_logger.log_text += log_text_content
+
+        self.quality_rule_logger.set_final_progress_emitted.emit(rule_name)
 
     return add_format_to_text
 
