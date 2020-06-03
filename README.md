@@ -242,4 +242,4 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
       
 + Integración con Sistema de Transición
  
-  ![Insumos](https://user-images.githubusercontent.com/27906888/83688152-8efe1780-a5b2-11ea-8464-330dfa115c9a.gif)
+  ![insumos](https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif)
