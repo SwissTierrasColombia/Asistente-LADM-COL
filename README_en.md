@@ -228,4 +228,4 @@ If these prerrequisites are not met, the LADM-COL Assistant will continue runnin
 
 + Integration with Transitional System
 
-![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)
+  ![Insumos](https://user-images.githubusercontent.com/27906888/83688152-8efe1780-a5b2-11ea-8464-330dfa115c9a.gif)
