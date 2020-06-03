@@ -241,5 +241,5 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
   ![Identificación de Novedades](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
       
 + Integración con Sistema de Transición
-
-  ![insumos](https://user-images.githubusercontent.com/27906888/75196661-73b97b80-572a-11ea-8ae0-30cebccd7996.gif)
+ 
+  ![Insumos](https://user-images.githubusercontent.com/27906888/83688152-8efe1780-a5b2-11ea-8464-330dfa115c9a.gif)
