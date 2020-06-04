@@ -1,0 +1,60 @@
+INTERLIS 2.3;
+
+TYPE MODEL ISO19107_PLANAS_V3_0 (es)
+AT "http://www.swisslm.ch/models"
+VERSION "2016-03-07"  =
+
+  DOMAIN
+
+    GM_Point2D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m] ,ROTATION 2 -> 1;
+
+    GM_Curve2D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;
+
+    GM_Surface2D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;
+
+    GM_Point3D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m], -5000.000 .. 6000.000 [INTERLIS.m] ,ROTATION 2 -> 1;
+
+    GM_Curve3D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;
+
+    GM_Surface3D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;
+
+  STRUCTURE GM_Geometry2DListValue =
+  END GM_Geometry2DListValue;
+
+  STRUCTURE GM_Curve2DListValue =
+    value : MANDATORY GM_Curve2D;
+  END GM_Curve2DListValue;
+
+  STRUCTURE GM_Surface2DListValue =
+    value : MANDATORY GM_Surface2D;
+  END GM_Surface2DListValue;
+
+  !!@ ili2db.mapping = "MultiLine"
+STRUCTURE GM_MultiCurve2D =
+    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve2DListValue;
+  END GM_MultiCurve2D;
+
+  !!@ ili2db.mapping = "MultiSurface"
+STRUCTURE GM_MultiSurface2D =
+    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface2DListValue;
+  END GM_MultiSurface2D;
+
+  STRUCTURE GM_Curve3DListValue =
+    value : MANDATORY GM_Curve3D;
+  END GM_Curve3DListValue;
+
+  STRUCTURE GM_Surface3DListValue =
+    value : MANDATORY GM_Surface3D;
+  END GM_Surface3DListValue;
+
+  !!@ ili2db.mapping = "MultiLine"
+STRUCTURE GM_MultiCurve3D =
+    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve3DListValue;
+  END GM_MultiCurve3D;
+
+  !!@ ili2db.mapping = "MultiSurface"
+STRUCTURE GM_MultiSurface3D =
+    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface3DListValue;
+  END GM_MultiSurface3D;
+
+END ISO19107_PLANAS_V3_0.
