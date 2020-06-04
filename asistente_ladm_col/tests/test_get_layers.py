@@ -207,6 +207,7 @@ class TestGetLayers(unittest.TestCase):
     def tearDownClass(cls):
         print("INFO: Closing connection and unloading model baker")
         cls.db_pg.conn.close()
+        cls.db_mssql.conn.close()
         unload_qgis_model_baker()
 
 

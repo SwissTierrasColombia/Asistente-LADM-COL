@@ -374,7 +374,7 @@ class TestQgisModelBaker(unittest.TestCase):
     def test_import_data_in_mssql(self):
         print("\nINFO: Validate Import Data in MS SQL Server...")
 
-        schema = 'test_import_data'
+        schema = 'test_ladm_col'
         reset_db_mssql(schema)
         restore_schema_mssql(schema)
 
