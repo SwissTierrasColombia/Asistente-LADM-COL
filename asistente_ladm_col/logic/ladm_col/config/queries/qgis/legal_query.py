@@ -11,14 +11,14 @@ from qgis.core import QgsExpression
 
 
 def get_igac_legal_query(names, ladm_units):
-    op_party_contact_fields = [
+    lc_party_contact_fields = [
         OwnField(names.LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_1_F, 'Teléfono 1'),
         OwnField(names.LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F, 'Teléfono 2'),
         OwnField(names.LC_PARTY_CONTACT_T_NOTIFICATION_ADDRESS_F, 'Domicilio notificación'),
         OwnField(names.LC_PARTY_CONTACT_T_EMAIL_F, 'Correo electrónico')
     ]
 
-    op_administrative_source_fields = [
+    lc_administrative_source_fields = [
         DomainOwnField(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F, "Tipo de fuente administrativa",
                        names.LC_ADMINISTRATIVE_SOURCE_TYPE_D),
         OwnField(names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F, "Ente emisor"),
@@ -29,21 +29,21 @@ def get_igac_legal_query(names, ladm_units):
                              names.EXT_ARCHIVE_S_LC_ADMINISTRATIVE_SOURCE_F)
     ]
 
-    op_party_fields = [
+    lc_party_fields = [
         DomainOwnField(names.LC_PARTY_T_TYPE_F, "Tipo", names.LC_PARTY_TYPE_D),
         OwnField(names.LC_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
         OwnField(names.COL_PARTY_T_NAME_F, 'Nombre'),
         OwnField(names.LC_PARTY_T_GENRE_F, 'Género'),
-        RelatedOwnFieldObject(names.LC_PARTY_CONTACT_T, names.LC_PARTY_CONTACT_T, op_party_contact_fields,
+        RelatedOwnFieldObject(names.LC_PARTY_CONTACT_T, names.LC_PARTY_CONTACT_T, lc_party_contact_fields,
                               names.LC_PARTY_CONTACT_T_LC_PARTY_F)
     ]
 
-    op_group_party_party_fields = [
+    lc_group_party_party_fields = [
         DomainOwnField(names.LC_PARTY_T_TYPE_F, "Tipo", names.LC_PARTY_TYPE_D),
         OwnField(names.LC_PARTY_T_DOCUMENT_ID_F, 'Cédula de ciudadanía'),
         OwnField(names.COL_PARTY_T_NAME_F, 'Nombre'),
         OwnField(names.LC_PARTY_T_GENRE_F, 'Género'),
-        RelatedOwnFieldObject(names.LC_PARTY_CONTACT_T, names.LC_PARTY_CONTACT_T, op_party_contact_fields,
+        RelatedOwnFieldObject(names.LC_PARTY_CONTACT_T, names.LC_PARTY_CONTACT_T, lc_party_contact_fields,
                               names.LC_PARTY_CONTACT_T_LC_PARTY_F),
         RelatedRemoteFieldValue(names.FRACTION_S,
                                 names.FRACTION_S,
@@ -57,7 +57,7 @@ def get_igac_legal_query(names, ladm_units):
                                 FilterSubLevel(names.T_ID_F, names.MEMBERS_T, names.MEMBERS_T_PARTY_F))
     ]
 
-    op_group_party_fields = [
+    lc_group_party_fields = [
         DomainOwnField(names.COL_GROUP_PARTY_T_TYPE_F, "Tipo de agrupación de interesados",
                        names.COL_GROUP_PARTY_TYPE_D),
         OwnField(names.COL_PARTY_T_NAME_F, "Nombre")
@@ -97,7 +97,7 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_SOURCE_T_SOURCE_F,
                                                                     names.COL_RRR_SOURCE_T,
                                                                     names.COL_RRR_SOURCE_T_LC_RIGHT_F),
-                        QueryNames.TABLE_FIELDS: op_administrative_source_fields
+                        QueryNames.TABLE_FIELDS: lc_administrative_source_fields
                     },
                     '2' + QueryNames.LEVEL_TABLE: {
                         QueryNames.LEVEL_TABLE_NAME: names.LC_PARTY_T,
@@ -105,7 +105,7 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_PARTY_T_LC_PARTY_F,
                                                                     names.LC_RIGHT_T,
                                                                     names.T_ID_F),
-                        QueryNames.TABLE_FIELDS: op_party_fields
+                        QueryNames.TABLE_FIELDS: lc_party_fields
                     },
                     '3' + QueryNames.LEVEL_TABLE: {
                         QueryNames.LEVEL_TABLE_NAME: names.LC_GROUP_PARTY_T,
@@ -113,14 +113,14 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F,
                                                                     names.LC_RIGHT_T,
                                                                     names.T_ID_F),
-                        QueryNames.TABLE_FIELDS: op_group_party_fields,
+                        QueryNames.TABLE_FIELDS: lc_group_party_fields,
                         QueryNames.LEVEL_TABLE: {
                             QueryNames.LEVEL_TABLE_NAME: names.LC_PARTY_T,
                             QueryNames.LEVEL_TABLE_ALIAS: names.LC_PARTY_T,
                             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.MEMBERS_T_PARTY_F,
                                                                         names.MEMBERS_T,
                                                                         names.MEMBERS_T_GROUP_PARTY_F),
-                            QueryNames.TABLE_FIELDS: op_group_party_party_fields
+                            QueryNames.TABLE_FIELDS: lc_group_party_party_fields
                         },
                     }
                 },
@@ -140,7 +140,7 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_SOURCE_T_SOURCE_F,
                                                                     names.COL_RRR_SOURCE_T,
                                                                     names.COL_RRR_SOURCE_T_LC_RESTRICTION_F),
-                        QueryNames.TABLE_FIELDS: op_administrative_source_fields
+                        QueryNames.TABLE_FIELDS: lc_administrative_source_fields
                     },
                     '2' + QueryNames.LEVEL_TABLE: {
                         QueryNames.LEVEL_TABLE_NAME: names.LC_PARTY_T,
@@ -148,7 +148,7 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_PARTY_T_LC_PARTY_F,
                                                                     names.LC_RESTRICTION_T,
                                                                     names.T_ID_F),
-                        QueryNames.TABLE_FIELDS: op_party_fields
+                        QueryNames.TABLE_FIELDS: lc_party_fields
                     },
                     '3' + QueryNames.LEVEL_TABLE: {
                         QueryNames.LEVEL_TABLE_NAME: names.LC_GROUP_PARTY_T,
@@ -156,14 +156,14 @@ def get_igac_legal_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F,
                                                                     names.LC_RESTRICTION_T,
                                                                     names.T_ID_F),
-                        QueryNames.TABLE_FIELDS: op_group_party_fields,
+                        QueryNames.TABLE_FIELDS: lc_group_party_fields,
                         QueryNames.LEVEL_TABLE: {
                             QueryNames.LEVEL_TABLE_NAME: names.LC_PARTY_T,
                             QueryNames.LEVEL_TABLE_ALIAS: names.LC_PARTY_T,
                             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.MEMBERS_T_PARTY_F,
                                                                         names.MEMBERS_T,
                                                                         names.MEMBERS_T_GROUP_PARTY_F),
-                            QueryNames.TABLE_FIELDS: op_group_party_party_fields
+                            QueryNames.TABLE_FIELDS: lc_group_party_party_fields
                         }
                     }
                 }

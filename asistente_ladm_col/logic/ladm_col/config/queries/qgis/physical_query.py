@@ -11,7 +11,7 @@ from qgis.core import QgsExpression
 
 
 def get_igac_physical_query(names, ladm_units):
-    op_spatial_source_fields = [
+    lc_spatial_source_fields = [
         DomainOwnField(names.COL_SPATIAL_SOURCE_T_TYPE_F, "Tipo de fuente espacial",
                        names.COL_SPATIAL_SOURCE_TYPE_D),
         DomainOwnField(names.COL_SOURCE_T_AVAILABILITY_STATUS_F, "Estado disponibilidad",
@@ -75,7 +75,7 @@ def get_igac_physical_query(names, ladm_units):
                             QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_UE_SOURCE_T_SOURCE_F,
                                                                         names.COL_UE_SOURCE_T,
                                                                         names.COL_UE_SOURCE_T_LC_BUILDING_UNIT_F),
-                            QueryNames.TABLE_FIELDS: op_spatial_source_fields
+                            QueryNames.TABLE_FIELDS: lc_spatial_source_fields
                         }
                     },
                     '2' + QueryNames.LEVEL_TABLE: {
@@ -84,7 +84,7 @@ def get_igac_physical_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_UE_SOURCE_T_SOURCE_F,
                                                                     names.COL_UE_SOURCE_T,
                                                                     names.COL_UE_SOURCE_T_LC_BUILDING_F),
-                        QueryNames.TABLE_FIELDS: op_spatial_source_fields
+                        QueryNames.TABLE_FIELDS: lc_spatial_source_fields
                     }
                 }
             },
@@ -145,7 +145,7 @@ def get_igac_physical_query(names, ladm_units):
                 QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.COL_UE_SOURCE_T_SOURCE_F,
                                                             names.COL_UE_SOURCE_T,
                                                             names.COL_UE_SOURCE_T_LC_PLOT_F),
-                QueryNames.TABLE_FIELDS: op_spatial_source_fields
+                QueryNames.TABLE_FIELDS: lc_spatial_source_fields
             }
         }
     }
