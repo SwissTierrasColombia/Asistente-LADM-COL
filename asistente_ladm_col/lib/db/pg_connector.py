@@ -252,7 +252,9 @@ class PGConnector(ClientServerDB):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE l.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
+            where_id = "WHERE l.{} {} {}".format(self.names.T_ID_F,
+                                                   '=' if mode == 'only_id' else '!=',
+                                                   plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -270,7 +272,7 @@ class PGConnector(ClientServerDB):
             return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = annex17_building_data_query.get_annex17_building_data_query(self.schema)
+        query = annex17_building_data_query.get_annex17_building_data_query(self.names, self.schema)
         cur.execute(query)
 
         return cur.fetchall()[0][0]
@@ -281,7 +283,7 @@ class PGConnector(ClientServerDB):
             return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = annex17_point_data_query.get_annex17_point_data_query(self.schema, plot_id)
+        query = annex17_point_data_query.get_annex17_point_data_query(self.names, self.schema, plot_id)
         cur.execute(query)
 
         return cur.fetchone()[0]
