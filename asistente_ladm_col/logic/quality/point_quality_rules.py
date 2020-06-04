@@ -54,23 +54,24 @@ class PointQualityRules:
         self.app = AppInterface()
         self.geometry = GeometryUtils()
 
-    def check_overlapping_boundary_point(self, db):
+    def check_overlapping_boundary_point(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.OP_BOUNDARY_POINT_T, QUALITY_RULE_ERROR_CODE_E100101)
+        return self.__check_overlapping_points(db, rule, layers, QUALITY_RULE_ERROR_CODE_E100101)
 
     def check_overlapping_control_point(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)
         return self.__check_overlapping_points(db, rule, db.names.OP_CONTROL_POINT_T, QUALITY_RULE_ERROR_CODE_E100201)
 
-    def __check_overlapping_points(self, db, rule, layer_name, error_code):
+    def __check_overlapping_points(self, db, rule, layer_dict, error_code):
         """
         Shows which points are overlapping
         :param db: db connection instance
-        :param entity: points layer
+        :param layer_dict: Dict with layer name and layer object
         :return: msg, Qgis.MessageLevel
         """
         features = []
-        point_layer = self.app.core.get_layer(db, layer_name, load=True)
+        layer_name = list(layer_dict.keys())[0]
+        point_layer = list(layer_dict.values())[0]
         if not point_layer:
             return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
 

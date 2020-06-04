@@ -14,6 +14,10 @@ QUALITY_RULE_TABLE_FIELDS = "QUALITY_RULE_TABLE_FIELDS"
 QUALITY_RULE_TABLE_FIELD = "QUALITY_RULE_TABLE_FIELD"
 QUALITY_RULE_DOMAIN_ERROR_CODES = "QUALITY_RULE_DOMAIN_ERROR_CODES"
 QUALITY_RULES_ERRORS = "QUALITY_RULES_ERRORS"
+QUALITY_RULE_LAYERS = "QUALITY_RULE_LAYERS"
+QUALITY_RULE_ADJUSTED_LAYERS = "QUALITY_RULE_ADJUSTED_LAYERS"
+ADJUSTED_INPUT_LAYER = "ADJUSTED_INPUT_LAYER"
+ADJUSTED_REFERENCE_LAYER = "ADJUSTED_REFERENCE_LAYER"
 
 #ERROR CODES FOR POINT QUALITY RULES
 QUALITY_RULE_ERROR_CODE_E100101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS.value) + '01'
@@ -664,4 +668,22 @@ class QualityRuleConfig:
             }
         }
 
-
+    @staticmethod
+    def get_quality_rules_layer_config(names):
+        return {
+            EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: {
+                QUALITY_RULE_LAYERS: [names.OP_BOUNDARY_POINT_T],
+                QUALITY_RULE_ADJUSTED_LAYERS: {
+                    names.OP_BOUNDARY_POINT_T: {
+                        ADJUSTED_INPUT_LAYER: names.OP_BOUNDARY_POINT_T,
+                        ADJUSTED_REFERENCE_LAYER: names.OP_BOUNDARY_POINT_T}
+                }
+            }, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
+                QUALITY_RULE_LAYERS: [names.OP_CONTROL_POINT_T],
+                QUALITY_RULE_ADJUSTED_LAYERS: {
+                    names.OP_CONTROL_POINT_T: {
+                        ADJUSTED_INPUT_LAYER: names.OP_CONTROL_POINT_T,
+                        ADJUSTED_REFERENCE_LAYER: names.OP_CONTROL_POINT_T}
+                }
+            }
+        }

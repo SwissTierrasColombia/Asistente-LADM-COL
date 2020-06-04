@@ -184,11 +184,12 @@ def _activate_processing_plugin(func_to_decorate):
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
-    def add_format_to_text(self, db, **args):
+    def add_format_to_text(self, rule_key, layers, **args):
         """
         Decorator used for registering log quality info
         :param self: QualityDialog instance
-        :param db: db connector
+        :param rule_key: rule_key
+        :param layers: layers
         :param args: 'rule_name' is the executed quality rule name
         """
         rule_name = args['rule_name']
@@ -197,7 +198,7 @@ def _log_quality_rule_validations(func_to_decorate):
 
         start_time = time.time()
         with OverrideCursor(Qt.WaitCursor):
-            msg, level = func_to_decorate(self, db, **args)
+            msg, level = func_to_decorate(self, rule_key, layers, **args)
         end_time = time.time()
 
         if level == Qgis.Critical:

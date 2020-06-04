@@ -36,13 +36,14 @@ class QualityRules:
         self.polygon_quality_rules = PolygonQualityRules()
         self.logic_quality_rules = LogicQualityRules()
 
-    def validate_quality_rule(self, db, id_quality_rule):
+    def validate_quality_rule(self, db, id_quality_rule, layers):
         """
         Single point of access to execute quality rules. It dispatches calls to
         the appropriate quality rule classes.
 
         :param db: DB Connector object
         :param id_quality_rule: id of the quality rule
+        :param layers: List of layers required by the quality rule.
         :return: A list of tuples. When the rule is check for duplicate records, the list has
                  several tuples, otherwise it returns a single tuple.
                  res = [(msg, Qgis.Success|Warning|Critical)), ...]
@@ -51,7 +52,7 @@ class QualityRules:
 
         # POINT QUALITY RULES
         if id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
-            msg, level = self.point_quality_rules.check_overlapping_boundary_point(db)
+            msg, level = self.point_quality_rules.check_overlapping_boundary_point(db, layers)
         elif id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS:
             msg, level = self.point_quality_rules.check_overlapping_control_point(db)
         elif id_quality_rule == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES:
