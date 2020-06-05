@@ -19,7 +19,8 @@ from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              pyqtSignal)
+                              pyqtSignal,
+                              QSettings)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
@@ -31,41 +32,43 @@ class QualityRuleEngine(QObject):
     """
     Engine that executes Quality Rules
     """
-    def __init__(self, db, rule_keys):
+    def __init__(self, db, rules):
         QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
 
-        self.__layer_manager = QualityRuleLayerManager(db, rule_keys)
+        self.__tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        self.__layer_manager = QualityRuleLayerManager(db, rules.keys(), self.__tolerance)
         self.__quality_rules = QualityRules()
-        self.quality_rule_logger = QualityRuleLogger()
+        self.quality_rule_logger = QualityRuleLogger(self.__tolerance)
 
         self.__db = db
-        self.__rule_keys = rule_keys
+        self.__rules = rules
         self.__result_layers = list()
 
-    def initialize(self, db, rule_keys):
+    def initialize(self, db, rules):
         """
         Objects of this class are reusable calling initialize()
         """
         self.__result_layers = list()
         self.__db = db
-        self.__rule_keys = rule_keys
-        self.__layer_manager.initialize(rule_keys)
-        self.quality_rule_logger.initialize()
+        self.__rules = rules
+        self.__tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        self.__layer_manager.initialize(rules.keys(), self.__tolerance)
+        self.quality_rule_logger.initialize(self.__tolerance)
 
     def validate_quality_rules(self):
-        if len(self.__rule_keys):
-            self.quality_rule_logger.set_count_topology_rules(len(self.__rule_keys))
+        if self.__rules:
+            self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
 
-            for rule_key in self.__rule_keys:
+            for rule_key, rule_name in self.__rules.items():
                 layers = self.__layer_manager.get_layers(rule_key)
-                self.__validate_quality_rule(rule_key, layers, rule_name="rule_name")
+                self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
 
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
+            self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
 
     @_log_quality_rule_validations
     def __validate_quality_rule(self, rule_key, layers, rule_name):
@@ -90,17 +93,19 @@ class QualityRuleLogger(QObject):
     set_initial_progress_emitted = pyqtSignal(str)
     set_final_progress_emitted = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, tolerance):
         QObject.__init__(self)
         self.log_text = ""
         self.log_total_time = 0
+        self.tolerance = tolerance
 
-    def initialize(self):
+    def initialize(self, tolerance):
         """
         Objects of this class are reusable calling initialize()
         """
         self.log_text = ""
         self.log_total_time = 0
+        self.tolerance = tolerance
 
     def set_count_topology_rules(self, count):
         self.show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)
@@ -109,4 +114,4 @@ class QualityRuleLogger(QObject):
         self.show_button_emitted.emit()
 
     def get_log_text(self):
-        return self.log_text, self.log_total_time
+        return self.log_text, self.tolerance, self.log_total_time

@@ -17,7 +17,8 @@
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
-from qgis.core import QgsProject
+from qgis.core import (QgsProject,
+                       QgsWkbTypes)
 import processing
 
 from asistente_ladm_col.app_interface import AppInterface
@@ -36,19 +37,18 @@ class QualityRuleLayerManager(QObject):
     session. It goes for LADM-COL layers only once and also manages
     intermediate layers (after snapping).
     """
-    def __init__(self, db, rule_keys):
+    def __init__(self, db, rule_keys, tolerance):
         QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
 
         self.__db = db
         self.__rule_keys = rule_keys
+        self.__tolerance = tolerance
 
         self.__quality_rule_layers_config = QualityRuleConfig.get_quality_rules_layer_config(self.__db.names)
         self.__layers = dict()  # {rule_key: {layer_name: layer}
         self.__adjusted_layers_cache = dict()
-
-        self.__tolerance = 10  # TODO: read from settings
 
     def initialize(self, rule_keys):
         """
@@ -139,8 +139,14 @@ class QualityRuleLayerManager(QObject):
         # Single layer --> behavior 7
         # Different layers --> behavior 2, tolerance + 0.0001
         single_layer = input_layer == reference_layer
-        behavior = 7 if single_layer else 2
-        tolerance = self.__tolerance if single_layer else self.__tolerance + 0.00001
+        if single_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
+            behavior = 7  # It's a bit aggressive for polygons, for points works fine
+            tolerance = self.__tolerance
+        else:
+            behavior = 2
+            tolerance = self.__tolerance + 0.001  # Behavior 2 doesn't work with the exact tolerance
+
+        tolerance /= 1000  # Tolerance comes in mm., we need it in m.
 
         params = {
             'INPUT': input_layer,

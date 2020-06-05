@@ -713,8 +713,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        log_text, log_total_time = self.quality_rule_engine.quality_rule_logger.get_log_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, log_total_time)
+        log_text, tolerance, log_total_time = self.quality_rule_engine.quality_rule_logger.get_log_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, tolerance, log_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):

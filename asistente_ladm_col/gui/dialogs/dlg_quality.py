@@ -80,7 +80,7 @@ class QualityDialog(QDialog, DIALOG_UI):
 
         self.load_items()
 
-        self.selected_rules = list()
+        self.selected_rules = dict()
 
     def validate_selection_rules(self):
         # At least one quality rule must have been selected
@@ -125,7 +125,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         while iterator.value():
             item = iterator.value()
             if item.isSelected():
-                self.selected_rules.append(item.data(0, Qt.UserRole))
+                self.selected_rules[item.data(0, Qt.UserRole)] = item.text(0)  # rule_key: rule_name
             iterator += 1
 
     def rejected(self):

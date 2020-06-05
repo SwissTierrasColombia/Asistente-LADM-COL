@@ -356,6 +356,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self.offline_models_radio_button.isChecked():
             settings.setValue('Asistente-LADM-COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
+        settings.setValue('Asistente-LADM-COL/quality/tolerance', self.sbx_tolerance.value())
         settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
         settings.setValue('Asistente-LADM-COL/sources/document_repository', self.connection_box.isChecked())
@@ -426,6 +427,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_model_directories_line_edit.setVisible(False)
             self.custom_models_dir_button.setVisible(False)
 
+        self.sbx_tolerance.setValue(settings.value('Asistente-LADM-COL/quality/tolerance', 0, int))
         use_roads = settings.value('Asistente-LADM-COL/quality/use_roads', True, bool)
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)
