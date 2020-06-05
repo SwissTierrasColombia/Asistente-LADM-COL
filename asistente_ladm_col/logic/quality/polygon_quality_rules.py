@@ -66,22 +66,23 @@ class PolygonQualityRules:
         self.geometry = GeometryUtils()
         self.quality_rules_manager = QualityRuleManager()
 
-    def check_overlapping_plots(self, db):
+    def check_overlapping_plots(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_PLOT_T, QUALITY_RULE_ERROR_CODE_E300101)
+        return self.__check_overlapping_polygons(db, rule, layers, QUALITY_RULE_ERROR_CODE_E300101)
 
-    def check_overlapping_buildings(self, db):
+    def check_overlapping_buildings(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_BUILDING_T, QUALITY_RULE_ERROR_CODE_E300201)
+        return self.__check_overlapping_polygons(db, rule, layers, QUALITY_RULE_ERROR_CODE_E300201)
 
-    def check_overlapping_right_of_way(self, db):
+    def check_overlapping_right_of_way(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)
-        return self.__check_overlapping_polygons(db, rule, db.names.OP_RIGHT_OF_WAY_T, QUALITY_RULE_ERROR_CODE_E300301)
+        return self.__check_overlapping_polygons(db, rule, layers, QUALITY_RULE_ERROR_CODE_E300301)
 
-    def __check_overlapping_polygons(self, db, rule, polygon_layer_name, error_code):
-        polygon_layer = self.app.core.get_layer(db, polygon_layer_name, load=True)
+    def __check_overlapping_polygons(self, db, rule, layer_dict, error_code):
+        polygon_layer_name = list(layer_dict.keys())[0] if layer_dict else ""
+        polygon_layer = list(layer_dict.values())[0] if layer_dict else None
         if not polygon_layer:
-            return QCoreApplication.translate("PolygonQualityRules", "'{}' layer not found!").format(polygon_layer_name), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "'{}' (polygon) layer not found!").format(polygon_layer_name), Qgis.Critical
 
         if polygon_layer:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -130,17 +131,9 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name), Qgis.Success)
 
-    def check_plots_covered_by_boundaries(self, db):
+    def check_plots_covered_by_boundaries(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
-        # read data
-        layers = {
-            db.names.OP_PLOT_T: None,
-            db.names.OP_BOUNDARY_T: None,
-            db.names.LESS_BFS_T: None,
-            db.names.MORE_BFS_T: None
-        }
 
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
@@ -173,14 +166,9 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "All plots are covered by boundaries!"), Qgis.Success)
 
-    def check_right_of_way_overlaps_buildings(self, db):
+    def check_right_of_way_overlaps_buildings(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)
-        layers = {
-            db.names.OP_RIGHT_OF_WAY_T: None,
-            db.names.OP_BUILDING_T: None
-        }
 
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical
 
@@ -226,10 +214,11 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "There are no Right of Way-Building overlaps."), Qgis.Success)
 
-    def check_gaps_in_plots(self, db):
+    def check_gaps_in_plots(self, db, dict_layer):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = self.app.core.get_layer(db, db.names.OP_PLOT_T, True)
+
+        plot_layer = list(dict_layer.values())[0] if dict_layer else None
         if not plot_layer:
             return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical
 
@@ -273,9 +262,10 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "There are no gaps in layer Plot."), Qgis.Success)
 
-    def check_multiparts_in_right_of_way(self, db):
+    def check_multiparts_in_right_of_way(self, db, dict_layer):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)
-        right_of_way_layer = self.app.core.get_layer(db, db.names.OP_RIGHT_OF_WAY_T, True)
+
+        right_of_way_layer = list(dict_layer.values())[0] if dict_layer else None
         if not right_of_way_layer:
             return QCoreApplication.translate("PolygonQualityRules", "'Right of way' layer not found!"), Qgis.Critical
 
@@ -314,13 +304,9 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
 
-    def check_plot_nodes_covered_by_boundary_points(self, db):
+    def check_plot_nodes_covered_by_boundary_points(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
-        layers = {
-            db.names.OP_PLOT_T: None,
-            db.names.OP_BOUNDARY_POINT_T: None
-        }
-        self.app.core.get_layers(db, layers, load=True)
+
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
@@ -362,17 +348,10 @@ class PolygonQualityRules:
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "All plot nodes are covered by boundary points!"), Qgis.Success)
 
-    def check_building_within_plots(self, db):
+    def check_building_within_plots(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)
         names = db.names
-        layers = {
-            names.OP_BUILDING_T: None,
-            names.OP_PLOT_T: None,
-            names.OP_PARCEL_T: None,
-            names.COL_UE_BAUNIT_T: None,
-            names.OP_CONDITION_PARCEL_TYPE_D: None
-        }
-        self.app.core.get_layers(db, layers, load=True)
+
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
 
@@ -536,19 +515,10 @@ class PolygonQualityRules:
 
         return list(set(buildings_bad_relation))  # Unique t_ids
 
-    def check_building_unit_within_plots(self, db):
+    def check_building_unit_within_plots(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)
         names = db.names
-        layers = {
-            names.OP_BUILDING_T: None,
-            names.OP_BUILDING_UNIT_T: None,
-            names.OP_PLOT_T: None,
-            names.OP_PARCEL_T: None,
-            names.COL_UE_BAUNIT_T: None,
-            names.OP_CONDITION_PARCEL_TYPE_D: None
-        }
 
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, building unit, plot, ue_baunit, condition parcel type) was not found!"), Qgis.Critical
 

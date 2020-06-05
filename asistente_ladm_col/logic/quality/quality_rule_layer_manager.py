@@ -15,13 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-import json
-import requests
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt,
-                              QObject,
-                              pyqtSignal)
-
+                              QObject)
+from qgis.core import QgsProject
 import processing
 
 from asistente_ladm_col.app_interface import AppInterface
@@ -29,10 +25,9 @@ from asistente_ladm_col.config.quality_rules_config import (QualityRuleConfig,
                                                             QUALITY_RULE_LAYERS,
                                                             QUALITY_RULE_ADJUSTED_LAYERS,
                                                             ADJUSTED_REFERENCE_LAYER,
-                                                            ADJUSTED_INPUT_LAYER)
+                                                            ADJUSTED_INPUT_LAYER,
+                                                            FIX_ADJUSTED_LAYER)
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.transitional_system.task_manager.task import STTask
-from asistente_ladm_col.utils.decorators import _with_override_cursor
 
 
 class QualityRuleLayerManager(QObject):
@@ -51,6 +46,7 @@ class QualityRuleLayerManager(QObject):
 
         self.__quality_rule_layers_config = QualityRuleConfig.get_quality_rules_layer_config(self.__db.names)
         self.__layers = dict()  # {rule_key: {layer_name: layer}
+        self.__adjusted_layers_cache = dict()
 
         self.__tolerance = 10  # TODO: read from settings
 
@@ -89,7 +85,7 @@ class QualityRuleLayerManager(QObject):
 
         if self.__tolerance:
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Tolerance > 0, adjusting layers..."))
-            adjusted_layers_cache = {}  # adjusted_layers_key: layer
+            self.__adjusted_layers_cache = dict()  # adjusted_layers_key: layer
             for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
                 if rule_key in self.__rule_keys:  # Only get selected rules' layers
                     if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
@@ -97,14 +93,17 @@ class QualityRuleLayerManager(QObject):
                         for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
                             input = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
                             reference = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
-                            adjusted_layers_key = "{}..{}".format(input, reference)
+                            fix = snap_config[FIX_ADJUSTED_LAYER] if FIX_ADJUSTED_LAYER in snap_config else False
+
+                            adjusted_layers_key = "{}..{}{}".format(input, reference, '..fix' if fix else '')
 
                             # Try to reuse if already calculated!
-                            if adjusted_layers_key not in adjusted_layers_cache:
-                                adjusted_layers_cache[adjusted_layers_key] = self.__adjust_layers(ladm_layers[input],
-                                                                                                  ladm_layers[reference])
+                            if adjusted_layers_key not in self.__adjusted_layers_cache:
+                                self.__adjusted_layers_cache[adjusted_layers_key] = self.__adjust_layers(ladm_layers[input],
+                                                                                                  ladm_layers[reference],
+                                                                                                  fix)
 
-                            adjusted_layers[rule_key][layer_name] = adjusted_layers_cache[adjusted_layers_key]
+                            adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
         self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
 
@@ -119,6 +118,11 @@ class QualityRuleLayerManager(QObject):
                     elif layer_name in ladm_layers:
                         self.__layers[rule_key][layer_name] = ladm_layers[layer_name]
 
+        # Register adjusted layers so that Processing can properly find them
+        load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items()]
+        self.logger.debug(__name__, "{} adjusted layers loaded to QGIS registry...".format(len(load_to_registry)))
+        QgsProject.instance().addMapLayers(load_to_registry, False)
+
         return True
 
     def get_layer(self, layer_name, rule_key):
@@ -131,7 +135,7 @@ class QualityRuleLayerManager(QObject):
 
         return self.__layers[rule_key]
 
-    def __adjust_layers(self, input_layer, reference_layer):
+    def __adjust_layers(self, input_layer, reference_layer, fix=False):
         # Single layer --> behavior 7
         # Different layers --> behavior 2, tolerance + 0.0001
         single_layer = input_layer == reference_layer
@@ -145,5 +149,19 @@ class QualityRuleLayerManager(QObject):
             'BEHAVIOR': behavior,
             'OUTPUT': 'TEMPORARY_OUTPUT'
         }
-        res = processing.run("qgis:snapgeometries", params)
-        return res['OUTPUT']
+        res = processing.run("qgis:snapgeometries", params)['OUTPUT']
+
+        if fix:
+            self.logger.debug(__name__, "Fixing adjusted layer ({}-->{})...".format(input_layer.name(), reference_layer.name()))
+            params = {
+                'INPUT': res,
+                'OUTPUT': 'TEMPORARY_OUTPUT'}
+            res = processing.run("native:fixgeometries", params)['OUTPUT']
+
+        return res
+
+    def clean_temporary_layers(self):
+        # Removes adjusted layers from registry
+        unload_from_registry = [layer.id() for key, layer in self.__adjusted_layers_cache.items()]
+        self.logger.debug(__name__, "{} adjusted layers removed from QGIS registry...".format(len(unload_from_registry)))
+        QgsProject.instance().removeMapLayers(unload_from_registry)

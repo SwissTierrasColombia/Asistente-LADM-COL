@@ -58,9 +58,9 @@ class PointQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)
         return self.__check_overlapping_points(db, rule, layers, QUALITY_RULE_ERROR_CODE_E100101)
 
-    def check_overlapping_control_point(self, db):
+    def check_overlapping_control_point(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.OP_CONTROL_POINT_T, QUALITY_RULE_ERROR_CODE_E100201)
+        return self.__check_overlapping_points(db, rule, layers, QUALITY_RULE_ERROR_CODE_E100201)
 
     def __check_overlapping_points(self, db, rule, layer_dict, error_code):
         """
@@ -70,8 +70,8 @@ class PointQualityRules:
         :return: msg, Qgis.MessageLevel
         """
         features = []
-        layer_name = list(layer_dict.keys())[0]
-        point_layer = list(layer_dict.values())[0]
+        layer_name = list(layer_dict.keys())[0] if layer_dict else None
+        point_layer = list(layer_dict.values())[0] if layer_dict else None
         if not point_layer:
             return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
 
@@ -115,16 +115,9 @@ class PointQualityRules:
                                                    "There are no overlapping points in layer '{}'!").format(layer_name),
                         Qgis.Success)
 
-    def check_boundary_points_covered_by_boundary_nodes(self, db):
+    def check_boundary_points_covered_by_boundary_nodes(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
 
-        layers = {
-            db.names.OP_BOUNDARY_T: None,
-            db.names.POINT_BFS_T: None,
-            db.names.OP_BOUNDARY_POINT_T: None
-        }
-
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
@@ -153,14 +146,9 @@ class PointQualityRules:
                 return (QCoreApplication.translate("PointQualityRules",
                                  "All boundary points are covered by boundary nodes!"), Qgis.Success)
 
-    def check_boundary_points_covered_by_plot_nodes(self, db):
+    def check_boundary_points_covered_by_plot_nodes(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)
-        layers = {
-            db.names.OP_PLOT_T: None,
-            db.names.OP_BOUNDARY_POINT_T: None
-        }
 
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
@@ -178,8 +166,8 @@ class PointQualityRules:
             error_layer.updateFields()
 
             point_list = self.get_boundary_points_features_not_covered_by_plot_nodes(layers[db.names.OP_BOUNDARY_POINT_T],
-                                                                                                  layers[db.names.OP_PLOT_T],
-                                                                                                  db.names.T_ILI_TID_F)
+                                                                                     layers[db.names.OP_PLOT_T],
+                                                                                     db.names.T_ILI_TID_F)
             features = list()
             for point in point_list:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,

@@ -386,13 +386,14 @@ class GeometryUtils(QObject):
         diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)
 
         if not diff_geoms:
-            return None
+            self.logger.debug(__name__, "Gaps in polygon layer: no difference result, no errors...")
+            return list()
 
         feature_error = list()
         if not diff_geoms.isMultipart():
             if include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
-                print("Unique value and no error")
-                return None
+                self.logger.debug(__name__, "Gaps in polygon layer: Single part and no errors...")
+                return list()
 
         for geometry in diff_geoms.asMultiPolygon():
             conflict_geom = QgsGeometry.fromPolygonXY(geometry)
