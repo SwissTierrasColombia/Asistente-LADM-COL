@@ -60,6 +60,9 @@ class QualityRuleEngine(QObject):
     def validate_quality_rules(self):
         if self.__rules:
             self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
+            self.logger.info(__name__,
+                             QCoreApplication.translate("QualityRuleEngine",
+                                "Validating {} quality rules with tolerance = {}.").format(len(self.__rules), self.__tolerance))
 
             for rule_key, rule_name in self.__rules.items():
                 layers = self.__layer_manager.get_layers(rule_key)

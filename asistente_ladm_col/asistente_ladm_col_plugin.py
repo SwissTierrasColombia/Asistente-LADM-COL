@@ -1107,14 +1107,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
         self.quality_rule_engine.validate_quality_rules()
 
-        # if self.app.gui.error_group_exists():
-        #     group = self.app.gui.get_error_layers_group()
-        #     # # Check if group layer is empty
-        #     if group.findLayers():
-        #         self.app.gui.set_error_group_visibility(True)
-        #     else:
-        #         self.app.gui.remove_error_group()
-
     def show_wiz_property_record_card(self):
         # TODO: Remove
         pass
