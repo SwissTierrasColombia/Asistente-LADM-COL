@@ -92,6 +92,7 @@ class RefactorFieldsMappings:
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'length': 2, 'name': '{}'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'length': 3, 'name': '{}'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_NUPRE_F), 'length': 11, 'name': '{}'.format(names.LC_PARCEL_T_NUPRE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'length': 11, 'name': '{}'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_ORIP_CODE_F), 'length': 3, 'name': '{}'.format(names.LC_PARCEL_T_ORIP_CODE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_FMI_F), 'length': 80, 'name': '{}'.format(names.LC_PARCEL_T_FMI_F), 'precision': -1, 'type': 10},

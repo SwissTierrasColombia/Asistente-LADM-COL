@@ -565,6 +565,7 @@ class LayerConfig:
                                names.LC_PARTY_T_DOCUMENT_TYPE_F],
             names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
                                 names.LC_PARCEL_T_MUNICIPALITY_F,
+                                names.LC_PARCEL_T_NUPRE_F,
                                 names.LC_PARCEL_T_ID_OPERATION_F,
                                 names.LC_PARCEL_T_FMI_F,
                                 names.LC_PARCEL_T_PARCEL_NUMBER_F,

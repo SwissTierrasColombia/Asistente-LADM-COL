@@ -82,6 +82,7 @@ def get_igac_economic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                                       'attributes', JSON_BUILD_OBJECT('Nombre', {LC_PARCEL_T}.{COL_BAUNIT_T_NAME_F},
                                                                       'Departamento', {LC_PARCEL_T}.{LC_PARCEL_T_DEPARTMENT_F},
                                                                       'Municipio', {LC_PARCEL_T}.{LC_PARCEL_T_MUNICIPALITY_F},
+                                                                      'NUPRE', {LC_PARCEL_T}.{LC_PARCEL_T_NUPRE_F},
                                                                       'Id operación', {LC_PARCEL_T}.{LC_PARCEL_T_ID_OPERATION_F},
                                                                       'FMI', ({LC_PARCEL_T}.{LC_PARCEL_T_ORIP_CODE_F} || '-'|| {LC_PARCEL_T}.{LC_PARCEL_T_FMI_F}),
                                                                       'Número predial', {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F},

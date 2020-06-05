@@ -77,6 +77,7 @@ def get_igac_legal_query(names, ladm_units):
                                                             names.COL_UE_BAUNIT_T_LC_PLOT_F),
                 QueryNames.TABLE_FIELDS: [
                     OwnField(names.COL_BAUNIT_T_NAME_F, "Nombre"),
+                    OwnField(names.LC_PARCEL_T_NUPRE_F, "NUPRE"),
                     OwnField(names.LC_PARCEL_T_ID_OPERATION_F, "Id operación"),
                     OwnField(names.LC_PARCEL_T_FMI_F, "FMI"),
                     OwnField(names.LC_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),

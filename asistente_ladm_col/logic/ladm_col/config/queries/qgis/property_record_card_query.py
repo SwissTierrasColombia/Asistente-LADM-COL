@@ -22,6 +22,7 @@ def get_igac_property_record_card_query(names, ladm_units):
                     OwnField(names.COL_BAUNIT_T_NAME_F, "Nombre"),
                     OwnField(names.LC_PARCEL_T_DEPARTMENT_F, "Departamento"),
                     OwnField(names.LC_PARCEL_T_MUNICIPALITY_F, "Municipio"),
+                    OwnField(names.LC_PARCEL_T_NUPRE_F, "NUPRE"),
                     OwnField(names.LC_PARCEL_T_ID_OPERATION_F, "Id operación"),
                     OwnField(names.LC_PARCEL_T_FMI_F, "FMI"),
                     OwnField(names.LC_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),

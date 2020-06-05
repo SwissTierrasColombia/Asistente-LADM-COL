@@ -65,7 +65,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         request = QgsFeatureRequest(QgsExpression('"{}" in ({})'.format(self.utils._db.names.T_ID_F, ",".join(str(t_id) for t_id in self.parcels_t_ids))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([self.utils._db.names.T_ID_F,
-                                       self.utils._db.names.LC_PARCEL_T_ID_OPERATION_F,
+                                       self.utils._db.names.LC_PARCEL_T_NUPRE_F,
                                        self.utils._db.names.LC_PARCEL_T_FMI_F,
                                        self.utils._db.names.LC_PARCEL_T_PARCEL_NUMBER_F],
                                       self.utils._layers[self.utils._db.names.LC_PARCEL_T].fields())  # NOTE: this adds a new flag
@@ -75,7 +75,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
             row = 0
             for parcel in parcels:
                 self.tbl_changes_parcels.setItem(row, 0, QTableWidgetItem(str(parcel[self.utils._db.names.T_ID_F])))
-                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_ID_OPERATION_F])))
+                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_NUPRE_F])))
                 self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_FMI_F])))
                 self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_PARCEL_NUMBER_F])))
                 row += 1
