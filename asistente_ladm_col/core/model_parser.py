@@ -34,7 +34,7 @@ class ModelParser(QObject):
             LADMNames.VALUATION_MODEL_PREFIX: None,
             LADMNames.LADM_MODEL_PREFIX: None,
             LADMNames.ANT_MODEL_PREFIX: None,
-            LADMNames.REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX: None,
+            LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: None,
             LADMNames.SNR_DATA_MODEL_PREFIX: None,
             LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: None,
             LADMNames.SUPPLIES_MODEL_PREFIX: None
@@ -45,7 +45,7 @@ class ModelParser(QObject):
             LADMNames.VALUATION_MODEL_PREFIX: False,
             LADMNames.LADM_MODEL_PREFIX: False,
             LADMNames.ANT_MODEL_PREFIX: False,
-            LADMNames.REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX: False,
+            LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: False,
             LADMNames.SNR_DATA_MODEL_PREFIX: False,
             LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: False,
             LADMNames.SUPPLIES_MODEL_PREFIX: False
@@ -85,8 +85,8 @@ class ModelParser(QObject):
     def ladm_model_exists(self):
         return self.model_version_is_supported[LADMNames.LADM_MODEL_PREFIX]
 
-    def reference_cadastral_cartography_model_exists(self):
-        return self.model_version_is_supported[LADMNames.REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX]
+    def cadastral_cartography_model_exists(self):
+        return self.model_version_is_supported[LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX]
 
     def snr_data_model_exists(self):
         return self.model_version_is_supported[LADMNames.SNR_DATA_MODEL_PREFIX]

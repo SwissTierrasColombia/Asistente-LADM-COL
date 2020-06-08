@@ -148,9 +148,9 @@ class DBConnector(QObject):
 
         return False
 
-    def reference_cadastral_cartography_model_exists(self):
+    def cadastral_cartography_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.reference_cadastral_cartography_model_exists()
+            return self.model_parser.cadastral_cartography_model_exists()
 
         return False
 

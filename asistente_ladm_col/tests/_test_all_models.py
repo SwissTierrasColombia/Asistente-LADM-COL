@@ -47,7 +47,7 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(db_connection.survey_model_exists())
         self.assertTrue(db_connection.valuation_model_exists())
         self.assertTrue(db_connection.ant_model_exists())
-        self.assertTrue(db_connection.reference_cadastral_cartography_model_exists())
+        self.assertTrue(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for all model in PG...")
@@ -73,7 +73,7 @@ class TestAllModels(unittest.TestCase):
                          'Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos': {
                              'table_name': 'ini_predio_insumos',
                              'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro': 'gc_predio_catastro',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Datos_SNR.Datos_SNR.SNR_PredioRegistro': 'snr_predio_juridico'
+                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro': 'snr_predio_juridico'
                          },
                          'ANT.Fiso.ANT_Conflictos': {
                              'table_name': 'ant_conflictos',
@@ -110,7 +110,7 @@ class TestAllModels(unittest.TestCase):
                          'Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos': {
                              'table_name': 'ini_predio_insumos',
                              'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro': 'gc_predio_catastro',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Datos_SNR.Datos_SNR.SNR_PredioRegistro': 'snr_predio_juridico'
+                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro': 'snr_predio_juridico'
                          },
                          'ANT.Fiso.ANT_Conflictos': {
                              'table_name': 'ant_conflictos',

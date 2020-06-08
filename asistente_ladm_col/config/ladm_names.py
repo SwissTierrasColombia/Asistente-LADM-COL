@@ -52,7 +52,7 @@ class LADMNames(metaclass=Singleton):
     SUPPLIES_INTEGRATION_MODEL_PREFIX = "Submodelo_Integracion_Insumos"
     SURVEY_MODEL_PREFIX = "Modelo_Aplicacion_LADMCOL_Lev_Cat"
     ANT_MODEL_PREFIX = "ANT"
-    REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX = "Submodelo_Cartografia_Catastral"
+    CADASTRAL_CARTOGRAPHY_PREFIX = "Submodelo_Cartografia_Catastral"
     VALUATION_MODEL_PREFIX = "Sumodelo_Avaluos"
 
     """
@@ -71,7 +71,7 @@ class LADMNames(metaclass=Singleton):
         VALUATION_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
         LADM_MODEL_PREFIX: LATEST_LADM_MODEL_VERSION_SUPPORTED,
         ANT_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
+        CADASTRAL_CARTOGRAPHY_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
         SNR_DATA_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
         SUPPLIES_INTEGRATION_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
         SUPPLIES_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED
@@ -84,7 +84,7 @@ class LADMNames(metaclass=Singleton):
     SUPPORTED_SUPPLIES_INTEGRATION_MODEL = "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
     SUPPORTED_SURVEY_MODEL = "{}_V{}".format(SURVEY_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
     SUPPORTED_ANT_MODEL = "{}_V{}".format(ANT_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY = "{}_V{}".format(REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS)
+    SUPPORTED_CADASTRAL_CARTOGRAPHY = "{}_V{}".format(CADASTRAL_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS)
     SUPPORTED_VALUATION_MODEL = "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
 
     DEFAULT_HIDDEN_MODELS = [SUPPORTED_LADM_MODEL, SUPPORTED_ISO_CARTESIAN_COORDINATES]
@@ -97,7 +97,7 @@ class LADMNames(metaclass=Singleton):
                                                                       "Supplies integration data"),
         SURVEY_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Survey"),
         ANT_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "ANT"),
-        REFERENCE_CADASTRAL_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
+        CADASTRAL_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
         VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
     }
 
@@ -107,13 +107,13 @@ class LADMNames(metaclass=Singleton):
                         SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                         SUPPORTED_SURVEY_MODEL,
                         SUPPORTED_ANT_MODEL,
-                        SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
+                        SUPPORTED_CADASTRAL_CARTOGRAPHY,
                         SUPPORTED_VALUATION_MODEL]
 
     DEFAULT_MODEL_NAMES_CHECKED = {
         # SUPPORTED_ANT_MODEL: Qt.Unchecked,  #TODO: Disable until get last movel version
         SUPPORTED_VALUATION_MODEL: Qt.Unchecked,
-        SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY: Qt.Unchecked,
+        SUPPORTED_CADASTRAL_CARTOGRAPHY: Qt.Unchecked,
         SUPPORTED_SUPPLIES_MODEL: Qt.Unchecked,
         SUPPORTED_SUPPLIES_INTEGRATION_MODEL: Qt.Unchecked,
         SUPPORTED_SNR_DATA_MODEL: Qt.Unchecked,

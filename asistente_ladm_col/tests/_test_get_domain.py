@@ -21,7 +21,7 @@ class TestGetDomains(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_qgis_model_baker()
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_operation_model_gpkg')
+        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 

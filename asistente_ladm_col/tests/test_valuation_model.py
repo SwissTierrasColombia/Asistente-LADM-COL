@@ -45,7 +45,7 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(db_connection.survey_model_exists())
         self.assertTrue(db_connection.valuation_model_exists())
         self.assertFalse(db_connection.ant_model_exists())
-        self.assertFalse(db_connection.reference_cadastral_cartography_model_exists())
+        self.assertFalse(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Valuation model from db in PG...")
@@ -53,21 +53,21 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 159)
+        self.assertEqual(len(dict_names), 180)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
-                         'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno': {
-                             'table_name': 'gc_terreno',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica': 'area_terreno_alfanumerica',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital': 'area_terreno_digital',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Geometria': 'geometria',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo': 'manzana_vereda_codigo',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos': 'numero_subterraneos',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio'
+                         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {
+                             "table_name": "gc_terreno",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica": "area_terreno_alfanumerica",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital": "area_terreno_digital",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Geometria": "geometria",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo": "manzana_vereda_codigo",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          }}
 
         for k,v in expected_dict.items():
@@ -80,21 +80,21 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 159)
+        self.assertEqual(len(dict_names), 180)
 
         expected_dict = {T_ID_KEY: 'T_Id',
                          T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',
-                         'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno': {
-                             'table_name': 'gc_terreno',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica': 'area_terreno_alfanumerica',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital': 'area_terreno_digital',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Geometria': 'geometria',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo': 'manzana_vereda_codigo',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos': 'numero_subterraneos',
-                             'Datos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio'
+                         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno": {
+                             "table_name": "gc_terreno",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Alfanumerica": "area_terreno_alfanumerica",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Area_Terreno_Digital": "area_terreno_digital",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Geometria": "geometria",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo": "manzana_vereda_codigo",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
+                             "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          }}
 
         for k,v in expected_dict.items():

@@ -17,13 +17,13 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
 
-class TestReferenceCadastralCartographyModel(unittest.TestCase):
+class TestCadastralCartographyModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_reference_cartography')
-        cls.db_pg = get_pg_conn('test_ladm_reference_cartography')
-        cls.db_gpkg = get_gpkg_conn('test_ladm_reference_cartography_gpkg')
+        restore_schema('test_ladm_cadastral_cartography')
+        cls.db_pg = get_pg_conn('test_ladm_cadastral_cartography')
+        cls.db_gpkg = get_gpkg_conn('test_ladm_cadastral_cartography_gpkg')
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for reference cadastral cartography model in PG...")
@@ -44,7 +44,7 @@ class TestReferenceCadastralCartographyModel(unittest.TestCase):
         self.assertTrue(db_connection.survey_model_exists())
         self.assertFalse(db_connection.valuation_model_exists())
         self.assertFalse(db_connection.ant_model_exists())
-        self.assertTrue(db_connection.reference_cadastral_cartography_model_exists())
+        self.assertTrue(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Reference cadastral cartography data model (edge case for field keys)...")
@@ -52,19 +52,21 @@ class TestReferenceCadastralCartographyModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 162)
+        self.assertEqual(len(dict_names), 179)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
-                         'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Terreno': 'ue_mas_lc_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_UnidadConstruccion': 'ue_mas_lc_unidadconstruccion'}}
+                         "LADM_COL.LADM_Nucleo.col_masCcl": {
+                             "table_name": "col_masccl",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "ccl_mas",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
+                         }}
 
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
@@ -76,19 +78,21 @@ class TestReferenceCadastralCartographyModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 162)
+        self.assertEqual(len(dict_names), 179)
 
         expected_dict = {T_ID_KEY: 'T_Id',
                          T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',
-                         'LADM_COL.LADM_Nucleo.col_masCcl': {'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Terreno': 'ue_mas_lc_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_UnidadConstruccion': 'ue_mas_lc_unidadconstruccion'}}
+                         "LADM_COL.LADM_Nucleo.col_masCcl": {
+                             "table_name": "col_masccl",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "ccl_mas",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
+                         }}
 
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)

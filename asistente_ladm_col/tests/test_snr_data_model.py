@@ -44,7 +44,7 @@ class TestSNRDataModel(unittest.TestCase):
         self.assertFalse(db_connection.survey_model_exists())
         self.assertFalse(db_connection.valuation_model_exists())
         self.assertFalse(db_connection.ant_model_exists())
-        self.assertFalse(db_connection.reference_cadastral_cartography_model_exists())
+        self.assertFalse(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_db_pg(self):
         print("\nINFO: Validate names for SNR data model (small DB case) in PG...")
@@ -53,17 +53,17 @@ class TestSNRDataModel(unittest.TestCase):
 
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 16)
+        self.assertEqual(len(dict_names), 18)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
-                         'Datos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Datos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Datos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
+                         'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
             self.assertEqual(v, dict_names[k])
@@ -74,17 +74,17 @@ class TestSNRDataModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 16)
+        self.assertEqual(len(dict_names), 18)
 
         expected_dict = {T_ID_KEY: 'T_Id',
                          T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',
-                         'Datos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Datos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
-                                                                     'Datos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Datos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
+                         'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
         for k,v in expected_dict.items():
             self.assertIn(k, dict_names)
             self.assertEqual(v, dict_names[k])

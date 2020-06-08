@@ -22,7 +22,7 @@ class TestGetModels(unittest.TestCase):
         print("\nINFO: Validate get models method() in postgres...")
         expected_dict = {'test_ladm_all_models': [LADMNames.SUPPORTED_ANT_MODEL,
                                                   LADMNames.SUPPORTED_VALUATION_MODEL,
-                                                  LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
+                                                  LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                                   LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                   LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                   LADMNames.SUPPORTED_SNR_DATA_MODEL,
@@ -34,7 +34,7 @@ class TestGetModels(unittest.TestCase):
                                                    LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                    LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                                    LADMNames.SUPPORTED_LADM_MODEL],
-                         'test_ladm_operation_model': [LADMNames.SUPPORTED_SURVEY_MODEL,
+                         'test_ladm_survey_model': [LADMNames.SUPPORTED_SURVEY_MODEL,
                                                        LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                                        LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                        LADMNames.SUPPORTED_SUPPLIES_MODEL,
@@ -58,7 +58,7 @@ class TestGetModels(unittest.TestCase):
         print("\nINFO: Validate get models method() in geopackage...")
         expected_dict = {
             'test_ladm_all_models_gpkg': [LADMNames.SUPPORTED_ANT_MODEL, LADMNames.SUPPORTED_VALUATION_MODEL,
-                                          LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
+                                          LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                           LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                           LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                           LADMNames.SUPPORTED_SNR_DATA_MODEL,
@@ -70,7 +70,7 @@ class TestGetModels(unittest.TestCase):
                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                            LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                            LADMNames.SUPPORTED_LADM_MODEL],
-            'test_ladm_operation_model_gpkg': [LADMNames.SUPPORTED_SURVEY_MODEL, LADMNames.SUPPORTED_SNR_DATA_MODEL,
+            'test_ladm_survey_model_gpkg': [LADMNames.SUPPORTED_SURVEY_MODEL, LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                                LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,

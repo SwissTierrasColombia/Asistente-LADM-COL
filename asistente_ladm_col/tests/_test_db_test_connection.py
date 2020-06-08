@@ -77,7 +77,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection(self):
         print("\nINFO: Validate test_connection() for GeoPackage (survey model: OK!)...")
-        db = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = db.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
@@ -132,7 +132,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_success(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
-        db = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = db.test_connection(required_models=[LADMNames.SURVEY_MODEL_PREFIX,
                                                              LADMNames.SNR_DATA_MODEL_PREFIX])
         self.assertTrue(res, msg)
@@ -140,7 +140,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_error(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
-        db = get_gpkg_conn('test_ladm_operation_model_gpkg')
+        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = db.test_connection(required_models=[LADMNames.ANT_MODEL_PREFIX])
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)

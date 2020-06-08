@@ -20,7 +20,7 @@ class TestGetLayers(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker(),
         cls.app = AppInterface()
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_operation_model_gpkg')
+        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
 
         print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')

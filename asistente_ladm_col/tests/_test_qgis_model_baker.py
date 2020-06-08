@@ -253,7 +253,7 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                             LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
+                                            LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         importer = iliimporter.Importer()
@@ -293,7 +293,7 @@ class TestQgisModelBaker(unittest.TestCase):
                                             LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                             LADMNames.SUPPORTED_SURVEY_MODEL,
                                             LADMNames.SUPPORTED_ANT_MODEL,
-                                            LADMNames.SUPPORTED_REFERENCE_CADASTRAL_CARTOGRAPHY,
+                                            LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                             LADMNames.SUPPORTED_VALUATION_MODEL])
 
         importer = iliimporter.Importer()
