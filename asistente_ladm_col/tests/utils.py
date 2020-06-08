@@ -281,14 +281,20 @@ def standardize_query_results(result):
 
 def reset_db_mssql(schema):
     print("\nReseting db {}...".format(schema))
-    db_connection = get_mssql_conn(schema, 'ladm_col')
+    db_connection = get_mssql_conn(schema)
+    if not db_connection.conn:
+        db_connection = get_mssql_server_conn()
+
     db_connection.conn.autocommit = True
 
     cur = db_connection.conn.cursor()
 
     try:
         print("deleting database {}".format(schema))
-        cur.execute("""Drop database {};""".format(schema))
+        cur.execute("""USE master;
+            ALTER DATABASE {schema} SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+            DROP DATABASE {schema};
+            """.format(schema=schema))
     except pyodbc.ProgrammingError as e:
         if e.args[0] != '42S02':
             raise e
@@ -297,6 +303,7 @@ def reset_db_mssql(schema):
     cur.execute("""create database {};""".format(schema))
 
     cur.close()
+    db_connection.conn.close()
 
 
 def restore_schema_mssql(schema):
@@ -313,13 +320,24 @@ def restore_schema_mssql(schema):
         print("Warning:", output)
 
 
-def get_mssql_conn(schema, database=None):
-
+def get_mssql_conn(schema):
     dict_conn = dict()
     dict_conn['host'] = 'mssql'
     dict_conn['port'] = '1433'
-    dict_conn['database'] = schema if database is None else database
+    dict_conn['database'] = schema
     dict_conn['schema'] = schema
+    dict_conn['username'] = 'sa'
+    dict_conn['password'] = '<YourStrong!Passw0rd>'
+    dict_conn['db_odbc_driver'] = 'ODBC Driver 17 for SQL Server'
+
+    db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('mssql', dict_conn)
+
+    return db
+
+def get_mssql_server_conn():
+    dict_conn = dict()
+    dict_conn['host'] = 'mssql'
+    dict_conn['port'] = '1433'
     dict_conn['username'] = 'sa'
     dict_conn['password'] = '<YourStrong!Passw0rd>'
     dict_conn['db_odbc_driver'] = 'ODBC Driver 17 for SQL Server'
