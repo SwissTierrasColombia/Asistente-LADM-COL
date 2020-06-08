@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
-                              Asistente LADM_COL
-                             --------------------
-        begin                : 2019-09-10
-        git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-                               (C) 2019 by Leo Cardona (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
-                               leo.cardona.p@gmail.com
- ***************************************************************************/
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License v3.0 as          *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- ***************************************************************************/
- """
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsMapLayerProxyModel
 

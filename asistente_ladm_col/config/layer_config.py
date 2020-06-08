@@ -409,7 +409,7 @@ class LayerConfig:
                 names.COL_PARTY_T_NAME_F: """
                     CASE
                         WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
-                            concat({surname_1}, ' ', {surname_2}, ' ', {first_name_1}, ' ', {first_name_2})
+                            trim(concat({surname_1}, ' ', {surname_2}, ' ', {first_name_1}, ' ', {first_name_2}))
                         WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
                             {business_name}
                     END

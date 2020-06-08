@@ -205,6 +205,8 @@ class DialogExportData(QDialog, DIALOG_UI):
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
         dlg = SettingsDialog(self.conn_manager)
+        dlg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Source DB Connection Settings"))
+        dlg.show_tip(QCoreApplication.translate("DialogExportData", "Configure which DB you want to export data from."))
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 

@@ -1,21 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
-                              Asistente LADM_COL
-                             --------------------
-        begin                : 2020-04-02
-        git sha              : :%H$
-        copyright            : (C) 2020 by Leo Cardona (BSF Swissphoto)
-        email                : leo.cardona.p@gmail.com
- ***************************************************************************/
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License v3.0 as          *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- ***************************************************************************/
- """
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QVariant)
 from qgis.core import QgsField

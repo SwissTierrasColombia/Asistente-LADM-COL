@@ -17,7 +17,7 @@
    <string>Run supplies ETL</string>
   </property>
   <property name="options">
-   <set>QWizard::HaveCustomButton1|QWizard::HaveHelpButton</set>
+   <set>QWizard::HaveCustomButton1|QWizard::HaveHelpButton|QWizard::NoCancelButtonOnLastPage</set>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
