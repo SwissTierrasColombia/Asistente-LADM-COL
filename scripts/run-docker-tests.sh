@@ -15,7 +15,6 @@
 #*   (at your option) any later version.                                   *
 #*                                                                         *
 #***************************************************************************
-
 set -e
 
 chmod u+x /usr/src/scripts/setup-mssql.sh

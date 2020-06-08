@@ -1,6 +1,6 @@
-ARG QGIS_TEST_VERSION=latest
-FROM  agenciaimplementacion/qgis:${QGIS_TEST_VERSION}
-MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
+ARG QGIS_TEST_VERSION=latest_focal
+FROM  qgis/qgis:${QGIS_TEST_VERSION}
+LABEL maintainer="matthias@opengis.ch"
 
 #RUN apt-get update && \
 #    apt-get -y install default-jre

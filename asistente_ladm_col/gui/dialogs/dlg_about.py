@@ -59,9 +59,9 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.tb_changelog.setOpenExternalLinks(True)
 
         if QGIS_LANG == 'en':
-            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog_en.html")
+            file = QFile(":/Asistente-LADM-COL/resources/html/Changelog_en.html")
         else:
-            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog.html")
+            file = QFile(":/Asistente-LADM-COL/resources/html/Changelog.html")
 
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
             raise Exception(file.errorString())
@@ -126,7 +126,7 @@ class AboutDialog(QDialog, DIALOG_UI):
     def download_help(self):
         if is_connected(TEST_SERVER):
             self.btn_download_help.setEnabled(False)
-            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs_{lang}.zip'.format(lang=QGIS_LANG)])
+            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'])
             fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
             fetcher_task.taskCompleted.connect(self.enable_download_button)
             fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))

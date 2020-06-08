@@ -100,8 +100,8 @@ ENV/
 .mypy_cache/
 
 # Build
-/Asistente-LADM_COL
-/Asistente-LADM_COL.zip
+/Asistente-LADM-COL
+/Asistente-LADM-COL.zip
 *.qm
 resources_rc.py
 

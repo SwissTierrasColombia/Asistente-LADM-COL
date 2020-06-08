@@ -48,8 +48,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
-                                                      URL_REPORTS_LIBRARIES,
-                                                      DEPENDENCY_REPORTS_DIR_NAME,
                                                       COLLECTED_DB_SOURCE,
                                                       WIZARD_CLASS,
                                                       WIZARD_TOOL_NAME, 
@@ -92,8 +90,9 @@ from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
-from asistente_ladm_col.lib.context import (Context, 
-                                            TaskContext)
+from asistente_ladm_col.lib.context import (Context,
+                                            TaskContext,
+                                            SettingsContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -126,10 +125,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _operation_model_required)
-from asistente_ladm_col.utils.utils import (Utils,
-                                            show_plugin_help)
+from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
-from asistente_ladm_col.logic.quality.quality import QualityUtils
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
@@ -142,9 +139,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.unit_tests = unit_tests
         self.main_window = self.iface.mainWindow()
         self._about_dialog = None
-        self._dock_widget_queries = None
-        self._dock_widget_change_detection = None
-        self._dock_widget_transitional_system = None
         self.toolbar = None
         self.wiz_address = None
         self.conn_manager = ConnectionManager()
@@ -166,6 +160,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_supplies.set_db_sources([SUPPLIES_DB_SOURCE])
         self._context_collected_supplies = Context()
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
+        self._context_settings = SettingsContext()
+        self._context_settings.blocking_mode = False  # Settings dialog should not block if called from the action
 
     def initGui(self):
         self.app = AppInterface()
@@ -173,12 +169,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.set_gui_interface(AppGUIInterface(self.iface))
 
         self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
-        self.quality = QualityUtils()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMDATA()
         self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
+        self.register_dock_widgets()
         self.set_signal_slot_connections()
 
         if not self.unit_tests:
@@ -192,7 +188,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.call_refresh_gui()
 
-        # Add LADM_COL provider and models to QGIS
+        # Add LADM-COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
         if QgsApplication.processingRegistry().providerById('model'):
@@ -210,6 +206,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self.create_transitional_system_actions()
         self.create_generic_actions()
 
+    def register_dock_widgets(self):
+        """
+        We register them so that GUI Builder can delete them properly when unloading the GUI
+        """
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_TRANSITION_SYSTEM, None)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_CHANGE_DETECTION, None)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUERIES, None)
+
     def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
 
@@ -220,22 +224,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.logger.message_with_button_open_table_attributes_emitted.connect(
             self.show_message_with_open_table_attributes_button)
-        self.logger.message_with_button_download_report_dependency_emitted.connect(
-            self.show_message_to_download_report_dependency)
-        self.logger.message_with_button_remove_report_dependency_emitted.connect(
-            self.show_message_to_remove_report_dependency)
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-
-        self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
-        self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
-        self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-
         self.report_generator.enable_action_requested.connect(self.enable_action)
-
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -252,46 +245,45 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_gui(self, db, res, db_source):
         if db_source == COLLECTED_DB_SOURCE:  # Only refresh GUI for changes in COLLECTED DB SOURCE
-            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM_COL Assistant...")
+            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM-COL Assistant...")
             with ProcessWithStatus(msg):
                 self.gui_builder.set_db_connection(db, res)
                 self.gui_builder.build_gui()
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
+            QIcon(":/Asistente-LADM-COL/resources/images/mActionFinalizeGeometryCreation.svg"),
             TOOLBAR_FINALIZE_GEOMETRY_CREATION,
             self.main_window)
         self._finalize_geometry_creation_action.triggered.connect(
             self.wiz_geometry_creation_finished)  # SIGNAL chaining
         self._finalize_geometry_creation_action.setEnabled(False)
 
-        self._build_boundary_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/build_boundaries.svg"),
+        self._build_boundary_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/build_boundaries.svg"),
                                               TOOLBAR_BUILD_BOUNDARY, self.main_window)
         self._build_boundary_action.triggered.connect(partial(self.call_explode_boundaries, self._context_collected))
 
-        self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
+        self._topological_editing_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/move_nodes.svg"),
             TOOLBAR_MOVE_NODES, self.main_window)
         self._topological_editing_action.triggered.connect(partial(self.call_topological_editing, self._context_collected))
 
-        self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+        self._fill_point_BFS_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/relationships.svg"),
                                               TOOLBAR_FILL_POINT_BFS,
                                               self.main_window)
         self._fill_point_BFS_action.triggered.connect(partial(self.call_fill_topology_table_pointbfs, self._context_collected))
 
-        self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+        self._fill_more_BFS_less_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/relationships.svg"),
                                                   TOOLBAR_FILL_MORE_BFS_LESS,
                                                   self.main_window)
         self._fill_more_BFS_less_action.triggered.connect(partial(self.call_fill_topology_tables_morebfs_less, self._context_collected))
 
-        self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/relationships.svg"),
+        self._fill_right_of_way_relations_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/relationships.svg"),
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
         self._fill_right_of_way_relations_action.triggered.connect(partial(self.call_fill_right_of_way_relations, self._context_collected))
 
-        self._import_from_intermediate_structure_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/excel.svg"),
-            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-            self.main_window)
+        self._import_from_intermediate_structure_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/excel.svg"),
+                                                                  TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                                                                  self.main_window)
         self._import_from_intermediate_structure_action.triggered.connect(partial(self.call_import_from_intermediate_structure, self._context_collected))
 
         self.gui_builder.register_actions({
@@ -305,11 +297,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_transitional_system_actions(self):
         self._st_login_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/login.svg"),
+            QIcon(":/Asistente-LADM-COL/resources/images/login.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Login..."),
             self.main_window)
         self._st_logout_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/logout.svg"),
+            QIcon(":/Asistente-LADM-COL/resources/images/logout.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Logout"),
             self.main_window)
 
@@ -323,12 +315,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_supplies_actions(self):
         self._etl_supplies_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/etl.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/etl.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Run supplies ETL"),
             self.main_window)
 
         self._missing_cobol_supplies_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/missing_supplies.svg"),
+            QIcon(":/Asistente-LADM-COL/resources/images/missing_supplies.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing Cobol supplies"),
             self.main_window)
 
@@ -341,73 +333,79 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_operation_actions(self):
         self._point_surveying_and_representation_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"),
                 self.main_window)
         self._boundary_surveying_and_representation_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/lines.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"),
                 self.main_window)
         self._plot_spatial_unit_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"),
                 self.main_window)
         self._building_spatial_unit_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
                 self.main_window)
         self._building_unit_spatial_unit_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
                 self.main_window)
         self._right_of_way_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
                 self.main_window)
         self._extaddress_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Associate Address")
                 )
 
         self._parcel_baunit_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
                 self.main_window)
 
         self._col_party_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"),
                 self.main_window)
         self._group_party_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"),
                 self.main_window)
 
         self._administrative_source_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"),
                 self.main_window)
         self._spatial_source_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
                 self.main_window)
-        self._upload_source_files_operation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/upload.svg"),
+        self._upload_source_files_operation_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/upload.svg"),
                                                              QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                         "Upload Pending Source Files"),
                                                              self.main_window)
 
         self._right_rrr_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"),
                 self.main_window)
         self._restriction_rrr_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
                 self.main_window)
 
         self._quality_operation_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/validation.svg"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self.main_window)
+                QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
+                self.main_window)
+
+        self._fix_ladm_col_relations_action = QAction(
+                QIcon(":/Asistente-LADM-COL/resources/images/relationships.svg"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fix LADM-COL relations"),
+                self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_point_cad, self._context_collected))
@@ -426,6 +424,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_source_operation_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
         self._upload_source_files_operation_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
         self._quality_operation_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
+        self._fix_ladm_col_relations_action.triggered.connect(partial(self.call_fix_ladm_col_relations, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_CREATE_POINT: self._point_surveying_and_representation_operation_action,
@@ -443,11 +442,12 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_UPLOAD_PENDING_SOURCE: self._upload_source_files_operation_action,
             ACTION_CREATE_RIGHT: self._right_rrr_operation_action,
             ACTION_CREATE_RESTRICTION: self._restriction_rrr_operation_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action})
+            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
+            ACTION_FIX_LADM_COL_RELATIONS: self._fix_ladm_col_relations_action})
 
     def create_cadastre_form_actions(self):
         self._property_record_card_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
             self.main_window)
 
@@ -456,23 +456,23 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_valuation_actions(self):
         self._parcel_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
             self.main_window)
         self._building_unit_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
             self.main_window)
         self._building_unit_qualification_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit Qualification"),
             self.main_window)
         self._geoeconomic_zone_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Geoeconomic Zone"),
             self.main_window)
         self._physical_zone_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Physical Zone"),
             self.main_window)
 
@@ -504,34 +504,34 @@ class AsistenteLADMCOLPlugin(QObject):
         })
 
     def create_generic_actions(self):
-        self._load_layers_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/load_layers.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
+        self._load_layers_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/load_layers.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
                                            self.main_window)
-        self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
+        self._queries_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
-        self._annex_17_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_annex_17.svg"),
+        self._annex_17_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/report_annex_17.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
                                         self.main_window)
         self._annex_17_action.triggered.connect(partial(self.call_annex_17_report_generation, self._context_collected))
-        self._ant_map_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/report_ant.svg"),
+        self._ant_map_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/report_ant.svg"),
                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
                                        self.main_window)
         self._ant_map_action.triggered.connect(partial(self.call_ant_map_report_generation, self._context_collected))
-        self._import_schema_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/schema_import.svg"),
+        self._import_schema_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema_import.svg"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
 
-        self._import_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/import_xtf.svg"),
+        self._import_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/import_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
                                            self.main_window)
-        self._export_data_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/export_to_xtf.svg"),
+        self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
-        self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
+        self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
-        self._help_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/help.png"),
+        self._help_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/help.png"),
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
-        self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
+        self._about_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
@@ -539,7 +539,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
-        self._settings_action.triggered.connect(self.show_settings)
+        self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
         self._help_action.triggered.connect(partial(show_plugin_help, ''))
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -587,7 +587,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(partial(self.open_table, layer, filter))
@@ -596,7 +596,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(partial(self.load_layer, layer))
@@ -605,7 +605,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message_to_open_about_dialog(self, msg):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
             "Open About Dialog"))
@@ -613,39 +613,9 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
-    def show_message_to_download_report_dependency(self, msg):
-        download_in_process = False
-        # Check if report dependency downloading is in process
-        for task in QgsApplication.taskManager().activeTasks():
-            if URL_REPORTS_LIBRARIES in task.description():
-                download_in_process = True
-
-        if not download_in_process:
-            widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                      "Download and install dependency"))
-            button.pressed.connect(self.download_report_dependency)
-            widget.layout().addWidget(button)
-            self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-        else:
-            self.app.gui.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                "Report dependency download is in progress..."),
-                                     Qgis.Info)
-
-    def show_message_to_remove_report_dependency(self, msg):
-        self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Remove dependency"))
-        button.pressed.connect(self.remove_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
-
     def show_message_with_buttons_change_detection_all_and_per_parcel(self, msg):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
 
         btn_query_per_parcel = QPushButton(widget)
         btn_query_per_parcel.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"))
@@ -661,7 +631,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message_with_settings_button(self, msg, button_text, level):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(self.show_settings)
@@ -670,7 +640,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message_with_close_wizard_button(self, msg, button_text, level):
         self.app.gui.clear_message_bar()  # Remove previous messages before showing a new one
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        widget = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(self.close_wizard_if_opened)
@@ -702,27 +672,27 @@ class AsistenteLADMCOLPlugin(QObject):
                                                duration=duration)
 
     def show_log_quality_message(self, msg, count):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        self.progress = QProgressBar()
-        self.progress.setFixedWidth(80)
+        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.log_quality_validation_progress = QProgressBar()
+        self.log_quality_validation_progress.setFixedWidth(80)
         self.log_quality_total_rule_count = count
-        self.progress.setMaximum(self.log_quality_total_rule_count * 10)
-        self.progressMessageBar.layout().addWidget(self.progress)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
-        self.progress_count = 0
+        self.log_quality_validation_progress.setMaximum(self.log_quality_total_rule_count * 10)
+        self.progress_message_bar.layout().addWidget(self.log_quality_validation_progress)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Info)
+        self.log_quality_validation_progress_count = 0
         self.log_quality_current_rule_count = 0
 
     def show_log_quality_button(self):
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_quality_dialog)
         self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
-        self.progressMessageBar.layout().addWidget(self.button)
+        self.progress_message_bar.layout().addWidget(self.button)
         QCoreApplication.processEvents()
 
     def set_log_quality_initial_progress(self, msg):
-        self.progress_count += 2 # 20% of the current rule
-        self.progress.setValue(self.progress_count)
-        self.progressMessageBar.setText(
+        self.log_quality_validation_progress_count += 2  # 20% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
+        self.progress_message_bar.setText(
             QCoreApplication.translate("LogQualityDialog",
                                        "Checking {} out of {}: '{}'").format(
                                         self.log_quality_current_rule_count + 1,
@@ -731,33 +701,34 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def set_log_quality_final_progress(self, msg):
-        self.progress_count += 8 # 80% of the current rule
-        self.progress.setValue(self.progress_count)
+        self.log_quality_validation_progress_count += 8  # 80% of the current rule
+        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
         self.log_quality_current_rule_count += 1
         if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
-            self.progressMessageBar.setText(QCoreApplication.translate("LogQualityDialog",
+            self.progress_message_bar.setText(QCoreApplication.translate("LogQualityDialog",
                 "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
         else:
-            self.progressMessageBar.setText(msg)
+            self.progress_message_bar.setText(msg)
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.quality, self.conn_manager.get_db_connector_from_source())
+        log_quality_validation_text, log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_quality_validation_text, log_quality_validation_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
-            QCoreApplication.translate("ImportFromExcelDialog",
+        self.progress_message_bar = self.iface.messageBar().createMessage("Import from Excel",
+                                                                          QCoreApplication.translate("ImportFromExcelDialog",
                                        "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
-        self.button = QPushButton(self.progressMessageBar)
+        self.button = QPushButton(self.progress_message_bar)
         self.button.pressed.connect(self.show_log_excel_dialog)
         self.button.setText(QCoreApplication.translate("ImportFromExcelDialog", "Show errors found"))
-        self.progressMessageBar.layout().addWidget(self.button)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
-        self.text = text
+        self.progress_message_bar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Warning)
+        self.log_excel_text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.text)
+        dlg = LogExcelDialog(self.log_excel_text)
         dlg.exec_()
 
     @_db_connection_required
@@ -848,43 +819,42 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
         self._dlg.exec_()
 
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def call_fix_ladm_col_relations(self, *args):
+        self.app.core.fix_ladm_col_relations(self.get_db_connection())  # Always for COLLECTED db
+
     def unload(self):
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
-        self.close_dock_widgets([self._dock_widget_transitional_system,
-                                 self._dock_widget_change_detection,
-                                 self._dock_widget_queries])
         self.gui_builder.unload_gui()
 
         # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
-    def close_dock_widgets(self, dock_widgets):
-        for dock_widget in dock_widgets:
-            if dock_widget is not None:
-                dock_widget.close()
-                dock_widget = None
-
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
-        dlg = SettingsDialog(self.conn_manager)
-        db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
-        dlg.set_db_source(db_source)
+        if args and isinstance(args[0], SettingsContext):
+            context = args[0]
+        else:
+            context = SettingsContext()  # Context with default configuration for the Settings Dialog
+
+        dlg = SettingsDialog(self.conn_manager, context)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
-        if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
+        if context.db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
-        elif db_source == SUPPLIES_DB_SOURCE:
-            dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])  # Only show connection tab for supplies
 
-        dlg.set_action_type(EnumDbActionType.CONFIG)
+        if context.action_type == EnumDbActionType.CONFIG:
+            dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
+
         dlg.exec_()
 
-    def show_settings_clear_message_bar(self, db_source):
-        self.show_settings(db_source)
+    def show_settings_clear_message_bar(self, context):
+        self.show_settings(context)
         self.iface.messageBar().popWidget()  # Display the next message in the stack if any or hide the bar
 
     def use_current_db_connection(self, db_source):
@@ -916,14 +886,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_queries(self, *args):
-        self.close_dock_widgets([self._dock_widget_queries])
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUERIES])
 
-        self._dock_widget_queries = DockWidgetQueries(self.iface,
-                                                      self.get_db_connection(),
-                                                      self.ladm_data)
-        self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
-        self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
+        dock_widget_queries = DockWidgetQueries(self.iface,
+                                                self.get_db_connection(),
+                                                self.ladm_data)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUERIES, dock_widget_queries)
+        self.conn_manager.db_connection_changed.connect(dock_widget_queries.update_db_connection)
+        dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_queries)
 
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
@@ -935,7 +906,7 @@ class AsistenteLADMCOLPlugin(QObject):
         Can be called from 1) an action, 2) from a signal or 3) directly.
 
         In 1) args has a Context argument and then a False argument from QAction.triggered.
-        In 2) either args comes with a dict inside (hence the "if args" below) from import_data.
+        In 2) args comes with a dict inside (hence the "if args" below) from import_data.
         In 3) **{} is passed, hence the "if kwargs" below.
         """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
@@ -1071,9 +1042,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_operation_model_required
     def show_dlg_group_party(self, *args):
-        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-        t_ili_tid_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        namespace_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
+        local_id_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
+        t_ili_tid_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
 
         if not namespace_enabled or not local_id_enabled or not t_ili_tid_enabled:
             self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartyOperation",
@@ -1125,8 +1096,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_operation_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        dlg = QualityDialog(self.get_db_connection(), self.quality)
-        dlg.exec_()
+        self.quality_dialog = QualityDialog(self.get_db_connection())
+
+        self.quality_dialog.log_quality_show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_dialog.log_quality_show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_dialog.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_dialog.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+
+        self.quality_dialog.exec_()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
@@ -1179,16 +1156,17 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_change_detection_dockwidget()
 
     def show_change_detection_dockwidget(self, all_parcels_mode=True):
-        self.close_dock_widgets([self._dock_widget_change_detection])
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_CHANGE_DETECTION])
 
-        self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
-                                                                       self.get_db_connection(),
-                                                                       self.get_db_connection(SUPPLIES_DB_SOURCE),
-                                                                       self.ladm_data,
-                                                                       all_parcels_mode)
-        self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
-        self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+        dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
+                                                                 self.get_db_connection(),
+                                                                 self.get_db_connection(SUPPLIES_DB_SOURCE),
+                                                                 self.ladm_data,
+                                                                 all_parcels_mode)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_CHANGE_DETECTION, dock_widget_change_detection)
+        self.conn_manager.db_connection_changed.connect(dock_widget_change_detection.update_db_connection)
+        dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_change_detection)
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
@@ -1197,14 +1175,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
-
-    def download_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        self.report_generator.download_report_dependency()
-
-    def remove_report_dependency(self):
-        self.app.gui.clear_message_bar()  # Remove messages
-        Utils.remove_dependency_directory(DEPENDENCY_REPORTS_DIR_NAME)
 
     def show_about_dialog(self):
         if self._about_dialog is None:
@@ -1252,19 +1222,28 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_st_login_dialog(self):
         dlg = LoginSTDialog(self.main_window)
+        dlg.active_role_changed.connect(self.call_refresh_gui)
         dlg.exec_()
 
         if self.session.is_user_logged():
-            self.close_dock_widgets([self._dock_widget_transitional_system])
+            # If the user didn't change the active role in the LADM-COL
+            # Assistant, the dock might not be deleted yet. Just in case...
+            self.gui_builder.close_dock_widgets([DOCK_WIDGET_TRANSITION_SYSTEM])
+
+            # Update controls: It was to be a SIGNAL-SLOT, but since a GUI
+            # refresh happens in between, the control update would be lost,
+            # so, now we call it directly.
+            self.set_login_controls_visibility(True)
 
             # Show Transitional System dock widget
             user = self.session.get_logged_st_user()
-            self._dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
-            self.conn_manager.db_connection_changed.connect(self._dock_widget_transitional_system.update_db_connection)
-            self._dock_widget_transitional_system.logout_requested.connect(self.session_logout)
-            self._dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
-            self.session.logout_finished.connect(self._dock_widget_transitional_system.after_logout)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_transitional_system)
+            dock_widget_transitional_system = DockWidgetTransitionalSystem(user, self.main_window)
+            self.gui_builder.register_dock_widget(DOCK_WIDGET_TRANSITION_SYSTEM, dock_widget_transitional_system)
+            self.conn_manager.db_connection_changed.connect(dock_widget_transitional_system.update_db_connection)
+            dock_widget_transitional_system.logout_requested.connect(self.session_logout)
+            dock_widget_transitional_system.trigger_action_emitted.connect(self.trigger_action_emitted)
+            self.session.logout_finished.connect(dock_widget_transitional_system.after_logout)
+            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_transitional_system)
 
     def session_logout_from_action(self):
         """ Overwrite action.triggered SIGNAL parameters and call session_logout properly """
@@ -1300,6 +1279,9 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         self._st_login_action.setVisible(not login_activated)
         self._st_logout_action.setVisible(login_activated)
+
+        self._st_login_action.setEnabled(not login_activated)
+        self._st_logout_action.setEnabled(login_activated)
 
     def trigger_action_emitted(self, action_tag):
         action = self.gui_builder.get_action(action_tag)

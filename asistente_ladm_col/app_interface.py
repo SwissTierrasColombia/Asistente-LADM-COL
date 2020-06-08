@@ -39,11 +39,14 @@ class AppInterface(QObject, metaclass=SingletonQObject):
 
     def set_connections(self):
         if self.core and self.gui:
+            self.core.action_add_feature_requested.connect(self.gui.trigger_add_feature)
             self.core.action_vertex_tool_requested.connect(self.gui.trigger_vertex_tool)
             self.core.activate_layer_requested.connect(self.gui.activate_layer)
             self.core.map_refresh_requested.connect(self.gui.refresh_map)
+            self.core.redraw_all_layers_requested.connect(self.gui.redraw_all_layers)
             self.core.map_freeze_requested.connect(self.gui.freeze_map)
             self.core.zoom_full_requested.connect(self.gui.zoom_full)
+            self.core.zoom_to_active_layer_requested.connect(self.gui.zoom_to_active_layer)
             self.core.zoom_to_selected_requested.connect(self.gui.zoom_to_selected)
             self.core.set_node_visibility_requested.connect(self.gui.set_node_visibility)
 

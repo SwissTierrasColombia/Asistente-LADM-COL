@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               pyqtSignal,
@@ -24,7 +23,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QVBoxLayout,
-                                 QRadioButton)
+                                 QRadioButton,
+                                 QMessageBox)
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
@@ -39,9 +39,12 @@ from asistente_ladm_col.config.transitional_system_config import TransitionalSys
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.lib.context import (SettingsContext,
+                                            Context)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -49,24 +52,37 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
+    """
+    Customizable dialog to configure LADM-COL Assistant.
+
+    It can be created passing a SettingsContext with specific params
+    or it can be instantiated and then set params one by one.
+    """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
     active_role_changed = pyqtSignal()
+    open_dlg_import_schema = pyqtSignal(Context)  # Context for the import schema dialog
 
-    def __init__(self, conn_manager=None, parent=None):
+    def __init__(self, conn_manager=None, context=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.parent = parent
         self.logger = Logger()
         self.conn_manager = conn_manager
         self.app = AppInterface()
 
-        self._db = None
-        self.db_source = COLLECTED_DB_SOURCE  # default db source
-        self._required_models = list()
-        self._tab_pages_list = list()
-        self.init_db_engine = None
+        context = context if context else SettingsContext()
 
-        self._action_type = None
+        self.db_source = context.db_source  # default db source is COLLECTED_DB_SOURCE
+        self._required_models = context.required_models
+        self._tab_pages_list = context.tab_pages_list
+        self._blocking_mode = context.blocking_mode  # Whether the dialog can only be accepted on valid DB connections or not
+        self._action_type = context.action_type  # By default "config"
+        self.setWindowTitle(context.title)
+
+        self._db = None
+        self.init_db_engine = None
         self.dbs_supported = ConfigDBsSupported()
+        self._open_dlg_import_schema = False  # After accepting, if non-valid DB is configured, we can go to import schema
 
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
@@ -118,24 +134,32 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)
         self.rejected.connect(self.close_dialog)
 
+        self._update_tabs()
+
+        if context.tip:
+            self.show_tip(context.tip)
+
     def set_db_source(self, db_source):
         self.db_source = db_source
         self.restore_db_source_settings()
 
     def set_tab_pages_list(self, tab_pages_list):
         self._tab_pages_list = tab_pages_list
-        self.show_tabs(tab_pages_list)
+        self._update_tabs()
 
     def set_required_models(self, required_models):
         self._required_models = required_models
 
-    def show_tabs(self, tab_pages_list):
+    def set_blocking_mode(self, block):
+        self._blocking_mode = block
+
+    def _update_tabs(self):
         """
         Show only those tabs that are listed in tab_pages_list, if any. If it's an empty list, show all tabs.
         """
-        if tab_pages_list:
+        if self._tab_pages_list:
             for i in reversed(range(self.tabWidget.count())):
-                if i not in tab_pages_list:
+                if i not in self._tab_pages_list:
                     self.tabWidget.removeTab(i)
 
     def load_roles(self):
@@ -226,12 +250,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
                                                                 required_models=self._required_models)
 
             if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                self.show_message(msg, Qgis.Warning)
-                return  # Do not close the dialog
+                if self._blocking_mode:
+                    self.show_message(msg, Qgis.Warning)
+                    return  # Do not close the dialog
 
         else:
-            self.show_message(msg, Qgis.Warning)
-            return  # Do not close the dialog
+            if self._blocking_mode:
+                self.show_message(msg, Qgis.Warning)
+                return  # Do not close the dialog
 
         # Connection is valid and complies with LADM
         current_db_engine = self.cbo_db_engine.currentData()
@@ -249,19 +275,52 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.db_connection_changed.emit(self._db, ladm_col_schema, self.db_source)
             self.logger.debug(__name__, "Settings dialog emitted a db_connection_changed.")
 
-        # Save settings from tabs other than database connection
-        self.save_settings(db)
-        QDialog.accept(self)
+        if not ladm_col_schema and self._action_type == EnumDbActionType.CONFIG:
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Question)
+            msg_box.setText(QCoreApplication.translate("SettingsDialog",
+                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
+            msg_box.setWindowTitle(QCoreApplication.translate("SettingsDialog", "Important"))
+            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Ignore)
+            msg_box.setDefaultButton(QMessageBox.Ignore)
+            msg_box.button(QMessageBox.Yes).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, go to create structure"))
+            msg_box.button(QMessageBox.Ignore).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, I'll do it later"))
+            reply = msg_box.exec_()
 
-        # If active role changed, refresh the GUI
+            if reply == QMessageBox.Yes:
+                self._open_dlg_import_schema = True  # We will open it when we've closed this Settings dialog
+
+        # If active role is changed (a check and confirmation may be needed), refresh the GUI
         selected_role = self.get_selected_role()
         if self.roles.get_active_role() != selected_role:
-            self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
-                self.roles.get_active_role(), selected_role))
-            self.roles.set_active_role(selected_role)
-            self.active_role_changed.emit()
+            b_change_role = True
+            if STSession().is_user_logged():
+                reply = QMessageBox.question(self.parent,
+                                             QCoreApplication.translate("SettingsDialog", "Warning"),
+                                             QCoreApplication.translate("SettingsDialog",
+                                                                        "You have a ST connection opened and you want to change your role.\nIf you confirm that you want to change your role, you'll be logged out from the ST.\n\nDo you really want to change your role?"),
+                                             QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
+                if reply == QMessageBox.Yes:
+                    STSession().logout()
+                elif reply == QMessageBox.Cancel:
+                    # No need to switch back selected role, the Settings Dialog gets it from role registry
+                    b_change_role = False
 
+            if b_change_role:
+                self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
+                    self.roles.get_active_role(), selected_role))
+                self.roles.set_active_role(selected_role)
+                self.active_role_changed.emit()
+
+        self.save_settings(db)
+
+        QDialog.accept(self)
         self.close()
+
+        if self._open_dlg_import_schema:
+            # After Settings dialog has been closed, we could call Import Schema depending on user's answer above
+            self.open_dlg_import_schema.emit(Context())
+            self.logger.debug(__name__, "Settings dialog emitted a show Import Schema dialog.")
 
     def get_selected_role(self):
         selected_role = None
@@ -288,41 +347,41 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def save_settings(self, db):
         settings = QSettings()
         current_db_engine = self.cbo_db_engine.currentData()
-        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
+        settings.setValue('Asistente-LADM-COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), current_db_engine)
         dict_conn = self._lst_panel[current_db_engine].read_connection_parameters()
 
         self._lst_db[current_db_engine].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
-        settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
-            settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
+            settings.setValue('Asistente-LADM-COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
-        settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
+        settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
+        settings.setValue('Asistente-LADM-COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
-        settings.setValue('Asistente-LADM_COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
+        settings.setValue('Asistente-LADM-COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
         endpoint = self.txt_service_endpoint.text().strip()
-        settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        settings.setValue('Asistente-LADM-COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
 
         # Changes in automatic namespace, local_id or t_ili_tid configuration?
-        current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-        current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
-        current_local_id_enabled = settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-        current_t_ili_tid_enabled = settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        current_namespace_enabled = settings.value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
+        current_namespace_prefix = settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")
+        current_local_id_enabled = settings.value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
+        current_t_ili_tid_enabled = settings.value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
         if self.namespace_collapsible_group_box.isChecked():
-            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
+            settings.setValue('Asistente-LADM-COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
-        settings.setValue('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', self.chk_t_ili_tid.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+        settings.setValue('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', self.chk_t_ili_tid.isChecked())
 
         if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
            current_namespace_prefix != self.txt_namespace.text() or \
@@ -336,7 +395,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings = QSettings()
         default_db_engine = self.dbs_supported.id_default_db
 
-        self.init_db_engine = settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), default_db_engine)
+        self.init_db_engine = settings.value('Asistente-LADM-COL/db/{db_source}/db_connection_engine'.format(db_source=self.db_source), default_db_engine)
         index_db_engine = self.cbo_db_engine.findData(self.init_db_engine)
 
         if index_db_engine == -1:
@@ -355,10 +414,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Restore QSettings
         settings = QSettings()
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_directories_is_checked = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
-            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR))
+            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR))
             self.custom_model_directories_line_edit.setVisible(True)
             self.custom_models_dir_button.setVisible(True)
         else:
@@ -367,21 +426,21 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_model_directories_line_edit.setVisible(False)
             self.custom_models_dir_button.setVisible(False)
 
-        use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)
+        use_roads = settings.value('Asistente-LADM-COL/quality/use_roads', True, bool)
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)
 
-        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
-        self.connection_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
-        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
-        self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
-        self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool))
-        self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
+        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
+        self.connection_box.setChecked(settings.value('Asistente-LADM-COL/sources/document_repository', True, bool))
+        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool))
+        self.chk_local_id.setChecked(settings.value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool))
+        self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool))
+        self.txt_namespace.setText(str(settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")))
 
-        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool))
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool))
 
-        self.txt_service_transitional_system.setText(settings.value('Asistente-LADM_COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
-        self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
+        self.txt_service_transitional_system.setText(settings.value('Asistente-LADM-COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
+        self.txt_service_endpoint.setText(settings.value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_engine_changed(self):
         if self._db is not None:
@@ -443,9 +502,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def set_default_value_transitional_system_service(self):
         self.txt_service_transitional_system.setText(TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
-    def show_message(self, message, level):
+    def show_message(self, message, level, duration=10):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage(message, level, 10)
+        self.bar.pushMessage(message, level, duration)
+
+    def show_tip(self, tip):
+        self.show_message(tip, Qgis.Info, 0)  # Don't show counter for the tip message
 
     def update_images_state(self, checked):
         self.img_with_roads.setEnabled(checked)

@@ -8,6 +8,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
 from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
+                                                      T_ILI_TID_KEY,
                                                       T_ID_KEY,
                                                       T_ILI_TID_KEY,
                                                       DESCRIPTION_KEY,

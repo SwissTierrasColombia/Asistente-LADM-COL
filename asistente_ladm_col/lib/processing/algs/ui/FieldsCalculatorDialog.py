@@ -51,8 +51,6 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.PostgisTableSelector import PostgisTableSelector
-from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.dirname(__file__)
 with warnings.catch_warnings():

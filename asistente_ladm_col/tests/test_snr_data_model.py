@@ -74,7 +74,6 @@ class TestSNRDataModel(unittest.TestCase):
         result = self.db_gpkg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
-
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 16)
 

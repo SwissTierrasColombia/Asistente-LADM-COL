@@ -364,7 +364,7 @@
     </Option>
   </Option>
   <Option name="help"/>
-  <Option value="LADM_COL" type="QString" name="model_group"/>
+  <Option value="LADM-COL" type="QString" name="model_group"/>
   <Option value="Overlapping_Boundaries" type="QString" name="model_name"/>
   <Option type="Map" name="parameterDefinitions">
     <Option type="Map" name="Boundary">

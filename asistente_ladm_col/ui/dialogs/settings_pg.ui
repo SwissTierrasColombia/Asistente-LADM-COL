@@ -24,7 +24,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
+       <normaloff>:/Asistente-LADM-COL/resources/images/schema.png</normaloff>:/Asistente-LADM-COL/resources/images/schema.png</iconset>
      </property>
     </widget>
    </item>
@@ -65,7 +65,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</iconset>
+       <normaloff>:/Asistente-LADM-COL/resources/images/create_db.png</normaloff>:/Asistente-LADM-COL/resources/images/create_db.png</iconset>
      </property>
     </widget>
    </item>

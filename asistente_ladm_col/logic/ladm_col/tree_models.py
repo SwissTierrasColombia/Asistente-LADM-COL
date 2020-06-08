@@ -322,7 +322,7 @@ class TreeModel(QAbstractItemModel):
 
     def fill_model(self, record, parent):
         """
-        Fill data in the treeview depending on the structure. It expects JSON data. The JSON data may contain LADM_COL
+        Fill data in the treeview depending on the structure. It expects JSON data. The JSON data may contain LADM-COL
         object collections in the form:
             "ladm_col_table_name" : [{"id": 5, "attributes":{k,v pairs}}, {"id": 8, "attributes":{k,v pairs}}, ...]
         """
@@ -343,7 +343,7 @@ class TreeModel(QAbstractItemModel):
                 for value in values:
                     if type(value) is dict:
                         if len(value) == 2 and 'id' in value and 'attributes' in value:
-                            # We have a list of LADM_COL model objects, we deal differently with them...
+                            # We have a list of LADM-COL model objects, we deal differently with them...
                             self.fill_collection(key, values, parent, plural, icons)
                             break
             elif type(values) is dict:
@@ -375,7 +375,7 @@ class TreeModel(QAbstractItemModel):
 
     def fill_collection(self, key, collection, parent, plural, icons):
         """
-        Fill a collection of LADM_COL objects
+        Fill a collection of LADM-COL objects
         """
         display_name = self._normalize_display(key, plural)
         key = self._normalize_key(key)
@@ -388,7 +388,7 @@ class TreeModel(QAbstractItemModel):
             icons[dict_table_package[key]]) if key in dict_table_package else None, Qt.DecorationRole)
 
         for object in collection:
-            # Fill LADM_COL object
+            # Fill LADM-COL object
             object_parent = self._create_new_item(collection_parent)
             object_parent.setData(0, "t_id: {}".format(object['id']))
             object_parent.setData(0, {"type": key, "id": object['id'], "value": object['id']}, Qt.UserRole)

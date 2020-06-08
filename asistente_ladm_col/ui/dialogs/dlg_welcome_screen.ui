@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Welcome to the LADM_COL Assistant!</string>
+   <string>Welcome to the LADM-COL Assistant!</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -56,7 +56,7 @@
        <string/>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:white;padding:1px;background-position:right bottom;background-repeat:no-repeat;background-image:url(':/Asistente-LADM_COL/resources/images/icon_about_transparency.png');</string>
+       <string notr="true">background-color:white;padding:1px;background-position:right bottom;background-repeat:no-repeat;background-image:url(':/Asistente-LADM-COL/resources/images/icon_about_transparency.png');</string>
       </property>
       <property name="openLinks">
        <bool>false</bool>
@@ -88,7 +88,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/Asistente-LADM_COL/resources/images/icon_about.png</pixmap>
+         <pixmap resource="../../resources.qrc">:/Asistente-LADM-COL/resources/images/icon_about.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

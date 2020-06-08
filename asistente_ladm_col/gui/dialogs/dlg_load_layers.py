@@ -55,7 +55,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.selected_items_dict = dict()
         self.icon_names = ['points.png', 'lines.png', 'polygons.png', 'tables.png', 'domains.png', 'structures.png', 'relationships.svg']
 
-        self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QLineEdit.LeadingPosition)
+        self.txt_search_text.addAction(QIcon(":/Asistente-LADM-COL/resources/images/search.png"), QLineEdit.LeadingPosition)
 
         # Fill predefined tables combobox
         self.cbo_select_predefined_tables.clear()
@@ -157,7 +157,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                         icon_name = self.icon_names[5]
                 elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
-                icon = QIcon(":/Asistente-LADM_COL/resources/images/{}".format(icon_name))
+                icon = QIcon(":/Asistente-LADM-COL/resources/images/{}".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
 
                 children.append(table_item)
@@ -240,15 +240,15 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_domains', self.chk_show_domains.isChecked())
-        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_structures', self.chk_show_structures.isChecked())
-        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_associations', self.chk_show_associations.isChecked())
+        settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_domains', self.chk_show_domains.isChecked())
+        settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_structures', self.chk_show_structures.isChecked())
+        settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_associations', self.chk_show_associations.isChecked())
 
     def restore_settings(self):
         settings = QSettings()
-        self.chk_show_domains.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_domains', False, bool))
-        self.chk_show_structures.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_structures', False, bool))
-        self.chk_show_associations.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_associations', False, bool))
+        self.chk_show_domains.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_domains', False, bool))
+        self.chk_show_structures.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_structures', False, bool))
+        self.chk_show_associations.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_associations', False, bool))
 
     def select_predefined_changed(self, index):
         layer_list = self.cbo_select_predefined_tables.currentData()

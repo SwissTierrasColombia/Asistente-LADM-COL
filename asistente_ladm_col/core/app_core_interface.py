@@ -84,11 +84,14 @@ from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
 class AppCoreInterface(QObject):
+    action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     map_refresh_requested = pyqtSignal()
+    redraw_all_layers_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     zoom_full_requested = pyqtSignal()
+    zoom_to_active_layer_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
 
@@ -130,6 +133,10 @@ class AppCoreInterface(QObject):
         self._bags_of_enum = list()
 
     def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+        """
+
+        :return: QgsVectorLayer
+        """
         # Handy function to get a single layer
         layer = {layer_name: None}
         self.get_layers(db, layer, load, emit_map_freeze, layer_modifiers=layer_modifiers)
@@ -151,9 +158,12 @@ class AppCoreInterface(QObject):
         :param load: Whether to load layer in the layer tree/map canvas or not (if not, it'll only be added to registry)
         :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
         one could be interested in handling the map_freeze from the outside
-        :param layer_modifiers: is a dict that it have properties that modify the layer properties
-        like prefix_layer_name, suffix_layer_name, symbology_group
+        :param layer_modifiers: dict with properties that modify default layer properties
+                                like prefix_layer_name, suffix_layer_name and symbology_group
         """
+        if not layers:
+            return
+
         if emit_map_freeze:
             self.map_freeze_requested.emit(True)
 
@@ -184,7 +194,7 @@ class AppCoreInterface(QObject):
                     # Required layers that are only in registry are removed, we reload them to get everything configured
                     self.remove_registry_layers(db, all_layers_to_load)
 
-                    self.logger.status(QCoreApplication.translate("QGISUtils", "Loading LADM_COL layers to QGIS and configuring their relations and forms..."))
+                    self.logger.status(QCoreApplication.translate("AppCoreInterface", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
                     self.qgis_model_baker_utils.load_layers(db, all_layers_to_load)
                     ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
@@ -213,13 +223,47 @@ class AppCoreInterface(QObject):
         for layer_name, layer in layers.items():
             if layer is None:
                 layer_not_loaded = True
-                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                     "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
                         description=db.get_display_conn_string()))
 
         if layer_not_loaded:  # If it is not possible to obtain the requested layers we make the variable layers None
             layers = None
+
+    def fix_ladm_col_relations(self, db):
+        """
+        Base on loaded ladm layers, find their related domains and layers, load
+        them to QGIS and configure missing relations. This is handy when users
+        removed some domain or related tables and would like their
+        configuration restored, or simply when they loaded some layers (which
+        loads related layers), and now they would like to continue working on
+        those related layers, but need their relations completely configured.
+
+        :param db: DB connector object
+        """
+        ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)
+        list_ladm_layers = list(ladm_layers.keys())
+        if ladm_layers:
+            layers_to_load = self.get_related_layers(list_ladm_layers, ladm_layers)
+            print(layers_to_load)
+            all_layers_to_load = list(set(list_ladm_layers + layers_to_load))
+
+            #self.remove_registry_layers(db, layers)  # Should we? WHICH ONES?
+
+            self.logger.status(QCoreApplication.translate("AppCoreInterface", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
+            self.qgis_model_baker_utils.load_layers(db, layers_to_load)
+            ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
+
+            # Now that all layers are loaded, fix relations in all layers
+            for layer_name, layer in ladm_layers.items():
+                self.configure_missing_relations(db, layer, layer_name)
+                self.configure_missing_bags_of_enum(db, layer, layer_name)
+                self.set_layer_visibility(layer, layer_name in list_ladm_layers)  # Turn off layer loaded as related layer
+
+            self.logger.success_msg(__name__, QCoreApplication.translate("AppCoreInterface", "Relations have been fixed for all LADM-COL loaded layers!"), 15)
+        else:
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface", "No layers to fix their relations."), 5)
 
     def get_related_layers(self, layer_names, ladm_layers):
         """
@@ -337,13 +381,12 @@ class AppCoreInterface(QObject):
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
         if layer.isSpatial():
-            SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+            self.set_layer_style(db, layer, layer_modifiers)
 
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
                 visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
-            node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
-            self.set_node_visibility_requested.emit(node, visible)
+            self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, db, layer, layer_name):
         """
@@ -455,6 +498,26 @@ class AppCoreInterface(QObject):
 
         if full_layer_name and full_layer_name != layer_name:
             layer.setName(full_layer_name)
+
+    def set_layer_style(self, db, layer, layer_modifiers):
+        """
+        Handy function to set the style for a layer
+
+        :param db: DB Connector object
+        :param layer: QgsMapLayer object
+        :param layer_modifiers: dict with symbology_group property that modifies default layer properties
+        """
+        SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+
+    def set_layer_visibility(self, layer, visible):
+        """
+        Handy function to turn on/off a layer
+
+        :param layer: QgsMapLayer object
+        :param visible: Whether the layer should be visible or not
+        """
+        node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        self.set_node_visibility_requested.emit(node, visible)
 
     def set_display_expressions(self, db, layer, layer_name):
         dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names)
@@ -654,11 +717,11 @@ class AppCoreInterface(QObject):
 
     def get_namespace_field_and_value(self, names, layer_name):
         """Handy function to get up-to-date configuration of namespace field"""
-        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        namespace_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
         namespace_field = names.OID_T_NAMESPACE_F
 
         if namespace_field is not None:
-            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+            namespace = str(QSettings().value('Asistente-LADM-COL/automatic_values/namespace_prefix', ""))
             namespace_value = "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper()
         else:
             namespace_value = None
@@ -667,7 +730,7 @@ class AppCoreInterface(QObject):
 
     def get_local_id_field_and_value(self, names):
         """Handy function to get up-to-date configuration of local_id field"""
-        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+        local_id_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
         local_id_field = names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
@@ -681,7 +744,7 @@ class AppCoreInterface(QObject):
 
     def get_t_ili_tid_field_and_value(self, names):
         """Handy function to get up-to-date configuration of t_ili_tid field"""
-        t_ili_tid_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/t_ili_tid_enabled', True, bool)
+        t_ili_tid_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
         t_ili_tid_field = names.T_ILI_TID_F
 
         if t_ili_tid_field is not None:
@@ -700,7 +763,7 @@ class AppCoreInterface(QObject):
         Note that all default values are disabled for the given layer, not only namespace, local_id and t_ili_tid.
         """
         automatic_fields_definition = {}
-        if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+        if not QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
             automatic_fields_definition = self.disable_automatic_fields(layer)
 
         return automatic_fields_definition
@@ -719,7 +782,7 @@ class AppCoreInterface(QObject):
         we saved before running the batch load.
         """
         if automatic_fields_definition:
-            if not QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
+            if not QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):
                 self.enable_automatic_fields(layer, automatic_fields_definition)
 
     def enable_automatic_fields(self, layer, automatic_fields_definition):
@@ -761,7 +824,7 @@ class AppCoreInterface(QObject):
         res = False
         msg = {'text': '', 'level': Qgis.Warning}
         if url is None:
-            url = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+            url = QSettings().value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         if url:
             with ProcessWithStatus("Checking source service availability (this might take a while)..."):
@@ -916,7 +979,7 @@ class AppCoreInterface(QObject):
 
     def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "No CSV file given or file doesn't exist."))
             return False
 
@@ -949,7 +1012,7 @@ class AppCoreInterface(QObject):
             csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "CSV layer not valid!"))
             return False
 
@@ -973,7 +1036,7 @@ class AppCoreInterface(QObject):
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
             if overlapping:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                     "There are overlapping points, we cannot import them into the DB! See selected points."))
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
@@ -992,11 +1055,12 @@ class AppCoreInterface(QObject):
         new_features = target_point_layer.featureCount() - initial_feature_count
 
         if features_added:
-            self.zoom_full_requested.emit()
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.activate_layer_requested.emit(target_point_layer)
+            self.zoom_to_active_layer_requested.emit()
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "No point was added to '{}'.").format(target_layer_name))
             return False
 
@@ -1011,7 +1075,7 @@ class AppCoreInterface(QObject):
             return False
 
         if output_layer.isEditable():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "You need to close the edit session on layer '{}' before using this tool!").format(
                 ladm_col_layer_name))
             return False
@@ -1020,7 +1084,7 @@ class AppCoreInterface(QObject):
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(output_layer)
             field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(db.names,
-                                                                                             ladm_col_layer_name, self)
+                                                                                             ladm_col_layer_name)
             self.activate_layer_requested.emit(input_layer)
 
             res = processing.run("model:ETL-model",
@@ -1029,9 +1093,12 @@ class AppCoreInterface(QObject):
             self.check_if_and_enable_automatic_fields(output_layer, automatic_fields_definition)
             finish_feature_count = output_layer.featureCount()
 
+            if not finish_feature_count:
+                self.logger.warning(__name__, QCoreApplication.translate("AppCoreInterface",
+                                                                        "The output of the ETL-model has no features!"))
             return finish_feature_count > start_feature_count
         else:
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                       "Model ETL-model was not found and cannot be opened!"))
             return False
 
@@ -1042,7 +1109,7 @@ class AppCoreInterface(QObject):
             return False
 
         if output.isEditable():
-            self.logger.warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "You need to close the edit session on layer '{}' before using this tool!").format(
                 ladm_col_layer_name))
             return False
@@ -1081,7 +1148,7 @@ class AppCoreInterface(QObject):
 
             return finish_feature_count > start_feature_count
         else:
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                       "Model ETL-model was not found and cannot be opened!"))
             return False
 
@@ -1179,7 +1246,7 @@ class AppCoreInterface(QObject):
             self.activate_layer_requested.emit(list_layers[0])
             self.action_vertex_tool_requested.emit()
 
-            self.logger.info_msg(__name__, QCoreApplication.translate("QGISUtils",
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                 "You can start moving nodes in layers {} and {}, simultaneously!").format(
                     ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)
 

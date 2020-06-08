@@ -5065,7 +5065,7 @@
     <Option name="inputuni" type="QString" value=""/>
   </Option>
   <Option name="modelVariables"/>
-  <Option name="model_group" type="QString" value="LADM_COL"/>
+  <Option name="model_group" type="QString" value="LADM-COL"/>
   <Option name="model_name" type="QString" value="ETL-model-supplies"/>
   <Option name="parameterDefinitions" type="Map">
     <Option name="barrio" type="Map">

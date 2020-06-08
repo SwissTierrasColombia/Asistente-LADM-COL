@@ -263,7 +263,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</iconset>
+             <normaloff>:/Asistente-LADM-COL/resources/images/mIconExpressionSelect.svg</normaloff>:/Asistente-LADM-COL/resources/images/mIconExpressionSelect.svg</iconset>
            </property>
           </widget>
          </item>
@@ -283,7 +283,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</iconset>
+             <normaloff>:/Asistente-LADM-COL/resources/images/mActionSelectRectangle.svg</normaloff>:/Asistente-LADM-COL/resources/images/mActionSelectRectangle.svg</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -316,7 +316,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectAll.svg</normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectAll.svg</iconset>
+             <normaloff>:/Asistente-LADM-COL/resources/images/mActionSelectAll.svg</normaloff>:/Asistente-LADM-COL/resources/images/mActionSelectAll.svg</iconset>
            </property>
           </widget>
          </item>

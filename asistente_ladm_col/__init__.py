@@ -35,7 +35,7 @@ def classFactory(iface):
             from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
         except ImportError as e:
             iface.messageBar().clearWidgets()
-            widget = iface.messageBar().createMessage("Asistente LADM_COL", QCoreApplication.translate("__init__",
+            widget = iface.messageBar().createMessage("Asistente LADM-COL", QCoreApplication.translate("__init__",
                                                       "There was a problem loading the plugin {}. See the log for details.").format(
                                                PLUGIN_NAME))
             button = QPushButton(widget)
@@ -58,7 +58,7 @@ def classFactory(iface):
 
         return AsistenteLADMCOLPlugin(iface)
     else:
-        iface.messageBar().pushMessage("Asistente LADM_COL",
+        iface.messageBar().pushMessage("Asistente LADM-COL",
                                        QCoreApplication.translate("__init__",
                                                                   "{} plugin requires QGIS {} version or higher. Please install the required version.").format(
                                            PLUGIN_NAME,

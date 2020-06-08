@@ -42,7 +42,7 @@ class GPKGConnector(FileDB):
         'dbfile': ''
     }
 
-    def __init__(self, uri, conn_dict={}):
+    def __init__(self, uri, conn_dict=dict()):
         DBConnector.__init__(self, uri, conn_dict)
         self.engine = 'gpkg'
         self.conn = None
@@ -172,9 +172,6 @@ class GPKGConnector(FileDB):
         self.logger.debug(__name__, "Models found: {}".format(lst_models))
         return lst_models
 
-    def get_logic_validation_queries(self):
-        raise NotImplementedError
-
     def is_ladm_layer(self, layer):
         result = False
         if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
@@ -202,13 +199,17 @@ class GPKGConnector(FileDB):
         return dict_conn['dbfile']
 
     def open_connection(self):
-        if os.path.exists(self._uri):
+        if os.path.exists(self._uri) and os.path.isfile(self._uri):
             self.conn = qgis.utils.spatialite_connect(self._uri)
             self.conn.row_factory = sqlite3.Row
             return (True, QCoreApplication.translate("GPKGConnector", "Connection is open!"))
-        else:
+        elif not os.path.exists(self._uri):
             return (False, QCoreApplication.translate("GPKGConnector",
                            "Connection could not be open! The file ('{}') does not exist!".format(self._uri)))
+        elif os.path.isdir(self._uri):
+            return (False, QCoreApplication.translate("GPKGConnector",
+                                                      "Connection could not be open! The URI ('{}') is not a file!".format(
+                                                          self._uri)))
 
     def close_connection(self):
         if self.conn:
@@ -269,7 +270,7 @@ class GPKGConnector(FileDB):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
                 "GPKGConnector",
-                "The database '{}' is not a valid LADM_COL database. That is, the database doesn't have the structure of the LADM_COL model.").format(
+                "The database '{}' is not a valid LADM-COL database. That is, the database doesn't have the structure of the LADM-COL model.").format(
                 database)
 
         if self.get_ili2db_version() != 4:
@@ -295,4 +296,19 @@ class GPKGConnector(FileDB):
                 msg)
 
         return True, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate("GPKGConnector",
-                                                                                                    "The database '{}' has a valid LADM_COL structure!").format(database)
+                                                                                                    "The database '{}' has a valid LADM-COL structure!").format(database)
+
+    def execute_sql_query(self, query):
+        """
+        Generic function for executing SQL statements
+
+        :param query: SQL Statement
+        :return: List of RealDictRow
+        """
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute(query)
+            return True, cursor.fetchall()
+        except sqlite3.ProgrammingError as e:
+            return False, e

@@ -19,8 +19,11 @@
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSlot,
                               pyqtSignal,
-                              QCoreApplication)
-from qgis.PyQt.QtWidgets import QFileDialog
+                              QCoreApplication,
+                              Qt)
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QTabBar,
+                                 QDockWidget)
 
 from qgis.core import (Qgis,
                        QgsLayerTreeGroup,
@@ -38,7 +41,9 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
+from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
+from asistente_ladm_col.utils.symbology import SymbologyUtils
 
 
 class AppGUIInterface(QObject):
@@ -67,6 +72,9 @@ class AppGUIInterface(QObject):
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
+    def redraw_all_layers(self):
+        self.iface.mapCanvas().redrawAllLayers()
+
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
 
@@ -85,6 +93,24 @@ class AppGUIInterface(QObject):
 
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
+
+    def add_error_layer(self, db, error_layer):
+        group = self.get_error_layers_group()
+
+        # Check if layer is loaded and remove it
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == error_layer.name():
+                group.removeLayer(layer.layer())
+                break
+
+        added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+        index = QgisModelBakerUtils().get_suggested_index_for_layer(added_layer, group)
+        added_layer = group.insertLayer(index, added_layer).layer()
+        if added_layer.isSpatial():
+            # db connection is none because we are using a memory layer
+            SymbologyUtils().set_layer_style_from_qml(db, added_layer, is_error_layer=True)
+        return added_layer
 
     def get_error_layers_group(self):
         """
@@ -174,7 +200,7 @@ class AppGUIInterface(QObject):
 
                 feedback = CustomFeedbackWithErrors()
                 try:
-                    msg = QCoreApplication.translate("AppGUIInterface", "Exporting queality errors to GeoPackage...")
+                    msg = QCoreApplication.translate("AppGUIInterface", "Exporting quality errors to GeoPackage...")
                     with ProcessWithStatus(msg):
                         processing.run("native:package", {
                             'LAYERS': layers,
@@ -213,14 +239,36 @@ class AppGUIInterface(QObject):
         self.iface.messageBar().clearWidgets()
 
     def zoom_full(self):
-        self.iface.zoom_full()
+        self.iface.zoomFull()
+
+    def zoom_to_active_layer(self):
+        self.iface.zoomToActiveLayer()
 
     def zoom_to_selected(self):
         self.iface.actionZoomToSelected().trigger()
 
     def show_message(self, msg, level, duration=5):
         self.clear_message_bar()  # Remove previous messages before showing a new one
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
+        self.iface.messageBar().pushMessage("Asistente LADM-COL", msg, level, duration)
 
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
+
+    def add_tabified_dock_widget(self, area, dock_widget):
+        """
+        Adds the dock_widget to the given area, making sure it is tabified if other dock widgets exist.
+        :param area: Value of the Qt.DockWidgetArea enum
+        :param dock_widget: QDockWidget object
+        """
+        if Qgis.QGIS_VERSION_INT >= 31300:  # Use native addTabifiedDockWidget
+            self.iface.addTabifiedDockWidget(area, dock_widget, raiseTab=True)
+        else:  # Use plugin's addTabifiedDockWidget, which does not raise the new tab
+            dock_widgets = list()
+            for dw in self.iface.mainWindow().findChildren(QDockWidget):
+                if dw.isVisible() and self.iface.mainWindow().dockWidgetArea(dw) == area:
+                    dock_widgets.append(dw)
+
+            self.iface.mainWindow().addDockWidget(area, dock_widget)  # We add the dock widget, then attempt to tabify
+            if dock_widgets:
+                self.logger.debug(__name__, "Tabifying dock widget {}...".format(dock_widget.windowTitle()))
+                self.iface.mainWindow().tabifyDockWidget(dock_widgets[0], dock_widget)  # No way to prefer one Dock Widget

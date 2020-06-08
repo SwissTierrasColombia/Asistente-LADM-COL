@@ -38,4 +38,4 @@ class LogExcelDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def save(self):
         title = QCoreApplication.translate("LogExcelDialog","<h2 align='center'>Errors importing from Excel into LADM-COL</h2>")
-        save_pdf_format('Asistente-LADM_COL/log_excel_dialog/save_path', title, self.export_text )
+        save_pdf_format('Asistente-LADM-COL/log_excel_dialog/save_path', title, self.export_text )

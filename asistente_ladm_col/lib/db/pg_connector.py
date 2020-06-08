@@ -28,7 +28,6 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (ClientServerDB,
                                                     DBConnector)
-from asistente_ladm_col.logic.ladm_col.config.queries.pg import logic_validation_queries
 from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_neighbouring_change_query,
                                                                             ant_map_plot_query)
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
@@ -63,7 +62,6 @@ class PGConnector(ClientServerDB):
         self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
         self.provider = 'postgres'
         self._tables_info = None
-        self._logic_validation_queries = None
 
     @DBConnector.uri.setter
     def uri(self, value):
@@ -329,11 +327,6 @@ class PGConnector(ClientServerDB):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(query)
         return cur.fetchall()
-
-    def get_logic_validation_queries(self):
-        if self._logic_validation_queries is None:
-            self._logic_validation_queries = logic_validation_queries.get_logic_validation_queries(self.schema, self.names)
-        return self._logic_validation_queries
 
     def get_ladm_units(self):
         query = """SELECT DISTINCT tablename || '..' || columnname AS unit_key, ' [' || setting || ']' AS unit_value FROM {schema}.t_ili2db_column_prop WHERE tag LIKE 'ch.ehi.ili2db.unit'""".format(schema=self.schema)
@@ -609,7 +602,7 @@ class PGConnector(ClientServerDB):
     def _test_connection_to_ladm(self, required_models):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate("PGConnector",
-                                                      "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
+                                                      "The schema '{}' is not a valid LADM-COL schema. That is, the schema doesn't have the structure of the LADM-COL model.").format(
                 self.schema)
 
         if self.get_ili2db_version() != 4:
@@ -635,5 +628,5 @@ class PGConnector(ClientServerDB):
                 msg)
 
         return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
-            "PGConnector", "The schema '{}' has a valid LADM_COL structure!").format(
+            "PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(
             self.schema)

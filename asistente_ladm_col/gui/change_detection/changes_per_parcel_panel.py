@@ -63,7 +63,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.utils = utils
         self.logger = Logger()
-        self.symbology = Symbology()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
@@ -82,7 +81,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.init_map_tool = self.utils.canvas.mapTool()
 
         self.active_map_tool_before_custom = None
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM-COL/resources/images/spatial_unit.png"))
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
 
         # Create maptool
@@ -351,7 +350,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         layer_modifiers = {
             LayerConfig.PREFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_PREFIX,
             LayerConfig.SUFFIX_LAYER_MODIFIERS: LayerConfig.SUPPLIES_DB_SUFFIX,
-            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_supplies_style_group(self.utils._supplies_db.names)
+            LayerConfig.STYLE_GROUP_LAYER_MODIFIERS: Symbology().get_style_group_layer_modifiers(self.utils._supplies_db.names)
         }
         dict_supplies_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes_supplies(self.utils._supplies_db, search_criterion_supplies, layer_modifiers=layer_modifiers)
 
@@ -466,7 +465,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.search_data(previous_parcel_number=query)
 
         else:
-            self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.utils.iface.messageBar().pushMessage("Asistente LADM-COL",
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):

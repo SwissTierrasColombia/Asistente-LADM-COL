@@ -21,6 +21,7 @@ TEST_SCHEMAS_MAPPING = {
     'ladm_col_210': 'ladm_col_operation_v_210.backup',
     'test_import_data':'test_import_data_ladm_v2.9.6.backup',
     'test_export_data':'test_export_data_ladm_v2.9.6.backup',
+    'test_logic_quality_rules': 'test_ladm_logic_quality_rules_v2.9.6.backup',
     'test_export_data_qpkg':'test_export_data.gpkg',
     'test_empty_ladm_gpkg': 'test_empty_ladm_v2_9_6.gpkg',
     'test_ladm_operation_model_gpkg': 'test_ladm_operation_model_v2_9_6.gpkg',
@@ -37,5 +38,7 @@ TEST_SCHEMAS_MAPPING = {
     'topology_cases_gpkg': 'topology_cases.gpkg',
     'adjust_boundaries_cases_gpkg': 'adjust_boundaries_cases.gpkg',
     'no_interlis_gpkg': 'no_interlis.gpkg',
+    'test_logic_quality_rules_gpkg': 'test_logic_quality_rules_v2.9.6.gpkg',
+    'test_valid_quality_rules_gpkg': 'test_valid_quality_rules_v2.9.6.gpkg',
     'interlis_no_ladm_col_models_gpkg': 'interlis_no_ladm_col_models.gpkg'
 }

@@ -28,6 +28,7 @@ import webbrowser
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
+from qgis.core import QgsFeatureRequest
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
                                                       MODULE_HELP_MAPPING,
@@ -42,14 +43,16 @@ from asistente_ladm_col.utils.qt_utils import (get_plugin_metadata,
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   PLUGIN_DIR)
 
+
 class Utils(QObject):
     """
     Utility methods are here to be able to use internationalization on some messages
     """
     def __init__(self):
         QObject.__init__(self)
- 
-    def set_time_format(self, time):
+
+    @staticmethod
+    def set_time_format(time):
         time_format = '.1f'
         unit_millisecond = "ms"
         unit_second = "seg"
@@ -210,13 +213,41 @@ def show_plugin_help(module='', offline=False):
             url = os.path.join("file://", help_path)
         else:
             if _is_connected:
-                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
                     "The local help could not be found in '{}' and cannot be open.").format(help_path), 20)
             else:
-                Logger().warning_msg(__name__, QCoreApplication.translate("QGISUtils",
+                Logger().warning_msg(__name__, QCoreApplication.translate("Utils",
                     "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url), 20)
             return
     else:
         url = web_url
 
     webbrowser.open("{}/{}".format(url, section))
+
+
+def get_uuid_dict(layer, names, id_field=None):
+    """
+    Return dict with id_field as key and uuid field as value
+    When id_field is None the key value is the id (QGIS) of the feature
+    """
+    field_names = [field.name() for field in layer.fields()]
+    dict_uuid = dict()
+
+    if names.T_ILI_TID_F in field_names and (id_field in field_names or id_field is None):
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        attrs = [names.T_ILI_TID_F]
+        if id_field:
+            attrs.append(id_field)
+        request.setSubsetOfAttributes(attrs, layer.fields())  # Note: this adds a new flag
+        for feature in layer.getFeatures(request):
+            if id_field:
+                dict_uuid[feature[id_field]] = str(feature[names.T_ILI_TID_F])
+            else:
+                dict_uuid[feature.id()] = str(feature[names.T_ILI_TID_F])
+    return dict_uuid
+
+
+def remove_keys_from_dict(keys, dictionary):
+    for key in keys:
+        if key in dictionary:
+            del dictionary[key]

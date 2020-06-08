@@ -54,7 +54,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.java_utils import JavaUtils
+from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
@@ -87,9 +87,9 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.logger = Logger()
         self.app = AppInterface()
 
-        self.java_utils = JavaUtils()
-        self.java_utils.download_java_completed.connect(self.download_java_complete)
-        self.java_utils.download_java_progress_changed.connect(self.download_java_progress_change)
+        self.java_dependency = JavaDependency()
+        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
+        self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
 
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
@@ -239,6 +239,8 @@ class DialogImportData(QDialog, DIALOG_UI):
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
         dlg = SettingsDialog(self.conn_manager)
+        dlg.setWindowTitle(QCoreApplication.translate("DialogImportData", "Target DB Connection Settings"))
+        dlg.show_tip(QCoreApplication.translate("DialogImportData", "Configure where do you want the XTF data to be imported."))
         dlg.set_db_source(self.db_source)
         dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
 
@@ -271,13 +273,13 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-        java_home_set = self.java_utils.set_java_home()
+        java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             message_java = QCoreApplication.translate("DialogImportData", """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
             self.txtStdout.setText(message_java)
-            self.java_utils.get_java_on_demand()
+            self.java_dependency.get_java_on_demand()
             self.disable()
             return
 
@@ -319,7 +321,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         if not supported_models_in_ili:
             self._running_tool = False
             error_msg = QCoreApplication.translate("DialogImportData",
-                                                   "The selected XTF file does not have data from any LADM-COL model supported by the LADM_COL Assistant. " \
+                                                   "The selected XTF file does not have data from any LADM-COL model supported by the LADM-COL Assistant. " \
                                                    "Therefore, you cannot import it! These are the models supported:\n\n * {}").format(" \n * ".join(LADMNames.SUPPORTED_MODELS))
             self.txtStdout.setText(error_msg)
             self.show_message(error_msg, Qgis.Warning)
@@ -416,22 +418,22 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
 
     def restore_configuration(self):
         settings = QSettings()
-        self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import'))
+        self.xtf_file_line_edit.setText(settings.value('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_import'))
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        value_show_log = settings.value('Asistente-LADM-COL/QgisModelBaker/show_log', False, type=bool)
         self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.use_local_models = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def update_configuration(self):
         """
@@ -446,19 +448,20 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False
 
-        configuration.epsg = QSettings().value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)
+        configuration.epsg = QSettings().value('Asistente-LADM-COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int)
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.with_importtid = True
 
-        full_java_exe_path = JavaUtils.get_full_java_exe_path()
+        full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM_COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
         # Check custom model directories
         if self.use_local_models:
@@ -472,7 +475,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
-        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/models/validate_data_importing_exporting', True, bool)
+        configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -544,4 +547,4 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.enable()
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
+        self.bar.pushMessage("Asistente LADM-COL", message, level, duration=0)

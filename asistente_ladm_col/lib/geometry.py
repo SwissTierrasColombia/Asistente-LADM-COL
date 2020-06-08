@@ -22,6 +22,7 @@ import gc
 
 from qgis.PyQt.QtCore import (QObject,
                               QVariant)
+from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPolygon,
@@ -554,7 +555,8 @@ class GeometryUtils(QObject):
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
         id_field_idx = boundary_layer.fields().indexFromName(names.T_ID_F)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        uuid_field_idx = boundary_layer.fields().indexFromName(names.T_ILI_TID_F)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx, uuid_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
@@ -802,7 +804,6 @@ class GeometryUtils(QObject):
         return geoms
 
     def fix_selected_boundaries(self, names, boundary_layer, id_field, selected_ids=list()):
-
         selected_features = list()
         if len(selected_ids) == 0:
             selected_features = [feature for feature in boundary_layer.selectedFeatures()]
@@ -907,39 +908,134 @@ class GeometryUtils(QObject):
 
         return merge_geometries, boundaries_to_del
 
-    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field):
-        building_within_plots = processing.run("qgis:joinattributesbylocation", {
-            'INPUT': building_layer,
-            'JOIN': plot_layer,
-            'PREDICATE':[5], # within
-            'JOIN_FIELDS':[id_field],
-            'METHOD':0, # 1:m
-            'DISCARD_NONMATCHING':False,
-            'PREFIX':'',
-            'OUTPUT':'memory:'})['OUTPUT']
+    @staticmethod
+    def get_relationships_among_polygons(input_layer, intersect_layer):
+        # Select buildings disjoint from plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [2],  # disjoint
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_disjoint = input_layer.selectedFeatureIds()
 
-        # Get buildings that are not cointained in a single plot
-        # This give us buildings that intersect with 0 OR more than one plots
-        building_within_plots.selectByExpression('"{}_2" IS NOT NULL'.format(id_field))
-        building_within_plots.dataProvider().deleteFeatures(building_within_plots.selectedFeatureIds())
+        # processing algorithm 'selectbylocation' by default remove the previous selection
+        # Select buildings overlaps with plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [5],  # overlaps
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_overlaps = input_layer.selectedFeatureIds()
 
-        # Now we run an intersection to classify the subset of buildings in two groups
-        building_plots_with_errors = processing.run("qgis:joinattributesbylocation", {
-            'INPUT': building_within_plots,
-            'JOIN': plot_layer,
-            'PREDICATE':[0], # intersects
-            'JOIN_FIELDS':[id_field],
-            'METHOD':1, # 1:1 We just want to know whether building intersects plots or not
-            'DISCARD_NONMATCHING':False,
-            'PREFIX':'',
-            'OUTPUT':'memory:'})['OUTPUT']
+        # Select buildings to are within plots
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [6],  # are within
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        input_within = input_layer.selectedFeatureIds()
 
-        buildings_with_no_plot = list()
-        buildings_not_within_a_single_plot = list()
-        for feature in building_plots_with_errors.getFeatures():
-            if feature['{}_3'.format(id_field)]:
-                buildings_not_within_a_single_plot.append(feature)
-            else:
-                buildings_with_no_plot.append(feature)
+        return input_disjoint, input_overlaps, input_within
 
-        return buildings_with_no_plot, buildings_not_within_a_single_plot
+    @staticmethod
+    def get_intersection_features(layer, geometries, id_field=None):
+        """
+        Return a list of lists, every list has the feature ids of features
+        that intersect with every geometry. If id_field is None return QGIS id.
+
+        layer: QgsVectorLayer
+        geometries: list of QgsGeometries (Order is not modified)
+        """
+        if id_field:
+            id_field_idx = layer.fields().indexFromName(id_field)
+            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+            dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
+        else:
+            request = QgsFeatureRequest().setNoAttributes()
+            dict_features = {feature.id(): feature for feature in layer.getFeatures(request)}
+
+        index = QgsSpatialIndex(layer)
+
+        intersecting_ids = list()
+        for geometry in geometries:
+            bbox = geometry.boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            feature_ids = list()
+            for candidate_feature in candidate_features:
+                candidate_geometry = candidate_feature.geometry()
+                if geometry.intersects(candidate_geometry):
+                    if id_field:
+                        feature_ids.append(candidate_feature[id_field])
+                    else:
+                        feature_ids.append(candidate_feature.id())
+            intersecting_ids.append(feature_ids)
+        return intersecting_ids
+
+    @staticmethod
+    def get_polygon_nodes_layer(polygon_layer, id_field):
+        """
+        Layer is created with unique vertices. It is necessary because 'remove duplicate vertices' processing
+        algorithm does not filter the data as we need them
+        """
+        tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        duplicate_nodes_layer = processing.run("qgis:fieldcalculator", {
+            'INPUT': tmp_plot_nodes_layer,
+            'FIELD_NAME': 'wkt_geom',
+            'FIELD_TYPE': 2,  # String
+            'FIELD_LENGTH': 255,
+            'FIELD_PRECISION': 3,
+            'NEW_FIELD': True,
+            'FORMULA': 'geom_to_wkt( $geometry )',
+            'OUTPUT': 'memory:'
+        })['OUTPUT']
+
+        unique_nodes_layer = processing.run("native:removeduplicatesbyattribute", {
+            'INPUT': duplicate_nodes_layer,
+            'FIELDS': [id_field, 'wkt_geom'],
+            'OUTPUT': 'memory:'})['OUTPUT']
+
+        return unique_nodes_layer
+
+    @staticmethod
+    def get_non_intersecting_geometries(input_layer, join_layer, id_field):
+        # get non matching features between input and join layer
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {'INPUT': input_layer,
+                                             'JOIN': join_layer,
+                                             'PREDICATE': [0],  # Intersects
+                                             'JOIN_FIELDS': [id_field],
+                                             'METHOD': 0,
+                                             'DISCARD_NONMATCHING': False,
+                                             'PREFIX': '',
+                                             'NON_MATCHING': 'memory:'})['NON_MATCHING']
+        features = list()
+
+        for feature in spatial_join_layer.getFeatures():
+            # When the two layers have the same attribute, the field of the layer
+            # that makes the join is renamed and the input layer preserves the same name
+            feature_id = feature[id_field]  # We use input layer field
+            feature_geom = feature.geometry()
+            features.append((feature_id, feature_geom))
+
+        return features
+
+    def get_dangle_ids(self, boundary_layer):
+        # 1. Run extract specific vertices
+        # 2. Call to get_overlapping_points
+        # 3. Obtain dangle ids (those not present in overlapping points result)
+        res = processing.run("qgis:extractspecificvertices", {
+                'INPUT': boundary_layer,
+                'VERTICES': '0,-1', # First and last
+                'OUTPUT': 'memory:'
+            },
+            feedback=QgsProcessingFeedback()
+        )
+        end_points = res['OUTPUT']
+
+        end_point_ids = [point.id() for point in end_points.getFeatures()]
+        overlapping_points = self.get_overlapping_points(end_points)
+
+        # Unpack list of lists into single list
+        overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
+
+        return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))

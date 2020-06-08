@@ -20,8 +20,6 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import (Setting,
                                               ProcessingConfig)
-
-from asistente_ladm_col.lib.processing.algs.ConvertEmptyToNull import ConvertEmptyToNull
 from asistente_ladm_col.lib.processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from asistente_ladm_col.lib.processing.algs.PolygonsToLines import PolygonsToLines
 from asistente_ladm_col.lib.processing.algs.FieldCalculator import FieldsCalculator
@@ -67,10 +65,10 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
     def name(self):
         """This is the localised full name.
         """
-        return 'LADM_COL'
+        return 'LADM-COL'
 
     def icon(self):
-        return QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
+        return QIcon(":/Asistente-LADM-COL/resources/images/icon.png")
 
     def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
@@ -86,5 +84,5 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator(), ConvertEmptyToNull()]:
+        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator()]:
             self.addAlgorithm(alg)

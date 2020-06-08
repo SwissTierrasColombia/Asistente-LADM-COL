@@ -73,6 +73,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         self.progress_configuration(0, 1)  # start from: 0, number of steps: 1
 
         self.wizardPage2.setButtonText(QWizard.CustomButton1, QCoreApplication.translate("SuppliesETLWizard", "Run ETL"))
+        self.wizardPage1.setButtonText(QWizard.CancelButton, QCoreApplication.translate("SuppliesETLWizard", "Close"))
+        self.wizardPage2.setButtonText(QWizard.CancelButton, QCoreApplication.translate("SuppliesETLWizard", "Close"))
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -131,6 +133,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.bar.clearWidgets()
             button_list.remove(QWizard.CustomButton1)
             button_list.remove(QWizard.NextButton)
+            button_list.remove(QWizard.BackButton)
             self.wizardPage3.setFinalPage(True)
 
         self.setButtonLayout(button_list)
@@ -207,13 +210,15 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                 QCoreApplication.translate("SuppliesETLWizard", "Warning"),
-                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM_COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
+                QCoreApplication.translate("SuppliesETLWizard", "The database <i>{}</i> already has a valid LADM-COL structure.<br/><br/>If such database has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?").format(self._db.get_description_conn_string()),
                 QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 self.set_gui_controls_enabled(False)
                 self.button(self.BackButton).setEnabled(False)
                 self.button(self.CustomButton1).setEnabled(False)
+                self.button(self.CancelButton).setText(QCoreApplication.translate("SuppliesETLWizard", "Cancel"))
+
                 with OverrideCursor(Qt.WaitCursor):
                     res_alpha, msg_alpha = etl.load_alphanumeric_layers()
 
@@ -233,6 +238,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
                                     self.button(self.NextButton).setVisible(True)
                                     self.button(self.CustomButton1).setVisible(False)
+                                    self.button(self.CancelButton).setText(QCoreApplication.translate("SuppliesETLWizard", "Close"))
                                     self.show_message(QCoreApplication.translate("SuppliesETLWizard",
                                                         "The {} has finished successfully!").format(self.tool_name),
                                                       Qgis.Success, 0)
@@ -255,7 +261,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                 # TODO: if an empty schema was selected, do the magic under the hood
                 # self.create_model_into_database()
                 # Now execute "accepted()"
-                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM_COL structure. Choose a proper database (schema) and try again.")
+                msg = QCoreApplication.translate("SuppliesETLWizard", "To run the ETL, the database (schema) should have the Supplies LADM-COL structure. Choose a proper database (schema) and try again.")
                 self.show_message(msg, Qgis.Warning)
                 self.logger.warning(__name__, msg)
 
@@ -310,12 +316,12 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         elif self.rad_cobol_data.isChecked():
             etl_source = "cobol"
 
-        settings.setValue('Asistente-LADM_COL/supplies/etl_source', etl_source)
+        settings.setValue('Asistente-LADM-COL/supplies/etl_source', etl_source)
         self._data_source_widget.save_settings()
 
     def restore_settings(self):
         settings = QSettings()
-        etl_source = settings.value('Asistente-LADM_COL/supplies/etl_source') or 'snc'
+        etl_source = settings.value('Asistente-LADM-COL/supplies/etl_source') or 'snc'
         if etl_source == 'snc':
             self.rad_snc_data.setChecked(True)
         elif etl_source == 'cobol':
@@ -326,6 +332,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
 
     def show_settings(self):
         dlg = SettingsDialog(self.conn_manager)
+        dlg.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "Target DB Connection Settings"))
+        dlg.show_tip(QCoreApplication.translate("SuppliesETLWizard", "Configure where do you want the data to be imported."))
         dlg.set_db_source(self.db_source)
 
         dlg.db_connection_changed.connect(self.db_connection_changed)

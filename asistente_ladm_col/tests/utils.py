@@ -43,7 +43,7 @@ from qgis.testing.mocked import get_iface
 
 from .config.test_config import TEST_SCHEMAS_MAPPING
 
-# PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
+# PostgreSQL connection to schema with a LADM-COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
 DB_NAME = "ladm_col"

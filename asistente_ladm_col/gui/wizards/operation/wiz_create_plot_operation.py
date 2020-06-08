@@ -159,13 +159,13 @@ class CreatePlotOperationWizard(MultiPageWizardFactory,
             self._layers[self.EDITING_LAYER_NAME].addFeatures(features)
             self.iface.mapCanvas().refresh()
 
-            message = QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created! To finish the creation of the plots, open its attribute table and fill in the mandatory fields.").format(len(features))
-            button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes")
+            message = QCoreApplication.translate("WizardTranslations", "{} new plot(s) has(have) been created! To finish the creation of the plots, open its attribute table and fill in the mandatory fields.").format(len(features))
+            button_text = QCoreApplication.translate("WizardTranslations", "Open table of attributes")
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME]
             filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
             self.logger.message_with_button_open_table_attributes_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:
-            message = QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!")
+            message = QCoreApplication.translate("WizardTranslations", "No plot could be created. Make sure selected boundaries are closed!")
             self.close_wizard(message)

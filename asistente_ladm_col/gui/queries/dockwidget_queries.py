@@ -90,7 +90,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.add_layers()
         self.fill_combos()
 
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM-COL/resources/images/spatial_unit.png"))
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
@@ -356,7 +356,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             else: # previous_parcel_number
                 self.search_data_by_component(previous_parcel_number=query, zoom_and_select=True)
         else:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.iface.messageBar().pushMessage("Asistente LADM-COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
 
     def show_context_menu(self, point):

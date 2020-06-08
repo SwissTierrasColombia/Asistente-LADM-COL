@@ -144,3 +144,11 @@ class TasksWidget(QWidget, WIDGET_UI):
 
     def clear_task_widget(self):
         self.lvw_tasks.clear()
+
+    def logout_user(self):
+        """
+        If the user logged out, clear everything
+        """
+        self.clear_task_widget()
+        self._user = None
+        self.setDisabled(True)

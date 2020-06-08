@@ -2,6 +2,9 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               QCoreApplication)
 
+from asistente_ladm_col.config.gui.common_keys import (MANAGER_ROLE,
+                                                       OPERATOR_ROLE,
+                                                       SUPPLIES_PROVIDER_ROLE)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
@@ -31,11 +34,16 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
     TASK_ASSIGNED_STATUS_BIG_TEXT_CSS = "font-size: 12pt;color: rgb(255, 174, 0);"  # orange
     TASK_STARTED_STATUS_BIG_TEXT_CSS = "font-size: 12pt;color: rgb(79, 157, 66);"  # different-green
 
+    # Mapping between roles in ST and roles in LADM-COL Assistant. {st_key: assistant_key}
+    ROLE_MAPPING = {2:MANAGER_ROLE,
+                    3:OPERATOR_ROLE,
+                    4:SUPPLIES_PROVIDER_ROLE}
+
     def __init__(self):
         QObject.__init__(self)
 
     def get_domain(self):
-        return QSettings().value('Asistente-LADM_COL/sources/service_transitional_system', self.ST_DEFAULT_DOMAIN)
+        return QSettings().value('Asistente-LADM-COL/sources/service_transitional_system', self.ST_DEFAULT_DOMAIN)
 
     @property
     def ST_LOGIN_SERVICE_URL(self):
