@@ -344,7 +344,7 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.db_odbc_driver = 'ODBC Driver 17 for SQL Server'
 
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = 3116
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID

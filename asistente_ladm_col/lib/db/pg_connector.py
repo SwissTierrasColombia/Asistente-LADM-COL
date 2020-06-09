@@ -150,7 +150,7 @@ class PGConnector(ClientServerDB):
             self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
-    def _get_fields_and_tables_ladm(self):
+    def _get_table_and_field_names(self):
         """
         Documented in the super class
         """

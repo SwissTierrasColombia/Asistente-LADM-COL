@@ -18,29 +18,29 @@
 """
 from .db_factory import DBFactory
 
-from asistente_ladm_col.gui.db_panel.mssql_config_panel import MssqlConfigPanel
-from .mssql_connector import MssqlConnector
+from asistente_ladm_col.gui.db_panel.mssql_config_panel import MSSQLConfigPanel
+from .mssql_connector import MSSQLConnector
 from ...logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
 
-class MssqlFactory(DBFactory):
+class MSSQLFactory(DBFactory):
 
     def __init__(self):
         DBFactory.__init__(self)
         self._engine = "mssql"
 
     def get_name(self):
-        return "Ms SQL Server"
+        return "MS SQL Server"
 
     def get_model_baker_db_ili_mode(self):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2mssql
 
     def get_config_panel(self, parent):
-        return MssqlConfigPanel(parent)
+        return MSSQLConfigPanel(parent)
 
     def get_db_connector(self, parameters=dict()):
-        return MssqlConnector(None, parameters)
+        return MSSQLConnector(None, parameters)
 
     def set_ili2db_configuration_params(self, params, configuration):
         configuration.tool_name = 'mssql'
