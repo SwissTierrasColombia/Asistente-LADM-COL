@@ -227,12 +227,12 @@ class DBConnector(QObject):
             }
         """
         # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
-        records = self._get_fields_and_tables_ladm()
+        records = self._get_table_and_field_names()
 
         dict_names = dict()
         for record in records:
             if record[QueryNames.TABLE_ILINAME] is None:
-                # Either t_ili2db_* tables (INTERLIS meta-attrs)
+                # Any t_ili2db_* tables (INTERLIS meta-attrs)
                 continue
 
             table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
@@ -269,8 +269,8 @@ class DBConnector(QObject):
 
         return dict_names
 
-    def _get_fields_and_tables_ladm(self):
-        """Gets both table and field names from DB. Only include field names that are not FKs.
+    def _get_table_and_field_names(self):
+        """Gets both table and field names from DB. Only includes field names that are not FKs.
 
         Execute below Sql statement (seudo-SQL):
         SELECT

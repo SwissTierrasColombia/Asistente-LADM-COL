@@ -2,7 +2,7 @@ from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.lib.db.pg_factory import PGFactory
 from asistente_ladm_col.lib.db.gpkg_factory import GPKGFactory
-from asistente_ladm_col.lib.db.mssql_factory import MssqlFactory
+from asistente_ladm_col.lib.db.mssql_factory import MSSQLFactory
 
 
 class ConfigDBsSupported(QObject):
@@ -20,7 +20,7 @@ class ConfigDBsSupported(QObject):
         db_factory = GPKGFactory()
         self._db_factories[db_factory.get_id()] = db_factory
 
-        db_factory = MssqlFactory()
+        db_factory = MSSQLFactory()
         self._db_factories[db_factory.get_id()] = db_factory
 
     def get_db_factories(self):

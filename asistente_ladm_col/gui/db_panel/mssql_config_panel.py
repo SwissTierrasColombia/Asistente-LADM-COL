@@ -18,15 +18,17 @@
 """
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.core import Qgis
-from .db_schema_db_panel import DBSchemaDBPanel
-from ...lib.db.mssql_connector import MssqlConnector
+
 from QgisModelBaker.utils.mssql_utils import get_odbc_drivers
-from ...utils import get_ui_class
+
+from asistente_ladm_col.gui.db_panel.db_schema_db_panel import DBSchemaDBPanel
+from asistente_ladm_col.lib.db.mssql_connector import MSSQLConnector
+from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('dialogs/settings_mssql.ui')
 
 
-class MssqlConfigPanel(DBSchemaDBPanel, WIDGET_UI):
+class MSSQLConfigPanel(DBSchemaDBPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent):
@@ -108,4 +110,4 @@ class MssqlConfigPanel(DBSchemaDBPanel, WIDGET_UI):
 
     def get_connector(self):
         dict = self.read_connection_parameters()
-        return MssqlConnector(None, dict)
+        return MSSQLConnector(None, dict)

@@ -309,13 +309,13 @@ def reset_db_mssql(schema):
 def restore_schema_mssql(schema):
     sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null"
     dir_file = get_test_path("sql")
-    sql_file = dir_file + "/{}.sql".format(schema)
+    sql_file = dir_file + "/{}_mssql.sql".format(schema)
 
     print(sql_cmd.format(schema, sql_file))
     process = os.popen(sql_cmd.format(schema, sql_file))
     output = process.readlines()
     process.close()
-    print("Done restoring ladm_col database.")
+    print("Done restoring {} database.".format(schema))
     if len(output) > 0:
         print("Warning:", output)
 

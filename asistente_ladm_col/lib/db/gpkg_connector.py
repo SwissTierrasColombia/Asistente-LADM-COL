@@ -53,7 +53,7 @@ class GPKGConnector(FileDB):
         self._dict_conn_params = {'dbfile': value}
         self._uri = value
 
-    def _get_fields_and_tables_ladm(self):
+    def _get_table_and_field_names(self):
         """
         Documented in super class
         """

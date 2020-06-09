@@ -16,17 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_connector import DBConnector
-
 import pyodbc
 from pyodbc import (ProgrammingError, InterfaceError)
-from qgis.PyQt.QtCore import QCoreApplication
-from ...config.general_config import (PLUGIN_NAME, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
-from asistente_ladm_col.config.ladm_names import LADMNames
-from qgis.core import (Qgis, QgsApplication)
-from asistente_ladm_col.core.model_parser import ModelParser
-from .db_connector import (DBConnector, ClientServerDB, EnumTestLevel)
 
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import Qgis
+
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.core.model_parser import ModelParser
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    ClientServerDB)
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.query_names import QueryNames
@@ -37,8 +37,7 @@ from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       DESCRIPTION_KEY)
 
 
-class MssqlConnector(ClientServerDB):
-
+class MSSQLConnector(ClientServerDB):
     _PROVIDER_NAME = 'mssql'
     _DEFAULT_HOST = 'localhost'
     _DEFAULT_VALUES = {
@@ -154,13 +153,13 @@ class MssqlConnector(ClientServerDB):
             try:
                 self.conn = pyodbc.connect(uri)
             except (ProgrammingError, InterfaceError, pyodbc.Error, pyodbc.OperationalError) as e:
-                return False, QCoreApplication.translate("MssqlConnector", "Could not open connection! Details: {}".format(e))
+                return False, QCoreApplication.translate("MSSQLConnector", "Could not open connection! Details: {}".format(e))
 
             self.logger.info(__name__, "Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         else:
             self.logger.info(__name__, "Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
-        return True, QCoreApplication.translate("MssqlConnector", "Connection is open!")
+        return True, QCoreApplication.translate("MSSQLConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
@@ -229,10 +228,15 @@ class MssqlConnector(ClientServerDB):
                 cur.execute(sql)
                 cur.commit()
             except pyodbc.ProgrammingError as e:
-                return False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e))
-        cur.close()
-        conn.close()
-        return True, QCoreApplication.translate("MssqlConnector", "Schema '{}' was successfully created!".format(schema_name))
+                return False, QCoreApplication.translate("MSSQLConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e))
+
+            cur.close()
+            conn.close()
+
+            return True, QCoreApplication.translate("MSSQLConnector", "Schema '{}' was successfully created!".format(schema_name))
+        else:
+            return False, QCoreApplication.translate("MSSQLConnector",
+                                                     "Could not connect to schema '{}'!".format(schema_name))
 
     def create_database(self, uri, db_name):
         """
@@ -252,10 +256,15 @@ class MssqlConnector(ClientServerDB):
                 cur.execute(sql)
 
             except pyodbc.ProgrammingError as e:
-                return False, QCoreApplication.translate("MssqlConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e))
-        cur.close()
-        conn.close()
-        return True, QCoreApplication.translate("MssqlConnector", "Database '{}' was successfully created!".format(db_name))
+                return False, QCoreApplication.translate("MSSQLConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e))
+
+            cur.close()
+            conn.close()
+
+            return True, QCoreApplication.translate("MSSQLConnector", "Database '{}' was successfully created!".format(db_name))
+        else:
+            return False, QCoreApplication.translate("MSSQLConnector",
+                                                     "Could not connect to database '{}'!".format(db_name))
 
     def get_models(self, schema=None):
         query = "SELECT distinct LEFT(iliname, CHARINDEX('.',iliname)-1) as modelname FROM {schema}.t_ili2db_trafo".format(schema=schema if schema else self.schema)
@@ -299,7 +308,7 @@ class MssqlConnector(ClientServerDB):
 
     def is_ladm_layer(self, layer):
         result = False
-        if layer.dataProvider().name() == MssqlConnector._PROVIDER_NAME:
+        if layer.dataProvider().name() == MSSQLConnector._PROVIDER_NAME:
             layer_uri = layer.dataProvider().uri()
             db_uri = self.dict_conn_params
 
@@ -386,11 +395,10 @@ class MssqlConnector(ClientServerDB):
                 self.schema)
         # TODO Test schema permissions (*)
 
-        return True, EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("PGConnector",
+        return True, EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("MSSQLConnector",
                                                                                                        "Connection to the database schema was successful.")
 
     def _test_connection_to_server(self):
-        # why is this method called necessary?
         uri = self.get_connection_uri(self._dict_conn_params, 0)
         res, msg = self.open_connection()
         if res:
@@ -467,14 +475,14 @@ class MssqlConnector(ClientServerDB):
 
         res, msg = self.names.test_names(self._table_and_field_names)
         if not res:
-            return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
+            return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("MSSQLConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(
                 msg)
 
         return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
             "MSSQLConnector", "The schema '{}' has a valid LADM_COL structure!").format(self.schema)
 
-    def _get_fields_and_tables_ladm(self):
+    def _get_table_and_field_names(self):
         sql_query = """
         SELECT 
           iliclass.iliname AS {table_iliname},
