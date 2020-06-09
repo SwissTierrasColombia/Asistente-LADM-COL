@@ -35,22 +35,25 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
-from qgis.core import (Qgis,
-                       QgsCoordinateReferenceSystem)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
+from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
+                                                      DEFAULT_SRS_CODE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR,
                                                       SETTINGS_MODELS_TAB_INDEX,
                                                       DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR)
+                                                      DEFAULT_MODELS_DIR,
+                                                      CTM12_PG_SCRIPT_PATH,
+                                                      CTM12_GPKG_SCRIPT_PATH, DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -114,7 +117,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
 
         # CRS Setting
-        self.epsg = DEFAULT_EPSG
+        self.srs_auth = DEFAULT_SRS_AUTH
+        self.srs_code = DEFAULT_SRS_CODE
         self.crsSelector.crsChanged.connect(self.crs_changed)
 
         # LOG
@@ -332,14 +336,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-        settings.setValue('Asistente-LADM-COL/QgisModelBaker/epsg', self.epsg)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/srs_auth', self.srs_auth)
+        settings.setValue('Asistente-LADM-COL/QgisModelBaker/srs_code', self.srs_code)
 
     def restore_configuration(self):
         settings = QSettings()
 
         # CRS
-        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM-COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
-        self.crsSelector.setCrs(crs)
+        srs_auth = settings.value('Asistente-LADM-COL/QgisModelBaker/srs_auth', DEFAULT_SRS_AUTH, str)
+        srs_code = settings.value('Asistente-LADM-COL/QgisModelBaker/srs_code', int(DEFAULT_SRS_CODE), int)
+        self.crsSelector.setCrs(get_crs_from_auth_and_code(srs_auth, srs_code))
         self.crs_changed()
 
         # Show log
@@ -353,15 +359,17 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
-        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
+        srs_auth, srs_code = self.crsSelector.crs().authid().split(":")
+        if srs_auth == 'USER':
             self.crs_label.setStyleSheet('color: orange')
-            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Please select an EPSG Coordinate Reference System"))
-            self.epsg = int(DEFAULT_EPSG)
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "USER crs are only valid for one machine. We'll use the default {}").format(DEFAULT_SRS_AUTHID))
+            self.srs_auth = DEFAULT_SRS_AUTH
+            self.srs_code = int(DEFAULT_SRS_CODE)
         else:
             self.crs_label.setStyleSheet('')
             self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Coordinate Reference System"))
-            authid = self.crsSelector.crs().authid()
-            self.epsg = int(authid[5:])
+            self.srs_auth = srs_auth
+            self.srs_code = srs_code
 
     def update_configuration(self):
         db_factory = self._dbs_supported.get_db_factory(self.db.engine)
@@ -371,11 +379,22 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = self.epsg
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
+
+        # CTM12 support
+        configuration.srs_auth = self.srs_auth
+        configuration.srs_code = self.srs_code
+        if self.srs_auth == DEFAULT_SRS_AUTH and self.srs_code == DEFAULT_SRS_CODE:
+            if self.db.engine == 'pg':
+                configuration.pre_script = CTM12_PG_SCRIPT_PATH
+            elif self.db.engine == 'gpkg':
+                # (Ugly, I know) We need to send known parameters, we'll fix this in the post_script
+                configuration.srs_auth = 'EPSG'
+                configuration.srs_code = 3116
+                configuration.post_script = CTM12_GPKG_SCRIPT_PATH
 
         full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:

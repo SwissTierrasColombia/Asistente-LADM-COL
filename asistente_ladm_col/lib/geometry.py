@@ -41,6 +41,7 @@ from qgis.core import (QgsField,
 import processing
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
 class GeometryUtils(QObject):
@@ -608,7 +609,7 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
 
-        layer = QgsVectorLayer("LineString?crs={}".format(plot_layer.sourceCrs().authid()), "rings", "memory")
+        layer = QgsVectorLayer("LineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), "rings", "memory")
         data_provider = layer.dataProvider()
         data_provider.addAttributes([QgsField(names.T_ID_F, QVariant.Int)])
         layer.updateFields()

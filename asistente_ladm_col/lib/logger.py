@@ -126,6 +126,15 @@ class Logger(QObject, metaclass=SingletonQObject):
             # Debug messages go for devs and/or for files
             self.log_message(module_name, msg, Qgis.Info, handler, duration, tab)
 
+    def info_warning(self, module_name, result, msg, handler=EnumLogHandler.QGIS_LOG, duration=0):
+        self.log_message(module_name, msg, Qgis.Info if result else Qgis.Warning, handler, duration)
+
+    def success_warning(self, module_name, result, msg, handler=EnumLogHandler.QGIS_LOG, duration=0):
+        self.log_message(module_name, msg, Qgis.Success if result else Qgis.Warning, handler, duration)
+
+    def success_error(self, module_name, result, msg, handler=EnumLogHandler.QGIS_LOG, duration=0):
+        self.log_message(module_name, msg, Qgis.Success if result else Qgis.Critical, handler, duration)
+
     def log_message(self, module_name, msg, level, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         module_name = module_name.split(".")[-1]
         call_message_log = False
