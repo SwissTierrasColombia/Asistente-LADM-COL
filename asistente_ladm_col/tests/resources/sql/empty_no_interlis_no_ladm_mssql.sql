@@ -1,0 +1,1 @@
+IF NOT EXISTS (SELECT  schema_name FROM information_schema.schemata WHERE schema_name = 'empty_no_interlis_no_ladm')EXEC sp_executesql N'CREATE SCHEMA empty_no_interlis_no_ladm';
