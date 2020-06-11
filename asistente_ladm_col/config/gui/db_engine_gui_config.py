@@ -19,9 +19,6 @@ class DBEngineGUIConfig(QObject):
                       ACTION_FILL_MORE_BFS_AND_LESS,
                       ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
                       ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-                      ACTION_RUN_ETL_SUPPLIES,
-                      ACTION_FIND_MISSING_COBOL_SUPPLIES,
-                      ACTION_INTEGRATE_SUPPLIES,
                       ACTION_ST_LOGIN,
                       ACTION_ST_LOGOUT,
                       ACTION_ST_UPLOAD_XTF,
@@ -48,14 +45,18 @@ class DBEngineGUIConfig(QObject):
                       ACTION_CHANGE_DETECTION_PER_PARCEL,
                       ACTION_CHANGE_DETECTION_ALL_PARCELS,
                       ACTION_PARCEL_QUERY,
-                      ACTION_CHECK_QUALITY_RULES,
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,
                       ACTION_CHANGE_DETECTION_SETTINGS]
 
-    GPKG_ACTIONS = COMMON_ACTIONS + []
+    GPKG_ACTIONS = COMMON_ACTIONS + [ACTION_CHECK_QUALITY_RULES,
+                                     ACTION_RUN_ETL_SUPPLIES,
+                                     ACTION_FIND_MISSING_COBOL_SUPPLIES,
+                                     ACTION_INTEGRATE_SUPPLIES]
 
     PG_ACTIONS = [ALL_ACTIONS]
+
+    MSSQL_ACTIONS = COMMON_ACTIONS
 
     def __init__(self):
         QObject.__init__(self)
