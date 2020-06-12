@@ -66,7 +66,11 @@ class QualityRuleEngine(QObject):
 
             for rule_key, rule_name in self.__rules.items():
                 layers = self.__layer_manager.get_layers(rule_key)
-                self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
+                if layers:
+                    self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
+                else:
+                    self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                              "Couldn't execute '{}' quality rule! Required layers are not available. Skipping..."))
 
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
