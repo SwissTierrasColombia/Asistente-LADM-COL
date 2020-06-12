@@ -1,55 +1,55 @@
-def get_ant_map_query (schema, where_id):
-    query = """with
-				terrenos_seleccionados AS (
-					(SELECT op_terreno.t_id as ue_terreno from {schema}.op_terreno {where_id}) --12425  12424 12005 12584 13499
+def get_ant_map_query(names, schema, where_id):
+    query = """WITH
+				_terrenos_seleccionados AS (
+					(SELECT lc_terreno.{T_ID_F} AS ue_terreno FROM {schema}.{LC_PLOT_T} {where_id}) --12425  12424 12005 12584 13499
 				),
-				predios_seleccionados AS (
-					SELECT col_uebaunit.baunit as t_id FROM {schema}.col_uebaunit WHERE col_uebaunit.ue_op_terreno in (SELECT op_terreno.t_id as ue_terreno from {schema}.op_terreno {where_id})
+				_predios_seleccionados AS (
+					SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} AS {T_ID_F} FROM {schema}.{COL_UE_BAUNIT_T} WHERE {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IN (SELECT {LC_PLOT_T}.{T_ID_F} AS ue_terreno FROM {schema}.{LC_PLOT_T} {where_id})
 				),
-				derechos_seleccionados AS (
-					SELECT DISTINCT op_derecho.t_id FROM {schema}.op_derecho WHERE op_derecho.unidad IN (SELECT * FROM predios_seleccionados)
+				_derechos_seleccionados AS (
+					SELECT DISTINCT {LC_RIGHT_T}.{T_ID_F} FROM {schema}.{LC_RIGHT_T} WHERE {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F} IN (SELECT * FROM _predios_seleccionados)
 				),
-				derecho_interesados AS (
-					SELECT DISTINCT op_derecho.interesado_op_interesado, op_derecho.t_id, op_derecho.unidad as predio_t_id FROM {schema}.op_derecho WHERE op_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND op_derecho.interesado_op_interesado IS NOT NULL
+				_derecho_interesados AS (
+					SELECT DISTINCT {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_PARTY_F}, {LC_RIGHT_T}.{T_ID_F}, {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F} AS predio_t_id FROM {schema}.{LC_RIGHT_T} WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT * FROM _derechos_seleccionados) AND {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_PARTY_F} IS NOT NULL
 				),
-				derecho_agrupacion_interesados AS (
-					SELECT DISTINCT op_derecho.interesado_op_agrupacion_interesados, col_miembros.interesado_op_interesado, col_miembros.agrupacion, op_derecho.unidad as predio_t_id
-					FROM {schema}.op_derecho LEFT JOIN {schema}.col_miembros ON op_derecho.interesado_op_agrupacion_interesados = col_miembros.agrupacion
-					WHERE op_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND op_derecho.interesado_op_agrupacion_interesados IS NOT NULL
+				_derecho_agrupacion_interesados AS (
+					SELECT DISTINCT {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}, {MEMBERS_T}.{MEMBERS_T_PARTY_F}, {MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}, {LC_RIGHT_T}.{COL_BAUNIT_RRR_T_UNIT_F} AS predio_t_id
+					FROM {schema}.{LC_RIGHT_T} LEFT JOIN {schema}.{MEMBERS_T} ON {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} = {MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}
+					WHERE {LC_RIGHT_T}.{T_ID_F} IN (SELECT * FROM _derechos_seleccionados) AND {LC_RIGHT_T}.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F} IS NOT NULL
 				),
-				info_predio as (
-					select
-						op_predio.numero_predial as numero_predial
-						,op_predio.local_id as local_id
-						,op_predio.t_id
-						from {schema}.op_predio where op_predio.t_id IN (SELECT * FROM predios_seleccionados)
+				_info_predio AS (
+					SELECT
+						{LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F}
+						,{LC_PARCEL_T}.{OID_T_LOCAL_ID_F}
+						,{LC_PARCEL_T}.{T_ID_F}
+						FROM {schema}.{LC_PARCEL_T} WHERE {LC_PARCEL_T}.{T_ID_F} IN (SELECT * FROM _predios_seleccionados)
 				),
-				info_agrupacion_filter as (
-						select distinct on (agrupacion) agrupacion
-						,op_interesado.local_id as local_id
+				_info_agrupacion_filter AS (
+						SELECT distinct on ({MEMBERS_T_GROUP_PARTY_F}) {MEMBERS_T_GROUP_PARTY_F}
+						,{LC_PARTY_T}.{OID_T_LOCAL_ID_F}
 						,predio_t_id
-						,(case when op_interesado.t_id is not null then 'agrupacion' end) as agrupacion_interesado
-						,(coalesce(op_interesado.primer_nombre,'') || coalesce(' ' || op_interesado.segundo_nombre, '') || coalesce(' ' || op_interesado.primer_apellido, '') || coalesce(' ' || op_interesado.segundo_apellido, '')
-								|| coalesce(op_interesado.razon_social, '') ) as nombre
-						from derecho_agrupacion_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = derecho_agrupacion_interesados.interesado_op_interesado order by agrupacion
+						,(case when {LC_PARTY_T}.{T_ID_F} is not null then 'agrupacion' end) AS agrupacion_interesado
+						,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_2_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_2_F}, '')
+								|| coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
+						FROM _derecho_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _derecho_agrupacion_interesados.{MEMBERS_T_PARTY_F} order by {MEMBERS_T_GROUP_PARTY_F}
 				),
-				info_interesado as (
-						select
-						op_interesado.local_id as local_id
+				_info_interesado AS (
+						SELECT
+						{LC_PARTY_T}.{OID_T_LOCAL_ID_F}
 						,predio_t_id
-						,(case when op_interesado.t_id is not null then 'interesado' end) as agrupacion_interesado
-						,(coalesce(op_interesado.primer_nombre,'') || coalesce(' ' || op_interesado.segundo_nombre, '') || coalesce(' ' || op_interesado.primer_apellido, '') || coalesce(' ' || op_interesado.segundo_apellido, '')
-								|| coalesce(op_interesado.razon_social, '') ) as nombre
-						from derecho_interesados LEFT JOIN {schema}.op_interesado ON op_interesado.t_id = derecho_interesados.interesado_op_interesado
+						,(case when {LC_PARTY_T}.{T_ID_F} is not null then 'interesado' end) AS agrupacion_interesado
+						,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_2_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_2_F}, '')
+								|| coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
+						FROM _derecho_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _derecho_interesados.{COL_RRR_PARTY_T_LC_PARTY_F}
 				),
-				info_agrupacion as (
-						select local_id
+				_info_agrupacion AS (
+						SELECT {OID_T_LOCAL_ID_F}
 						,predio_t_id
 						,agrupacion_interesado
 						,nombre
-						from info_agrupacion_filter
+						FROM _info_agrupacion_filter
 				),
-				info_total_interesados as (select * from info_interesado union all select * from info_agrupacion)
+				_info_total_interesados AS (SELECT * FROM _info_interesado union all SELECT * FROM _info_agrupacion)
 				SELECT array_to_json(array_agg(features)) AS features
 									FROM (
 										SELECT f AS features
@@ -58,18 +58,20 @@ def get_ant_map_query (schema, where_id):
 												,row_to_json((
 													SELECT l
 													FROM (
-														SELECT (left(right(info_predio.numero_predial,15),6) ||
-									(CASE WHEN info_total_interesados.agrupacion_interesado = 'agrupacion'
-									THEN COALESCE(' ' || 'AGRUPACIÓN DE ' || info_total_interesados.nombre || ' Y OTROS', ' INDETERMINADO')
-									ELSE COALESCE(' ' || info_total_interesados.nombre, ' INDETERMINADO') END)) AS predio
+														SELECT (left(right(_info_predio.{LC_PARCEL_T_PARCEL_NUMBER_F},15),6) ||
+									(CASE WHEN _info_total_interesados.agrupacion_interesado = 'agrupacion'
+									THEN COALESCE(' ' || 'AGRUPACIÓN DE ' || _info_total_interesados.nombre || ' Y OTROS', ' INDETERMINADO')
+									ELSE COALESCE(' ' || _info_total_interesados.nombre, ' INDETERMINADO') END)) AS predio
 														) AS l
 													)) AS properties
-												,ST_AsGeoJSON(op_terreno.geometria)::json AS geometry
-								FROM info_total_interesados
-								join info_predio on info_predio.t_id = info_total_interesados.predio_t_id
-								join {schema}.col_uebaunit on col_uebaunit.baunit = info_total_interesados.predio_t_id
-								join {schema}.op_terreno on op_terreno.t_id = col_uebaunit.ue_op_terreno
+												,ST_AsGeoJSON({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F})::json AS geometry
+								FROM _info_total_interesados
+								join _info_predio on _info_predio.{T_ID_F} = _info_total_interesados.predio_t_id
+								join {schema}.{COL_UE_BAUNIT_T} on {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = _info_total_interesados.predio_t_id
+								join {schema}.{LC_PLOT_T} on {LC_PLOT_T}.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F}
 								) AS f
-                             ) AS ff;""".format(schema=schema, where_id=where_id)
+                             ) AS ff;""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                                                schema=schema,
+                                                where_id=where_id)
 
     return query

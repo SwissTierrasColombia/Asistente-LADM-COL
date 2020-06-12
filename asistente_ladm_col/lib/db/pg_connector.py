@@ -258,7 +258,7 @@ class PGConnector(ClientServerDB):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = annex17_plot_data_query.get_annex17_plot_data_query(self.schema, where_id)
+        query = annex17_plot_data_query.get_annex17_plot_data_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':
@@ -295,11 +295,14 @@ class PGConnector(ClientServerDB):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE op_terreno.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
+            where_id = "WHERE {LC_PLOT_T}.{T_ID_F} {operation} {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
+                                                                                 T_ID_F=self.names.T_ID_F,
+                                                                                 operation='=' if mode == 'only_id' else '!=',
+                                                                                 plot_id=plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = ant_map_plot_query.get_ant_map_query(self.schema, where_id)
+        query = ant_map_plot_query.get_ant_map_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':
@@ -318,7 +321,7 @@ class PGConnector(ClientServerDB):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.schema, where_id)
+        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':

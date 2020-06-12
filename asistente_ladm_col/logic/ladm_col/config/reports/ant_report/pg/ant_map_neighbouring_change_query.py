@@ -1,4 +1,4 @@
-def get_ant_map_neighbouring_change_query (schema, where_id):
+def get_ant_map_neighbouring_change_query(names, schema, where_id):
     query = """WITH
                     parametros AS (
                         SELECT
@@ -7,7 +7,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                             15		as tolerancia_sentidos --tolerancia en grados para la definicion del sentido de una linea
                             ),
                             t AS ( --Orienta los vertices del terreno en sentido horario
-	                        SELECT t_id, ST_ForceRHR(geometria) as geometria FROM {schema}.op_terreno AS t, parametros {where_id}
+	                        SELECT t_id, ST_ForceRHR(geometria) as geometria FROM {schema}.lc_terreno AS t, parametros {where_id}
                                 ),
                             --bordes de la extension del poligono
                             a AS (
@@ -55,7 +55,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                 SELECT t_id, ST_Boundary(geometria) geom FROM t
                             )
                             ,limite_vecinos as (  --obtiene el limite de los terrenos colindantes, filtrados por bounding box
-                                select o.t_id, ST_Boundary(o.geometria) geom from t, {schema}.op_terreno o where o.geometria && st_envelope(t.geometria) and t.t_id <> o.t_id
+                                select o.t_id, ST_Boundary(o.geometria) geom from t, {schema}.lc_terreno o where o.geometria && st_envelope(t.geometria) and t.t_id <> o.t_id
                             )
                             ,pre_colindancias as ( --inteseccion entre el limite del poligono y los terrenos cercanos, añade la geometria de los limites sin adjacencia
                                 SELECT limite_vecinos.t_id, st_intersection(limite_poligono.geom,limite_vecinos.geom) geom  FROM limite_poligono,limite_vecinos where st_intersects(limite_poligono.geom,limite_vecinos.geom) and limite_poligono.t_id <> limite_vecinos.t_id
@@ -203,6 +203,7 @@ def get_ant_map_neighbouring_change_query (schema, where_id):
                                                                     ) AS l
                                                                 )) AS properties
 
-                            ,ST_AsGeoJSON(lineas_colindancia.geom)::json AS geometry FROM lineas_colindancia) as f) as ff""".format(schema=schema, where_id=where_id)
-
+                            ,ST_AsGeoJSON(lineas_colindancia.geom)::json AS geometry FROM lineas_colindancia) as f) as ff""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                                                                                                                                    schema=schema,
+                                                                                                                                    where_id=where_id)
     return query
