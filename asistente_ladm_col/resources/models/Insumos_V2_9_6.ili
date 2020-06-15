@@ -501,15 +501,15 @@ VERSION "V2.3"  // 2019-07-31 // =
       snr_derecho -- {1..*} SNR_Derecho;
     END snr_derecho_predio;
 
-    ASSOCIATION snr_fuente_cabidalinderos =
+    ASSOCIATION snr_predio_registro_fuente_cabidalinderos =
       snr_predio_registro -- {0..*} SNR_Predio_Registro;
       snr_fuente_cabidalinderos -- {0..1} SNR_Fuente_CabidaLinderos;
-    END snr_fuente_cabidalinderos;
+    END snr_predio_registro_fuente_cabidalinderos;
 
-    ASSOCIATION snr_fuente_derecho =
+    ASSOCIATION snr_derecho_fuente_derecho =
       snr_derecho -- {1..*} SNR_Derecho;
       snr_fuente_derecho -- {1} SNR_Fuente_Derecho;
-    END snr_fuente_derecho;
+    END snr_derecho_fuente_derecho;
 
     ASSOCIATION snr_titular_derecho =
       snr_titular -- {1..*} SNR_Titular;

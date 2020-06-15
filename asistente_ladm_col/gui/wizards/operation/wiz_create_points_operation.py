@@ -33,11 +33,12 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import DEFAULT_EPSG
+from asistente_ladm_col.config.general_config import DEFAULT_SRS_AUTHID
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                OverrideCursor,
@@ -81,7 +82,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                                file_filter=QCoreApplication.translate("WizardTranslations",'CSV File (*.csv *.txt)')))
         self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.crsSelector.crsChanged.connect(self.crs_changed)
-        self.crs = QgsCoordinateReferenceSystem()
+        self.crs = ""  # SRS auth id
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
         self.known_delimiters = [
@@ -293,7 +294,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                                                    self.txt_delimiter.text(),
                                                    self.cbo_longitude.currentText(),
                                                    self.cbo_latitude.currentText(),
-                                                   self.epsg,
+                                                   self.crs,
                                                    self.cbo_elevation.currentText() or None,
                                                    self.detect_decimal_point(csv_path))
 
@@ -339,11 +340,10 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
                         return
 
     def update_crs_info(self):
-        self.crsSelector.setCrs(self.crs)
+        self.crsSelector.setCrs(QgsCoordinateReferenceSystem(self.crs))
 
     def crs_changed(self):
-        authid = self.crsSelector.crs().authid()
-        self.epsg = int(authid[5:])
+        self.crs = get_crs_authid(self.crsSelector.crs())
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -488,7 +488,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM-COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM-COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM-COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
-        settings.setValue('Asistente-LADM-COL/wizards/points_csv_epsg', self.epsg)
+        settings.setValue('Asistente-LADM-COL/wizards/points_csv_crs', self.crs)
 
     def restore_settings(self):
         settings = QSettings()
@@ -509,8 +509,7 @@ class CreatePointsOperationWizard(QWizard, WIZARD_UI):
         self.txt_file_path.setText(settings.value('Asistente-LADM-COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM-COL/wizards/points_csv_file_delimiter'))
 
-        self.crs = QgsCoordinateReferenceSystem(
-            settings.value('Asistente-LADM-COL/wizards/points_csv_epsg', DEFAULT_EPSG, int))
+        self.crs = settings.value('Asistente-LADM-COL/wizards/points_csv_crs', DEFAULT_SRS_AUTHID, str)
         self.update_crs_info()
 
     def show_help(self):

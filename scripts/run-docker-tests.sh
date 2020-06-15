@@ -16,6 +16,10 @@
 #*                                                                         *
 #***************************************************************************
 set -e
+
+chmod u+x /usr/src/scripts/setup-mssql.sh
+/usr/src/scripts/setup-mssql.sh
+
 # rationale: Wait for postgres container to become available
 # link: https://cstan.io/?p=8620&lang=en
 dig postgres

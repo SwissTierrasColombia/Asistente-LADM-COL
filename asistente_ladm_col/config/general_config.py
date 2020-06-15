@@ -19,7 +19,11 @@ ANT_MAP_REPORT = "Plano_ANT"
 
 PREFIX_ERROR_CODE = 'E'
 
-DEFAULT_EPSG =  "3116"
+# CTM 12
+DEFAULT_SRS_AUTH = "EPSG"
+DEFAULT_SRS_CODE = "38820"
+DEFAULT_SRS_AUTHID = "EPSG:38820"
+
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
 HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM-COL"
@@ -32,6 +36,8 @@ HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
+CTM12_PG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_pg.sql')
+CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_gpkg.sql')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
@@ -122,7 +128,7 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.1"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.3"
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -131,7 +137,7 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip'  # ''https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v4.3.1.2/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.3/QgisModelBaker_6113.zip'  # ''
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
