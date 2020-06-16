@@ -4,6 +4,7 @@ from qgis.core import QgsField
 
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.general_config import PREFIX_ERROR_CODE
+from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
 
 QUALITY_GROUP_NAME = "QUALITY_GROUP_NAME"
 QUALITY_RULES = "QUALITY_RULES"
@@ -792,9 +793,12 @@ class QualityRuleConfig:
                                       names.LESS_BFS_T,
                                       names.MORE_BFS_T],
                 QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.OP_BOUNDARY_T: {
+                    names.OP_PLOT_T: {
+                        ADJUSTED_INPUT_LAYER: names.OP_PLOT_T,
+                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T
+                    }, names.OP_BOUNDARY_T: {  # This one uses an adjusted layer as reference layer!
                         ADJUSTED_INPUT_LAYER: names.OP_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T,
+                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.OP_PLOT_T, names.OP_PLOT_T, False),
                         FIX_ADJUSTED_LAYER: True
                     }
                 }

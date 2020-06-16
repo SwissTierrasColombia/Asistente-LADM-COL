@@ -42,7 +42,7 @@ class QualityRule:
         self._initialize_quality_rule()
 
     def _initialize_quality_rule(self):
-        self.logger.info(__name__, "Creating quality rule...")
+        self.logger.debug(__name__, "Registering quality rule '{}'...".format(self.__quality_rule_data.get(QUALITY_RULE_ID)))
         common_fields = [QgsField(QCoreApplication.translate("QualityRule", "tipo_error"), QVariant.String),
                          QgsField(QCoreApplication.translate("QualityRule", "codigo_error"), QVariant.String)]
 

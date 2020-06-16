@@ -30,6 +30,7 @@ from asistente_ladm_col.config.quality_rules_config import (QualityRuleConfig,
                                                             ADJUSTED_INPUT_LAYER,
                                                             FIX_ADJUSTED_LAYER, HAS_ADJUSTED_LAYERS)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
 
 
 class QualityRuleLayerManager(QObject):
@@ -97,21 +98,23 @@ class QualityRuleLayerManager(QObject):
                     if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
 
                         for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
-                            input = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
-                            reference = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
+                            # Read from config
+                            input_name = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
+                            reference_name = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
                             fix = snap_config[FIX_ADJUSTED_LAYER] if FIX_ADJUSTED_LAYER in snap_config else False
 
-                            adjusted_layers_key = "{}..{}{}".format(input, reference, '..fix' if fix else '')
+                            # Get input and reference layers (note that they could be adjusted layers)
+                            input = self.__adjusted_layers_cache[input_name] if input_name in self.__adjusted_layers_cache else ladm_layers[input_name]
+                            reference = self.__adjusted_layers_cache[reference_name] if reference_name in self.__adjusted_layers_cache else ladm_layers[reference_name]
 
                             # Try to reuse if already calculated!
+                            adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
                             if adjusted_layers_key not in self.__adjusted_layers_cache:
-                                self.__adjusted_layers_cache[adjusted_layers_key] = self.__adjust_layers(ladm_layers[input],
-                                                                                                  ladm_layers[reference],
-                                                                                                  fix)
+                                self.__adjusted_layers_cache[adjusted_layers_key] = self.__adjust_layers(input, reference, fix)
 
                             adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
-        self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
+            self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
 
         # Now that we have both ladm_layers and adjusted_layers, join them
         # in a single member dict of layers per rule, preferring adjusted layers
@@ -123,7 +126,7 @@ class QualityRuleLayerManager(QObject):
                     # In LADM-COL layers we send all original layers
                     self.__layers[rule_key][QUALITY_RULE_LADM_COL_LAYERS][layer_name] = ladm_layers[layer_name] if layer_name in ladm_layers else None
 
-                    # In QR_Layers we send the best layer we have available (either adjusted or ladm-col)
+                    # In QR_Layers we store the best layer we have available (preferring adjusted over ladm-col)
                     if layer_name in adjusted_layers[rule_key]:
                         self.__layers[rule_key][QUALITY_RULE_LAYERS][layer_name] = adjusted_layers[rule_key][layer_name]
                     elif layer_name in ladm_layers:

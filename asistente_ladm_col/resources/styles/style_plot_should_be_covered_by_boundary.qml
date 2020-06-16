@@ -3,10 +3,10 @@
   <renderer-v2 type="categorizedSymbol" enableorderby="0" forceraster="0" attr="codigo_error" symbollevels="0">
     <categories>
       <category symbol="0" label="El terreno no está cubierto por linderos" value="E300401" render="true"/>
-      <category symbol="1" label="La relación topológica entre lindero y terreno está duplicada en la tabla masccl" value="E300402" render="true"/>
-      <category symbol="2" label="La relación topológica entre lindero y terreno está duplicada en la tabla menosccl" value="E300403" render="true"/>
-      <category symbol="3" label="La relación topológica entre lindero y terreno no está registrada en la tabla masccl" value="E300404" render="true"/>
-      <category symbol="4" label="La relación topológica entre lindero y terreno no está registrada en la tabla menosccl" value="E300405" render="true"/>
+      <category symbol="1" label="La relación topológica entre terreno y lindero está duplicada en la tabla masccl" value="E300402" render="true"/>
+      <category symbol="2" label="La relación topológica entre terreno y lindero está duplicada en la tabla menosccl" value="E300403" render="true"/>
+      <category symbol="3" label="La relación topológica entre terreno y lindero no está registrada en la tabla masccl" value="E300404" render="true"/>
+      <category symbol="4" label="La relación topológica entre terreno y lindero no está registrada en la tabla menosccl" value="E300405" render="true"/>
     </categories>
     <symbols>
       <symbol clip_to_extent="1" type="line" name="0" force_rhr="0" alpha="1">

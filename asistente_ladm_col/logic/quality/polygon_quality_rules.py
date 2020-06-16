@@ -162,6 +162,18 @@ class PolygonQualityRules:
                                                                         error_layer,
                                                                         db.names.T_ID_F)
             if features:
+                if layer_dict[HAS_ADJUSTED_LAYERS]:
+                    # We need to get original LADM-COL geometries and use them in error_layer
+                    plot_t_ili_tid_field = QCoreApplication.translate("QualityRulesConfig", "id_terreno")
+                    t_ili_tids = list(set([f[plot_t_ili_tid_field] for f in features]))  # May come repeated for error_layer
+                    ladm_col_plot_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][db.names.OP_PLOT_T]
+                    request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(db.names.T_ILI_TID_F, "','".join(t_ili_tids))))
+                    field_idx = ladm_col_plot_layer.fields().indexFromName(db.names.T_ILI_TID_F)
+                    request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
+                    ladm_col_geoms = {f[db.names.T_ILI_TID_F]:f.geometry() for f in ladm_col_plot_layer.getFeatures(request)}
+                    for feature in features:
+                        feature.setGeometry(ladm_col_geoms[feature[plot_t_ili_tid_field]].constGet().boundary())  # Convert to lines
+
                 error_layer.dataProvider().addFeatures(features)
                 added_layer = self.app.gui.add_error_layer(db, error_layer)
 
