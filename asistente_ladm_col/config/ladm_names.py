@@ -130,13 +130,6 @@ class LADMNames(metaclass=Singleton):
     INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
     # TODO: Remove when LADM model version 3 is fully defined
-
-    """
-    UNIQUE CADASTRAL FORM
-    """
-    UNIQUE_CADASTRAL_FORM_TABLE = "fcm_formulario_unico_cm"
-    UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE = "fcm_contacto_visita"
-
     """
     VALUATION MAPPING
     """

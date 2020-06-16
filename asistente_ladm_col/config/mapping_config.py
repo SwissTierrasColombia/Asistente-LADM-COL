@@ -369,9 +369,9 @@ class TableAndFieldNames:
     COL_BFS_T_TEXTUAL_LOCATION_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual"
     COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"
     COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"
-    # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Descripcion"
-    # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Metadato"
-    # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Nombre"
+    COL_SOURCE_T_DESCRIPTION_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Descripcion"
+    COL_SOURCE_T_METADATA_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Metadato"
+    COL_SOURCE_T_NAME_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Nombre"
     COL_SPATIAL_SOURCE_T_TYPE_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacial.Tipo"
     COL_SOURCE_T_AVAILABILITY_STATUS_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"
     COL_SOURCE_T_DATE_DOCUMENT_F = None  # "LADM_COL_V3_0.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente"
@@ -456,7 +456,7 @@ class TableAndFieldNames:
     # "LADM_COL_V3_0.LADM_Nucleo.col_unidadFuente.unidad..Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio"  --> unidad
 
     LC_BUILDING_T_IDENTIFIER_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Identificador"
-    LC_BUILDING_T_NUMBER_OF_MEZZANINE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Numero_Mezanines"
+    LC_BUILDING_T_NUMBER_OF_MEZZANINE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_ConstruBUILDING YEARccion.Numero_Mezanines"
     LC_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Numero_Semisotanos"
     LC_BUILDING_T_NUMBER_OF_BASEMENT_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Numero_Sotanos"
     LC_BUILDING_T_BUILDING_TYPE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Tipo_Construccion"
@@ -464,12 +464,12 @@ class TableAndFieldNames:
     LC_BUILDING_T_BUILDING_AREA_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Area_Construccion"
     LC_BUILDING_T_BUILDING_VALUATION_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Avaluo_Construccion"
     LC_BUILDING_T_NUMBER_OF_FLOORS_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Numero_Pisos"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Altura"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Anio_Construccion"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Observaciones"
+    LC_BUILDING_T_HEIGHT_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Altura"
+    LC_BUILDING_T_YEAR_OF_BUILD_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Anio_Construccion"
+    LC_BUILDING_T_OBSERVATIONS_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion.Observaciones"
 
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho.Fecha_Inicio_Tenencia"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho.Fraccion_Derecho"
+    LC_RIGHT_T_DATE_START_TENANCY_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho.Fecha_Inicio_Tenencia"
+    LC_RIGHT_T_RIGHT_FRACTION_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho.Fraccion_Derecho"
     LC_RIGHT_T_TYPE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho.Tipo"
 
     LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa.Ente_Emisor"
@@ -522,7 +522,7 @@ class TableAndFieldNames:
     LC_PARCEL_T_ID_OPERATION_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Id_Operacion"
     LC_PARCEL_T_NUPRE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.NUPRE"
     LC_PARCEL_T_TYPE_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Tipo"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Tiene_FMI"
+    LC_PARCEL_T_HAS_FMI_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Tiene_FMI"
 
     # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_ContactoVisita.Autoriza_Notificaciones"
     # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_ContactoVisita.Celular"
@@ -621,7 +621,7 @@ class TableAndFieldNames:
     LC_BUILDING_UNIT_T_TOTAL_BATHROOMS_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Banios"
     LC_BUILDING_UNIT_T_TOTAL_ROOMS_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Habitaciones"
     LC_BUILDING_UNIT_T_TOTAL_LOCALS_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Locales"
-    # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion.Altura"
+    LC_BUILDING_UNIT_T_HEIGHT_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion.Altura"
     LC_BUILDING_UNIT_T_BUILDING_F = None  # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.lc_construccion_unidadconstruccion.lc_construccion..Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion"  --> lc_construccion
     # "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_TipologiaConstruccion.Tipo_Tipologia"
 
@@ -929,6 +929,7 @@ class TableAndFieldNames:
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Habitaciones": "LC_BUILDING_UNIT_T_TOTAL_ROOMS_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Locales": "LC_BUILDING_UNIT_T_TOTAL_LOCALS_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Pisos": "LC_BUILDING_UNIT_T_TOTAL_FLOORS_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion.Altura": "LC_BUILDING_UNIT_T_HEIGHT_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
@@ -942,6 +943,9 @@ class TableAndFieldNames:
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Area_Construccion": "LC_BUILDING_T_BUILDING_AREA_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Avaluo_Construccion": "LC_BUILDING_T_BUILDING_VALUATION_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Numero_Pisos": "LC_BUILDING_T_NUMBER_OF_FLOORS_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Altura": "LC_BUILDING_T_HEIGHT_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Anio_Construccion": "LC_BUILDING_T_YEAR_OF_BUILD_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Observaciones": "LC_BUILDING_T_OBSERVATIONS_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Identificador": "LC_BUILDING_T_IDENTIFIER_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Numero_Mezanines": "LC_BUILDING_T_NUMBER_OF_MEZZANINE_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion.Numero_Semisotanos": "LC_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F",
@@ -960,6 +964,8 @@ class TableAndFieldNames:
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho": {VARIABLE_NAME: "LC_RIGHT_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.col_baunitRrr.unidad..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio": "COL_BAUNIT_RRR_T_UNIT_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho.Tipo": "LC_RIGHT_T_TYPE_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho.Fecha_Inicio_Tenencia": "LC_RIGHT_T_DATE_START_TENANCY_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho.Fraccion_Derecho": "LC_RIGHT_T_RIGHT_FRACTION_F",
             "LADM_COL.LADM_Nucleo.COL_DRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
             "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
             "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
@@ -983,6 +989,9 @@ class TableAndFieldNames:
             "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Tipo": "COL_SPATIAL_SOURCE_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad": "COL_SOURCE_T_AVAILABILITY_STATUS_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente": "COL_SOURCE_T_DATE_DOCUMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Descripcion": "COL_SOURCE_T_DESCRIPTION_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Metadato": "COL_SOURCE_T_METADATA_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Nombre": "COL_SOURCE_T_NAME_F",
             "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
             "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Tipo_Principal": "COL_SOURCE_T_MAIN_TYPE_F"
@@ -1020,6 +1029,7 @@ class TableAndFieldNames:
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Departamento": "LC_PARCEL_T_DEPARTMENT_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Direccion..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio": "LC_PARCEL_T_ADDRESS_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Matricula_Inmobiliaria": "LC_PARCEL_T_FMI_F",
+            "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Tiene_FMI": "LC_PARCEL_T_HAS_FMI_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Municipio": "LC_PARCEL_T_MUNICIPALITY_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Numero_Predial": "LC_PARCEL_T_PARCEL_NUMBER_F",
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio.Numero_Predial_Anterior": "LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F",
