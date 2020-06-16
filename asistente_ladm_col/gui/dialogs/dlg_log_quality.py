@@ -41,6 +41,7 @@ class LogQualityDialog(QDialog, DIALOG_LOG_QUALITY_UI):
         self.tolerance = tolerance
         self.execution_total_time = total_time
         self.txt_log_quality.setHtml(self.text)
+        self.lbl_tolerance.setText(self.lbl_tolerance.text().format(self.tolerance))
 
     def save(self):
         title = QCoreApplication.translate(
