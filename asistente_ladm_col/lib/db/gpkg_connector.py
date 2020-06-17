@@ -31,10 +31,8 @@ from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
-                                                    DBConnector,
-                                                    COMPOSED_KEY_SEPARATOR)
+                                                    DBConnector)
 from asistente_ladm_col.core.model_parser import ModelParser
-from asistente_ladm_col.utils.utils import normalize_iliname
 
 
 class GPKGConnector(FileDB):
@@ -55,12 +53,10 @@ class GPKGConnector(FileDB):
         self._dict_conn_params = {'dbfile': value}
         self._uri = value
 
-    def get_table_and_field_names(self):
+    def _get_table_and_field_names(self):
         """
         Documented in super class
         """
-        dict_names = dict()
-
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:
@@ -85,25 +81,20 @@ class GPKGConnector(FileDB):
             table_name=QueryNames.TABLE_NAME,
             field_iliname=QueryNames.FIELD_ILINAME,
             field_name=QueryNames.FIELD_NAME))
+
         records = cursor.fetchall()
+        cursor.close()
 
-        for record in records:
-            if record[QueryNames.TABLE_ILINAME] is None:
-                # Either t_ili2db_* tables (INTERLIS meta-attrs)
-                continue
+        return records
 
-            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
+    def _get_fk_fields(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return dict()
 
-            if not table_iliname in dict_names:
-                dict_names[table_iliname] = dict()
-                dict_names[table_iliname][QueryNames.TABLE_NAME] = record[QueryNames.TABLE_NAME]
-
-            if record[QueryNames.FIELD_ILINAME] is None:
-                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
-                continue
-
-            field_iliname = normalize_iliname(record[QueryNames.FIELD_ILINAME])
-            dict_names[table_iliname][field_iliname] = record[QueryNames.FIELD_NAME]
+        cursor = self.conn.cursor()
 
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         cursor.execute("""SELECT rtrim(rtrim(a.iliname, replace(a.iliname, '.', '')), '.') as {table_iliname},
@@ -114,22 +105,14 @@ class GPKGConnector(FileDB):
                             INNER JOIN t_ili2db_classname o ON o.sqlname = a.colowner
                             INNER JOIN t_ili2db_classname c ON c.sqlname = a.target
                             ORDER BY a.iliname;""".format(table_iliname=QueryNames.TABLE_ILINAME))
+
         records = cursor.fetchall()
-
-        for record in records:
-            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
-                                           COMPOSED_KEY_SEPARATOR,
-                                           normalize_iliname(record['iliname2']))
-            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
-            if table_iliname in dict_names:
-                dict_names[table_iliname][composed_key] = record['sqlname']
-            else:
-                colowner = normalize_iliname(record['colowner'])
-                if colowner in dict_names:
-                    dict_names[colowner][composed_key] = record['sqlname']
-
         cursor.close()
 
+        return records
+
+    def _get_common_db_names(self):
+        dict_names = dict()
         # Custom names
         dict_names[T_ID_KEY] = "T_Id"
         dict_names[T_ILI_TID_KEY] = "T_Ili_Tid"
@@ -216,13 +199,17 @@ class GPKGConnector(FileDB):
         return dict_conn['dbfile']
 
     def open_connection(self):
-        if os.path.exists(self._uri):
+        if os.path.exists(self._uri) and os.path.isfile(self._uri):
             self.conn = qgis.utils.spatialite_connect(self._uri)
             self.conn.row_factory = sqlite3.Row
             return (True, QCoreApplication.translate("GPKGConnector", "Connection is open!"))
-        else:
+        elif not os.path.exists(self._uri):
             return (False, QCoreApplication.translate("GPKGConnector",
                            "Connection could not be open! The file ('{}') does not exist!".format(self._uri)))
+        elif os.path.isdir(self._uri):
+            return (False, QCoreApplication.translate("GPKGConnector",
+                                                      "Connection could not be open! The URI ('{}') is not a file!".format(
+                                                          self._uri)))
 
     def close_connection(self):
         if self.conn:

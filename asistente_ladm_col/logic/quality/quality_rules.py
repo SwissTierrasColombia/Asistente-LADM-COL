@@ -36,13 +36,14 @@ class QualityRules:
         self.polygon_quality_rules = PolygonQualityRules()
         self.logic_quality_rules = LogicQualityRules()
 
-    def validate_quality_rule(self, db, id_quality_rule):
+    def validate_quality_rule(self, db, id_quality_rule, layers):
         """
         Single point of access to execute quality rules. It dispatches calls to
         the appropriate quality rule classes.
 
         :param db: DB Connector object
         :param id_quality_rule: id of the quality rule
+        :param layers: List of layers required by the quality rule.
         :return: A list of tuples. When the rule is check for duplicate records, the list has
                  several tuples, otherwise it returns a single tuple.
                  res = [(msg, Qgis.Success|Warning|Critical)), ...]
@@ -51,47 +52,49 @@ class QualityRules:
 
         # POINT QUALITY RULES
         if id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
-            msg, level = self.point_quality_rules.check_overlapping_boundary_point(db)
+            msg, level = self.point_quality_rules.check_overlapping_boundary_point(db, layers)
         elif id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS:
-            msg, level = self.point_quality_rules.check_overlapping_control_point(db)
+            msg, level = self.point_quality_rules.check_overlapping_control_point(db, layers)
         elif id_quality_rule == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES:
-            msg, level = self.point_quality_rules.check_boundary_points_covered_by_boundary_nodes(db)
+            msg, level = self.point_quality_rules.check_boundary_points_covered_by_boundary_nodes(db, layers)
         elif id_quality_rule == EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES:
-            msg, level = self.point_quality_rules.check_boundary_points_covered_by_plot_nodes(db)
+            msg, level = self.point_quality_rules.check_boundary_points_covered_by_plot_nodes(db, layers)
 
         # LINE QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES:
-            msg, level = self.line_quality_rules.check_overlaps_in_boundaries(db)
+            msg, level = self.line_quality_rules.check_overlaps_in_boundaries(db, layers)
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT:
-            msg, level = self.line_quality_rules.check_boundaries_are_not_split(db)
+            msg, level = self.line_quality_rules.check_boundaries_are_not_split(db, layers)
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS:
-            msg, level = self.line_quality_rules.check_boundaries_covered_by_plots(db)
+            msg, level = self.line_quality_rules.check_boundaries_covered_by_plots(db, layers)
         elif id_quality_rule == EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS:
-            msg, level = self.line_quality_rules.check_boundary_nodes_covered_by_boundary_points(db)
+            msg, level = self.line_quality_rules.check_boundary_nodes_covered_by_boundary_points(db, layers)
         elif id_quality_rule == EnumQualityRule.Line.DANGLES_IN_BOUNDARIES:
-            msg, level = self.line_quality_rules.check_dangles_in_boundaries(db)
+            msg, level = self.line_quality_rules.check_dangles_in_boundaries(db, layers)
 
         # POLYGON QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS:
-            msg, level = self.polygon_quality_rules.check_overlapping_plots(db)
+            msg, level = self.polygon_quality_rules.check_overlapping_plots(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS:
-            msg, level = self.polygon_quality_rules.check_overlapping_buildings(db)
+            msg, level = self.polygon_quality_rules.check_overlapping_buildings(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY:
-            msg, level = self.polygon_quality_rules.check_overlapping_right_of_way(db)
+            msg, level = self.polygon_quality_rules.check_overlapping_right_of_way(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES:
-            msg, level = self.polygon_quality_rules.check_plots_covered_by_boundaries(db)
+            msg, level = self.polygon_quality_rules.check_plots_covered_by_boundaries(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS:
-            msg, level = self.polygon_quality_rules.check_right_of_way_overlaps_buildings(db)
+            msg, level = self.polygon_quality_rules.check_right_of_way_overlaps_buildings(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.GAPS_IN_PLOTS:
-            msg, level = self.polygon_quality_rules.check_gaps_in_plots(db)
+            msg, level = self.polygon_quality_rules.check_gaps_in_plots(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY:
-            msg, level = self.polygon_quality_rules.check_multiparts_in_right_of_way(db)
+            msg, level = self.polygon_quality_rules.check_multiparts_in_right_of_way(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS:
-            msg, level = self.polygon_quality_rules.check_plot_nodes_covered_by_boundary_points(db)
+            msg, level = self.polygon_quality_rules.check_plot_nodes_covered_by_boundary_points(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS:
-            msg, level = self.polygon_quality_rules.check_building_within_plots(db)
+            msg, level = self.polygon_quality_rules.check_building_within_plots(db, layers)
         elif id_quality_rule == EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS:
-            msg, level = self.polygon_quality_rules.check_building_unit_within_plots(db)
+            msg, level = self.polygon_quality_rules.check_building_unit_within_plots(db, layers)
+        elif id_quality_rule == EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS:
+            msg, level = self.polygon_quality_rules.check_building_unit_within_buildings(db, layers)
 
         # LOGIC QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP:

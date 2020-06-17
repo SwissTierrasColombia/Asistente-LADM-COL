@@ -14,7 +14,10 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             restore_schema,
                                             get_gpkg_conn_from_path,
                                             import_qgis_model_baker,
-                                            unload_qgis_model_baker)
+                                            unload_qgis_model_baker,
+                                            reset_db_mssql,
+                                            restore_schema_mssql,
+                                            get_mssql_conn)
 
 
 class TestDBTestConnection(unittest.TestCase):
@@ -144,6 +147,62 @@ class TestDBTestConnection(unittest.TestCase):
         res, code, msg = db.test_connection(required_models=[LADMNames.ANT_MODEL_PREFIX])
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
+
+    def test_mssql_test_connection_no_interlis_no_ladm_col_models(self):
+        print("\nINFO: Validate test_connection() for SQL Server (no Interlis, no LADM-COL models)...")
+        schema = 'empty_no_interlis_no_ladm'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        db_conn = get_mssql_conn('empty_no_interlis_no_ladm')
+        res, code, msg = db_conn.test_connection()
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND)
+        db_conn.conn.close()
+
+    def test_mssql_test_connection_interlis_no_ladm_col_models(self):
+        print("\nINFO: Validate test_connection() for SQL Server (Interlis, no LADM-COL models)...")
+
+        schema = 'interlis_no_ladm'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        db_conn = get_mssql_conn(schema)
+        res, code, msg = db_conn.test_connection()
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
+        db_conn.conn.close()
+
+    def test_mssql_test_connection_interlis_ladm_col_models_higher_version(self):
+        print("\nINFO: Validate test_connection() for SQL Server (Interlis, LADM-COL with higher models version)...")
+        schema = 'ladm_col_211'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        db_conn = get_mssql_conn(schema)
+        res, code, msg = db_conn.test_connection()
+        self.assertFalse(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
+        db_conn.conn.close()
+
+    def test_mssql_test_connection_interlis_ladm_col_models(self):
+        print("\nINFO: Validate test_connection() for SQL Server (Interlis, no LADM-COL models)...")
+        schema = 'test_ladm_all_models'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        db_conn = get_mssql_conn(schema)
+        res, code, msg = db_conn.test_connection()
+        self.assertTrue(res, msg)
+        self.assertEqual(code, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE)
+        db_conn.conn.close()
+
+    def test_mssql_test_connection_interlis_with_ili2mssql3_ladm_col_221_models(self):
+        print("\nINFO: Validate test_connection() for SQL Server (Interlis with ili2mssql 3, LADM-COL 2.2.1 models)...")
+        schema = 'interlis_ili2db3_ladm'
+        reset_db_mssql(schema)
+        restore_schema_mssql(schema)
+        db_conn = get_mssql_conn(schema)
+        res, code, msg = db_conn.test_connection()
+        self.assertFalse(res, msg)
+        self.assertEqual(EnumTestConnectionMsg.INVALID_ILI2DB_VERSION, code)
+        db_conn.conn.close()
 
     @classmethod
     def tearDownClass(cls):

@@ -44,7 +44,8 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E100301,
                                                             QUALITY_RULE_ERROR_CODE_E100302,
                                                             QUALITY_RULE_ERROR_CODE_E100303,
-                                                            QUALITY_RULE_ERROR_CODE_E100401)
+                                                            QUALITY_RULE_ERROR_CODE_E100401,
+                                                            QUALITY_RULE_LAYERS)
 
 
 class PointQualityRules:
@@ -54,23 +55,24 @@ class PointQualityRules:
         self.app = AppInterface()
         self.geometry = GeometryUtils()
 
-    def check_overlapping_boundary_point(self, db):
+    def check_overlapping_boundary_point(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.LC_BOUNDARY_POINT_T, QUALITY_RULE_ERROR_CODE_E100101)
+        return self.__check_overlapping_points(db, rule, layers, QUALITY_RULE_ERROR_CODE_E100101)
 
-    def check_overlapping_control_point(self, db):
+    def check_overlapping_control_point(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)
-        return self.__check_overlapping_points(db, rule, db.names.LC_CONTROL_POINT_T, QUALITY_RULE_ERROR_CODE_E100201)
+        return self.__check_overlapping_points(db, rule, layers, QUALITY_RULE_ERROR_CODE_E100201)
 
-    def __check_overlapping_points(self, db, rule, layer_name, error_code):
+    def __check_overlapping_points(self, db, rule, layer_dict, error_code):
         """
         Shows which points are overlapping
         :param db: db connection instance
-        :param entity: points layer
+        :param layer_dict: Dict with layer name and layer object
         :return: msg, Qgis.MessageLevel
         """
         features = []
-        point_layer = self.app.core.get_layer(db, layer_name, load=True)
+        layer_name = list(layer_dict[QUALITY_RULE_LAYERS].keys())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
+        point_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         if not point_layer:
             return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
 
@@ -114,16 +116,11 @@ class PointQualityRules:
                                                    "There are no overlapping points in layer '{}'!").format(layer_name),
                         Qgis.Success)
 
-    def check_boundary_points_covered_by_boundary_nodes(self, db):
+    def check_boundary_points_covered_by_boundary_nodes(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
 
-        layers = {
-            db.names.LC_BOUNDARY_T: None,
-            db.names.POINT_BFS_T: None,
-            db.names.LC_BOUNDARY_POINT_T: None
-        }
+        layers = layer_dict[QUALITY_RULE_LAYERS]
 
-        self.app.core.get_layers(db, layers, load=True)
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
@@ -152,14 +149,11 @@ class PointQualityRules:
                 return (QCoreApplication.translate("PointQualityRules",
                                  "All boundary points are covered by boundary nodes!"), Qgis.Success)
 
-    def check_boundary_points_covered_by_plot_nodes(self, db):
+    def check_boundary_points_covered_by_plot_nodes(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)
-        layers = {
-            db.names.LC_PLOT_T: None,
-            db.names.LC_BOUNDARY_POINT_T: None
-        }
 
-        self.app.core.get_layers(db, layers, load=True)
+        layers = layer_dict[QUALITY_RULE_LAYERS]
+
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 

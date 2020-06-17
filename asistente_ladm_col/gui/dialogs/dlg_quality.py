@@ -17,9 +17,7 @@
  ***************************************************************************/
 """
 import collections
-from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal,
-                              QCoreApplication)
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
                              QIcon,
@@ -28,23 +26,13 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
-from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
-from asistente_ladm_col.config.general_config import (LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                                      LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
-                                                      LOG_QUALITY_LIST_ITEM_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CLOSE)
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
-from asistente_ladm_col.utils.utils import Utils
-from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.lib.logger import Logger
 
@@ -52,19 +40,11 @@ DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
 
 class QualityDialog(QDialog, DIALOG_UI):
-    log_quality_show_message_emitted = pyqtSignal(str, int)
-    log_quality_show_button_emitted = pyqtSignal()
-    log_quality_set_initial_progress_emitted = pyqtSignal(str)
-    log_quality_set_final_progress_emitted = pyqtSignal(str)
-
-    def __init__(self, db, parent=None):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self._db = db
         self.quality_rules_manager = QualityRuleManager()
-        self.utils = Utils()
         self.quality_rules = QualityRules()
-        self.names = self._db.names
         self.log_dialog_quality_text = ""
         self.log_dialog_quality_text_content = ""
         self.log_quality_validation_total_time = 0
@@ -99,6 +79,8 @@ class QualityDialog(QDialog, DIALOG_UI):
                 self.items_dict[group_name]['icon'] = 'tables'
 
         self.load_items()
+
+        self.selected_rules = dict()
 
     def validate_selection_rules(self):
         # At least one quality rule must have been selected
@@ -138,69 +120,13 @@ class QualityDialog(QDialog, DIALOG_UI):
     def accepted(self):
         # we erase the group error layer every time it runs because we assume that data set changes.
         self.app.gui.remove_error_group()
-        self.initialize_log_dialog_quality()
-        selected_count = len(self.trw_quality_rules.selectedItems())
-
-        if selected_count > 0:
-            self.set_count_topology_rules(selected_count)
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
             item = iterator.value()
-
             if item.isSelected():
-                id = item.data(0, Qt.UserRole)
-                rule_name = item.text(0)
-                self.execute_quality_rule(id, rule_name=rule_name)
+                self.selected_rules[item.data(0, Qt.UserRole)] = item.text(0)  # rule_key: rule_name
             iterator += 1
-
-        if selected_count > 0:
-            self.generate_log_button()
-
-        if self.app.gui.error_group_exists():
-            group = self.app.gui.get_error_layers_group()
-            # # Check if group layer is empty
-            if group.findLayers():
-                self.app.gui.set_error_group_visibility(True)
-            else:
-                self.app.gui.remove_error_group()
-
-    @_log_quality_rule_validations
-    def execute_quality_rule(self, id, rule_name):
-        """
-        Intermediate function to log quality rule execution.
-
-        :param id: rule id
-        :param rule_name: Rule name (needed for the logging decorator)
-        """
-        msg, level = self.quality_rules.validate_quality_rule(self._db, id)
-        self.log_message(msg, level)
-
-    def set_count_topology_rules(self, count):
-        self.log_quality_show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)
-
-    def generate_log_button(self):
-        self.log_quality_show_button_emitted.emit()
-
-    def get_log_dialog_quality_text(self):
-        return self.log_dialog_quality_text, self.log_quality_validation_total_time
-
-    def initialize_log_dialog_quality(self):
-        self.log_dialog_quality_text = ""
-        self.log_quality_validation_total_time = 0
-
-    def log_message(self, msg, level):
-        if level == Qgis.Critical:
-            prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
-            suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
-        elif level == Qgis.Success:
-            prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
-            suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
-        else: # Qgis.Warning
-            prefix = LOG_QUALITY_LIST_ITEM_OPEN
-            suffix = LOG_QUALITY_LIST_ITEM_CLOSE
-
-        self.log_dialog_quality_text_content += "{}{}{}".format(prefix, msg, suffix)
 
     def rejected(self):
         pass

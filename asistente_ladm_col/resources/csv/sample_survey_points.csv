@@ -1,5 +1,5 @@
 fid;id_punto_levantamiento;tipo_punto_levantamiento;fotoidentificacion;exactitud_horizontal;exactitud_vertical;posicion_interpolacion;monumentacion;puntotipo;metodoproduccion;comienzo_vida_util_version;fin_vida_util_version;local_id;espacio_de_nombres;x;y;z
-1;;Construccion;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:24:23;;1;OP_PUNTOLEVANTAMIENTO;963462.60665992;1077294.78140877;1483.53086387903
-2;;Auxiliar;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:25:14;;2;OP_PUNTOLEVANTAMIENTO;963457.918014966;1077287.23880602;4415.12040068168
-3;;Construccion;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:25:49;;3;OP_PUNTOLEVANTAMIENTO;963468.008794324;1077282.55016107;4828.21110395166
-4;;Construccion;Visible;1;;Aislado;Mojon;Construccion;;2019-03-27T08:26:26;;4;OP_PUNTOLEVANTAMIENTO;963474.226345242;1077290.29661795;3533.79023891584
+1;;Construccion;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:24:23;;1;LC_PUNTOLEVANTAMIENTO;963462.60665992;1077294.78140877;1483.53086387903
+2;;Auxiliar;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:25:14;;2;LC_PUNTOLEVANTAMIENTO;963457.918014966;1077287.23880602;4415.12040068168
+3;;Construccion;Visible;1;;Aislado;Incrustacion;Construccion;;2019-03-27T08:25:49;;3;LC_PUNTOLEVANTAMIENTO;963468.008794324;1077282.55016107;4828.21110395166
+4;;Construccion;Visible;1;;Aislado;Mojon;Construccion;;2019-03-27T08:26:26;;4;LC_PUNTOLEVANTAMIENTO;963474.226345242;1077290.29661795;3533.79023891584

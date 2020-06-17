@@ -7,6 +7,15 @@ services:
       - POSTGRES_USER="usuario_ladm_col"
       - POSTGRES_PASS="clave_ladm_col"
       - POSTGRES_DBNAME="ladm_col"
+
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong!Passw0rd>
+    ports:
+      - "1433:1433"
+
   qgis:
     build: .
     tty: true
@@ -14,4 +23,8 @@ services:
       - ${TRAVIS_BUILD_DIR}:/usr/src
     depends_on:
       - postgres
+      - mssql
+    links:
+      - postgres
+      - mssql
     command: ["/usr/src/scripts/run-docker-tests.sh"]

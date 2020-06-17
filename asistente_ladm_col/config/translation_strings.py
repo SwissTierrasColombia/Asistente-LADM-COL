@@ -1,6 +1,8 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 from asistente_ladm_col.config.enums import EnumQualityRule
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E100101,
                                                             QUALITY_RULE_ERROR_CODE_E100201,
                                                             QUALITY_RULE_ERROR_CODE_E100301,
@@ -36,9 +38,9 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E301001,
                                                             QUALITY_RULE_ERROR_CODE_E301002,
                                                             QUALITY_RULE_ERROR_CODE_E301003,
-                                                            QUALITY_RULE_ERROR_CODE_E301004,
-                                                            QUALITY_RULE_ERROR_CODE_E301005,
-                                                            QUALITY_RULE_ERROR_CODE_E301006,
+                                                            QUALITY_RULE_ERROR_CODE_E301101,
+                                                            QUALITY_RULE_ERROR_CODE_E301102,
+                                                            QUALITY_RULE_ERROR_CODE_E301103,
                                                             QUALITY_RULE_ERROR_CODE_E400101,
                                                             QUALITY_RULE_ERROR_CODE_E400102,
                                                             # QUALITY_RULE_ERROR_CODE_E400201,
@@ -123,6 +125,13 @@ class TranslatableConfigStrings(QObject):
         pass
 
     @staticmethod
+    def tr_db_source(source):
+        if source == COLLECTED_DB_SOURCE:
+            return QCoreApplication.translate("TranslatableConfigStrings", "COLLECTED")
+        elif source == SUPPLIES_DB_SOURCE:
+            return QCoreApplication.translate("TranslatableConfigStrings", "SUPPLIES")
+
+    @staticmethod
     def get_translatable_config_strings():
         return {
             EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap"),
@@ -143,7 +152,8 @@ class TranslatableConfigStrings(QObject):
             EnumQualityRule.Polygon.GAPS_IN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps"),
             EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries"),
             EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots"),
-            EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within corresponding plots and buildings"),
+            EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within corresponding plots"),
+            EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within corresponding buildings"),
             EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP: QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right"),
             EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS: QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1"),
             EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the department field of the parcel table has two numerical characters"),
@@ -194,10 +204,10 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E300201: QCoreApplication.translate("TranslatableConfigStrings", "Las construcciones no deben superponerse"),
             QUALITY_RULE_ERROR_CODE_E300301: QCoreApplication.translate("TranslatableConfigStrings", "Las servidumbres de paso no deben superponerse"),
             QUALITY_RULE_ERROR_CODE_E300401: QCoreApplication.translate("TranslatableConfigStrings", "El terreno no está cubierto por linderos"),
-            QUALITY_RULE_ERROR_CODE_E300402: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre lindero y terreno está duplicada en la tabla masccl"),
-            QUALITY_RULE_ERROR_CODE_E300403: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre lindero y terreno está duplicada en la tabla menosccl"),
-            QUALITY_RULE_ERROR_CODE_E300404: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre lindero y terreno no está registrada en la tabla masccl"),
-            QUALITY_RULE_ERROR_CODE_E300405: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre lindero y terreno no está registrada en la tabla menosccl"),
+            QUALITY_RULE_ERROR_CODE_E300402: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre terreno y lindero está duplicada en la tabla masccl"),
+            QUALITY_RULE_ERROR_CODE_E300403: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre terreno y lindero está duplicada en la tabla menosccl"),
+            QUALITY_RULE_ERROR_CODE_E300404: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre terreno y lindero no está registrada en la tabla masccl"),
+            QUALITY_RULE_ERROR_CODE_E300405: QCoreApplication.translate("TranslatableConfigStrings", "La relación topológica entre terreno y lindero no está registrada en la tabla menosccl"),
             QUALITY_RULE_ERROR_CODE_E300501: QCoreApplication.translate("TranslatableConfigStrings", "La servidumbre de paso no se debe superponer con la construcción"),
             QUALITY_RULE_ERROR_CODE_E300601: QCoreApplication.translate("TranslatableConfigStrings", "No debe haber hueco entre terrenos"),
             QUALITY_RULE_ERROR_CODE_E300701: QCoreApplication.translate("TranslatableConfigStrings", "Servidumbre de paso no debe tener geometría multiparte"),
@@ -208,9 +218,9 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E301001: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ningún terreno"),
             QUALITY_RULE_ERROR_CODE_E301002: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de un terreno"),
             QUALITY_RULE_ERROR_CODE_E301003: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de un terreno pero no dentro de su terreno correspondiente"),
-            QUALITY_RULE_ERROR_CODE_E301004: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ninguna contrucción"),
-            QUALITY_RULE_ERROR_CODE_E301005: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de un construcción"),
-            QUALITY_RULE_ERROR_CODE_E301006: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente"),
+            QUALITY_RULE_ERROR_CODE_E301101: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ninguna contrucción"),
+            QUALITY_RULE_ERROR_CODE_E301102: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de una construcción"),
+            QUALITY_RULE_ERROR_CODE_E301103: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente"),
 
             # ERROR CODES FOR LOGIC QUALITY RULES
             QUALITY_RULE_ERROR_CODE_E400101: QCoreApplication.translate("TranslatableConfigStrings", "El predio tiene más de un derecho de dominio asociado"),

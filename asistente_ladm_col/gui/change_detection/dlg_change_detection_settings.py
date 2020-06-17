@@ -124,6 +124,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.update_connection_info()
 
     def show_settings_collected_db(self):
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "COLLECTED DB Connection Settings"))
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SURVEY_MODEL_PREFIX])
@@ -135,6 +136,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def show_settings_supplies_db(self):
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "SUPPLIES DB Connection Settings"))
         self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])

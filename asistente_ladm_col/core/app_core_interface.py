@@ -21,7 +21,9 @@ import datetime
 import glob
 import json
 import os
+import sqlite3
 
+from qgis.utils import spatialite_connect
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               pyqtSignal,
@@ -52,11 +54,17 @@ from qgis.core import (Qgis,
                        QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsCoordinateReferenceSystem)
 
 import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
+from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
+                                                                                 get_insert_ctm12_query,
+                                                                                 get_insert_cm12_bounds_query,
+                                                                                 get_ctm12_bounds_exist_query)
+from asistente_ladm_col.utils.crs_utils import get_ctm12_crs
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
@@ -64,13 +72,13 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.utils.utils import is_connected
-from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                                      FIELD_MAPPING_PATH,
+from asistente_ladm_col.config.general_config import (FIELD_MAPPING_PATH,
                                                       MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                                       TEST_SERVER,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID,
-                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
+                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
+                                                      DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -977,20 +985,20 @@ class AppCoreInterface(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, epsg, elevation=None, decimal_point='.'):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.', reproject=True):
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "No CSV file given or file doesn't exist."))
             return False
 
         # Create QGIS vector layer
-        uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
+        uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs={}".format(
             csv_path,
             decimal_point,
             delimiter if delimiter != '\t' else '%5Ct',
             longitude,
             latitude,
-            epsg
+            crs
         )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
@@ -1002,10 +1010,9 @@ class AppCoreInterface(QObject):
             res = processing.run("qgis:setzvalue", parameters)
             csv_layer = res['OUTPUT']
 
-        if not epsg == DEFAULT_EPSG:
-            crs_dest = 'EPSG:{}'.format(DEFAULT_EPSG)
+        if reproject and crs != DEFAULT_SRS_AUTHID:
             parameters = {'INPUT': csv_layer,
-                          'TARGET_CRS': crs_dest,
+                          'TARGET_CRS': get_ctm12_crs(),
                           'OUTPUT': 'memory:'}
 
             res = processing.run("native:reprojectlayer", parameters)
@@ -1016,7 +1023,7 @@ class AppCoreInterface(QObject):
                                                                          "CSV layer not valid!"))
             return False
 
-        # Necessary export to have edit capabilities in the dataprovider
+        # Export needed to have edit capabilities in the dataprovider
         csv_layer.selectAll()
         csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         csv_layer.removeSelection()
@@ -1263,3 +1270,49 @@ class AppCoreInterface(QObject):
 
         self.suppress_form(layer, False)
         return new_feature
+
+    def initialize_ctm12(self):
+        """
+        Make sure CTM12 is in the QGIS SRS database
+
+        :return: Whether CTM12 is there or not after we checked and attempted to add it if not present
+        """
+        conn = spatialite_connect(QgsApplication.srsDatabaseFilePath())
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        ctm12_exists = self.ctm12_exists(cursor)
+        if not ctm12_exists:
+            self.logger.debug(__name__, "Adding CTM12 to QGIS SRS database...")
+
+            try:
+                cursor.execute("BEGIN")
+                cursor.execute(get_insert_ctm12_query())
+                if not self.ctm12_bounds_exist(cursor):
+                    cursor.execute(get_insert_cm12_bounds_query())
+                cursor.execute("COMMIT")
+            except sqlite3.OperationalError as e:
+                # We couldn't write in srs.db
+                return False
+
+            conn.close()
+            QgsCoordinateReferenceSystem.invalidateCache()
+
+            # We need another connection for the next query to have actual data (otherwise ctm12_exists is always True)
+            conn = spatialite_connect(QgsApplication.srsDatabaseFilePath())
+            conn.row_factory = sqlite3.Row
+            ctm12_exists = self.ctm12_exists(conn.cursor())
+
+        conn.close()
+
+        return ctm12_exists
+
+    @staticmethod
+    def ctm12_exists(cursor):
+        cursor.execute(get_ctm12_exists_query())
+        return cursor.fetchone()[0] == 1
+
+    @staticmethod
+    def ctm12_bounds_exist(cursor):
+        cursor.execute(get_ctm12_bounds_exist_query())
+        return cursor.fetchone()[0] == 1

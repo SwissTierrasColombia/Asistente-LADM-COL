@@ -27,8 +27,7 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (ClientServerDB,
-                                                    DBConnector,
-                                                    COMPOSED_KEY_SEPARATOR)
+                                                    DBConnector)
 from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_neighbouring_change_query,
                                                                             ant_map_plot_query)
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
@@ -37,7 +36,6 @@ from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import 
 from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.core.model_parser import ModelParser
-from asistente_ladm_col.utils.utils import normalize_iliname
 from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
                                                       T_ILI_TID_KEY,
                                                       DISPLAY_NAME_KEY,
@@ -152,7 +150,7 @@ class PGConnector(ClientServerDB):
             self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
             self.conn = None
 
-    def get_table_and_field_names(self):
+    def _get_table_and_field_names(self):
         """
         Documented in the super class
         """
@@ -177,26 +175,9 @@ class PGConnector(ClientServerDB):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
-        records = cur.fetchall()
+        return cur.fetchall()
 
-        dict_names = dict()
-        for record in records:
-            if record[QueryNames.TABLE_ILINAME] is None:
-                # Either t_ili2db_* tables (INTERLIS meta-attrs)
-                continue
-
-            record[QueryNames.TABLE_ILINAME] = normalize_iliname(record[QueryNames.TABLE_ILINAME])
-            if not record[QueryNames.TABLE_ILINAME] in dict_names:
-                dict_names[record[QueryNames.TABLE_ILINAME]] = dict()
-                dict_names[record[QueryNames.TABLE_ILINAME]][QueryNames.TABLE_NAME] = record[QueryNames.TABLE_NAME]
-
-            if record[QueryNames.FIELD_ILINAME] is None:
-                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
-                continue
-
-            record[QueryNames.FIELD_ILINAME] = normalize_iliname(record[QueryNames.FIELD_ILINAME])
-            dict_names[record[QueryNames.TABLE_ILINAME]][record[QueryNames.FIELD_ILINAME]] = record[QueryNames.FIELD_NAME]
-
+    def _get_fk_fields(self):
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
         #   Key: "LADM_COL_V1_7.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
@@ -210,19 +191,10 @@ class PGConnector(ClientServerDB):
                                          schema=self.schema)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
-        records = cur.fetchall()
-        for record in records:
-            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
-                                           COMPOSED_KEY_SEPARATOR,
-                                           normalize_iliname(record['iliname2']))
-            record[QueryNames.TABLE_ILINAME] = normalize_iliname(record[QueryNames.TABLE_ILINAME])
-            if record[QueryNames.TABLE_ILINAME] in dict_names:
-                dict_names[record[QueryNames.TABLE_ILINAME]][composed_key] = record['sqlname']
-            else:
-                record['colowner'] = normalize_iliname(record['colowner'])
-                if record['colowner'] in dict_names:
-                    dict_names[record['colowner']][composed_key] = record['sqlname']
+        return cur.fetchall()
 
+    def _get_common_db_names(self):
+        dict_names = dict()
         # Add required key-value pairs that do not come from the DB query
         dict_names[T_ID_KEY] = "t_id"
         dict_names[T_ILI_TID_KEY] = "t_ili_tid"

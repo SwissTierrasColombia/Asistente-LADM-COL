@@ -106,6 +106,7 @@ class Utils(QObject):
 
         return zip_file_path
 
+
 def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
     plugin_found = plugin_name in qgis.utils.plugins
     if not plugin_found:
@@ -113,6 +114,7 @@ def is_plugin_version_valid(plugin_name, min_required_version, exact_required_ve
     current_version = get_plugin_metadata(plugin_name, 'version')
     current_version = current_version[1:] if current_version.startswith("v") else current_version
     return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
+
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
     """
@@ -156,6 +158,7 @@ def is_version_valid(current_version, min_required_version, exact_required_versi
 
     return True
 
+
 def normalize_iliname(name):
     """
     Removes version from an iliname
@@ -166,6 +169,7 @@ def normalize_iliname(name):
     parts = name.split(".")
     parts[0] = parts[0].split("_V")[0]
     return ".".join(parts)
+
 
 def md5sum(filename):
     with open(filename, mode='rb') as f:
@@ -251,3 +255,6 @@ def remove_keys_from_dict(keys, dictionary):
     for key in keys:
         if key in dictionary:
             del dictionary[key]
+
+def get_key_for_quality_rule_adjusted_layer(input, reference, fix=False):
+    return "{}..{}{}".format(input, reference, '..fix' if fix else '')

@@ -260,29 +260,15 @@ class AppGUIInterface(QObject):
         :param area: Value of the Qt.DockWidgetArea enum
         :param dock_widget: QDockWidget object
         """
-        dock_widgets = list()
-        for dw in self.iface.mainWindow().findChildren(QDockWidget):
-            if dw.isVisible() and self.iface.mainWindow().dockWidgetArea(dw) == area:
-                dock_widgets.append(dw)
+        if Qgis.QGIS_VERSION_INT >= 31300:  # Use native addTabifiedDockWidget
+            self.iface.addTabifiedDockWidget(area, dock_widget, raiseTab=True)
+        else:  # Use plugin's addTabifiedDockWidget, which does not raise the new tab
+            dock_widgets = list()
+            for dw in self.iface.mainWindow().findChildren(QDockWidget):
+                if dw.isVisible() and self.iface.mainWindow().dockWidgetArea(dw) == area:
+                    dock_widgets.append(dw)
 
-        self.iface.mainWindow().addDockWidget(area, dock_widget)  # We add the dock widget, then attempt to tabify
-        if dock_widgets:
-            self.logger.debug(__name__, "Tabifying dock widget {}...".format(dock_widget.windowTitle()))
-            self.iface.mainWindow().tabifyDockWidget(dock_widgets[0], dock_widget)  # No way to prefer one Dock Widget
-            QCoreApplication.processEvents()  # Give the app a while for it to refresh controls
-            self.raise_in_dockwidget_tabbar(dock_widget.windowTitle())  # Select our newly added tab
-            dock_widget.setFocus()
-
-    def raise_in_dockwidget_tabbar(self, tab_name):
-        """
-        Select a tab by name from all tabs that are direct children of QGIS app (e.g., dock widgets).
-        Note: If you have several dock widgets with the same name (rare), this method just selects the first it finds.
-
-        :param tab_name: Name of the tab we'd like to select
-        """
-        bars = self.iface.mainWindow().findChildren(QTabBar, '', Qt.FindDirectChildrenOnly)
-        for w in bars:
-            for idx in range(w.count()):
-                if w.tabText(idx) == tab_name:
-                    w.setCurrentIndex(idx)
-                    return
+            self.iface.mainWindow().addDockWidget(area, dock_widget)  # We add the dock widget, then attempt to tabify
+            if dock_widgets:
+                self.logger.debug(__name__, "Tabifying dock widget {}...".format(dock_widget.windowTitle()))
+                self.iface.mainWindow().tabifyDockWidget(dock_widgets[0], dock_widget)  # No way to prefer one Dock Widget

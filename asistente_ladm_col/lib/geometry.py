@@ -41,6 +41,7 @@ from qgis.core import (QgsField,
 import processing
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
 class GeometryUtils(QObject):
@@ -386,13 +387,14 @@ class GeometryUtils(QObject):
         diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)
 
         if not diff_geoms:
-            return None
+            self.logger.debug(__name__, "Gaps in polygon layer: no difference result, no errors...")
+            return list()
 
         feature_error = list()
         if not diff_geoms.isMultipart():
             if include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
-                print("Unique value and no error")
-                return None
+                self.logger.debug(__name__, "Gaps in polygon layer: Single part and no errors...")
+                return list()
 
         for geometry in diff_geoms.asMultiPolygon():
             conflict_geom = QgsGeometry.fromPolygonXY(geometry)
@@ -608,7 +610,7 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
 
-        layer = QgsVectorLayer("LineString?crs={}".format(plot_layer.sourceCrs().authid()), "rings", "memory")
+        layer = QgsVectorLayer("LineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), "rings", "memory")
         data_provider = layer.dataProvider()
         data_provider.addAttributes([QgsField(names.T_ID_F, QVariant.Int)])
         layer.updateFields()
@@ -909,28 +911,56 @@ class GeometryUtils(QObject):
         return merge_geometries, boundaries_to_del
 
     @staticmethod
-    def get_relationships_among_polygons(input_layer, intersect_layer):
-        # Select buildings disjoint from plots
+    def get_relationships_among_polygons(input_layer, intersect_layer, key=None, attrs=list(), get_geometry=False):
+        """
+        Gets relationships among two polygon layers.
+
+        :param input_layer: Input polygon layer
+        :param intersect_layer: Intersect polygon layer
+        :param key: None to use QGIS id, otherwise it expects an id to use as response key
+        :param attrs: List of attributes to retrieve
+        :param get_geometry: Whether the resulting dicts should contain geometry or not
+        :return: 3 dicts with the given key. Example of 1 dict: {key: {'attrs':{attr1:v1,...}, 'geom':QgsGeometry}}
+        """
+        # attrs = attributes or []
+        def build_response_dict():
+            res = dict()
+            if not key and not attrs and not get_geometry:  # We just need the QGIS id
+                res = {fid: dict() for fid in input_layer.selectedFeatureIds()}
+            else:
+                for f in input_layer.selectedFeatures():
+                    f_attrs = {attr: f[attr] for attr in attrs}
+                    values = {'attrs': f_attrs, 'geometry': f.geometry() if get_geometry else None}
+                    res[f[key] if key else f.id()] = values
+            return res
+
+        # 1) Select input layer features disjoint from intersect layer features
         processing.run("native:selectbylocation", {'INPUT': input_layer,
                                                    'PREDICATE': [2],  # disjoint
                                                    'INTERSECT': intersect_layer,
                                                    'METHOD': 0})
-        input_disjoint = input_layer.selectedFeatureIds()
+        input_disjoint = build_response_dict()
 
-        # processing algorithm 'selectbylocation' by default remove the previous selection
-        # Select buildings overlaps with plots
-        processing.run("native:selectbylocation", {'INPUT': input_layer,
-                                                   'PREDICATE': [5],  # overlaps
-                                                   'INTERSECT': intersect_layer,
-                                                   'METHOD': 0})
-        input_overlaps = input_layer.selectedFeatureIds()
-
-        # Select buildings to are within plots
+        # 2) Select input layer features within within itersect layer features
         processing.run("native:selectbylocation", {'INPUT': input_layer,
                                                    'PREDICATE': [6],  # are within
                                                    'INTERSECT': intersect_layer,
                                                    'METHOD': 0})
-        input_within = input_layer.selectedFeatureIds()
+        input_within = build_response_dict()
+        fids_within = input_layer.selectedFeatureIds()  # We'll use them after the next run
+
+        # 3) Select input layer features that intersect the intersect layer features
+        processing.run("native:selectbylocation", {'INPUT': input_layer,
+                                                   'PREDICATE': [0],  # intersects
+                                                   'INTERSECT': intersect_layer,
+                                                   'METHOD': 0})
+        # We need to select those features that intersect but are not within
+        # (i.e. overlap, contain) intersect layer features
+        fids_intersect = input_layer.selectedFeatureIds()
+        input_layer.selectByIds(list(set(fids_intersect) - set(fids_within)))
+        input_overlaps = build_response_dict()
+
+        input_layer.removeSelection()
 
         return input_disjoint, input_overlaps, input_within
 

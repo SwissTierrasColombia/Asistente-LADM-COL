@@ -46,14 +46,14 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
                 self.__quality_rules[rule_k] = QualityRule(rule_v)
         self.logger.info(__name__, "{} quality rules registered!".format(len(self.__quality_rules)))
 
-    def get_quality_rule(self, rule_code):
+    def get_quality_rule(self, rule_key):
         """
         Returns the QualityRule object corresponding to a rule code.
 
-        :param rule_code: rule key
+        :param rule_key: rule key
         :return: QualityRule
         """
-        return self.__quality_rules.get(rule_code)
+        return self.__quality_rules.get(rule_key)
 
     def get_quality_rule_group_name(self, group_key):
         """

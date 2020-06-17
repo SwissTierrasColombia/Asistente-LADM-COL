@@ -23,6 +23,7 @@ from functools import partial
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
+from processing.script import ScriptUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
@@ -90,8 +91,9 @@ from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
-from asistente_ladm_col.lib.context import (Context, 
-                                            TaskContext)
+from asistente_ladm_col.lib.context import (Context,
+                                            TaskContext,
+                                            SettingsContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -115,6 +117,7 @@ from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import Creat
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
+from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
@@ -125,7 +128,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _valuation_model_required,
                                                  _survey_model_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
-from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
+from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
+                                               normalize_local_url)
 from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
@@ -159,6 +163,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_supplies.set_db_sources([SUPPLIES_DB_SOURCE])
         self._context_collected_supplies = Context()
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
+        self._context_settings = SettingsContext()
+        self._context_settings.blocking_mode = False  # Settings dialog should not block if called from the action
+
+        self.ladm_col_provider = LADMCOLAlgorithmProvider()
+        self.__processing_resources_installed = list()
 
     def initGui(self):
         self.app = AppInterface()
@@ -182,16 +191,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
+            self.iface.initializationCompleted.connect(self.initialize_requirements)
         else:
             self.call_refresh_gui()
+            self.initialize_requirements()
 
-        # Add LADM-COL provider and models to QGIS
-        self.ladm_col_provider = LADMCOLAlgorithmProvider()
-        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
-        if QgsApplication.processingRegistry().providerById('model'):
-            self.add_processing_models(None)
-        else: # We need to wait until processing is initialized
-            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+        # Add LADM-COL provider, models and sripts to QGIS
+        self.initialize_processing_resources()
 
     def create_actions(self):
         self.create_supplies_actions()
@@ -233,6 +239,35 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsExpression.unregisterFunction('get_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_value_from_code')
         QgsExpression.unregisterFunction('get_domain_description_from_code')
+
+    def initialize_requirements(self):
+        """
+        Make sure all we need from QGIS is set
+        """
+        # We need CTM12 projection in the QGIS SRS database
+        res = self.app.core.initialize_ctm12()
+        self.logger.info_warning(__name__, res, "CTM12 is in the QGIS SRS database? {}!!!".format(res))
+        if not res and not self.unit_tests:
+            folder, filename = os.path.split(QgsApplication.srsDatabaseFilePath())
+            msg_box = QMessageBox(self.main_window)
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setTextFormat(Qt.RichText)
+            msg_box.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL Assistant - Warning"))
+            msg_box.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                       "The spatial reference database is not editable. Therefore, CTM12 cannot be configured.<br><br>" \
+                                                       "Go to the folder <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over that folder and over the '<b>{filename}</b>' file.<br><br>" \
+                                                       "Once you're done, click <b>Ok</b> to continue loading <i>LADM-COL Assistant</i>. " \
+                                                       "If you click <b>Cancel</b>, the <i>LADM-COL Assistant</i> won't be available, as the CTM12 projection is a prerequisite.".format(normalized_folder=normalize_local_url(folder), folder=folder, filename=filename)))
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg_box.setDefaultButton(QMessageBox.Ok)
+            reply = msg_box.exec_()
+
+            if reply == QMessageBox.Ok:
+                self.initialize_requirements()
+            else:
+                self.unload()
+                self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                    "CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
 
     def call_refresh_gui(self):
         """
@@ -536,7 +571,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
-        self._settings_action.triggered.connect(self.show_settings)
+        self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
         self._help_action.triggered.connect(partial(show_plugin_help, ''))
         self._about_action.triggered.connect(self.show_about_dialog)
 
@@ -554,27 +589,73 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_ABOUT: self._about_action
         })
 
-    def add_processing_models(self, provider_id):
-        if not (provider_id == 'model' or provider_id is None):
+    def initialize_processing_resources(self):
+        """
+        Add custom provider, models and scripts to QGIS
+        """
+        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
+
+        connect_provider_added = False
+        if QgsApplication.processingRegistry().providerById('model'):
+            self.add_processing_resources('model')
+        else:
+            connect_provider_added = True
+
+        if QgsApplication.processingRegistry().providerById('script'):
+            self.add_processing_resources('script')
+        else:
+            connect_provider_added = True
+
+        if connect_provider_added:  # We need to wait until processing is initialized
+            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_resources)
+
+    def add_processing_resources(self, provider_id):
+        if provider_id not in ['model', 'script']:
             return
 
-        if provider_id is not None: # If method acted as slot
-            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_models)
+        if sorted(self.__processing_resources_installed) == ["models", "script"]:  # We are done, disconnect.
+            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_resources)
 
-        # Add ladm_col models
-        basepath = os.path.dirname(os.path.abspath(__file__))
-        plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
+        if provider_id == 'model':
+            # Add LADM-COL models
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
-        for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
-            alg = QgsProcessingModelAlgorithm()
-            if not alg.fromFile(filename):
-                self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
-                return
+            count = 0
+            for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
+                alg = QgsProcessingModelAlgorithm()
+                if not alg.fromFile(filename):
+                    self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
+                    return
 
-            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
-            shutil.copyfile(filename, destFilename)
+                destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
+                shutil.copyfile(filename, destFilename)
+                count += 1
 
-        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+            if count:
+                QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+                self.logger.debug(__name__, "{} LADM-COL models were installed!".format(count))
+
+            self.__processing_resources_installed.append('model')
+        elif provider_id == 'script':
+            # Add LADM-COL scripts
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            plugin_scripts_dir = os.path.join(basepath, "lib", "processing", "scripts")
+
+            count = 0
+            scripts_dir = ScriptUtils.defaultScriptsFolder()
+            for filename in glob.glob(os.path.join(plugin_scripts_dir, '*.py')):
+                try:
+                    shutil.copy(filename, scripts_dir)
+                    count += 1
+                except OSError as e:
+                    self.logger.critical(__name__, "Couldn't install LADM-COL script '{}'!".format(filename))
+
+            if count:
+                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
+                self.logger.debug(__name__, "{} LADM-COL scripts were installed!".format(count))
+
+            self.__processing_resources_installed.append('script')
 
     def enable_action(self, action_name, enable):
         if action_name == ANT_MAP_REPORT:
@@ -709,8 +790,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        log_quality_validation_text, log_quality_validation_total_time = self.quality_dialog.get_log_dialog_quality_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_quality_validation_text, log_quality_validation_total_time)
+        log_text, tolerance, log_total_time = self.quality_rule_engine.quality_rule_logger.get_log_text()
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, tolerance, log_total_time)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
@@ -833,22 +914,25 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
-        dlg = SettingsDialog(self.conn_manager)
-        db_source = args[0] if args and args[0] in [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE] else COLLECTED_DB_SOURCE
-        dlg.set_db_source(db_source)
+        if args and isinstance(args[0], SettingsContext):
+            context = args[0]
+        else:
+            context = SettingsContext()  # Context with default configuration for the Settings Dialog
+
+        dlg = SettingsDialog(self.conn_manager, context)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
-        if db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
+        if context.db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
             dlg.active_role_changed.connect(self.call_refresh_gui)
-        elif db_source == SUPPLIES_DB_SOURCE:
-            dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])  # Only show connection tab for supplies
 
-        dlg.set_action_type(EnumDbActionType.CONFIG)
+        if context.action_type == EnumDbActionType.CONFIG:
+            dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
+
         dlg.exec_()
 
-    def show_settings_clear_message_bar(self, db_source):
-        self.show_settings(db_source)
+    def show_settings_clear_message_bar(self, context):
+        self.show_settings(context)
         self.iface.messageBar().popWidget()  # Display the next message in the stack if any or hide the bar
 
     def use_current_db_connection(self, db_source):
@@ -900,7 +984,7 @@ class AsistenteLADMCOLPlugin(QObject):
         Can be called from 1) an action, 2) from a signal or 3) directly.
 
         In 1) args has a Context argument and then a False argument from QAction.triggered.
-        In 2) either args comes with a dict inside (hence the "if args" below) from import_data.
+        In 2) args comes with a dict inside (hence the "if args" below) from import_data.
         In 3) **{} is passed, hence the "if kwargs" below.
         """
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
@@ -1090,14 +1174,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        self.quality_dialog = QualityDialog(self.get_db_connection())
+        quality_dialog = QualityDialog()
+        quality_dialog.exec_()
 
-        self.quality_dialog.log_quality_show_message_emitted.connect(self.show_log_quality_message)
-        self.quality_dialog.log_quality_show_button_emitted.connect(self.show_log_quality_button)
-        self.quality_dialog.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality_dialog.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-
-        self.quality_dialog.exec_()
+        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+        self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        self.quality_rule_engine.validate_quality_rules()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

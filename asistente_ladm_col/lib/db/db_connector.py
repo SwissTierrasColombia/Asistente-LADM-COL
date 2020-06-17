@@ -34,6 +34,7 @@ from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.utils import normalize_iliname
 
 COMPOSED_KEY_SEPARATOR = ".."
 
@@ -218,6 +219,110 @@ class DBConnector(QObject):
                 'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
                 'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
             }
+        """
+        # Get both table and field names. Only include field names that are not FKs, they will be added in a second step
+        records = self._get_table_and_field_names()
+
+        dict_names = dict()
+        for record in records:
+            if record[QueryNames.TABLE_ILINAME] is None:
+                # Any t_ili2db_* tables (INTERLIS meta-attrs)
+                continue
+
+            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
+
+            if not table_iliname in dict_names:
+                dict_names[table_iliname] = dict()
+                dict_names[table_iliname][QueryNames.TABLE_NAME] = record[QueryNames.TABLE_NAME]
+
+            if record[QueryNames.FIELD_ILINAME] is None:
+                # Fields for domains, like 'description' (we map it in a custom way later in this class method)
+                continue
+
+            field_iliname = normalize_iliname(record[QueryNames.FIELD_ILINAME])
+            dict_names[table_iliname][field_iliname] = record[QueryNames.FIELD_NAME]
+
+        # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
+        # Spatial_Unit-->Ext_Address_ID (Ext_Address)
+        #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        records = self._get_fk_fields()
+        for record in records:
+            composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
+                                           COMPOSED_KEY_SEPARATOR,
+                                           normalize_iliname(record['iliname2']))
+            table_iliname = normalize_iliname(record[QueryNames.TABLE_ILINAME])
+            if table_iliname in dict_names:
+                dict_names[table_iliname][composed_key] = record['sqlname']
+            else:
+                colowner = normalize_iliname(record['colowner'])
+                if colowner in dict_names:
+                    dict_names[colowner][composed_key] = record['sqlname']
+
+        dict_names.update(self._get_common_db_names())
+
+        return dict_names
+
+    def _get_table_and_field_names(self):
+        """Gets both table and field names from DB. Only includes field names that are not FKs.
+
+        Execute below Sql statement (seudo-SQL):
+        SELECT
+          IliName AS {QueryNames.TABLE_ILINAME}, -- (1)
+          table_name AS {QueryNames.TABLE_NAME}, -- (2)
+          IliName AS {QueryNames.FIELD_ILINAME}, -- (3)
+          SqlName AS {QueryNames.FIELD_NAME}     -- (4)
+        FROM Dbms_tbl_metadata INNER JOIN T_ILI2DB_CLASSNAME LEFT JOIN T_ILI2DB_ATTRNAME
+        WHERE ilicol.Target IS NULL (because it does not include FKs)
+
+        *Dbms_tbl_metadata="Metadata table of specific DBMS"
+
+        +-----------------+       +------------------+       +-----------------+
+        |Dbms_tbl_metadata|       |T_ILI2DB_CLASSNAME|       |T_ILI2DB_ATTRNAME|
+        |-----------------|       |------------------|       |-----------------|
+        |table_name (2)+  +---+   |IliName   (1)     |       |IliName   (3)    |
+        +--------------|--+   +---+SqlName           |       |SqlName   (4)    |
+                       |          +------------------+   +---+ColOwner         |
+                       |                                 |   |Target           |
+                       +---------------------------------+   +-----------------+
+
+        :return: dict
+        """
+        raise NotImplementedError
+
+    def _get_fk_fields(self):
+        """Maps FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
+
+        i.e.
+        Spatial_Unit-->Ext_Address_ID (Ext_Address)
+        Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+
+        Execute below Sql statement (seudo-SQL):
+        SELECT  "iliname before the last point" as QueryNames.TABLE_ILINAME,
+          iliname, -- (2)
+          sqlname, -- (3)
+          iliname as iliname2, (4)
+          iliname as colowner
+        FROM T_ILI2DB_CLASSNAME AS main_class INNER_JOIN T_ILI2DB_ATTRNAME INNER JOIN T_ILI2DB_CLASSNAME as target class
+
+        +------------------+     +-----------------+     +------------------+
+        |T_ILI2DB_CLASSNAME|     |T_ILI2DB_ATTRNAME|     |T_ILI2DB_CLASSNAME|
+        |   (main class)   |     |-----------------|     |  (target class)  |
+        |------------------|     |IliName   (1,2)  |     |------------------|
+        |IliName   (5)     |     |SqlName   (3)    |     |IliName           |
+        |SqlName    <------------+ColOwner         |  +-->SqlName    (4)    |
+        +------------------+     |Target       +------+  +------------------+
+                                 +-----------------+
+        :return: dict
+        """
+        raise NotImplementedError
+
+    def _get_common_db_names(self):
+        """Returns field common names of databases. T_Id, T_Ili_Tid, dispName, iliCode and description.
+
+        :return: Dictionary with the next keys:
+                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, and DESCRIPTION_KEY from mapping_config.py file
         """
         raise NotImplementedError
 
