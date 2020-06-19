@@ -17,7 +17,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+                              QObject,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import (Qgis,
                        QgsProject,
@@ -150,10 +151,12 @@ class ToolBar(QObject):
                           bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
+        tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
         id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[db.names.OP_BOUNDARY_T],
                                                                   layers[db.names.OP_BOUNDARY_POINT_T],
                                                                   db.names.T_ID_F,
-                                                                  use_selection=use_selection)
+                                                                  use_selection=use_selection,
+                                                                  tolerance=tolerance)
 
         if id_pairs:
             layers[db.names.POINT_BFS_T].startEditing()
