@@ -149,7 +149,7 @@ class MSSQLConnector(ClientServerDB):
         else:
             self.conn.close()
 
-        if self.conn is None:
+        if self.conn is None or self.__is_conn_closed():
             try:
                 self.conn = pyodbc.connect(uri)
             except (ProgrammingError, InterfaceError, pyodbc.Error, pyodbc.OperationalError) as e:
@@ -163,7 +163,8 @@ class MSSQLConnector(ClientServerDB):
 
     def close_connection(self):
         if self.conn:
-            self.conn.close()
+            if not self.__is_conn_closed():
+                self.conn.close()
             self.logger.info(__name__, "Connection was closed!")
             self.conn = None
 
@@ -373,7 +374,7 @@ class MSSQLConnector(ClientServerDB):
             return 4
 
     def check_and_fix_connection(self):
-        if self.conn is None:
+        if self.conn is None or self.__is_conn_closed():
             res, code, msg = self.test_connection()
             if not res:
                 return res, msg
@@ -429,8 +430,7 @@ class MSSQLConnector(ClientServerDB):
                                                                                                "You should first select a database.")
 
         # Client side check
-        # XXX missing conn.closed
-        if self.conn is None:
+        if self.conn is None or self.__is_conn_closed():
             res, msg = self.open_connection()
             if not res:
                 return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
@@ -441,8 +441,6 @@ class MSSQLConnector(ClientServerDB):
             cur.execute('SELECT 1')  # This query will fail if the db is no longer connected
             cur.close()
         except Exception as e:
-            # Reopen the connection if it is closed due to timeout
-            self.conn.close()
             res, msg = self.open_connection()
             if not res:
                 return res, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
@@ -532,3 +530,13 @@ class MSSQLConnector(ClientServerDB):
         dict_names[DESCRIPTION_KEY] = "description"
 
         return dict_names
+
+    def __is_conn_closed(self):
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT @@version;")
+            result = False
+        except (ProgrammingError, InterfaceError, pyodbc.Error, pyodbc.OperationalError):
+            result = True
+
+        return result
