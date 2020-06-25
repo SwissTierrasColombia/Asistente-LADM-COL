@@ -110,7 +110,7 @@ class QualityRuleLayerManager(QObject):
                             # Try to reuse if already calculated!
                             adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
                             if adjusted_layers_key not in self.__adjusted_layers_cache:
-                                self.__adjusted_layers_cache[adjusted_layers_key] = self.__adjust_layers(input, reference, fix)
+                                self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, fix)
 
                             adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
@@ -161,37 +161,6 @@ class QualityRuleLayerManager(QObject):
                 return None
 
         return self.__layers[rule_key]
-
-    def __adjust_layers(self, input_layer, reference_layer, fix=False):
-        # Single layer --> behavior 7
-        # Different layers --> behavior 2, tolerance + 0.0001
-        single_layer = input_layer == reference_layer
-        if single_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
-            behavior = 7  # It's a bit aggressive for polygons, for points works fine
-            tolerance = self.__tolerance
-        else:
-            behavior = 2
-            tolerance = self.__tolerance + 0.001  # Behavior 2 doesn't work with the exact tolerance
-
-        tolerance /= 1000  # Tolerance comes in mm., we need it in m.
-
-        params = {
-            'INPUT': input_layer,
-            'REFERENCE_LAYER': reference_layer,
-            'TOLERANCE': tolerance,
-            'BEHAVIOR': behavior,
-            'OUTPUT': 'TEMPORARY_OUTPUT'
-        }
-        res = processing.run("qgis:snapgeometries", params)['OUTPUT']
-
-        if fix:
-            self.logger.debug(__name__, "Fixing adjusted layer ({}-->{})...".format(input_layer.name(), reference_layer.name()))
-            params = {
-                'INPUT': res,
-                'OUTPUT': 'TEMPORARY_OUTPUT'}
-            res = processing.run("native:fixgeometries", params)['OUTPUT']
-
-        return res
 
     def clean_temporary_layers(self):
         # Removes adjusted layers from registry

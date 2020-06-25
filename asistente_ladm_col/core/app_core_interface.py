@@ -55,7 +55,8 @@ from qgis.core import (Qgis,
                        QgsProperty,
                        QgsRelation,
                        QgsVectorLayer,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsWkbTypes)
 
 import processing
 
@@ -241,7 +242,7 @@ class AppCoreInterface(QObject):
 
     def fix_ladm_col_relations(self, db):
         """
-        Base on loaded ladm layers, find their related domains and layers, load
+        Based on loaded ladm layers, find their related domains and layers, load
         them to QGIS and configure missing relations. This is handy when users
         removed some domain or related tables and would like their
         configuration restored, or simply when they loaded some layers (which
@@ -374,7 +375,6 @@ class AppCoreInterface(QObject):
         return ladm_layers
 
     def post_load_configurations(self, db, layer, layer_name, layer_modifiers=dict()):
-        # TODO: Just call this method once after get_layers (IMPORTANT!)
         # Do some post-load work, such as setting styles or setting automatic fields for that layer
         self.configure_missing_relations(db, layer, layer_name)
         self.configure_missing_bags_of_enum(db, layer, layer_name)
@@ -1316,3 +1316,52 @@ class AppCoreInterface(QObject):
     def ctm12_bounds_exist(cursor):
         cursor.execute(get_ctm12_bounds_exist_query())
         return cursor.fetchone()[0] == 1
+
+    def adjust_layer(self, input_layer, reference_layer, tolerance=0, fix=False, input_only_selected=False):
+        """
+        Returns an adjusted layer.
+
+        :param input_layer: Layer to adjust
+        :param reference_layer: Reference layer for the adjustment
+        :param tolerance: Tolerance in mm.!!!
+        :param fix: Whether the result should be fixed or not
+        :param input_only_selected: Whether we should onlly use selected features from input layer
+        :return: Adjusted and eventually fixed QgsVectorLayer
+        """
+        # Single layer --> behavior 7
+        # Different layers --> behavior 2, tolerance + 0.001
+        single_layer = input_layer == reference_layer
+        if single_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
+            behavior = 7  # It's a bit aggressive for polygons, for points works fine
+        else:
+            behavior = 2
+            tolerance += 0.001  # Behavior 2 doesn't work with exact tolerance
+
+        tolerance /= 1000  # Tolerance comes in mm., we need it in m.
+        input_layer_name = input_layer.name()
+
+        # TODO: Replace the following block by a simple
+        #       QgsProcessingFeatureSourceDefinition(input_layer.id(), input_only_selected) as 'INPUT'
+        #       when this QGIS issue (https://github.com/qgis/QGIS/issues/37394) is solved.
+        if input_only_selected:
+            input_layer = processing.run("native:saveselectedfeatures", {'INPUT':input_layer,'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
+            if single_layer:
+                reference_layer = input_layer
+
+        params = {
+            'INPUT': input_layer,
+            'REFERENCE_LAYER': reference_layer,
+            'TOLERANCE': tolerance,
+            'BEHAVIOR': behavior,
+            'OUTPUT': 'TEMPORARY_OUTPUT'
+        }
+        res = processing.run("qgis:snapgeometries", params)['OUTPUT']
+
+        if fix:
+            self.logger.debug(__name__, "Fixing adjusted layer ({}-->{})...".format(input_layer_name, reference_layer.name()))
+            params = {
+                'INPUT': res,
+                'OUTPUT': 'TEMPORARY_OUTPUT'}
+            res = processing.run("native:fixgeometries", params)['OUTPUT']
+
+        return res
