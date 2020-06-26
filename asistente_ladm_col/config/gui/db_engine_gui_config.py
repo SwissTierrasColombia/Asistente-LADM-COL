@@ -47,10 +47,10 @@ class DBEngineGUIConfig(QObject):
                       ACTION_PARCEL_QUERY,
                       # ACTION_REPORT_ANNEX_17,
                       # ACTION_REPORT_ANT,
-                      ACTION_CHANGE_DETECTION_SETTINGS]
+                      ACTION_CHANGE_DETECTION_SETTINGS,
+                      ACTION_CHECK_QUALITY_RULES]
 
-    GPKG_ACTIONS = COMMON_ACTIONS + [ACTION_CHECK_QUALITY_RULES,
-                                     ACTION_RUN_ETL_SUPPLIES,
+    GPKG_ACTIONS = COMMON_ACTIONS + [ACTION_RUN_ETL_SUPPLIES,
                                      ACTION_FIND_MISSING_COBOL_SUPPLIES,
                                      ACTION_INTEGRATE_SUPPLIES]
 

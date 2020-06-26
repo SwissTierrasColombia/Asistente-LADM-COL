@@ -19,8 +19,8 @@
 from .db_factory import DBFactory
 
 from asistente_ladm_col.gui.db_panel.mssql_config_panel import MSSQLConfigPanel
-from .mssql_connector import MSSQLConnector
-from ...logic.ladm_col.qgis_ladm_query import QGISLADMQuery
+from asistente_ladm_col.lib.db.mssql_connector import MSSQLConnector
+from asistente_ladm_col.logic.ladm_col.mssql_ladm_query import MSSQLLADMQuery
 
 
 class MSSQLFactory(DBFactory):
@@ -54,4 +54,4 @@ class MSSQLFactory(DBFactory):
         configuration.db_odbc_driver = params['db_odbc_driver']
 
     def get_ladm_queries(self):
-        return QGISLADMQuery()
+        return MSSQLLADMQuery()
