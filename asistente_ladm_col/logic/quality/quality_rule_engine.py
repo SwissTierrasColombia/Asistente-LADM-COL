@@ -62,7 +62,7 @@ class QualityRuleEngine(QObject):
             self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
             self.logger.info(__name__,
                              QCoreApplication.translate("QualityRuleEngine",
-                                "Validating {} quality rules with tolerance = {}.").format(len(self.__rules), self.__tolerance))
+                                "Validating {} quality rules (tolerance: {}).").format(len(self.__rules), self.__tolerance))
 
             for rule_key, rule_name in self.__rules.items():
                 layers = self.__layer_manager.get_layers(rule_key)
@@ -70,7 +70,7 @@ class QualityRuleEngine(QObject):
                     self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
                 else:
                     self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                              "Couldn't execute '{}' quality rule! Required layers are not available. Skipping..."))
+                            "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule_name))
 
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()

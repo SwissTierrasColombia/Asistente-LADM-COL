@@ -10,8 +10,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
     def get_parcels_with_invalid_department_code(db):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
-                   WHERE length({op_parcel_t_department_f}) !=2 OR
-                         {op_parcel_t_department_f} ~ '^[0-9]*$' = FALSE
+                   WHERE len({op_parcel_t_department_f}) != 2 OR
+                         {op_parcel_t_department_f} LIKE '%[^0-9]%'
                  """.format(t_id=db.names.T_ID_F,
                             t_ili_tid=db.names.T_ILI_TID_F,
                             schema=db.schema,
