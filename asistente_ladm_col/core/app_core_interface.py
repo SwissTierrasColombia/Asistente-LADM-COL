@@ -139,7 +139,7 @@ class AppCoreInterface(QObject):
     def clear_db_cache(self):
         self._layers = list()
         self._relations = list()
-        self._bags_of_enum = list()
+        self._bags_of_enum = dict()
 
     def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         """

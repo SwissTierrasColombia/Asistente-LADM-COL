@@ -22,6 +22,7 @@ import shutil
 from functools import partial
 
 import qgis.utils
+from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 from qgis.PyQt.QtCore import (Qt,
@@ -51,7 +52,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       RELEASE_URL,
                                                       COLLECTED_DB_SOURCE,
                                                       WIZARD_CLASS,
-                                                      WIZARD_TOOL_NAME, 
+                                                      WIZARD_TOOL_NAME,
                                                       WIZARD_TYPE,
                                                       WIZARD_LAYERS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
@@ -69,7 +70,14 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
-                                                      SETTINGS_CONNECTION_TAB_INDEX)
+                                                      QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
+                                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                                      MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -156,6 +164,16 @@ class AsistenteLADMCOLPlugin(QObject):
         task_steps_config.set_slot_caller(self)
         layer_tree_indicator_config = LayerTreeIndicatorConfig()
         layer_tree_indicator_config.set_slot_caller(self)
+
+        # Let's persist some dependency objects
+        self.qmb_plugin = PluginDependency(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                           QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                           QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                           QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
+        self.mst_plugin = PluginDependency(MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                           MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                           MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
+                                           MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -953,8 +971,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
-    @_db_connection_required
     @_qgis_model_baker_required
+    @_db_connection_required
     def load_layers_from_qgis_model_baker(self, *args):
         dlg = LoadLayersDialog(self.get_db_connection())
         dlg.exec_()
