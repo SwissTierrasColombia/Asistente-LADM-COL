@@ -45,7 +45,7 @@ class ReportDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("ReportDependency", "reports")
 
-    def save_dependency_file(self, fetcher_task):
+    def _save_dependency_file(self, fetcher_task):
         self._downloading = False
         if fetcher_task.reply() is not None:
             # Write response to tmp file
