@@ -882,7 +882,7 @@ class AppCoreInterface(QObject):
         return (res, msg)
 
     @staticmethod
-    def is_transitional_system_service_valid(self, url=None):
+    def is_transitional_system_service_valid(url=None):
         res = False
         msg = {'text': '', 'level': Qgis.Warning}
         st_config = TransitionalSystemConfig()
