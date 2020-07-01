@@ -229,7 +229,7 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E400301: QCoreApplication.translate("TranslatableConfigStrings", "Los porcentajes de participación de la agrupación de interesados deben sumar uno (1)"),
             QUALITY_RULE_ERROR_CODE_E400401: QCoreApplication.translate("TranslatableConfigStrings", "El código de departamento debe tener dos caracteres numéricos"),
             QUALITY_RULE_ERROR_CODE_E400501: QCoreApplication.translate("TranslatableConfigStrings", "El código de municipio debe tener tres caracteres numéricos"),
-            QUALITY_RULE_ERROR_CODE_E400601: QCoreApplication.translate("TranslatableConfigStrings", "El número predial debe tiener 30 caracteres numéricos"),
+            QUALITY_RULE_ERROR_CODE_E400601: QCoreApplication.translate("TranslatableConfigStrings", "El número predial debe tener 30 caracteres numéricos"),
             QUALITY_RULE_ERROR_CODE_E400701: QCoreApplication.translate("TranslatableConfigStrings", "El número predial anterior debe tener 20 caracteres numéricos"),
             QUALITY_RULE_ERROR_CODE_E400801: QCoreApplication.translate("TranslatableConfigStrings", "La razón social no debe estar diligenciada"),
             QUALITY_RULE_ERROR_CODE_E400802: QCoreApplication.translate("TranslatableConfigStrings", "El primer apellido es obligatorio y debe estar diligenciado"),

@@ -23,8 +23,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
     def get_parcels_with_invalid_municipality_code(db):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
-                   WHERE length({op_parcel_t_municipality_f}) !=3 OR
-                         {op_parcel_t_municipality_f} ~ '^[0-9]*$' = FALSE
+                   WHERE len({op_parcel_t_municipality_f}) != 3 OR
+                         {op_parcel_t_municipality_f} LIKE '%[^0-9]%'
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
@@ -36,8 +36,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
     def get_parcels_with_invalid_parcel_number(db):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
-                   WHERE length({op_parcel_t_parcel_number_f}) !=30 OR
-                         {op_parcel_t_parcel_number_f} ~ '^[0-9]*$' = FALSE
+                   WHERE len({op_parcel_t_parcel_number_f}) != 30 OR
+                         {op_parcel_t_parcel_number_f} LIKE '%[^0-9]%'
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
@@ -49,8 +49,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
     def get_parcels_with_invalid_previous_parcel_number(db):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {schema}.{op_parcel_t}
-                   WHERE ({op_parcel_t_previous_parcel_number_f} IS NOT NULL AND (length({op_parcel_t_previous_parcel_number_f}) !=20
-                   OR ({op_parcel_t_previous_parcel_number_f} ~ '^[0-9]*$') = FALSE))
+                   WHERE {op_parcel_t_previous_parcel_number_f} IS NOT NULL AND (len({op_parcel_t_previous_parcel_number_f}) != 20
+                            OR {op_parcel_t_previous_parcel_number_f} LIKE '%[^0-9]%')
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
@@ -204,8 +204,11 @@ class MSSQLLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_duplicate_records_in_table(db, table_name, fields_to_check):
+        fields_to_check = ["{}.STAsText()".format(f) if f in (db.names.COL_BFS_T_GEOMETRY_F,
+                                                              db.names.OP_PLOT_T_GEOMETRY_F,
+                                                              db.names.COL_SPATIAL_UNIT_T_GEOMETRY_F) else f for f in fields_to_check]
         query = """
-                    SELECT string_agg({t_ili_tid}::text, ',') as duplicate_uuids, COUNT({t_id}) as duplicate_total
+                    SELECT string_agg(cast({t_ili_tid} AS char(36)), ',') as duplicate_uuids, COUNT({t_id}) as duplicate_total
                     FROM {schema}.{table_name}
                     GROUP BY {fields}
                     HAVING COUNT({t_id}) > 1
