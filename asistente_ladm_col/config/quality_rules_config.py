@@ -768,7 +768,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.OP_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.OP_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }
                 }
             }, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
@@ -795,10 +796,11 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.OP_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.OP_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }, names.OP_BOUNDARY_T: {  # This one uses an adjusted layer as reference layer!
                         ADJUSTED_INPUT_LAYER: names.OP_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.OP_PLOT_T, names.OP_PLOT_T, False),
+                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.OP_PLOT_T, names.OP_PLOT_T, True),
                         FIX_ADJUSTED_LAYER: True
                     }
                 }
@@ -816,7 +818,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.OP_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.OP_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.OP_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }
                 }
             }, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {

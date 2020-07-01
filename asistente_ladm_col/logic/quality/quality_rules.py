@@ -16,10 +16,12 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis._core import Qgis
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import Qgis
 
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.layer_config import LayerConfig
+from asistente_ladm_col.config.quality_rules_config import QUALITY_RULE_LAYERS
 from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules
 from asistente_ladm_col.logic.quality.line_quality_rules import LineQualityRules
 from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
@@ -49,6 +51,11 @@ class QualityRules:
                  res = [(msg, Qgis.Success|Warning|Critical)), ...]
         """
         msg, level = "Rule {} not found!".format(id_quality_rule), Qgis.Critical
+
+        # Check that we have all required layers, otherwise, return and don't even call the quality rule
+        for k,v in layers[QUALITY_RULE_LAYERS].items():
+            if v is None:
+                return QCoreApplication.translate("", "Invalid input layer '{}'. Chances are, you're using a tolerance so high that it makes some geometries invalid.".format(k)), Qgis.Critical
 
         # POINT QUALITY RULES
         if id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:

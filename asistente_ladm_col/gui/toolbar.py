@@ -240,7 +240,8 @@ class ToolBar(QObject):
             layers[db.names.OP_PLOT_T] = self.app.core.adjust_layer(layers[db.names.OP_PLOT_T],
                                                                     layers[db.names.OP_PLOT_T],
                                                                     tolerance,
-                                                                    input_only_selected=use_selection)
+                                                                    True,
+                                                                    use_selection)
             layers[db.names.OP_BOUNDARY_T] = self.app.core.adjust_layer(layers[db.names.OP_BOUNDARY_T],
                                                                         layers[db.names.OP_PLOT_T],
                                                                         tolerance,

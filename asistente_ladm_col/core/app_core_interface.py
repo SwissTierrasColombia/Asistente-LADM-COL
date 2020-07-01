@@ -56,11 +56,13 @@ from qgis.core import (Qgis,
                        QgsRelation,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingException)
 
 import processing
 
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
+from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
                                                                                  get_insert_ctm12_query,
                                                                                  get_insert_cm12_bounds_query,
@@ -1355,7 +1357,16 @@ class AppCoreInterface(QObject):
             'BEHAVIOR': behavior,
             'OUTPUT': 'TEMPORARY_OUTPUT'
         }
-        res = processing.run("qgis:snapgeometries", params)['OUTPUT']
+        feedback = CustomFeedbackWithErrors()
+        try:
+            res = processing.run("qgis:snapgeometries", params, feedback=feedback)['OUTPUT']
+        except QgsProcessingException as e:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
+                                                                         "'{}' and '{}' layers could not be adjusted. Details: {}".format(
+                                                                             input_layer_name,
+                                                                             reference_layer.name(),
+                                                                             feedback.msg)))
+            return None
 
         if fix:
             self.logger.debug(__name__, "Fixing adjusted layer ({}-->{})...".format(input_layer_name, reference_layer.name()))

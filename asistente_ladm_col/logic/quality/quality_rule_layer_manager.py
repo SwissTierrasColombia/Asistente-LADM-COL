@@ -30,6 +30,7 @@ from asistente_ladm_col.config.quality_rules_config import (QualityRuleConfig,
                                                             ADJUSTED_INPUT_LAYER,
                                                             FIX_ADJUSTED_LAYER, HAS_ADJUSTED_LAYERS)
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
 
 
@@ -93,26 +94,34 @@ class QualityRuleLayerManager(QObject):
         if self.__tolerance:
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Tolerance > 0, adjusting layers..."))
             self.__adjusted_layers_cache = dict()  # adjusted_layers_key: layer
-            for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
-                if rule_key in self.__rule_keys:  # Only get selected rules' layers
-                    if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
+            count_rules = 0
+            total_rules = len([rk for rk in self.__rule_keys if rk in self.__quality_rule_layers_config])
 
-                        for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
-                            # Read from config
-                            input_name = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
-                            reference_name = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
-                            fix = snap_config[FIX_ADJUSTED_LAYER] if FIX_ADJUSTED_LAYER in snap_config else False
+            with ProcessWithStatus(QCoreApplication.translate("QualityRuleLayerManager",
+                                                              "Preparing tolerance on layers...")):
+                for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
+                    if rule_key in self.__rule_keys:  # Only get selected rules' layers
+                        count_rules += 1
+                        self.logger.status(QCoreApplication.translate("QualityRuleLayerManager",
+                                                                      "Preparing tolerance on layers... {}%").format(int(count_rules/total_rules*100)))
+                        if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
 
-                            # Get input and reference layers (note that they could be adjusted layers)
-                            input = self.__adjusted_layers_cache[input_name] if input_name in self.__adjusted_layers_cache else ladm_layers[input_name]
-                            reference = self.__adjusted_layers_cache[reference_name] if reference_name in self.__adjusted_layers_cache else ladm_layers[reference_name]
+                            for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
+                                # Read from config
+                                input_name = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
+                                reference_name = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
+                                fix = snap_config[FIX_ADJUSTED_LAYER] if FIX_ADJUSTED_LAYER in snap_config else False
 
-                            # Try to reuse if already calculated!
-                            adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
-                            if adjusted_layers_key not in self.__adjusted_layers_cache:
-                                self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, fix)
+                                # Get input and reference layers (note that they could be adjusted layers)
+                                input = self.__adjusted_layers_cache[input_name] if input_name in self.__adjusted_layers_cache else ladm_layers[input_name]
+                                reference = self.__adjusted_layers_cache[reference_name] if reference_name in self.__adjusted_layers_cache else ladm_layers[reference_name]
 
-                            adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
+                                # Try to reuse if already calculated!
+                                adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
+                                if adjusted_layers_key not in self.__adjusted_layers_cache:
+                                    self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, fix)
+
+                                adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
 
@@ -136,7 +145,7 @@ class QualityRuleLayerManager(QObject):
                 self.__layers[rule_key][HAS_ADJUSTED_LAYERS] = bool(self.__tolerance)
 
         # Register adjusted layers so that Processing can properly find them
-        load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items()]
+        load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
         self.logger.debug(__name__, "{} adjusted layers loaded to QGIS registry...".format(len(load_to_registry)))
         QgsProject.instance().addMapLayers(load_to_registry, False)
 
@@ -164,6 +173,6 @@ class QualityRuleLayerManager(QObject):
 
     def clean_temporary_layers(self):
         # Removes adjusted layers from registry
-        unload_from_registry = [layer.id() for key, layer in self.__adjusted_layers_cache.items()]
+        unload_from_registry = [layer.id() for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
         self.logger.debug(__name__, "{} adjusted layers removed from QGIS registry...".format(len(unload_from_registry)))
         QgsProject.instance().removeMapLayers(unload_from_registry)
