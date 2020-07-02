@@ -61,57 +61,57 @@ class MSSQLLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_invalid_col_party_type_natural(db):
         query = """SELECT {t_id}, {t_ili_tid},
-                                  CASE WHEN {op_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
-                                  CASE WHEN {op_party_t_surname_1_f} IS NULL OR length(trim({op_party_t_surname_1_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
-                                  CASE WHEN {op_party_t_first_name_1_f} IS NULL OR length(trim({op_party_t_first_name_1_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
-                                  CASE WHEN {op_party_t_document_type_f} = (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {op_party_t_document_type_f}
-                           FROM {schema}.{op_party_t}
-                           WHERE {op_party_t_type_f} = (select {t_id} from {schema}.{op_party_type_d} where {ilicode} = '{op_party_type_d_ilicode_f_natural_party_v}')
-                                 AND ({op_party_t_business_name_f} IS NOT NULL OR {op_party_t_surname_1_f} IS NULL OR length(trim({op_party_t_surname_1_f})) > 0 is False
-                                 OR {op_party_t_first_name_1_f} IS NULL OR length(trim({op_party_t_first_name_1_f})) > 0 is False
-                                 OR {op_party_t_document_type_f} = (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}'))
-                       """.format(t_id=db.names.T_ID_F,
-                                  t_ili_tid=db.names.T_ILI_TID_F,
-                                  schema=db.schema,
-                                  ilicode=db.names.ILICODE_F,
-                                  op_party_t=db.names.OP_PARTY_T,
-                                  op_party_t_business_name_f=db.names.OP_PARTY_T_BUSINESS_NAME_F,
-                                  op_party_t_surname_1_f=db.names.OP_PARTY_T_SURNAME_1_F,
-                                  op_party_t_first_name_1_f=db.names.OP_PARTY_T_FIRST_NAME_1_F,
-                                  op_party_t_document_type_f=db.names.OP_PARTY_T_DOCUMENT_TYPE_F,
-                                  op_party_t_type_f=db.names.OP_PARTY_T_TYPE_F,
-                                  op_party_type_d=db.names.OP_PARTY_TYPE_D,
-                                  op_party_document_type_d=db.names.OP_PARTY_DOCUMENT_TYPE_D,
-                                  op_party_document_type_d_ilicode_f_nit_v=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
-                                  op_party_type_d_ilicode_f_natural_party_v=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
+                          CASE WHEN {op_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
+                          CASE WHEN {op_party_t_surname_1_f} IS NULL OR len(trim({op_party_t_surname_1_f})) = 0 THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
+                          CASE WHEN {op_party_t_first_name_1_f} IS NULL OR len(trim({op_party_t_first_name_1_f})) = 0 THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
+                          CASE WHEN {op_party_t_document_type_f} = (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {op_party_t_document_type_f}
+                   FROM {schema}.{op_party_t}
+                   WHERE {op_party_t_type_f} = (select {t_id} from {schema}.{op_party_type_d} where {ilicode} = '{op_party_type_d_ilicode_f_natural_party_v}')
+                         AND ({op_party_t_business_name_f} IS NOT NULL OR {op_party_t_surname_1_f} IS NULL OR len(trim({op_party_t_surname_1_f})) = 0
+                         OR {op_party_t_first_name_1_f} IS NULL OR len(trim({op_party_t_first_name_1_f})) = 0
+                         OR {op_party_t_document_type_f} = (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}'))
+               """.format(t_id=db.names.T_ID_F,
+                          t_ili_tid=db.names.T_ILI_TID_F,
+                          schema=db.schema,
+                          ilicode=db.names.ILICODE_F,
+                          op_party_t=db.names.OP_PARTY_T,
+                          op_party_t_business_name_f=db.names.OP_PARTY_T_BUSINESS_NAME_F,
+                          op_party_t_surname_1_f=db.names.OP_PARTY_T_SURNAME_1_F,
+                          op_party_t_first_name_1_f=db.names.OP_PARTY_T_FIRST_NAME_1_F,
+                          op_party_t_document_type_f=db.names.OP_PARTY_T_DOCUMENT_TYPE_F,
+                          op_party_t_type_f=db.names.OP_PARTY_T_TYPE_F,
+                          op_party_type_d=db.names.OP_PARTY_TYPE_D,
+                          op_party_document_type_d=db.names.OP_PARTY_DOCUMENT_TYPE_D,
+                          op_party_document_type_d_ilicode_f_nit_v=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                          op_party_type_d_ilicode_f_natural_party_v=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
         return db.execute_sql_query(query)
 
     @staticmethod
     def get_invalid_col_party_type_no_natural(db):
         query = """SELECT {t_id}, {t_ili_tid},
-                                  CASE WHEN {op_party_t_business_name_f} IS NULL OR length(trim({op_party_t_business_name_f})) > 0 is False THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
-                                  CASE WHEN {op_party_t_surname_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
-                                  CASE WHEN {op_party_t_first_name_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
-                                  CASE WHEN {op_party_t_document_type_f} NOT IN ((select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}')) THEN 1 ELSE 0 END AS {op_party_t_document_type_f}
-                           FROM {schema}.{op_party_t}
-                           WHERE {op_party_t_type_f} = (select {t_id} from {schema}.{op_party_type_d} where {ilicode} = '{op_party_type_d_ilicode_f_not_natural_party_v}')
-                           AND ({op_party_t_business_name_f} IS NULL OR length(trim({op_party_t_business_name_f})) > 0 is False OR {op_party_t_surname_1_f} IS NOT NULL OR
-                           {op_party_t_first_name_1_f} IS NOT NULL OR
-                           {op_party_t_document_type_f} NOT IN ((select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}')))
-                        """.format(t_id=db.names.T_ID_F,
-                                   t_ili_tid=db.names.T_ILI_TID_F,
-                                   schema=db.schema,
-                                   ilicode=db.names.ILICODE_F,
-                                   op_party_t=db.names.OP_PARTY_T,
-                                   op_party_t_business_name_f=db.names.OP_PARTY_T_BUSINESS_NAME_F,
-                                   op_party_t_first_name_1_f=db.names.OP_PARTY_T_FIRST_NAME_1_F,
-                                   op_party_t_document_type_f=db.names.OP_PARTY_T_DOCUMENT_TYPE_F,
-                                   op_party_t_surname_1_f=db.names.OP_PARTY_T_SURNAME_1_F,
-                                   op_party_t_type_f=db.names.OP_PARTY_T_TYPE_F,
-                                   op_party_type_d=db.names.OP_PARTY_TYPE_D,
-                                   op_party_document_type_d=db.names.OP_PARTY_DOCUMENT_TYPE_D,
-                                   op_party_document_type_d_ilicode_f_nit_v=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
-                                   op_party_type_d_ilicode_f_not_natural_party_v=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V)
+                          CASE WHEN {op_party_t_business_name_f} IS NULL OR len(trim({op_party_t_business_name_f})) = 0 THEN 1 ELSE 0 END AS {op_party_t_business_name_f},
+                          CASE WHEN {op_party_t_surname_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_surname_1_f},
+                          CASE WHEN {op_party_t_first_name_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {op_party_t_first_name_1_f},
+                          CASE WHEN {op_party_t_document_type_f} != (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {op_party_t_document_type_f}
+                   FROM {schema}.{op_party_t}
+                   WHERE {op_party_t_type_f} = (select {t_id} from {schema}.{op_party_type_d} where {ilicode} = '{op_party_type_d_ilicode_f_not_natural_party_v}')
+                       AND ({op_party_t_business_name_f} IS NULL OR len(trim({op_party_t_business_name_f})) = 0 OR {op_party_t_surname_1_f} IS NOT NULL OR
+                       {op_party_t_first_name_1_f} IS NOT NULL OR
+                       {op_party_t_document_type_f} != (select {t_id} from {schema}.{op_party_document_type_d} where {ilicode} = '{op_party_document_type_d_ilicode_f_nit_v}'))
+                """.format(t_id=db.names.T_ID_F,
+                           t_ili_tid=db.names.T_ILI_TID_F,
+                           schema=db.schema,
+                           ilicode=db.names.ILICODE_F,
+                           op_party_t=db.names.OP_PARTY_T,
+                           op_party_t_business_name_f=db.names.OP_PARTY_T_BUSINESS_NAME_F,
+                           op_party_t_first_name_1_f=db.names.OP_PARTY_T_FIRST_NAME_1_F,
+                           op_party_t_document_type_f=db.names.OP_PARTY_T_DOCUMENT_TYPE_F,
+                           op_party_t_surname_1_f=db.names.OP_PARTY_T_SURNAME_1_F,
+                           op_party_t_type_f=db.names.OP_PARTY_T_TYPE_F,
+                           op_party_type_d=db.names.OP_PARTY_TYPE_D,
+                           op_party_document_type_d=db.names.OP_PARTY_DOCUMENT_TYPE_D,
+                           op_party_document_type_d_ilicode_f_nit_v=LADMNames.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                           op_party_type_d_ilicode_f_not_natural_party_v=LADMNames.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V)
         return db.execute_sql_query(query)
 
     @staticmethod
@@ -172,8 +172,7 @@ class MSSQLLADMQuery(QGISLADMQuery):
                           {op_parcel_t_parcel_type_f}
                    FROM {schema}.{op_parcel_t}
                    WHERE ({op_parcel_t_parcel_number_f} IS NOT NULL
-                          AND (substring({op_parcel_t_parcel_number_f},22,1) != '0'
-                          AND {op_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}'))
+                          AND (substring({op_parcel_t_parcel_number_f},22,1) != '0' AND {op_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}'))
                           OR (substring({op_parcel_t_parcel_number_f},22,1) != '9' AND {op_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_horizontal_property_parcel_unit}')))
                           OR (substring({op_parcel_t_parcel_number_f},22,1) != '8' AND {op_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} in ('{parcel_type_condominium_parent}', '{parcel_type_condominium_parcel_unit}')))
                           OR (substring({op_parcel_t_parcel_number_f},22,1) != '7' AND {op_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{op_condition_parcel_type_d} where {ilicode} in ('{parcel_type_cemetery_parent}', '{parcel_type_cemetery_parcel_unit}')))
@@ -222,9 +221,12 @@ class MSSQLLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_group_party_fractions_that_do_not_make_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, string_agg({t_id}::text, ',') as miembros, SUM(parte) suma_fracciones  FROM (
-                    SELECT {fraction_s_numerator_f}::float/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {schema}.{fraction_s}
-                    ) AS fraccion_parte join {schema}.{members_t} on fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
+                    SELECT {members_t_group_party_f} as agrupacion, string_agg(cast({t_id} as varchar(MAX)), ',') as miembros, SUM(parte) suma_fracciones
+                    FROM (
+                        SELECT CAST({fraction_s_numerator_f} as float)/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {schema}.{fraction_s}
+                        ) AS fraccion_parte
+                    JOIN {schema}.{members_t}
+                        ON fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
                     GROUP BY {members_t_group_party_f}
                     HAVING SUM(parte) != 1
                 """.format(t_id=db.names.T_ID_F,

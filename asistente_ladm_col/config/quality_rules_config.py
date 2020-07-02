@@ -518,7 +518,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_terrenos_asociados"), QVariant.Int),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_construcciones_asociadas"), QVariant.Int),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_unidades_contruccion_asociadas"), QVariant.Int)
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_unidades_construccion_asociadas"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
                             QUALITY_RULE_ERROR_CODE_E401101,

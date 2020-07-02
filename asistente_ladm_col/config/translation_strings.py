@@ -218,7 +218,7 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E301001: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ningún terreno"),
             QUALITY_RULE_ERROR_CODE_E301002: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de un terreno"),
             QUALITY_RULE_ERROR_CODE_E301003: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de un terreno pero no dentro de su terreno correspondiente"),
-            QUALITY_RULE_ERROR_CODE_E301101: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ninguna contrucción"),
+            QUALITY_RULE_ERROR_CODE_E301101: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ninguna construcción"),
             QUALITY_RULE_ERROR_CODE_E301102: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de una construcción"),
             QUALITY_RULE_ERROR_CODE_E301103: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente"),
 
