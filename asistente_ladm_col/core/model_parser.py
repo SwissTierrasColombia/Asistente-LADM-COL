@@ -33,7 +33,6 @@ class ModelParser(QObject):
             LADMNames.SURVEY_MODEL_PREFIX: None,
             LADMNames.VALUATION_MODEL_PREFIX: None,
             LADMNames.LADM_MODEL_PREFIX: None,
-            LADMNames.ANT_MODEL_PREFIX: None,
             LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: None,
             LADMNames.SNR_DATA_MODEL_PREFIX: None,
             LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: None,
@@ -44,7 +43,6 @@ class ModelParser(QObject):
             LADMNames.SURVEY_MODEL_PREFIX: False,
             LADMNames.VALUATION_MODEL_PREFIX: False,
             LADMNames.LADM_MODEL_PREFIX: False,
-            LADMNames.ANT_MODEL_PREFIX: False,
             LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: False,
             LADMNames.SNR_DATA_MODEL_PREFIX: False,
             LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: False,
@@ -78,9 +76,6 @@ class ModelParser(QObject):
 
     def valuation_model_exists(self):
         return self.model_version_is_supported[LADMNames.VALUATION_MODEL_PREFIX]
-
-    def ant_model_exists(self):
-        return self.model_version_is_supported[LADMNames.ANT_MODEL_PREFIX]
 
     def ladm_model_exists(self):
         return self.model_version_is_supported[LADMNames.LADM_MODEL_PREFIX]

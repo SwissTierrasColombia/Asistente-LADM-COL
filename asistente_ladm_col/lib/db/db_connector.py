@@ -137,12 +137,6 @@ class DBConnector(QObject):
 
         return False
 
-    def ant_model_exists(self):
-        if self.read_model_parser():
-            return self.model_parser.ant_model_exists()
-
-        return False
-
     def ladm_model_exists(self):
         if self.read_model_parser():
             return self.model_parser.ladm_model_exists()

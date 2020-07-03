@@ -44,7 +44,6 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(db_connection.supplies_integration_model_exists())
         self.assertTrue(db_connection.survey_model_exists())
         self.assertTrue(db_connection.valuation_model_exists())
-        self.assertFalse(db_connection.ant_model_exists())
         self.assertFalse(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
@@ -53,7 +52,7 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 180)
+        self.assertEqual(len(dict_names), 181)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
@@ -68,6 +67,12 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo": "manzana_vereda_codigo",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
+                         },
+                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                             "table_name": "av_tablacalificacionconstruccion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -80,7 +85,7 @@ class TestValuationModel(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 180)
+        self.assertEqual(len(dict_names), 181)
 
         expected_dict = {T_ID_KEY: 'T_Id',
                          T_ILI_TID_KEY: "T_Ili_Tid",
@@ -95,6 +100,12 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Manzana_Vereda_Codigo": "manzana_vereda_codigo",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
+                         },
+                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                             "table_name": "av_tablacalificacionconstruccion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():

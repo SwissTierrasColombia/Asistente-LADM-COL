@@ -672,7 +672,7 @@ class LADMDATA():
     @staticmethod
     def mapping_plot_fields_for_supplies(names):
         return {
-            names.GC_PLOT_T_ALPHANUMERIC_AREA: DICT_KEY_PLOT_T_AREA_F
+            names.GC_PLOT_T_ALPHANUMERIC_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
     @staticmethod

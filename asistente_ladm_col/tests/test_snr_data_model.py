@@ -43,7 +43,6 @@ class TestSNRDataModel(unittest.TestCase):
         self.assertFalse(db_connection.supplies_integration_model_exists())
         self.assertFalse(db_connection.survey_model_exists())
         self.assertFalse(db_connection.valuation_model_exists())
-        self.assertFalse(db_connection.ant_model_exists())
         self.assertFalse(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_db_pg(self):

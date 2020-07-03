@@ -244,10 +244,10 @@ def _survey_model_required(func_to_decorate):
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
                 settings_context = SettingsContext(db_source)
-                settings_context.required_models = [LADMNames.OPERATION_MODEL_PREFIX]
+                settings_context.required_models = [LADMNames.SURVEY_MODEL_PREFIX]
                 settings_context.tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
                 settings_context.title = QCoreApplication.translate("SettingsDialog", "{} Connection Settings").format(Tr.tr_db_source(db_source))
-                settings_context.tip = QCoreApplication.translate("SettingsDialog", "Set a DB connection with the '{}' model.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.OPERATION_MODEL_PREFIX])
+                settings_context.tip = QCoreApplication.translate("SettingsDialog", "Set a DB connection with the '{}' model.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.SURVEY_MODEL_PREFIX])
                 button.pressed.connect(partial(inst.show_settings_clear_message_bar, settings_context))
 
                 widget.layout().addWidget(button)
@@ -314,7 +314,7 @@ def _valuation_model_required(func_to_decorate):
             settings_context.required_models = [LADMNames.VALUATION_MODEL_PREFIX]
             settings_context.tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
             settings_context.title = QCoreApplication.translate("SettingsDialog", "{} Connection Settings").format(Tr.tr_db_source(db_source))
-            settings_context.tip = QCoreApplication.translate("SettingsDialog", "Set a DB connection with the '{}' model.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.OPERATION_MODEL_PREFIX])
+            settings_context.tip = QCoreApplication.translate("SettingsDialog", "Set a DB connection with the '{}' model.").format(LADMNames.ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL[LADMNames.SURVEY_MODEL_PREFIX])
             button.pressed.connect(partial(inst.show_settings_clear_message_bar, settings_context))
 
             widget.layout().addWidget(button)

@@ -47,7 +47,7 @@ def get_igac_economic_query(names, ladm_units):
                         QueryNames.FILTER_SUB_LEVEL: FilterSubLevel(names.T_ID_F, names.LC_BUILDING_UNIT_T,
                                                                     names.LC_BUILDING_UNIT_T_BUILDING_F),
                         QueryNames.TABLE_FIELDS: [
-                            OwnField(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F, "Avalúo"),
+                            OwnField(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F, get_full_alias("Avalúo", ladm_units, names.LC_BUILDING_UNIT_T, names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F)),
                             OwnField(names.LC_BUILDING_UNIT_T_BUILT_AREA_F, get_full_alias("Área construida", ladm_units, names.LC_BUILDING_UNIT_T, names.LC_BUILDING_UNIT_T_BUILT_AREA_F)),
                             OwnField(names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F,
                                      get_full_alias("Área privada construida", ladm_units, names.LC_BUILDING_UNIT_T, names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F)),
