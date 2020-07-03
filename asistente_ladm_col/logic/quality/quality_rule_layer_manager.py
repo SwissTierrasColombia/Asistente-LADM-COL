@@ -78,7 +78,7 @@ class QualityRuleLayerManager(QObject):
 
         self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Getting {} LADM-COL layers...").format(len(ladm_layers)))
         self.app.core.get_layers(self.__db, ladm_layers, load=True)
-        if not ladm_layers:
+        if ladm_layers is None:  # If there are errors with get_layers, ladm_layers is None
             self.logger.critical(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Couldn't finish preparing required layers!"))
             return False
 
@@ -125,8 +125,8 @@ class QualityRuleLayerManager(QObject):
 
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
 
-        # Now that we have both ladm_layers and adjusted_layers, join them
-        # in a single member dict of layers per rule, preferring adjusted layers
+        # Now that we have both ladm_layers and adjusted_layers, use them
+        # in a single member dict of layers per rule (preserving original LADM-COL layers)
         self.__layers = {rule_key:{QUALITY_RULE_LAYERS: dict(), QUALITY_RULE_LADM_COL_LAYERS: dict()} for rule_key in self.__rule_keys}
         for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
             if rule_key in self.__rule_keys:  # Only get selected rules' layers
@@ -145,9 +145,10 @@ class QualityRuleLayerManager(QObject):
                 self.__layers[rule_key][HAS_ADJUSTED_LAYERS] = bool(self.__tolerance)
 
         # Register adjusted layers so that Processing can properly find them
-        load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
-        self.logger.debug(__name__, "{} adjusted layers loaded to QGIS registry...".format(len(load_to_registry)))
-        QgsProject.instance().addMapLayers(load_to_registry, False)
+        if self.__adjusted_layers_cache:
+            load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
+            self.logger.debug(__name__, "{} adjusted layers loaded to QGIS registry...".format(len(load_to_registry)))
+            QgsProject.instance().addMapLayers(load_to_registry, False)
 
         return True
 
