@@ -12,6 +12,7 @@ from qgis.utils import (isPluginLoaded,
                         startPlugin)
 
 from asistente_ladm_col.lib.context import SettingsContext
+from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.utils import (is_plugin_version_valid,
@@ -133,31 +134,32 @@ def _qgis_model_baker_required(func_to_decorate):
     def decorated_function(*args, **kwargs):
         inst = args[0]
         # Check if QGIS Model Baker is installed and active, disable access if not
-        plugin_version_right = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-
-        if plugin_version_right:
+        if inst.qmb_plugin.check_if_dependency_is_valid():
             func_to_decorate(*args, **kwargs)
         else:
-            if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
-                # If we depend on a specific version of QGIS Model Baker (only on that one)
-                # and it is not the latest version, show a download link
+            if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:  # Handle custom plugin release installation
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                 "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP' in the Plugin Manager.").format(
-                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
-            else:
+                                                 "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Click the button to install it.").format(
+                                                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION)
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Install plugin"))
+                button.pressed.connect(inst.qmb_plugin.install)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            else:  # Shouldn't be necessary because QGIS handles official plugin dependencies
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                  "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(
                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                     '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
 
-            widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-            button.pressed.connect(inst.show_plugin_manager)
-            widget.layout().addWidget(button)
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                button.pressed.connect(inst.show_plugin_manager)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
             inst.logger.warning(__name__,
                 QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -332,26 +334,31 @@ def _map_swipe_tool_required(func_to_decorate):
     def decorated_function(*args, **kwargs):
         inst = args[0]
         # Check if Map Swipe Tool is installed and active, disable access if not
-        plugin_version_right = is_plugin_version_valid(MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
-                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION)
-
-        if plugin_version_right:
+        if inst.mst_plugin.check_if_dependency_is_valid():
             func_to_decorate(*args, **kwargs)
         else:
             if MAP_SWIPE_TOOL_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of Map Swipe Tool (only on that one)
                 # and it is not the latest version, show a download link
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP' in the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
-            else:
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                 "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Click the button to install it.").format(
+                                                    MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Install plugin"))
+                button.pressed.connect(inst.mst_plugin.install)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            else:  # Shouldn't be necessary because QGIS handles official plugin dependencies
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, '' if MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION else '(or higher) ')
 
-            widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-            button.pressed.connect(inst.show_plugin_manager)
-            widget.layout().addWidget(button)
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                button.pressed.connect(inst.show_plugin_manager)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
             inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."))

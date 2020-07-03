@@ -54,7 +54,7 @@ class JavaDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("JavaDependency", "JAVA")
 
-    def save_dependency_file(self, fetcher_task):
+    def _save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
             # Write response to tmp file
             tmp_file = tempfile.mktemp()

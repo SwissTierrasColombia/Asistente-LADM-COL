@@ -29,7 +29,8 @@ from qgis.core import (Qgis,
                        QgsLayerTreeGroup,
                        QgsProject,
                        QgsLayerTreeNode,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsCategorizedSymbolRenderer)
 from qgis.gui import QgsLayerTreeViewIndicator
 import processing
 
@@ -110,6 +111,17 @@ class AppGUIInterface(QObject):
         if added_layer.isSpatial():
             # db connection is none because we are using a memory layer
             SymbologyUtils().set_layer_style_from_qml(db, added_layer, is_error_layer=True)
+
+            if isinstance(added_layer.renderer(), QgsCategorizedSymbolRenderer):
+                # Remove empty style categories as they just make difficult to understand validation errors
+                unique_values = added_layer.uniqueValues(added_layer.fields().indexOf(QCoreApplication.translate("QualityRule", "codigo_error")))
+                renderer = added_layer.renderer()
+                for cat in reversed(renderer.categories()):  # To be safe while removing categories
+                    if cat.value() not in unique_values:
+                        renderer.deleteCategory(renderer.categoryIndexForValue(cat.value()))
+
+                added_layer.setRenderer(added_layer.renderer().clone())
+
         return added_layer
 
     def get_error_layers_group(self):

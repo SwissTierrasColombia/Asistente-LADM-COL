@@ -9,7 +9,7 @@ from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
 class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
-    ST_DEFAULT_DOMAIN = "https://apist-pruebas.proadmintierra.info"  # "http://apist.proadmintierra.info"
+    ST_DEFAULT_DOMAIN = "http://apist.proadmintierra.info"  # "https://apist-pruebas.proadmintierra.info"
     ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
     encoded = b'c3Qtd2ViLWpqOHNmUUVVOm5FSmVzR3ZF'  # b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
