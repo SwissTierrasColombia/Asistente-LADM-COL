@@ -55,7 +55,7 @@ RUN pip3 install --upgrade pip==9.0.3 && \
 #RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/v6.1.1/qgis-model-baker.v6.1.1.zip -O /tmp/QgisModelBaker.zip
 
 # When we need a custom release
-RUN wget https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.3/QgisModelBaker_6113.zip -O /tmp/QgisModelBaker.zip
+RUN wget https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip -O /tmp/QgisModelBaker.zip
 
 RUN unzip /tmp/QgisModelBaker.zip -d /usr/share/qgis/python/plugins
 RUN rm -rf /tmp/QgisModelBaker.zip
