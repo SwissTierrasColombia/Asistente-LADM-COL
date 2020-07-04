@@ -109,8 +109,15 @@ class Utils(QObject):
 
 def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
     plugin_found = plugin_name in qgis.utils.plugins
+
     if not plugin_found:
-        return False
+        if plugin_name in qgis.utils.available_plugins:
+            # It just needs to be activated
+            if not qgis.utils.startPlugin(plugin_name):
+                return False  # We couldn't started, no details, so return False to be safe
+        else:
+            return False
+
     current_version = get_plugin_metadata(plugin_name, 'version')
     current_version = current_version[1:] if current_version.startswith("v") else current_version
     return is_version_valid(current_version, min_required_version, exact_required_version, plugin_name)
@@ -118,7 +125,7 @@ def is_plugin_version_valid(plugin_name, min_required_version, exact_required_ve
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
     """
-    Gerneric one, it helps us to validate whether a current version is greater or equal (if exact_required_version)
+    Generic one, it helps us to validate whether a current version is greater or equal (if exact_required_version)
     to a min_required_version
 
     :param current_version: String, in the form 2.9.5

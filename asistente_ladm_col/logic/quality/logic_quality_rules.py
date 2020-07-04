@@ -162,7 +162,7 @@ class LogicQualityRules:
             for record in records:
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                                                   QgsGeometry(),
-                                                                  {0: dict_uuid_group_party.get(record['agrupacion']),  # Fields alias was defined in the sql query
+                                                                  {0: dict_uuid_group_party.get(record['agrupacion']),  # Field alias as defined in the sql query
                                                                    1: ",".join([str(dict_uuid_members.get(int(t_id))) for t_id in record['miembros'].split(',')]),
                                                                    2: record['suma_fracciones'],
                                                                    3: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400301),

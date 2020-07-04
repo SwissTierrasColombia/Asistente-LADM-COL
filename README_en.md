@@ -135,6 +135,21 @@ The current version ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-
  - Online/offline help.
 
 
+## Support per DB engine
+
+| Module                           | PostgreSQL/PostGIS |     GeoPackage     |   MS SQL Server    |
+| --------------------------------- | :----------------: | :----------------: | :----------------: |
+| Data management           | ​:heavy_check_mark:​ | :heavy_check_mark:​ | :heavy_check_mark: |
+| Data capture and structuring | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Load layers                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Supplies management                | :heavy_check_mark: | :heavy_check_mark: |          ​          |
+| Quality           | :heavy_check_mark: | :heavy_check_mark: |                    |
+| Queries                         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Reports                          | :heavy_check_mark: |                    |                    |
+| Change detection       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Transitional System             | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+
+
 ## Minimum requirements
 
 To use the LADM-COL Assistant you need:

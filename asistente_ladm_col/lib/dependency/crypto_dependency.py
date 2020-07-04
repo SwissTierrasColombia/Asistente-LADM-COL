@@ -39,7 +39,8 @@ class CryptoDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("Dependency", "cryptography")
 
-    def save_dependency_file(self, fetcher_task):
+    def _save_dependency_file(self, fetcher_task):
+        self._downloading = False
         if fetcher_task.reply() is not None:
             try:
                 if not os.path.exists(DEPENDENCY_CRYPTO_DIR):
@@ -57,8 +58,6 @@ class CryptoDependency(Dependency):
             else:
                 self.logger.clear_message_bar()
                 self.logger.info_msg(__name__, QCoreApplication.translate("EncrypterDecrypter", "The dependency used to encrypt/decrypt is properly installed!"))
-
-        self._downloading = False
 
     def check_if_dependency_is_valid(self):
         if os.path.exists(CRYPTO_LIBRARY_PATH):

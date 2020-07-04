@@ -518,7 +518,7 @@ class QualityRuleConfig:
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_terrenos_asociados"), QVariant.Int),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_construcciones_asociadas"), QVariant.Int),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_unidades_contruccion_asociadas"), QVariant.Int)
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "numero_unidades_construccion_asociadas"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
                             QUALITY_RULE_ERROR_CODE_E401101,
@@ -768,7 +768,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }
                 }
             }, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
@@ -795,10 +796,11 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }, names.LC_BOUNDARY_T: {  # This one uses an adjusted layer as reference layer!
                         ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.LC_PLOT_T, names.LC_PLOT_T, False),
+                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.LC_PLOT_T, names.LC_PLOT_T, True),
                         FIX_ADJUSTED_LAYER: True
                     }
                 }
@@ -816,7 +818,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
                     }
                 }
             }, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {

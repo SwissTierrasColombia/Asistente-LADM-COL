@@ -126,7 +126,7 @@ class QgisModelBakerUtils(QObject):
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
-            return (None, None, None)
+            return (list(), list(), dict())
 
     def filter_relations(self, relations):
         """

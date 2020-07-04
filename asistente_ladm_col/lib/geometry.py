@@ -19,6 +19,7 @@
  ***************************************************************************/
 """
 import gc
+from math import sqrt
 
 from qgis.PyQt.QtCore import (QObject,
                               QVariant)
@@ -156,7 +157,7 @@ class GeometryUtils(QObject):
         gc.collect()
         return (intersect_more_pairs, intersect_less_pairs)
 
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field, use_selection=True):
+    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field, use_selection=True, tolerance=0):
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         lines = boundary_layer.getSelectedFeatures(request) if use_selection else boundary_layer.getFeatures(request)
@@ -171,17 +172,22 @@ class GeometryUtils(QObject):
         index = QgsSpatialIndex(boundary_point_layer)
         candidate_features = None
 
+        tolerance_in_m = tolerance/1000
         for line in lines:
             bbox = line.geometry().boundingBox()
-            bbox.scale(1.001)
-            candidates_ids = index.intersects(bbox)
+            candidates_ids = index.intersects(bbox.buffered(tolerance_in_m))
             candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
             for candidate_feature in candidate_features:
-                #if line.geometry().intersects(candidate_feature.geometry()):
-                #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
                 for line_vertex in line.geometry().asPolyline():
-                    if line_vertex.x() == candidate_point.x() and line_vertex.y() == candidate_point.y():
+                    intersects = False
+                    if tolerance_in_m:
+                        intersects = sqrt((line_vertex.x() - candidate_point.x()) ** 2 +
+                                          (line_vertex.y() - candidate_point.y()) ** 2) <= tolerance_in_m
+                    else:
+                        intersects = (line_vertex.x() == candidate_point.x() and line_vertex.y() == candidate_point.y())
+
+                    if intersects:
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)

@@ -17,7 +17,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+                              QObject,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import (Qgis,
                        QgsProject,
@@ -150,10 +151,12 @@ class ToolBar(QObject):
                           bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
+        tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
         id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[db.names.LC_BOUNDARY_T],
                                                                   layers[db.names.LC_BOUNDARY_POINT_T],
                                                                   db.names.T_ID_F,
-                                                                  use_selection=use_selection)
+                                                                  use_selection=use_selection,
+                                                                  tolerance=tolerance)
 
         if id_pairs:
             layers[db.names.POINT_BFS_T].startEditing()
@@ -230,19 +233,29 @@ class ToolBar(QObject):
                 elif reply == QMessageBox.Cancel:
                     return
 
-        more_bfs_features = layers[db.names.MORE_BFS_T].getFeatures()
-        less_features = layers[db.names.LESS_BFS_T].getFeatures()
+        tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        if tolerance:
+            # We need to adjust input layers to take tolerance into account
+            # Use the same configuration we use in quality rule 3004 (Plots should be covereed by boundaries).
+            layers[db.names.LC_PLOT_T] = self.app.core.adjust_layer(layers[db.names.LC_PLOT_T],
+                                                                    layers[db.names.LC_PLOT_T],
+                                                                    tolerance,
+                                                                    True,
+                                                                    use_selection)
+            layers[db.names.LC_BOUNDARY_T] = self.app.core.adjust_layer(layers[db.names.LC_BOUNDARY_T],
+                                                                        layers[db.names.LC_PLOT_T],
+                                                                        tolerance,
+                                                                        True)
+            if use_selection:
+                layers[db.names.LC_PLOT_T].selectAll()  # Because this layer is already filtered by selected features
 
         # Get unique pairs id_boundary-id_plot in both tables
-        existing_more_pairs = [
-            (more_bfs_feature[db.names.MORE_BFS_T_LC_PLOT_F], more_bfs_feature[db.names.MORE_BFS_T_LC_BOUNDARY_F]) for
-            more_bfs_feature in more_bfs_features]
-        existing_more_pairs = set(existing_more_pairs)
-        # Todo: Update when ili2db issue is solved.
-        # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-        existing_less_pairs = [(less_feature[db.names.LESS_BFS_T_LC_PLOT_F], less_feature[db.names.LESS_BFS_T_LC_BOUNDARY_F]) for
-                               less_feature in less_features]
-        existing_less_pairs = set(existing_less_pairs)
+        existing_more_pairs = set(
+            [(more_bfs_feature[db.names.MORE_BFS_T_LC_PLOT_F], more_bfs_feature[db.names.MORE_BFS_T_LC_BOUNDARY_F]) for
+            more_bfs_feature in layers[db.names.MORE_BFS_T].getFeatures()])
+        existing_less_pairs = set(
+            [(less_feature[db.names.LESS_BFS_T_LC_PLOT_F], less_feature[db.names.LESS_BFS_T_LC_BOUNDARY_F]) for
+             less_feature in layers[db.names.LESS_BFS_T].getFeatures()])
 
         id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(layers[db.names.LC_BOUNDARY_T],
                                                                             layers[db.names.LC_PLOT_T],
@@ -256,8 +269,6 @@ class ToolBar(QObject):
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(layers[db.names.LESS_BFS_T])
                     feature.setAttribute(db.names.LESS_BFS_T_LC_PLOT_F, id_pair[0])
-                    # Todo: Update LESS_BFS_T_LC_BOUNDARY_F by LESS_BFS_T_LC_BOUNDARY_F.
-                    # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
                     feature.setAttribute(db.names.LESS_BFS_T_LC_BOUNDARY_F, id_pair[1])
                     features.append(feature)
             layers[db.names.LESS_BFS_T].addFeatures(features)
