@@ -449,7 +449,7 @@ class LayerConfig:
             },
             names.LC_BUILDING_UNIT_T: {
                 "qgis_25d_angle": 90,
-                "qgis_25d_height": '"{}" * 2.5'.format(names.LC_BUILDING_UNIT_T_TOTAL_FLOORS_F)
+                "qgis_25d_height": 'coalesce("{}", 0) * 2.5'.format(names.LC_BUILDING_UNIT_T_TOTAL_FLOORS_F)
             }
         }
 
