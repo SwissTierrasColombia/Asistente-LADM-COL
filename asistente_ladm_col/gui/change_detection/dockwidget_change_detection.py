@@ -191,7 +191,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
             self.map_swipe_tool.run(False)
 
         self.utils.app.gui.set_layer_visibility(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T], True)
-        self.utils.app.gui.set_layer_visibility(self.utils._layers[self.utils._db.names.OP_PLOT_T], True)
+        self.utils.app.gui.set_layer_visibility(self.utils._layers[self.utils._db.names.LC_PLOT_T], True)
 
 
 class ChangeDetectionUtils(QObject):
@@ -217,8 +217,8 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            self._db.names.OP_PLOT_T: None,
-            self._db.names.OP_PARCEL_T: None,
+            self._db.names.LC_PLOT_T: None,
+            self._db.names.LC_PARCEL_T: None,
             self._db.names.COL_UE_BAUNIT_T: None
         }
 
@@ -233,7 +233,7 @@ class ChangeDetectionUtils(QObject):
 
     def add_layers(self):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[self._db.names.OP_PLOT_T] is None:
+        if self._layers[self._db.names.LC_PLOT_T] is None:
             self.app.gui.freeze_map(True)
 
             self.app.core.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)

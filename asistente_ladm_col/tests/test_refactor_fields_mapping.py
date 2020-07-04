@@ -32,29 +32,29 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         print('\nINFO: Validating refactor fields...')
 
         dict_layers_to_check = {
-            self.db_gpkg_test.names.OP_BOUNDARY_T: self.db_gpkg_empty.names.OP_BOUNDARY_T,
-            self.db_gpkg_test.names.OP_PLOT_T: self.db_gpkg_empty.names.OP_PLOT_T,
-            self.db_gpkg_test.names.OP_PARCEL_T: self.db_gpkg_empty.names.OP_PARCEL_T,
-            self.db_gpkg_test.names.OP_BOUNDARY_POINT_T: self.db_gpkg_empty.names.OP_BOUNDARY_POINT_T,
-            self.db_gpkg_test.names.OP_CONTROL_POINT_T: self.db_gpkg_empty.names.OP_CONTROL_POINT_T,
-            self.db_gpkg_test.names.OP_SURVEY_POINT_T: self.db_gpkg_empty.names.OP_SURVEY_POINT_T,
-            self.db_gpkg_test.names.OP_PARTY_T: self.db_gpkg_empty.names.OP_PARTY_T,
-            self.db_gpkg_test.names.OP_ADMINISTRATIVE_SOURCE_T: self.db_gpkg_empty.names.OP_ADMINISTRATIVE_SOURCE_T,
-            self.db_gpkg_test.names.OP_BUILDING_T: self.db_gpkg_empty.names.OP_BUILDING_T,
-            self.db_gpkg_test.names.OP_BUILDING_UNIT_T: self.db_gpkg_empty.names.OP_BUILDING_UNIT_T
+            self.db_gpkg_test.names.LC_BOUNDARY_T: self.db_gpkg_empty.names.LC_BOUNDARY_T,
+            self.db_gpkg_test.names.LC_PLOT_T: self.db_gpkg_empty.names.LC_PLOT_T,
+            self.db_gpkg_test.names.LC_PARCEL_T: self.db_gpkg_empty.names.LC_PARCEL_T,
+            self.db_gpkg_test.names.LC_BOUNDARY_POINT_T: self.db_gpkg_empty.names.LC_BOUNDARY_POINT_T,
+            self.db_gpkg_test.names.LC_CONTROL_POINT_T: self.db_gpkg_empty.names.LC_CONTROL_POINT_T,
+            self.db_gpkg_test.names.LC_SURVEY_POINT_T: self.db_gpkg_empty.names.LC_SURVEY_POINT_T,
+            self.db_gpkg_test.names.LC_PARTY_T: self.db_gpkg_empty.names.LC_PARTY_T,
+            self.db_gpkg_test.names.LC_ADMINISTRATIVE_SOURCE_T: self.db_gpkg_empty.names.LC_ADMINISTRATIVE_SOURCE_T,
+            self.db_gpkg_test.names.LC_BUILDING_T: self.db_gpkg_empty.names.LC_BUILDING_T,
+            self.db_gpkg_test.names.LC_BUILDING_UNIT_T: self.db_gpkg_empty.names.LC_BUILDING_UNIT_T
         }
 
         feature_count_test = {
-            self.db_gpkg_test.names.OP_BOUNDARY_T: 154,
-            self.db_gpkg_test.names.OP_PLOT_T: 52,
-            self.db_gpkg_test.names.OP_PARCEL_T: 51,
-            self.db_gpkg_test.names.OP_BOUNDARY_POINT_T: 390,
-            self.db_gpkg_test.names.OP_CONTROL_POINT_T: 0,
-            self.db_gpkg_test.names.OP_SURVEY_POINT_T: 53,
-            self.db_gpkg_test.names.OP_PARTY_T: 36,
-            self.db_gpkg_test.names.OP_ADMINISTRATIVE_SOURCE_T: 50,
-            self.db_gpkg_test.names.OP_BUILDING_T: 17,
-            self.db_gpkg_test.names.OP_BUILDING_UNIT_T: 29
+            self.db_gpkg_test.names.LC_BOUNDARY_T: 154,
+            self.db_gpkg_test.names.LC_PLOT_T: 52,
+            self.db_gpkg_test.names.LC_PARCEL_T: 51,
+            self.db_gpkg_test.names.LC_BOUNDARY_POINT_T: 390,
+            self.db_gpkg_test.names.LC_CONTROL_POINT_T: 0,
+            self.db_gpkg_test.names.LC_SURVEY_POINT_T: 53,
+            self.db_gpkg_test.names.LC_PARTY_T: 36,
+            self.db_gpkg_test.names.LC_ADMINISTRATIVE_SOURCE_T: 50,
+            self.db_gpkg_test.names.LC_BUILDING_T: 17,
+            self.db_gpkg_test.names.LC_BUILDING_UNIT_T: 29
         }
 
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)

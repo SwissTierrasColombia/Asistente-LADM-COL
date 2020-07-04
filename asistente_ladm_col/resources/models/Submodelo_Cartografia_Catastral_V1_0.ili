@@ -1,0 +1,249 @@
+INTERLIS 2.3;
+
+/** Cartografia de referencia.
+ * 
+ * 02.08.2018: FM/ Actualizacion de dependencia a la version 2.2.1 del nucleo y LADM 1.1
+ * 19.04.2018: FM-GC/ Cambio de geometrias de GM_Surface2D a GM_MultiSurface2D
+ */
+MODEL Submodelo_Cartografia_Catastral_V1_0 (es)
+AT "http://www.proadmintierra.info/"
+VERSION "V2.2.1"  // 2018-04-19 // =
+  IMPORTS ISO19107_PLANAS_V3_0,Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0,LADM_COL_V3_0;
+
+  /** Este tema almacena específicamente las clases que definen la división administrativa desde el punto de vista operativo de catastro.
+   */
+  TOPIC LimitesOperativosCatastro =
+
+    !!@ ili2db.dispName = "(CC) Centro poblado"
+    CLASS CC_CentroPoblado =
+      /** Código de identificación del centro poblado.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*2;
+      /** Nombre del centro poblado.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : MANDATORY TEXT*50;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el centro poblado.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_CentroPoblado;
+
+    /** Es una división del departamento, al tenor del Decreto 2274 del 4 de octubre de 1991, la cual incluye un núcleo de población. Según esta misma disposición, los ahora corregimientos departamentales no forman parte de un determinado municipio.
+     */
+    !!@ ili2db.dispName = "(CC) Corregimiento"
+    CLASS CC_Corregimiento =
+      /** Código de identificación del corregimiento.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*2;
+      /** Nombre del corregimiento.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : MANDATORY TEXT*50;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el corregimiento.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_Corregimiento;
+
+    /** Límites geográficos fijados entre municipios que determinan su jurisdicción territorial.
+     */
+    !!@ ili2db.dispName = "(CC) Límite municipio"
+    CLASS CC_LimiteMunicipio =
+      /** Código de 2 dígitos correspondiente al departamento donde se encuentra el municipio según la clasificación del Divipola.
+       */
+      !!@ ili2db.dispName = "Código del departamento"
+      Codigo_Departamento : MANDATORY TEXT*2;
+      /** Código de 3 dígitos correspondiente al municipio según la clasificación del Divipola.
+       */
+      !!@ ili2db.dispName = "Código del municipio"
+      Codigo_Municipio : MANDATORY TEXT*5;
+      /** Nombre del municipio según la clasificación del Divipola.
+       */
+      !!@ ili2db.dispName = "Nombre del municipio"
+      Nombre_Municipio : MANDATORY TEXT*255;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por limite del municipio.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_LimiteMunicipio;
+
+    /** Es una superficie de espacio geograáfico delimitada por calles en sus cuatro lados.
+     */
+    !!@ ili2db.dispName = "(CC) Manzana"
+    CLASS CC_Manzana =
+      /** Código de identificación de la manzana.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*4;
+      /** Código de identificación del barrio donde se encuentra la manzana.
+       */
+      !!@ ili2db.dispName = "Código del barrio"
+      Codigo_Barrio : TEXT*2;
+      /** Nombre de la manzana.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : TEXT*50;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por la manzana.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_Manzana;
+
+    /** La Nomenclatura Vial es el conjunto de caracteres alfanuméricos que se emplean para identificar una vía espacialmente.
+     */
+    !!@ ili2db.dispName = "(CC) Nomenclatura vial"
+    CLASS CC_NomenclaturaVial =
+      /** Tipo de eje vial.
+       */
+      !!@ ili2db.dispName = "Tipo de vía"
+      Tipo_Via : MANDATORY (
+        !!@ ili2db.dispName = "Avenida calle"
+        Avenida_Calle,
+        !!@ ili2db.dispName = "Avenida carrera"
+        Avenida_Carrera,
+        Avenida,
+        Autopista,
+        Circunvalar,
+        Calle,
+        Carrera,
+        Diagonal,
+        Transversal,
+        Circular,
+        !!@ ili2db.dispName = "Vía rural"
+        Via_Rural
+      );
+      /** Indica el número o nombre del tipo de vía.
+       */
+      !!@ ili2db.dispName = "Numero o nombre de la vía"
+      Numero_Via : MANDATORY TEXT*100;
+      /** Geometría de tipo línea que corresponde a la representación espacial de la vía.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
+    END CC_NomenclaturaVial;
+
+    /** Es la delimitación física del suelo urbano, determina su área y se representa gráficamente por una línea imaginaria continua que divide el suelo urbano del suelo rural y del suelo de expansión urbana.
+     */
+    !!@ ili2db.dispName = "(CC) Perímetro Urbano"
+    CLASS CC_PerimetroUrbano =
+      /** Código de 2 dígitos correspondiente al departamento donde se encuentra el municipio según la clasificación del Divipola.
+       */
+      !!@ ili2db.dispName = "Código del departamento"
+      Codigo_Departamento : MANDATORY TEXT*2;
+      /** Código de 3 dígitos correspondiente al municipio según la clasificación del Divipola.
+       */
+      !!@ ili2db.dispName = "Código municipio"
+      Codigo_Municipio : MANDATORY TEXT*5;
+      /** Tipo de avaluo del perimetro urbano que para efectos catastrales es 01.
+       */
+      !!@ ili2db.dispName = "Tipo de avalúo"
+      Tipo_Avaluo : TEXT*30;
+      /** Nombre geográfico del perimetro urbano, ejemplo, TABIO.
+       */
+      !!@ ili2db.dispName = "Nombre geográfico"
+      Nombre_Geografico : MANDATORY TEXT*50;
+      /** Codgio del nombre geografico.
+       */
+      !!@ ili2db.dispName = "Código nombre"
+      Codigo_Nombre : TEXT*255;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el perímetro urbano.
+       */
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_PerimetroUrbano;
+
+    /** Es la delimitación física del suelo rual, determina su área y se representa gráficamente por una línea imaginaria continua que divide el suelo urbano del suelo rural y del suelo de expansión urbana.
+     */
+    !!@ ili2db.dispName = "(CC) Sector rural"
+    CLASS CC_SectorRural =
+      /** Código de identificación del sector rural catastral.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*9;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el sector rural.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_SectorRural;
+
+    /** Es la delimitación física del suelo urbano, determina su área y se representa gráficamente por una línea imaginaria continua que divide el suelo urbano del suelo rural y del suelo de expansión urbana.
+     */
+    !!@ ili2db.dispName = "(CC) Sector Urbano"
+    CLASS CC_SectorUrbano =
+      /** Código de identificación única del sector catastral.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*9;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el sector urbano catastral.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_SectorUrbano;
+
+    /** Unidad geográfica rural conformada por un número determinado de predios pertenecientes a una o varias parcelaciones, delimitado por accidentes geográficos naturales o vías.
+     */
+    !!@ ili2db.dispName = "(CC) Vereda"
+    CLASS CC_Vereda =
+      /** Código de identificación de la vereda.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*4;
+      /** Nombre de la vereda.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : MANDATORY TEXT*50;
+      /** Código del sector catastral donde se encuentra localizada la vereda.
+       */
+      !!@ ili2db.dispName = "Código del sector"
+      Codigo_Sector : TEXT*2;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por la vereda.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_Vereda;
+
+    /** Unidad administrativa en la cual se subdivide el área urbana de una ciudad media o principal del país, que agrupa barrios o sectores determinados.
+     */
+    !!@ ili2db.dispName = "(CC) Localidad Comuna"
+    CLASS CC_LocalidadComuna =
+      /** Código de la localidad o comuna aprobada por el acuerdo municipal, su número corresponderá al que se haya determinado en la norma.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*2;
+      /** Nombre de la localidad o comuna aprobada por el acuerdo municipal.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : MANDATORY TEXT*50;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por la localidad o comuna.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_LocalidadComuna;
+
+    /** Zona ocupada por un barrio dado y su determinación toponímica y catastral.
+     */
+    !!@ ili2db.dispName = "(CC) Barrio"
+    CLASS CC_Barrio =
+      /** Código del barrio aprobado por el acuerdo municipal, su número corresponderá al que se haya determinado en la norma.
+       */
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*2;
+      /** Nombre del barrio aprobado en el acuerdo municipal.
+       */
+      !!@ ili2db.dispName = "Nombre"
+      Nombre : MANDATORY TEXT*100;
+      /** Código del sector catastral donde se encuentra el barrio.
+       */
+      !!@ ili2db.dispName = "Código del sector"
+      Codigo_Sector : TEXT*2;
+      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el barrio.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END CC_Barrio;
+
+  END LimitesOperativosCatastro;
+
+END Submodelo_Cartografia_Catastral_V1_0.

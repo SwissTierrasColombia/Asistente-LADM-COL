@@ -20,14 +20,12 @@ class TestGetModels(unittest.TestCase):
 
     def test_pg_get_models(self):
         print("\nINFO: Validate get models method() in postgres...")
-        expected_dict = {'test_ladm_all_models': [LADMNames.SUPPORTED_ANT_MODEL,
-                                                  LADMNames.SUPPORTED_VALUATION_MODEL,
-                                                  LADMNames.SUPPORTED_REFERENCE_CARTOGRAPHY,
+        expected_dict = {'test_ladm_all_models': [LADMNames.SUPPORTED_VALUATION_MODEL,
+                                                  LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                                   LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                   LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                   LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                                  LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
-                                                  LADMNames.SUPPORTED_OPERATION_MODEL,
+                                                  LADMNames.SUPPORTED_SURVEY_MODEL,
                                                   LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                                   LADMNames.SUPPORTED_LADM_MODEL],
                          'test_ladm_integration': [LADMNames.SUPPORTED_SNR_DATA_MODEL,
@@ -35,7 +33,7 @@ class TestGetModels(unittest.TestCase):
                                                    LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                    LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                                    LADMNames.SUPPORTED_LADM_MODEL],
-                         'test_ladm_operation_model': [LADMNames.SUPPORTED_OPERATION_MODEL,
+                         'test_ladm_survey_model': [LADMNames.SUPPORTED_SURVEY_MODEL,
                                                        LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                                        LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                        LADMNames.SUPPORTED_SUPPLIES_MODEL,
@@ -58,12 +56,12 @@ class TestGetModels(unittest.TestCase):
     def test_gpkg_get_models(self):
         print("\nINFO: Validate get models method() in geopackage...")
         expected_dict = {
-            'test_ladm_all_models_gpkg': [LADMNames.SUPPORTED_ANT_MODEL, LADMNames.SUPPORTED_VALUATION_MODEL,
-                                          LADMNames.SUPPORTED_REFERENCE_CARTOGRAPHY,
+            'test_ladm_all_models_gpkg': [LADMNames.SUPPORTED_VALUATION_MODEL,
+                                          LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
                                           LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                           LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                          LADMNames.SUPPORTED_SNR_DATA_MODEL, LADMNames.SUPPORTED_CADASTRAL_FORM_MODEL,
-                                          LADMNames.SUPPORTED_OPERATION_MODEL,
+                                          LADMNames.SUPPORTED_SNR_DATA_MODEL,
+                                          LADMNames.SUPPORTED_SURVEY_MODEL,
                                           LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                           LADMNames.SUPPORTED_LADM_MODEL],
             'test_ladm_integration_gpkg': [LADMNames.SUPPORTED_SNR_DATA_MODEL,
@@ -71,7 +69,7 @@ class TestGetModels(unittest.TestCase):
                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                            LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,
                                            LADMNames.SUPPORTED_LADM_MODEL],
-            'test_ladm_operation_model_gpkg': [LADMNames.SUPPORTED_OPERATION_MODEL, LADMNames.SUPPORTED_SNR_DATA_MODEL,
+            'test_ladm_survey_model_gpkg': [LADMNames.SUPPORTED_SURVEY_MODEL, LADMNames.SUPPORTED_SNR_DATA_MODEL,
                                                LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
                                                LADMNames.SUPPORTED_SUPPLIES_MODEL,
                                                LADMNames.SUPPORTED_ISO_CARTESIAN_COORDINATES,

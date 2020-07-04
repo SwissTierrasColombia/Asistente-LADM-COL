@@ -11,14 +11,14 @@ class Symbology:
     @staticmethod
     def get_default_style_group(names):
          return {
-             names.OP_BOUNDARY_T: 'style_boundary',
-             names.OP_BOUNDARY_POINT_T: 'style_boundary_point',
-             names.OP_SURVEY_POINT_T: 'style_survey_point',
-             names.OP_CONTROL_POINT_T: 'style_control_point',
-             names.OP_PLOT_T: 'style_plot_polygon',
-             names.OP_BUILDING_T: 'style_building',
-             names.OP_BUILDING_UNIT_T: 'style_building_unit_25',
-             names.OP_RIGHT_OF_WAY_T: 'style_right_of_way'
+             names.LC_BOUNDARY_T: 'style_boundary',
+             names.LC_BOUNDARY_POINT_T: 'style_boundary_point',
+             names.LC_SURVEY_POINT_T: 'style_survey_point',
+             names.LC_CONTROL_POINT_T: 'style_control_point',
+             names.LC_PLOT_T: 'style_plot_polygon',
+             names.LC_BUILDING_T: 'style_building',
+             names.LC_BUILDING_UNIT_T: 'style_building_unit_25',
+             names.LC_RIGHT_OF_WAY_T: 'style_right_of_way'
         }
 
     @staticmethod

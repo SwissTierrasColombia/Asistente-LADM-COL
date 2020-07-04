@@ -44,7 +44,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.setWindowTitle(QCoreApplication.translate("SelectParcelDialog", "Duplicate Parcels in collected DB"))
 
         # Remove selection in plot layers
-        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._layers[self.utils._db.names.LC_PLOT_T].removeSelection()
         self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T].removeSelection()
 
         self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
@@ -65,19 +65,19 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         request = QgsFeatureRequest(QgsExpression('"{}" in ({})'.format(self.utils._db.names.T_ID_F, ",".join(str(t_id) for t_id in self.parcels_t_ids))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([self.utils._db.names.T_ID_F,
-                                       self.utils._db.names.OP_PARCEL_T_NUPRE_F,
-                                       self.utils._db.names.OP_PARCEL_T_FMI_F,
-                                       self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F],
-                                      self.utils._layers[self.utils._db.names.OP_PARCEL_T].fields())  # NOTE: this adds a new flag
-        parcels = self.utils._layers[self.utils._db.names.OP_PARCEL_T].getFeatures(request)
+                                       self.utils._db.names.LC_PARCEL_T_NUPRE_F,
+                                       self.utils._db.names.LC_PARCEL_T_FMI_F,
+                                       self.utils._db.names.LC_PARCEL_T_PARCEL_NUMBER_F],
+                                      self.utils._layers[self.utils._db.names.LC_PARCEL_T].fields())  # NOTE: this adds a new flag
+        parcels = self.utils._layers[self.utils._db.names.LC_PARCEL_T].getFeatures(request)
 
         if parcels:
             row = 0
             for parcel in parcels:
                 self.tbl_changes_parcels.setItem(row, 0, QTableWidgetItem(str(parcel[self.utils._db.names.T_ID_F])))
-                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_NUPRE_F])))
-                self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_FMI_F])))
-                self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[self.utils._db.names.OP_PARCEL_T_PARCEL_NUMBER_F])))
+                self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_NUPRE_F])))
+                self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_FMI_F])))
+                self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[self.utils._db.names.LC_PARCEL_T_PARCEL_NUMBER_F])))
                 row += 1
 
     def react_after_new_selection(self):
@@ -93,14 +93,14 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.set_controls_enabled()
 
     def zoom_to_parcels(self, parcels_t_ids):
-        self.utils._layers[self.utils._db.names.OP_PLOT_T].removeSelection()
+        self.utils._layers[self.utils._db.names.LC_PLOT_T].removeSelection()
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                      parcels_t_ids,
                                                                      field_name=None,
-                                                                     plot_layer=self.utils._layers[self.utils._db.names.OP_PLOT_T],
+                                                                     plot_layer=self.utils._layers[self.utils._db.names.LC_PLOT_T],
                                                                      uebaunit_table=self.utils._layers[self.utils._db.names.COL_UE_BAUNIT_T])
 
-        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.utils._db.names.OP_PLOT_T], plot_ids, dict(), 500)
+        self.parent.zoom_to_features_requested.emit(self.utils._layers[self.utils._db.names.LC_PLOT_T], plot_ids, dict(), 500)
 
     def set_controls_enabled(self):
         for button in self.buttonBox.buttons():

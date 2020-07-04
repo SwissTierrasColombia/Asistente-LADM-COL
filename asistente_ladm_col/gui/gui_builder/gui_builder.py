@@ -252,10 +252,8 @@ class GUI_Builder(QObject):
         :return: List of actions without duplicate elements.
         """
         actions = list()
-        if self._db.operation_model_exists():
-            actions.extend(MODELS_GUI_DICT[LADMNames.OPERATION_MODEL_PREFIX])
-        if self._db.cadastral_form_model_exists():
-            actions.extend(MODELS_GUI_DICT[LADMNames.CADASTRAL_FORM_MODEL_PREFIX])
+        if self._db.survey_model_exists():
+            actions.extend(MODELS_GUI_DICT[LADMNames.SURVEY_MODEL_PREFIX])
         if self._db.valuation_model_exists():
             actions.extend(MODELS_GUI_DICT[LADMNames.VALUATION_MODEL_PREFIX])
 

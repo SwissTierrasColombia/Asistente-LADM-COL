@@ -27,7 +27,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
             self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
         else:
             fid = features[0].id()
-            building_unit_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatures()]
+            building_unit_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME].getFeature(fid).isValid():
                 self.logger.warning(__name__, "Feature not found in layer {}...".format(self.EDITING_LAYER_NAME))
@@ -53,7 +53,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        _count = self._layers[self.names.OP_BUILDING_UNIT_T].selectedFeatureCount()
+        _count = self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()
         self.lb_info.setText(QCoreApplication.translate("WizardTranslations", "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
@@ -72,7 +72,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_UNIT_T]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
@@ -84,4 +84,4 @@ class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_UNIT_T]))
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))

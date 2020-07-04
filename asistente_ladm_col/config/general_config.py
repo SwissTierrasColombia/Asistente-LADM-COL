@@ -65,9 +65,9 @@ CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
-REPORTS_REQUIRED_VERSION = '0.6dev'
+REPORTS_REQUIRED_VERSION = '0.7'
 URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
-REPORTS_LIBRARIES_MD5SUM = 'ce7176136d9cd9847b3da0b4e29c755c'
+REPORTS_LIBRARIES_MD5SUM = '684fc2a5de34fa5986f2325e9e8ff435'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -213,17 +213,17 @@ WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
 
 # Cadastral model
 WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"
-WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION = "wizard_create_administrative_source_operation"
-WIZARD_CREATE_BOUNDARY_OPERATION = "wizard_create_boundary_operation"
-WIZARD_CREATE_BUILDING_OPERATION = "wizard_create_building_operation"
-WIZARD_CREATE_BUILDING_UNIT_OPERATION = "wizard_create_building_unit_operation"
-WIZARD_CREATE_RIGHT_OPERATION = "wizard_create_right_operation"
-WIZARD_CREATE_RESTRICTION_OPERATION = "wizard_create_restriction_operation"
-WIZARD_CREATE_SPATIAL_SOURCE_OPERATION = "wizard_create_spatial_source_operation"
-WIZARD_CREATE_PARCEL_OPERATION = "wizard_create_parcel_operation"
-WIZARD_CREATE_PLOT_OPERATION = "wizard_create_plot_operation"
-WIZARD_CREATE_EXT_ADDRESS_OPERATION = "wizard_create_ext_address_operation"
-WIZARD_CREATE_RIGHT_OF_WAY_OPERATION = "wizard_create_right_of_way_operation"
+WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY = "wizard_create_administrative_source_survey"
+WIZARD_CREATE_BOUNDARY_SURVEY = "wizard_create_boundary_survey"
+WIZARD_CREATE_BUILDING_SURVEY = "wizard_create_building_survey"
+WIZARD_CREATE_BUILDING_UNIT_SURVEY = "wizard_create_building_unit_survey"
+WIZARD_CREATE_RIGHT_SURVEY = "wizard_create_right_survey"
+WIZARD_CREATE_RESTRICTION_SURVEY = "wizard_create_restriction_survey"
+WIZARD_CREATE_SPATIAL_SOURCE_SURVEY = "wizard_create_spatial_source_survey"
+WIZARD_CREATE_PARCEL_SURVEY = "wizard_create_parcel_survey"
+WIZARD_CREATE_PLOT_SURVEY = "wizard_create_plot_survey"
+WIZARD_CREATE_EXT_ADDRESS_SURVEY = "wizard_create_ext_address_survey"
+WIZARD_CREATE_RIGHT_OF_WAY_SURVEY = "wizard_create_right_of_way_survey"
 
 # Valuation model
 WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION = "wizard_create_geoeconomic_zone_valuation"

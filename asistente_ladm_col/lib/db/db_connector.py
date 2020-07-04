@@ -125,9 +125,9 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def operation_model_exists(self):
+    def survey_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.operation_model_exists()
+            return self.model_parser.survey_model_exists()
 
         return False
 
@@ -137,27 +137,15 @@ class DBConnector(QObject):
 
         return False
 
-    def cadastral_form_model_exists(self):
-        if self.read_model_parser():
-            return self.model_parser.cadastral_form_model_exists()
-
-        return False
-
-    def ant_model_exists(self):
-        if self.read_model_parser():
-            return self.model_parser.ant_model_exists()
-
-        return False
-
     def ladm_model_exists(self):
         if self.read_model_parser():
             return self.model_parser.ladm_model_exists()
 
         return False
 
-    def reference_cartography_model_exists(self):
+    def cadastral_cartography_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.reference_cartography_model_exists()
+            return self.model_parser.cadastral_cartography_model_exists()
 
         return False
 
@@ -220,9 +208,9 @@ class DBConnector(QObject):
 
             "LADM_COL.LADM_Nucleo.col_masCcl": {
                 'table_name': 'col_masccl',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Lindero': 'ccl_mas',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_Construccion': 'ue_mas_lc_construccion',
+                'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Levantamiento_Catastral.Levantamiento_Catastral.LC_ServidumbreTransito': 'ue_mas_lc_servidumbretransito',
                 'LADM_COL.LADM_Nucleo.col_masCcl.another_ili_attr': 'corresponding_sql_name'
             }
         """

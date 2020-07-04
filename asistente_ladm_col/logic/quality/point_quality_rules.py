@@ -124,18 +124,18 @@ class PointQualityRules:
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
 
-        elif layers[db.names.OP_BOUNDARY_POINT_T].featureCount() == 0:
+        elif layers[db.names.LC_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
                              "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Warning)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_BOUNDARY_POINT_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
 
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            features = self.get_boundary_points_not_covered_by_boundary_nodes(db, layers[db.names.OP_BOUNDARY_POINT_T], layers[db.names.OP_BOUNDARY_T], layers[db.names.POINT_BFS_T], error_layer, db.names.T_ID_F)
+            features = self.get_boundary_points_not_covered_by_boundary_nodes(db, layers[db.names.LC_BOUNDARY_POINT_T], layers[db.names.LC_BOUNDARY_T], layers[db.names.POINT_BFS_T], error_layer, db.names.T_ID_F)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -157,12 +157,12 @@ class PointQualityRules:
         if not layers:
             return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
-        if layers[db.names.OP_BOUNDARY_POINT_T].featureCount() == 0:
+        if layers[db.names.LC_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
                              "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Warning)
 
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_POINT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_BOUNDARY_POINT_T].sourceCrs().authid()),
                                          rule.error_table_name,
                                          "memory")
 
@@ -170,8 +170,8 @@ class PointQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            point_list = self.get_boundary_points_features_not_covered_by_plot_nodes(layers[db.names.OP_BOUNDARY_POINT_T],
-                                                                                     layers[db.names.OP_PLOT_T],
+            point_list = self.get_boundary_points_features_not_covered_by_plot_nodes(layers[db.names.LC_BOUNDARY_POINT_T],
+                                                                                     layers[db.names.LC_PLOT_T],
                                                                                      db.names.T_ILI_TID_F)
             features = list()
             for point in point_list:
@@ -237,8 +237,8 @@ class PointQualityRules:
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_point = {feature[id_field]: feature for feature in boundary_point_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, db.names.POINT_BFS_T_OP_BOUNDARY_F)
-        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[db.names.POINT_BFS_T_OP_BOUNDARY_F]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F, db.names.POINT_BFS_T_LC_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F], 'boundary_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_F]}
                      for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],

@@ -44,11 +44,9 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(db_connection.supplies_model_exists())
         self.assertTrue(db_connection.snr_data_model_exists())
         self.assertTrue(db_connection.supplies_integration_model_exists())
-        self.assertTrue(db_connection.operation_model_exists())
+        self.assertTrue(db_connection.survey_model_exists())
         self.assertTrue(db_connection.valuation_model_exists())
-        self.assertTrue(db_connection.cadastral_form_model_exists())
-        self.assertTrue(db_connection.ant_model_exists())
-        self.assertTrue(db_connection.reference_cartography_model_exists())
+        self.assertTrue(db_connection.cadastral_cartography_model_exists())
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for all model in PG...")
@@ -56,32 +54,33 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(res, msg)
 
         dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 216)
+        self.assertEqual(len(dict_names), 195)
 
         expected_dict = {T_ID_KEY: 't_id',
                          T_ILI_TID_KEY: "t_ili_tid",
                          ILICODE_KEY: 'ilicode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispname',
-                         'LADM_COL.LADM_Nucleo.col_masCcl': {
-                             'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas_op_lindero',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal': 'ccl_mas_crf_estructuralineal',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion': 'ue_mas_op_unidadconstruccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno': 'ue_mas_op_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso'
+                         "LADM_COL.LADM_Nucleo.col_masCcl": {
+                             "table_name": "col_masccl",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "ccl_mas",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
                          },
-                         'Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_Predio_Insumos': {
-                             'table_name': 'ini_predio_insumos',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio_catastro',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Datos_SNR.Datos_SNR.SNR_Predio_Registro': 'snr_predio_juridico'
+                         "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos": {
+                             "table_name": "ini_predioinsumos",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos.Observaciones": "observaciones",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos.Tipo_Emparejamiento": "tipo_emparejamiento",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio_catastro",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro": "snr_predio_juridico"
                          },
-                         'ANT.Fiso.ANT_Conflictos': {
-                             'table_name': 'ant_conflictos',
-                             'ANT.Fiso.ANT_Conflictos.Conflicto': 'conflicto',
-                             'ANT.Fiso.ANT_Conflictos.Descripcion': 'descripcion',
-                             'ANT.Fiso.ant_conflictos_predio.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
+                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                             "table_name": "av_tablacalificacionconstruccion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -94,32 +93,33 @@ class TestAllModels(unittest.TestCase):
         self.assertTrue(res, msg)
 
         dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 216)
+        self.assertEqual(len(dict_names), 195)
 
         expected_dict = {T_ID_KEY: 'T_Id',
                          T_ILI_TID_KEY: "T_Ili_Tid",
                          ILICODE_KEY: 'iliCode',
                          DESCRIPTION_KEY: 'description',
                          DISPLAY_NAME_KEY: 'dispName',
-                         'LADM_COL.LADM_Nucleo.col_masCcl': {
-                             'table_name': 'col_masccl',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Operacion.Operacion.OP_Lindero': 'ccl_mas_op_lindero',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal': 'ccl_mas_crf_estructuralineal',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_UnidadConstruccion': 'ue_mas_op_unidadconstruccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Construccion': 'ue_mas_op_construccion',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_Terreno': 'ue_mas_op_terreno',
-                             'LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Operacion.Operacion.OP_ServidumbrePaso': 'ue_mas_op_servidumbrepaso'
+                         "LADM_COL.LADM_Nucleo.col_masCcl": {
+                             "table_name": "col_masccl",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "ccl_mas",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
+                             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
                          },
-                         'Datos_Integracion_Insumos.Datos_Integracion_Insumos.INI_Predio_Insumos': {
-                             'table_name': 'ini_predio_insumos',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Predio_Catastro': 'gc_predio_catastro',
-                             'Datos_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Datos_SNR.Datos_SNR.SNR_Predio_Registro': 'snr_predio_juridico'
+                         "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos": {
+                             "table_name": "ini_predioinsumos",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos.Observaciones": "observaciones",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos.Tipo_Emparejamiento": "tipo_emparejamiento",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio_catastro",
+                             "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro": "snr_predio_juridico"
                          },
-                         'ANT.Fiso.ANT_Conflictos': {
-                             'table_name': 'ant_conflictos',
-                             'ANT.Fiso.ANT_Conflictos.Conflicto': 'conflicto',
-                             'ANT.Fiso.ANT_Conflictos.Descripcion': 'descripcion',
-                             'ANT.Fiso.ant_conflictos_predio.op_predio..Operacion.Operacion.OP_Predio': 'op_predio'
+                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                             "table_name": "av_tablacalificacionconstruccion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -139,7 +139,7 @@ class TestAllModels(unittest.TestCase):
         self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
-        test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'OP_BUILDING_TYPE_D', 'OP_DOMAIN_BUILDING_TYPE_D', 'OP_BUILDING_UNIT_TYPE_D', 'OP_GROUP_PARTY_T', 'OP_BUILDING_UNIT_T', 'OP_BUILDING_T', 'OP_RIGHT_T', 'OP_ADMINISTRATIVE_SOURCE_T', 'OP_SPATIAL_SOURCE_T', 'OP_PARTY_T', 'OP_BOUNDARY_T', 'OP_PARCEL_T', 'OP_BOUNDARY_POINT_T', 'OP_RESTRICTION_T', 'OP_RIGHT_OF_WAY_T', 'OP_PLOT_T', 'OP_ADMINISTRATIVE_SOURCE_TYPE_D', 'OP_PARTY_TYPE_D', 'OP_PARCEL_TYPE_D', 'OP_CONTROL_POINT_TYPE_D', 'OP_SURVEY_POINT_TYPE_D', 'OP_POINT_TYPE_D', 'GC_PARCEL_T', 'GC_OWNER_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'EXT_ARCHIVE_S']
+        test_required_tables = ['MORE_BFS_T', 'LESS_BFS_T', 'POINT_BFS_T', 'COL_POINT_SOURCE_T', 'COL_RRR_SOURCE_T', 'COL_UE_BAUNIT_T', 'COL_UE_SOURCE_T', 'COL_BAUNIT_SOURCE_T', 'COL_CCL_SOURCE_T', 'LC_BUILDING_TYPE_D', 'LC_DOMAIN_BUILDING_TYPE_D', 'LC_BUILDING_UNIT_TYPE_D', 'LC_GROUP_PARTY_T', 'LC_BUILDING_UNIT_T', 'LC_BUILDING_T', 'LC_RIGHT_T', 'LC_ADMINISTRATIVE_SOURCE_T', 'LC_SPATIAL_SOURCE_T', 'LC_PARTY_T', 'LC_BOUNDARY_T', 'LC_PARCEL_T', 'LC_BOUNDARY_POINT_T', 'LC_RESTRICTION_T', 'LC_RIGHT_OF_WAY_T', 'LC_PLOT_T', 'LC_ADMINISTRATIVE_SOURCE_TYPE_D', 'LC_PARTY_TYPE_D', 'LC_PARCEL_TYPE_D', 'LC_CONTROL_POINT_TYPE_D', 'LC_SURVEY_POINT_TYPE_D', 'LC_POINT_TYPE_D', 'GC_PARCEL_T', 'GC_OWNER_T', 'GC_PLOT_T', 'GC_BUILDING_UNIT_T', 'INI_PARCEL_SUPPLIES_T', 'SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'EXT_ARCHIVE_S']
         required_tables = get_required_tables(db_connection)
 
         for test_required_table in test_required_tables:
@@ -158,7 +158,7 @@ class TestAllModels(unittest.TestCase):
         self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'FRACTION_S_NUMERATOR_F', 'MORE_BFS_T_OP_BOUNDARY_F','MORE_BFS_T_OP_PLOT_F', 'MORE_BFS_T_OP_BUILDING_UNIT_F', 'LESS_BFS_T_OP_BOUNDARY_F', 'MORE_BFS_T_CRF_LINEAR_STRUCTURE_F', 'LESS_BFS_T_CRF_LINEAR_STRUCTURE_F', 'POINT_BFS_T_CRF_LINEAR_STRUCTURE_F', 'FRACTION_S_MEMBER_F', 'MEMBERS_T_GROUP_PARTY_F', 'MEMBERS_T_PARTY_F', 'POINT_BFS_T_OP_BOUNDARY_F', 'POINT_BFS_T_OP_CONTROL_POINT_F', 'POINT_BFS_T_OP_SURVEY_POINT_F', 'POINT_BFS_T_OP_BOUNDARY_POINT_F', 'COL_POINT_SOURCE_T_SOURCE_F', 'COL_POINT_SOURCE_T_OP_CONTROL_POINT_F', 'COL_UE_BAUNIT_T_OP_BUILDING_F', 'COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F', 'COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_SOURCE_F', 'COL_UE_SOURCE_T_OP_BUILDING_F', 'COL_UE_SOURCE_T_OP_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_OP_PLOT_F']
+        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'FRACTION_S_NUMERATOR_F', 'MORE_BFS_T_LC_BOUNDARY_F','MORE_BFS_T_LC_PLOT_F', 'MORE_BFS_T_LC_BUILDING_UNIT_F', 'LESS_BFS_T_LC_BOUNDARY_F', 'FRACTION_S_MEMBER_F', 'MEMBERS_T_GROUP_PARTY_F', 'MEMBERS_T_PARTY_F', 'POINT_BFS_T_LC_BOUNDARY_F', 'POINT_BFS_T_LC_CONTROL_POINT_F', 'POINT_BFS_T_LC_SURVEY_POINT_F', 'POINT_BFS_T_LC_BOUNDARY_POINT_F', 'COL_POINT_SOURCE_T_SOURCE_F', 'COL_POINT_SOURCE_T_LC_CONTROL_POINT_F', 'COL_UE_BAUNIT_T_LC_BUILDING_F', 'COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F', 'COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_SOURCE_F', 'COL_UE_SOURCE_T_LC_BUILDING_F', 'COL_UE_SOURCE_T_LC_RIGHT_OF_WAY_F', 'COL_UE_SOURCE_T_LC_PLOT_F']
         required_fields = get_required_fields(db_connection)
 
         for test_required_field in test_required_fields:

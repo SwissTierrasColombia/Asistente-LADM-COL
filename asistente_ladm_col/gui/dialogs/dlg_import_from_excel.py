@@ -210,14 +210,14 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         # GET LADM LAYERS
         layers = {
-            self.names.OP_PARTY_T: None,
-            self.names.OP_PARCEL_T: None,
-            self.names.OP_RIGHT_T: None,
+            self.names.LC_PARTY_T: None,
+            self.names.LC_PARCEL_T: None,
+            self.names.LC_RIGHT_T: None,
             self.names.EXT_ARCHIVE_S: None,
             self.names.COL_RRR_SOURCE_T: None,
-            self.names.OP_GROUP_PARTY_T: None,
+            self.names.LC_GROUP_PARTY_T: None,
             self.names.MEMBERS_T: None,
-            self.names.OP_ADMINISTRATIVE_SOURCE_T: None
+            self.names.LC_ADMINISTRATIVE_SOURCE_T: None
         }
 
         self.app.core.get_layers(self._db, layers, load=True)
@@ -225,33 +225,33 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
             return None
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
-        ladm_tables = [layers[self.names.OP_PARCEL_T],
-                       layers[self.names.OP_PARTY_T],
-                       layers[self.names.OP_RIGHT_T],
-                       layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
+        ladm_tables = [layers[self.names.LC_PARCEL_T],
+                       layers[self.names.LC_PARTY_T],
+                       layers[self.names.LC_RIGHT_T],
+                       layers[self.names.LC_ADMINISTRATIVE_SOURCE_T],
                        layers[self.names.COL_RRR_SOURCE_T],
-                       layers[self.names.OP_GROUP_PARTY_T],
+                       layers[self.names.LC_GROUP_PARTY_T],
                        layers[self.names.MEMBERS_T]]
         ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
 
 
         # Run the ETL
-        params = {'agrupacion': layers[self.names.OP_GROUP_PARTY_T],
+        params = {'agrupacion': layers[self.names.LC_GROUP_PARTY_T],
                   'colmiembros': layers[self.names.MEMBERS_T],
                   'colrrrsourcet': layers[self.names.COL_RRR_SOURCE_T],
                   'extarchivo': layers[self.names.EXT_ARCHIVE_S],
-                  'interesado': layers[self.names.OP_PARTY_T],
+                  'interesado': layers[self.names.LC_PARTY_T],
                   'layergroupparty': layer_group_party,
                   'layerparcel': layer_parcel,
                   'layerparty': layer_party,
                   'layerright': layer_right,
-                  'opderecho': layers[self.names.OP_RIGHT_T],
-                  'opfuenteadministrativatipo': layers[self.names.OP_ADMINISTRATIVE_SOURCE_T],
-                  'parcel': layers[self.names.OP_PARCEL_T]}
+                  'opderecho': layers[self.names.LC_RIGHT_T],
+                  'opfuenteadministrativatipo': layers[self.names.LC_ADMINISTRATIVE_SOURCE_T],
+                  'parcel': layers[self.names.LC_PARCEL_T]}
 
-        self.app.core.disable_automatic_fields(layers[self.names.OP_GROUP_PARTY_T])
-        self.app.core.disable_automatic_fields(layers[self.names.OP_RIGHT_T])
-        self.app.core.disable_automatic_fields(layers[self.names.OP_ADMINISTRATIVE_SOURCE_T])
+        self.app.core.disable_automatic_fields(layers[self.names.LC_GROUP_PARTY_T])
+        self.app.core.disable_automatic_fields(layers[self.names.LC_RIGHT_T])
+        self.app.core.disable_automatic_fields(layers[self.names.LC_ADMINISTRATIVE_SOURCE_T])
 
         processing.run("model:ETL_intermediate_structure", params, feedback=self.feedback)
 

@@ -116,10 +116,10 @@ class TranslatableConfigStrings(QObject):
                                          "<br><span class=\"argument\">validate_conn</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Whether validate connection or not") + \
                                          QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
                                          """<pre>get_domain_code_from_value( 
-  'op_condicionprediotipo',
+  'lc_condicionprediotipo',
   'NPH',
   True,
-  False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain op_condicion_predio"))
+  False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain lc_condicionprediotipo"))
 
     def __init__(self):
         pass

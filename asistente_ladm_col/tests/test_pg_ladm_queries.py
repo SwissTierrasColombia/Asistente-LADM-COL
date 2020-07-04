@@ -39,35 +39,35 @@ class TestPGLADMQueries(unittest.TestCase):
         result = self.db_pg.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
 
-        kwargs = {'plot_t_ids': [1416]}
+        kwargs = {'plot_t_ids': [1432]}
         result = standardize_query_results(self.ladm_queries.get_igac_basic_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_basic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_basic_query, result))
 
     def test_igac_legal_info_query(self):
         print("\nINFO: Validating legal info query from IGAC...")
 
-        kwargs = {'plot_t_ids': [1416]}
+        kwargs = {'plot_t_ids': [1432]}
         result = standardize_query_results(self.ladm_queries.get_igac_legal_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_legal_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_legal_query, result))
 
     def test_igac_property_record_card_info_query(self):
         print("\nINFO: Validating property record card info query from IGAC...")
 
-        kwargs = {'plot_t_ids': [1416]}
+        kwargs = {'plot_t_ids': [1432]}
         result = standardize_query_results(self.ladm_queries.get_igac_property_record_card_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_property_record_card_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_property_record_card_query, result))
 
     def test_igac_physical_info_query(self):
         print("\nINFO: Validating physical info query from IGAC...")
 
-        kwargs = {'plot_t_ids': [1416]}
+        kwargs = {'plot_t_ids': [1432]}
         result = standardize_query_results(self.ladm_queries.get_igac_physical_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_physical_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_physical_query, result))
 
     def test_igac_economic_info_query(self):
         print("\nINFO: Validating economic info query from IGAC...")
 
-        kwargs = {'plot_t_ids': [1416]}
+        kwargs = {'plot_t_ids': [1432]}
         result = standardize_query_results(self.ladm_queries.get_igac_economic_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_economic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_economic_query, result))
 

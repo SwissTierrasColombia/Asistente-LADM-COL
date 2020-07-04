@@ -1,0 +1,4 @@
+espacio_de_nombres;local_id;comienzo_vida_util_version;_puntotipo;_metodoproduccion;id_punto_lindero;_acuerdo;exactitud_horizontal;x;y;z;t_id
+LC_PUNTOLINDERO;325;2020-06-23T11:33:45.000;Construccion;Metodo_Directo;1;Acuerdo;1.000;-74.4084642190474;5.29608583101562;1446.843;1
+LC_PUNTOLINDERO;326;2020-06-23T11:33:45.000;Construccion;Metodo_Directo;2;Acuerdo;1.000;-74.409063197638;5.2965997386575;1409.762;2
+LC_PUNTOLINDERO;327;2020-06-23T11:33:45.000;Construccion;Metodo_Directo;3;Acuerdo;1.000;-74.4085140843838;5.29603270853555;1498.403;3

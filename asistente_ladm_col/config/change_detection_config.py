@@ -66,7 +66,7 @@ def get_supplies_search_options(names):
 
 def get_collected_search_options(names):
     return {
-        PARCEL_NUMBER_SEARCH_KEY: names.OP_PARCEL_T_PARCEL_NUMBER_F,
-        PREVIOUS_PARCEL_NUMBER_SEARCH_KEY: names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
-        FMI_PARCEL_SEARCH_KEY: names.OP_PARCEL_T_FMI_F
+        PARCEL_NUMBER_SEARCH_KEY: names.LC_PARCEL_T_PARCEL_NUMBER_F,
+        PREVIOUS_PARCEL_NUMBER_SEARCH_KEY: names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F,
+        FMI_PARCEL_SEARCH_KEY: names.LC_PARCEL_T_FMI_F
     }

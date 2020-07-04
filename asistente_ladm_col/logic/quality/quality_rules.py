@@ -125,29 +125,29 @@ class QualityRules:
         elif id_quality_rule == EnumQualityRule.Logic.UEBAUNIT_PARCEL:
             msg, level = self.logic_quality_rules.check_uebaunit_parcel(db)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_BOUNDARY_POINT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_BOUNDARY_POINT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_SURVEY_POINT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_SURVEY_POINT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_CONTROL_POINT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_CONTROL_POINT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_BOUNDARY_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_BOUNDARY_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_PLOT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_PLOT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_BUILDING_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_BUILDING_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_BUILDING_UNIT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_BUILDING_UNIT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_PARCEL_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_PARCEL_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_PARTY_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_PARTY_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_RIGHT_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_RIGHT_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_RESTRICTION_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_RESTRICTION_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE:
-            msg, level = self.__check_duplicate_records_in_table(db, db.names.OP_ADMINISTRATIVE_SOURCE_T, id_quality_rule)
+            msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_ADMINISTRATIVE_SOURCE_T, id_quality_rule)
 
         return msg, level
 

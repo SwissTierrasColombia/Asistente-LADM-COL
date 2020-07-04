@@ -547,8 +547,8 @@ class AppCoreInterface(QObject):
                                                        custom_widget_configuration[layer_name]['config'])
             if layer_name == db.names.EXT_ARCHIVE_S:
                 index = layer.fields().indexFromName(db.names.EXT_ARCHIVE_S_DATA_F)
-            elif layer_name == db.names.OP_BUILDING_UNIT_T:
-                index = layer.fields().indexFromName(db.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
+            elif layer_name == db.names.LC_BUILDING_UNIT_T:
+                index = layer.fields().indexFromName(db.names.LC_BUILDING_UNIT_T_TOTAL_FLOORS_F)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
@@ -1040,7 +1040,7 @@ class AppCoreInterface(QObject):
             return
 
         # Skip checking point overlaps if layer is Survey points
-        if target_layer_name != db.names.OP_SURVEY_POINT_T:
+        if target_layer_name != db.names.LC_SURVEY_POINT_T:
             overlapping = GeometryUtils().get_overlapping_points(csv_layer) # List of lists of ids
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 

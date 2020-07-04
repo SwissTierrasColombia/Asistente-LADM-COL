@@ -41,8 +41,10 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E200401,
                                                             QUALITY_RULE_ERROR_CODE_E200402,
                                                             QUALITY_RULE_ERROR_CODE_E200403,
-                                                            QUALITY_RULE_ERROR_CODE_E200501, QUALITY_RULE_LAYERS,
-                                                            QUALITY_RULE_LADM_COL_LAYERS, HAS_ADJUSTED_LAYERS)
+                                                            QUALITY_RULE_ERROR_CODE_E200501, 
+                                                            QUALITY_RULE_LAYERS,
+                                                            QUALITY_RULE_LADM_COL_LAYERS, 
+                                                            HAS_ADJUSTED_LAYERS)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
@@ -197,11 +199,11 @@ class LineQualityRules:
             return QCoreApplication.translate("LineQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
         # validate data
-        if layers[db.names.OP_BOUNDARY_T].featureCount() == 0:
+        if layers[db.names.LC_BOUNDARY_T].featureCount() == 0:
             return (QCoreApplication.translate("LineQualityRules",
                              "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Warning)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.LC_BOUNDARY_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
 
             data_provider = error_layer.dataProvider()
@@ -209,8 +211,8 @@ class LineQualityRules:
             error_layer.updateFields()
 
             features = self.get_boundary_features_not_covered_by_plots(db,
-                                                                       layers[db.names.OP_PLOT_T],
-                                                                       layers[db.names.OP_BOUNDARY_T],
+                                                                       layers[db.names.LC_PLOT_T],
+                                                                       layers[db.names.LC_BOUNDARY_T],
                                                                        layers[db.names.MORE_BFS_T],
                                                                        layers[db.names.LESS_BFS_T],
                                                                        error_layer,
@@ -234,19 +236,19 @@ class LineQualityRules:
 
         if not layers:
             return QCoreApplication.translate("LineQualityRules", "At least one required layer (boundary point, boundary, point BFS) was not found!"), Qgis.Critical
-        elif layers[db.names.OP_BOUNDARY_T].featureCount() == 0:
+        elif layers[db.names.LC_BOUNDARY_T].featureCount() == 0:
             return (QCoreApplication.translate("LineQualityRules",
                              "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Warning)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_BOUNDARY_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_BOUNDARY_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
             features = self.get_boundary_nodes_features_not_covered_by_boundary_points(db,
-                                                                                       layers[db.names.OP_BOUNDARY_POINT_T],
-                                                                                       layers[db.names.OP_BOUNDARY_T],
+                                                                                       layers[db.names.LC_BOUNDARY_POINT_T],
+                                                                                       layers[db.names.LC_BOUNDARY_T],
                                                                                        layers[db.names.POINT_BFS_T],
                                                                                        error_layer,
                                                                                        db.names.T_ID_F)
@@ -355,8 +357,8 @@ class LineQualityRules:
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
 
-        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F, db.names.POINT_BFS_T_OP_BOUNDARY_F)
-        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_OP_BOUNDARY_POINT_F], 'boundary_id': feature[db.names.POINT_BFS_T_OP_BOUNDARY_F]}
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F, db.names.POINT_BFS_T_LC_BOUNDARY_F)
+        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F], 'boundary_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_F]}
                           for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
         list_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
@@ -447,12 +449,12 @@ class LineQualityRules:
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(db.names.MORE_BFS_T_OP_BOUNDARY_F, db.names.MORE_BFS_T_OP_PLOT_F)
-        list_more_bfs = [{'plot_id': feature[db.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.MORE_BFS_T_OP_BOUNDARY_F]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(db.names.MORE_BFS_T_LC_BOUNDARY_F, db.names.MORE_BFS_T_LC_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[db.names.MORE_BFS_T_LC_PLOT_F], 'boundary_id': feature[db.names.MORE_BFS_T_LC_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(db.names.LESS_BFS_T_OP_BOUNDARY_F, db.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(db.names.LESS_BFS_T_LC_BOUNDARY_F, db.names.LESS_BFS_T_LC_PLOT_F)
+        list_less = [{'plot_id': feature[db.names.LESS_BFS_T_LC_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_LC_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)

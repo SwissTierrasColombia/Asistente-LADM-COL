@@ -56,16 +56,16 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_TYPE,
                                                       WIZARD_LAYERS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
-                                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION,
-                                                      WIZARD_CREATE_BOUNDARY_OPERATION,
-                                                      WIZARD_CREATE_BUILDING_OPERATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_OPERATION,
-                                                      WIZARD_CREATE_RIGHT_OPERATION,
-                                                      WIZARD_CREATE_RESTRICTION_OPERATION,
-                                                      WIZARD_CREATE_SPATIAL_SOURCE_OPERATION,
-                                                      WIZARD_CREATE_PARCEL_OPERATION, WIZARD_CREATE_PLOT_OPERATION,
-                                                      WIZARD_CREATE_EXT_ADDRESS_OPERATION,
-                                                      WIZARD_CREATE_RIGHT_OF_WAY_OPERATION,
+                                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY,
+                                                      WIZARD_CREATE_BOUNDARY_SURVEY,
+                                                      WIZARD_CREATE_BUILDING_SURVEY,
+                                                      WIZARD_CREATE_BUILDING_UNIT_SURVEY,
+                                                      WIZARD_CREATE_RIGHT_SURVEY,
+                                                      WIZARD_CREATE_RESTRICTION_SURVEY,
+                                                      WIZARD_CREATE_SPATIAL_SOURCE_SURVEY,
+                                                      WIZARD_CREATE_PARCEL_SURVEY, WIZARD_CREATE_PLOT_SURVEY,
+                                                      WIZARD_CREATE_EXT_ADDRESS_SURVEY,
+                                                      WIZARD_CREATE_RIGHT_OF_WAY_SURVEY,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
@@ -120,8 +120,8 @@ from asistente_ladm_col.gui.reports.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
-from asistente_ladm_col.gui.wizards.operation.dlg_create_group_party_operation import CreateGroupPartyOperation
-from asistente_ladm_col.gui.wizards.operation.wiz_create_points_operation import CreatePointsOperationWizard
+from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import CreateGroupPartySurvey
+from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -134,7 +134,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_layers_in_editing_mode_with_changes,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _operation_model_required)
+                                                 _survey_model_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -219,7 +219,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_actions(self):
         self.create_supplies_actions()
-        self.create_operation_actions()
+        self.create_survey_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
         self.create_change_detection_actions()
@@ -381,73 +381,73 @@ class AsistenteLADMCOLPlugin(QObject):
         self.gui_builder.register_actions({ACTION_RUN_ETL_SUPPLIES: self._etl_supplies_action,
                                            ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
 
-    def create_operation_actions(self):
-        self._point_surveying_and_representation_operation_action = QAction(
+    def create_survey_actions(self):
+        self._point_surveying_and_representation_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"),
                 self.main_window)
-        self._boundary_surveying_and_representation_operation_action = QAction(
+        self._boundary_surveying_and_representation_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"),
                 self.main_window)
-        self._plot_spatial_unit_operation_action = QAction(
+        self._plot_spatial_unit_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"),
                 self.main_window)
-        self._building_spatial_unit_operation_action = QAction(
+        self._building_spatial_unit_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
                 self.main_window)
-        self._building_unit_spatial_unit_operation_action = QAction(
+        self._building_unit_spatial_unit_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
                 self.main_window)
-        self._right_of_way_operation_action = QAction(
+        self._right_of_way_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
                 self.main_window)
-        self._extaddress_operation_action = QAction(
+        self._extaddress_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Associate Address")
                 )
 
-        self._parcel_baunit_operation_action = QAction(
+        self._parcel_baunit_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
                 self.main_window)
 
-        self._col_party_operation_action = QAction(
+        self._col_party_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"),
                 self.main_window)
-        self._group_party_operation_action = QAction(
+        self._group_party_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"),
                 self.main_window)
 
-        self._administrative_source_operation_action = QAction(
+        self._administrative_source_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"),
                 self.main_window)
-        self._spatial_source_operation_action = QAction(
+        self._spatial_source_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
                 self.main_window)
-        self._upload_source_files_operation_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/upload.svg"),
-                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+        self._upload_source_files_survey_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/upload.svg"),
+                                                          QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                         "Upload Pending Source Files"),
-                                                             self.main_window)
+                                                          self.main_window)
 
-        self._right_rrr_operation_action = QAction(
+        self._right_rrr_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"),
                 self.main_window)
-        self._restriction_rrr_operation_action = QAction(
+        self._restriction_rrr_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
                 self.main_window)
 
-        self._quality_operation_action = QAction(
+        self._quality_survey_action = QAction(
                 QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
                 self.main_window)
@@ -458,41 +458,41 @@ class AsistenteLADMCOLPlugin(QObject):
                 self.main_window)
 
         # Set connections
-        self._point_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_point_cad, self._context_collected))
-        self._boundary_surveying_and_representation_operation_action.triggered.connect(partial(self.show_wiz_boundaries_cad, self._context_collected))
-        self._plot_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_plot_cad, self._context_collected))
-        self._parcel_baunit_operation_action.triggered.connect(partial(self.show_wiz_parcel_cad, self._context_collected))
-        self._building_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_cad, self._context_collected))
-        self._building_unit_spatial_unit_operation_action.triggered.connect(partial(self.show_wiz_building_unit_cad, self._context_collected))
-        self._right_of_way_operation_action.triggered.connect(partial(self.show_wiz_right_of_way_cad, self._context_collected))
-        self._extaddress_operation_action.triggered.connect(partial(self.show_wiz_extaddress_cad, self._context_collected))
-        self._col_party_operation_action.triggered.connect(partial(self.show_wiz_col_party_cad, self._context_collected))
-        self._group_party_operation_action.triggered.connect(partial(self.show_dlg_group_party, self._context_collected))
-        self._right_rrr_operation_action.triggered.connect(partial(self.show_wiz_right_rrr_cad, self._context_collected))
-        self._restriction_rrr_operation_action.triggered.connect(partial(self.show_wiz_restriction_rrr_cad, self._context_collected))
-        self._administrative_source_operation_action.triggered.connect(partial(self.show_wiz_administrative_source_cad, self._context_collected))
-        self._spatial_source_operation_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
-        self._upload_source_files_operation_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
-        self._quality_operation_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
+        self._point_surveying_and_representation_survey_action.triggered.connect(partial(self.show_wiz_point_cad, self._context_collected))
+        self._boundary_surveying_and_representation_survey_action.triggered.connect(partial(self.show_wiz_boundaries_cad, self._context_collected))
+        self._plot_spatial_unit_survey_action.triggered.connect(partial(self.show_wiz_plot_cad, self._context_collected))
+        self._parcel_baunit_survey_action.triggered.connect(partial(self.show_wiz_parcel_cad, self._context_collected))
+        self._building_spatial_unit_survey_action.triggered.connect(partial(self.show_wiz_building_cad, self._context_collected))
+        self._building_unit_spatial_unit_survey_action.triggered.connect(partial(self.show_wiz_building_unit_cad, self._context_collected))
+        self._right_of_way_survey_action.triggered.connect(partial(self.show_wiz_right_of_way_cad, self._context_collected))
+        self._extaddress_survey_action.triggered.connect(partial(self.show_wiz_extaddress_cad, self._context_collected))
+        self._col_party_survey_action.triggered.connect(partial(self.show_wiz_col_party_cad, self._context_collected))
+        self._group_party_survey_action.triggered.connect(partial(self.show_dlg_group_party, self._context_collected))
+        self._right_rrr_survey_action.triggered.connect(partial(self.show_wiz_right_rrr_cad, self._context_collected))
+        self._restriction_rrr_survey_action.triggered.connect(partial(self.show_wiz_restriction_rrr_cad, self._context_collected))
+        self._administrative_source_survey_action.triggered.connect(partial(self.show_wiz_administrative_source_cad, self._context_collected))
+        self._spatial_source_survey_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
+        self._upload_source_files_survey_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
+        self._quality_survey_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
         self._fix_ladm_col_relations_action.triggered.connect(partial(self.call_fix_ladm_col_relations, self._context_collected))
 
         self.gui_builder.register_actions({
-            ACTION_CREATE_POINT: self._point_surveying_and_representation_operation_action,
-            ACTION_CREATE_BOUNDARY: self._boundary_surveying_and_representation_operation_action,
-            ACTION_CREATE_PLOT: self._plot_spatial_unit_operation_action,
-            ACTION_CREATE_BUILDING: self._building_spatial_unit_operation_action,
-            ACTION_CREATE_BUILDING_UNIT: self._building_unit_spatial_unit_operation_action,
-            ACTION_CREATE_RIGHT_OF_WAY: self._right_of_way_operation_action,
-            ACTION_CREATE_EXT_ADDRESS: self._extaddress_operation_action,
-            ACTION_CREATE_PARCEL: self._parcel_baunit_operation_action,
-            ACTION_CREATE_PARTY: self._col_party_operation_action,
-            ACTION_CREATE_GROUP_PARTY: self._group_party_operation_action,
-            ACTION_CREATE_ADMINISTRATIVE_SOURCE: self._administrative_source_operation_action,
-            ACTION_CREATE_SPATIAL_SOURCE: self._spatial_source_operation_action,
-            ACTION_UPLOAD_PENDING_SOURCE: self._upload_source_files_operation_action,
-            ACTION_CREATE_RIGHT: self._right_rrr_operation_action,
-            ACTION_CREATE_RESTRICTION: self._restriction_rrr_operation_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
+            ACTION_CREATE_POINT: self._point_surveying_and_representation_survey_action,
+            ACTION_CREATE_BOUNDARY: self._boundary_surveying_and_representation_survey_action,
+            ACTION_CREATE_PLOT: self._plot_spatial_unit_survey_action,
+            ACTION_CREATE_BUILDING: self._building_spatial_unit_survey_action,
+            ACTION_CREATE_BUILDING_UNIT: self._building_unit_spatial_unit_survey_action,
+            ACTION_CREATE_RIGHT_OF_WAY: self._right_of_way_survey_action,
+            ACTION_CREATE_EXT_ADDRESS: self._extaddress_survey_action,
+            ACTION_CREATE_PARCEL: self._parcel_baunit_survey_action,
+            ACTION_CREATE_PARTY: self._col_party_survey_action,
+            ACTION_CREATE_GROUP_PARTY: self._group_party_survey_action,
+            ACTION_CREATE_ADMINISTRATIVE_SOURCE: self._administrative_source_survey_action,
+            ACTION_CREATE_SPATIAL_SOURCE: self._spatial_source_survey_action,
+            ACTION_UPLOAD_PENDING_SOURCE: self._upload_source_files_survey_action,
+            ACTION_CREATE_RIGHT: self._right_rrr_survey_action,
+            ACTION_CREATE_RESTRICTION: self._restriction_rrr_survey_action,
+            ACTION_CHECK_QUALITY_RULES: self._quality_survey_action,
             ACTION_FIX_LADM_COL_RELATIONS: self._fix_ladm_col_relations_action})
 
     def create_cadastre_form_actions(self):
@@ -598,7 +598,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_REPORT_ANT: self._ant_map_action,
             ACTION_LOAD_LAYERS: self._load_layers_action,
             ACTION_PARCEL_QUERY: self._queries_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_operation_action,
+            ACTION_CHECK_QUALITY_RULES: self._quality_survey_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
@@ -858,35 +858,35 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_topological_editing(self, *args):
         self.app.core.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_fill_topology_table_pointbfs(self, *args):
         self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_fill_topology_tables_morebfs_less(self, *args):
         self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     @_activate_processing_plugin
     def call_fill_right_of_way_relations(self, *args):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
@@ -894,21 +894,21 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def call_annex_17_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
         self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection())
@@ -980,7 +980,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_queries(self, *args):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUERIES])
 
@@ -1072,15 +1072,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_point_cad(self, *args):
-        self.wiz = CreatePointsOperationWizard(self.iface, self.get_db_connection())
+        self.wiz = CreatePointsSurveyWizard(self.iface, self.get_db_connection())
         self.exec_wizard(self.wiz)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_boundaries_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_BOUNDARY_OPERATION)
+        self.show_wizard(WIZARD_CREATE_BOUNDARY_SURVEY)
 
     def set_wizard_is_open_flag(self, open):
         """
@@ -1099,57 +1099,57 @@ class AsistenteLADMCOLPlugin(QObject):
         self._finalize_geometry_creation_action.setEnabled(enable)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_plot_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_PLOT_OPERATION)
+        self.show_wizard(WIZARD_CREATE_PLOT_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_building_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_BUILDING_OPERATION)
+        self.show_wizard(WIZARD_CREATE_BUILDING_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_building_unit_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_OPERATION)
+        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_right_of_way_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_RIGHT_OF_WAY_OPERATION)
+        self.show_wizard(WIZARD_CREATE_RIGHT_OF_WAY_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_extaddress_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_EXT_ADDRESS_OPERATION)
+        self.show_wizard(WIZARD_CREATE_EXT_ADDRESS_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_parcel_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_PARCEL_OPERATION)
+        self.show_wizard(WIZARD_CREATE_PARCEL_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_col_party_cad(self, *args):
         self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_dlg_group_party(self, *args):
         namespace_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
         local_id_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
         t_ili_tid_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
 
         if not namespace_enabled or not local_id_enabled or not t_ili_tid_enabled:
-            self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartyOperation",
+            self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartySurvey",
                                                        "First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog."),
-                                                   QCoreApplication.translate("CreateGroupPartyOperation", "Open Settings"),
+                                                   QCoreApplication.translate("CreateGroupPartySurvey", "Open Settings"),
                                                    Qgis.Info)
             return
 
-        dlg = CreateGroupPartyOperation(self.iface, self.get_db_connection())
+        dlg = CreateGroupPartySurvey(self.iface, self.get_db_connection())
 
         # Check if required layers are available
         if dlg.required_layers_are_available():
@@ -1160,36 +1160,36 @@ class AsistenteLADMCOLPlugin(QObject):
             del dlg
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_right_rrr_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_RIGHT_OPERATION)
+        self.show_wizard(WIZARD_CREATE_RIGHT_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_restriction_rrr_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_RESTRICTION_OPERATION)
+        self.show_wizard(WIZARD_CREATE_RESTRICTION_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_administrative_source_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_OPERATION)
+        self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY)
 
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def show_wiz_spatial_source_cad(self, *args):
-        self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_OPERATION)
+        self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_SURVEY)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     def upload_source_files(self, *args):
         self.app.core.upload_source_files(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
         quality_dialog = QualityDialog()
@@ -1234,7 +1234,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_map_swipe_tool_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_per_parcel(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes per Parcel panel...")
@@ -1245,7 +1245,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_map_swipe_tool_required
     @_db_connection_required
-    @_operation_model_required
+    @_survey_model_required
     @_validate_if_layers_in_editing_mode_with_changes
     def query_changes_all_parcels(self, *args):
         msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Opening Query Changes for All Parcels panel...")

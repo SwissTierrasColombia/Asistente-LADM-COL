@@ -140,7 +140,7 @@ class LogicQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS)
         layers = {
             db.names.MEMBERS_T: None,
-            db.names.OP_GROUP_PARTY_T: None
+            db.names.LC_GROUP_PARTY_T: None
         }
 
         self.app.core.get_layers(db, layers, load=False)
@@ -148,7 +148,7 @@ class LogicQualityRules:
             return QCoreApplication.translate("LogicQualityRules", "At least one required layer (members, group party) was not found!"), Qgis.Critical
 
         dict_uuid_members = get_uuid_dict(layers[db.names.MEMBERS_T], db.names, db.names.T_ID_F)
-        dict_uuid_group_party = get_uuid_dict(layers[db.names.OP_GROUP_PARTY_T], db.names, db.names.T_ID_F)
+        dict_uuid_group_party = get_uuid_dict(layers[db.names.LC_GROUP_PARTY_T], db.names, db.names.T_ID_F)
 
         error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
         pr = error_layer.dataProvider()
@@ -210,25 +210,25 @@ class LogicQualityRules:
         if res:
             new_features = list()
             for record in records:
-                if record[db.names.OP_PARTY_T_BUSINESS_NAME_F] > 0:
+                if record[db.names.LC_PARTY_T_BUSINESS_NAME_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                               {0: record[db.names.T_ILI_TID_F],
                                1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400801),
                                2: QUALITY_RULE_ERROR_CODE_E400801})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_SURNAME_1_F] > 0:
+                if record[db.names.LC_PARTY_T_SURNAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                               {0: record[db.names.T_ILI_TID_F],
                                1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400802),
                                2: QUALITY_RULE_ERROR_CODE_E400802})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_FIRST_NAME_1_F] > 0:
+                if record[db.names.LC_PARTY_T_FIRST_NAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                               {0: record[db.names.T_ILI_TID_F],
                                1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400803),
                                2: QUALITY_RULE_ERROR_CODE_E400803})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_DOCUMENT_TYPE_F] > 0:
+                if record[db.names.LC_PARTY_T_DOCUMENT_TYPE_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                               {0: record[db.names.T_ILI_TID_F],
                                1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400804),
@@ -252,25 +252,25 @@ class LogicQualityRules:
         new_features = list()
         if res:
             for record in records:
-                if record[db.names.OP_PARTY_T_BUSINESS_NAME_F] > 0:
+                if record[db.names.LC_PARTY_T_BUSINESS_NAME_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                       {0: record[db.names.T_ILI_TID_F],
                                        1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400901),
                                        2: QUALITY_RULE_ERROR_CODE_E400901})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_SURNAME_1_F] > 0:
+                if record[db.names.LC_PARTY_T_SURNAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                       {0: record[db.names.T_ILI_TID_F],
                                        1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400902),
                                        2: QUALITY_RULE_ERROR_CODE_E400902})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_FIRST_NAME_1_F] > 0:
+                if record[db.names.LC_PARTY_T_FIRST_NAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                       {0: record[db.names.T_ILI_TID_F],
                                        1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400903),
                                        2: QUALITY_RULE_ERROR_CODE_E400903})
                     new_features.append(new_feature)
-                if record[db.names.OP_PARTY_T_DOCUMENT_TYPE_F] > 0:
+                if record[db.names.LC_PARTY_T_DOCUMENT_TYPE_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                       {0: record[db.names.T_ILI_TID_F],
                                        1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400904),
@@ -295,21 +295,21 @@ class LogicQualityRules:
         if res:
             for record in records:
                 error_code = None
-                if record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
+                if record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
                     error_code = QUALITY_RULE_ERROR_CODE_E401005
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT):
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT):
                     error_code = QUALITY_RULE_ERROR_CODE_E401007
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT, LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT):
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT, LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT):
                     error_code = QUALITY_RULE_ERROR_CODE_E401002
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CEMETERY_PARENT, LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT):
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CEMETERY_PARENT, LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT):
                     error_code = QUALITY_RULE_ERROR_CODE_E401006
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
                     error_code = QUALITY_RULE_ERROR_CODE_E401004
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
                     error_code = QUALITY_RULE_ERROR_CODE_E401003
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
                     error_code = QUALITY_RULE_ERROR_CODE_E401008
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
                     error_code = QUALITY_RULE_ERROR_CODE_E401001
 
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
@@ -341,27 +341,27 @@ class LogicQualityRules:
                 building_count = record['sum_c']  # count of buildings associated to the parcel
                 building_unit_count = record['sum_uc']  # count of building units associated to the parcel
 
-                if record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
+                if record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
                     error_code = QUALITY_RULE_ERROR_CODE_E401111
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401108
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401102
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARENT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARENT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401106
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
                     error_code = QUALITY_RULE_ERROR_CODE_E401101
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401103
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
                     error_code = QUALITY_RULE_ERROR_CODE_E401110
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401107
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
                     error_code = QUALITY_RULE_ERROR_CODE_E401109
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
                     error_code = QUALITY_RULE_ERROR_CODE_E401105
-                elif record[db.names.OP_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
+                elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
                     error_code = QUALITY_RULE_ERROR_CODE_E401104
 
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,

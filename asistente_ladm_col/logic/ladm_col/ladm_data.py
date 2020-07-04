@@ -287,12 +287,12 @@ class LADMDATA():
             return []
 
         layers = {
-            db.names.OP_PLOT_T: None,
+            db.names.LC_PLOT_T: None,
             db.names.COL_UE_BAUNIT_T: None
         }
 
         if plot_layer is not None:
-            del layers[db.names.OP_PLOT_T]
+            del layers[db.names.LC_PLOT_T]
         if uebaunit_table is not None:
             del layers[db.names.COL_UE_BAUNIT_T]
 
@@ -301,8 +301,8 @@ class LADMDATA():
             if not layers:
                 return None
 
-            if db.names.OP_PLOT_T in layers:
-                plot_layer = layers[db.names.OP_PLOT_T]
+            if db.names.LC_PLOT_T in layers:
+                plot_layer = layers[db.names.LC_PLOT_T]
 
             if db.names.COL_UE_BAUNIT_T in layers:
                 uebaunit_table = layers[db.names.COL_UE_BAUNIT_T]
@@ -310,12 +310,12 @@ class LADMDATA():
         expression = QgsExpression("{} IN ('{}') AND {} IS NOT NULL".format(
                                                     db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                     "','".join([str(t_id) for t_id in t_ids]),
-                                                    db.names.COL_UE_BAUNIT_T_OP_PLOT_F))
+                                                    db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
         features = self.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
 
         plot_t_ids = list()
         for feature in features:
-            plot_t_ids.append(feature[db.names.COL_UE_BAUNIT_T_OP_PLOT_F])
+            plot_t_ids.append(feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F])
 
         if field_name == db.names.T_ID_F:
             return plot_t_ids
@@ -351,12 +351,12 @@ class LADMDATA():
             return []
 
         layers = {
-            db.names.OP_PARCEL_T: None,
+            db.names.LC_PARCEL_T: None,
             db.names.COL_UE_BAUNIT_T: None
         }
 
         if parcel_table is not None:
-            del layers[db.names.OP_PARCEL_T]
+            del layers[db.names.LC_PARCEL_T]
         if uebaunit_table is not None:
             del layers[db.names.COL_UE_BAUNIT_T]
 
@@ -365,15 +365,15 @@ class LADMDATA():
             if not layers:
                 return None
 
-            if db.names.OP_PARCEL_T in layers:
-                parcel_table = layers[db.names.OP_PARCEL_T]
+            if db.names.LC_PARCEL_T in layers:
+                parcel_table = layers[db.names.LC_PARCEL_T]
 
             if db.names.COL_UE_BAUNIT_T in layers:
                 uebaunit_table = layers[db.names.COL_UE_BAUNIT_T]
 
 
         expression = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(
-                                                    db.names.COL_UE_BAUNIT_T_OP_PLOT_F,
+                                                    db.names.COL_UE_BAUNIT_T_LC_PLOT_F,
                                                     ",".join([str(t_id) for t_id in t_ids]),
                                                     db.names.COL_UE_BAUNIT_T_PARCEL_F))
         features = self.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
@@ -415,39 +415,34 @@ class LADMDATA():
         mapping_plot_field = self.mapping_plot_fields(db.names)
 
         layers = {
-            db.names.OP_PARCEL_T: None,
-            db.names.OP_PLOT_T: None,
-            db.names.OP_RIGHT_T: None,
-            db.names.OP_PARTY_T: None,
-            db.names.OP_GROUP_PARTY_T: None,
+            db.names.LC_PARCEL_T: None,
+            db.names.LC_PLOT_T: None,
+            db.names.LC_RIGHT_T: None,
+            db.names.LC_PARTY_T: None,
+            db.names.LC_GROUP_PARTY_T: None,
             db.names.COL_UE_BAUNIT_T: None,
             db.names.MEMBERS_T: None,
-            db.names.OP_CONDITION_PARCEL_TYPE_D: None,
-            db.names.OP_PARTY_DOCUMENT_TYPE_D: None,
-            db.names.OP_RIGHT_TYPE_D: None,
-            db.names.OP_PARTY_DOCUMENT_TYPE_D: None
+            db.names.LC_CONDITION_PARCEL_TYPE_D: None,
+            db.names.LC_PARTY_DOCUMENT_TYPE_D: None,
+            db.names.LC_RIGHT_TYPE_D: None,
+            db.names.LC_PARTY_DOCUMENT_TYPE_D: None
         }
-
-        if db.cadastral_form_model_exists():
-            # TODO: Replace property record card for correct table model
-            # layers[PROPERTY_RECORD_CARD_TABLE] = None
-            pass
 
         self.app.core.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
             return None
 
-        parcel_features = self.get_features_by_search_criterion(layers[db.names.OP_PARCEL_T], db.names.T_ID_F, search_criterion=search_criterion, with_attributes=True)
+        parcel_features = self.get_features_by_search_criterion(layers[db.names.LC_PARCEL_T], db.names.T_ID_F, search_criterion=search_criterion, with_attributes=True)
 
         # ===================== Start adding parcel info ==================================================
         dict_features = dict()
         for feature in parcel_features:
             dict_attrs = dict()
-            for field in layers[db.names.OP_PARCEL_T].fields():
+            for field in layers[db.names.LC_PARCEL_T].fields():
                 if field.name() in mapping_parcels_field.keys():  # parcel fields to compare
-                    if field.name() == db.names.OP_PARCEL_T_PARCEL_TYPE_F:
+                    if field.name() == db.names.LC_PARCEL_T_PARCEL_TYPE_F:
                         # Go for domain value, instead of t_id
-                        value = self.get_domain_value_from_code(db, layers[db.names.OP_CONDITION_PARCEL_TYPE_D], feature.attribute(field.name()))
+                        value = self.get_domain_value_from_code(db, layers[db.names.LC_CONDITION_PARCEL_TYPE_D], feature.attribute(field.name()))
                     else:
                         value = feature.attribute(field.name())
 
@@ -464,14 +459,14 @@ class LADMDATA():
 
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[db.names.T_ID_F] for parcel_feature in parcel_features]
-        expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ",".join([str(id) for id in parcel_t_ids]), db.names.COL_UE_BAUNIT_T_OP_PLOT_F))
+        expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ",".join([str(id) for id in parcel_t_ids]), db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
         uebaunit_features = self.get_features_by_expression(layers[db.names.COL_UE_BAUNIT_T], db.names.T_ID_F, expression_uebaunit_features, with_attributes=True)
 
-        plot_t_ids = [feature[db.names.COL_UE_BAUNIT_T_OP_PLOT_F] for feature in uebaunit_features]
+        plot_t_ids = [feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F] for feature in uebaunit_features]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(db.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
-        plot_features = self.get_features_by_expression(layers[db.names.OP_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
+        plot_features = self.get_features_by_expression(layers[db.names.LC_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
 
-        dict_parcel_plot = {uebaunit_feature[db.names.COL_UE_BAUNIT_T_PARCEL_F]: uebaunit_feature[db.names.COL_UE_BAUNIT_T_OP_PLOT_F] for uebaunit_feature in uebaunit_features}
+        dict_parcel_plot = {uebaunit_feature[db.names.COL_UE_BAUNIT_T_PARCEL_F]: uebaunit_feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F] for uebaunit_feature in uebaunit_features}
         dict_plot_features = {plot_feature[db.names.T_ID_F]: plot_feature for plot_feature in plot_features}
 
         for feature in dict_features:
@@ -487,33 +482,33 @@ class LADMDATA():
 
         # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(db.names.COL_BAUNIT_RRR_T_UNIT_F, ",".join([str(id) for id in parcel_t_ids])))
-        right_features = self.get_features_by_expression(layers[db.names.OP_RIGHT_T], db.names.T_ID_F, expression_right_features, with_attributes=True)
+        right_features = self.get_features_by_expression(layers[db.names.LC_RIGHT_T], db.names.T_ID_F, expression_right_features, with_attributes=True)
 
-        dict_party_right = {right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F] != NULL}
-        party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F] != NULL]
+        dict_party_right = {right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] != NULL}
+        party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] != NULL]
         expression_party_features = QgsExpression("{} IN ({})".format(db.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = self.get_features_by_expression(layers[db.names.OP_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
+        party_features = self.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
 
         dict_parcel_parties = dict()
         for right_feature in right_features:
-            if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] != NULL and right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F] != NULL:
+            if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] != NULL and right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] != NULL:
                 if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] in dict_parcel_parties:
-                    if right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F] not in dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]]:
-                        dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]].append(right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F])
+                    if right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] not in dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]]:
+                        dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]].append(right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F])
                 else:
-                    dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]] = [right_feature[db.names.COL_RRR_PARTY_T_OP_PARTY_F]]
+                    dict_parcel_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]] = [right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F]]
 
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
             for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
-                if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D], party_feature[party_field])
+                if party_field == db.names.LC_PARTY_T_DOCUMENT_TYPE_F:
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.LC_PARTY_DOCUMENT_TYPE_D], party_feature[party_field])
                 else:
                     dict_party[common_key_value_party] = party_feature[party_field]
             # Add extra attribute from right table
-            right_type_id = dict_party_right[party_feature[db.names.T_ID_F]][db.names.OP_RIGHT_T_TYPE_F]
-            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D], right_type_id)
+            right_type_id = dict_party_right[party_feature[db.names.T_ID_F]][db.names.LC_RIGHT_T_TYPE_F]
+            dict_party[DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.LC_RIGHT_TYPE_D], right_type_id)
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -539,15 +534,15 @@ class LADMDATA():
         # =====================  Start add group party info ==================================================
         dict_parcel_group_parties = dict()  # {id_parcel: [id_group_party1, id_group_party2]}
         for right_feature in right_features:
-            if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] != NULL and right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] != NULL:
+            if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] != NULL and right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] != NULL:
                 if right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F] in dict_parcel_group_parties:
-                    if right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] not in dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]]:
-                        dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]].append(right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F])
+                    if right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] not in dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]]:
+                        dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]].append(right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F])
                 else:
-                    dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]] = [right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F]]
+                    dict_parcel_group_parties[right_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F]] = [right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F]]
 
-        dict_group_party_right = {right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] != NULL}
-        group_party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] != NULL]
+        dict_group_party_right = {right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] != NULL}
+        group_party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] != NULL]
         expression_members_features = QgsExpression("{} IN ({})".format(db.names.MEMBERS_T_GROUP_PARTY_F, ",".join([str(id) for id in group_party_t_ids])))
         members_features = self.get_features_by_expression(layers[db.names.MEMBERS_T], db.names.T_ID_F, expression_members_features, with_attributes=True)
 
@@ -564,14 +559,14 @@ class LADMDATA():
         party_t_ids = list(set(party_t_ids))
 
         expression_party_features = QgsExpression("{} IN ({})".format(db.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = self.get_features_by_expression(layers[db.names.OP_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
+        party_features = self.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
 
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
             for party_field, common_key_value_party in mapping_party_field.items():  # party fields to compare
-                if party_field == db.names.OP_PARTY_T_DOCUMENT_TYPE_F:
-                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.OP_PARTY_DOCUMENT_TYPE_D], party_feature[party_field])
+                if party_field == db.names.LC_PARTY_T_DOCUMENT_TYPE_F:
+                    dict_party[common_key_value_party] = self.get_domain_value_from_code(db, layers[db.names.LC_PARTY_DOCUMENT_TYPE_D], party_feature[party_field])
                 else:
                     dict_party[common_key_value_party] = party_feature[party_field]
             dict_parties[party_feature[db.names.T_ID_F]] = dict_party
@@ -583,8 +578,8 @@ class LADMDATA():
             for id_party in dict_group_party_parties[id_group_party]:
                 if id_party in dict_parties:
                     # Add extra attribute from right table
-                    right_type_id = dict_group_party_right[id_group_party][db.names.OP_RIGHT_T_TYPE_F]
-                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.OP_RIGHT_TYPE_D], right_type_id)
+                    right_type_id = dict_group_party_right[id_group_party][db.names.LC_RIGHT_T_TYPE_F]
+                    dict_parties[id_party][DICT_KEY_PARTY_T_RIGHT] = self.get_domain_value_from_code(db, layers[db.names.LC_RIGHT_TYPE_D], right_type_id)
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -609,24 +604,6 @@ class LADMDATA():
                             item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
                     else:
                         item[DICT_KEY_PARTIES] = dict_parcel_group_parties[item[db.names.T_ID_F]]
-
-        # =====================  Start add record card info ==================================================
-        # TODO: Replace property record card for correct table model
-        # if db.cadastral_form_model_exists():
-        #     expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-        #     property_record_card_features = self.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE], db.names.T_ID_F, expr_property_record_card_features, with_attributes=True)
-        #
-        #     dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
-        #
-        #     for feature in dict_features:
-        #         for item in dict_features[feature]:
-        #             if item[db.names.T_ID_F] in dict_property_record_card_features:
-        #                 property_record_card_feature = dict_property_record_card_features[item[db.names.T_ID_F]]
-        #                 for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
-        #                     if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
-        #                         item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
-        #                     else:
-        #                         item[PROPERTY_RECORD_CARD_FIELD] = NULL
 
         return dict_features
 
@@ -670,7 +647,7 @@ class LADMDATA():
         return [feature for feature in layer.getFeatures(request)]
 
 
-    # Two different models (supplies and operation), different field names
+    # Two different models (supplies and survey), different field names
     # in each model, so we need to map them to a common key for each field
 
     @staticmethod
@@ -695,31 +672,31 @@ class LADMDATA():
     @staticmethod
     def mapping_plot_fields_for_supplies(names):
         return {
-            names.GC_PLOT_T_ALPHANUMERIC_AREA: DICT_KEY_PLOT_T_AREA_F
+            names.GC_PLOT_T_ALPHANUMERIC_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
     @staticmethod
     def mapping_parcel_fields(names):
         return {
-            names.OP_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
-            names.OP_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
-            names.OP_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
-            names.OP_PARCEL_T_PARCEL_TYPE_F: DICT_KEY_PARCEL_T_CONDITION_F,
+            names.LC_PARCEL_T_DEPARTMENT_F: DICT_KEY_PARCEL_T_DEPARTMENT_F,
+            names.LC_PARCEL_T_FMI_F: DICT_KEY_PARCEL_T_FMI_F,
+            names.LC_PARCEL_T_PARCEL_NUMBER_F: DICT_KEY_PARCEL_T_PARCEL_NUMBER_F,
+            names.LC_PARCEL_T_PARCEL_TYPE_F: DICT_KEY_PARCEL_T_CONDITION_F,
             names.COL_BAUNIT_T_NAME_F: DICT_KEY_PARCEL_T_NAME_F
         }
 
     @staticmethod
     def mapping_party_fields(names):
         return {
-            names.OP_PARTY_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
-            names.OP_PARTY_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
+            names.LC_PARTY_T_DOCUMENT_TYPE_F: DICT_KEY_PARTY_T_DOCUMENT_TYPE_F,
+            names.LC_PARTY_T_DOCUMENT_ID_F: DICT_KEY_PARTY_T_DOCUMENT_ID_F,
             names.COL_PARTY_T_NAME_F: DICT_KEY_PARTY_T_NAME_F
         }
 
     @staticmethod
     def mapping_plot_fields(names):
         return {
-            names.OP_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
+            names.LC_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
     def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):

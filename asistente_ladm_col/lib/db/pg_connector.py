@@ -180,7 +180,7 @@ class PGConnector(ClientServerDB):
     def _get_fk_fields(self):
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-        #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        #   Key: "LADM_COL_V1_7.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
         #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
         sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as {table_iliname},
             a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
@@ -224,11 +224,13 @@ class PGConnector(ClientServerDB):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE l.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
+            where_id = "WHERE l.{} {} {}".format(self.names.T_ID_F,
+                                                   '=' if mode == 'only_id' else '!=',
+                                                   plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = annex17_plot_data_query.get_annex17_plot_data_query(self.schema, where_id)
+        query = annex17_plot_data_query.get_annex17_plot_data_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':
@@ -242,7 +244,7 @@ class PGConnector(ClientServerDB):
             return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = annex17_building_data_query.get_annex17_building_data_query(self.schema)
+        query = annex17_building_data_query.get_annex17_building_data_query(self.names, self.schema)
         cur.execute(query)
 
         return cur.fetchall()[0][0]
@@ -253,7 +255,7 @@ class PGConnector(ClientServerDB):
             return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = annex17_point_data_query.get_annex17_point_data_query(self.schema, plot_id)
+        query = annex17_point_data_query.get_annex17_point_data_query(self.names, self.schema, plot_id)
         cur.execute(query)
 
         return cur.fetchone()[0]
@@ -265,11 +267,14 @@ class PGConnector(ClientServerDB):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE op_terreno.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
+            where_id = "WHERE {LC_PLOT_T}.{T_ID_F} {operation} {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
+                                                                                 T_ID_F=self.names.T_ID_F,
+                                                                                 operation='=' if mode == 'only_id' else '!=',
+                                                                                 plot_id=plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = ant_map_plot_query.get_ant_map_query(self.schema, where_id)
+        query = ant_map_plot_query.get_ant_map_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':
@@ -288,7 +293,7 @@ class PGConnector(ClientServerDB):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.schema, where_id)
+        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.names, self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':

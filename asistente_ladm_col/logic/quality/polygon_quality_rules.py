@@ -26,7 +26,8 @@ from qgis.core import (Qgis,
                        QgsProcessingFeatureSourceDefinition,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
-                       QgsFeatureRequest, QgsExpression)
+                       QgsFeatureRequest, 
+                       QgsExpression)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E300101,
@@ -143,11 +144,11 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
 
-        if layers[db.names.OP_PLOT_T].featureCount() == 0:
+        if layers[db.names.LC_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Warning)
         else:
-            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.LC_PLOT_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
 
             data_provider = error_layer.dataProvider()
@@ -155,8 +156,8 @@ class PolygonQualityRules:
             error_layer.updateFields()
 
             features = self.get_plot_features_not_covered_by_boundaries(db,
-                                                                        layers[db.names.OP_PLOT_T],
-                                                                        layers[db.names.OP_BOUNDARY_T],
+                                                                        layers[db.names.LC_PLOT_T],
+                                                                        layers[db.names.LC_BOUNDARY_T],
                                                                         layers[db.names.MORE_BFS_T],
                                                                         layers[db.names.LESS_BFS_T],
                                                                         error_layer,
@@ -166,7 +167,8 @@ class PolygonQualityRules:
                     # We need to get original LADM-COL geometries and use them in error_layer
                     plot_t_ili_tid_field = QCoreApplication.translate("QualityRulesConfig", "id_terreno")
                     t_ili_tids = list(set([f[plot_t_ili_tid_field] for f in features]))  # May come repeated for error_layer
-                    ladm_col_plot_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][db.names.OP_PLOT_T]
+                    ladm_col_plot_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][db.names.LC_PLOT_T]
+                    
                     request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(db.names.T_ILI_TID_F, "','".join(t_ili_tids))))
                     field_idx = ladm_col_plot_layer.fields().indexFromName(db.names.T_ILI_TID_F)
                     request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
@@ -192,24 +194,24 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical
 
-        if layers[db.names.OP_RIGHT_OF_WAY_T].featureCount() == 0:
+        if layers[db.names.LC_RIGHT_OF_WAY_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
 
-        elif layers[db.names.OP_BUILDING_T].featureCount() == 0:
+        elif layers[db.names.LC_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
 
         else:
-            dict_uuid_building = get_uuid_dict(layers[db.names.OP_BUILDING_T], db.names)
-            dict_uuid_right_of_way = get_uuid_dict(layers[db.names.OP_RIGHT_OF_WAY_T], db.names)
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.OP_BUILDING_T].sourceCrs().authid()),
+            dict_uuid_building = get_uuid_dict(layers[db.names.LC_BUILDING_T], db.names)
+            dict_uuid_right_of_way = get_uuid_dict(layers[db.names.LC_RIGHT_OF_WAY_T], db.names)
+            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[db.names.LC_BUILDING_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
             data_provider = error_layer.dataProvider()
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            ids, overlapping_polygons = self.geometry.get_inner_intersections_between_polygons(layers[db.names.OP_RIGHT_OF_WAY_T], layers[db.names.OP_BUILDING_T])
+            ids, overlapping_polygons = self.geometry.get_inner_intersections_between_polygons(layers[db.names.LC_RIGHT_OF_WAY_T], layers[db.names.LC_BUILDING_T])
 
             if overlapping_polygons is not None:
                 new_features = list()
@@ -332,11 +334,11 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
 
-        if layers[db.names.OP_PLOT_T].featureCount() == 0:
+        if layers[db.names.LC_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Warning)
         else:
-            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.OP_PLOT_T].sourceCrs().authid()),
+            error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_PLOT_T].sourceCrs().authid()),
                                          rule.error_table_name,
                                          "memory")
 
@@ -344,8 +346,8 @@ class PolygonQualityRules:
             data_provider.addAttributes(rule.error_table_fields)
             error_layer.updateFields()
 
-            point_list = self.get_plot_nodes_features_not_covered_by_boundary_points(layers[db.names.OP_BOUNDARY_POINT_T],
-                                                                                     layers[db.names.OP_PLOT_T],
+            point_list = self.get_plot_nodes_features_not_covered_by_boundary_points(layers[db.names.LC_BOUNDARY_POINT_T],
+                                                                                     layers[db.names.LC_PLOT_T],
                                                                                      db.names.T_ILI_TID_F)
 
             features = list()
@@ -379,11 +381,11 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
 
-        if layers[names.OP_BUILDING_T].featureCount() == 0:
+        if layers[names.LC_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning)
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.OP_BUILDING_T].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes(rule.error_table_fields)
@@ -392,14 +394,14 @@ class PolygonQualityRules:
 
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
-            ladm_col_building_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.OP_BUILDING_T]
+            ladm_col_building_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_disjoint, building_overlaps, building_within = GeometryUtils.get_relationships_among_polygons(
-            layers[names.OP_BUILDING_T],
-            layers[names.OP_PLOT_T],
+            layers[names.LC_BUILDING_T],
+            layers[names.LC_PLOT_T],
             key,
             attrs,
             get_geometry
@@ -408,11 +410,11 @@ class PolygonQualityRules:
         tid_buildings = list()
         if building_within:
             tid_buildings = self.check_building_not_associated_with_correct_plot(list(building_within.keys()),
-                                                                                 layers[names.OP_BUILDING_T],
-                                                                                 layers[names.OP_PLOT_T],
-                                                                                 layers[names.OP_PARCEL_T],
+                                                                                 layers[names.LC_BUILDING_T],
+                                                                                 layers[names.LC_PLOT_T],
+                                                                                 layers[names.LC_PARCEL_T],
                                                                                  layers[names.COL_UE_BAUNIT_T],
-                                                                                 layers[names.OP_CONDITION_PARCEL_TYPE_D],
+                                                                                 layers[names.LC_CONDITION_PARCEL_TYPE_D],
                                                                                  names)
 
         # If needed, get geometries from LADM-COL original layer
@@ -461,11 +463,11 @@ class PolygonQualityRules:
             request = QgsFeatureRequest(QgsExpression(exp))
             if layer_dict[HAS_ADJUSTED_LAYERS]:
                 request.setFlags(QgsFeatureRequest.NoGeometry)  # We don't need them, we got them from original ladm-col layer
-            tid_field_idx = layers[names.OP_BUILDING_T].fields().indexFromName(names.T_ID_F)
-            t_ili_tid_field_idx = layers[names.OP_BUILDING_T].fields().indexFromName(names.T_ILI_TID_F)
+            tid_field_idx = layers[names.LC_BUILDING_T].fields().indexFromName(names.T_ID_F)
+            t_ili_tid_field_idx = layers[names.LC_BUILDING_T].fields().indexFromName(names.T_ILI_TID_F)
             request.setSubsetOfAttributes([tid_field_idx, t_ili_tid_field_idx])  # Note: this adds a new flag
 
-            for building in layers[names.OP_BUILDING_T].getFeatures(request):
+            for building in layers[names.LC_BUILDING_T].getFeatures(request):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 ladm_col_features[building[names.T_ID_F]] if layer_dict[HAS_ADJUSTED_LAYERS] else building.geometry(),
@@ -522,19 +524,19 @@ class PolygonQualityRules:
         building_parcels = dict()
         expr = "{building_f} in ({filter}) and {plot_f} is null and {building_unit_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in buildings_to_check.keys()]),
-            plot_f=names.COL_UE_BAUNIT_T_OP_PLOT_F,
-            building_f=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            plot_f=names.COL_UE_BAUNIT_T_LC_PLOT_F,
+            building_f=names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
-            if not building_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]):
-                building_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
+            if not building_parcels.get(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F]):
+                building_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
                 # error: building should only have one parcel associated
-                buildings_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F])
-                del building_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]]
+                buildings_bad_relation.append(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F])
+                del building_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F]]
 
         # Remove buildings that have more than one association with parcel
         remove_keys_from_dict(buildings_bad_relation, buildings_to_check)
@@ -542,21 +544,21 @@ class PolygonQualityRules:
         # Get parcel condition
         expr = "{} in ({})".format(names.T_ID_F, ', '.join([str(t_id) for t_id in building_parcels.values()]))
         domain_condition_parcel = {f[names.T_ID_F]: f[names.ILICODE_F] for f in condition_parcel_layer.getFeatures()}
-        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.OP_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
+        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.LC_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
 
         # Relation parcel - plot
         parcel_plot = dict()
         expr = "{parcel_f} in ({filter}) and {building_f} is null and {building_unit_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in building_parcels.values()]),
             parcel_f=names.COL_UE_BAUNIT_T_PARCEL_F,
-            building_f=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            building_f=names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
             if not parcel_plot.get(feature[names.COL_UE_BAUNIT_T_PARCEL_F]):
-                parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = feature[names.COL_UE_BAUNIT_T_OP_PLOT_F]
+                parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = feature[names.COL_UE_BAUNIT_T_LC_PLOT_F]
             else:
                 # error: parcel should only have one plot associate
                 del parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]]
@@ -590,11 +592,11 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, building unit, ue_baunit, parcel) was not found!"), Qgis.Critical
 
-        if layers[names.OP_BUILDING_UNIT_T].featureCount() == 0:
+        if layers[names.LC_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning)
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.OP_BUILDING_UNIT_T].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_UNIT_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes(rule.error_table_fields)
@@ -603,14 +605,14 @@ class PolygonQualityRules:
 
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
-            ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.OP_BUILDING_UNIT_T]
+            ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_UNIT_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_units_disjoint_plots, building_units_overlaps_plots, building_units_within_plots = GeometryUtils.get_relationships_among_polygons(
-            layers[names.OP_BUILDING_UNIT_T],
-            layers[names.OP_PLOT_T],
+            layers[names.LC_BUILDING_UNIT_T],
+            layers[names.LC_PLOT_T],
             key,
             attrs,
             get_geometry
@@ -618,11 +620,11 @@ class PolygonQualityRules:
 
         tids_building_units_bad_relation_plots = self.check_building_unit_not_associated_with_correct_plot(
             list(building_units_within_plots.keys()),  # fids
-            layers[names.OP_BUILDING_UNIT_T],
-            layers[names.OP_PLOT_T],
-            layers[names.OP_PARCEL_T],
+            layers[names.LC_BUILDING_UNIT_T],
+            layers[names.LC_PLOT_T],
+            layers[names.LC_PARCEL_T],
             layers[names.COL_UE_BAUNIT_T],
-            layers[names.OP_CONDITION_PARCEL_TYPE_D],
+            layers[names.LC_CONDITION_PARCEL_TYPE_D],
             names)
 
         # If needed, get geometries from LADM-COL original layer
@@ -671,11 +673,11 @@ class PolygonQualityRules:
             request = QgsFeatureRequest(QgsExpression(exp))
             if layer_dict[HAS_ADJUSTED_LAYERS]:
                 request.setFlags(QgsFeatureRequest.NoGeometry)  # We don't need them, we got them from original ladm-col layer
-            tid_field_idx = layers[names.OP_BUILDING_UNIT_T].fields().indexFromName(names.T_ID_F)
-            t_ili_tid_field_idx = layers[names.OP_BUILDING_UNIT_T].fields().indexFromName(names.T_ILI_TID_F)
+            tid_field_idx = layers[names.LC_BUILDING_UNIT_T].fields().indexFromName(names.T_ID_F)
+            t_ili_tid_field_idx = layers[names.LC_BUILDING_UNIT_T].fields().indexFromName(names.T_ILI_TID_F)
             request.setSubsetOfAttributes([tid_field_idx, t_ili_tid_field_idx])  # Note: this adds a new flag
 
-            for building_unit_bad_relation_plot in layers[names.OP_BUILDING_UNIT_T].getFeatures(request):
+            for building_unit_bad_relation_plot in layers[names.LC_BUILDING_UNIT_T].getFeatures(request):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 ladm_col_features[building_unit_bad_relation_plot[names.T_ID_F]] if layer_dict[HAS_ADJUSTED_LAYERS] else building_unit_bad_relation_plot.geometry(),
@@ -704,11 +706,11 @@ class PolygonQualityRules:
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (building unit, ue_baunit, building, parcel) was not found!"), Qgis.Critical
 
-        if layers[names.OP_BUILDING_UNIT_T].featureCount() == 0:
+        if layers[names.LC_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
                              "There are no buildings to check 'Building should be within Buildings'."), Qgis.Warning)
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.OP_BUILDING_UNIT_T].sourceCrs().authid()),
+        error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_UNIT_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes(rule.error_table_fields)
@@ -717,14 +719,14 @@ class PolygonQualityRules:
 
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
-            ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.OP_BUILDING_UNIT_T]
+            ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_UNIT_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_units_disjoint_buildings, building_units_overlaps_buildings, building_units_within_building = GeometryUtils.get_relationships_among_polygons(
-            layers[names.OP_BUILDING_UNIT_T],
-            layers[names.OP_BUILDING_T],
+            layers[names.LC_BUILDING_UNIT_T],
+            layers[names.LC_BUILDING_T],
             key,
             attrs,
             get_geometry
@@ -734,11 +736,11 @@ class PolygonQualityRules:
         if building_units_within_building:
             t_ids_building_units_bad_relation_buildings = self.check_building_unit_not_associated_with_correct_building(
                 list(building_units_within_building.keys()),  # fids
-                layers[names.OP_BUILDING_UNIT_T],
-                layers[names.OP_BUILDING_T],
-                layers[names.OP_PARCEL_T],
+                layers[names.LC_BUILDING_UNIT_T],
+                layers[names.LC_BUILDING_T],
+                layers[names.LC_PARCEL_T],
                 layers[names.COL_UE_BAUNIT_T],
-                layers[names.OP_CONDITION_PARCEL_TYPE_D],
+                layers[names.LC_CONDITION_PARCEL_TYPE_D],
                 names)
 
         # If needed, get geometries from LADM-COL original layer
@@ -787,11 +789,11 @@ class PolygonQualityRules:
             request = QgsFeatureRequest(QgsExpression(exp))
             if layer_dict[HAS_ADJUSTED_LAYERS]:
                 request.setFlags(QgsFeatureRequest.NoGeometry)  # We don't need them, we got them from original ladm-col layer
-            tid_field_idx = layers[names.OP_BUILDING_T].fields().indexFromName(names.T_ID_F)
-            t_ili_tid_field_idx = layers[names.OP_BUILDING_T].fields().indexFromName(names.T_ILI_TID_F)
+            tid_field_idx = layers[names.LC_BUILDING_T].fields().indexFromName(names.T_ID_F)
+            t_ili_tid_field_idx = layers[names.LC_BUILDING_T].fields().indexFromName(names.T_ILI_TID_F)
             request.setSubsetOfAttributes([tid_field_idx, t_ili_tid_field_idx])  # Note: this adds a new flag
 
-            for building_units_bad_relation_building in layers[names.OP_BUILDING_UNIT_T].getFeatures(request):
+            for building_units_bad_relation_building in layers[names.LC_BUILDING_UNIT_T].getFeatures(request):
                 new_feature = QgsVectorLayerUtils().createFeature(
                                 error_layer,
                                 ladm_col_features[building_units_bad_relation_building[names.T_ID_F]] if layer_dict[HAS_ADJUSTED_LAYERS] else building_units_bad_relation_building.geometry(),
@@ -846,19 +848,19 @@ class PolygonQualityRules:
         building_unit_parcels = dict()
         expr = "{building_unit_f} in ({filter}) and {plot_f} is null and {building_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in building_units_to_check.keys()]),
-            plot_f=names.COL_UE_BAUNIT_T_OP_PLOT_F,
-            building_f=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            plot_f=names.COL_UE_BAUNIT_T_LC_PLOT_F,
+            building_f=names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
-            if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]):
-                building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
+            if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]):
+                building_unit_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
                 # error: building unit should only have one parcel associated
-                building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F])
-                del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]]
+                building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F])
+                del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]]
 
         # Remove buildings units that have more than one association with parcel
         remove_keys_from_dict(building_units_bad_relation, building_units_to_check)
@@ -866,21 +868,21 @@ class PolygonQualityRules:
         # Get parcel condition
         expr = "{} in ({})".format(names.T_ID_F, ', '.join([str(t_id) for t_id in building_unit_parcels.values()]))
         domain_condition_parcel = {f[names.T_ID_F]: f[names.ILICODE_F] for f in condition_parcel_layer.getFeatures()}
-        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.OP_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
+        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.LC_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
 
         # Relation parcel - plot
         parcel_plot = dict()
         expr = "{parcel_f} in ({filter}) and {building_f} is null and {building_unit_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in building_unit_parcels.values()]),
             parcel_f=names.COL_UE_BAUNIT_T_PARCEL_F,
-            building_f=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            building_f=names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
             if not parcel_plot.get(feature[names.COL_UE_BAUNIT_T_PARCEL_F]):
-                parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = feature[names.COL_UE_BAUNIT_T_OP_PLOT_F]
+                parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = feature[names.COL_UE_BAUNIT_T_LC_PLOT_F]
             else:
                 # error: parcel should only have one plot associate
                 del parcel_plot[feature[names.COL_UE_BAUNIT_T_PARCEL_F]]
@@ -926,7 +928,7 @@ class PolygonQualityRules:
         building_unit_within_building = dict()
         for feature in building_unit_within_building_layer.getFeatures():
             if not building_unit_within_building.get(feature[names.T_ID_F]):
-                if feature[names.OP_BUILDING_UNIT_T_BUILDING_F] != feature[names.T_ID_F + '_2']:
+                if feature[names.LC_BUILDING_UNIT_T_BUILDING_F] != feature[names.T_ID_F + '_2']:
                     # error: alphanumeric relation between building and building unit should be equal to spatial relation
                     building_units_bad_relation.append(feature[names.T_ID_F])
                 else:
@@ -944,19 +946,19 @@ class PolygonQualityRules:
         building_unit_parcels = dict()
         expr = "{building_unit_f} in ({filter}) and {plot_f} is null and {building_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in building_units_to_check.keys()]),
-            plot_f=names.COL_UE_BAUNIT_T_OP_PLOT_F,
-            building_f=names.COL_UE_BAUNIT_T_OP_BUILDING_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            plot_f=names.COL_UE_BAUNIT_T_LC_PLOT_F,
+            building_f=names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
-            if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]):
-                building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
+            if not building_unit_parcels.get(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]):
+                building_unit_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]] = feature[names.COL_UE_BAUNIT_T_PARCEL_F]
             else:
                 # error: building unit should only have one parcel associated
-                building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F])
-                del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F]]
+                building_units_bad_relation.append(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F])
+                del building_unit_parcels[feature[names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F]]
 
         # Remove buildings units that are within more than one plot
         remove_keys_from_dict(building_units_bad_relation, building_units_to_check)
@@ -964,23 +966,23 @@ class PolygonQualityRules:
         # Get parcel condition
         expr = "{} in ({})".format(names.T_ID_F, ', '.join([str(t_id) for t_id in building_unit_parcels.values()]))
         domain_condition_parcel = {f[names.T_ID_F]: f[names.ILICODE_F] for f in condition_parcel_layer.getFeatures()}
-        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.OP_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
+        parcel_condition = {f[names.T_ID_F]: domain_condition_parcel.get(f[names.LC_PARCEL_T_PARCEL_TYPE_F]) for f in parcel_layer.getFeatures(expr)}
 
         # Relation parcel - building
         parcel_building = dict()
         expr = "{parcel_f} in ({filter}) and {plot_f} is null and {building_unit_f} is null and {right_of_way_f} is null".format(
             filter=', '.join([str(t_id) for t_id in building_unit_parcels.values()]),
             parcel_f=names.COL_UE_BAUNIT_T_PARCEL_F,
-            plot_f=names.COL_UE_BAUNIT_T_OP_PLOT_F,
-            building_unit_f=names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F,
-            right_of_way_f=names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F
+            plot_f=names.COL_UE_BAUNIT_T_LC_PLOT_F,
+            building_unit_f=names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+            right_of_way_f=names.COL_UE_BAUNIT_T_LC_RIGHT_OF_WAY_F
         )
 
         for feature in ue_baunit_layer.getFeatures(expr):
             if not parcel_building.get(feature[names.COL_UE_BAUNIT_T_PARCEL_F]):
-                parcel_building[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = [feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F]]
+                parcel_building[feature[names.COL_UE_BAUNIT_T_PARCEL_F]] = [feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F]]
             else:
-                parcel_building.get(feature[names.COL_UE_BAUNIT_T_PARCEL_F]).append(feature[names.COL_UE_BAUNIT_T_OP_BUILDING_F])
+                parcel_building.get(feature[names.COL_UE_BAUNIT_T_PARCEL_F]).append(feature[names.COL_UE_BAUNIT_T_LC_BUILDING_F])
 
         for t_id_building_unit in building_units_to_check:
             parcel_tid = building_unit_parcels.get(t_id_building_unit)
@@ -1020,12 +1022,12 @@ class PolygonQualityRules:
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[id_field]: feature for feature in boundary_layer.getFeatures(request)}
 
-        exp_more = '"{}" is not null and "{}" is not null'.format(db.names.MORE_BFS_T_OP_BOUNDARY_F, db.names.MORE_BFS_T_OP_PLOT_F)
-        list_more_bfs = [{'plot_id': feature[db.names.MORE_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.MORE_BFS_T_OP_BOUNDARY_F]}
+        exp_more = '"{}" is not null and "{}" is not null'.format(db.names.MORE_BFS_T_LC_BOUNDARY_F, db.names.MORE_BFS_T_LC_PLOT_F)
+        list_more_bfs = [{'plot_id': feature[db.names.MORE_BFS_T_LC_PLOT_F], 'boundary_id': feature[db.names.MORE_BFS_T_LC_BOUNDARY_F]}
                          for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        exp_less = '"{}" is not null and "{}" is not null'.format(db.names.LESS_BFS_T_OP_BOUNDARY_F, db.names.LESS_BFS_T_OP_PLOT_F)
-        list_less = [{'plot_id': feature[db.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_OP_BOUNDARY_F]}
+        exp_less = '"{}" is not null and "{}" is not null'.format(db.names.LESS_BFS_T_LC_BOUNDARY_F, db.names.LESS_BFS_T_LC_PLOT_F)
+        list_less = [{'plot_id': feature[db.names.LESS_BFS_T_LC_PLOT_F], 'boundary_id': feature[db.names.LESS_BFS_T_LC_BOUNDARY_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
         tmp_inner_rings_layer = self.geometry.get_inner_rings_layer(db.names, plot_layer, db.names.T_ID_F)

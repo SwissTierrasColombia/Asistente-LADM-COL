@@ -39,24 +39,24 @@ class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
         self.lst_buildings.clear()
 
         self.plots = {
-            self.names.OP_BOUNDARY_POINT_T: None,
-            self.names.OP_BOUNDARY_T: None,
-            self.names.OP_PLOT_T: None
+            self.names.LC_BOUNDARY_POINT_T: None,
+            self.names.LC_BOUNDARY_T: None,
+            self.names.LC_PLOT_T: None
         }
 
         self.buildings = {
-            self.names.OP_SURVEY_POINT_T: None,
-            self.names.OP_BUILDING_T: None,
-            self.names.OP_BUILDING_UNIT_T: None
+            self.names.LC_SURVEY_POINT_T: None,
+            self.names.LC_BUILDING_T: None,
+            self.names.LC_BUILDING_UNIT_T: None
         }
 
         icons = {
-            self.names.OP_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
-            self.names.OP_BOUNDARY_T: QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
-            self.names.OP_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
-            self.names.OP_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
-            self.names.OP_BUILDING_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
-            self.names.OP_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
+            self.names.LC_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+            self.names.LC_BOUNDARY_T: QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
+            self.names.LC_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+            self.names.LC_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+            self.names.LC_BUILDING_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+            self.names.LC_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
         }
 
         for k, v in self.plots.items():

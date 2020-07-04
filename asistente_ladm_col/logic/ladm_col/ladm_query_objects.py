@@ -145,9 +145,9 @@ class FilterSubLevel(AbsFilterSubLevel):
     For example:
         FilterSubLevel(names.COL_UE_BAUNIT_T_PARCEL_F,
                        names.COL_UE_BAUNIT_T,
-                       names.COL_UE_BAUNIT_T_OP_PLOT_F)
+                       names.COL_UE_BAUNIT_T_LC_PLOT_F)
 
-        Filter table COL_UE_BAUNIT_T by COL_UE_BAUNIT_T_OP_PLOT_F and return COL_UE_BAUNIT_T_PARCEL_F
+        Filter table COL_UE_BAUNIT_T by COL_UE_BAUNIT_T_LC_PLOT_F and return COL_UE_BAUNIT_T_PARCEL_F
 
     :param required_field_referenced_layer: Required field from the referenced layer
     :param referenced_layer: Referenced layer (str)
@@ -168,10 +168,10 @@ class SpatialFilterSubLevel(AbsFilterSubLevel):
 
     For example:
         SpatialFilterSubLevel(names.T_ID_F,
-                              names.OP_SURVEY_POINT_T,
-                              names.OP_PLOT_T,
+                              names.LC_SURVEY_POINT_T,
+                              names.LC_PLOT_T,
                               EnumSpatialOperationType.INTERSECTS)
-        Get T_ID_F field of OP_SURVEY_POINT_T that INTERSECTS with a filtered OP_PLOT_T layer (several plots)
+        Get T_ID_F field of LC_SURVEY_POINT_T that INTERSECTS with a filtered LC_PLOT_T layer (several plots)
 
     :param referenced_field: Required field in the sub level table
     :param referenced layer: Table name to be filtered (str)

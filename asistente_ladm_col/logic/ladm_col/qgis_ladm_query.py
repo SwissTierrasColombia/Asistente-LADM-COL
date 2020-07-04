@@ -104,24 +104,24 @@ class QGISLADMQuery:
             plot_ids = params[QueryNames.SEARCH_KEY_PLOT_T_IDS]
 
         if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL' or params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL' or params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
-            layers = {db.names.OP_PARCEL_T: None,
+            layers = {db.names.LC_PARCEL_T: None,
                       db.names.COL_UE_BAUNIT_T: None}
             self.app.core.get_layers(db, layers, False)
 
             if layers:
-                parcel_layer = layers[db.names.OP_PARCEL_T]
+                parcel_layer = layers[db.names.LC_PARCEL_T]
                 ue_baunit_layer = layers[db.names.COL_UE_BAUNIT_T]
 
                 if params[QueryNames.SEARCH_KEY_PARCEL_FMI] != 'NULL':
-                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_FMI_F, params[QueryNames.SEARCH_KEY_PARCEL_FMI]))
+                    expr = QgsExpression("{} like '{}'".format(db.names.LC_PARCEL_T_FMI_F, params[QueryNames.SEARCH_KEY_PARCEL_FMI]))
                     plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
                 if params[QueryNames.SEARCH_KEY_PARCEL_NUMBER] != 'NULL':
-                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PARCEL_NUMBER]))
+                    expr = QgsExpression("{} like '{}'".format(db.names.LC_PARCEL_T_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PARCEL_NUMBER]))
                     plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
                 if params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER] != 'NULL':
-                    expr = QgsExpression("{} like '{}'".format(db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER]))
+                    expr = QgsExpression("{} like '{}'".format(db.names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER]))
                     plot_ids.extend(self._filter_plots_ids_from_expresion(db, parcel_layer, ue_baunit_layer, expr))
 
         return plot_ids
@@ -133,7 +133,7 @@ class QGISLADMQuery:
         """
         # Only required field in parcel layer
         fields_idx = list()
-        for field in [db.names.T_ID_F, db.names.OP_PARCEL_T_FMI_F, db.names.OP_PARCEL_T_PARCEL_NUMBER_F, db.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F]:
+        for field in [db.names.T_ID_F, db.names.LC_PARCEL_T_FMI_F, db.names.LC_PARCEL_T_PARCEL_NUMBER_F, db.names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F]:
             fields_idx.append(parcel_layer.fields().indexFromName(field))
 
         request = QgsFeatureRequest(expression_select_parcels)
@@ -143,14 +143,14 @@ class QGISLADMQuery:
         parcel_ids = [select_parcel[db.names.T_ID_F] for select_parcel in parcels]
 
         # Only required field in ue baunit layer
-        field_idx = parcel_layer.fields().indexFromName(db.names.COL_UE_BAUNIT_T_OP_PLOT_F)
-        expression_select_plots = QgsExpression('{} in ({}) AND {} IS NOT NULL'.format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ','.join([str(parcel_id) for parcel_id in parcel_ids]), db.names.COL_UE_BAUNIT_T_OP_PLOT_F))
+        field_idx = parcel_layer.fields().indexFromName(db.names.COL_UE_BAUNIT_T_LC_PLOT_F)
+        expression_select_plots = QgsExpression('{} in ({}) AND {} IS NOT NULL'.format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ','.join([str(parcel_id) for parcel_id in parcel_ids]), db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
         request = QgsFeatureRequest(expression_select_plots)
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
         plots = ue_baunit_layer.getFeatures(request)
 
-        return [plot[db.names.COL_UE_BAUNIT_T_OP_PLOT_F] for plot in plots]  # Plot ids
+        return [plot[db.names.COL_UE_BAUNIT_T_LC_PLOT_F] for plot in plots]  # Plot ids
 
     def _execute_query(self, db, response, level_dict, filter_field_values):
         """
