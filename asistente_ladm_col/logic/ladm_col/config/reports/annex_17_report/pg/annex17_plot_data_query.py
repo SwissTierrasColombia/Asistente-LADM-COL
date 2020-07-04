@@ -16,7 +16,7 @@ def get_annex17_plot_data_query(names, schema, where_id):
                             LEFT JOIN {schema}.{LC_PARCEL_T} ON {LC_PARCEL_T}.{T_ID_F} = {COL_UE_BAUNIT_T_PARCEL_F}
                             {where_id}
                             ) AS f
-                        ) AS ff;""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                        ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                                            schema=schema,
                                            where_id=where_id)
 

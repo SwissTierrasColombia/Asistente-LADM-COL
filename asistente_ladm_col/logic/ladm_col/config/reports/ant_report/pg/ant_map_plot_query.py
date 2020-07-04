@@ -70,7 +70,7 @@ def get_ant_map_query(names, schema, where_id):
 								join {schema}.{COL_UE_BAUNIT_T} on {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = _info_total_interesados.predio_t_id
 								join {schema}.{LC_PLOT_T} on {LC_PLOT_T}.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F}
 								) AS f
-                             ) AS ff;""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                             ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                                                 schema=schema,
                                                 where_id=where_id)
 

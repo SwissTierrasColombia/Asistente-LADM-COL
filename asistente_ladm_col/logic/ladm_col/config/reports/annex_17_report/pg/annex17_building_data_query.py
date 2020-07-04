@@ -13,7 +13,7 @@ def get_annex17_building_data_query (names, schema):
                     					)) AS properties
                             FROM {schema}.{LC_BUILDING_T} AS c
                     		) AS f
-                        ) AS ff;""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                        ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                                            schema=schema)
 
     return query

@@ -113,7 +113,7 @@ def get_igac_economic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
         SELECT JSON_BUILD_OBJECT('{LC_PLOT_T}', JSON_AGG(_info_terreno._terreno_)) FROM _info_terreno
     """
 
-    query = query.format(**vars(names),  # Custom keys are search in Table And Field Names object
+    query = query.format(**vars(names),  # Custom keys are searched in Table And Field Names object
                          schema=schema,
                          custom_filter_plots=custom_filter_plots,
                          custom_filter_parcels=custom_filter_parcels,

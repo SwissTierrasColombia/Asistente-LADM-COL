@@ -265,7 +265,7 @@ def get_annex17_point_data_query(names, schema, plot_id):
                     					)) AS properties
                     		FROM puntos_ordenados
                     		) AS f
-                    ) AS ff;""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                    ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                                            schema=schema,
                                            id=plot_id)
 

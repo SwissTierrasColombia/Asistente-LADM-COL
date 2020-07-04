@@ -203,7 +203,7 @@ def get_ant_map_neighbouring_change_query(names, schema, where_id):
                                                                     ) AS l
                                                                 )) AS properties
 
-                            ,ST_AsGeoJSON(lineas_colindancia.geom)::json AS geometry FROM lineas_colindancia) as f) as ff""".format(**vars(names),  # Custom keys are search in Table And Field Names object
+                            ,ST_AsGeoJSON(lineas_colindancia.geom)::json AS geometry FROM lineas_colindancia) as f) as ff""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                                                                                                                                     schema=schema,
                                                                                                                                     where_id=where_id)
     return query
