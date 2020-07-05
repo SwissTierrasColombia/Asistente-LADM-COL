@@ -186,7 +186,7 @@ class TestGetLayers(unittest.TestCase):
                                                             db.names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
                                                             survey_point_type_domain,
                                                             db.names.T_ID_F),
-                        "'op_puntolevantamiento-tipo_punto_levantamiento' relationship should be there!")
+                        "'lc_puntolevantamiento-tipo_punto_levantamiento' relationship should be there!")
 
         QgsProject.instance().clear()
 

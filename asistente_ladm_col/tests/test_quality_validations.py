@@ -1324,7 +1324,7 @@ class TesQualityValidations(unittest.TestCase):
 
         # Points rules
         self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS))[1], Qgis.Warning)  # "There are no points in layer 'op_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS))[1], Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
         self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))[1], Qgis.Success)
         self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))[1], Qgis.Success)
 

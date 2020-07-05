@@ -102,21 +102,21 @@ class TestQgisModelBaker(unittest.TestCase):
 
     def check_export_xtf(self, xtf_path):
         test_xtf_dom = parse(testdata_path('xtf/test_ladm_col_queries_v1_0.xtf'))
-        test_xtf_op_building_count = len(test_xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion'))
-        test_xtf_op_admin_source_count = len(test_xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa'))
+        test_xtf_lc_building_count = len(test_xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion'))
+        test_xtf_lc_admin_source_count = len(test_xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa'))
         test_xtf_snr = test_xtf_dom.getElementsByTagName('Submodelo_Insumos_SNR_V1_0.Datos_SNR')[0]
         test_xtf_gc = test_xtf_dom.getElementsByTagName('Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral')[0]
         test_xtf_integration = test_xtf_dom.getElementsByTagName('Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos')[0]
 
         xtf_dom = parse(testdata_path(xtf_path))
-        xtf_op_building_count = len(xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion'))
-        xtf_op_admin_source_count = len(xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa'))
+        xtf_lc_building_count = len(xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion'))
+        xtf_lc_admin_source_count = len(xtf_dom.getElementsByTagName('Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa'))
         xtf_snr = xtf_dom.getElementsByTagName('Submodelo_Insumos_SNR_V1_0.Datos_SNR')[0]
         xtf_gc = xtf_dom.getElementsByTagName('Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral')[0]
         xtf_integration = xtf_dom.getElementsByTagName('Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos')[0]
 
-        self.assertEqual(xtf_op_building_count, test_xtf_op_building_count)
-        self.assertEqual(xtf_op_admin_source_count, test_xtf_op_admin_source_count)
+        self.assertEqual(xtf_lc_building_count, test_xtf_lc_building_count)
+        self.assertEqual(xtf_lc_admin_source_count, test_xtf_lc_admin_source_count)
         self.assertEqual(xtf_snr.toxml(), test_xtf_snr.toxml())
         self.assertEqual(xtf_gc.toxml(), test_xtf_gc.toxml())
         self.assertEqual(xtf_integration.toxml(), test_xtf_integration.toxml())
@@ -402,7 +402,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
         res, code, msg = db_conn.test_connection()
         self.assertTrue(res, msg)
-        test_layer = self.app.core.get_layer(db_conn, db_conn.names.OP_BOUNDARY_POINT_T, load=True)
+        test_layer = self.app.core.get_layer(db_conn, db_conn.names.LC_BOUNDARY_POINT_T, load=True)
 
         self.assertEqual(test_layer.featureCount(), 390)
         db_conn.conn.close()

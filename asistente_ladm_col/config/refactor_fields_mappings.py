@@ -276,7 +276,7 @@ class RefactorFieldsMappings:
                 {'expression': '"valor_m2_construccion"', 'length': 16, 'name': 'valor_m2_construccion', 'precision': 1, 'type': 6},
                 {'expression': '"anio_construccion"', 'length': -1, 'name': 'anio_construccion', 'precision': 0, 'type': 2},
                 {'expression': '"observaciones"', 'length': 255, 'name': 'observaciones', 'precision': -1, 'type': 10},
-                {'expression': '"op_unidad_construccion"', 'length': -1, 'name': 'op_unidad_construccion', 'precision': 0, 'type': 4}
+                {'expression': '"lc_unidad_construccion"', 'length': -1, 'name': 'lc_unidad_construccion', 'precision': 0, 'type': 4}
             ]
         elif layer_name == LADMNames.VALUATION_COMPONENT_BUILDING:
             mapping = [

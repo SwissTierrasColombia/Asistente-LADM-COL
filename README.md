@@ -144,7 +144,7 @@ La versión actual ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-L
 | Captura y estructuración de datos | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Cargar capas                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Gestión de insumos                | :heavy_check_mark: | :heavy_check_mark: |          ​          |
-| Validaciones de calidad           | :heavy_check_mark: | :heavy_check_mark: |                    |
+| Validaciones de calidad           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Consultas                         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Reportes                          | :heavy_check_mark: |                    |                    |
 | Identificación de novedades       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

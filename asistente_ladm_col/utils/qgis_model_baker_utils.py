@@ -86,7 +86,7 @@ class QgisModelBakerUtils(QObject):
         """
         Gets a list of layers from a list of layer names using QGIS Model Baker.
         Layers are register in QgsProject, but not loaded to the canvas!
-        :param layer_list: list of layers names (e.g., ['op_terreno', 'op_lindero'])
+        :param layer_list: list of layers names (e.g., ['lc_terreno', 'lc_lindero'])
         :param db: db connection
         :return: list of QgsVectorLayers registered in the project
         """

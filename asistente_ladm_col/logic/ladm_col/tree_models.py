@@ -412,7 +412,7 @@ class TreeModel(QAbstractItemModel):
         # Check if the key has extra words, in that case, we need to filter them (we expect 0 or 1 extra word in key)
         for word in self._extra_words_to_ignore:
             parts = key.split(word)
-            if len(parts) == 2:  # parts[0] is the key (e.g. 'op_lindero externo' --> 0: 'op_lindero', 1:'')
+            if len(parts) == 2:  # parts[0] is the key (e.g. 'lc_lindero externo' --> 0: 'lc_lindero', 1:'')
                 return "{}{}".format(plural[parts[0]] if parts[0] in plural else parts[0], word)
 
         return plural[key] if key in plural else key

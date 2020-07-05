@@ -239,7 +239,7 @@ class DBConnector(QObject):
         # Map FK ilinames (i.e., those whose t_ili2db_attrname target column is not NULL)
         # Spatial_Unit-->Ext_Address_ID (Ext_Address)
         #   Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-        #   Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        #   Values: lc_construccion_ext_direccion_id and  lc_terreno_ext_direccion_id
         records = self._get_fk_fields()
         for record in records:
             composed_key = "{}{}{}".format(normalize_iliname(record['iliname']),
@@ -290,7 +290,7 @@ class DBConnector(QObject):
         i.e.
         Spatial_Unit-->Ext_Address_ID (Ext_Address)
         Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-        Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        Values: lc_construccion_ext_direccion_id and  lc_terreno_ext_direccion_id
 
         Execute below Sql statement (seudo-SQL):
         SELECT  "iliname before the last point" as QueryNames.TABLE_ILINAME,
