@@ -62,7 +62,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                      SLOT_NAME: self._slot_caller.show_dlg_import_schema,
                      SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
                      SLOT_PARAMS: {'link_to_import_data': False,
-                                   'selected_models': [LADMNames.SUPPORTED_SUPPLIES_MODEL]}}
+                                   'selected_models': [LADMNames.SUPPLIES_MODEL_KEY]}}
                  },
                 {STEP_NUMBER: 2,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Run supplies ETL"),

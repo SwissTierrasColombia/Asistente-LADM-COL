@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.utils.utils import is_version_valid
 
 
@@ -29,42 +30,26 @@ class ModelParser(QObject):
         QObject.__init__(self)
         self.logger = Logger()
 
-        self.current_model_version = {
-            LADMNames.SURVEY_MODEL_PREFIX: None,
-            LADMNames.VALUATION_MODEL_PREFIX: None,
-            LADMNames.LADM_MODEL_PREFIX: None,
-            LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: None,
-            LADMNames.SNR_DATA_MODEL_PREFIX: None,
-            LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: None,
-            LADMNames.SUPPLIES_MODEL_PREFIX: None
-        }
-
-        self.model_version_is_supported = {
-            LADMNames.SURVEY_MODEL_PREFIX: False,
-            LADMNames.VALUATION_MODEL_PREFIX: False,
-            LADMNames.LADM_MODEL_PREFIX: False,
-            LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX: False,
-            LADMNames.SNR_DATA_MODEL_PREFIX: False,
-            LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX: False,
-            LADMNames.SUPPLIES_MODEL_PREFIX: False
-        }
+        ladmcol_models = LADMColModelRegistry()
+        self.current_model_version = {model_id: None for model_id in ladmcol_models.model_ids()}
+        self.model_version_is_supported = {model_id: False for model_id in ladmcol_models.model_ids()}
 
         self._db = db
 
         # Fill versions for each model found
         for current_model_name in self._get_models():
-            for model_prefix,v in self.current_model_version.items():
-                if current_model_name.startswith(model_prefix):
-                    parts = current_model_name.split(model_prefix)
+            for model_key,v in self.current_model_version.items():
+                if current_model_name.startswith(model_key):
+                    parts = current_model_name.split(model_key)
                     if len(parts) > 1:
                         current_version = self.parse_version(parts[1])
                         current_version_valid = is_version_valid(current_version,
-                                                                 LADMNames.SUPPORTED_MODEL_VERSIONS[model_prefix],
+                                                                 ladmcol_models.model(model_key).supported_version(),
                                                                  True,  # Exact version required
-                                                                 QCoreApplication.translate("ModelParser", model_prefix))
-                        self.current_model_version[model_prefix] = current_version
-                        self.model_version_is_supported[model_prefix] = current_version_valid
-                        self.logger.debug(__name__, "Model '{}' found! Valid: {}".format(model_prefix, current_version_valid))
+                                                                 QCoreApplication.translate("ModelParser", model_key))
+                        self.current_model_version[model_key] = current_version
+                        self.model_version_is_supported[model_key] = current_version_valid
+                        self.logger.debug(__name__, "Model '{}' found! Valid: {}".format(model_key, current_version_valid))
                         break
 
     def parse_version(self, str_version):
@@ -72,25 +57,25 @@ class ModelParser(QObject):
         return ".".join(str_version.replace("_V", "").split("_"))
 
     def survey_model_exists(self):
-        return self.model_version_is_supported[LADMNames.SURVEY_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.SURVEY_MODEL_KEY]
 
     def valuation_model_exists(self):
-        return self.model_version_is_supported[LADMNames.VALUATION_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.VALUATION_MODEL_KEY]
 
     def ladm_model_exists(self):
-        return self.model_version_is_supported[LADMNames.LADM_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.LADM_COL_MODEL_KEY]
 
     def cadastral_cartography_model_exists(self):
-        return self.model_version_is_supported[LADMNames.CADASTRAL_CARTOGRAPHY_PREFIX]
+        return self.model_version_is_supported[LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY]
 
     def snr_data_model_exists(self):
-        return self.model_version_is_supported[LADMNames.SNR_DATA_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]
 
     def supplies_integration_model_exists(self):
-        return self.model_version_is_supported[LADMNames.SUPPLIES_INTEGRATION_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY]
 
     def supplies_model_exists(self):
-        return self.model_version_is_supported[LADMNames.SUPPLIES_MODEL_PREFIX]
+        return self.model_version_is_supported[LADMNames.SUPPLIES_MODEL_KEY]
 
     def ladm_col_model_exists(self, model_prefix):
         return self.model_version_is_supported[model_prefix] if model_prefix in self.model_version_is_supported else False

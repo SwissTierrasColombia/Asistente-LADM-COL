@@ -127,7 +127,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "COLLECTED DB Connection Settings"))
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
-        self.settings_dialog.set_required_models([LADMNames.SURVEY_MODEL_PREFIX])
+        self.settings_dialog.set_required_models([LADMNames.SURVEY_MODEL_KEY])
         self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
         if self.settings_dialog.exec_():
@@ -139,7 +139,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "SUPPLIES DB Connection Settings"))
         self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
-        self.settings_dialog.set_required_models([LADMNames.SUPPLIES_MODEL_PREFIX])
+        self.settings_dialog.set_required_models([LADMNames.SUPPLIES_MODEL_KEY])
         self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
         if self.settings_dialog.exec_():
@@ -163,8 +163,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # First, update status of same_db button according to collected db connection
-        res_collected, code_collected, msg_collected = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_PREFIX])
-        res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
+        res_collected, code_collected, msg_collected = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_KEY])
+        res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
 
         if res_supplies:
             self.radio_button_same_db.setEnabled(True)
@@ -172,7 +172,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.radio_button_same_db.setChecked(False)  # signal update the label
 
         if not self.radio_button_same_db.isChecked():
-            res_supplies, code_supplies, msg_supplies = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
+            res_supplies, code_supplies, msg_supplies = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
 
         # Update collected db connection label
         db_description = self._db_collected.get_description_conn_string()
@@ -281,11 +281,11 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             pass  # Continue config db connections
 
     def collected_db_is_valid(self):
-        res, foo, bar = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_PREFIX])
+        res, foo, bar = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_KEY])
         return res
 
     def supplies_db_is_valid(self):
-        res, foo, bar = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_PREFIX])
+        res, foo, bar = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
         return res
 
     def reject(self):

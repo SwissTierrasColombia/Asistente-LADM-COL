@@ -53,6 +53,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
@@ -87,6 +88,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.logger = Logger()
         self.app = AppInterface()
+        self.__ladmcol_models = LADMColModelRegistry()
 
         self.java_dependency = JavaDependency()
         self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
@@ -195,16 +197,16 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_qmodel = QStandardItemModel()
             self.import_models_list_view.setModel(self.import_models_qmodel)
         else:
-
             if os.path.isfile(self.xtf_file_line_edit.text().strip()):
                 color = '#fff'  # White
 
                 self.import_models_qmodel = QStandardItemModel()
-                models_name = get_models_from_xtf(self.xtf_file_line_edit.text().strip())
+                model_names= get_models_from_xtf(self.xtf_file_line_edit.text().strip())
 
-                for model_name in models_name:
-                    if not model_name in LADMNames.DEFAULT_HIDDEN_MODELS:
-                        item = QStandardItem(model_name)
+                for model in self.__ladmcol_models.supported_models():
+                    if not model.hidden() and model.full_name() in model_names:
+                        item = QStandardItem(model.full_alias())
+                        item.setData(model.full_name(), Qt.UserRole)
                         item.setCheckable(False)
                         item.setEditable(False)
                         self.import_models_qmodel.appendRow(item)
@@ -234,7 +236,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         ili_models = list()
         for index in range(self.import_models_qmodel.rowCount()):
             item = self.import_models_qmodel.item(index)
-            ili_models.append(item.text())
+            ili_models.append(item.data(Qt.UserRole))
         return ili_models
 
     def show_settings(self):
@@ -317,13 +319,13 @@ class DialogImportData(QDialog, DIALOG_UI):
         # Get list of models present in the XTF file, in the DB and in the list of required models (by the plugin)
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
 
-        supported_models_in_ili = set(LADMNames.SUPPORTED_MODELS).intersection(ili_models)
+        supported_models_in_ili = set([m.full_name() for m in self.__ladmcol_models.supported_models()]).intersection(ili_models)
 
         if not supported_models_in_ili:
             self._running_tool = False
             error_msg = QCoreApplication.translate("DialogImportData",
                                                    "The selected XTF file does not have data from any LADM-COL model supported by the LADM-COL Assistant. " \
-                                                   "Therefore, you cannot import it! These are the models supported:\n\n * {}").format(" \n * ".join(LADMNames.SUPPORTED_MODELS))
+                                                   "Therefore, you cannot import it! These are the models supported:\n\n * {}").format(" \n * ".join([m.full_alias() for m in self.__ladmcol_models.supported_models()]))
             self.txtStdout.setText(error_msg)
             self.show_message(error_msg, Qgis.Warning)
             self.import_models_list_view.setFocus()

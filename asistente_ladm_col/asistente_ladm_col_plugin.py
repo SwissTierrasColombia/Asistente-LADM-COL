@@ -22,9 +22,6 @@ import shutil
 from functools import partial
 
 import qgis.utils
-from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
-from processing.modeler.ModelerUtils import ModelerUtils
-from processing.script import ScriptUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
@@ -39,7 +36,13 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingModelAlgorithm,
                        QgsExpression)
+from processing.modeler.ModelerUtils import ModelerUtils
+from processing.script import ScriptUtils
 
+from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
+from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
+                                                    LADMColModel)
+from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              EnumWizardType,
                                              EnumLogHandler,
@@ -164,6 +167,11 @@ class AsistenteLADMCOLPlugin(QObject):
         task_steps_config.set_slot_caller(self)
         layer_tree_indicator_config = LayerTreeIndicatorConfig()
         layer_tree_indicator_config.set_slot_caller(self)
+
+        # Register LADM-COL models
+        model_registry = LADMColModelRegistry()
+        for model_key, model_config in MODEL_CONFIG.items():
+            model_registry.register_model(LADMColModel(model_key, model_config))
 
         # Let's persist some dependency objects
         self.qmb_plugin = PluginDependency(QGIS_MODEL_BAKER_PLUGIN_NAME,

@@ -108,12 +108,12 @@ MENU_REPORTS_OBJECTNAME = "ladm_col_reports_menu"
 
 # Nowadays just an example, it is not being used, although initially planned
 MODELS_GUI_DICT = {
-    LADMNames.SURVEY_MODEL_PREFIX: [
+    LADMNames.SURVEY_MODEL_KEY: [
         ACTION_CHECK_QUALITY_RULES
     ],
-    LADMNames.VALUATION_MODEL_PREFIX: [
+    LADMNames.VALUATION_MODEL_KEY: [
     ],
-    LADMNames.SUPPLIES_MODEL_PREFIX: [
+    LADMNames.SUPPLIES_MODEL_KEY: [
         ACTION_RUN_ETL_SUPPLIES,
         ACTION_FIND_MISSING_COBOL_SUPPLIES
     ]

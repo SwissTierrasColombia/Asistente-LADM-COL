@@ -2,6 +2,12 @@ from PyQt5.QtCore import QCoreApplication, Qt
 
 from asistente_ladm_col.utils.singleton import Singleton
 
+MODEL_ALIAS = "MODEL_ALIAS"
+MODEL_IS_SUPPORTED = "MODEL_IS_SUPPORTED"
+MODEL_SUPPORTED_VERSION = "MODEL_SUPPORTED_VERSION"
+MODEL_HIDDEN_BY_DEFAULT = "MODEL_HIDDEN_BY_DEFAULT"
+MODEL_CHECKED_BY_DEFAULT = "MODEL_CHECKED_BY_DEFAULT"
+
 
 class LADMNames(metaclass=Singleton):
     """
@@ -46,73 +52,14 @@ class LADMNames(metaclass=Singleton):
     """
     LADM VARIABLES
     """
-    LADM_MODEL_PREFIX = "LADM_COL"
-    SNR_DATA_MODEL_PREFIX = "Submodelo_Insumos_SNR"
-    SUPPLIES_MODEL_PREFIX = "Submodelo_Insumos_Gestor_Catastral"
-    SUPPLIES_INTEGRATION_MODEL_PREFIX = "Submodelo_Integracion_Insumos"
-    SURVEY_MODEL_PREFIX = "Modelo_Aplicacion_LADMCOL_Lev_Cat"
-    CADASTRAL_CARTOGRAPHY_PREFIX = "Submodelo_Cartografia_Catastral"
-    VALUATION_MODEL_PREFIX = "Sumodelo_Avaluos"
-
-    """
-    MODELS SUPPORTED IN LADM
-    """
-    # From this version on the plugin will work, a message will block prior versions
-    LATEST_SURVEY_MODEL_VERSION_SUPPORTED = "1.0"
-    LATEST_LADM_MODEL_VERSION_SUPPORTED = "3.0"
-    VERSION_EXTENDED_MODELS = LATEST_SURVEY_MODEL_VERSION_SUPPORTED.replace('.', '_')
-    VERSION_LADM_MODEL = LATEST_LADM_MODEL_VERSION_SUPPORTED.replace('.', '_')
-
-    ISO_CARTESIAN_COORDINATES = 'ISO19107_PLANAS'
-
-    SUPPORTED_MODEL_VERSIONS = {
-        SURVEY_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        VALUATION_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        LADM_MODEL_PREFIX: LATEST_LADM_MODEL_VERSION_SUPPORTED,
-        CADASTRAL_CARTOGRAPHY_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        SNR_DATA_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        SUPPLIES_INTEGRATION_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED,
-        SUPPLIES_MODEL_PREFIX: LATEST_SURVEY_MODEL_VERSION_SUPPORTED
-    }
-
-    SUPPORTED_ISO_CARTESIAN_COORDINATES = "{}_V{}".format(ISO_CARTESIAN_COORDINATES, VERSION_LADM_MODEL)
-    SUPPORTED_LADM_MODEL = "{}_V{}".format(LADM_MODEL_PREFIX, VERSION_LADM_MODEL)
-    SUPPORTED_SNR_DATA_MODEL = "{}_V{}".format(SNR_DATA_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_SUPPLIES_MODEL = "{}_V{}".format(SUPPLIES_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_SUPPLIES_INTEGRATION_MODEL = "{}_V{}".format(SUPPLIES_INTEGRATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_SURVEY_MODEL = "{}_V{}".format(SURVEY_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_CADASTRAL_CARTOGRAPHY = "{}_V{}".format(CADASTRAL_CARTOGRAPHY_PREFIX, VERSION_EXTENDED_MODELS)
-    SUPPORTED_VALUATION_MODEL = "{}_V{}".format(VALUATION_MODEL_PREFIX, VERSION_EXTENDED_MODELS)
-
-    DEFAULT_HIDDEN_MODELS = [SUPPORTED_LADM_MODEL, SUPPORTED_ISO_CARTESIAN_COORDINATES]
-
-    ALIAS_FOR_ASSISTANT_SUPPORTED_MODEL = {
-        LADM_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "LADM COL"),
-        SNR_DATA_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
-        SUPPLIES_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
-        SUPPLIES_INTEGRATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings",
-                                                                      "Supplies integration data"),
-        SURVEY_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Survey"),
-        CADASTRAL_CARTOGRAPHY_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
-        VALUATION_MODEL_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Valuation")
-    }
-
-    SUPPORTED_MODELS = [SUPPORTED_LADM_MODEL,
-                        SUPPORTED_SNR_DATA_MODEL,
-                        SUPPORTED_SUPPLIES_MODEL,
-                        SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                        SUPPORTED_SURVEY_MODEL,
-                        SUPPORTED_CADASTRAL_CARTOGRAPHY,
-                        SUPPORTED_VALUATION_MODEL]
-
-    DEFAULT_MODEL_NAMES_CHECKED = {
-        SUPPORTED_VALUATION_MODEL: Qt.Unchecked,
-        SUPPORTED_CADASTRAL_CARTOGRAPHY: Qt.Unchecked,
-        SUPPORTED_SUPPLIES_MODEL: Qt.Unchecked,
-        SUPPORTED_SUPPLIES_INTEGRATION_MODEL: Qt.Unchecked,
-        SUPPORTED_SNR_DATA_MODEL: Qt.Unchecked,
-        SUPPORTED_SURVEY_MODEL: Qt.Checked
-    }
+    LADM_COL_MODEL_KEY = "LADM_COL"
+    SURVEY_MODEL_KEY = "Modelo_Aplicacion_LADMCOL_Lev_Cat"
+    SUPPLIES_MODEL_KEY = "Submodelo_Insumos_Gestor_Catastral"
+    SNR_DATA_SUPPLIES_MODEL_KEY = "Submodelo_Insumos_SNR"
+    SUPPLIES_INTEGRATION_MODEL_KEY = "Submodelo_Integracion_Insumos"
+    CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
+    VALUATION_MODEL_KEY = "Sumodelo_Avaluos"
+    ISO19107_MODEL_KEY = "ISO19107_PLANAS"
 
     DEFAULT_INHERITANCE = 'smart2'
     # Settings to create schema according to LADM-COL
@@ -203,3 +150,63 @@ class LADMNames(metaclass=Singleton):
             }
         }
     }
+
+
+MODEL_CONFIG = {
+    LADMNames.LADM_COL_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "LADM-COL"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "3.0",
+        MODEL_HIDDEN_BY_DEFAULT: True,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.SURVEY_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Survey"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: True
+    },
+    LADMNames.SUPPLIES_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Supplies"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Supplies integration data"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.VALUATION_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Valuation"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_HIDDEN_BY_DEFAULT: False,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.ISO19107_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "ISO19107"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "3.0",
+        MODEL_HIDDEN_BY_DEFAULT: True,
+        MODEL_CHECKED_BY_DEFAULT: False
+    }
+}

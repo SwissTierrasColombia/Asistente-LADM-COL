@@ -51,6 +51,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_MODELS_DIR)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
@@ -160,9 +161,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         model_names = self.db.get_models()
 
         if model_names:
-            for model_name in model_names:
-                if model_name not in LADMNames.DEFAULT_HIDDEN_MODELS:
-                    item = QStandardItem(model_name)
+            for model in LADMColModelRegistry().supported_models():
+                if not model.hidden() and model.full_name() in model_names:
+                    item = QStandardItem(model.full_alias())
+                    item.setData(model.full_name(), Qt.UserRole)
                     item.setCheckable(False)
                     item.setEditable(False)
                     self.export_models_qmodel.appendRow(item)
@@ -199,7 +201,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         ili_models = list()
         for index in range(self.export_models_qmodel.rowCount()):
             item = self.export_models_qmodel.item(index)
-            ili_models.append(item.text())
+            ili_models.append(item.data(Qt.UserRole))
         return ili_models
 
     def show_settings(self):
