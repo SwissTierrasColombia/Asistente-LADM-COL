@@ -624,6 +624,6 @@ class LayerConfig:
         #   2. Only for a wizard (e.g., PARCEL_TYPE)
         # WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
         return {
-            names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
-                                names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
+            #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
+            #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
