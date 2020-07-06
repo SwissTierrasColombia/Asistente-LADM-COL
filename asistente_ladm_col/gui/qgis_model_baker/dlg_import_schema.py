@@ -52,6 +52,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
@@ -81,6 +82,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.link_to_import_data = link_to_import_data
         self.logger = Logger()
         self.app = AppInterface()
+        self.__ladmcol_models = LADMColModelRegistry()
 
         self.java_dependency = JavaDependency()
         self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
@@ -186,14 +188,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        for modelname, checked in LADMNames.DEFAULT_MODEL_NAMES_CHECKED.items():
-            item = QListWidgetItem(modelname)
-            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            if self.selected_models:  # From parameters
-                item.setCheckState(Qt.Checked if modelname in self.selected_models else Qt.Unchecked)
-            else:  # By default
-                item.setCheckState(Qt.Checked if checked == Qt.Checked else Qt.Unchecked)
-            self.import_models_list_widget.addItem(item)
+        for model in self.__ladmcol_models.supported_models():
+            if not model.hidden():
+                item = QListWidgetItem(model.full_alias())
+                item.setData(Qt.UserRole, model.full_name())
+                item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                if self.selected_models:  # From parameters
+                    item.setCheckState(Qt.Checked if model.id() in self.selected_models else Qt.Unchecked)
+                else:  # By default
+                    item.setCheckState(Qt.Checked if model.checked() else Qt.Unchecked)
+                self.import_models_list_widget.addItem(item)
 
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
         self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
@@ -202,10 +206,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         # disconnect signal to do changes in the items
         self.import_models_list_widget.itemChanged.disconnect(self.on_itemchanged_import_model)
         if self.previous_item.text() != item.text():
-            if item.checkState() == Qt.Checked:
-                item.setCheckState(Qt.Unchecked)
-            else:
-                item.setCheckState(Qt.Checked)
+            item.setCheckState(Qt.Unchecked if item.checkState() == Qt.Checked else Qt.Checked)
+
         # connect signal to check when the items change
         self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
         self.previous_item = item
@@ -220,7 +222,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         for index in range(self.import_models_list_widget.count()):
             item = self.import_models_list_widget.item(index)
             if item.checkState() == Qt.Checked:
-                checked_models.append(item.text())
+                checked_models.append(item.data(Qt.UserRole))
+
         return checked_models
 
     def show_settings(self):

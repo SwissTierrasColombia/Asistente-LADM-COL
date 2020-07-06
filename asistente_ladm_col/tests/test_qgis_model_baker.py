@@ -1,6 +1,8 @@
 import nose2
 import os
 import tempfile
+
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from xml.dom.minidom import parse
 
 from qgis.testing import unittest, start_app
@@ -45,6 +47,8 @@ class TestQgisModelBaker(unittest.TestCase):
         cls.base_test_path = tempfile.mkdtemp()
         import_qgis_model_baker()
 
+        cls.ladmcol_models = LADMColModelRegistry()
+
     def test_export_data_in_pg(self):
         print("\nINFO: Validate Export Data in PG...")
         restore_schema('test_export_data')
@@ -62,11 +66,11 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.database = 'ladm_col'
         configuration.dbschema = 'test_export_data'
         configuration.delete_data = True
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()])
 
         exporter = iliexporter.Exporter()
         exporter.tool = DbIliMode.ili2pg
@@ -86,11 +90,11 @@ class TestQgisModelBaker(unittest.TestCase):
 
         configuration = ExportConfiguration()
         configuration.base_configuration = base_config
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         configuration.dbfile = gpkg_path
 
         exporter = iliexporter.Exporter()
@@ -145,11 +149,11 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
         configuration.dbschema = 'test_import_data'
         configuration.delete_data = True
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()])
 
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = DbIliMode.ili2pg
@@ -195,11 +199,11 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
         configuration.delete_data = True
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = DbIliMode.ili2gpkg
         importer.configuration = configuration
@@ -239,13 +243,13 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
-                                            LADMNames.SUPPORTED_VALUATION_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()])
 
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2pg
@@ -278,13 +282,13 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL,
-                                            LADMNames.SUPPORTED_CADASTRAL_CARTOGRAPHY,
-                                            LADMNames.SUPPORTED_VALUATION_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()])
 
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2gpkg
@@ -324,13 +328,13 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = LADMNames.STROKE_ARCS
-        configuration.ilimodels = ';'.join([LADMNames.SUPPORTED_LADM_MODEL,
-                                            LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                                            LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                                            LADMNames.SUPPORTED_SURVEY_MODEL,
-                                            LADMNames.SUPPORTED_REFERENCE_CARTOGRAPHY,
-                                            LADMNames.SUPPORTED_VALUATION_MODEL])
+        configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
+                                            self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()])
 
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2mssql
@@ -360,12 +364,12 @@ class TestQgisModelBaker(unittest.TestCase):
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
-        model_list = [LADMNames.SUPPORTED_LADM_MODEL,
-                      LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                      LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                      LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                      LADMNames.SUPPORTED_SURVEY_MODEL,
-                      LADMNames.SUPPORTED_VALUATION_MODEL]
+        model_list = [self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()]
 
         configuration = ImportDataConfiguration()
         configuration.base_configuration = base_config
@@ -420,12 +424,12 @@ class TestQgisModelBaker(unittest.TestCase):
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True
 
-        model_list = [LADMNames.SUPPORTED_LADM_MODEL,
-                      LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                      LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                      LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL,
-                      LADMNames.SUPPORTED_SURVEY_MODEL,
-                      LADMNames.SUPPORTED_VALUATION_MODEL]
+        model_list = [self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                      self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()]
 
         configuration = ExportConfiguration()
         configuration.base_configuration = base_config

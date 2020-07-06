@@ -253,9 +253,9 @@ class GUI_Builder(QObject):
         """
         actions = list()
         if self._db.survey_model_exists():
-            actions.extend(MODELS_GUI_DICT[LADMNames.SURVEY_MODEL_PREFIX])
+            actions.extend(MODELS_GUI_DICT[LADMNames.SURVEY_MODEL_KEY])
         if self._db.valuation_model_exists():
-            actions.extend(MODELS_GUI_DICT[LADMNames.VALUATION_MODEL_PREFIX])
+            actions.extend(MODELS_GUI_DICT[LADMNames.VALUATION_MODEL_KEY])
 
         return list(set(actions))
 

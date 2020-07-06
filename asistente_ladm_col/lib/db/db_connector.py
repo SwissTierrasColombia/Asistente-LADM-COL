@@ -18,6 +18,7 @@
 """
 import psycopg2
 from PyQt5.QtCore import QCoreApplication
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 from qgis.PyQt.QtCore import QObject
 
@@ -63,6 +64,8 @@ class DBConnector(QObject):
             self.dict_conn_params = conn_dict
 
         self.model_parser = None
+
+        self.__ladmcol_models = LADMColModelRegistry()
 
     @property
     def dict_conn_params(self):
@@ -359,7 +362,7 @@ class DBConnector(QObject):
                 code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
                 msg = QCoreApplication.translate("DBConnector",
                             "At least one LADM-COL model should exist in the required version! Supported models are: '{}', but you have '{}'").format(
-                                ', '.join(LADMNames.SUPPORTED_MODELS), ', '.join(self.get_models()))
+                                ', '.join([m.full_alias() for m in self.__ladmcol_models.supported_models()]), ', '.join(self.get_models()))
 
         return res, code, msg
 

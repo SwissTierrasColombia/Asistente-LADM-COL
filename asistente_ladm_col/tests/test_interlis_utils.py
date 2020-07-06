@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import nose2
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 from qgis.testing import (start_app,
                           unittest)
@@ -15,15 +16,15 @@ class TestInterlisUtils(unittest.TestCase):
     def test_xtf_with_start_and_closing_tag(self):
         found_models = get_models_from_xtf(get_test_path("xtf/start_and_closing_tag.xtf"))
         # print(get_models_from_xtf("/docs/borrar/xtf/empty_element_tag.xtf"))
-        expected_models = [LADMNames.SUPPORTED_SUPPLIES_MODEL]
+        expected_models = [LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name()]
 
         self.assertEqual(expected_models, found_models)
 
     def test_xtf_with_empty_element_tag(self):
         found_models = get_models_from_xtf(get_test_path("xtf/empty_element_tag.xtf"))
-        expected_models = [LADMNames.SUPPORTED_SNR_DATA_MODEL,
-                           LADMNames.SUPPORTED_SUPPLIES_MODEL,
-                           LADMNames.SUPPORTED_SUPPLIES_INTEGRATION_MODEL]
+        expected_models = [LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                           LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                           LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name()]
         self.assertEqual(expected_models.sort(), found_models.sort())
 
 if __name__ == '__main__':
