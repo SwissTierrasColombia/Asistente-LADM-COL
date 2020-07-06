@@ -348,7 +348,7 @@ def get_mssql_server_conn():
     return db
 
 
-def reproject_to_38820(layer):
+def reproject_to_ctm12(layer):
     # TODO: when we have tests for CTM12 instead of EPSG:3116, remove this method
     if layer.crs().authid() != "EPSG:38820":
         import_processing()

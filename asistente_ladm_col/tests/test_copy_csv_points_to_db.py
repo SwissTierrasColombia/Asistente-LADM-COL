@@ -21,7 +21,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_test_path,
                                             restore_schema,
                                             clean_table,
-                                            reproject_to_38820)
+                                            reproject_to_ctm12)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
@@ -113,7 +113,7 @@ class TestCopy(unittest.TestCase):
         cbo_latitude = 'y'
         crs = 'EPSG:4326'
         csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, crs, reproject=False)
-        csv_layer = reproject_to_38820(csv_layer)
+        csv_layer = reproject_to_ctm12(csv_layer)
 
         self.upload_points_from_csv_crs_wgs84(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db_from_wgs84(SCHEMA_LADM_COL_EMPTY)
