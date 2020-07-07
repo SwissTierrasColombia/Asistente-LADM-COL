@@ -196,7 +196,7 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path_predio_bloqueo.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_sancion_path', ''))
+        self.txt_file_path_predio_bloqueo.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_bloqueo_path', ''))
         self.txt_file_path_predio.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_path', ''))
         self.txt_file_path_direccion.setText(settings.value('Asistente-LADM-COL/etl_snc/direccion_path', ''))
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/etl_snc/uni_path', ''))
