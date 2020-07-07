@@ -350,8 +350,8 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_MOVE_NODES: self._topological_editing_action,
             ACTION_FILL_BFS: self._fill_point_BFS_action,
             ACTION_FILL_MORE_BFS_AND_LESS: self._fill_more_BFS_less_action,
-            ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
-            ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
+            ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action})
+            #ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
 
     def create_transitional_system_actions(self):
         self._st_login_action = QAction(
