@@ -44,9 +44,9 @@ class TableAndFieldNames:
     GC_COMMISSION_BUILDING_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesConstruccion"
     GC_COMMISSION_PLOT_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesTerreno"
     GC_COMMISSION_BUILDING_UNIT_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesUnidadConstruccion"
-    GC_QUALIFICATION_BUILDING_UNIT_T = None # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion"
-    GC_PARCEL_STATUS_T = None# "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio"
-    GC_PH_TOWER_DATA_T = None # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH"
+    GC_QUALIFICATION_BUILDING_UNIT_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion"
+    GC_PARCEL_STATUS_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio"
+    GC_HP_TOWER_DATA_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH"
 
     INI_PARCEL_SUPPLIES_T = None  # "Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.INI_PredioInsumos"
     # "Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo"
