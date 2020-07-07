@@ -43,7 +43,7 @@ class ConfigDBsSupported(QObject):
 
         if not driver_odbc_available:
             self.logger.warning(__name__, QCoreApplication.translate("ConfigDBsSupported",
-                                                                     "MS SQL Server could not be configured. There is not any odbc driver installed"))
+                                                                     "MS SQL Server could not be configured. There is not any odbc driver installed!"))
 
     def get_db_factories(self):
         return self._db_factories

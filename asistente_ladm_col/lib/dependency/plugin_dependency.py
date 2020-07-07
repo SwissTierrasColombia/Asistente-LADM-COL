@@ -66,7 +66,7 @@ class PluginDependency(Dependency):
                 "The plugin '{}' was successfully installed!").format(self.plugin_name))
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("Dependency",
-                "There was a problem installing the plugin. Plugin's ZIP file could not be found!."))
+                "There was a problem installing the plugin. Plugin's ZIP file could not be found!"))
 
         self.logger.clear_status()
 

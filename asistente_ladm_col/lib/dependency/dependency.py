@@ -49,7 +49,7 @@ class Dependency(QObject):
     def download_dependency(self, uri):
         if not uri:
             self.logger.warning_msg(__name__, QCoreApplication.translate("Dependency",
-                                                                         "Invalid URI to download dependency."))
+                                                                         "Invalid URL to download dependency."))
 
         self.logger.clear_message_bar()
         is_valid = self.check_if_dependency_is_valid()

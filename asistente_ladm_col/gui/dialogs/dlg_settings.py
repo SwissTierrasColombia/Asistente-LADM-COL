@@ -283,8 +283,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
             msg_box.setWindowTitle(QCoreApplication.translate("SettingsDialog", "Important"))
             msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Ignore)
             msg_box.setDefaultButton(QMessageBox.Ignore)
-            msg_box.button(QMessageBox.Yes).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Yes, go to create structure"))
-            msg_box.button(QMessageBox.Ignore).setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "No, I'll do it later"))
+            msg_box.button(QMessageBox.Yes).setText(QCoreApplication.translate("SettingsDialog", "Yes, go to create structure"))
+            msg_box.button(QMessageBox.Ignore).setText(QCoreApplication.translate("SettingsDialog", "No, I'll do it later"))
             reply = msg_box.exec_()
 
             if reply == QMessageBox.Yes:

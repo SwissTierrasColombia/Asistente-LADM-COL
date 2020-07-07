@@ -379,7 +379,7 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_beaunit, codition parcel type) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_baunit, codition parcel type) was not found!"), Qgis.Critical
 
         if layers[names.LC_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
@@ -708,7 +708,7 @@ class PolygonQualityRules:
 
         if layers[names.LC_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no buildings to check 'Building should be within Buildings'."), Qgis.Warning)
+                             "There are no building units to check 'Building units should be within Buildings'."), Qgis.Warning)
 
         error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_UNIT_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
