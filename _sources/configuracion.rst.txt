@@ -17,7 +17,7 @@ Estos parámetros son:
 
 **Parámetros comunes**
 
-- **Fuente**: Define el origen de los datos, esta puede ser una base de datos espacial PostgreSQL o GeoPackage.
+- **Fuente**: Define el origen de los datos, esta puede ser una base de datos espacial PostgreSQL, GeoPackage o MSSQL (Experimental).
 
 Párametros de PostgreSQL/PostGIS
 ---------------------------------

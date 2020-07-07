@@ -117,7 +117,7 @@ Crear Servidumbre de Paso
 
 4. Llenar relaciones de servidumbre de paso
 
-  Para saber como usar esta función dirígete a `Barra de herramientas <../toolbar.html#fill-right-of-way-relations>`_.
+  Para saber como usar esta función dirígete a `Barra de herramientas <../barra_de_herramientas.html#llenar-relaciones-de-servidumbre-de-paso>`_.
 
 
 Relacionar Extdireccion

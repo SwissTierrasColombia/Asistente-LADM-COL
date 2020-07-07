@@ -130,4 +130,4 @@ Crear Lindero
   BARRA_DE_HERRAMIENTAS_.
 
 .. _ENLACE: ../captura_y_estructura_de_datos/preprocesamiento.html#usar-mapeo-de-campos
-.. _BARRA_DE_HERRAMIENTAS: ../toolbar.html
+.. _BARRA_DE_HERRAMIENTAS: ../barra_de_herramientas.html

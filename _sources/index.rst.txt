@@ -10,6 +10,7 @@
    :maxdepth: 2
    :caption: Contents:
 
+   acerca_de
    instalacion
    configuracion
    barra_de_herramientas
@@ -22,5 +23,4 @@
    reportes
    identificacion_de_novedades
    sistema_de_transicion
-   acerca_de
 

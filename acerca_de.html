@@ -40,7 +40,8 @@
   <link rel="stylesheet" href="_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="prev" title="Sistema de transición" href="sistema_de_transicion.html" /> 
+    <link rel="next" title="Instalación" href="instalacion.html" />
+    <link rel="prev" title="¡Bienvenido a la documentación del Asistente LADM-COL!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,6 +87,23 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Acerca de</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#soporte-de-funcionalidades-por-motor-de-base-de-datos">Soporte de funcionalidades por motor de base de datos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#funcionalidades">Funcionalidades</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#administracion-de-datos">Administración de datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#captura-y-estructuracion-de-datos">Captura y estructuración de datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cargar-capas">Cargar capas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-insumos">Gestión de Insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validaciones-de-calidad">Validaciones de calidad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consultas">Consultas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reportes">Reportes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#identificacion-de-novedades">Identificación de Novedades</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-transicion">Sistema de Transición</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#galeria">Galería</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="instalacion.html">Instalación</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuracion.html">Configuración</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
@@ -98,10 +116,6 @@
 <li class="toctree-l1"><a class="reference internal" href="reportes.html">Reportes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="identificacion_de_novedades.html">Identificación de novedades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sistema_de_transicion.html">Sistema de transición</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Acerca de</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#funcionalidades">Funcionalidades</a></li>
-</ul>
-</li>
 </ul>
 
             
@@ -168,47 +182,111 @@
             
   <div class="section" id="acerca-de">
 <h1>Acerca de<a class="headerlink" href="#acerca-de" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>Plugin de <a class="reference external" href="http://qgis.org">QGIS</a> que ayuda a capturar y mantener datos conformes con <a class="reference external" href="https://github.com/AgenciaImplementacion/LADM_COL">LADM_COL</a> y a generar archivos de intercambio de <a class="reference external" href="http://www.interlis.ch/index_e.htm">INTERLIS</a> (.XTF).</p>
-<p>Licencia: <a class="reference external" href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE">GNU General Public License v3.0</a></p>
-<p>Enlaces de interés: <a class="reference external" href="https://agenciaimplementacion.github.io/Asistente-LADM_COL">Documentación</a>, <a class="reference external" href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README.md#galer%C3%ADa">Galería</a></p>
-<p>Un proyecto de: <a class="reference external" href="https://www.proadmintierra.info/">Agencia de Implementación</a> (<a class="reference external" href="http://bsf-swissphoto.com/">BSF-Swissphoto AG</a> - <a class="reference external" href="http://www.incige.com/">INCIGE S.A.S</a>)</p>
-<p>Se recomienda utilizar la versión 3.10.x de QGIS, disponible en https://qgis.org/downloads/</p>
+<p>Complemento para <a class="reference external" href="http://qgis.org">QGIS</a> que permite crear y mantener datos conformes con <a class="reference external" href="https://github.com/SwissTierrasColombia/LADM-COL">LADM-COL</a>, así  como importar, visualizar, capturar, consultar, transformar (mediante  ETLs), validar y generar archivos de intercambio de <a class="reference external" href="http://www.interlis.ch/index_e.htm">INTERLIS</a> (.XTF). Se integra al Sistema de Transición para realizar tareas que requieren análisis y validación de datos espaciales.</p>
+<p>Licencia: <a class="reference external" href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/LICENSE">GNU General Public License v3.0</a></p>
+<p>Enlaces de interés: <a class="reference external" href="https://swisstierrascolombia.github.io/Asistente-LADM-COL">Documentación</a>, <a class="reference external" href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/README.md#galer%C3%ADa">Galería</a></p>
+<p>Un proyecto de: <a class="reference external" href="https://swisstierrascolombia.com/">SwissTierras Colombia</a> (<a class="reference external" href="http://bsf-swissphoto.com/">BSF-Swissphoto AG</a> - <a class="reference external" href="http://www.incige.com/">INCIGE S.A.S</a>)</p>
+<div class="section" id="soporte-de-funcionalidades-por-motor-de-base-de-datos">
+<h2>Soporte de funcionalidades por motor de base de datos<a class="headerlink" href="#soporte-de-funcionalidades-por-motor-de-base-de-datos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La versión actual (<a class="reference external" href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.0.0">3.0.0</a>) del Asistente LADM-COL depende del plugin <a class="reference external" href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip">QGIS Model Baker v6.1.1.4</a> y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.</p>
+<p>Este es el soporte funcional para cada motor:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Módulos</th>
+<th align="center">PostgreSQL/PostGIS</th>
+<th align="center">GeoPackage</th>
+<th align="center">MS SQL Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Administración de datos</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+</tr>
+<tr>
+<td>Captura y estructuración de datos</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Parcial</td>
+</tr>
+<tr>
+<td>Cargar capas</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+</tr>
+<tr>
+<td>Gestión de insumos</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">No</td>
+</tr>
+<tr>
+<td>Validaciones de calidad</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+</tr>
+<tr>
+<td>Consultas</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+</tr>
+<tr>
+<td>Reportes</td>
+<td align="center">Si</td>
+<td align="center">No</td>
+<td align="center">No</td>
+</tr>
+<tr>
+<td>Identificación de novedades</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Parcial</td>
+</tr>
+<tr>
+<td>Sistema de Transición</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+<td align="center">Si</td>
+</tr>
+</tbody>
+</table></div>
 <div class="section" id="funcionalidades">
 <h2>Funcionalidades<a class="headerlink" href="#funcionalidades" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>La versión actual (<a class="reference external" href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/2.99.4">2.99.4</a>) del Asistente LADM_COL depende del plugin <a class="reference external" href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip">QGIS Model Baker v6.1.1.1</a> y permite:</p>
+<div class="section" id="administracion-de-datos">
+<h3>Administración de datos<a class="headerlink" href="#administracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
-<li><p>Integración con el Sistema de Transición:</p>
-<ul>
-<li><p>Autenticación.</p></li>
-<li><p>Gestión de tareas: consulta, iniciación, cancelación y finalización.</p></li>
-<li><p>Tareas de generación de insumos catastrales e integración asistida de insumos (soporte parcial).</p></li>
-</ul>
-</li>
-<li><p>Soporte de roles y generación de interfaz de usuario para cada rol.</p></li>
-<li><p>Crear estructura de base de datos conforme con el modelo LADM-COL v2.9.6.</p></li>
-<li><p>Soporte de dos motores para manejar datos de LADM-COL:</p>
-<ul>
-<li><p>PostgreSQL/PostGIS: Soporte total.</p></li>
-<li><p>GeoPackage: Validaciones de calidad, consultas y reportes no están soportadas.</p></li>
-</ul>
-</li>
-<li><p>Capturar datos para el modelo <code class="docutils literal notranslate"><span class="pre">OPERACIÓN</span> <span class="pre">v2.9.6</span></code> (<a class="reference external" href="https://github.com/AgenciaImplementacion/LADM_COL/releases/download/2.9.6/LADM_COL-2_9_6.zip">descargar</a>).</p></li>
+<li><p>Crear estructura de base de datos conforme al modelo LADM-COL v3.0.</p></li>
 <li><p>Importar datos desde archivo de transferencia (.XTF).</p></li>
 <li><p>Exportar datos a archivo de transferencia (.XTF).</p></li>
 <li><p>Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos.</p></li>
-<li><p>Consultar datos LADM_COL por componentes:</p>
+<li><p>Soporte de tres motores para manejar datos de LADM-COL:</p>
 <ul>
-<li><p>Información Básica.</p></li>
-<li><p>Información Jurídica.</p></li>
-<li><p>Información de Ficha Predial.</p></li>
-<li><p>Información Física.</p></li>
-<li><p>Información Económica.</p></li>
+<li><p>:elephant: PostgreSQL/PostGIS: Soporte total.</p></li>
+<li><p>:package: GeoPackage: Soporte total, exceptuando el módulo de reportes.</p></li>
+<li><p>SQL Server: Soporte parcial. Gestión de insumos y reportes no están soportados.</p></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="section" id="captura-y-estructuracion-de-datos">
+<h3>Captura y estructuración de datos<a class="headerlink" href="#captura-y-estructuracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.0 (<a class="reference external" href="https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip">descargar</a>).</p></li>
+</ul>
+<ul class="simple">
 <li><p>Agregar puntos a las capas <code class="docutils literal notranslate"><span class="pre">Punto</span> <span class="pre">Lindero</span></code>, <code class="docutils literal notranslate"><span class="pre">Punto</span> <span class="pre">Levantamiento</span></code> y <code class="docutils literal notranslate"><span class="pre">Punto</span> <span class="pre">Control</span></code>:</p>
 <ul>
-<li><p>Desde archivo CSV con la estructura requerida.</p></li>
+<li><p>Desde archivo CSV con la estructura requerida.</p>
+<ul>
 <li><p>Validar para evitar insertar puntos superpuestos.</p></li>
+</ul>
+</li>
 <li><p>Desde otra capa con cualquier estructura, definiendo un mapeo de campos.</p></li>
 </ul>
 </li>
@@ -314,14 +392,33 @@ posteriormente, de forma masiva.</p></li>
 <li><p>Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.</p></li>
 </ul>
 </li>
-<li><p>ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).</p></li>
-<li><p>Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:</p>
-<ul>
+<li><p>Importar datos alfanuméricos desde <a class="reference external" href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx">estructura intermedia en Excel</a>.</p></li>
+<li><p>Configurar valores automáticos para campos <code class="docutils literal notranslate"><span class="pre">t_ili_tid</span></code>, <code class="docutils literal notranslate"><span class="pre">espacio_de_nombres</span></code> y <code class="docutils literal notranslate"><span class="pre">local_id</span></code>.</p></li>
+<li><p>Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.</p></li>
+</ul>
+</div>
+<div class="section" id="cargar-capas">
+<h3>Cargar capas<a class="headerlink" href="#cargar-capas" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:</p></li>
+</ul>
+<ul class="simple">
 <li><p>Usar el plugin “QGIS Model Baker” para cargar capas con formularios, relaciones y dominios configurados.</p></li>
 <li><p>Cargar conjuntos de capas preconfigurados.</p></li>
 </ul>
-</li>
-<li><p>Realizar revisiones de calidad (topología):</p>
+</div>
+<div class="section" id="gestion-de-insumos">
+<h3>Gestión de Insumos<a class="headerlink" href="#gestion-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>ETL para generar insumos catastrales a partir de datos del IGAC (fuente SNC).</p></li>
+<li><p>ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).</p></li>
+<li><p>Generar reporte de Omisiones y Comisiones.</p></li>
+</ul>
+</div>
+<div class="section" id="validaciones-de-calidad">
+<h3>Validaciones de calidad<a class="headerlink" href="#validaciones-de-calidad" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Realizar revisiones de calidad (topología) configurando opcionalmente una tolerancia:</p>
 <ul>
 <li><p>Revisar superposiciones en <code class="docutils literal notranslate"><span class="pre">Punto</span> <span class="pre">Lindero</span></code>.</p></li>
 <li><p>Revisar superposiciones en <code class="docutils literal notranslate"><span class="pre">Punto</span> <span class="pre">de</span> <span class="pre">Control</span></code>.</p></li>
@@ -340,6 +437,7 @@ posteriormente, de forma masiva.</p></li>
 <li><p>Revisar geometrías multiparte en <code class="docutils literal notranslate"><span class="pre">Servidumbre</span> <span class="pre">de</span> <span class="pre">paso</span></code>.</p></li>
 <li><p>Revisar que las <code class="docutils literal notranslate"><span class="pre">Construcciones</span></code> estén dentro de su <code class="docutils literal notranslate"><span class="pre">Terreno</span></code> correspondiente.</p></li>
 <li><p>Revisar que las <code class="docutils literal notranslate"><span class="pre">Unidades</span> <span class="pre">de</span> <span class="pre">Construcción</span></code> estén dentro de su <code class="docutils literal notranslate"><span class="pre">Terreno</span></code> correspondiente.</p></li>
+<li><p>Revisar que las <code class="docutils literal notranslate"><span class="pre">Unidades</span> <span class="pre">de</span> <span class="pre">Construcción</span></code> estén dentro de su <code class="docutils literal notranslate"><span class="pre">Construcción</span></code> correspondiente.</p></li>
 </ul>
 </li>
 <li><p>Realizar revisiones de calidad (consistencia lógica):</p>
@@ -359,18 +457,74 @@ posteriormente, de forma masiva.</p></li>
 </ul>
 </li>
 <li><p>Generar reporte de revisiones de calidad.</p></li>
-<li><p>Generar Informes de Colindancia con base en <code class="docutils literal notranslate"><span class="pre">Terrenos</span></code> seleccionados (Anexo 17).</p></li>
-<li><p>Generar reporte “Plano ANT” con base en <code class="docutils literal notranslate"><span class="pre">Terrenos</span></code> seleccionados.</p></li>
-<li><p>Generar reporte de Omisiones y Comisiones.</p></li>
-<li><p>Identificar novedades:</p>
+</ul>
+</div>
+<div class="section" id="consultas">
+<h3>Consultas<a class="headerlink" href="#consultas" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Consultar datos LADM-COL por componentes:</p>
 <ul>
-<li><p>Comparar base de datos del barrido contra datos de insumos y mostrar diferencias masivas y por predio.</p></li>
+<li><p>Información Básica.</p></li>
+<li><p>Información Jurídica.</p></li>
+<li><p>Información de Ficha Predial.</p></li>
+<li><p>Información Física.</p></li>
+<li><p>Información Económica.</p></li>
 </ul>
 </li>
-<li><p>Importar datos alfanuméricos desde <a class="reference external" href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx">estructura intermedia en Excel</a>.</p></li>
-<li><p>Configurar valores automáticos para campos <code class="docutils literal notranslate"><span class="pre">espacio_de_nombres</span></code> y <code class="docutils literal notranslate"><span class="pre">local_id</span></code>.</p></li>
-<li><p>Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.</p></li>
-<li><p>Ayuda online y offline.</p></li>
+</ul>
+</div>
+<div class="section" id="reportes">
+<h3>Reportes<a class="headerlink" href="#reportes" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Generar Informes de Colindancia con base en <code class="docutils literal notranslate"><span class="pre">Terrenos</span></code> seleccionados (Anexo 17).</p></li>
+<li><p>Generar reporte “Plano ANT” con base en <code class="docutils literal notranslate"><span class="pre">Terrenos</span></code> seleccionados.</p></li>
+</ul>
+</div>
+<div class="section" id="identificacion-de-novedades">
+<h3>Identificación de Novedades<a class="headerlink" href="#identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Identificar novedades:</p>
+<ul>
+<li><p>Comparar base de datos del barrido contra datos de insumos y evidenciar diferencias masivas y por predio tanto en el componente alfanumérico como geográfico.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sistema-de-transicion">
+<h3>Sistema de Transición<a class="headerlink" href="#sistema-de-transicion" title="Enlazar permanentemente con este título">¶</a></h3>
+<ul class="simple">
+<li><p>Integración con el Sistema de Transición:</p>
+<ul>
+<li><p>Autenticación.</p></li>
+<li><p>Gestión de tareas: consulta, iniciación, cancelación y finalización.</p></li>
+<li><p>Tareas de generación de insumos catastrales.</p>
+<ul>
+<li><p>ETL para generar insumos catastrales a partir de datos del IGAC (fuente SNC).</p></li>
+<li><p>ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Soporte de roles y generación de interfaz de usuario para cada rol.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="galeria">
+<h2>Galería<a class="headerlink" href="#galeria" title="Enlazar permanentemente con este título">¶</a></h2>
+<ul>
+<li><p>Reglas de Calidad<img alt="Reglas de Calidad" src="https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif" /></p></li>
+<li><p>Consultas</p>
+<p><img alt="Consultas" src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif" /></p>
+</li>
+<li><p>Reportes</p>
+<p><img alt="Reportes" src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif" /></p>
+</li>
+<li><p>Identificación de Novedades</p>
+<p><img alt="Identificación de Novedades" src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif" /></p>
+</li>
+<li><p>Integración con el Sistema de Transición</p>
+<p><img alt="insumos" src="https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif" /></p>
+</li>
 </ul>
 </div>
 </div>
@@ -383,8 +537,10 @@ posteriormente, de forma masiva.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="instalacion.html" class="btn btn-neutral float-right" title="Instalación" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="sistema_de_transicion.html" class="btn btn-neutral float-left" title="Sistema de transición" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="¡Bienvenido a la documentación del Asistente LADM-COL!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

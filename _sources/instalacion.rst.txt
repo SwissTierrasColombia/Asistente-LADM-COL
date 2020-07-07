@@ -7,23 +7,22 @@ Requerimientos mínimos
 Para usar el Asistente LADM_COL se requiere:
 
  - Sistema Operativo:
-   - Windows 8 o Windows 10
+   - Windows 10
    - GNU/Linux
+   - macOS
  - Software base:
    - QGIS v3.10.0-A Coruña o superior
    - Java v1.8
-   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11). La versión 12 no está soportada aún.
+   - PostgreSQL 9.5 o superior (funciona PostgreSQL 10, 11 o 12).
    - PostGIS 2.4 o superior.
- - Complementos de QGIS (al instalar el Asistente LADM_COL usando el Administrador de Complementos de QGIS,
-   las dependencias se instalarán automáticamente):
-   - `QGIS Model Baker v6.1.1.1 <https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip>`_.
+ - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
+   - `QGIS Model Baker v6.1.1.4 <https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip>`_.
    - MapSwipe Tool v1.2
 
 Proceso de instalación
 -----------------------
 
-- Es necesario tener el Software QGIS versión 3 instalado, recomendamos usar la versión semanal hasta
-  que se haya lanzado la versión 3.10.0-A Coruña o superior, para obtener este diríjete a QGIS_
+- Es necesario tener el Software QGIS versión 3 instalado, recomendamos usar la versión 3.10.0-A Coruña o superior, para obtener este diríjete a QGIS_
 - El proceso puede ser observado graficamete en el siguiente GIF:
 
 .. image:: _static/instalacion/instalation.gif
