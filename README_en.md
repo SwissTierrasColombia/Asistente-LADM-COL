@@ -15,10 +15,61 @@ A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-S
 
 :arrow_right: We suggest you to use QGIS v3.10.x, available at https://qgis.org/downloads/
 
+## Support per DB engine
+
+| Module                       | PostgreSQL/PostGIS |        GeoPackage        |        MS SQL Server        |
+| ---------------------------- | :----------------: | :----------------------: | :-------------------------: |
+| Data management              | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Data capture and structuring | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark::warning: |
+| Load layers                  | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Supplies management          | :heavy_check_mark: |    :heavy_check_mark:    |  :heavy_multiplication_x:   |
+| Quality                      | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Queries                      | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Reports                      | :heavy_check_mark: | :heavy_multiplication_x: |  :heavy_multiplication_x:   |
+| Change detection             | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Transitional System          | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+
+## Minimum requirements
+
+To use the LADM-COL Assistant you need:
+
+ - Operating System:
+   - Windows 8 or Windows 10
+   - GNU/Linux
+   - macOS
+ - Base software:
+   - QGIS v3.10.0-A Coruña or higher.
+   - Java v1.8.
+   - PostgreSQL 9.5 or higher (PostgreSQL 10, 11 or 12 work as well).
+   - PostGIS 2.4 or higher.
+   - (Optional) SQL Server 2012 or higher.
+ - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
+   - QGIS Model Baker v6.1.1.4
+   - MapSwipe Tool v1.2
+
+## Gallery
+
+ + Quality Rules![Quality Rules](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
+
++ Queries
+
+  ![Queries](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
+
++ Reports
+
+  ![Reports](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
+
++ Change detection
+
+  ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+
++ Integration with Transitional System
+
+  ![insumos](https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif)
 
 ## Functionalities
 
-The current version ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/2.99.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.1](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.1/QgisModelBaker_6111.zip) and allows users to:
+The current version ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.0.0)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -27,11 +78,11 @@ The current version ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
- - Create database structures for the LADM-COL v2.9.6 model.
+ - Create database structures for the LADM-COL v3.0 model.
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
    - GeoPackage: Total support (except reports).
- - Capture data for the `OPERACION v2.9.6` model ([download](https://github.com/SwissTierrasColombia/LADM-COL/releases/download/2.9.6/LADM_COL-2_9_6.zip)).
+ - Capture data for the Application Model Cadastral Survey v1.0 ([download](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
  - Import/export data from/to transfer files (.XTF) disabling data validation.
@@ -134,38 +185,6 @@ The current version ([2.99.4](https://github.com/SwissTierrasColombia/Asistente-
  - Load styles for newly added layers from preconfigured QML files.
  - Online/offline help.
 
-
-## Support per DB engine
-
-| Module                           | PostgreSQL/PostGIS |     GeoPackage     |   MS SQL Server    |
-| --------------------------------- | :----------------: | :----------------: | :----------------: |
-| Data management           | ​:heavy_check_mark:​ | :heavy_check_mark:​ | :heavy_check_mark: |
-| Data capture and structuring | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Load layers                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Supplies management                | :heavy_check_mark: | :heavy_check_mark: |          ​          |
-| Quality           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Queries                         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Reports                          | :heavy_check_mark: |                    |                    |
-| Change detection       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Transitional System             | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-
-
-## Minimum requirements
-
-To use the LADM-COL Assistant you need:
-
- - Operting System:
-   - Windows 8 or Windows 10
-   - GNU/Linux
- - Base software:
-   - QGIS v3.10.0-A Coruña or higher
-   - Java v1.8
-   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well). Support for v12 is still experimental.
-   - PostGIS 2.4 or higher.
- - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.1.1.1
-   - MapSwipe Tool v1.2
-
 ## Testing
 
 ### Unit tests
@@ -220,28 +239,3 @@ If these prerrequisites are not met, the LADM-COL Assistant will continue runnin
       + Sign in using your e-mail.
       + Search for "Asistente LADM-COL" and choose the `SwissTierrasColombia/Asistente-LADM-COL` repository.
       + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.
-
-
-      
-## Gallery
-
- + Quality Rules:
-
-  ![Quality Rules](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
-
-+ Queries:
-
-  ![Queries](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
-
-+ Reports:
-
-  ![Reports](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
-
-+ Change detection:
-
-  ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
-
-+ Integration with Transitional System
-
-  ![insumos](https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif)
-
