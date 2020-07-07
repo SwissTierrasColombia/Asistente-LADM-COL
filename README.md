@@ -74,7 +74,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Administración de datos
 
-  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0 usando la proyección con origen único nacional (CTM12).
+  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0, usando la proyección con origen único nacional (CTM12).
   - Importar datos desde archivo de transferencia (.XTF).
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
