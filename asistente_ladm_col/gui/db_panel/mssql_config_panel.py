@@ -19,11 +19,10 @@
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.core import Qgis
 
-from QgisModelBaker.utils.mssql_utils import get_odbc_drivers
-
 from asistente_ladm_col.gui.db_panel.db_schema_db_panel import DBSchemaDBPanel
 from asistente_ladm_col.lib.db.mssql_connector import MSSQLConnector
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.mssql_utils import get_odbc_drivers
 
 WIDGET_UI = get_ui_class('dialogs/settings_mssql.ui')
 
