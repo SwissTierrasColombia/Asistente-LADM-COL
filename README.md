@@ -20,17 +20,17 @@ La versión actual ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-LA
 
 Este es el soporte funcional para cada motor: 
 
-| Módulos                           | PostgreSQL/PostGIS |        GeoPackage        |        MS SQL Server        |
-| --------------------------------- | :----------------: | :----------------------: | :-------------------------: |
-| Administración de datos           | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
-| Captura y estructuración de datos | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark::warning: |
-| Cargar capas                      | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
-| Gestión de insumos                | :heavy_check_mark: |    :heavy_check_mark:    |  :heavy_multiplication_x:   |
-| Validaciones de calidad           | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
-| Consultas                         | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
-| Reportes                          | :heavy_check_mark: | :heavy_multiplication_x: |  :heavy_multiplication_x:   |
-| Identificación de novedades       | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
-| Sistema de Transición             | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Módulos                                                      | PostgreSQL/PostGIS |        GeoPackage        |        MS SQL Server        |
+| ------------------------------------------------------------ | :----------------: | :----------------------: | :-------------------------: |
+| [Administración de datos](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#administraci%C3%B3n-de-datos) | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| [Captura y estructuración de datos](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#captura-y-estructuraci%C3%B3n-de-datos) | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark::warning: |
+| [Cargar capas](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#cargar-capas) | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| [Gestión de insumos](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#gesti%C3%B3n-de-insumos) | :heavy_check_mark: |    :heavy_check_mark:    |  :heavy_multiplication_x:   |
+| [Validaciones de calidad](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#validaciones-de-calidad) | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| [Consultas](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#consultas) | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| [Reportes](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#reportes) | :heavy_check_mark: | :heavy_multiplication_x: |  :heavy_multiplication_x:   |
+| [Identificación de novedades](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#identificaci%C3%B3n-de-novedades) | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark::warning: |
+| [Sistema de Transición](https://github.com/SwissTierrasColombia/Asistente-LADM-COL#sistema-de-transici%C3%B3n) | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
 
 ## Requerimientos mínimos
 
@@ -74,7 +74,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Administración de datos
 
-  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0.
+  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0 usando la proyección con origen único nacional (CTM12).
   - Importar datos desde archivo de transferencia (.XTF).
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 

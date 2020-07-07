@@ -26,7 +26,7 @@ A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-S
 | Quality                      | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
 | Queries                      | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
 | Reports                      | :heavy_check_mark: | :heavy_multiplication_x: |  :heavy_multiplication_x:   |
-| Change detection             | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
+| Change detection             | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark::warning: |
 | Transitional System          | :heavy_check_mark: |    :heavy_check_mark:    |     :heavy_check_mark:      |
 
 ## Minimum requirements
@@ -78,7 +78,7 @@ The current version ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-L
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
- - Create database structures for the LADM-COL v3.0 model.
+ - Create database structures for the LADM-COL v3.0 model using the national map projection with unique origin (CTM12).
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
    - GeoPackage: Total support (except reports).

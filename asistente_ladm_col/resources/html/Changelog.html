@@ -4,24 +4,17 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>2.99.4</b></p>
+<p>Cambios en la version <b>3.0.0</b></p>
 <ul>
-    <li>Soporte de validación de <b>reglas de calidad</b> para GeoPackage.</li>
-    <li>Nueva herramienta para <b>arreglar relaciones rotas</b> de LADM-COL. Si los usuarios remueven capas relacionadas, esta herramienta las configura de nuevo.</li>
-    <li><b>Sistema de Transición (ST)</b>:
-        <ul>
-            <li>Cambio de rol automático en el Asistente LADM-COL en el momento de ingreso al ST. Esto es, la interfaz del Asistente LADM-COL, siempre coincidirá con el rol activo en el ST.</li>
-            <li>Solo se puede cambiar de rol en el Asistente LADM-COL si no hay sesión activa del ST.</li>
-            <li>La librería para encriptar/desencriptar (algo pesada) ahora se descarga por demanda, solo si el usuario utiliza una funcionalidad que la requiera.</li>
-        </ul>
-    </li>
-    <li>Usabilidad:
-        <ul>
-            <li>Los <b>paneles del plugin</b> (ST, Consultas, Identificación de novedades) se agregan como pestañas en la región derecha, evitando que aparezcan divididos y por ende, incompletos. (<a href="https://github.com/qgis/QGIS/pull/35933" target="_blank">¡mejora en QGIS!</a>).</li>
-            <li>El diálogo de <b>Configuración</b> ya no bloquea si la BD no es LADM-COL, en cuyo caso avisa al usuario que las funcionalidades serán limitadas hasta configurar una BD válida. Esto evita perder configuraciones.</li>
-            <li>El diálogo de <b>Configuración</b> se personaliza para los diferentes contextos en los que se muestra. En cada contexto se agrega título y descripción al usuario, removiendo además pestañas del diálogo que no serán útiles en el contexto actual.</li>
-        </ul>
-    </li>
+<li>Soporte para el <strong>modelo LADM-COL v3.0</strong>, el Modelo de Aplicaci&oacute;n de<strong> Levantamiento Catastral v1.0</strong>, y los submodelos de Insumos (SNR, Gestor Catastral e integraci&oacute;n), Cartograf&iacute;a Catastral y Aval&uacute;os.</li>
+<li>Soporte para la <strong>proyecci&oacute;n con or&iacute;gen &uacute;nico nacional</strong> (CTM12).</li>
+<li>Soporte de <strong>tolerancias para reglas de calidad</strong> (topolog&iacute;a).</li>
+<li>Soporte (parcial) para un nuevo motor de bases de datos: <strong>MS SQL Server</strong>. Ver <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL#soporte-de-funcionalidades-por-motor-de-base-de-datos">matriz de soporte por m&oacute;dulo</a>.</li>
+<li>Mejoras de usabilidad:
+<ul>
+<li><strong>Instalaci&oacute;n autom&aacute;tica de plugins</strong> (cuando se trata de versiones personalizadas).</li>
+</ul>
+</li>
 </ul>
 </body>
 </html>
