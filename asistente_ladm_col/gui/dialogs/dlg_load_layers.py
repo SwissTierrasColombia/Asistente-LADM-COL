@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication)
@@ -30,6 +29,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
@@ -88,13 +88,16 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         tables_info = self.app.core.get_cached_layers()
         self.models_tree = dict()
 
+        ladmcol_models = {model.full_name(): model.alias() for model in LADMColModelRegistry().supported_models()}
+
         for record in tables_info:
             if record[QueryNames.MODEL] is not None:
-                if record[QueryNames.MODEL] not in self.models_tree:
-                    self.models_tree[record[QueryNames.MODEL]] = {
+                model = ladmcol_models.get(record[QueryNames.MODEL], record[QueryNames.MODEL])
+                if model not in self.models_tree:
+                    self.models_tree[model] = {
                         record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]: record}
                 else:
-                    self.models_tree[record[QueryNames.MODEL]][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
+                    self.models_tree[model][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
 
         self.update_available_layers()
 
