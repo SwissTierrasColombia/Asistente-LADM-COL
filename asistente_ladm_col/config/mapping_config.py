@@ -44,9 +44,9 @@ class TableAndFieldNames:
     GC_COMMISSION_BUILDING_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesConstruccion"
     GC_COMMISSION_PLOT_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesTerreno"
     GC_COMMISSION_BUILDING_UNIT_T = None  # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesUnidadConstruccion"
-    # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion"
-    # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio"
-    # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH"
+    GC_QUALIFICATION_BUILDING_UNIT_T = None # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion"
+    GC_PARCEL_STATUS_T = None# "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio"
+    GC_PH_TOWER_DATA_T = None # "Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH"
 
     INI_PARCEL_SUPPLIES_T = None  # "Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.INI_PredioInsumos"
     # "Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo"
@@ -733,6 +733,8 @@ class TableAndFieldNames:
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Construccion": {VARIABLE_NAME: "GC_BUILDING_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_DatosPHCondominio": {VARIABLE_NAME: "GC_HP_CONDOMINIUM_DATA_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_copropiedad": {VARIABLE_NAME: "GC_COPROPERTY_T", FIELDS_DICT: {}},
+        "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_DatosTorrePH": {VARIABLE_NAME: "GC_PH_TOWER_DATA_T", FIELDS_DICT: {}},
+        "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_EstadoPredio": {VARIABLE_NAME: "GC_PARCEL_STATUS_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Manzana": {VARIABLE_NAME: "GC_BLOCK_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Perimetro": {VARIABLE_NAME: "GC_PERIMETER_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": {VARIABLE_NAME: "GC_PARCEL_T", FIELDS_DICT: {
@@ -771,6 +773,8 @@ class TableAndFieldNames:
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_ComisionesConstruccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_ComisionesTerreno": {VARIABLE_NAME: "GC_COMMISSION_PLOT_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_ComisionesUnidadConstruccion": {VARIABLE_NAME: "GC_COMMISSION_BUILDING_UNIT_T", FIELDS_DICT: {}},
+        "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion": {VARIABLE_NAME: "GC_QUALIFICATION_BUILDING_UNIT_T", FIELDS_DICT: {}},
+        
         "Submodelo_Insumos_Gestor_Catastral.GC_CondicionPredioTipo": {VARIABLE_NAME: "GC_PARCEL_TYPE_D", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Direccion": {VARIABLE_NAME: "GC_ADDRESS_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.GC_UnidadConstruccionTipo": {VARIABLE_NAME: "GC_BUILDING_UNIT_TYPE_T", FIELDS_DICT: {}},

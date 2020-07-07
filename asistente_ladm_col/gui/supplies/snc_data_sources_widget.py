@@ -43,8 +43,8 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
         self.restore_settings()
 
-        self.btn_browse_file_predio_sancion.clicked.connect(
-            make_file_selector(self.txt_file_path_predio_sancion, QCoreApplication.translate("SNCDataSourceWidget",
+        self.btn_browse_file_predio_bloqueo.clicked.connect(
+            make_file_selector(self.txt_file_path_predio_bloqueo, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                              "Select the predio sanción .csv file with SNC data "),
                                QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
 
@@ -61,6 +61,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.btn_browse_file_uni.clicked.connect(
             make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                   "Select the unidad construcción .csv file with SNC data "),
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_uni_comp.clicked.connect(
+            make_file_selector(self.txt_file_path_uni_comp, QCoreApplication.translate("SNCDataSourceWidget",
+                                                                                  "Select the unidad construcción comp .csv file with SNC data "),
                                QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
 
         self.btn_browse_file_persona.clicked.connect(
@@ -96,10 +101,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         file_validator_csv = FileValidator(pattern='*.csv', allow_non_existing=False)
         dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
 
-        self.txt_file_path_predio_sancion.setValidator(file_validator_optional)
+        self.txt_file_path_predio_bloqueo.setValidator(file_validator_optional)
         self.txt_file_path_predio.setValidator(file_validator_csv)
         self.txt_file_path_direccion.setValidator(file_validator_csv)
         self.txt_file_path_uni.setValidator(file_validator_csv)
+        self.txt_file_path_uni_comp.setValidator(file_validator_csv)
         self.txt_file_path_persona.setValidator(file_validator_csv)
         self.txt_file_path_persona_predio.setValidator(file_validator_csv)
         self.txt_file_path_ficha_m.setValidator(file_validator_optional)
@@ -107,10 +113,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_ficha_m_torre.setValidator(file_validator_optional)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
 
-        self.txt_file_path_predio_sancion.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_predio_bloqueo.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_predio.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_direccion.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_uni_comp.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_persona.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_persona_predio.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_ficha_m.textChanged.connect(self.validators.validate_line_edits)
@@ -118,10 +125,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_ficha_m_torre.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
 
-        self.txt_file_path_predio_sancion.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_predio_bloqueo.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_predio.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_direccion.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_uni.textChanged.connect(self.emit_input_data_changed)
+        self.txt_file_path_uni_comp.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_persona.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_persona_predio.textChanged.connect(self.emit_input_data_changed)
         self.txt_file_path_ficha_m.textChanged.connect(self.emit_input_data_changed)
@@ -130,10 +138,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_gdb.textChanged.connect(self.emit_input_data_changed)
 
         # Trigger validations right now
-        self.txt_file_path_predio_sancion.textChanged.emit(self.txt_file_path_predio_sancion.text())
+        self.txt_file_path_predio_bloqueo.textChanged.emit(self.txt_file_path_predio_bloqueo.text())
         self.txt_file_path_predio.textChanged.emit(self.txt_file_path_predio.text())
         self.txt_file_path_direccion.textChanged.emit(self.txt_file_path_direccion.text())
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
+        self.txt_file_path_uni_comp.textChanged.emit(self.txt_file_path_uni_comp.text())
         self.txt_file_path_persona.textChanged.emit(self.txt_file_path_persona.text())
         self.txt_file_path_persona_predio.textChanged.emit(self.txt_file_path_persona_predio.text())
         self.txt_file_path_ficha_m.textChanged.emit(self.txt_file_path_ficha_m.text())
@@ -142,10 +151,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
 
     def validate_inputs(self):
-        state_predio_sancion = self.txt_file_path_predio_sancion.validator().validate(self.txt_file_path_predio_sancion.text().strip(), 0)[0]
+        state_predio_sancion = self.txt_file_path_predio_bloqueo.validator().validate(self.txt_file_path_predio_bloqueo.text().strip(), 0)[0]
         state_predio = self.txt_file_path_predio.validator().validate(self.txt_file_path_predio.text().strip(), 0)[0]
         state_direccion = self.txt_file_path_direccion.validator().validate(self.txt_file_path_direccion.text().strip(), 0)[0]
         state_uni = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
+        state_uni_comp = self.txt_file_path_uni_comp.validator().validate(self.txt_file_path_uni_comp.text().strip(), 0)[0]
         state_persona = self.txt_file_path_persona.validator().validate(self.txt_file_path_persona.text().strip(), 0)[0]
         state_persona_predio = self.txt_file_path_persona_predio.validator().validate(self.txt_file_path_persona_predio.text().strip(), 0)[0]
         state_ficha_m = self.txt_file_path_ficha_m.validator().validate(self.txt_file_path_ficha_m.text().strip(), 0)[0]
@@ -172,10 +182,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM-COL/etl_snc/predio_sancion_path', self.txt_file_path_predio_sancion.text())
+        settings.setValue('Asistente-LADM-COL/etl_snc/predio_sancion_path', self.txt_file_path_predio_bloqueo.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/predio_path', self.txt_file_path_predio.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/direccion_path', self.txt_file_path_direccion.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/uni_path', self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM-COL/etl_snc/uni_comp_path', self.txt_file_path_uni_comp.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/persona_path', self.txt_file_path_persona.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/persona_predio_path', self.txt_file_path_persona_predio.text())
         settings.setValue('Asistente-LADM-COL/etl_snc/ficha_m_path', self.txt_file_path_ficha_m.text())
@@ -185,10 +196,11 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path_predio_sancion.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_sancion_path', ''))
+        self.txt_file_path_predio_bloqueo.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_sancion_path', ''))
         self.txt_file_path_predio.setText(settings.value('Asistente-LADM-COL/etl_snc/predio_path', ''))
         self.txt_file_path_direccion.setText(settings.value('Asistente-LADM-COL/etl_snc/direccion_path', ''))
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/etl_snc/uni_path', ''))
+        self.txt_file_path_uni_comp.setText(settings.value('Asistente-LADM-COL/etl_snc/uni_comp_path', ''))
         self.txt_file_path_persona.setText(settings.value('Asistente-LADM-COL/etl_snc/persona_path', ''))
         self.txt_file_path_persona_predio.setText(settings.value('Asistente-LADM-COL/etl_snc/persona_predio_path', ''))
         self.txt_file_path_ficha_m.setText(settings.value('Asistente-LADM-COL/etl_snc/ficha_m_path', ''))

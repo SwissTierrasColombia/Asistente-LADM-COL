@@ -27,7 +27,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsVectorLayer)
 import processing
 
-from asistente_ladm_col.config.general_config import (PREDIO_SANCION_FILE_PATH,
+from asistente_ladm_col.config.general_config import (PREDIO_BLOQUEO_FILE_PATH,
                                                       FICHA_MATRIZ_FILE_PATH,
                                                       FICHA_MATRIZ_PREDIO_FILE_PATH,
                                                       FICHA_MATRIZ_TORRE_FILE_PATH,
@@ -46,6 +46,9 @@ class ETLSNC(ETLSupplies):
             self.names.GC_PARCEL_T: None,
             self.names.GC_OWNER_T: None,
             self.names.GC_HP_CONDOMINIUM_DATA_T: None,
+            self.names.GC_PH_TOWER_DATA_T: None,
+            self.names.GC_QUALIFICATION_BUILDING_UNIT_T: None,
+            self.names.GC_PARCEL_STATUS_T: None,
             self.names.GC_COPROPERTY_T: None,
             self.names.GC_ADDRESS_T: None,
             self.names.GC_BUILDING_UNIT_T: None,
@@ -64,10 +67,11 @@ class ETLSNC(ETLSupplies):
 
     def load_alphanumeric_layers(self):
         self.alphanumeric_file_paths = {
-            'predio_sancion': self.data_source_widget.txt_file_path_predio_sancion.text().strip(),
+            'predio_bloqueo': self.data_source_widget.txt_file_path_predio_bloqueo.text().strip(),
             'predio': self.data_source_widget.txt_file_path_predio.text().strip(),
             'direccion': self.data_source_widget.txt_file_path_direccion.text().strip(),
             'unidad_construccion': self.data_source_widget.txt_file_path_uni.text().strip(),
+            'unidad_construccion_comp': self.data_source_widget.txt_file_path_uni_comp.text().strip(),
             'persona': self.data_source_widget.txt_file_path_persona.text().strip(),
             'persona_predio': self.data_source_widget.txt_file_path_persona_predio.text().strip(),
             'ficha_matriz': self.data_source_widget.txt_file_path_ficha_m.text().strip(),
@@ -81,7 +85,7 @@ class ETLSNC(ETLSupplies):
         root = QgsProject.instance().layerTreeRoot()
         alphanumeric_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "SNC Alphanumeric Supplies"))
 
-        optional_layers = {'predio_sancion':PREDIO_SANCION_FILE_PATH,
+        optional_layers = {'predio_bloqueo':PREDIO_BLOQUEO_FILE_PATH,
                            'ficha_matriz':FICHA_MATRIZ_FILE_PATH,
                            'ficha_matriz_predio':FICHA_MATRIZ_PREDIO_FILE_PATH,
                            'ficha_matriz_torre':FICHA_MATRIZ_TORRE_FILE_PATH,}
@@ -94,7 +98,7 @@ class ETLSNC(ETLSupplies):
                 alphanumeric_group.addLayer(layer)
             else:
                 if name in optional_layers.keys():
-                    # predio_sancion, ficha_matriz, ficha_matriz_predio and ficha_matriz_torre
+                    # predio_bloqueo, ficha_matriz, ficha_matriz_predio and ficha_matriz_torre
                     # are optional, if they are not given, we pass default values
                     layer = QgsVectorLayer(optional_layers[name], name, 'ogr')
                     self.alphanumeric_file_paths[name] = layer
@@ -124,7 +128,10 @@ class ETLSNC(ETLSupplies):
                         'gccomisionesunidadconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T],
                         'gcconstruccion': self.layers[self.names.GC_BUILDING_T],
                         'gccopropiedad': self.layers[self.names.GC_COPROPERTY_T],
+                        'gcdatostorreph': self.layers[self.names.GC_PH_TOWER_DATA_T],
                         'gcdireccion': self.layers[self.names.GC_ADDRESS_T],
+                        'gcestadopredio': self.layers[self.names.GC_QUALIFICATION_BUILDING_UNIT_T],
+                        'gcestadopredio2': self.layers[self.names.GC_PARCEL_STATUS_T],
                         'gcmanzana': self.layers[self.names.GC_BLOCK_T],
                         'gcperimetro': self.layers[self.names.GC_PERIMETER_T],
                         'gcpredio': self.layers[self.names.GC_PARCEL_T],
@@ -138,6 +145,7 @@ class ETLSNC(ETLSupplies):
                         'manzana': self.gdb_layer_paths['U_MANZANA'],
                         'persona': self.alphanumeric_file_paths['persona'],
                         'personapredio': self.alphanumeric_file_paths['persona_predio'],
+                        'personapredio2': self.alphanumeric_file_paths['predio_bloqueo'],
                         'predio': self.alphanumeric_file_paths['predio'],
                         'prediodireccion': self.alphanumeric_file_paths['direccion'],
                         'rconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
@@ -148,6 +156,7 @@ class ETLSNC(ETLSupplies):
                         'runidad': self.gdb_layer_paths['R_UNIDAD'],
                         'uconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
                         'unidadconstruccion': self.alphanumeric_file_paths['unidad_construccion'],
+                        'unidadconstrucioncomp': self.alphanumeric_file_paths['unidad_construccion_comp'],
                         'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA'],
                         'usector': self.gdb_layer_paths['U_SECTOR'],
                         'uterreno': self.gdb_layer_paths['U_TERRENO'],

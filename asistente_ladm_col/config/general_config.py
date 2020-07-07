@@ -41,7 +41,7 @@ CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ct
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
 BLO_LIS_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'blo.lis')  # Default Cobol BLO.lis file
-PREDIO_SANCION_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_sancion.csv')  # Default SNC predio_sancion.csv file
+PREDIO_BLOQUEO_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'predio_bloqueo.csv')  # Default SNC predio_bloqueo.csv file
 FICHA_MATRIZ_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz.csv')  # Default SNC ficha_matriz.csv file
 FICHA_MATRIZ_PREDIO_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_predio.csv')  # Default SNC ficha_matriz_predio.csv file
 FICHA_MATRIZ_TORRE_FILE_PATH = os.path.join(PLUGIN_DIR, 'resources', 'etl', 'ficha_matriz_torre.csv')  # Default SNC ficha_matriz_torre.csv file
