@@ -1,5 +1,4 @@
-fid;id_punto_control;tipo_punto_control;exactitud_horizontal;exactitud_vertical;posicion_interpolacion;monumentacion;puntotipo;metodoproduccion;comienzo_vida_util_version;fin_vida_util_version;local_id;espacio_de_nombres;x;y;z
-1;1;Apoyo;4;2;Aislado;Mojon;Elemento_Natural;Metodo_Directo;2019-11-21T00:00:00;;1;LC_PUNTOCONTROL;963365.079911539;1077756.26542362;2387.79483474223
-2;2;Control;5;4;Intermedio_Arco;No_Materializado;Mojon;Metodo_Indirecto;2019-11-22T00:00:00;;2;LC_PUNTOCONTROL;963421.020674459;1077726.43035006;2720.92151815115
-3;3;Apoyo;3;5;Intermedio_Arco;Otros;Pilastra;Metodo_Directo;2019-11-06T13:07:19;;3;LC_PUNTOCONTROL;963417.291290264;1077784.85736911;4990.87444506161
-4;3;Apoyo;4;2;Intermedio_Arco;Incrustacion;Poste;Metodo_Indirecto;2019-11-21T00:00:00;;4;LC_PUNTOCONTROL;963467.016412861;1077752.53603942;3747.15141195206
+Espacio_De_Nombres;Local_Id;Comienzo_Vida_Util_Version;PuntoTipo;MetodoProduccion;ID_Punto_Control;Exactitud_Horizontal;Exactitud_Vertical;x;y;z
+LC_PUNTOCONTROL;"1";2020-07-07T15:53:41.627;Pilastra;Metodo_Directo;"1";"0.004";"0.007";4844630.817;2143534.994;2861.324
+LC_PUNTOCONTROL;"2";2020-07-07T15:53:41.634;Mojon;Metodo_Directo;"2";"0.005";"0.003";4844625.654;2143250.995;2127.598
+LC_PUNTOCONTROL;"3";2020-07-07T16:03:06.430;Pilastra;Metodo_Directo;"3";"0.003";"0.005";4845038.127;2143547.878;1398.083
