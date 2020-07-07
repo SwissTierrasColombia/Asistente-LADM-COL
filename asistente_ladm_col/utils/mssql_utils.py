@@ -19,10 +19,9 @@ def is_pyodbc_available():
 
 def check_if_odbc_exists():
     result = False
-
     try:
         odbc_drivers = get_odbc_drivers()
-        result = len(odbc_drivers) != 0
+        result = bool(len(odbc_drivers))
     except ModuleNotFoundError:
         pass
     return result
@@ -36,9 +35,7 @@ def get_odbc_drivers():
     for item in pyodbc.drivers():
         regex_sql_server = "({})".format("|".join(regex_list))
 
-        x = re.search(regex_sql_server, item, re.IGNORECASE)
-
-        if x:
+        if re.search(regex_sql_server, item, re.IGNORECASE):
             result.append(item)
 
     return result
