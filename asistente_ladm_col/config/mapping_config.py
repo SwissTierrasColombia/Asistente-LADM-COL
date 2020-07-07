@@ -733,7 +733,7 @@ class TableAndFieldNames:
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Construccion": {VARIABLE_NAME: "GC_BUILDING_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_DatosPHCondominio": {VARIABLE_NAME: "GC_HP_CONDOMINIUM_DATA_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_copropiedad": {VARIABLE_NAME: "GC_COPROPERTY_T", FIELDS_DICT: {}},
-        "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_DatosTorrePH": {VARIABLE_NAME: "GC_PH_TOWER_DATA_T", FIELDS_DICT: {}},
+        "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_DatosTorrePH": {VARIABLE_NAME: "GC_HP_TOWER_DATA_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_EstadoPredio": {VARIABLE_NAME: "GC_PARCEL_STATUS_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Manzana": {VARIABLE_NAME: "GC_BLOCK_T", FIELDS_DICT: {}},
         "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Perimetro": {VARIABLE_NAME: "GC_PERIMETER_T", FIELDS_DICT: {}},
