@@ -7,7 +7,6 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_TABLE_N
 
 
 class Symbology:
-
     @staticmethod
     def get_default_style_group(names):
          return {

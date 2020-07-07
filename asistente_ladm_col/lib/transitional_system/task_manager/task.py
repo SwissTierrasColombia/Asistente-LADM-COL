@@ -96,7 +96,7 @@ class STTask(QObject):
         if self.__is_valid:
             self.__task_steps = STTaskSteps(self)
 
-        self.logger.debug(__name__, "Task is valid? {}".format(self.is_valid()))
+        self.logger.debug(__name__, "Is task valid? {}".format(self.is_valid()))
 
     def is_valid(self):
         return self.__is_valid

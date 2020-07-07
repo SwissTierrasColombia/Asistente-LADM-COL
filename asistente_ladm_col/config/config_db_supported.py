@@ -11,7 +11,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class ConfigDBsSupported(QObject):
-
     def __init__(self):
         self.id_default_db = None
         self._db_factories = dict()

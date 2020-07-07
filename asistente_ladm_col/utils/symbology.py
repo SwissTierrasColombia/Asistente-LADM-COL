@@ -34,7 +34,6 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 class SymbologyUtils(QObject):
-
     layer_symbology_changed = pyqtSignal(str) # layer id
 
     def __init__(self):

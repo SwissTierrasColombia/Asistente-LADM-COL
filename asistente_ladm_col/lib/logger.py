@@ -28,6 +28,7 @@ from asistente_ladm_col.utils.singleton import SingletonQObject
 
 TAB_NAME_FOR_LOGS = "Asistente LADM-COL"
 
+
 class Logger(QObject, metaclass=SingletonQObject):
     """
     Point of access to send messages from the plugin to either the GUI or a log.

@@ -19,11 +19,13 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/dialogs/dlg_welcome_screen.ui \
 	    ../ui/dialogs/settings_gpkg.ui \
 	    ../ui/dialogs/settings_pg.ui \
+	    ../ui/dialogs/settings_mssql.ui \
         ../ui/dockwidgets/dockwidget_queries.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
         ../ui/supplies/cobol_data_source_widget.ui \
+        ../ui/supplies/dlg_etl_cobol.ui \
         ../ui/supplies/snc_data_source_widget.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wig_missing_cobol_supplies_export.ui \
@@ -57,27 +59,33 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/wizards/valuation/wiz_create_physical_zone_valuation.ui
 
 SOURCES = ../__init__.py \
-          ../asistente_ladm_col_plugin.py \
           ../app_interface.py \
-          ../config/help_strings.py \
-          ../config/mapping_config.py \
-          ../config/task_steps_config.py \
-          ../config/gui/change_detection_config.py \
+          ../asistente_ladm_col_plugin.py \
+          ../config/change_detection_config.py \
+          ../config/config_db_supported.py \
           ../config/gui/gui_config.py \
+          ../config/help_strings.py \
+          ../config/ladm_names.py \
           ../config/layer_tree_indicator_config.py \
+          ../config/mapping_config.py \
+          ../config/quality_rules_config.py \
+          ../config/task_steps_config.py \
           ../config/transitional_system_config.py \
           ../config/translation_strings.py \
           ../config/wizard_config.py \
           ../core/app_core_interface.py \
           ../gui/app_gui_interface.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
+          ../gui/change_detection/changes_parties_panel.py \
           ../gui/change_detection/changes_per_parcel_panel.py \
           ../gui/change_detection/dlg_change_detection_settings.py \
+          ../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py \
           ../gui/change_detection/dockwidget_change_detection.py \
           ../gui/change_detection/parcels_changes_summary_panel.py \
-          ../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py \
           ../gui/db_panel/db_schema_db_panel.py \
           ../gui/db_panel/gpkg_config_panel.py \
+          ../gui/db_panel/mssql_config_panel.py \
+          ../gui/db_panel/pg_config_panel.py \
           ../gui/dialogs/dlg_about.py \
           ../gui/dialogs/dlg_custom_model_dir.py \
           ../gui/dialogs/dlg_get_db_or_schema_name.py \
@@ -88,6 +96,7 @@ SOURCES = ../__init__.py \
           ../gui/dialogs/dlg_quality.py \
           ../gui/dialogs/dlg_settings.py \
           ../gui/dialogs/dlg_upload_progress.py \
+          ../gui/dialogs/dlg_welcome_screen.py \
           ../gui/gui_builder/gui_builder.py \
           ../gui/gui_builder/role_registry.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
@@ -95,17 +104,27 @@ SOURCES = ../__init__.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
           ../gui/queries/dockwidget_queries.py \
           ../gui/reports/reports.py \
+          ../gui/right_of_way.py \
           ../gui/supplies/cobol_data_sources_widget.py \
           ../gui/supplies/dlg_cobol_base.py \
           ../gui/supplies/dlg_missing_cobol_supplies.py \
           ../gui/supplies/snc_data_sources_widget.py \
           ../gui/supplies/wiz_supplies_etl.py \
+          ../gui/toolbar.py \
           ../gui/transitional_system/dlg_cancel_task.py \
           ../gui/transitional_system/dlg_login_st.py \
           ../gui/transitional_system/dlg_upload_file.py \
           ../gui/transitional_system/task_panel.py \
           ../gui/transitional_system/tasks_widget.py \
           ../gui/transitional_system/transitional_system_initial_panel.py \
+          ../gui/wizards/abs_wizard_factory.py \
+          ../gui/wizards/map_interaction_expansion.py \
+          ../gui/wizards/multi_page_spatial_wizard_factory.py \
+          ../gui/wizards/multi_page_wizard_factory.py \
+          ../gui/wizards/select_features_on_map_wrapper.py \
+          ../gui/wizards/single_page_spatial_wizard_factory.py \
+          ../gui/wizards/single_page_wizard_factory.py \
+          ../gui/wizards/spatial_wizard_factory.py \
           ../gui/wizards/survey/dlg_create_group_party_survey.py \
           ../gui/wizards/survey/wiz_create_ext_address_survey.py \
           ../gui/wizards/survey/wiz_create_parcel_survey.py \
@@ -116,35 +135,35 @@ SOURCES = ../__init__.py \
           ../gui/wizards/survey/wiz_create_spatial_source_survey.py \
           ../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py \
           ../gui/wizards/valuation/wiz_create_building_unit_valuation.py \
-          ../gui/wizards/abs_wizard_factory.py \
-          ../gui/wizards/map_interaction_expansion.py \
-          ../gui/wizards/multi_page_spatial_wizard_factory.py \
-          ../gui/wizards/multi_page_wizard_factory.py \
-          ../gui/wizards/select_features_on_map_wrapper.py \
-          ../gui/wizards/single_page_spatial_wizard_factory.py \
-          ../gui/wizards/single_page_wizard_factory.py \
-          ../gui/wizards/spatial_wizard_factory.py \
           ../gui/wizards/wizard_factory.py \
-          ../gui/right_of_way.py \
-          ../gui/toolbar.py \
-          ../lib/db/db_connector.py \
+          ../lib/context.py \
           ../lib/db/db_connection_manager.py \
+          ../lib/db/db_connector.py \
           ../lib/db/gpkg_connector.py \
+          ../lib/db/mssql_connector.py \
           ../lib/db/pg_connector.py \
+          ../lib/dependency/crypto_dependency.py \
+          ../lib/dependency/dependency.py \
+          ../lib/dependency/java_dependency.py \
+          ../lib/dependency/plugin_dependency.py \
+          ../lib/dependency/report_dependency.py \
           ../lib/processing/algs/InsertFeaturesToLayer.py \
           ../lib/processing/algs/PolygonsToLines.py \
+          ../lib/quality_rule/quality_rule.py \
+          ../lib/source_handler.py \
           ../lib/transitional_system/st_session/st_session.py \
           ../lib/transitional_system/task_manager/task_manager.py \
           ../lib/transitional_system/task_manager/task_steps.py \
-          ../lib/source_handler.py \
-          ../logic/ladm_col/queries/per_component/pg/logic_validation_queries.py \
-          ../logic/quality/logic_checks.py \
-          ../logic/quality/quality.py \
+          ../logic/quality/line_quality_rules.py \
+          ../logic/quality/logic_quality_rules.py \
+          ../logic/quality/point_quality_rules.py \
+          ../logic/quality/polygon_quality_rules.py \
+          ../logic/quality/quality_rule_engine.py \
+          ../logic/quality/quality_rule_layer_manager.py \
+          ../logic/quality/quality_rules.py \
           ../utils/decorators.py \
-          ../utils/qt_utils.py \
-          ../utils/java_utils.py \
-          ../utils/model_parser.py \
           ../utils/qgis_model_baker_utils.py \
+          ../utils/qt_utils.py \
           ../utils/st_utils.py \
           ../utils/utils.py
 

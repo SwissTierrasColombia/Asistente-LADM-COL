@@ -263,5 +263,6 @@ def remove_keys_from_dict(keys, dictionary):
         if key in dictionary:
             del dictionary[key]
 
+
 def get_key_for_quality_rule_adjusted_layer(input, reference, fix=False):
     return "{}..{}{}".format(input, reference, '..fix' if fix else '')

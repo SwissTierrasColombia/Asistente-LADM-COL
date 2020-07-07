@@ -3,7 +3,6 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 class CustomFeedback(QgsProcessingFeedback):
-
     def setProgressText(self, text):
         """
         Format message to print the description of processes in a model.
@@ -14,7 +13,6 @@ class CustomFeedback(QgsProcessingFeedback):
 
 
 class CustomFeedbackWithErrors(QgsProcessingFeedback):
-
     def reportError(self, error, fatal_error=False):
         """
         Store error in member variable to be able to access it after an exception.

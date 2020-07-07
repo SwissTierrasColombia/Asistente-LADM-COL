@@ -68,6 +68,7 @@ def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_co
 
     return res
 
+
 @qgsfunction(args='auto', group='LADM-COL')
 def get_domain_description_from_code(value, table, feature, parent):
     """

@@ -118,7 +118,6 @@ QUALITY_RULE_ERROR_CODE_E402301 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.
 
 
 class QualityRuleConfig:
-
     @staticmethod
     def get_quality_rules_config():
         from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings  # To avoid circularity

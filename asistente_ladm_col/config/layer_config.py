@@ -3,7 +3,6 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 
 
 class LayerConfig:
-
     SUPPLIES_DB_PREFIX = None
     SUPPLIES_DB_SUFFIX = " (Insumos)"
     PREFIX_LAYER_MODIFIERS = 'prefix'
