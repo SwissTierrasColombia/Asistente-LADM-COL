@@ -51,6 +51,21 @@ Proceso de instalación
     :download: true
     :title: Instalación de QgisModelBaker
 
+
+Habilitar proyección con Origen Único Nacional
+------------------------------------------------
+
+Para poder usar la proyección con Origen Único Nacional antes de que esté oficialmente en la base de datos de Sistemas de Referencia de QGIS, debemos permitir que el Asistente LADM-COL configure dicha proyección.
+
+Para ello, basta con otorgar estos dos permisos de escritura al usuario con el cual usamos QGIS:
+
+.. image:: _static/instalacion/permisos_srs.gif
+    :height: 500
+    :width: 800
+    :alt: Habilitar proyección con Origen Único Nacional
+    :download: true
+    :title: Habilitar proyección con Origen Único Nacional
+
 Suscríbete a los lanzamientos del Asistente-LADM_COL
 -----------------------------------------------------
 
