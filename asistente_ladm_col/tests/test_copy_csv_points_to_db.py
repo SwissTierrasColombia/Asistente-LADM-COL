@@ -24,7 +24,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             reproject_to_ctm12)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 import_processing()
 
@@ -46,7 +46,7 @@ class TestCopy(unittest.TestCase):
         cls.app.core.initialize_ctm12()  # We need to initialize CTM12
 
         cls.names = cls.db_pg.names
-        cls.ladm_data = LADMDATA()
+        cls.ladm_data = LADMData()
         cls.geometry = GeometryUtils()
 
         result = cls.db_pg.test_connection()

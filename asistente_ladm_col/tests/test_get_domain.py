@@ -13,7 +13,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_copy_gpkg_conn)
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 class TestGetDomains(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestGetDomains(unittest.TestCase):
         cls.assertTrue(res, msg)
 
         cls.app = AppInterface()
-        cls.ladm_data = LADMDATA()
+        cls.ladm_data = LADMData()
 
     def test_get_domain_value_from_code(self):
         print('\nINFO: Validating get domain value from code ...')

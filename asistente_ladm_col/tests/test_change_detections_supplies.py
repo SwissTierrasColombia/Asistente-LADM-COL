@@ -9,7 +9,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             restore_schema,
@@ -33,7 +33,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
             return
 
         cls.app = AppInterface()
-        cls.ladm_data = LADMDATA()
+        cls.ladm_data = LADMData()
 
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")

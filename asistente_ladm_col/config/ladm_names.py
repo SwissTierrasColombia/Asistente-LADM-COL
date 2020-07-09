@@ -13,10 +13,15 @@ class LADMNames(metaclass=Singleton):
     """
     Singleton to handle domain values ('which are not dependent on the database engine') a single point of access.
     """
+    """
+    USEFUL DOMAIN VALUES
+    """
     LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V = "Persona_Natural"
     LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V = "Persona_Juridica"
     LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V = "NIT"
+    LC_PARTY_ETHNIC_GROUP_TYPE_D_NONE_V = "Ninguno"
     LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
+    CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
 
     TABLE_PROP_ASSOCIATION = "ASSOCIATION"
     TABLE_PROP_DOMAIN = "ENUM"

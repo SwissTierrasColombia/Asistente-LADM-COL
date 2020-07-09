@@ -47,7 +47,7 @@ from asistente_ladm_col.lib.logger import Logger
 #                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
 
 
-class LADMDATA():
+class LADMData():
     """
     High-level class to get related information from the LADM-COL database.
     """

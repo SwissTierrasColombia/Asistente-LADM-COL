@@ -1,5 +1,6 @@
 from qgis.core import NULL
 from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 class LayerConfig:
@@ -401,10 +402,15 @@ class LayerConfig:
         }
 
     @staticmethod
-    def get_dict_automatic_values(names):
-        return {
-            names.LC_BOUNDARY_T: {names.LC_BOUNDARY_T_LENGTH_F: "$length"},
-            names.LC_PARTY_T: {
+    def get_dict_automatic_values(db, layer_name):
+        names = db.names
+        ladm_data = LADMData()
+
+        dict_automatic_values = dict()
+        if layer_name == names.LC_BOUNDARY_T:
+            dict_automatic_values = {names.LC_BOUNDARY_T_LENGTH_F: "$length"}
+        elif layer_name == names.LC_PARTY_T:
+            dict_automatic_values = {
                 names.COL_PARTY_T_NAME_F: """
                     CASE
                         WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
@@ -420,13 +426,27 @@ class LayerConfig:
                            first_name_2=names.LC_PARTY_T_FIRST_NAME_2_F,
                            business_name=names.LC_PARTY_T_BUSINESS_NAME_F,
                            LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
-                           LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
-            },
-            names.LC_PARCEL_T: {
+                           LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V),
+                names.LC_PARTY_T_TYPE_F: "{}".format(ladm_data.get_domain_code_from_value(db,
+                                                                                          names.LC_PARTY_TYPE_D,
+                                                                                          LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)),
+                names.LC_PARTY_T_ETHNIC_GROUP_F: "{}".format(ladm_data.get_domain_code_from_value(db,
+                                                                                                  names.LC_ETHNIC_GROUP_TYPE_D,
+                                                                                                  LADMNames.LC_PARTY_ETHNIC_GROUP_TYPE_D_NONE_V))
+            }
+        elif layer_name == names.LC_PARCEL_T:
+            dict_automatic_values = {
                 names.LC_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F),
                 names.LC_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F)
             }
-        }
+        elif layer_name == names.LC_ADMINISTRATIVE_SOURCE_T:
+            dict_automatic_values = {
+                names.COL_SOURCE_T_MAIN_TYPE_F: "{}".format(ladm_data.get_domain_code_from_value(db,
+                                                                                                 names.CI_CODE_PRESENTATION_FORM_D,
+                                                                                                 LADMNames.CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V))
+            }
+
+        return dict_automatic_values
 
     @staticmethod
     def get_dict_display_expressions(names):
@@ -632,7 +652,7 @@ class LayerConfig:
         # Read only fields might be declared in two scenarios:
         #   1. As soon as the layer is loaded (e.g., LC_PARCEL_T_DEPARTMENT_F)
         #   2. Only for a wizard (e.g., PARCEL_TYPE)
-        # WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
+        # WARNING: Both modes are exclusive, if you list a field in 1, it shouldn't be in 2. and viceversa!
         return {
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition

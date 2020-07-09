@@ -106,7 +106,7 @@ from asistente_ladm_col.lib.context import (Context,
                                             TaskContext,
                                             SettingsContext)
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
@@ -202,7 +202,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
         self.toolbar = ToolBar(self.iface)
-        self.ladm_data = LADMDATA()
+        self.ladm_data = LADMData()
         self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()

@@ -665,10 +665,22 @@ class AppCoreInterface(QObject):
                     if layer.fields().field(field).typeName() == 'uuid':
                         continue
 
-                default_value = QgsDefaultValue(expression, True)  # Calculate on update
+                default_value = QgsDefaultValue(expression, self.should_be_applied_on_update(layer, index))
                 layer.setDefaultValueDefinition(index, default_value)
                 self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
                     layer.name(), field, expression))
+
+    @staticmethod
+    def should_be_applied_on_update(layer, field_index):
+        """
+        Determines whether a given field should have a default value that is applied on feature updates
+
+        :param layer: QgsVectorLayer
+        :param field_index: field index
+        :return: True if default value should be applied on any update of the current feature
+        """
+        # Relation reference are widgets for FKs, they shouldn't be applied on update
+        return layer.editorWidgetSetup(field_index).type() != 'RelationReference'
 
     def reset_automatic_fields(self, layer, list_fields):
         self.configure_automatic_fields(layer, {field: "" for field in list_fields})
@@ -685,9 +697,9 @@ class AppCoreInterface(QObject):
         if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
             dict_field_expression[db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F] = "now()"
 
-        dict_automatic_values = LayerConfig.get_dict_automatic_values(db.names)
-        if layer_name in dict_automatic_values:
-            dict_field_expression.update(dict_automatic_values[layer_name])
+        dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name)
+        if dict_automatic_values:
+            dict_field_expression.update(dict_automatic_values)
 
         self.configure_automatic_fields(layer, dict_field_expression, db.names)
 

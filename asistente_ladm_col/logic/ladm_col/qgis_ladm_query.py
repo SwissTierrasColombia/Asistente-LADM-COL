@@ -42,7 +42,7 @@ from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   SpatialFilterSubLevel,
                                                                   FilterSubLevel)
 
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMDATA
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.config.mapping_config import QueryNames
 from asistente_ladm_col.config.enums import (EnumSpatialOperationType,
                                              EnumLADMQueryType)
@@ -52,7 +52,7 @@ class QGISLADMQuery:
 
     def __init__(self):
         self.app = AppInterface()
-        self.ladm_data = LADMDATA()
+        self.ladm_data = LADMData()
 
     def get_igac_property_record_card_info(self, db, **kwargs):
         return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO, kwargs)
