@@ -34,7 +34,6 @@ class EncrypterDecrypter():
         self.crypto_dependency = CryptoDependency()
 
     def run(self, mode, value):
-
         java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             self.java_dependency.get_java_on_demand()

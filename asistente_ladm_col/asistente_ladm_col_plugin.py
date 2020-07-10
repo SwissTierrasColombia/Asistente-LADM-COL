@@ -40,6 +40,8 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
+from asistente_ladm_col.config.role_config import ROLE_CONFIG
+from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
@@ -151,27 +153,36 @@ class AsistenteLADMCOLPlugin(QObject):
         QObject.__init__(self)
         self.iface = iface
         self.unit_tests = unit_tests
-        self.main_window = self.iface.mainWindow()
-        self._about_dialog = None
-        self.toolbar = None
-        self.wiz_address = None
-        self.conn_manager = ConnectionManager()
-        self.wiz = None
-        self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
-        self.wizard_config = WizardConfig()
-        self.logger = Logger()
-        self.logger.set_mode(DEFAULT_LOG_MODE)
-        self.gui_builder = GUI_Builder(self.iface)
-        self.session = STSession()
-        task_steps_config = TaskStepsConfig()
-        task_steps_config.set_slot_caller(self)
-        layer_tree_indicator_config = LayerTreeIndicatorConfig()
-        layer_tree_indicator_config.set_slot_caller(self)
 
         # Register LADM-COL models
         model_registry = LADMColModelRegistry()
         for model_key, model_config in MODEL_CONFIG.items():
             model_registry.register_model(LADMColModel(model_key, model_config))
+
+        # Register roles
+        role_registry = Role_Registry()
+        for role_key, role_config in ROLE_CONFIG.items():
+            role_registry.register_role(role_key, role_config)
+
+        # Create member objects
+        self.main_window = self.iface.mainWindow()
+        self._about_dialog = None
+        self.toolbar = None
+        self.wiz_address = None
+        self.conn_manager = ConnectionManager()
+        self.logger = Logger()
+        self.logger.set_mode(DEFAULT_LOG_MODE)
+        self.gui_builder = GUI_Builder(self.iface)
+        self.session = STSession()
+        self.wiz = None
+        self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
+        self.wizard_config = WizardConfig()
+
+        # Initialize some singleton object properties
+        task_steps_config = TaskStepsConfig()
+        task_steps_config.set_slot_caller(self)
+        layer_tree_indicator_config = LayerTreeIndicatorConfig()
+        layer_tree_indicator_config.set_slot_caller(self)
 
         # Let's persist some dependency objects
         self.qmb_plugin = PluginDependency(QGIS_MODEL_BAKER_PLUGIN_NAME,
