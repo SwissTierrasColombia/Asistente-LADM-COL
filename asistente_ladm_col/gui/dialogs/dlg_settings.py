@@ -38,7 +38,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.context import (SettingsContext,
                                             Context)
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
@@ -128,7 +128,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.restore_db_source_settings()  # restore settings with default db source
         self.restore_settings()
 
-        self.roles = Role_Registry()
+        self.roles = RoleRegistry()
         self.load_roles()
 
         self.cbo_db_engine.currentIndexChanged.connect(self.db_engine_changed)

@@ -22,7 +22,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QRadioButton)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -43,7 +43,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.gbx_layout = QVBoxLayout()
-        self.roles = Role_Registry()
+        self.roles = RoleRegistry()
         self.dict_roles = self.roles.get_roles_info()
         checked = False
         active_role = self.roles.get_active_role()

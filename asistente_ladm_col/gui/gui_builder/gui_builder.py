@@ -27,11 +27,11 @@ from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
 
 
-class GUI_Builder(QObject):
+class GUIBuilder(QObject):
     """
     Build plugin GUI according to roles and LADM-COL models present in the current db connection
     """
@@ -128,8 +128,8 @@ class GUI_Builder(QObject):
 
         :return: Dictionary in the form of a gui_config dict, but only with allowed actions for the role_key passed.
         """
-        role_key = Role_Registry().get_active_role()
-        self.logger.info(__name__, "Active role: {}".format(Role_Registry().get_role_name(role_key)))
+        role_key = RoleRegistry().get_active_role()
+        self.logger.info(__name__, "Active role: {}".format(RoleRegistry().get_role_name(role_key)))
 
         gui_config = self._get_gui_config(role_key)
         # self.logger.debug(__name__, "Filtered gui_config: {}".format(gui_config))
@@ -222,7 +222,7 @@ class GUI_Builder(QObject):
         gui_type = DEFAULT_GUI  # If test_connection is False, we use a default gui config
 
         if self._test_conn_result:
-            gui_config = Role_Registry().get_role_gui_config(role_key)
+            gui_config = RoleRegistry().get_role_gui_config(role_key)
             if gui_config:
                 self.logger.info(__name__, "Using gui_config from the role.")
                 return gui_config
@@ -242,7 +242,7 @@ class GUI_Builder(QObject):
         :param role_key: Role key.
         :return: List of actions a role has access to.
         """
-        return Role_Registry().get_role_actions(role_key)
+        return RoleRegistry().get_role_actions(role_key)
 
     def _get_model_actions(self):
         """
@@ -393,4 +393,4 @@ class GUI_Builder(QObject):
         return action
 
     def show_welcome_screen(self):
-        return not Role_Registry().active_role_already_set()
+        return not RoleRegistry().active_role_already_set()

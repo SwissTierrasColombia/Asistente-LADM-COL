@@ -41,7 +41,7 @@ from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import ROLE_CONFIG
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
@@ -102,7 +102,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
-from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
+from asistente_ladm_col.gui.gui_builder.gui_builder import GUIBuilder
 from asistente_ladm_col.gui.transitional_system.dockwidget_transitional_system import DockWidgetTransitionalSystem
 from asistente_ladm_col.lib.context import (Context,
                                             TaskContext,
@@ -160,7 +160,7 @@ class AsistenteLADMCOLPlugin(QObject):
             model_registry.register_model(LADMColModel(model_key, model_config))
 
         # Register roles
-        role_registry = Role_Registry()
+        role_registry = RoleRegistry()
         for role_key, role_config in ROLE_CONFIG.items():
             role_registry.register_role(role_key, role_config)
 
@@ -172,7 +172,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.conn_manager = ConnectionManager()
         self.logger = Logger()
         self.logger.set_mode(DEFAULT_LOG_MODE)
-        self.gui_builder = GUI_Builder(self.iface)
+        self.gui_builder = GUIBuilder(self.iface)
         self.session = STSession()
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
