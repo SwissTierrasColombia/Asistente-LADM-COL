@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
-from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.task_manager.task_manager import STTaskManager
 from asistente_ladm_col.utils.singleton import SingletonQObject
@@ -92,8 +92,8 @@ class STSession(QObject, metaclass=SingletonQObject):
             self.logger.info(__name__, msg)
 
             # Make LADM-COL Assistant's current role correspond to the logged in user role in ST
-            if st_config.ROLE_MAPPING[st_role] != Role_Registry().get_active_role():
-                Role_Registry().set_active_role(st_config.ROLE_MAPPING[st_role])
+            if st_config.ROLE_MAPPING[st_role] != RoleRegistry().get_active_role():
+                RoleRegistry().set_active_role(st_config.ROLE_MAPPING[st_role])
                 should_emit_role_changed = True  # Safer to let the dialog deal with that SIGNAL (refreshes the GUI!)
         else:
             if response.status_code == 400:

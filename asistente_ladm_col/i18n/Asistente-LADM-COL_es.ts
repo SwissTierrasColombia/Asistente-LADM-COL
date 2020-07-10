@@ -9308,7 +9308,7 @@ You&apos;ll continue with a limited functionality until you configure an LADM-CO
 Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
         <translation>¡No se configuró una base de datos con estructura LADM-COL! Continuarás con funcionalidades limitadas hasta que la configures.
 
-¿Quieres ir al diálogo &lt;i&gt;Crear estructura LADM-COL&lt;/i&gt;?</translation>
+¿Quieres ir al diálogo &quot;Crear estructura LADM-COL&quot;?</translation>
     </message>
     <message>
         <location filename="../gui/dialogs/dlg_settings.py" line="283"/>

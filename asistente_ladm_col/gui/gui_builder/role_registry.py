@@ -25,7 +25,7 @@ from asistente_ladm_col.utils.singleton import Singleton
 from asistente_ladm_col.lib.logger import Logger
 
 
-class Role_Registry(metaclass=Singleton):
+class RoleRegistry(metaclass=Singleton):
     """
     Manage all role information. Current role can also be got/set from this class.
 
