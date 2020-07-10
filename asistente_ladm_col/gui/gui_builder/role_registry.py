@@ -18,19 +18,24 @@
 
 from copy import deepcopy
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import (QSettings,
+                              QObject,
+                              pyqtSignal)
 
 from asistente_ladm_col.config.gui.common_keys import *
-from asistente_ladm_col.utils.singleton import Singleton
+from asistente_ladm_col.utils.singleton import SingletonQObject
 from asistente_ladm_col.lib.logger import Logger
 
 
-class RoleRegistry(metaclass=Singleton):
+class RoleRegistry(QObject, metaclass=SingletonQObject):
     """
     Manage all role information. Current role can also be got/set from this class.
 
-    Roles can set their own GUI configuration even using and overwriting the template gui config.
+    Roles can set their own GUI configuration, their own LADM-COL supported models,
+    their own quality rules, etc.
     """
+    active_role_changed = pyqtSignal(str)  # New active role key
+
     COMMON_ACTIONS = [  # Common actions for all roles
         ACTION_LOAD_LAYERS,
         ACTION_SCHEMA_IMPORT,
@@ -42,6 +47,7 @@ class RoleRegistry(metaclass=Singleton):
     ]
 
     def __init__(self):
+        QObject.__init__(self)
         self.logger = Logger()
         self._registered_roles = dict()
         self._default_role = BASIC_ROLE
@@ -77,7 +83,16 @@ class RoleRegistry(metaclass=Singleton):
         """
         return QSettings().value("Asistente-LADM-COL/roles/current_role_key", False) is not False
 
-    def set_active_role(self, role_key):
+    def set_active_role(self, role_key, emit_signal=True):
+        """
+        Set the active role for the plugin.
+
+        :param role_key: Key to identify the role.
+        :param emit_signal: Whether the active_role_changed should be emitted or not. A False argument should be passed
+                            if the plugin config refresh will be called manually, for instance, because it is safer to
+                            call a GUI refresh after closing some plugin dialogs.
+        :return: Whether the role was successfully changed or not in the role registry.
+        """
         res = False
         if role_key in self._registered_roles:
             res = True
@@ -88,12 +103,13 @@ class RoleRegistry(metaclass=Singleton):
         QSettings().setValue("Asistente-LADM-COL/roles/current_role_key", role_key)
         self.logger.info(__name__, "Role '{}' is now active!".format(role_key))
 
+        if emit_signal:
+            self.active_role_changed.emit(role_key)
+
         return res
 
-    def set_active_default_role(self):
-        QSettings().setValue("Asistente-LADM-COL/roles/current_role_key", self._default_role)
-        self.logger.info(__name__, "Default role '{}' is now active!".format(self._default_role))
-        return True
+    def set_active_default_role(self, emit_signal=True):
+        return self.set_active_role(self._default_role, emit_signal)
 
     def get_roles_info(self):
         return {k: v[ROLE_NAME] for k,v in self._registered_roles.items()}
