@@ -93,7 +93,7 @@ class STSession(QObject, metaclass=SingletonQObject):
 
             # Make LADM-COL Assistant's current role correspond to the logged in user role in ST
             if st_config.ROLE_MAPPING[st_role] != RoleRegistry().get_active_role():
-                RoleRegistry().set_active_role(st_config.ROLE_MAPPING[st_role])
+                RoleRegistry().set_active_role(st_config.ROLE_MAPPING[st_role], emit_signal=False)
                 should_emit_role_changed = True  # Safer to let the dialog deal with that SIGNAL (refreshes the GUI!)
         else:
             if response.status_code == 400:

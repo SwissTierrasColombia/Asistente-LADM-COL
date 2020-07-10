@@ -59,7 +59,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
     or it can be instantiated and then set params one by one.
     """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, source
-    active_role_changed = pyqtSignal()
     open_dlg_import_schema = pyqtSignal(Context)  # Context for the import schema dialog
 
     def __init__(self, conn_manager=None, context=None, parent=None):
@@ -309,8 +308,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             if b_change_role:
                 self.logger.info(__name__, "The active role has changed from '{}' to '{}'.".format(
                     self.roles.get_active_role(), selected_role))
-                self.roles.set_active_role(selected_role)
-                self.active_role_changed.emit()
+                self.roles.set_active_role(selected_role)  # Emits signal that refreshed the plugin for this role
 
         self.save_settings(db)
 

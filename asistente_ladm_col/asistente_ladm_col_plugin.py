@@ -160,9 +160,9 @@ class AsistenteLADMCOLPlugin(QObject):
             model_registry.register_model(LADMColModel(model_key, model_config))
 
         # Register roles
-        role_registry = RoleRegistry()
+        self.role_registry = RoleRegistry()
         for role_key, role_config in ROLE_CONFIG.items():
-            role_registry.register_role(role_key, role_config)
+            self.role_registry.register_role(role_key, role_config)
 
         # Create member objects
         self.main_window = self.iface.mainWindow()
@@ -227,10 +227,10 @@ class AsistenteLADMCOLPlugin(QObject):
                 dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
-            self.iface.initializationCompleted.connect(self.call_refresh_gui)
+            self.iface.initializationCompleted.connect(self.configure_plugin_for_new_active_role)
             self.iface.initializationCompleted.connect(self.initialize_requirements)
         else:
-            self.call_refresh_gui()
+            self.configure_plugin_for_new_active_role()
             self.initialize_requirements()
 
         # Add LADM-COL provider, models and sripts to QGIS
@@ -256,6 +256,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def set_signal_slot_connections(self):
         self.conn_manager.db_connection_changed.connect(self.refresh_gui)
+        self.role_registry.active_role_changed.connect(self.configure_plugin_for_new_active_role)
 
         self.logger.message_with_duration_emitted.connect(self.app.gui.show_message)
         self.logger.status_bar_message_emitted.connect(self.app.gui.show_status_bar_message)
@@ -306,13 +307,20 @@ class AsistenteLADMCOLPlugin(QObject):
                 self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                     "CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
 
-    def call_refresh_gui(self):
+    def configure_plugin_for_new_active_role(self):
         """
-        SLOT. Intermediate step to call refresh gui adding proper parameters.
+        SLOT. After a role has been activated, change the plugin config for that role.
         """
+        # Call refresh gui adding proper parameters
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
+        """
+        Refreshes the plugin's GUI after a new user is active or a db connection has changed
+        :param db: DBConnector object
+        :param res: Whether the DB is LADM-COL compliant or not
+        :param db_source: Whether the db source is COLLECTED or SUPPLIES
+        """
         if db_source == COLLECTED_DB_SOURCE:  # Only refresh GUI for changes in COLLECTED DB SOURCE
             msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM-COL Assistant...")
             with ProcessWithStatus(msg):
@@ -961,7 +969,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         if context.db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
-            dlg.active_role_changed.connect(self.call_refresh_gui)
 
         if context.action_type == EnumDbActionType.CONFIG:
             dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
@@ -1338,7 +1345,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_st_login_dialog(self):
         dlg = LoginSTDialog(self.main_window)
-        dlg.active_role_changed.connect(self.call_refresh_gui)
+        dlg.active_role_changed.connect(self.configure_plugin_for_new_active_role)
         dlg.exec_()
 
         if self.session.is_user_logged():

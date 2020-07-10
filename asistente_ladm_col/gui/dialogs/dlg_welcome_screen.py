@@ -64,7 +64,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
 
     def finish_dialog(self, result):
         if result == 0:
-            self.roles.set_active_default_role()
+            self.roles.set_active_default_role(emit_signal=False)  # Welcome dialog should not emit role_changed signal
         else:
             self.set_checked_role_active()
 
@@ -82,7 +82,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
 
         for k, v in self.dict_roles.items():
             if v == radio_checked:
-                self.roles.set_active_role(k)
+                self.roles.set_active_role(k, emit_signal=False)  # Welcome dialog should not emit role_changed signal
                 break
 
     def show_help(self):
