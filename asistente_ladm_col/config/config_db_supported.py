@@ -18,13 +18,16 @@ class ConfigDBsSupported(QObject):
         self._init_db_factories()
 
     def _init_db_factories(self):
+        # PostgreSQL/PostGIS
         db_factory = PGFactory()
         self._db_factories[db_factory.get_id()] = db_factory
         self.id_default_db = db_factory.get_id()  # Make PostgreSQL the default DB engine
 
+        # GeoPackage
         db_factory = GPKGFactory()
         self._db_factories[db_factory.get_id()] = db_factory
 
+        # MS SQL Server
         pyodbc_installed = is_pyodbc_available()
         libqt5sql5_odbc_installed = is_libqt5sql5_odbc_available()
         driver_odbc_available = check_if_odbc_exists()
@@ -36,14 +39,14 @@ class ConfigDBsSupported(QObject):
 
         if not pyodbc_installed:
             self.logger.warning(__name__, QCoreApplication.translate("ConfigDBsSupported",
-                                                   "MS SQL Server could not be configured. Library 'pyodbc' is missing!"))
+                                    "MS SQL Server could not be configured. Library 'pyodbc' is missing!"))
         if not libqt5sql5_odbc_installed:
             self.logger.warning(__name__, QCoreApplication.translate("ConfigDBsSupported",
-                                                           "MS SQL Server could not be configured. Library 'libqt5sql5-odbc' is missing!"))
+                                    "MS SQL Server could not be configured. Library 'libqt5sql5-odbc' is missing!"))
 
         if not driver_odbc_available:
             self.logger.warning(__name__, QCoreApplication.translate("ConfigDBsSupported",
-                                                                     "MS SQL Server could not be configured. There is not any odbc driver installed!"))
+                                    "MS SQL Server could not be configured. There is not any odbc driver installed!"))
 
     def get_db_factories(self):
         return self._db_factories
