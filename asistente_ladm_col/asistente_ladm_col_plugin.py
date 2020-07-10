@@ -155,9 +155,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self.unit_tests = unit_tests
 
         # Register LADM-COL models
-        model_registry = LADMColModelRegistry()
+        self.model_registry = LADMColModelRegistry()
         for model_key, model_config in MODEL_CONFIG.items():
-            model_registry.register_model(LADMColModel(model_key, model_config))
+            self.model_registry.register_model(LADMColModel(model_key, model_config))
 
         # Register roles
         self.role_registry = RoleRegistry()
@@ -311,6 +311,9 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         SLOT. After a role has been activated, change the plugin config for that role.
         """
+        # Update supported models
+        self.model_registry.refresh_models_for_role()
+
         # Call refresh gui adding proper parameters
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 

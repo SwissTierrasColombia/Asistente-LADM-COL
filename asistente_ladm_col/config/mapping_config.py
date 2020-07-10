@@ -1179,7 +1179,7 @@ class TableAndFieldNames:
                     or DISPLAY_NAME_KEY not in dict_names \
                     or ILICODE_KEY not in dict_names \
                     or DESCRIPTION_KEY not in dict_names:
-                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
+                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, T_ILI_TID, DISPLAY_NAME, ILICODE and DESCRIPTION.")
                 return False
 
             for table_key, attrs in self.TABLE_DICT.items():

@@ -197,6 +197,7 @@ ROLE_CONFIG = {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
         ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                      "The basic role helps you to explore the LADM-COL assistant main functionalities."),
+        ROLE_MODELS: COMMON_ROLE_MODELS,
         ROLE_ACTIONS: [
             ACTION_DOWNLOAD_GUIDE,
             ACTION_CREATE_POINT,
@@ -231,6 +232,16 @@ ROLE_CONFIG = {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Provider"),
         ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                      "The Supplies Provider role generates a XTF file with supplies data for the Manager role."),
+        ROLE_MODELS: {
+            ROLE_SUPPORTED_MODELS: [LADMNames.LADM_COL_MODEL_KEY,
+                                    LADMNames.SUPPLIES_MODEL_KEY,
+                                    LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY,
+                                    LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY,
+                                    LADMNames.ISO19107_MODEL_KEY],
+            ROLE_HIDDEN_MODELS: COMMON_HIDDEN_MODELS,
+            ROLE_CHECKED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY,
+                                  LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY]
+        },
         ROLE_ACTIONS: [
             ACTION_RUN_ETL_SUPPLIES,
             ACTION_FIND_MISSING_COBOL_SUPPLIES,
@@ -243,6 +254,7 @@ ROLE_CONFIG = {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operator"),
         ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                      "The operator is in charge of capturing current cadastral data."),
+        ROLE_MODELS: COMMON_ROLE_MODELS,
         ROLE_ACTIONS: [
             ACTION_CREATE_POINT,
             ACTION_CREATE_BOUNDARY,
@@ -281,6 +293,7 @@ ROLE_CONFIG = {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Manager"),
         ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                      "The manager is in charge of preparing supplies for operators as well as validating and managing the data provided by operators."),
+        ROLE_MODELS: COMMON_ROLE_MODELS,
         ROLE_ACTIONS: [
             ACTION_CHANGE_DETECTION_SETTINGS,
             ACTION_CHANGE_DETECTION_ALL_PARCELS,
@@ -299,6 +312,7 @@ ROLE_CONFIG = {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Advanced"),
         ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                      "The advanced role has access to all the functionality."),
+        ROLE_MODELS: COMMON_ROLE_MODELS,
         ROLE_ACTIONS: [ALL_ACTIONS],
         ROLE_GUI_CONFIG: advanced_role_gui
     }

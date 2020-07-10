@@ -64,7 +64,8 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         :return: Whether the role was successfully registered or not.
         """
         valid = False
-        if ROLE_NAME in role_dict and ROLE_DESCRIPTION in role_dict and ROLE_ACTIONS in role_dict and ROLE_GUI_CONFIG in role_dict:
+        if ROLE_NAME in role_dict and ROLE_DESCRIPTION in role_dict and ROLE_ACTIONS in role_dict and \
+                ROLE_GUI_CONFIG in role_dict and ROLE_MODELS in role_dict:
             self._registered_roles[role_key] = deepcopy(role_dict)
             valid = True
         else:
@@ -141,3 +142,10 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             role_key = self._default_role
 
         return self._registered_roles[role_key][ROLE_GUI_CONFIG]
+
+    def get_role_models(self, role_key):
+        if role_key not in self._registered_roles:
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's GUI models.".format(role_key))
+            role_key = self._default_role
+
+        return self._registered_roles[role_key][ROLE_MODELS]
