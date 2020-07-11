@@ -418,5 +418,5 @@ class LogicQualityRules:
                     Qgis.Critical)
         else:
             return (QCoreApplication.translate("LogicQualityRules",
-                                               "No errors were found checking the '{rule_name}' logic consistency rule!").format(rule_name=rule_name),
+                                               "No errors were found checking the '{}' logic consistency rule!").format(rule_name),
                     Qgis.Success)

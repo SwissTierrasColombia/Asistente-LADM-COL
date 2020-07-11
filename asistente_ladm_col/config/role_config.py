@@ -224,7 +224,12 @@ ROLE_CONFIG = {
             ACTION_FILL_MORE_BFS_AND_LESS,
             ACTION_FILL_RIGHT_OF_WAY_RELATIONS,
             ACTION_PARCEL_QUERY,
-            ACTION_CHECK_QUALITY_RULES
+            ACTION_CHECK_QUALITY_RULES],
+        ROLE_QUALITY_RULES: [
+            EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
+            EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT,
+            EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS,
+            EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER,
         ],
         ROLE_GUI_CONFIG: basic_role_gui
     },
@@ -248,6 +253,7 @@ ROLE_CONFIG = {
             ACTION_ST_LOGIN,
             ACTION_ST_LOGOUT
         ],
+        ROLE_QUALITY_RULES: list(),
         ROLE_GUI_CONFIG: supplies_provider_role_gui
     },
     OPERATOR_ROLE: {
@@ -285,8 +291,8 @@ ROLE_CONFIG = {
             ACTION_ST_LOGIN,
             ACTION_ST_LOGOUT,
             ACTION_PARCEL_QUERY,
-            ACTION_CHECK_QUALITY_RULES
-        ],
+            ACTION_CHECK_QUALITY_RULES],
+        ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
         ROLE_GUI_CONFIG: operator_role_gui
     },
     MANAGER_ROLE: {
@@ -304,8 +310,8 @@ ROLE_CONFIG = {
             ACTION_REPORT_ANT,
             ACTION_INTEGRATE_SUPPLIES,
             ACTION_PARCEL_QUERY,
-            ACTION_CHECK_QUALITY_RULES
-        ],
+            ACTION_CHECK_QUALITY_RULES],
+        ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
         ROLE_GUI_CONFIG: manager_role_gui
     },
     ADVANCED_ROLE: {
@@ -314,6 +320,7 @@ ROLE_CONFIG = {
                                                      "The advanced role has access to all the functionality."),
         ROLE_MODELS: COMMON_ROLE_MODELS,
         ROLE_ACTIONS: [ALL_ACTIONS],
+        ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
         ROLE_GUI_CONFIG: advanced_role_gui
     }
 }

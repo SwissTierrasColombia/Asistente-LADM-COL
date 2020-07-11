@@ -18,6 +18,7 @@
  """
 from qgis.PyQt.QtCore import QObject
 
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.quality_rule.quality_rule import QualityRule
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_GROUP_NAME,
@@ -35,6 +36,8 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         self.__translated_strings = TranslatableConfigStrings().get_translatable_config_strings()
         self._quality_rule_groups = dict()
         self.__quality_rules = dict()
+
+        self.role_registry = RoleRegistry()
 
         self._initialize_quality_rule_manager()
 
@@ -57,7 +60,7 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
 
     def get_quality_rule_group_name(self, group_key):
         """
-        Returns a quality rule name.
+        Returns a quality rule group name.
 
         :param group_key: Group key
         :return: Group name if the group key is found. Otherwise, None.
@@ -73,8 +76,11 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         :return: dict of rules
         """
         quality_rules_group = dict()
+        role_key = self.role_registry.get_active_role()
+        role_quality_rules = self.role_registry.get_role_quality_rules(role_key)
+
         if enum_group:
-            quality_rules_group = {k_rule: v_rule for k_rule, v_rule in self.__quality_rules.items() if k_rule in enum_group}
+            quality_rules_group = {k_rule: v_rule for k_rule, v_rule in self.__quality_rules.items() if k_rule in enum_group and k_rule in role_quality_rules}
         else:
             quality_rules_group[EnumQualityRule.Point] = dict()
             quality_rules_group[EnumQualityRule.Line] = dict()
@@ -82,14 +88,17 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
             quality_rules_group[EnumQualityRule.Logic] = dict()
 
             for k_quality_rule, v_quality_rule in self.__quality_rules.items():
-                if k_quality_rule in EnumQualityRule.Point:
-                    quality_rules_group[EnumQualityRule.Point][k_quality_rule] = v_quality_rule
-                elif k_quality_rule in EnumQualityRule.Line:
-                    quality_rules_group[EnumQualityRule.Line][k_quality_rule] = v_quality_rule
-                elif k_quality_rule in EnumQualityRule.Polygon:
-                    quality_rules_group[EnumQualityRule.Polygon][k_quality_rule] = v_quality_rule
-                elif k_quality_rule in EnumQualityRule.Logic:
-                    quality_rules_group[EnumQualityRule.Logic][k_quality_rule] = v_quality_rule
+                if k_quality_rule in role_quality_rules:
+                    if k_quality_rule in EnumQualityRule.Point:
+                        quality_rules_group[EnumQualityRule.Point][k_quality_rule] = v_quality_rule
+                    elif k_quality_rule in EnumQualityRule.Line:
+                        quality_rules_group[EnumQualityRule.Line][k_quality_rule] = v_quality_rule
+                    elif k_quality_rule in EnumQualityRule.Polygon:
+                        quality_rules_group[EnumQualityRule.Polygon][k_quality_rule] = v_quality_rule
+                    elif k_quality_rule in EnumQualityRule.Logic:
+                        quality_rules_group[EnumQualityRule.Logic][k_quality_rule] = v_quality_rule
+
+            self.logger.debug(__name__, "Quality Rules for role '{}': {}".format(role_key, ", ".join([str(rqr.value) for rqr in role_quality_rules])))
 
         return quality_rules_group
 
