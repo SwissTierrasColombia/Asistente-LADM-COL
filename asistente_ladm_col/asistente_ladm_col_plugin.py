@@ -817,7 +817,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_log_quality_dialog(self):
         log_text, tolerance, log_total_time = self.quality_rule_engine.quality_rule_logger.get_log_text()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, tolerance, log_total_time)
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_text, tolerance, log_total_time, self.main_window)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
@@ -832,7 +832,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log_excel_text = text
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.log_excel_text)
+        dlg = LogExcelDialog(self.log_excel_text, self.main_window)
         dlg.exec_()
 
     @_db_connection_required
@@ -875,7 +875,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_survey_model_required
     def call_topological_editing(self, *args):
-        self.app.core.enable_topological_editing(self.get_db_connection())
+        self.app.enable_topological_editing(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -919,7 +919,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_activate_processing_plugin
     def call_import_from_intermediate_structure(self, *args):
-        self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection())
+        self._dlg = ImportFromExcelDialog(self.iface, self.get_db_connection(), self.main_window)
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
         self._dlg.exec_()
 
@@ -945,7 +945,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             context = SettingsContext()  # Context with default configuration for the Settings Dialog
 
-        dlg = SettingsDialog(self.conn_manager, context)
+        dlg = SettingsDialog(self.conn_manager, context, self.main_window)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
 
         if context.db_source == COLLECTED_DB_SOURCE:  # Only update cache and gui when db_source is collected
@@ -982,7 +982,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def load_layers_from_qgis_model_baker(self, *args):
-        dlg = LoadLayersDialog(self.get_db_connection())
+        dlg = LoadLayersDialog(self.get_db_connection(), self.main_window)
         dlg.exec_()
 
     @_validate_if_wizard_is_open
@@ -1032,7 +1032,12 @@ class AsistenteLADMCOLPlugin(QObject):
         selected_models_import_schema = params['selected_models'] if 'selected_models' in params else list()
         link_to_import_data = params['link_to_import_data'] if 'link_to_import_data' in params else True
 
-        dlg = DialogImportSchema(self.iface, self.conn_manager, context, selected_models_import_schema, link_to_import_data)
+        dlg = DialogImportSchema(self.iface,
+                                 self.conn_manager,
+                                 context,
+                                 selected_models_import_schema,
+                                 link_to_import_data,
+                                 parent=self.main_window)
         dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
 
         if isinstance(context, TaskContext):
@@ -1051,7 +1056,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = DialogImportData(self.iface, self.conn_manager, context)
+        dlg = DialogImportData(self.iface, self.conn_manager, context, parent=self.main_window)
         dlg.open_dlg_import_schema.connect(partial(self.show_dlg_import_schema, context))
 
         if isinstance(context, TaskContext):
@@ -1070,7 +1075,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = DialogExportData(self.iface, self.conn_manager, context)
+        dlg = DialogExportData(self.iface, self.conn_manager, context, parent=self.main_window)
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
@@ -1200,7 +1205,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
-        quality_dialog = QualityDialog()
+        quality_dialog = QualityDialog(self.main_window)
         quality_dialog.exec_()
 
         self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
@@ -1275,7 +1280,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_layers_in_editing_mode_with_changes
     def show_change_detection_settings(self, *args, **kwargs):
-        dlg = ChangeDetectionSettingsDialog(self.conn_manager)
+        dlg = ChangeDetectionSettingsDialog(self.conn_manager, self.main_window)
         dlg.exec_()
 
     def open_table(self, layer, filter=None):
@@ -1283,7 +1288,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_about_dialog(self):
         if self._about_dialog is None:
-            self._about_dialog = AboutDialog()
+            self._about_dialog = AboutDialog(self.main_window)
             self._about_dialog.message_with_button_open_about_emitted.connect(self.show_message_to_open_about_dialog)
         else:
             self._about_dialog.check_local_help()

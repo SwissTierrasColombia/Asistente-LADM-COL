@@ -15,17 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication)
+from qgis.PyQt.QtWidgets import QDialog
 
-from qgis.core import QgsLayerTreeNode
+from qgis.core import (QgsLayerTreeNode,
+                       QgsProject)
 
+from asistente_ladm_col import Logger
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
+from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
 class AppInterface(QObject, metaclass=SingletonQObject):
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
         self.core = None
         self.gui = None
 
@@ -66,3 +72,29 @@ class AppInterface(QObject, metaclass=SingletonQObject):
                 payload = ladm_layers[node_name]
 
         return payload
+
+    def enable_topological_editing(self, db):
+        # Enable Topological Editing
+        QgsProject.instance().setTopologicalEditing(True)
+
+        dlg = LayersForTopologicalEditionDialog(db.names, self.gui.iface.mainWindow())
+        if dlg.exec_() == QDialog.Accepted:
+            # Load layers selected in the dialog
+            layers = dlg.selected_layers_info
+            self.core.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            list_layers = list()
+            # Open edit session in all layers
+            for layer_name, layer in layers.items():
+                layer.startEditing()
+                list_layers.append(layer)
+
+            # Activate "Vertex Tool (All Layers)"
+            self.gui.activate_layer(list_layers[0])
+            self.gui.trigger_vertex_tool()
+
+            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
+                "You can start moving nodes in layers {} and {}, simultaneously!").format(
+                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)

@@ -72,8 +72,8 @@ class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
     current_row_schema = 0
 
-    def __init__(self, iface, conn_manager, context):
-        QDialog.__init__(self)
+    def __init__(self, iface, conn_manager, context, parent=None):
+        QDialog.__init__(self, parent)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
@@ -206,7 +206,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
-        dlg = SettingsDialog(self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager, parent=self)
         dlg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Source DB Connection Settings"))
         dlg.show_tip(QCoreApplication.translate("DialogExportData", "Configure which DB you want to export data from."))
         dlg.set_db_source(self.db_source)

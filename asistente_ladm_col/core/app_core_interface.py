@@ -33,7 +33,6 @@ from qgis.PyQt.QtCore import (Qt,
                               QTextStream,
                               QIODevice,
                               QUrl)
-from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QNetworkRequest)
 from qgis.core import (Qgis,
@@ -61,7 +60,6 @@ from qgis.core import (Qgis,
 
 import processing
 
-from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
                                                                                  get_insert_ctm12_query,
@@ -88,8 +86,7 @@ from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
-                                                           ERROR_LAYER_GROUP)
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.source_handler import SourceHandler
 
@@ -1243,33 +1240,6 @@ class AppCoreInterface(QObject):
             else:
                 form_config.setSuppress(QgsEditFormConfig.SuppressOff)
             layer.setEditFormConfig(form_config)
-
-    def enable_topological_editing(self, db):
-        # Enable Topological Editing
-        QgsProject.instance().setTopologicalEditing(True)
-
-        dlg = LayersForTopologicalEditionDialog(db.names)
-        if dlg.exec_() == QDialog.Accepted:
-            # Load layers selected in the dialog
-
-            layers = dlg.selected_layers_info
-            self.get_layers(db, layers, load=True)
-            if not layers:
-                return None
-
-            list_layers = list()
-            # Open edit session in all layers
-            for layer_name, layer in layers.items():
-                layer.startEditing()
-                list_layers.append(layer)
-
-            # Activate "Vertex Tool (All Layers)"
-            self.activate_layer_requested.emit(list_layers[0])
-            self.action_vertex_tool_requested.emit()
-
-            self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
-                "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer_name for layer_name in list(layers.keys())[:-1]), list(layers.keys())[-1]), 30)
 
     def get_new_feature(self, layer, is_spatial=False):
         self.suppress_form(layer, True)

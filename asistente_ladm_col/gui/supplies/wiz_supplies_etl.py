@@ -50,11 +50,10 @@ WIZARD_UI = get_ui_class('supplies/wiz_supplies_etl.ui')
 
 
 class SuppliesETLWizard(QWizard, WIZARD_UI):
-
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
     def __init__(self, db, conn_manager, parent=None):
-        QWizard.__init__(self)
+        QWizard.__init__(self, parent)
         self.setupUi(self)
         self._db = db
         self.conn_manager = conn_manager
@@ -331,7 +330,7 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         show_plugin_help('supplies')
 
     def show_settings(self):
-        dlg = SettingsDialog(self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager, parent=self)
         dlg.setWindowTitle(QCoreApplication.translate("SuppliesETLWizard", "Target DB Connection Settings"))
         dlg.show_tip(QCoreApplication.translate("SuppliesETLWizard", "Configure where do you want the data to be imported."))
         dlg.set_db_source(self.db_source)

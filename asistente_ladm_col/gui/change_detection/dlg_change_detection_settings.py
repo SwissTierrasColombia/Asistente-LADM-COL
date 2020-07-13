@@ -56,7 +56,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.txt_help_page.setHtml(self.help_strings.CHANGE_DETECTION_SETTING_DIALOG_HELP)
 
         # we will use a unique instance of setting dialog
-        self.settings_dialog = SettingsDialog(self.conn_manager)
+        self.settings_dialog = SettingsDialog(self.conn_manager, parent=parent)
         # The database configuration is saved if it becomes necessary
         # to restore the configuration when the user rejects the dialog
         self.init_db_collected = None

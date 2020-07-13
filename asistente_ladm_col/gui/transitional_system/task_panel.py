@@ -229,7 +229,7 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
                                          self._task.get_name()),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            dlg = STCancelTaskDialog()
+            dlg = STCancelTaskDialog(self.parent)
             res = dlg.exec_()
             if res == QDialog.Accepted:
                 if dlg.comments:

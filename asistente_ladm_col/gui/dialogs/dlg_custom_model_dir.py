@@ -28,7 +28,6 @@ DIALOG_UI = get_ui_class('dialogs/dlg_custom_model_dir.ui')
 
 
 class CustomModelDirDialog(QDialog, DIALOG_UI):
-
     def __init__(self, current_paths, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)

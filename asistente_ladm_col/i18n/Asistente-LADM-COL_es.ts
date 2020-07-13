@@ -6580,7 +6580,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../ui/dialogs/dlg_topological_edition.ui" line="20"/>
         <source>Boundary Points, Boundaries and Plots</source>
-        <translation>Punto Lindero, Lindero y Terrreno</translation>
+        <translation>Punto Lindero, Lindero y Terreno</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_topological_edition.ui" line="55"/>
@@ -6594,12 +6594,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../ui/dialogs/dlg_topological_edition.ui" line="75"/>
         <source>Survey Points, Buildings and Building Units</source>
-        <translation>Punto de Levantamiento, Construcción y Unidad de Construción</translation>
+        <translation>Punto de Levantamiento, Construcción y Unidad de Construcción</translation>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_topological_edition.ui" line="141"/>
         <source>Select the layers you want to edit topologically</source>
-        <translation>Selecciona las capas que quires editar topológicamente</translation>
+        <translation>Selecciona las capas que quieres editar topológicamente</translation>
     </message>
 </context>
 <context>

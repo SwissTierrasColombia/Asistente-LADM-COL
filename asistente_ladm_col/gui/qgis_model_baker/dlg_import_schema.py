@@ -74,8 +74,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
     BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, conn_manager, context, selected_models=list(), link_to_import_data=True):
-        QDialog.__init__(self)
+    def __init__(self, iface, conn_manager, context, selected_models=list(), link_to_import_data=True, parent=None):
+        QDialog.__init__(self, parent)
         self.iface = iface
         self.conn_manager = conn_manager
         self.selected_models = selected_models
@@ -228,7 +228,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def show_settings(self):
         # We only need those tabs related to Model Baker/ili2db operations
-        dlg = SettingsDialog(self.conn_manager)
+        dlg = SettingsDialog(self.conn_manager, parent=self)
         dlg.setWindowTitle(QCoreApplication.translate("DialogImportSchema", "Target DB Connection Settings"))
         dlg.show_tip(QCoreApplication.translate("DialogImportSchema", "Configure where do you want the LADM-COL structure to be created."))
         dlg.set_db_source(self.db_source)

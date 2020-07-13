@@ -50,8 +50,8 @@ DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
 class AboutDialog(QDialog, DIALOG_UI):
     message_with_button_open_about_emitted = pyqtSignal(str)
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.setupUi(self)
         self.logger = Logger()
         self.check_local_help()

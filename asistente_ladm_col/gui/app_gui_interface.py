@@ -19,10 +19,8 @@
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSlot,
                               pyqtSignal,
-                              QCoreApplication,
-                              Qt)
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QTabBar,
                                  QDockWidget)
 
 from qgis.core import (Qgis,
@@ -37,7 +35,8 @@ import processing
 from asistente_ladm_col.config.general_config import PLUGIN_NAME
 from asistente_ladm_col.config.layer_tree_indicator_config import (INDICATOR_TOOLTIP,
                                                                    INDICATOR_ICON,
-                                                                   INDICATOR_SLOT, LayerTreeIndicatorConfig)
+                                                                   INDICATOR_SLOT,
+                                                                   LayerTreeIndicatorConfig)
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.lib.logger import Logger

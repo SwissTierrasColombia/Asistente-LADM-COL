@@ -39,10 +39,10 @@ from qgis.core import (QgsProject,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
-from ..utils.qt_utils import OverrideCursor
-from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                     SOURCE_SERVICE_UPLOAD_SUFFIX)
-from ..gui.dialogs.dlg_upload_progress import UploadProgressDialog
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                                      SOURCE_SERVICE_UPLOAD_SUFFIX)
+from asistente_ladm_col.gui.dialogs.dlg_upload_progress import UploadProgressDialog
 
 
 class SourceHandler(QObject):
@@ -80,7 +80,7 @@ class SourceHandler(QObject):
         total = len(features)
         not_found = total - len(file_features)
 
-        upload_dialog = UploadProgressDialog(len(file_features), not_found)
+        upload_dialog = UploadProgressDialog(len(file_features), not_found, self.app.gui.iface.mainWindow())
         upload_dialog.show()
         count = 0
         upload_errors = 0

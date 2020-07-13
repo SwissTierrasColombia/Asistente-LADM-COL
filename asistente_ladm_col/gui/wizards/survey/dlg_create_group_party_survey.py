@@ -49,7 +49,7 @@ class CreateGroupPartySurvey(QDialog, DIALOG_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
 
     def __init__(self, iface, db, parent=None):
-        QDialog.__init__(self)
+        QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
