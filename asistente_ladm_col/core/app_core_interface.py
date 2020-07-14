@@ -1277,6 +1277,7 @@ class AppCoreInterface(QObject):
                 cursor.execute("COMMIT")
             except sqlite3.OperationalError as e:
                 # We couldn't write in srs.db
+                conn.close()
                 return False
 
             conn.close()
