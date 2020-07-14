@@ -70,6 +70,7 @@ from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
+                                               normalize_local_url,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.symbology import SymbologyUtils
 from asistente_ladm_col.utils.utils import is_connected
@@ -1004,7 +1005,7 @@ class AppCoreInterface(QObject):
 
         # Create QGIS vector layer
         uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs={}".format(
-            csv_path,
+            normalize_local_url(csv_path),
             decimal_point,
             delimiter if delimiter != '\t' else '%5Ct',
             longitude,
