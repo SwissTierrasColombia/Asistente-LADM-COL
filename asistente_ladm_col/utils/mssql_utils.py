@@ -3,8 +3,7 @@ import re
 
 def is_libqt5sql5_odbc_available():
     from qgis.PyQt.QtSql import QSqlDatabase
-    db = QSqlDatabase.addDatabase("QODBC")
-    return db.isValid()
+    return 'QODBC' in QSqlDatabase.drivers() or 'QODBC3' in QSqlDatabase.drivers()
 
 
 def is_pyodbc_available():
