@@ -64,7 +64,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:38820", reproject=False)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:9377", reproject=False)
 
         self.upload_points_from_csv(csv_layer, SCHEMA_LADM_COL_EMPTY)
 
@@ -151,7 +151,7 @@ class TestCopy(unittest.TestCase):
         cbo_longitude = 'x'
         cbo_latitude = 'y'
         elevation = 'z'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:38820", elevation, reproject=False)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:9377", elevation, reproject=False)
 
         self.upload_points_from_csv_with_elevation(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_points_in_db(SCHEMA_LADM_COL_EMPTY, with_z=True)
@@ -216,7 +216,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:38820", reproject=False)
+        csv_layer = self.app.core.csv_to_layer(csv_path, txt_delimiter, cbo_longitude, cbo_latitude, "EPSG:9377", reproject=False)
 
         self.upload_points_from_csv_overlapping(csv_layer, SCHEMA_LADM_COL_EMPTY)
         self.validate_number_of_boundary_points_in_db(SCHEMA_LADM_COL_EMPTY, 0)
