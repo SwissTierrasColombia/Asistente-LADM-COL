@@ -26,6 +26,7 @@ import processing
 
 from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
 from asistente_ladm_col.core.supplies.etl_supplies import ETLSupplies
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class ETLCobol(ETLSupplies):
@@ -66,7 +67,7 @@ class ETLCobol(ETLSupplies):
         lis_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "LIS Supplies"))
 
         for name in self.alphanumeric_file_paths:
-            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.alphanumeric_file_paths[name])
+            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(self.alphanumeric_file_paths[name]))
             layer = QgsVectorLayer(uri, name, 'delimitedtext')
             if layer.isValid():
                 self.alphanumeric_file_paths[name] = layer
@@ -75,7 +76,7 @@ class ETLCobol(ETLSupplies):
             else:
                 if name == 'blo':
                     # BLO is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(BLO_LIS_FILE_PATH)
+                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(BLO_LIS_FILE_PATH))
                     layer = QgsVectorLayer(uri, name, 'delimitedtext')
                     self.alphanumeric_file_paths[name] = layer
                     QgsProject.instance().addMapLayer(layer, False)

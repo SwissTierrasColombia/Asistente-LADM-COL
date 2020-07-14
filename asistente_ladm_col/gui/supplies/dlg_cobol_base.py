@@ -36,6 +36,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                DirValidator,
                                                Validators,
+                                               normalize_local_url,
                                                make_file_selector,
                                                make_folder_selector)
 from asistente_ladm_col.utils import get_ui_class
@@ -236,7 +237,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         lis_group = root.addGroup(QCoreApplication.translate("CobolBaseDialog", "LIS Supplies"))
 
         for name in self.lis_paths:
-            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(self.lis_paths[name])
+            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(self.lis_paths[name]))
             layer = QgsVectorLayer(uri, name, 'delimitedtext')
             if layer.isValid():
                 self.lis_paths[name] = layer
@@ -245,7 +246,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
             else:
                 if name == 'blo':
                     # BLO is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(BLO_LIS_FILE_PATH)
+                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(BLO_LIS_FILE_PATH))
                     layer = QgsVectorLayer(uri, name, 'delimitedtext')
                     self.lis_paths[name] = layer
                     QgsProject.instance().addMapLayer(layer, False)
