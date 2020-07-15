@@ -30,11 +30,11 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
-                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
+from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR,
-                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE)
+                                                      DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
+                                                      TOLERANCE_MAX_VALUE)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
@@ -68,6 +68,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.logger = Logger()
         self.conn_manager = conn_manager
         self.app = AppInterface()
+
+        self.sbx_tolerance.setMaximum(TOLERANCE_MAX_VALUE)
 
         context = context if context else SettingsContext()
 

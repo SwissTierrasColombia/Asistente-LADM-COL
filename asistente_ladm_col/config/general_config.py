@@ -176,6 +176,9 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
 
+
+TOLERANCE_MAX_VALUE = 5000  # In milimeters
+
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
 LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE = "</h4>"
