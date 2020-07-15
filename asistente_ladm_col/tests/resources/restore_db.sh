@@ -6,11 +6,6 @@ MY_PATH="`dirname \"$0\"`"              # relative
 MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
 cd "$MY_PATH"
 DB_BACKUP=$1
-SCHEMA=$2
 # rationale: Standard output is silenced and only error occurrences are shown
 # link: https://unix.stackexchange.com/questions/119648/redirecting-to-dev-null
-PGPASSWORD=clave_ladm_col psql -h postgres -U usuario_ladm_col -d ladm_col --command='DROP SCHEMA IF EXISTS '${SCHEMA}' CASCADE' > /dev/null 2>&1
-PGPASSWORD=clave_ladm_col psql -h postgres -U usuario_ladm_col -d ladm_col --command='CREATE SCHEMA '${SCHEMA} > /dev/null 2>&1
-PGPASSWORD=clave_ladm_col psql -h postgres -U usuario_ladm_col -d ladm_col --command='CREATE EXTENSION IF NOT EXISTS postgis' > /dev/null 2>&1
-PGPASSWORD=clave_ladm_col psql -h postgres -U usuario_ladm_col -d ladm_col --command='CREATE EXTENSION IF NOT EXISTS "uuid-ossp"' > /dev/null 2>&1
-PGPASSWORD=clave_ladm_col pg_restore --clean -h postgres -U usuario_ladm_col -d ladm_col sql/$DB_BACKUP > /dev/null 2>&1
+PGPASSWORD=clave_ladm_col psql -h postgres -U usuario_ladm_col -d ladm_col -f sql/$DB_BACKUP > /dev/null 2>&1
