@@ -24,6 +24,7 @@ from qgis.core import (QgsLayerTreeNode,
 
 from asistente_ladm_col import Logger
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
+from asistente_ladm_col.core.app_settings import AppSettings
 from asistente_ladm_col.gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
@@ -32,6 +33,7 @@ class AppInterface(QObject, metaclass=SingletonQObject):
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
+        self.settings = AppSettings()
         self.core = None
         self.gui = None
 

@@ -37,7 +37,7 @@ class QualityRuleEngine(QObject):
         self.logger = Logger()
         self.app = AppInterface()
 
-        self.__tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        self.__tolerance = self.app.settings.tolerance
         self.__layer_manager = QualityRuleLayerManager(db, rules.keys(), self.__tolerance)
         self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__tolerance)
@@ -53,7 +53,7 @@ class QualityRuleEngine(QObject):
         self.__result_layers = list()
         self.__db = db
         self.__rules = rules
-        self.__tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        self.__tolerance = self.app.settings.tolerance
         self.__layer_manager.initialize(rules.keys(), self.__tolerance)
         self.quality_rule_logger.initialize(self.__tolerance)
 

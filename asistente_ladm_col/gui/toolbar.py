@@ -151,7 +151,7 @@ class ToolBar(QObject):
                           bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
-        tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        tolerance = self.app.settings.tolerance
         id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[db.names.LC_BOUNDARY_T],
                                                                   layers[db.names.LC_BOUNDARY_POINT_T],
                                                                   db.names.T_ID_F,
@@ -233,7 +233,7 @@ class ToolBar(QObject):
                 elif reply == QMessageBox.Cancel:
                     return
 
-        tolerance = QSettings().value('Asistente-LADM-COL/quality/tolerance', 0, int)
+        tolerance = self.app.settings.tolerance
         if tolerance:
             # We need to adjust input layers to take tolerance into account
             # Use the same configuration we use in quality rule 3004 (Plots should be covereed by boundaries).
