@@ -120,7 +120,7 @@ def restore_schema(schema):
     else:
         print("Please add the test script")
 
-    process = os.popen("{} {} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema], schema))
+    process = os.popen("{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema]))
     output = process.readlines()
     process.close()
     print("Done restoring ladm_col database.")
