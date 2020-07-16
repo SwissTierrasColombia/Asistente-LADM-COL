@@ -414,7 +414,7 @@ class LogicQualityRules:
         if feature_count:
             self.app.gui.add_error_layer(db, error_layer)
             return (QCoreApplication.translate("LogicQualityRules",
-                                               "A memory layer with {error_count} errors has been added to the map after checking the '{rule_name}' logic consistency rule.").format(error_count=feature_count, rule_name=rule_name),
+                                               "A memory layer with {} errors has been added to the map after checking the '{}' logic consistency rule.").format(feature_count, rule_name),
                     Qgis.Critical)
         else:
             return (QCoreApplication.translate("LogicQualityRules",
