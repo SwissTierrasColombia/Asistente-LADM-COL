@@ -125,6 +125,7 @@ def restore_schema(schema):
     command = "{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema])
     process = subprocess.Popen([command], shell=True)
     process.wait()
+    print("Done restoring {} database.".format(schema))
 
 def drop_schema(schema):
     print("\nDropping schema {}...".format(schema))
@@ -306,17 +307,15 @@ def reset_db_mssql(schema):
 
 
 def restore_schema_mssql(schema):
-    sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null"
+    sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null 2>&1"
     dir_file = get_test_path("sql")
     sql_file = dir_file + "/{}_mssql.sql".format(schema)
 
-    print(sql_cmd.format(schema, sql_file))
-    process = os.popen(sql_cmd.format(schema, sql_file))
-    output = process.readlines()
-    process.close()
+    command = sql_cmd.format(schema, sql_file)
+    print(command)
+    process = subprocess.Popen([command], shell=True)
+    process.wait()
     print("Done restoring {} database.".format(schema))
-    if len(output) > 0:
-        print("Warning:", output)
 
 
 def get_mssql_conn(schema):

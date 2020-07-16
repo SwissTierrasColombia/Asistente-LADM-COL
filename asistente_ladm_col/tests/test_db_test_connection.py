@@ -181,7 +181,7 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
         db_conn.conn.close()
 
-    def __test_mssql_test_connection_interlis_ladm_col_models(self):
+    def test_mssql_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for SQL Server (Interlis, no LADM-COL models)...")
         schema = 'test_ladm_all_models'
         reset_db_mssql(schema)

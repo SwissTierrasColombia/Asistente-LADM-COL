@@ -302,7 +302,7 @@ class TestQgisModelBaker(unittest.TestCase):
         available_layers = generator.layers()
         self.assertEqual(len(available_layers), 184)
 
-    def __test_import_schema_in_mssql(self):
+    def test_import_schema_in_mssql(self):
         schema = 'test_import_schema'
         reset_db_mssql(schema)
 
@@ -323,7 +323,7 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.db_odbc_driver = 'ODBC Driver 17 for SQL Server'
 
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = 3116
+        configuration.epsg = 9377
         configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
         configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
@@ -332,9 +332,7 @@ class TestQgisModelBaker(unittest.TestCase):
                                             self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
-                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
-                                            self.ladmcol_models.model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
-                                            self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()])
+                                            self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()])
 
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2mssql
@@ -349,9 +347,9 @@ class TestQgisModelBaker(unittest.TestCase):
                               importer.configuration.dbschema)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 207)
+        self.assertEqual(len(available_layers), 156)
 
-    def __test_import_data_in_mssql(self):
+    def test_import_data_in_mssql(self):
         print("\nINFO: Validate Import Data in MS SQL Server...")
 
         schema = 'test_ladm_col'
@@ -368,8 +366,7 @@ class TestQgisModelBaker(unittest.TestCase):
                       self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                       self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
                       self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
-                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
-                      self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()]
+                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()]
 
         configuration = ImportDataConfiguration()
         configuration.base_configuration = base_config
@@ -402,7 +399,7 @@ class TestQgisModelBaker(unittest.TestCase):
                               importer.configuration.dbschema)
 
         available_layers = generator.layers()
-        self.assertEqual(len(available_layers), 189)
+        self.assertEqual(len(available_layers), 156)
 
         res, code, msg = db_conn.test_connection()
         self.assertTrue(res, msg)
@@ -411,7 +408,7 @@ class TestQgisModelBaker(unittest.TestCase):
         self.assertEqual(test_layer.featureCount(), 390)
         db_conn.conn.close()
 
-    def __test_export_data_in_mssql(self):
+    def test_export_data_in_mssql(self):
         print("\nINFO: Validate Export Data in MS SQL Server...")
 
         schema = 'test_export_data'
@@ -428,8 +425,7 @@ class TestQgisModelBaker(unittest.TestCase):
                       self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                       self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
                       self.ladmcol_models.model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
-                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name(),
-                      self.ladmcol_models.model(LADMNames.VALUATION_MODEL_KEY).full_name()]
+                      self.ladmcol_models.model(LADMNames.SURVEY_MODEL_KEY).full_name()]
 
         configuration = ExportConfiguration()
         configuration.base_configuration = base_config
