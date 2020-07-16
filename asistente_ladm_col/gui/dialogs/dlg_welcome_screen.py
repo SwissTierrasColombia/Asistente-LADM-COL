@@ -17,6 +17,9 @@
 """
 from functools import partial
 
+from PyQt5.QtCore import QCoreApplication
+
+from asistente_ladm_col.lib.logger import Logger
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QRadioButton)
@@ -34,6 +37,7 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.logger = Logger()
         self.help_strings = HelpStrings()
 
         #self.txt_help_page.setHtml(self.help_strings.DLG_WELCOME_SCREEN)
@@ -67,6 +71,9 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
             self.roles.set_active_default_role(emit_signal=False)  # Welcome dialog should not emit role_changed signal
         else:
             self.set_checked_role_active()
+
+        self.logger.info_msg(__name__, QCoreApplication.translate("WelcomeScreenDialog",
+                                                                  "The role '{}' is now active!").format(self.roles.get_active_role_name()))
 
     def show_description(self, description, checked):
         if checked:

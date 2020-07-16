@@ -1029,7 +1029,7 @@
     <message>
         <location filename="../config/role_config.py" line="238"/>
         <source>The &lt;b&gt;Supplies Provider&lt;/b&gt; role generates a XTF file with supplies data for the operators.</source>
-        <translation type="unfinished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de insumos para los operadores.</translation>
+        <translation>El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de insumos para los operadores.</translation>
     </message>
     <message>
         <location filename="../config/role_config.py" line="261"/>
@@ -11021,6 +11021,14 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../utils/utils.py" line="230"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
+    </message>
+</context>
+<context>
+    <name>WelcomeScreenDialog</name>
+    <message>
+        <location filename="../gui/dialogs/dlg_welcome_screen.py" line="75"/>
+        <source>The role &apos;{}&apos; is now active!</source>
+        <translation>¡El rol &apos;{}&apos; ahora está activo!</translation>
     </message>
 </context>
 <context>

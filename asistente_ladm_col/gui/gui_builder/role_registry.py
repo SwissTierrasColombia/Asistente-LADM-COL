@@ -22,6 +22,7 @@ from qgis.PyQt.QtCore import (QSettings,
                               QObject,
                               pyqtSignal)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.utils.singleton import SingletonQObject
 from asistente_ladm_col.lib.logger import Logger
@@ -49,6 +50,7 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
+        self.app = AppInterface()
         self._registered_roles = dict()
         self._default_role = BASIC_ROLE
 
@@ -74,7 +76,10 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         return valid
 
     def get_active_role(self):
-        return QSettings().value("Asistente-LADM-COL/roles/current_role_key", self._default_role)
+        return self.app.settings.active_role or self._default_role
+
+    def get_active_role_name(self):
+        return self.get_role_name(self.get_active_role())
 
     def active_role_already_set(self):
         """
@@ -82,7 +87,7 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
 
         :return: True if the current_role_key variable is stored in QSettings. False otherwise.
         """
-        return QSettings().value("Asistente-LADM-COL/roles/current_role_key", False) is not False
+        return self.app.settings.active_role is not None
 
     def set_active_role(self, role_key, emit_signal=True):
         """
@@ -101,7 +106,7 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             self.logger.warning(__name__, "Role '{}' was not found, the default role is now active.".format(role_key))
             role_key = self._default_role
 
-        QSettings().setValue("Asistente-LADM-COL/roles/current_role_key", role_key)
+        self.app.settings.active_role = role_key
         self.logger.info(__name__, "Role '{}' is now active!".format(role_key))
 
         if emit_signal:

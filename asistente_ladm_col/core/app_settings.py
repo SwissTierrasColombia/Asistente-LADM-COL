@@ -18,17 +18,27 @@
 """
 from qgis.PyQt.QtCore import QSettings
 
-from asistente_ladm_col.config.general_config import TOLERANCE_MAX_VALUE
+from asistente_ladm_col.config.general_config import (TOLERANCE_MAX_VALUE,
+                                                      PLUGIN_VERSION)
 
 
 class AppSettings:
     """
     Centralize application setting handlers and keys
     """
-    TOLERANCE_KEY = 'Asistente-LADM-COL/quality/tolerance'
+    ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
+    TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
 
     def __init__(self):
         self.settings = QSettings()
+
+    @property
+    def active_role(self):
+        return self.settings.value(self.ACTIVE_ROLE_KEY, None)
+
+    @active_role.setter
+    def active_role(self, value):
+        self.settings.setValue(self.ACTIVE_ROLE_KEY, value)
 
     @property
     def tolerance(self):
