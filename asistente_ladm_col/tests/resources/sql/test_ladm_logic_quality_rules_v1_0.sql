@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_logic_quality_rules CASCADE;
 CREATE SCHEMA test_logic_quality_rules;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 ALTER SCHEMA test_logic_quality_rules OWNER TO postgres;

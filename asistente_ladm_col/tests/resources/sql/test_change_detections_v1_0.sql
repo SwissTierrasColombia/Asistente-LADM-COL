@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_change_detections CASCADE;
 CREATE SCHEMA test_change_detections;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ALTER SCHEMA test_change_detections OWNER TO postgres;
 

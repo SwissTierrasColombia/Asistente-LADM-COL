@@ -61,11 +61,7 @@ class TesQualityValidations(unittest.TestCase):
         cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
-        test_connection_dbs = ['test_ladm_validations_topology_tables', 'test_logic_quality_rules']
-
-        print("INFO: Restoring databases to be used")
-        for test_connection_db in test_connection_dbs:
-            restore_schema(test_connection_db)
+        restore_schema('test_ladm_validations_topology_tables')
 
     def test_split_by_selected_boundary(self):
         print('\nINFO: Validation of the definition of selected boundary ...')
@@ -1390,6 +1386,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(records), 0)
 
     def test_logic_quality_rules_pg(self):
+        restore_schema('test_logic_quality_rules')
         db_pg = get_pg_conn('test_logic_quality_rules')
         names = db_pg.names
         result = db_pg.test_connection()

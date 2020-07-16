@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_distinct_geoms CASCADE;
 CREATE SCHEMA test_distinct_geoms;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ALTER SCHEMA test_distinct_geoms OWNER TO postgres;
 

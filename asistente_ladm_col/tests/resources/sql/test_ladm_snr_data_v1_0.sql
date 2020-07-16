@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_ladm_snr_data CASCADE;
 CREATE SCHEMA test_ladm_snr_data;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 ALTER SCHEMA test_ladm_snr_data OWNER TO postgres;

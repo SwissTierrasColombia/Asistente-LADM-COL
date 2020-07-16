@@ -25,7 +25,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_ladm_cadastral_cartography CASCADE;
 CREATE SCHEMA test_ladm_cadastral_cartography;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 ALTER SCHEMA test_ladm_cadastral_cartography OWNER TO postgres;
