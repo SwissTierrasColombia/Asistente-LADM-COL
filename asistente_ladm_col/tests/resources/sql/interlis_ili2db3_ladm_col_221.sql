@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS interlis_ili2db3_ladm CASCADE;
 CREATE SCHEMA interlis_ili2db3_ladm;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 ALTER SCHEMA interlis_ili2db3_ladm OWNER TO postgres;

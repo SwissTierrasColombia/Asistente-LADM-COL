@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_ladm_validations_topology_tables CASCADE;
 CREATE SCHEMA test_ladm_validations_topology_tables;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 ALTER SCHEMA test_ladm_validations_topology_tables OWNER TO postgres;

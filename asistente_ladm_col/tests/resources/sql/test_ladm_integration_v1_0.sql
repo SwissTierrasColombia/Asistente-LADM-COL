@@ -26,7 +26,6 @@ SET row_security = off;
 DROP SCHEMA IF EXISTS test_ladm_integration CASCADE;
 CREATE SCHEMA test_ladm_integration;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ALTER SCHEMA test_ladm_integration OWNER TO postgres;
 

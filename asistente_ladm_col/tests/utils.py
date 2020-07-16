@@ -20,6 +20,7 @@
 import os
 from shutil import copyfile
 from sys import platform
+import subprocess
 
 import psycopg2
 import pyodbc
@@ -121,12 +122,9 @@ def restore_schema(schema):
     else:
         print("Please add the test script")
 
-    process = os.popen("{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema]))
-    output = process.readlines()
-    process.close()
-    print("Done restoring ladm_col database.")
-    if len(output) > 0:
-        print("Warning:", output)
+    command = "{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema])
+    process = subprocess.Popen([command], shell=True)
+    process.wait()
 
 def drop_schema(schema):
     print("\nDropping schema {}...".format(schema))
