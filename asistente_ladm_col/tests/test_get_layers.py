@@ -58,13 +58,13 @@ class TestGetLayers(unittest.TestCase):
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_get_layers(self.db_gpkg)
 
-    def __test_get_layer_in_mssql(self):
+    def test_get_layer_in_mssql(self):
         print("\nINFO: Validating get_layer() method in SQL Server...")
         result = self.db_mssql.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')
         self.check_get_layer(self.db_mssql)
 
-    def __test_get_layers_in_mssql(self):
+    def test_get_layers_in_mssql(self):
         print("\nINFO: Validating get_layers() method in SQL Server...")
         result = self.db_mssql.test_connection()
         self.assertTrue(result[0], 'The test connection is not working')

@@ -1,6 +1,6 @@
 ARG QGIS_TEST_VERSION=latest
 FROM  qgis/qgis:${QGIS_TEST_VERSION}
-#LABEL maintainer="matthias@opengis.ch"
+LABEL maintainer="matthias@opengis.ch"
 
 ENV PYTHONPATH="/usr/share/qgis/python"
 
