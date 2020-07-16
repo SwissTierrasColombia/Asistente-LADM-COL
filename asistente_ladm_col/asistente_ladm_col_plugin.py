@@ -669,8 +669,17 @@ class AsistenteLADMCOLPlugin(QObject):
             basepath = os.path.dirname(os.path.abspath(__file__))
             plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
+            filenames = list()
+            for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):  # Non-recursive
+                filenames.append(filename)
+
+            # We store models that depend on QGIS versions in folders like "314" (for QGIS 3.14.x)
+            qgis_major_version = str(Qgis.QGIS_VERSION_INT)[:3]
+            for filename in glob.glob(os.path.join(plugin_models_dir, qgis_major_version, '*.model3')):  # Non-recursive
+                filenames.append(filename)
+
             count = 0
-            for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
+            for filename in filenames:
                 alg = QgsProcessingModelAlgorithm()
                 if not alg.fromFile(filename):
                     self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
