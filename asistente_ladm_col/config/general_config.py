@@ -2,6 +2,7 @@ import os.path
 import platform
 
 from qgis.PyQt.QtGui import QColor
+from qgis.core import Qgis
 
 from asistente_ladm_col.config.translator import PLUGIN_DIR
 from asistente_ladm_col.config.enums import EnumLogMode
@@ -24,14 +25,16 @@ DEFAULT_SRS_AUTH = "EPSG"
 DEFAULT_SRS_CODE = "9377"
 DEFAULT_SRS_AUTHID = "EPSG:9377"
 
+PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
+PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+# PLUGIN_DIR (set in translator.py)
+
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
 HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM-COL"
 FIELD_MAPPING_PATH = os.path.join(DEPENDENCIES_BASE_PATH, 'field_mappings')
+FIELD_MAPPING_PARAMETER = 'mapping' if Qgis.QGIS_VERSION_INT < 31400 else 'fieldsmapper'
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
-PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
-PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
-# PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')

@@ -669,15 +669,27 @@ class AsistenteLADMCOLPlugin(QObject):
             basepath = os.path.dirname(os.path.abspath(__file__))
             plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
 
+            # First get model file names from the model root folder
             filenames = list()
             for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):  # Non-recursive
                 filenames.append(filename)
 
+            # Now, go for subfolders.
             # We store models that depend on QGIS versions in folders like "314" (for QGIS 3.14.x)
+            # This was initially needed for the FieldMapper input, which was migrated to C++ in QGIS 3.14
             qgis_major_version = str(Qgis.QGIS_VERSION_INT)[:3]
-            for filename in glob.glob(os.path.join(plugin_models_dir, qgis_major_version, '*.model3')):  # Non-recursive
+            qgis_major_version_path = os.path.join(plugin_models_dir, qgis_major_version)
+
+            if not os.path.isdir(qgis_major_version_path):
+                # No folder for this version (e.g., unit tests on QGIS-dev), so let's find the most recent version
+                subfolders = [sf.name for sf in os.scandir(plugin_models_dir) if sf.is_dir()]
+                if subfolders:
+                    qgis_major_version_path = os.path.join(plugin_models_dir, max(subfolders))
+
+            for filename in glob.glob(os.path.join(qgis_major_version_path, '*.model3')):
                 filenames.append(filename)
 
+            # Finally, do load the models!
             count = 0
             for filename in filenames:
                 alg = QgsProcessingModelAlgorithm()

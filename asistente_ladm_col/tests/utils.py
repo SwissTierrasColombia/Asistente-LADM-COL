@@ -31,6 +31,7 @@ from qgis.analysis import QgsNativeAlgorithms
 from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -213,7 +214,7 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
         mapping = refactor_fields.get_refactor_fields_mapping(names, ladm_col_layer_name)
         params = {
             'INPUT': input_layer,
-            'mapping': mapping,
+            FIELD_MAPPING_PARAMETER: mapping,
             'output': out_layer
         }
         res = processing.run("model:ETL-model", params)
