@@ -65,7 +65,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import 
                                                                                  get_insert_ctm12_query,
                                                                                  get_insert_cm12_bounds_query,
                                                                                  get_ctm12_bounds_exist_query)
-from asistente_ladm_col.utils.crs_utils import get_ctm12_crs
+from asistente_ladm_col.utils.crs_utils import get_ctm12_crs, get_crs_authid
 from asistente_ladm_col.utils.decorators import _activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
@@ -81,7 +81,8 @@ from asistente_ladm_col.config.general_config import (FIELD_MAPPING_PATH,
                                                       SOURCE_SERVICE_EXPECTED_ID,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
                                                       DEFAULT_SRS_AUTHID,
-                                                      FIELD_MAPPING_PARAMETER)
+                                                      FIELD_MAPPING_PARAMETER, ETL_MODEL_NAME,
+                                                      ETL_MODEL_WITH_REPROJECTION_NAME)
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -963,20 +964,25 @@ class AppCoreInterface(QObject):
 
         log_path =  os.path.join(processing.tools.system.userFolder(), 'processing.log')
 
-        with open(log_path) as log_file: # TODO, review this!!!
-            contents = log_file.read().split("ALGORITHM")[-1]
-            contents = contents.split('processing.run("model:ETL-model",')[-1]
-            params = ast.literal_eval(contents.strip().strip(')'))
+        with open(log_path) as log_file:
+            contents = log_file.read().split("ALGORITHM")[-1]  # the most recent alg ran is in the last position
 
-        name_field_mapping = "{}_{}.{}".format(ladm_col_layer_name,
-                                               datetime.datetime.now().strftime("%Y%m%d_%H_%M_%S"),
-                                               "txt")
+            model_name = ETL_MODEL_NAME
+            if ETL_MODEL_WITH_REPROJECTION_NAME in contents:
+                model_name = ETL_MODEL_WITH_REPROJECTION_NAME
 
-        txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, name_field_mapping)
-        self.logger.info(__name__, "Field mapping saved: {}".format(name_field_mapping))
+            search_model_name = 'processing.run("{}",'.format(model_name)
+            contents = contents.split(search_model_name)[-1]
+            params = ast.literal_eval(contents.strip().strip(')'))  # Convert the string into a Python dict
 
+        field_mapping_file_name = "{}_{}.{}".format(ladm_col_layer_name,
+                                                    datetime.datetime.now().strftime("%Y%m%d_%H_%M_%S"),
+                                                    "txt")
+        txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, field_mapping_file_name)
         with open(txt_field_mapping_path, "w+") as file:
             file.write(str(params[FIELD_MAPPING_PARAMETER]))
+
+        self.logger.info(__name__, "Field mapping saved: {}".format(field_mapping_file_name))
 
     def get_field_mappings_file_names(self, layer_name):
         files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
@@ -998,7 +1004,7 @@ class AppCoreInterface(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.', reproject=True):
+    def csv_to_layer(self, csv_path, delimiter, longitude, latitude, crs, elevation=None, decimal_point='.', reproject=False):
         if not csv_path or not os.path.exists(csv_path):
             self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "No CSV file given or file doesn't exist."))
@@ -1081,7 +1087,7 @@ class AppCoreInterface(QObject):
                 "{} points were added succesfully to '{}'.").format(new_features, target_layer_name))
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
-                "No point was added to '{}'.").format(target_layer_name))
+                "No point was added to '{}'. Most likely, the CSV does not have the required structure.").format(target_layer_name))
             return False
 
         return True
@@ -1100,14 +1106,19 @@ class AppCoreInterface(QObject):
                 ladm_col_layer_name))
             return False
 
-        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+        model_name = ETL_MODEL_NAME
+        if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output_layer.isSpatial():
+            model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
+            self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
+
+        model = QgsApplication.processingRegistry().algorithmById(model_name)
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(output_layer)
             field_mapping = self.refactor_fields.get_refactor_fields_mapping_resolve_domains(db.names,
                                                                                              ladm_col_layer_name)
             self.activate_layer_requested.emit(input_layer)
 
-            res = processing.run("model:ETL-model",
+            res = processing.run(model_name,
                                  {'INPUT': input_layer, FIELD_MAPPING_PARAMETER: field_mapping, 'output': output_layer})
 
             self.check_if_and_enable_automatic_fields(output_layer, automatic_fields_definition)
@@ -1115,11 +1126,11 @@ class AppCoreInterface(QObject):
 
             if not finish_feature_count:
                 self.logger.warning(__name__, QCoreApplication.translate("AppCoreInterface",
-                                                                        "The output of the ETL-model has no features!"))
+                                                                         "The output of the ETL-model has no features! Most likely, the CSV does not have the required structure."))
             return finish_feature_count > start_feature_count
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
-                                                                      "Model ETL-model was not found and cannot be opened!"))
+                                                                      "Model '{}' was not found and cannot be opened!").format(model_name))
             return False
 
     @_activate_processing_plugin
@@ -1134,7 +1145,12 @@ class AppCoreInterface(QObject):
                 ladm_col_layer_name))
             return False
 
-        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+        model_name = ETL_MODEL_NAME
+        if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output.isSpatial():
+            model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
+            self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
+
+        model = QgsApplication.processingRegistry().algorithmById(model_name)
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(output)
 
@@ -1159,7 +1175,7 @@ class AppCoreInterface(QObject):
             }
 
             start_feature_count = output.featureCount()
-            dlg = processing.createAlgorithmDialog("model:ETL-model", params)
+            dlg = processing.createAlgorithmDialog(model_name, params)
             dlg.setModal(True)
             res = dlg.exec_()
             finish_feature_count = output.featureCount()
@@ -1169,7 +1185,7 @@ class AppCoreInterface(QObject):
             return finish_feature_count > start_feature_count
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
-                                                                      "Model ETL-model was not found and cannot be opened!"))
+                                                                      "Model '{}' was not found and cannot be opened!").format(model_name))
             return False
 
     def active_snapping_all_layers(self, tolerance=12):

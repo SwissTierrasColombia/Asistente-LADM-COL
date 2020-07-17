@@ -76,6 +76,8 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
         self.dict_pages_ids = {self.pages[idx] : pid for idx, pid in enumerate(self.pageIds())}
 
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
+
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
@@ -84,6 +86,7 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
         self.crsSelector.crsChanged.connect(self.crs_changed)
         self.crs = ""  # SRS auth id
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
+        self.mMapLayerComboBox.layerChanged.connect(self.import_layer_changed)
 
         self.known_delimiters = [
             {'name': ';', 'value': ';'},
@@ -107,8 +110,6 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
         self.point_option_changed() # Initialize it
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.currentIdChanged.connect(self.current_page_changed)
-
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
 
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_SURVEY_PAGE_2_OPTION_CSV)
 
@@ -203,6 +204,7 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            self.import_layer_changed(self.mMapLayerComboBox.currentLayer())
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
@@ -213,6 +215,7 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
+            self.lbl_refactor_source.setStyleSheet('')
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
@@ -344,6 +347,13 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
 
     def crs_changed(self):
         self.crs = get_crs_authid(self.crsSelector.crs())
+        if self.crs != DEFAULT_SRS_AUTHID:
+            self.lbl_crs.setStyleSheet('color: orange')
+            self.lbl_crs.setToolTip(QCoreApplication.translate("WizardTranslations",
+                "Your CSV data will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(DEFAULT_SRS_AUTHID))
+        else:
+            self.lbl_crs.setStyleSheet('')
+            self.lbl_crs.setToolTip(QCoreApplication.translate("WizardTranslations", "Coordinate Reference System"))
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -469,6 +479,18 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
                 self.logger.warning(__name__, 'There was an error copying the CSV file {}!'.format(new_filename))
                 msg = QCoreApplication.translate("WizardTranslations", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
+
+    def import_layer_changed(self, layer):
+        if layer:
+            crs = get_crs_authid(layer.crs())
+            if crs != DEFAULT_SRS_AUTHID:
+                self.lbl_refactor_source.setStyleSheet('color: orange')
+                self.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
+                                                                   "This layer will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(
+                    DEFAULT_SRS_AUTHID))
+            else:
+                self.lbl_refactor_source.setStyleSheet('')
+                self.lbl_refactor_source.setToolTip('')
 
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one

@@ -40,7 +40,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
-                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL, DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.translation_strings import RIGHT_OF_WAY_LINE_LAYER
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
@@ -56,8 +56,10 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
     #############################################################################
     # Override methods
     #############################################################################
-
     def init_gui(self):
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
+        self.mMapLayerComboBox.layerChanged.connect(self.import_layer_changed)
+
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.rad_digitizing_line.toggled.connect(self.adjust_page_1_controls)
@@ -67,7 +69,6 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.width_line_edit.setValue(1.0)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -81,6 +82,7 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            self.import_layer_changed(self.mMapLayerComboBox.currentLayer())
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
         elif self.rad_create_manually.isChecked():
@@ -92,6 +94,7 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+            self.lbl_refactor_source.setStyleSheet('')
         elif self.rad_digitizing_line.isChecked():
             self.width_line_edit.setEnabled(True)
             self.lbl_width.setEnabled(True)
@@ -101,6 +104,7 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
+            self.lbl_refactor_source.setStyleSheet('')
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -112,9 +116,9 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               field_mapping=field_mapping)
+                                                             self.mMapLayerComboBox.currentLayer(),
+                                                             self.EDITING_LAYER_NAME,
+                                                             field_mapping=field_mapping)
                 if res_etl_model: # Features were added?
                     self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
 
@@ -258,6 +262,18 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
         feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME], buffer_geometry)
         return feature
 
+    def import_layer_changed(self, layer):
+        if layer:
+            crs = get_crs_authid(layer.crs())
+            if crs != DEFAULT_SRS_AUTHID:
+                self.lbl_refactor_source.setStyleSheet('color: orange')
+                self.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
+                                                                   "This layer will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(
+                    DEFAULT_SRS_AUTHID))
+            else:
+                self.lbl_refactor_source.setStyleSheet('')
+                self.lbl_refactor_source.setToolTip('')
+
     def save_settings(self):
         settings = QSettings()
 
@@ -281,7 +297,6 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
             self.rad_digitizing_line.setChecked(True)
 
     def save_created_geometry(self):
-
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
             layer = self._layers[self.EDITING_LAYER_NAME]

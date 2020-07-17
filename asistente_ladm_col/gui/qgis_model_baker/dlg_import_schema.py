@@ -54,7 +54,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code
+from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code, get_crs_authid
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -362,7 +362,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
-        self.srs_auth, self.srs_code = self.crsSelector.crs().authid().split(":")
+        self.srs_auth, self.srs_code = get_crs_authid(self.crsSelector.crs()).split(":")
         if self.srs_code != DEFAULT_SRS_CODE or self.srs_auth != DEFAULT_SRS_AUTH:
             self.crs_label.setStyleSheet('color: orange')
             self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "The {} (Colombian National Origin) is recommended,<br>since official models were created for that projection.").format(DEFAULT_SRS_AUTHID))

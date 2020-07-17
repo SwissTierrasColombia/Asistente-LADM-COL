@@ -15,6 +15,8 @@ def get_ctm12_crs():
 
 def get_crs_authid(crs):
     """
+    Created when we had no official EPSG code for MAGNA-SIRGAS / Origen Nacional (EPSG:9377)
+
     :param crs: QgsCoordinateReferenceSystem object
     :return: str representing the authid
     """
