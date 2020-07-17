@@ -80,7 +80,8 @@ from asistente_ladm_col.config.general_config import (FIELD_MAPPING_PATH,
                                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       SOURCE_SERVICE_EXPECTED_ID,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
-                                                      DEFAULT_SRS_AUTHID)
+                                                      DEFAULT_SRS_AUTHID,
+                                                      FIELD_MAPPING_PARAMETER)
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.config.layer_config import LayerConfig
@@ -975,7 +976,7 @@ class AppCoreInterface(QObject):
         self.logger.info(__name__, "Field mapping saved: {}".format(name_field_mapping))
 
         with open(txt_field_mapping_path, "w+") as file:
-            file.write(str(params['mapping']))
+            file.write(str(params[FIELD_MAPPING_PARAMETER]))
 
     def get_field_mappings_file_names(self, layer_name):
         files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
@@ -1107,7 +1108,7 @@ class AppCoreInterface(QObject):
             self.activate_layer_requested.emit(input_layer)
 
             res = processing.run("model:ETL-model",
-                                 {'INPUT': input_layer, 'mapping': field_mapping, 'output': output_layer})
+                                 {'INPUT': input_layer, FIELD_MAPPING_PARAMETER: field_mapping, 'output': output_layer})
 
             self.check_if_and_enable_automatic_fields(output_layer, automatic_fields_definition)
             finish_feature_count = output_layer.featureCount()
@@ -1153,7 +1154,7 @@ class AppCoreInterface(QObject):
             self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),
-                'mapping': mapping,
+                FIELD_MAPPING_PARAMETER: mapping,
                 'output': output.name()
             }
 
