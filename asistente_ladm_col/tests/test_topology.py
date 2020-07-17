@@ -17,22 +17,7 @@ import_qgis_model_baker()
 
 class TestTopology(unittest.TestCase):
 
-    def _test_pair_boundary_plot(self):
-        # TODO: Fix this test!
-        # Message:
-        # AssertionError: Lists differ: [(1, 1), (1, 4), (1, 3), (3, 3)] != [(1, 3), (3, 3)]
-        #
-        #     First differing element 0:
-        #     (1, 1)
-        #     (1, 3)
-        #
-        #     First list contains 2 additional elements.
-        #     First extra element 2:
-        #     (1, 3)
-        #
-        #     - [(1, 1), (1, 4), (1, 3), (3, 3)]
-        #     + [(1, 3), (3, 3)]
-
+    def test_pair_boundary_plot(self):
         print('\nValidating boundaries plots')
         # extracted with: iface.activeLayer().dataProvider().dataSourceUri() in qgis console
         # and type is: layer.providerType()
