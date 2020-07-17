@@ -362,17 +362,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
 
     def crs_changed(self):
-        srs_auth, srs_code = self.crsSelector.crs().authid().split(":")
-        if srs_auth == 'USER':
+        self.srs_auth, self.srs_code = self.crsSelector.crs().authid().split(":")
+        if self.srs_code != DEFAULT_SRS_CODE or self.srs_auth != DEFAULT_SRS_AUTH:
             self.crs_label.setStyleSheet('color: orange')
-            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "USER crs are only valid for one machine. We'll use the default {}").format(DEFAULT_SRS_AUTHID))
-            self.srs_auth = DEFAULT_SRS_AUTH
-            self.srs_code = int(DEFAULT_SRS_CODE)
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "The {} (Colombian National Origin) is recommended,<br>since official models were created for that projection.").format(DEFAULT_SRS_AUTHID))
         else:
             self.crs_label.setStyleSheet('')
             self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Coordinate Reference System"))
-            self.srs_auth = srs_auth
-            self.srs_code = srs_code
 
     def update_configuration(self):
         db_factory = self._dbs_supported.get_db_factory(self.db.engine)
