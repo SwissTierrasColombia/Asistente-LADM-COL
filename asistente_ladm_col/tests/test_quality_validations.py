@@ -642,9 +642,7 @@ class TesQualityValidations(unittest.TestCase):
             self.assertEqual(len(unique_points), 1, 'The intersection failed, points are not equal')
             self.assertEqual(list(unique_points)[0], list(expected_overlaps.values())[0])
 
-    def _test_get_overlapping_lines(self):
-        # TODO: Fix the OVERLAPS_IN_BOUNDARIES test!
-
+    def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
