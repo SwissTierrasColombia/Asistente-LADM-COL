@@ -48,6 +48,9 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
         super(MultiPageSpatialWizardFactory, self).__init__(iface, db, wizard_settings)
 
     def init_gui(self):
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
+        self.mMapLayerComboBox.layerChanged.connect(self.import_layer_changed)
+
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
@@ -56,7 +59,6 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -70,6 +72,7 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
+            self.import_layer_changed(self.mMapLayerComboBox.currentLayer())
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
@@ -81,6 +84,7 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
+            self.lbl_refactor_source.setStyleSheet('')
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 

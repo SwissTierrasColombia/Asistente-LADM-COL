@@ -24,6 +24,8 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.general_config import DEFAULT_SRS_AUTHID
+from asistente_ladm_col.utils.crs_utils import get_crs_authid
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import (QgsProject,
@@ -152,3 +154,15 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
     def exec_form_advanced(self, layer):
         raise NotImplementedError
+
+    def import_layer_changed(self, layer):
+        if layer:
+            crs = get_crs_authid(layer.crs())
+            if crs != DEFAULT_SRS_AUTHID:
+                self.lbl_refactor_source.setStyleSheet('color: orange')
+                self.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
+                                                                               "This layer will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(
+                    DEFAULT_SRS_AUTHID))
+            else:
+                self.lbl_refactor_source.setStyleSheet('')
+                self.lbl_refactor_source.setToolTip('')
