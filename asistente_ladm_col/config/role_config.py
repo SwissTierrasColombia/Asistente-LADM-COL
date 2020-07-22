@@ -89,6 +89,31 @@ supplies_provider_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ]
 }]
 
+
+field_coordinator_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
+field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
+    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"),
+    OBJECT_NAME: 'ladm_col_toolbar',
+    ACTIONS: [
+        ACTION_LOAD_LAYERS,
+        ACTION_INTEGRATE_SUPPLIES,
+        SEPARATOR,
+        ACTION_CHECK_QUALITY_RULES,
+        ACTION_PARCEL_QUERY,
+        SEPARATOR,
+        {  # List of toolbars
+            WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
+            OBJECT_NAME: 'ladm_col_reports_toolbar',
+            ICON: REPORTS_ICON,
+            ACTIONS: [
+                ACTION_REPORT_ANNEX_17,
+                ACTION_REPORT_ANT
+            ]
+        }
+    ]
+}]
+
+
 operator_role_gui = {}  # Let the gui builder use the template GUI config.
 
 manager_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
@@ -192,6 +217,12 @@ advanced_role_gui[TOOLBAR] = [{  # List of toolbars
 }]
 
 
+field_coordinator_role_models = COMMON_ROLE_MODELS.copy()
+field_coordinator_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
+field_coordinator_role_models[ROLE_CHECKED_MODELS] = COMMON_CHECKED_MODELS +  [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
+
+
+
 ROLE_CONFIG = {
     BASIC_ROLE: {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
@@ -255,6 +286,20 @@ ROLE_CONFIG = {
         ],
         ROLE_QUALITY_RULES: list(),
         ROLE_GUI_CONFIG: supplies_provider_role_gui
+    },
+    FIELD_COORDINATOR_ROLE: {
+        ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field coordinator"),
+        ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                     "The <b>field coordinator</b> assigns parcel sets to surveyors and synchronizes back the data they collected in the field."),
+        ROLE_MODELS: field_coordinator_role_models,
+        ROLE_ACTIONS: [
+            ACTION_REPORT_ANNEX_17,
+            ACTION_REPORT_ANT,
+            ACTION_INTEGRATE_SUPPLIES,
+            ACTION_PARCEL_QUERY,
+            ACTION_CHECK_QUALITY_RULES],
+        ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+        ROLE_GUI_CONFIG: field_coordinator_role_gui
     },
     OPERATOR_ROLE: {
         ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operator"),

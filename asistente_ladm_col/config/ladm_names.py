@@ -65,6 +65,7 @@ class LADMNames(metaclass=Singleton):
     CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
     VALUATION_MODEL_KEY = "Sumodelo_Avaluos"
     ISO19107_MODEL_KEY = "ISO19107_PLANAS"
+    FIELD_DATA_CAPTURE_MODEL_KEY = "Captura_Geo"
 
     DEFAULT_INHERITANCE = 'smart2'
     # Settings to create schema according to LADM-COL
@@ -211,6 +212,13 @@ MODEL_CONFIG = {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "ISO19107"),
         MODEL_IS_SUPPORTED: True,
         MODEL_SUPPORTED_VERSION: "3.0",
+        MODEL_HIDDEN_BY_DEFAULT: True,
+        MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "0.1",
         MODEL_HIDDEN_BY_DEFAULT: True,
         MODEL_CHECKED_BY_DEFAULT: False
     }
