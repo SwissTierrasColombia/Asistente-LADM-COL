@@ -41,6 +41,7 @@ from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import ROLE_CONFIG
+from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture import DockWidgetFieldDataCapture
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
@@ -238,6 +239,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_actions(self):
         self.create_supplies_actions()
+        self.create_field_data_capture_actions()
         self.create_survey_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
@@ -410,6 +412,24 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_SUPPLIES: self._etl_supplies_action,
                                            ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
+
+    def create_field_data_capture_actions(self):
+        self._allocate_parcels_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
+            self.main_window)
+
+        self._synchronize_field_data_action = QAction(
+            QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronize field data"),
+            self.main_window)
+
+        # Connections
+        self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
+        self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
+
+        self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
+                                           ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
 
     def create_survey_actions(self):
         self._point_surveying_and_representation_survey_action = QAction(
@@ -905,6 +925,26 @@ class AsistenteLADMCOLPlugin(QObject):
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_allocate_parcels_field_data_capture(self, *args):
+        self.show_field_data_capture_dockwidget(True)
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_synchronize_field_data(self):
+        self.show_field_data_capture_dockwidget(False)
+
+    def show_field_data_capture_dockwidget(self, allocate=True):
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_FIELD_DATA_CAPTURE])
+
+        dock_widget_field_data_capture = DockWidgetFieldDataCapture(self.iface,
+                                                                   self.get_db_connection(),
+                                                                   allocate_mode=allocate)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
+        self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

@@ -114,6 +114,9 @@ ACTION_RUN_ETL_SUPPLIES = 'action_run_etl_supplies'
 ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
+ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE = 'action_allocate_parcels_field_data_capture'
+ACTION_SYNCHRONIZE_FIELD_DATA = 'action_synchronize_field_data'
+
 ACTION_ST_LOGIN = 'action_st_login'
 ACTION_ST_LOGOUT = 'action_st_logout'
 ACTION_ST_UPLOAD_XTF = 'action_st_upload_xtf'
@@ -148,12 +151,14 @@ ACTION_CHANGE_DETECTION_SETTINGS = "action_change_detection_settings"
 
 ALL_ACTIONS = 'all_actions'
 
+DOCK_WIDGET_FIELD_DATA_CAPTURE = "dock_widget_field_data_capture"
 DOCK_WIDGET_QUERIES = "dock_widget_queries"
 DOCK_WIDGET_CHANGE_DETECTION = "dock_widget_change_detection"
 DOCK_WIDGET_TRANSITION_SYSTEM = "dock_widget_transition_system"
 
 SURVEYING_ICON = ":/Asistente-LADM-COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM-COL/resources/images/create_db.png"
+FIELD_DATA_CAPTURE_ICON = ":/Asistente-LADM-COL/resources/images/process.svg"
 DATA_CREATION_ICON = ":/Asistente-LADM-COL/resources/images/data_creation.svg"
 ST_ICON = ":/Asistente-LADM-COL/resources/images/st.svg"
 OPERATION_ICON = ":/Asistente-LADM-COL/resources/images/icon.png"

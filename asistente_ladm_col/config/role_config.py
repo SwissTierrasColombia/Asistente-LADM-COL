@@ -293,8 +293,8 @@ ROLE_CONFIG = {
                                                      "The <b>field coordinator</b> assigns parcel sets to surveyors and synchronizes back the data they collected in the field."),
         ROLE_MODELS: field_coordinator_role_models,
         ROLE_ACTIONS: [
-            ACTION_REPORT_ANNEX_17,
-            ACTION_REPORT_ANT,
+            ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+            #  ACTION_SYNCHRONIZE_FIELD_DATA,
             ACTION_INTEGRATE_SUPPLIES,
             ACTION_PARCEL_QUERY,
             ACTION_CHECK_QUALITY_RULES],
