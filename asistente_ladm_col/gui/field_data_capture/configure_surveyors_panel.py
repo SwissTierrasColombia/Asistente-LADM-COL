@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM-COL
+                              Asistente LADM_COL
                              --------------------
-        begin                : 2020-07-22
+        begin                : 2020-07-23
         git sha              : :%H$
         copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
         email                : gcarrillo@linuxmail.org
@@ -16,27 +16,30 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.gui import QgsPanelWidget
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.utils import get_ui_class
 
-WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widget.ui')
+WIDGET_UI = get_ui_class('field_data_capture/configure_surveyors_panel_widget.ui')
 
 
-class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
+class ConfigureSurveyorsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
         self.parent = parent
 
         self.setDockMode(True)
-        self.setPanelTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
-        self.parent.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
+        self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure surveyors"))
 
-        self.tbl_parcels.resizeColumnsToContents()
+        self.panelAccepted.connect(self.deselect_plots)
 
-        self.prb_to_offline.setVisible(False)
+        self.fill_table()
+        self.tbl_surveyors.resizeColumnsToContents()
 
-    def fill_data(self):
+    def deselect_plots(self):
+        pass
+
+    def fill_table(self):
         pass

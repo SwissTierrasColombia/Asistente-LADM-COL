@@ -1,0 +1,919 @@
+INTERLIS 2.3;
+
+MODEL Captura_Geo_V0_1 (es)
+AT "mailto:shade@localhost"
+VERSION "2020-07-21"  =
+  IMPORTS ISO19107_PLANAS_V3_0,LADM_COL_V3_0;
+
+  DOMAIN
+
+    D_AcuerdoTipo = (
+      /** Existe un acuerdo sobre la posición del punto
+       */
+      !!@ ili2db.dispName = "Acuerdo"
+      Acuerdo,
+      Desacuerdo
+    );
+
+    D_ClaseSueloTipo = (
+      /** Constituyen el suelo urbano, las áreas del territorio distrital o municipal destinadas a usos urbanos por el plan de ordenamiento, que cuenten con infraestructura vial y redes primarias de energía, acueducto y alcantarillado, posibilitándose su urbanización y edificación, según sea el caso. Podrán pertenecer a esta categoría aquellas zonas con procesos de urbanización incompletos, comprendidos en áreas consolidadas con edificación, que se definan como áreas de mejoramiento integral en los planes de ordenamiento territorial.
+       * 
+       * Las áreas que conforman el suelo urbano serán delimitadas por perímetros y podrán incluir los centros poblados de los corregimientos. En ningún caso el perímetro urbano podrá ser mayor que el denominado perímetro de servicios públicos o sanitario. (Artículo 31, Ley 388 de 1997)
+       */
+      !!@ ili2db.dispName = "Urbano"
+      Urbano,
+      /** Constituyen esta categoría los terrenos no aptos para el uso urbano, por razones de oportunidad, o por su destinación a usos agrícolas, ganaderos, forestales, de explotación de recursos naturales y actividades análogas. (Artículo 33, Ley 388 de 1997)
+       */
+      !!@ ili2db.dispName = "Rural"
+      Rural,
+      /** Constituido por la porción del territorio municipal destinada a la expansión urbana, que se habilitará para el uso urbano durante la vigencia del plan de ordenamiento, según lo determinen los Programas de Ejecución.
+       * 
+       * La determinación de este suelo se ajustará a las previsiones de crecimiento de la ciudad y a la posibilidad de dotación con infraestructura para el sistema vial, de transporte, de servicios públicos domiciliarios, áreas libres, y parques y equipamiento colectivo de interés público o social.
+       * 
+       * Dentro de la categoría de suelo de expansión podrán incluirse áreas de desarrollo concertado, a través de procesos que definan la conveniencia y las condiciones para su desarrollo mediante su adecuación y habilitación urbanística a cargo de sus propietarios, pero cuyo desarrollo estará condicionado a la adecuación previa de las áreas programadas. (Artículo 32, Ley 388 de 1997)
+       */
+      !!@ ili2db.dispName = "Expansión urbana"
+      Expansion_urbana
+    );
+
+    !!@ ili2db.dispName = "CondicionPredioTipo"
+    D_CondicionPredioTipo = (
+      /** Predio no sometido al régimen de propiedad horizontal.
+       */
+      !!@ ili2db.dispName = "No propiedad horizontal"
+      NPH,
+      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada
+       */
+      !!@ ili2db.dispName = "Propiedad horizontal"
+      PH,
+      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada en cuyo reglamento define para cada unidad predial un área privada de terreno.
+       */
+      !!@ ili2db.dispName = "Condominio"
+      Condominio,
+      /** Es la construcción o edificación instalada por una persona natural o jurídica sobre un predio que no le pertenece.
+       */
+      !!@ ili2db.dispName = "Mejora"
+      Mejora,
+      Parque_cementerio,
+      /** Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros
+       */
+      !!@ ili2db.dispName = "Vía"
+      Via,
+      /** Inmuebles que siendo de dominio de la Nación, o una entidad territorial o de particulares, están destinados al uso de los habitantes.
+       */
+      !!@ ili2db.dispName = "Bien de uso público"
+      Bien_uso_publico
+    );
+
+    D_ConstruccionPlantaTipo = (
+      /** Superficie horizontal de un espacio arquitectónico que divide los espacios en altura.
+       */
+      !!@ ili2db.dispName = "Piso"
+      Piso,
+      /** Piso intermedio entre los pisos principales de una casa o edificio.
+       */
+      !!@ ili2db.dispName = "Mezanine"
+      Mezanine,
+      /** Piso de un edificio situado por debajo del nivel de la calle.
+       */
+      !!@ ili2db.dispName = "Sótano"
+      Sotano,
+      /** Piso que sobresale por lo menos la mitad de su altura, del nivel de un patio de la calle.
+       */
+      !!@ ili2db.dispName = "Semisótano"
+      Semisotano,
+      /** Construcción que se encuentra por debajo del nivel de la calle y que comprende grandes espacios.
+       */
+      !!@ ili2db.dispName = "Subterráneo"
+      Subterraneo
+    );
+
+    D_ConstruccionTipo = (
+      /** Se refiere aquellas construcciones de uso residencial, comercial e industrial.
+       */
+      !!@ ili2db.dispName = "Convencional"
+      Convencional,
+      /** Se refiere aquellas construcciones consideradas anexos de construcción.
+       */
+      !!@ ili2db.dispName = "No convencional"
+      No_Convencional
+    );
+
+    D_ControlTipo = (
+      /** Puntos en el terreno levantados por topografía o geodesia que sirven de base para la orientación absoluta en la restitución fotogramétrica, y para efectuar un tratamiento geométrico o geo-referenciación de los datos en teledetección.
+       */
+      !!@ ili2db.dispName = "Control"
+      Control,
+      /** Puntos en el terreno levantados por topografía o geodesia que sirven de base para la orientación absoluta en la restitución fotogramétrica, y para efectuar un tratamiento geométrico o geo-referenciación de los datos en teledetección.
+       */
+      !!@ ili2db.dispName = "Apoyo"
+      Apoyo
+    );
+
+    D_DerechoTipo = (
+      /** El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC)
+       */
+      !!@ ili2db.dispName = "Dominio"
+      Dominio,
+      /** En el ámbito de la gestión catastral, es el polígono que representa el asentamiento de personas naturales o jurídicas dentro de un terreno baldío, el cual puede contar o no con construcciones y/o edificaciones.
+       */
+      !!@ ili2db.dispName = "Ocupación"
+      Ocupacion,
+      /** En el ámbito de la gestión catastral, es el polígono que representa el asentamiento de personas naturales o jurídicas, con ánimo de señor y dueño sobre un predio privado, el cual puede contar o no con construcciones y/o edificaciones.
+       */
+      !!@ ili2db.dispName = "Posesión"
+      Posesion
+    );
+
+    D_DominioConstruccionTipo = (
+      /** Tipo de dominio común.
+       */
+      !!@ ili2db.dispName = "Común"
+      Comun,
+      /** Tipo de dominio privado.
+       */
+      !!@ ili2db.dispName = "Privado"
+      Privado
+    );
+
+    D_FotoTipo = (
+      /** Demarcación de un área con un punto que se encuentra visible en un proceso de fotoidentificación.
+       */
+      !!@ ili2db.dispName = "Visible"
+      Visible,
+      /** Demarcación estimada mediante la interpretación de coberturas  de un área con un punto en un proceso de fotoidentificación.
+       */
+      !!@ ili2db.dispName = "Estimado"
+      Estimado
+    );
+
+    D_GrupoEtnico = (
+      /** Son el grupo humano que vive de acuerdo con las formas de relación con el medio natural en el que se asentaron los diferentes grupos aborígenes desde antes de la conquista y la han conservado y dinamizado a lo largo de la historia.
+       */
+      !!@ ili2db.dispName = "Indígena"
+      Indigena,
+      /** El pueblo Rrom o gitano se consolida y fortalece como grupo étnico que hacer parte de la diversidad étnica y cultural de la nación colombiana. Su origen se remonta a más de 1000 años, proviene del norte de la India y conserva un alto bagaje cultural que lo diferencia de otros pueblos y de la sociedad mayoritaria. En este sentido, cuenta con unos elementos identitarios que los diferencian notablemente de los demás grupos étnicos de la sociedad. Sé es Rrom o gitano por derecho de nacimiento y se lleva la sangre gitana.
+       */
+      !!@ ili2db.dispName = "Rrom"
+      Rrom,
+      /** Es la población nativa de las Islas de San Andrés, Providencia Y Santa Catalina descendientes de la unión entre europeos (principalmente ingleses, españoles y holandeses) y esclavos africanos. Se distinguen por su cultura, lengua (creole), creencias religiosas (iglesia bautista) y pasado histórico similar a los pueblos antillanos como Jamaica y Haití.
+       */
+      !!@ ili2db.dispName = "Raizal"
+      Raizal,
+      /** La comunidad palenquera está conformada por los descendientes de los esclavizados que mediante actos de resistencia y de libertad, se refugiaron en los territorios de la Costa Norte de Colombia desde el Siglo XV denominados palenques. Existen 4 Palenques reconocidos: San Basilio de Palenque (Mahates – Bolívar), San José de Uré (Córdoba), Jacobo Pérez escobar (Magdalena) y La Libertad (Sucre).
+       */
+      !!@ ili2db.dispName = "Palenquero"
+      Palenquero,
+      /** Es el conjunto de familias de ascendencia afrocolombiana que poseen una cultura propia, comparten una historia y tienen sus propias tradiciones y costumbres dentro de la relación campo-poblado, además revelan y conservan conciencia de identidad que las distinguen de otros grupos étnicos. Se suele denominar a este grupo humano como negros, morenos, mulatos y afrodescendientes.
+       */
+      !!@ ili2db.dispName = "Negro o afrocolombiano"
+      Negro_Afrocolombiano,
+      /** No pertenece a ningún grupo étnico.
+       */
+      !!@ ili2db.dispName = "Ninguno"
+      Ninguno
+    );
+
+    !!@ ili2db.dispName = "D_GrupoInteresado_Tipo"
+    D_GrupoInteresadoTipo = (
+      !!@ ili2db.dispName = "Grupo Civil"
+      Grupo_civil,
+      !!@ ili2db.dispName = "Grupo Empresarial"
+      Grupo_empresarial,
+      !!@ ili2db.dispName = "Grupo etnico"
+      Grupo_etnico,
+      !!@ ili2db.dispName = "Grupo mixto"
+      Grupo_mixto
+    );
+
+    D_PredioTipo = (
+      /** Es el predio que pertenece al estado y/o cuyo propietario es una entidad de derecho público
+       */
+      !!@ ili2db.dispName = "Público"
+      Publico,
+      /** Es aquel que ha salido del patrimonio del estado, cuenta con un propietario inscrito en el folio de matrícula y se considera propiedad privada en los términos del artículo 48 de la Ley 160 de 1993.
+       */
+      !!@ ili2db.dispName = "(Privado)"
+      Privado,
+      /** Son los predios adjudicados a comunidades pertenecientes a grupos étnicos en el marco del reconocimiento de los resguardos legalmente constituidos según el Decreto 2164 de 1995 o de las propiedades colectivas de comunidades negras conforme Ley 70 de 1993.
+       */
+      !!@ ili2db.dispName = "(Territorio colectivo)"
+      Territorio_colectivo,
+      /** Son bienes inmuebles que se encuentran dentro de territorio respectivo a cargo de la Nación, sin dueño aparente o conocido
+       */
+      !!@ ili2db.dispName = "Vacante"
+      Vacante
+    );
+
+    D_PropietarioDocumentoTipo = (
+      /** Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.
+       */
+      !!@ ili2db.dispName = "Cédula de ciudadanía"
+      Cedula_ciudadania,
+      /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
+       */
+      !!@ ili2db.dispName = "Cédula de estranjería"
+      Cedula_extranjeria,
+      /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
+       */
+      !!@ ili2db.dispName = "NIT"
+      NIT,
+      /** Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.
+       */
+      !!@ ili2db.dispName = "Tarjeta de identidad"
+      Tarjeta_identidad,
+      /** Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.
+       */
+      !!@ ili2db.dispName = "Registro civil"
+      Registro_civil,
+      /** Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.
+       */
+      !!@ ili2db.dispName = "Secuencial"
+      Secuencial
+    );
+
+    D_PropietarioTipo = (
+      /** Se refiere a la persona humana.
+       */
+      !!@ ili2db.dispName = "Persona natural"
+      Persona_natural,
+      /** Se llama persona jurídica, una persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente. Las personas jurídicas son de dos especies: corporaciones y fundaciones de beneficencia pública.
+       */
+      !!@ ili2db.dispName = "Persona jurídica"
+      Persona_juridica
+    );
+
+    D_puntoLevTipo = (
+      /** Puntos de levantamiento para delimitar las construcción y unidades de construcción.
+       */
+      !!@ ili2db.dispName = "Construcción"
+      Construccion,
+      /** Puntos de levantamiento para las servidumbres de tránsito.
+       */
+      !!@ ili2db.dispName = "Servidumbre"
+      Servidumbre
+    );
+
+    !!@ ili2db.dispName = "PuntoTipo"
+    D_PuntoTipo = (
+      /** Punto referido a los soportes verticales que sirven de apoyo,utilizados en la construcción de alambradas, tendidos eléctricos y telefónicos, televisión por cable, para iluminar calles, plazas o estadios y en las actividades agrícolas.
+       */
+      !!@ ili2db.dispName = "Poste"
+      Poste,
+      /** Punto referido a las esquina o sección de los paramentos de las construcción y unidades de construcción.
+       */
+      !!@ ili2db.dispName = "Construcción"
+      Construccion,
+      /** Punto referido a los puntos limitantes con elementos hidrográficos que por su condición pueden variar su límite con el tiempo.
+       */
+      !!@ ili2db.dispName = "Punto dinámico"
+      Punto_dinamico,
+      /** Punto referido a los elementos naturales de la vegetación  como los árboles, arbustos o cualquier otra especie de la fauna.
+       */
+      !!@ ili2db.dispName = "Elemento natural"
+      Elemento_natural,
+      /** Punto referido a los elementos piedra o rocas.
+       */
+      !!@ ili2db.dispName = "Piedra"
+      Piedra,
+      /** Puntos referido a las áreas de campos abiertos, zonas boscosas, desérticas o cualquier otro tipo de espacio donde no se aprecia una clara delimitación.
+       */
+      !!@ ili2db.dispName = "Sin materialización"
+      Sin_materializacion,
+      /** Puntos referidos a los mojones utilizados en topografía que tienen datos de coordenadas espaciales.
+       */
+      !!@ ili2db.dispName = "Mojón"
+      Mojon,
+      /** Puntos referidos a las incrustaciones realizadas en el suelo.
+       */
+      !!@ ili2db.dispName = "Incrustación"
+      Incrustacion,
+      /** Puntos referidos a las columnas verticales donde se encuentra materializado un punto con coordenadas espaciales.
+       */
+      !!@ ili2db.dispName = "Pilastra"
+      Pilastra
+    );
+
+    D_RestriccionTipo = (
+      /** Es la agrupación de códigos registrales que hacen referencia a servidumbres:
+       * 
+       * 0325
+       * 0334
+       * 0335
+       * 0336
+       * 0337
+       * 0338
+       * 0339
+       * 0340
+       * 0341
+       * 0342
+       * 0343
+       * 0344
+       * 0350
+       * 0351
+       * 0354
+       * 0358
+       * 0373
+       * 0381
+       */
+      !!@ ili2db.dispName = "Servidumbre de paso"
+      Servidumbre
+    );
+
+    D_SexoTipo = (
+      Masculino,
+      Femenino
+    );
+
+    D_UnidadConstruccionTipo = (
+      /** Tipo de unidad de construcción en uso para vivienda.
+       */
+      !!@ ili2db.dispName = "Residencial"
+      Residencial,
+      /** Tipo de unidad de construcción en uso de actividades comerciales.
+       */
+      !!@ ili2db.dispName = "Comercial"
+      Comercial,
+      /** Tipo de unidad de construcción en uso de actividades industriales.
+       */
+      !!@ ili2db.dispName = "Industrial"
+      Industrial,
+      /** Tipo de unidad de construcción en uso de actividades institucionales.
+       */
+      !!@ ili2db.dispName = "Institucional"
+      Institucional,
+      /** Tipo de unidad de construcción anexa, por ejemplo, piscinas, cobertizos, canchas de tenis, toboganes.
+       */
+      !!@ ili2db.dispName = "Anexo"
+      EnumElement95
+    );
+
+    D_UsoUConsTipo = (
+      !!@ ili2db.dispName = "Residencial"
+      Residencial,
+      !!@ ili2db.dispName = "Comercial"
+      Comercial,
+      !!@ ili2db.dispName = "Industrial"
+      Industrial,
+      !!@ ili2db.dispName = "Institucional"
+      Institucional,
+      !!@ ili2db.dispName = "Anexo"
+      Anexo
+    );
+
+    SNR_CalidadDerechoTipo = (
+      /** El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):
+       * 
+       * 0100
+       * 0101
+       * 0102
+       * 0103
+       * 0106
+       * 0107
+       * 0108
+       * 0109
+       * 0110
+       * 0111
+       * 0112
+       * 0113
+       * 0114
+       * 0115
+       * 0116
+       * 0117
+       * 0118
+       * 0119
+       * 0120
+       * 0121
+       * 0122
+       * 0124
+       * 0125
+       * 0126
+       * 0127
+       * 0128
+       * 0129
+       * 0130
+       * 0131
+       * 0132
+       * 0133
+       * 0135
+       * 0137
+       * 0138
+       * 0139
+       * 0140
+       * 0141
+       * 0142
+       * 0143
+       * 0144
+       * 0145
+       * 0146
+       * 0147
+       * 0148
+       * 0150
+       * 0151
+       * 0152
+       * 0153
+       * 0154
+       * 0155
+       * 0156
+       * 0157
+       * 0158
+       * 0159
+       * 0160
+       * 0161
+       * 0163
+       * 0164
+       * 0165
+       * 0166
+       * 0167
+       * 0168
+       * 0169
+       * 0171
+       * 0172
+       * 0173
+       * 0175
+       * 0177
+       * 0178
+       * 0179
+       * 0180
+       * 0181
+       * 0182
+       * 0183
+       * 0184
+       * 0185
+       * 0186
+       * 0187
+       * 0188
+       * 0189
+       * 0190
+       * 0191
+       * 0192
+       * 0193
+       * 0194
+       * 0195
+       * 0196
+       * 0197
+       * 0198
+       * 0199
+       * 01003
+       * 01004
+       * 01005
+       * 01006
+       * 01007
+       * 01008
+       * 01009
+       * 01010
+       * 01012
+       * 01013
+       * 01014
+       * 0301
+       * 0307
+       * 0321
+       * 0332
+       * 0348
+       * 0356
+       * 0374
+       * 0375
+       * 0376
+       * 0377
+       * 0906
+       * 0907
+       * 0910
+       * 0911
+       * 0912
+       * 0913
+       * 0915
+       * 0917
+       * 0918
+       * 0919
+       * 0920
+       * 0924
+       * 0935
+       * 0959
+       * 0962
+       * 0963
+       */
+      !!@ ili2db.dispName = "Dominio"
+      Dominio,
+      /** Es la inscripción en la Oficina de Registro de Instrumentos Públicos, de todo acto de transferencia de un derecho incompleto que se hace a favor de una persona, por parte de quien carece del derecho de dominio sobre determinado inmueble: 
+       * 
+       * 0600
+       * 0601
+       * 0602
+       * 0604
+       * 0605
+       * 0606
+       * 0607
+       * 0608
+       * 0609
+       * 0610
+       * 0611
+       * 0613
+       * 0614
+       * 0615
+       * 0616
+       * 0617
+       * 0618
+       * 0619
+       * 0620
+       * 0621
+       * 0622
+       * 0136
+       * 0508
+       * 0927
+       */
+      !!@ ili2db.dispName = "Falsa tradición"
+      Falsa_Tradicion,
+      /** La propiedad separada del goce de la cosa se llama mera o nuda propiedad (art 669 CC):
+       * 
+       * Códigos:
+       * 
+       * 0302
+       * 0308
+       * 0322
+       * 0349
+       * 0379
+       */
+      !!@ ili2db.dispName = "Nuda propiedad"
+      Nuda_Propiedad,
+      /** Es la propiedad de toda una comunidad sea indígena o negra. Adjudicacion Baldios En Propiedad Colectiva A Comunidades Negras, Adjudicacion Baldios Resguardos Indigenas, Constitución Resguardo Indigena,
+       * Ampliación De Resguardo Indígena
+       * 
+       * Códigos:
+       * 
+       * 0104
+       * 0105
+       * 01001
+       * 01002
+       */
+      !!@ ili2db.dispName = "Derecho de propiedad colectiva"
+      Derecho_Propiedad_Colectiva,
+      /** El derecho de usufructo es un derecho real que consiste en la facultad de gozar de una cosa con cargo de conservar su forma y sustancia, y de restituir a su dueño, si la cosa no es fungible; o con cargo de volver igual cantidad y calidad del mismo género, o de pagar su valor si la cosa es fungible. (art. 823 CC):
+       * 
+       * 0310
+       * 0314
+       * 0323
+       * 0333
+       * 0378
+       * 0380
+       * 0382
+       * 0383
+       */
+      !!@ ili2db.dispName = "Usufructo"
+      Usufructo
+    );
+
+  TOPIC Captura_Geo_V0_1 =
+
+    !!@ ili2db.dispName = "Construcción"
+    CLASS Construccion =
+      !!@ ili2db.dispName = "Identificador"
+      identificador : MANDATORY TEXT*2;
+      !!@ ili2db.dispName = "Tipo construcción"
+      tipo_construccion : Captura_Geo_V0_1.D_ConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo dominio"
+      tipo_dominio : Captura_Geo_V0_1.D_DominioConstruccionTipo;
+      !!@ ili2db.dispName = "Número pisos"
+      numero_pisos : MANDATORY 0 .. 300;
+      !!@ ili2db.dispName = "Número sótanos"
+      numero_sotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Número mezanines"
+      numero_mezanines : 0 .. 99;
+      !!@ ili2db.dispName = "Número semisotanos"
+      numero_semisotanos : 0 .. 99;
+      !!@ ili2db.dispName = "Año construcción"
+      ano_construccion : 1550 .. 2500;
+      !!@ ili2db.dispName = "Ávaluo de construcción"
+      avaluo_construccion : LADM_COL_V3_0.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Área construccion"
+      area_construccion : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Altura"
+      altura : TEXT*20;
+      !!@ ili2db.dispName = "Observaciones"
+      observaciones : TEXT*20;
+      !!@ ili2db.dispName = "Área"
+      area : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;
+      !!@ ili2db.dispName = "Dimensión"
+      dimension : LADM_COL_V3_0.LADM_Nucleo.COL_DimensionTipo;
+      !!@ ili2db.dispName = "Ext dirección id"
+      ext_direccion_id : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      !!@ ili2db.dispName = "Etiqueta"
+      etiqueta : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
+      !!@ ili2db.dispName = "Relación superficie"
+      relacion_superficie : LADM_COL_V3_0.LADM_Nucleo.COL_RelacionSuperficieTipo;
+      !!@ ili2db.dispName = "Volumen"
+      volumen : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END Construccion;
+
+    !!@ ili2db.dispName = "Derecho"
+    CLASS Derecho =
+      !!@ ili2db.dispName = "Derecho tipo"
+      DerechoTipo : MANDATORY Captura_Geo_V0_1.D_DerechoTipo;
+      !!@ ili2db.dispName = "Restricción tipo"
+      RestriccionTipo : MANDATORY Captura_Geo_V0_1.D_RestriccionTipo;
+      !!@ ili2db.dispName = "Participación"
+      participacion : TEXT*20;
+      !!@ ili2db.dispName = "Calidad derecho"
+      calidad_derecho_registro : Captura_Geo_V0_1.SNR_CalidadDerechoTipo;
+      !!@ ili2db.dispName = "Código naturaleza jurídica"
+      codigo_naturaleza_juridica : TEXT*20;
+      !!@ ili2db.dispName = "Fecha"
+      fecha : TEXT*20;
+    END Derecho;
+
+    STRUCTURE Direccion =
+      !!@ ili2db.dispName = "Valor"
+      valor : TEXT*20;
+      !!@ ili2db.dispName = "Principal"
+      principal : TEXT*20;
+      geometria : ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
+    END Direccion;
+
+    /** Linea de división que separa un bien inmueble de otro, que puede o no estar materializada físicamente.
+     */
+    !!@ ili2db.dispName = "Lindero"
+    CLASS lindero =
+      !!@ ili2db.dispName = "Logitud"
+      longitud : MANDATORY 0.0 .. 10000.0 [INTERLIS.m];
+      !!@ ili2db.dispName = "Localización textual"
+      localizacion_textual : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
+    END lindero;
+
+    /** Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
+     * El predio es la unidad territorial legal propia de Catastro. Está formada por el terreno y puede o no tener construcciones asociadas.
+     */
+    !!@ ili2db.dispName = "Predio"
+    CLASS predio =
+      !!@ ili2db.dispName = "Departamento"
+      departamento : MANDATORY TEXT*2;
+      !!@ ili2db.dispName = "Municipio"
+      municipio : MANDATORY TEXT*3;
+      !!@ ili2db.dispName = "ID Operación"
+      id_operacion : MANDATORY TEXT*30;
+      !!@ ili2db.dispName = "Tiene FMI"
+      tiene_FMI : MANDATORY BOOLEAN;
+      !!@ ili2db.dispName = "Código ORIP"
+      codigo_orip : TEXT*3;
+      !!@ ili2db.dispName = "Matricula inmobiliaria"
+      matricula_inmobiliaria : TEXT*80;
+      !!@ ili2db.dispName = "Número predial"
+      numero_predial : TEXT*30;
+      !!@ ili2db.dispName = "Número predial anterior"
+      numero_predial_anterior : TEXT*20;
+      !!@ ili2db.dispName = "NUPRE"
+      NUPRE : TEXT*11;
+      !!@ ili2db.dispName = "Avaluo catastral"
+      avaluo_catastral : LADM_COL_V3_0.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Predio tipo"
+      predio_tipo : Captura_Geo_V0_1.D_PredioTipo;
+      !!@ ili2db.dispName = "Condición predio"
+      condicion_predio : Captura_Geo_V0_1.D_CondicionPredioTipo;
+      !!@ ili2db.dispName = "Direccion"
+      direccion : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      !!@ ili2db.dispName = "Clase suelo"
+      clase_suelo : Captura_Geo_V0_1.D_ClaseSueloTipo;
+      !!@ ili2db.dispName = "Área registral"
+      area_registral : TEXT*20;
+      !!@ ili2db.dispName = "Destinación económica"
+      destinacion_economica : TEXT*20;
+    END predio;
+
+    !!@ ili2db.dispName = "Propietario"
+    CLASS propietario =
+      !!@ ili2db.dispName = "Tipo persona"
+      tipo_persona : MANDATORY Captura_Geo_V0_1.D_PropietarioTipo;
+      !!@ ili2db.dispName = "Tipo documento"
+      tipo_documento : MANDATORY Captura_Geo_V0_1.D_PropietarioDocumentoTipo;
+      !!@ ili2db.dispName = "Número documento"
+      numero_documento : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Dígito verificación"
+      digito_verificacion : TEXT*1;
+      !!@ ili2db.dispName = "Primer nombre"
+      primer_nombre : TEXT*100;
+      !!@ ili2db.dispName = "Segundo nombre"
+      segundo_nombre : TEXT*100;
+      !!@ ili2db.dispName = "Primer apellido"
+      primer_apellido : TEXT*100;
+      !!@ ili2db.dispName = "Segundo apellido"
+      segundo_apellido : TEXT*100;
+      !!@ ili2db.dispName = "Sexo"
+      sexo : Captura_Geo_V0_1.D_SexoTipo;
+      !!@ ili2db.dispName = "Grupo étnico"
+      grupo_etnico : Captura_Geo_V0_1.D_GrupoEtnico;
+      !!@ ili2db.dispName = "Razón social"
+      razon_social : TEXT*255;
+    END propietario;
+
+    !!@ ili2db.dispName = "Propietario contacto"
+    CLASS propietario_Contacto =
+      !!@ ili2db.dispName = "Teléfono 1"
+      telefono1 : TEXT*20;
+      !!@ ili2db.dispName = "Teléfono 2"
+      telefono2 : TEXT*20;
+      !!@ ili2db.dispName = "Domicilio notificación"
+      domicilio_notificacion : TEXT*500;
+      !!@ ili2db.dispName = "Dirección residencia"
+      direccion_residencia : TEXT*500;
+      !!@ ili2db.dispName = "Correo electrónico"
+      correo_electronico : TEXT*100;
+      !!@ ili2db.dispName = "Autorización notificación correo"
+      autorizacion_notificacion_correo : BOOLEAN;
+      !!@ ili2db.dispName = "Departamento"
+      departamento : MANDATORY TEXT*100;
+      !!@ ili2db.dispName = "Municipio"
+      municipio : MANDATORY TEXT*100;
+      !!@ ili2db.dispName = "Vereda"
+      vereda : TEXT*100;
+      !!@ ili2db.dispName = "Corregimiento"
+      corregimiento : TEXT*100;
+    END propietario_Contacto;
+
+    !!@ ili2db.dispName = "Punto"
+    CLASS punto =
+      !!@ ili2db.dispName = "Posición interpolación"
+      posicion_interpolacion : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
+      !!@ ili2db.dispName = "Punto tipo"
+      punto_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
+      !!@ ili2db.dispName = "Método de producción"
+      metodo_produccion_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
+      !!@ ili2db.dispName = "Transformación y resultado"
+      transformacion_y_resultado : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;
+    END punto;
+
+    CLASS Punto_levantamiento =
+      !!@ ili2db.dispName = "Posición interpolación"
+      posicion_interpolacion_lev : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
+      !!@ ili2db.dispName = "Metodo produccion tipo"
+      metodo_produccion_tipo_lev : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
+      !!@ ili2db.dispName = "Transformación y resultado"
+      transformacion_y_resultado : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;
+      !!@ ili2db.dispName = "ID del punto de levantamiento"
+      id_punto_levantamiento : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Punto tipo levantamiento"
+      punto_tipo_lev : MANDATORY Captura_Geo_V0_1.D_PuntoTipo;
+      !!@ ili2db.dispName = "Tipo punto levantamiento"
+      tipo_punto_levantamiento : MANDATORY Captura_Geo_V0_1.D_puntoLevTipo;
+      !!@ ili2db.dispName = "fotoidentificación"
+      fotoidentificacion : Captura_Geo_V0_1.D_FotoTipo;
+      !!@ ili2db.dispName = "Exactitud horizonta"
+      exactitud_horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
+      !!@ ili2db.dispName = "Exactitud vertical"
+      exactitud_vertical : 0.000 .. 10.000 [INTERLIS.m];
+      geometria_lev : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;
+    END Punto_levantamiento;
+
+    /** Porción de tierra con una extensión geográfica definida.
+     */
+    !!@ ili2db.dispName = "Terreno"
+    CLASS terreno =
+      !!@ ili2db.dispName = "Área terreno alfanumérica"
+      area_terreno_alfanumerica : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;
+      !!@ ili2db.dispName = "Área terreno digital"
+      area_terreno_digital : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Dimensión"
+      dimension : LADM_COL_V3_0.LADM_Nucleo.COL_DimensionTipo;
+      !!@ ili2db.dispName = "Dirección terreno"
+      direccion_terreno : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      !!@ ili2db.dispName = "Etiqueta"
+      etiqueta : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
+      !!@ ili2db.dispName = "Relación superficie"
+      relacion_superficie : LADM_COL_V3_0.LADM_Nucleo.COL_RelacionSuperficieTipo;
+      !!@ ili2db.dispName = "Volumen"
+      volumen : LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;
+      /** Numero predial hasta la posición 21
+       */
+      !!@ ili2db.dispName = "Manzana, Vereda código"
+      Manzana_Vereda_Codigo : TEXT*21;
+      !!@ ili2db.dispName = "Avalúo terreno"
+      avaluo_terreno : LADM_COL_V3_0.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Número subterraneos"
+      num_subterraneos : TEXT*20;
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END terreno;
+
+    /** Es cada conjunto de materiales consolidados dentro de un predio que tiene unas características específicas en cuanto a elementos constitutivos físicos y usos de la misma.
+     */
+    !!@ ili2db.dispName = "Unidad de construcción"
+    CLASS unidad_construccion =
+      !!@ ili2db.dispName = "Identificador"
+      identificador : MANDATORY TEXT*3;
+      !!@ ili2db.dispName = "Tipo dominio"
+      tipo_dominio : Captura_Geo_V0_1.D_DominioConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo construcción"
+      tipo_construccion : Captura_Geo_V0_1.D_ConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo unidad construcción"
+      tipo_unidad_construccion : MANDATORY Captura_Geo_V0_1.D_UnidadConstruccionTipo;
+      !!@ ili2db.dispName = "Tipo de planta"
+      tipo_planta : MANDATORY Captura_Geo_V0_1.D_ConstruccionPlantaTipo;
+      !!@ ili2db.dispName = "Planta ubicación"
+      planta_ubicacion : MANDATORY 0 .. 500;
+      !!@ ili2db.dispName = "Total habitaciones"
+      total_habitaciones : 0 .. 999999;
+      !!@ ili2db.dispName = "Total baños"
+      total_banios : 0 .. 999999;
+      !!@ ili2db.dispName = "Total locales"
+      total_locales : 0 .. 999999;
+      !!@ ili2db.dispName = "Total pisos"
+      total_pisos : 0 .. 150;
+      !!@ ili2db.dispName = "Uso"
+      uso : Captura_Geo_V0_1.D_UsoUConsTipo;
+      !!@ ili2db.dispName = "Año construcción"
+      anio_construccion : 1512 .. 2500;
+      !!@ ili2db.dispName = "Avaluó construcción"
+      avaluo_construccion : LADM_COL_V3_0.LADM_Nucleo.Peso;
+      !!@ ili2db.dispName = "Área construida"
+      area_construida : MANDATORY 0.0 .. 99999999999999.9;
+      !!@ ili2db.dispName = "Área privada construida"
+      area_privada_construida : 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Altura"
+      altura : 1 .. 1000 [INTERLIS.m];
+      !!@ ili2db.dispName = "Observaciones"
+      observaciones : TEXT;
+      geom : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END unidad_construccion;
+
+    CLASS Punto_control
+    EXTENDS punto =
+      !!@ ili2db.dispName = "ID del punto de control"
+      ID_Punto_Control : MANDATORY TEXT*255;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo : MANDATORY Captura_Geo_V0_1.D_PuntoTipo;
+      !!@ ili2db.dispName = "Tipo de punto de control"
+      tipo_punto_control : Captura_Geo_V0_1.D_ControlTipo;
+      !!@ ili2db.dispName = "Exactitud horizontal"
+      exactitud_horizontal : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Exactitud vertical"
+      exactitud_vertical : MANDATORY TEXT*20;
+    END Punto_control;
+
+    /** Puntos que definen los lindero de un terreno. La sucesión de estos puntos forman una línea que representa el límite entre dos terrenos.
+     */
+    !!@ ili2db.dispName = "Punto lindero"
+    CLASS Punto_lindero
+    EXTENDS punto =
+      !!@ ili2db.dispName = "ID del punto de lindero"
+      id_punto_lindero : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo : Captura_Geo_V0_1.D_PuntoTipo;
+      !!@ ili2db.dispName = "Acuerdo"
+      acuerto : MANDATORY Captura_Geo_V0_1.D_AcuerdoTipo;
+      !!@ ili2db.dispName = "Fotoidentificación"
+      fotoidentificacion : Captura_Geo_V0_1.D_FotoTipo;
+      !!@ ili2db.dispName = "Exactitud horizontal"
+      exactitud_horizontal : TEXT*20;
+      !!@ ili2db.dispName = "Exactitud vertical"
+      exactitud_vertical : TEXT*20;
+    END Punto_lindero;
+
+    ASSOCIATION construccion_punto_levantamiento =
+      construccion -- {0..*} Construccion;
+      punto_levantamiento -- {3..*} Punto_levantamiento;
+    END construccion_punto_levantamiento;
+
+    ASSOCIATION construccion_unidad_construccion =
+      construccion -- {1} Construccion;
+      unidad_construccion -- {0..*} unidad_construccion;
+    END construccion_unidad_construccion;
+
+    ASSOCIATION derecho_propietario =
+      propietario -- {0..*} propietario;
+      derecho -- {0..*} Derecho;
+    END derecho_propietario;
+
+    ASSOCIATION lindero_punto =
+      lindero -- {0..*} lindero;
+      punto -- {2..*} punto;
+    END lindero_punto;
+
+    ASSOCIATION predio_construccion =
+      predio -- {1} predio;
+      construccion -- {0..*} Construccion;
+    END predio_construccion;
+
+    ASSOCIATION predio_derecho =
+      derecho -- {1..*} Derecho;
+      predio -- {1} predio;
+    END predio_derecho;
+
+    ASSOCIATION predio_terreno =
+      predio -- {1} predio;
+      terreno -- {0..*} terreno;
+    END predio_terreno;
+
+    ASSOCIATION propietario_propietario_contacto =
+      propietario_contacto -- {0..*} propietario_Contacto;
+      propietario -- {0..*} propietario;
+    END propietario_propietario_contacto;
+
+    ASSOCIATION terreno_lindero =
+      terreno -- {1..*} terreno;
+      lindero -- {2..*} lindero;
+    END terreno_lindero;
+
+  END Captura_Geo_V0_1;
+
+END Captura_Geo_V0_1.

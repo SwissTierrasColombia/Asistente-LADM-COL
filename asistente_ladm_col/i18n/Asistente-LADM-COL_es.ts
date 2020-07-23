@@ -116,10 +116,18 @@
 <context>
     <name>AllocateParcelsFieldDataCapturePanelWidget</name>
     <message>
-        <location filename="../gui/field_data_capture/allocate_parcels_panel.py" line="34"/>
-        <location filename="../gui/field_data_capture/allocate_parcels_panel.py" line="35"/>
+        <location filename="../gui/field_data_capture/allocate_parcels_initial_panel.py" line="34"/>
+        <location filename="../gui/field_data_capture/allocate_parcels_initial_panel.py" line="35"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
+    </message>
+</context>
+<context>
+    <name>AllocateParcelsToSurveyorPanelWidget</name>
+    <message>
+        <location filename="../gui/field_data_capture/allocate_parcels_to_surveyor_panel.py" line="34"/>
+        <source>Allocate parcels to surveyor</source>
+        <translation>Asignar predios a reconocedor</translation>
     </message>
 </context>
 <context>
@@ -1508,6 +1516,14 @@
     <message>
         <source>MS SQL Server could not be configured. There is not any odbc driver installed</source>
         <translation type="vanished">No se pudo configurar MS SQL Server. ¡No hay ningún controlador ODBC instalado!</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigureSurveyorsPanelWidget</name>
+    <message>
+        <location filename="../gui/field_data_capture/configure_surveyors_panel.py" line="35"/>
+        <source>Configure surveyors</source>
+        <translation>Configurar reconocedores</translation>
     </message>
 </context>
 <context>
@@ -4718,7 +4734,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetFieldDataCapture</name>
     <message>
-        <location filename="../gui/field_data_capture/dockwidget_field_data_capture.py" line="69"/>
+        <location filename="../gui/field_data_capture/dockwidget_field_data_capture.py" line="105"/>
         <source>&apos;Field data capture&apos; has been closed because you just removed a required layer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5309,7 +5325,7 @@ Rol:</translation>
     <message>
         <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="14"/>
         <source>Initial Panel Widget Allocate Parcels</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel inicial de asignación de predios</translation>
     </message>
     <message>
         <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="22"/>
@@ -5340,6 +5356,11 @@ Rol:</translation>
         <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="153"/>
         <source>Search by parcel code...</source>
         <translation>Buscar por número predial...</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="183"/>
+        <source>Configure surveyors</source>
+        <translation>Configurar reconocedores</translation>
     </message>
 </context>
 <context>
@@ -11975,6 +11996,101 @@ p, li { white-space: pre-wrap; }
         <location filename="../ui/transitional_system/tasks_widget.ui" line="91"/>
         <source>Close Task</source>
         <translation>Finalizar tarea</translation>
+    </message>
+</context>
+<context>
+    <name>wid_allocate_to_operator</name>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="14"/>
+        <source>Panel Widget Allocate to Operator</source>
+        <translation>Panel widget asignar a reconocedor</translation>
+    </message>
+    <message>
+        <source>Operator</source>
+        <translation type="obsolete">Operador</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="22"/>
+        <source>Surveyor</source>
+        <translation>Reconocedor</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="54"/>
+        <source>0 already allocated</source>
+        <translation>0 predios ya asignados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="78"/>
+        <source>0 to be allocated</source>
+        <translation>0 predios a ser asignados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="117"/>
+        <source>Número predial</source>
+        <translation>Número predial</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="122"/>
+        <source>Estado</source>
+        <translation>Estado</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="145"/>
+        <source>Discard selection</source>
+        <translation>Descartar</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="156"/>
+        <source>Save allocation</source>
+        <translation>Guardar asignación</translation>
+    </message>
+</context>
+<context>
+    <name>wid_configure_surveyors</name>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="14"/>
+        <source>Panel Widget Configure Surveyors</source>
+        <translation>Panel widget configurar reconocedores</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="22"/>
+        <source>First name</source>
+        <translation>Primer nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="32"/>
+        <source>Second name</source>
+        <translation>Segundo nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="42"/>
+        <source>First last name</source>
+        <translation>Primer apellido</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="52"/>
+        <source>Second last name</source>
+        <translation>Segundo apellido</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="92"/>
+        <source>Add surveyor</source>
+        <translation>Agregar reconocedor</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="154"/>
+        <source>Name</source>
+        <translation>Nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="159"/>
+        <source>Document</source>
+        <translation>Documento</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="196"/>
+        <source>Save surveyors</source>
+        <translation>Guardar reconocedores</translation>
     </message>
 </context>
 <context>

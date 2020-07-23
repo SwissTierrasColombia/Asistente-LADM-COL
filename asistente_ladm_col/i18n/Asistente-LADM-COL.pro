@@ -21,6 +21,8 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
 	    ../ui/dialogs/settings_pg.ui \
 	    ../ui/dialogs/settings_mssql.ui \
 	    ../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui \
+	    ../ui/field_data_capture/allocate_parcels_to_surveyor.ui \
+	    ../ui/field_data_capture/configure_surveyors.ui \
 	    ../ui/field_data_capture/dockwidget_field_data_capture.ui \
         ../ui/dockwidgets/dockwidget_queries.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
@@ -100,7 +102,9 @@ SOURCES = ../__init__.py \
           ../gui/dialogs/dlg_settings.py \
           ../gui/dialogs/dlg_upload_progress.py \
           ../gui/dialogs/dlg_welcome_screen.py \
-          ../gui/field_data_capture/allocate_parcels_panel.py \
+          ../gui/field_data_capture/allocate_parcels_initial_panel.py \
+          ../gui/field_data_capture/allocate_parcels_to_surveyor_panel.py \
+          ../gui/field_data_capture/configure_surveyors_panel.py \
           ../gui/field_data_capture/dockwidget_field_data_capture.py \
           ../gui/gui_builder/gui_builder.py \
           ../gui/gui_builder/role_registry.py \

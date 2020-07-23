@@ -21,10 +21,14 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.core import Qgis
 from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.field_data_capture.allocate_parcels_panel import AllocateParcelsFieldDataCapturePanelWidget
+from asistente_ladm_col.gui.field_data_capture.allocate_parcels_initial_panel import AllocateParcelsFieldDataCapturePanelWidget
+from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import \
+    AllocateParcelsToSurveyorPanelWidget
+from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
 from asistente_ladm_col.utils import get_ui_class
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 DOCKWIDGET_UI = get_ui_class('field_data_capture/dockwidget_field_data_capture.ui')
 
@@ -40,11 +44,11 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         Logger().clear_message_bar()  # Clear QGIS message bar
 
         # Configure panels
-        self.allocate_subpanels = None
-        self.lst_all_allocate_subpanels = list()
+        self.configure_surveyors_panel = None
+        self.lst_configure_surveyors_panel = list()
 
-        self.party_panel = None
-        self.lst_party_panels = list()
+        self.allocate_parcels_to_surveyor_panel = None
+        self.lst_allocate_parcels_to_surveyor_panel = list()
 
         if allocate_mode:
             self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self)
@@ -56,6 +60,38 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             # self.widget.setMainPanel(self.synchronize_panel)
             # self.lst_parcel_panels.append(self.synchronize_panel)
             pass
+
+    def show_configure_surveyors_panel(self):
+        with OverrideCursor(Qt.WaitCursor):
+            if self.lst_configure_surveyors_panel:
+                for panel in self.lst_configure_surveyors_panel:
+                    try:
+                        self.widget.closePanel(panel)
+                    except RuntimeError as e:  # Panel in C++ could be already closed...
+                        pass
+
+                self.lst_configure_surveyors_panel = list()
+                self.configure_surveyors_panel = None
+
+            self.configure_surveyors_panel = ConfigureSurveyorsPanelWidget(self)
+            self.widget.showPanel(self.configure_surveyors_panel)
+            self.lst_configure_surveyors_panel.append(self.configure_surveyors_panel)
+
+    def show_allocate_parcels_to_surveyor_panel(self):
+        with OverrideCursor(Qt.WaitCursor):
+            if self.lst_allocate_parcels_to_surveyor_panel:
+                for panel in self.lst_allocate_parcels_to_surveyor_panel:
+                    try:
+                        self.widget.closePanel(panel)
+                    except RuntimeError as e:  # Panel in C++ could be already closed...
+                        pass
+
+                self.lst_allocate_parcels_to_surveyor_panel = list()
+                self.allocate_parcels_to_surveyor_panel = None
+
+            self.allocate_parcels_to_surveyor_panel = AllocateParcelsToSurveyorPanelWidget(self)
+            self.widget.showPanel(self.allocate_parcels_to_surveyor_panel)
+            self.lst_allocate_parcels_to_surveyor_panel.append(self.allocate_parcels_to_surveyor_panel)
 
     def closeEvent(self, event):
         # Close here open signals in other panels (if needed)

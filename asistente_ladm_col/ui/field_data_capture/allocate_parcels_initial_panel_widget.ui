@@ -179,6 +179,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_configure_surveyors">
+       <property name="toolTip">
+        <string>Configure surveyors</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -196,7 +199,7 @@
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
