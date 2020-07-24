@@ -71,14 +71,7 @@ class MSSQLConnector(ClientServerDB):
             if key_value[0] and key_value[1]:
                 lst_item_uri[key_value[0]] = key_value[1]
 
-        result = dict()
-
-        result['host'] = 'localhost'
-        result['port'] = ''
-        result['instance'] = ''
-        result['username'] = ''
-        result['password'] = ''
-        result['database'] = ''
+        result = dict(MSSQLConnector._DEFAULT_VALUES)
 
         if 'SERVER' in lst_item_uri:
             server_parts = lst_item_uri["SERVER"].split(',')
@@ -94,9 +87,15 @@ class MSSQLConnector(ClientServerDB):
             # FIXME check if no result
             result['host'] = server_parts2[0]
 
-        result['username'] = lst_item_uri['UID'] if 'UID' in lst_item_uri else ''
-        result['password'] = lst_item_uri['PWD'] if 'PWD' in lst_item_uri else ''
-        result['database'] = lst_item_uri['DATABASE'] if 'DATABASE' in lst_item_uri else ''
+        if 'DRIVER' in lst_item_uri:
+            result['db_odbc_driver'] = lst_item_uri['DRIVER'].replace('{', '').replace('}', '')
+
+        result['username'] = lst_item_uri['UID'] if 'UID' in lst_item_uri \
+            else MSSQLConnector._DEFAULT_VALUES['username']
+        result['password'] = lst_item_uri['PWD'] if 'PWD' in lst_item_uri \
+            else MSSQLConnector._DEFAULT_VALUES['password']
+        result['database'] = lst_item_uri['DATABASE'] if 'DATABASE' in lst_item_uri \
+            else MSSQLConnector._DEFAULT_VALUES['database']
 
         return result
 
