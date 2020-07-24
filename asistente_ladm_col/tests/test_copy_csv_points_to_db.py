@@ -42,17 +42,17 @@ class TestCopy(unittest.TestCase):
         cls.app = AppInterface()
         cls.app.core.initialize_ctm12()  # We need to initialize CTM12
 
-    def setUp(cls):
+    def setUp(self):
         restore_schema(SCHEMA_LADM_COL_EMPTY, True)
-        cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
+        self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
-        cls.names = cls.db_pg.names
-        cls.ladm_data = LADMData()
-        cls.geometry = GeometryUtils()
+        self.names = self.db_pg.names
+        self.ladm_data = LADMData()
+        self.geometry = GeometryUtils()
 
-        res, code, msg = cls.db_pg.test_connection()
-        cls.assertTrue(res, msg)
-        cls.assertIsNotNone(cls.names.LC_BOUNDARY_POINT_T, 'Names is None')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
+        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
@@ -233,9 +233,9 @@ class TestCopy(unittest.TestCase):
         result = cur.fetchone()
         self.assertEqual(result[0], num)
 
-    def tearDown(cls):
+    def tearDown(self):
         print("INFO: Closing open connections to databases")
-        cls.db_pg.conn.close()
+        self.db_pg.conn.close()
 
     @classmethod
     def tearDownClass(cls):
