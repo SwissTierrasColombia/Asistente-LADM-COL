@@ -216,8 +216,8 @@ class TesQualityValidations(unittest.TestCase):
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
@@ -311,8 +311,8 @@ class TesQualityValidations(unittest.TestCase):
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
@@ -433,8 +433,8 @@ class TesQualityValidations(unittest.TestCase):
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
@@ -524,8 +524,8 @@ class TesQualityValidations(unittest.TestCase):
         self.db_pg = get_pg_conn(schema_name)
         self.names = self.db_pg.names
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
@@ -1288,11 +1288,11 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_no_error_quality_rule(self):
         self.db_gpkg = get_gpkg_conn('test_valid_quality_rules_gpkg')
-        result = self.db_gpkg.test_connection()
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
 
         # When the tests are run the REGEXP function is not found, so we register it
         self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)
-        self.assertTrue(result[0], 'The test connection is not working')
         query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries()
 
         rules = [EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
@@ -1387,20 +1387,20 @@ class TesQualityValidations(unittest.TestCase):
         restore_schema('test_logic_quality_rules')
         db_pg = get_pg_conn('test_logic_quality_rules')
         names = db_pg.names
-        result = db_pg.test_connection()
+        res, code, msg = db_pg.test_connection()
 
-        self.assertTrue(result[0], 'The test connection is not working')
+        self.assertTrue(res, msg)
         self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         self.check_logic_quality_rules(db_pg)
 
     def test_logic_quality_rules_gpkg(self):
         db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
-        result = db_gpkg.test_connection()
+        res, code, msg = db_gpkg.test_connection()
+        self.assertTrue(res, msg)
 
         # When the tests are run the REGEXP function is not found, so we register it
         db_gpkg.conn.create_function("REGEXP", 2, _regexp)
-        self.assertTrue(result[0], 'The test connection is not working')
         self.check_logic_quality_rules(db_gpkg)
 
     def check_logic_quality_rules(self, db):

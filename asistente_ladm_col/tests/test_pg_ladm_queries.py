@@ -36,8 +36,8 @@ class TestPGLADMQueries(unittest.TestCase):
     def test_igac_basic_info_query(self):
         print("\nINFO: Validating basic info query from IGAC...")
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
 
         kwargs = {'plot_t_ids': [1430]}
         result = standardize_query_results(self.ladm_queries.get_igac_basic_info(self.db_pg, **kwargs))

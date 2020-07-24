@@ -50,8 +50,8 @@ class TestCopy(unittest.TestCase):
         cls.ladm_data = LADMData()
         cls.geometry = GeometryUtils()
 
-        result = cls.db_pg.test_connection()
-        cls.assertTrue(result[0], 'The test connection is not working for empty db')
+        res, code, msg = cls.db_pg.test_connection()
+        cls.assertTrue(res, msg)
         cls.assertIsNotNone(cls.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
     def test_copy_csv_to_db(self):
