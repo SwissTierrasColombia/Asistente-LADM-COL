@@ -25,12 +25,8 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
         import_qgis_model_baker()
         restore_schema('test_change_detections')
         cls.db_pg = get_pg_conn('test_change_detections')
-        result = cls.db_pg.test_connection()
-        print('test_connection', result)
-
-        if not result[1]:
-            print('The test connection is not working')
-            return
+        res, code, msg = cls.db_pg.test_connection()
+        cls.assertTrue(res, msg)
 
         cls.app = AppInterface()
         cls.ladm_data = LADMData()
@@ -38,8 +34,8 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
     def test_get_plots_related_to_parcels_supplies(self):
         print("\nINFO: Validating get plots related to parcels in supplies model (Case: t_id)...")
 
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.assertIsNotNone(self.db_pg.names.LC_BOUNDARY_POINT_T, 'Names is None')
 
         parcel_ids_tests = [list(), [3122], [3122, 3123, 3124]]

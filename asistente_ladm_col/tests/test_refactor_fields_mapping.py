@@ -23,10 +23,11 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         cls.db_gpkg_test = get_copy_gpkg_conn('test_export_data_qpkg')
         cls.app = AppInterface()
 
-        result_empty = cls.db_gpkg_empty.test_connection()
-        result_test = cls.db_gpkg_test.test_connection()
-        cls.assertTrue(result_empty[0], 'The test connection is not working for empty db')
-        cls.assertTrue(result_test[0], 'The test connection is not working for test data db')
+        res, code, msg = cls.db_gpkg_empty.test_connection()
+        cls.assertTrue(res, msg)
+
+        res, code, msg = cls.db_gpkg_test.test_connection()
+        cls.assertTrue(res, msg)
 
     def test_refactor_field(self):
         print('\nINFO: Validating refactor fields...')

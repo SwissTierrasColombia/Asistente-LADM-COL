@@ -39,8 +39,8 @@ class TestGPKGLADMQueries(unittest.TestCase):
         cls.conn_manager = cls.plugin.conn_manager
         cls.conn_manager.set_db_connector_for_source(cls.db_gpkg)
 
-        result = cls.db_gpkg.test_connection()
-        cls.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = cls.db_gpkg.test_connection()
+        cls.assertTrue(res, msg)
         cls.assertIsNotNone(cls.db_gpkg.names.T_ID_F, 'Names is None')
         cls.ladm_queries = QGISLADMQuery()
 

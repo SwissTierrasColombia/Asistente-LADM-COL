@@ -24,12 +24,8 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         import_qgis_model_baker()
         restore_schema('test_ladm_col_queries')
         cls.db_pg = get_pg_conn('test_ladm_col_queries')
-        result = cls.db_pg.test_connection()
-        print('test_connection', result)
-
-        if not result[1]:
-            print('The test connection is not working')
-            return
+        res, code, msg = cls.db_pg.test_connection()
+        cls.assertTrue(res, msg)
 
         cls.app = AppInterface()
         cls.ladm_data = LADMData()
