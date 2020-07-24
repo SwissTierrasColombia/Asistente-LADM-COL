@@ -1,7 +1,6 @@
 [![License](https://img.shields.io/github/license/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases)
 [![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL)
-[![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 # LADM-COL Assistant
 [QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
@@ -49,7 +48,9 @@ To use the LADM-COL Assistant you need:
 
 ## Gallery
 
- + Quality Rules![Quality Rules](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
++ Quality Rules
+
+  ![Quality Rules](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
 
 + Queries
 
@@ -69,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.0.0)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) and allows users to:
+The current version ([3.1.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.0)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -78,7 +79,7 @@ The current version ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-L
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
- - Create database structures for the LADM-COL v3.0 model using the national map projection with unique origin (CTM12).
+ - Create database structures for the LADM-COL v3.0 model using the national map projection (CTM12).
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
    - GeoPackage: Total support (except reports).

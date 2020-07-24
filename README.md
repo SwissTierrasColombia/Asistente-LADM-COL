@@ -1,7 +1,6 @@
 [![License](https://img.shields.io/github/license/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases)
 [![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL)
-[![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 You can read the docs in [English](README_en.md).
 
@@ -16,7 +15,7 @@ Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.0.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.0.0)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.1.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.0)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -43,7 +42,7 @@ Para usar el Asistente LADM-COL se requiere:
  - Software base:
    - QGIS v3.10.0-A Coruña o superior ([descargar](https://qgis.org/downloads/)).
    - Java v1.8
-   - PostgreSQL 9.5 o superior (funciona con PostgreSQL 10, 11 o 12).
+   - PostgreSQL 9.5 o superior (funciona con PostgreSQL 10, 11 ó 12).
    - PostGIS 2.4 o superior.
    - (Opcional) SQL Server 2012 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
@@ -52,7 +51,9 @@ Para usar el Asistente LADM-COL se requiere:
 
 ## Galería
 
- + Reglas de Calidad![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
++ Reglas de Calidad
+
+  ![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
 
 + Consultas
 
@@ -74,7 +75,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Administración de datos
 
-  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0, usando la proyección con origen único nacional (CTM12).
+  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0, usando la proyección Origen Nacional (CTM12).
   - Importar datos desde archivo de transferencia (.XTF).
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
