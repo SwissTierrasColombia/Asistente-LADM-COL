@@ -38,12 +38,13 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         print("INFO: Restoring databases to be used")
         import_qgis_model_baker()
-        restore_schema(SCHEMA_LADM_COL_EMPTY)
-        cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
-
         import_asistente_ladm_col()
         cls.app = AppInterface()
         cls.app.core.initialize_ctm12()  # We need to initialize CTM12
+
+    def setUp(cls):
+        restore_schema(SCHEMA_LADM_COL_EMPTY, True)
+        cls.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
 
         cls.names = cls.db_pg.names
         cls.ladm_data = LADMData()
@@ -71,8 +72,6 @@ class TestCopy(unittest.TestCase):
         test_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
         delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
-
-        # TODO: Rewrite test using t_ili_tids instead of depending on a list order...
 
     def boundary_point_layer_resolve_domains_for_test(self, csv_layer):
         data_provider = csv_layer.dataProvider()
@@ -130,7 +129,7 @@ class TestCopy(unittest.TestCase):
     def validate_points_in_db_from_wgs84(self, schema):
         print('\nINFO: Validating points in db from wgs84')
         cur = self.db_pg.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = cur.execute("""SELECT st_x(geometria), st_y(geometria) FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
+        cur.execute("""SELECT st_x(geometria), st_y(geometria) FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
         results = cur.fetchall()
         self.assertEqual(len(results), 3)
         self.assertEqual([round(result, 3) for result in results[0]], [round(item_test, 3) for item_test in [4843984.711, 2143385.632]])
@@ -157,8 +156,6 @@ class TestCopy(unittest.TestCase):
         delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-        # TODO: Rewrite test using t_ili_tids instead of depending on a list order...
-
     def upload_points_from_csv_with_elevation(self, csv_layer, schema):
         print("\nINFO: Copying CSV data with elevation...")
         self.boundary_point_layer_resolve_domains_for_test(csv_layer)
@@ -170,7 +167,7 @@ class TestCopy(unittest.TestCase):
     def validate_points_in_db(self, schema, with_z=False):
         cur = self.db_pg.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         print('\nValidating points {}(both spatial and alphanumeric attributes)'.format('with Z ' if with_z else ''))
-        query = cur.execute("""SELECT * FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
+        cur.execute("""SELECT * FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
         results = cur.fetchall()
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
 
@@ -196,9 +193,9 @@ class TestCopy(unittest.TestCase):
         self.assertIsNone(row[colnames['ue_lc_unidadconstruccion']])
         self.assertIsNone(row[colnames['fin_vida_util_version']])
 
-        geom = '01010000A0A4970000EC51B836A57A5241CDCCCC7C8D5A40410000000000000000'
+        geom = '01010000A0A1240000EC51B836A57A5241CDCCCC7C8D5A40410000000000000000'
         if with_z:
-            geom = '01010000A0A4970000EC51B836A57A5241CDCCCC7C8D5A404123DBF97EEA2E9640'
+            geom = '01010000A0A1240000EC51B836A57A5241CDCCCC7C8D5A404123DBF97EEA2E9640'
 
         self.assertEqual(row[colnames['geometria']], geom)
 
@@ -232,14 +229,16 @@ class TestCopy(unittest.TestCase):
     def validate_number_of_boundary_points_in_db(self, schema, num=0):
         print('\nINFO: Validating number of boundary points in schema {}'.format(schema))
         cur = self.db_pg.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = cur.execute("""SELECT count(t_id) FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
+        cur.execute("""SELECT count(t_id) FROM {}.{};""".format(schema, self.names.LC_BOUNDARY_POINT_T))
         result = cur.fetchone()
         self.assertEqual(result[0], num)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(cls):
         print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
+
+    @classmethod
+    def tearDownClass(cls):
         unload_qgis_model_baker()
 
 

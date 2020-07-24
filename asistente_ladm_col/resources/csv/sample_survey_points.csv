@@ -1,5 +1,5 @@
 Espacio_De_Nombres;Local_Id;Comienzo_Vida_Util_Version;Posicion_Interpolacion;PuntoTipo;MetodoProduccion;ID_Punto_Levantamiento;Tipo_Punto_Levantamiento;Fotoidentificacion;Exactitud_Horizontal;Exactitud_Vertical;x;y;z
-LC_PUNTOLEVANTAMIENTO;"1";2020-07-07T15:54:04.308;Intermedio_Linea;Construccion;Medoto_Declarativo_y_Colaborativo;"1";Construccion;Visible;"0.004";"0.007";4844544.327;2143608.575;2539.109
+LC_PUNTOLEVANTAMIENTO;"1";2020-07-07T15:54:04.308;Intermedio_Linea;Construccion;Metodo_Declarativo_y_Colaborativo;"1";Construccion;Visible;"0.004";"0.007";4844544.327;2143608.575;2539.109
 LC_PUNTOLEVANTAMIENTO;"2";2020-07-07T15:54:04.319;Intermedio_Linea;Construccion;Metodo_Directo;"2";Construccion;Estimado;"0.003";"0.002";4844727.635;2143620.193;2395.245
 LC_PUNTOLEVANTAMIENTO;"3";2020-07-07T15:54:04.329;;Mojon;Metodo_Directo;"3";Construccion;;"0.002";;4844563.69;2143444.63;1883.023
 LC_PUNTOLEVANTAMIENTO;"4";2020-07-07T15:54:04.337;;Mojon;Metodo_Indirecto;"4";Construccion;;"0.002";;4844723.762;2143447.212;1425.855

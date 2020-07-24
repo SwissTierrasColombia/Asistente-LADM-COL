@@ -102,16 +102,23 @@ def get_copy_gpkg_conn(gpkg_schema_name):
 
     return db
 
-def restore_schema(schema):
-    print("\nRestoring schema {}...".format(schema))
-    db_connection = get_pg_conn(schema)
-    print("Testing Connection...", db_connection.test_connection())
-    cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
-    result = cur.fetchone()
-    if result is not None and len(result) > 0:
-        print("The schema {} already exists".format(schema))
-        return
+
+def restore_schema(schema, force=False):
+    """
+    restore db schema
+    :param schema: db schema name
+    :param force: If True db connection should come already closed
+    """
+    if not force:
+        print("\nRestoring schema {}...".format(schema))
+        db_connection = get_pg_conn(schema)
+        print("Testing Connection...", db_connection.test_connection())
+        cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
+        result = cur.fetchone()
+        if result is not None and len(result) > 0:
+            print("The schema {} already exists".format(schema))
+            return
 
     print("Restoring ladm_col database...")
     script_dir = get_test_path("restore_db.sh")

@@ -26,7 +26,7 @@ INTERLIS 2.3;
  * 
  * -----------------------------------------------------------
  */
-MODEL Sumodelo_Avaluos_V1_0 (es)
+MODEL Submodelo_Avaluos_V1_0 (es)
 AT "http://www.proadmintierra.info/"
 VERSION "V2.2.1"  // 2018-02-01 // =
   IMPORTS ISO19107_PLANAS_V3_0,Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0,LADM_COL_V3_0;
@@ -1268,7 +1268,7 @@ VERSION "V2.2.1"  // 2018-02-01 // =
       /** Es la actividad que se desarrolla en una unidad de construcción.
        */
       !!@ ili2db.dispName = "Uso"
-      Uso : Sumodelo_Avaluos_V1_0.AV_UsoUConsTipo;
+      Uso : Submodelo_Avaluos_V1_0.AV_UsoUConsTipo;
       /** Puntaje de las edificaciones de acuerdo a sus características constructivas.
        */
       !!@ ili2db.dispName = "Puntuación"
@@ -1283,7 +1283,7 @@ VERSION "V2.2.1"  // 2018-02-01 // =
        * actividad residencial, comercial e industrial.
        */
       !!@ ili2db.dispName = "Tipo de topología"
-      Tipo_Tipologia : Sumodelo_Avaluos_V1_0.AV_TipologiaTipo;
+      Tipo_Tipologia : Submodelo_Avaluos_V1_0.AV_TipologiaTipo;
       /** Valor unitario en pesos del tipo de tipología constructiva.
        */
       !!@ ili2db.dispName = "Valor unitario"
@@ -1310,15 +1310,15 @@ VERSION "V2.2.1"  // 2018-02-01 // =
       /** En el estudio de esta variable se analiza la existencia de fuentes de aguas superficiales permanentes y su clasificación, con el fin de zonificar de acuerdo con la posibilidad de aprovechamiento para el uso actual que se da al suelo.
        */
       !!@ ili2db.dispName = "Disponibilidad agua"
-      Disponibilidad_Agua : Sumodelo_Avaluos_V1_0.AV_DisponibilidadAguaTipo;
+      Disponibilidad_Agua : Submodelo_Avaluos_V1_0.AV_DisponibilidadAguaTipo;
       /** Se refiere a la existencia y calidad de las vías, analizada a nivel de zona. A esta condición se asocia la existencia de otras obras de ingeniería, la instalación de redes de servicios públicos, etc.
        */
       !!@ ili2db.dispName = "Influencia vial"
-      Influencia_Vial : Sumodelo_Avaluos_V1_0.AV_InfluenciaVialRuralTipo;
+      Influencia_Vial : Submodelo_Avaluos_V1_0.AV_InfluenciaVialRuralTipo;
       /** Actividad que se desarrolla en un determinado espacio geográfico en el momento de la elaboración del estudio de zonas homogéneas físicas.
        */
       !!@ ili2db.dispName = "Uso actual del suelo"
-      Uso_Actual_Suelo : Sumodelo_Avaluos_V1_0.AV_UsoSueloRuralTipo;
+      Uso_Actual_Suelo : Submodelo_Avaluos_V1_0.AV_UsoSueloRuralTipo;
       /** Indicación legal sobre la actividad que se puede desarrollar en un determinado espacio geográfico con lo planificado y reglamentado por la respectiva autoridad de la unidad orgánica catastral.
        */
       !!@ ili2db.dispName = "Norma uso del suelo"
@@ -1348,19 +1348,19 @@ VERSION "V2.2.1"  // 2018-02-01 // =
       /** Características naturales relacionadas con el relieve que permitan o dificulten el desarrollo de las construcciones, dentro de esta variable deben considerarse factores tales como zonas anegadizas o inundables, las discontinuidades físicas tales como taludes, caños y ríos, altura por encima de la cota de servicios, áreas potenciales de derrumbe, por inclinación o presencia de drenajes superficiales.
        */
       !!@ ili2db.dispName = "Topografía"
-      Topografia : Sumodelo_Avaluos_V1_0.AV_TopografiaZonaTipo;
+      Topografia : Submodelo_Avaluos_V1_0.AV_TopografiaZonaTipo;
       /** Se refiere a la existencia y calidad de las vías, analizada a nivel de zona. A esta condición se asocia la existencia de otras obras de ingeniería, la instalación de redes de servicios públicos, etc.
        */
       !!@ ili2db.dispName = "Influencia vial"
-      Influencia_Vial : Sumodelo_Avaluos_V1_0.AV_InfluenciaVialUrbanaTipo;
+      Influencia_Vial : Submodelo_Avaluos_V1_0.AV_InfluenciaVialUrbanaTipo;
       /** Se prestan con la finalidad específica de satisfacer las necesidades esenciales de las personas. Para efectos de la presente metodología se consideran servicios públicos básicos: Acueducto, Alcantarillado y Energía Eléctrica.
        */
       !!@ ili2db.dispName = "Servicio público"
-      Servicio_Publico : Sumodelo_Avaluos_V1_0.AV_ServiciosPublicosTipo;
+      Servicio_Publico : Submodelo_Avaluos_V1_0.AV_ServiciosPublicosTipo;
       /** Actividad que se desarrolla en un determinado espacio geográfico en el momento de la elaboración del estudio de zonas homogéneas físicas.
        */
       !!@ ili2db.dispName = "Uso actual del suelo"
-      Uso_Actual_Suelo : Sumodelo_Avaluos_V1_0.AV_UsoSueloUrbanoTipo;
+      Uso_Actual_Suelo : Submodelo_Avaluos_V1_0.AV_UsoSueloUrbanoTipo;
       /** Indicación legal sobre la actividad que se puede desarrollar en un determinado espacio geográfico con lo planificado y reglamentado por la respectiva autoridad de la unidad orgánica catastral.
        */
       !!@ ili2db.dispName = "Norma uso del suelo"
@@ -1368,7 +1368,7 @@ VERSION "V2.2.1"  // 2018-02-01 // =
       /** Clasificación de las construcciones de acuerdo a ciertas características observables y cuantificables que reflejan las condiciones socioeconómicas (ingresos y cultura) de los habitantes de las viviendas.
        */
       !!@ ili2db.dispName = "Tipificación de la construcción"
-      Tipificacion_Construccion : Sumodelo_Avaluos_V1_0.AV_TipificacionConstruccionTipo;
+      Tipificacion_Construccion : Submodelo_Avaluos_V1_0.AV_TipificacionConstruccionTipo;
       /** Vigencia del estudio de zonas homogeneas fisicas urbanas.
        */
       !!@ ili2db.dispName = "Vigencia"
@@ -1441,4 +1441,4 @@ VERSION "V2.2.1"  // 2018-02-01 // =
 
   END Avaluos;
 
-END Sumodelo_Avaluos_V1_0.
+END Submodelo_Avaluos_V1_0.

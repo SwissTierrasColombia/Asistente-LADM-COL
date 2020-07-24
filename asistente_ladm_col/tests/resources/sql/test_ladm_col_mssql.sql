@@ -2072,7 +2072,7 @@ económica de los inmuebles a través del uso de de sensores
 remotos, integración registros administrativos, modelos ísticos y
 econométricos, análisis de Big Data y fuentes secundarias como
 observatorios inmobiliarios, su posterior incorporación en la base catastral.')
-,(46,'LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo',NULL,2,'Medoto_Declarativo_y_Colaborativo',NULL,0,'Metodo declarativo y colaborativo','Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.')
+,(46,'LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo',NULL,2,'Metodo_Declarativo_y_Colaborativo',NULL,0,'Metodo declarativo y colaborativo','Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.')
 ;INSERT INTO test_ladm_col.col_miembros (T_Id,T_Ili_Tid,interesado_lc_interesado,interesado_lc_agrupacioninteresados,agrupacion) VALUES 
 (2955,NULL,739,NULL,592)
 ,(2958,NULL,743,NULL,593)
@@ -3595,7 +3595,7 @@ INSERT INTO test_ladm_col.lc_interesado (T_Id,T_Ili_Tid,tipo,tipo_documento,docu
 ,(756,'EE514D6C-E223-4AE9-AF21-774CFA4F880A','1_telefono1','1_telefono2','1_domicilio_notificacion',NULL,'1_correo_electronico',NULL,'11','11',NULL,NULL,739)
 ;INSERT INTO test_ladm_col.lc_interesadodocumentotipo (T_Id,thisClass,baseClass,itfCode,iliCode,seq,inactive,dispName,description) VALUES 
 (6,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,0,'Cedula_Ciudadania',NULL,0,'Cédula de ciudadanía','Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.')
-,(7,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,1,'Cedula_Extranjeria',NULL,0,'Cédula de estranjería','Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.')
+,(7,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,1,'Cedula_Extranjeria',NULL,0,'Cédula de extranjería','Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.')
 ,(8,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,2,'NIT',NULL,0,'NIT','El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.')
 ,(9,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,3,'Tarjeta_Identidad',NULL,0,'Tarjeta de identidad','Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.')
 ,(10,'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL,4,'Registro_Civil',NULL,0,'Registro civil','Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.')
@@ -6162,7 +6162,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON')
 ,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('ini_predioinsumos',NULL,'observaciones','ch.ehi.ili2db.dispName','Observaciones')
 ,('lc_predio',NULL,'avaluo_catastral','ch.ehi.ili2db.unit','COP')
@@ -6201,7 +6201,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_construccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_sectorurbano',NULL,'codigo','ch.ehi.ili2db.dispName','Código')
 ;
@@ -6219,7 +6219,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_construccion',NULL,'numero_pisos','ch.ehi.ili2db.dispName','Número de pisos')
 ,('lc_predio',NULL,'numero_predial','ch.ehi.ili2db.dispName','Número predial')
@@ -6268,7 +6268,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_propietario',NULL,'digito_verificacion','ch.ehi.ili2db.dispName','Dígito de verificación')
 ,('extinteresado',NULL,'extredserviciosfisica_ext_interesado_administrador_id','ch.ehi.ili2db.foreignKey','extredserviciosfisica')
@@ -6280,7 +6280,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_manzana',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_manzana',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_manzana',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_manzana',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('lc_terreno',NULL,'espacio_de_nombres','ch.ehi.ili2db.dispName','Espacio de nombres')
 ,('snr_predioregistro',NULL,'fecha_datos','ch.ehi.ili2db.dispName','Fecha de datos')
@@ -6292,7 +6292,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('extarchivo',NULL,'fecha_entrega','ch.ehi.ili2db.dispName','Fecha de entrega')
 ,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.coordDimension','3')
@@ -6305,7 +6305,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_construccion',NULL,'numero_sotanos','ch.ehi.ili2db.dispName','Número de sótanos')
 ,('col_miembros',NULL,'interesado_lc_interesado','ch.ehi.ili2db.foreignKey','lc_interesado')
@@ -6368,7 +6368,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_terreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('col_volumenvalor',NULL,'volumen_medicion','ch.ehi.ili2db.unit','m')
 ,('col_volumenvalor',NULL,'volumen_medicion','ch.ehi.ili2db.dispName','Volumen medición')
@@ -6402,7 +6402,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c2Min','1080000.000')
 ,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c3Min','-5000.000')
 ,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c3Max','6000.000')
-,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.srid','38820')
+,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.srid','9377')
 ,('extdireccion',NULL,'localizacion','ch.ehi.ili2db.dispName','Localización')
 ,('snr_titular',NULL,'segundo_apellido','ch.ehi.ili2db.dispName','Segundo apellido')
 ,('lc_datosadicionaleslevantamientocatastral',NULL,'segundo_nombre_reconocedor','ch.ehi.ili2db.dispName','Segundo nombre del reconocedor')
@@ -6446,7 +6446,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.c2Min','1080000.000')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
-('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','38820')
+('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','9377')
 ,('lc_datosadicionaleslevantamientocatastral',NULL,'clase_suelo','ch.ehi.ili2db.foreignKey','lc_clasesuelotipo')
 ,('lc_datosadicionaleslevantamientocatastral',NULL,'clase_suelo','ch.ehi.ili2db.dispName','Clase de suelo')
 ,('lc_contactovisita',NULL,'segundo_apellido_quien_atendio','ch.ehi.ili2db.dispName','Segundo apellido de quien atendió')
@@ -6486,7 +6486,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON')
 ,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('lc_interesadocontacto',NULL,'correo_electronico','ch.ehi.ili2db.dispName','Correo electrónico')
 ,('lc_construccion',NULL,'anio_construccion','ch.ehi.ili2db.dispName','Año de la construcción')
@@ -6503,7 +6503,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c2Min','1080000.000')
 ,('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c3Min','-5000.000')
 ,('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c3Max','6000.000')
-,('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.srid','38820')
+,('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.srid','9377')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.dispName','Geometría de referencia')
@@ -6518,7 +6518,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
-('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('lc_puntolindero',NULL,'ue_lc_unidadconstruccion','ch.ehi.ili2db.foreignKey','lc_unidadconstruccion')
 ,('lc_fuenteadministrativa',NULL,'numero_fuente','ch.ehi.ili2db.dispName','Número de fuente')
@@ -6538,7 +6538,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_construccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
@@ -6593,7 +6593,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('col_puntocl',NULL,'punto_lc_puntocontrol','ch.ehi.ili2db.foreignKey','lc_puntocontrol')
 ,('snr_predioregistro',NULL,'numero_predial_anterior_en_fmi','ch.ehi.ili2db.dispName','Número predial anterior en FMI')
@@ -6632,7 +6632,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c2Min','1080000.000')
 ,('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c3Min','-5000.000')
 ,('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c3Max','6000.000')
-,('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','38820')
+,('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','9377')
 ,('lc_puntolindero',NULL,'posicion_interpolacion','ch.ehi.ili2db.foreignKey','col_interpolaciontipo')
 ,('lc_puntolindero',NULL,'posicion_interpolacion','ch.ehi.ili2db.dispName','Posición interpolación')
 ,('snr_fuentederecho',NULL,'tipo_documento','ch.ehi.ili2db.foreignKey','snr_fuentetipo')
@@ -6659,7 +6659,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
@@ -6716,7 +6716,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.coordDimension','2')
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c1Max','5700000.000')
@@ -6726,7 +6726,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON')
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_vereda',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_prediocatastro',NULL,'fecha_datos','ch.ehi.ili2db.dispName','Fecha de los datos')
 ,('lc_interesado',NULL,'documento_identidad','ch.ehi.ili2db.dispName','Documento de identidad')
@@ -6802,7 +6802,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c2Min','1080000.000')
 ,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c3Min','-5000.000')
 ,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c3Max','6000.000')
-,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.srid','38820')
+,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.srid','9377')
 ,('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.dispName','Localización transformada')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
@@ -6959,7 +6959,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('gc_barrio',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON')
 ,('gc_barrio',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_barrio',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_barrio',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_barrio',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
@@ -6976,7 +6976,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('col_menoscl',NULL,'ue_menos_lc_terreno','ch.ehi.ili2db.foreignKey','lc_terreno')
 ,('lc_puntocontrol',NULL,'tipo_punto_control','ch.ehi.ili2db.foreignKey','lc_puntocontroltipo')
@@ -7059,7 +7059,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
 ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('lc_interesado',NULL,'primer_apellido','ch.ehi.ili2db.dispName','Primer apellido')
 ,('snr_titular',NULL,'tipo_persona','ch.ehi.ili2db.foreignKey','snr_personatitulartipo')
@@ -7097,7 +7097,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON')
 ,('gc_terreno',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000')
 ,('gc_terreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
-,('gc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('gc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('gc_terreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ,('gc_unidadconstruccion',NULL,'uso','ch.ehi.ili2db.dispName','Uso')
 ,('lc_predio',NULL,'id_operacion','ch.ehi.ili2db.dispName','Identificador único de operación')
@@ -7126,7 +7126,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 ,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000')
 ,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000')
 ,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000')
-,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.srid','38820')
+,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.srid','9377')
 ,('lc_lindero',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES 
@@ -9386,7 +9386,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.
          */
         !!@ ili2db.dispName = "Metodo declarativo y colaborativo"
-        Medoto_Declarativo_y_Colaborativo
+        Metodo_Declarativo_y_Colaborativo
       );
 
       COL_PuntoTipo = (
@@ -9703,7 +9703,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
        */
       !!@ ili2db.dispName = "Versión de comienzo de vida útil"
       Comienzo_Vida_Util_Version : MANDATORY INTERLIS.XMLDateTime;
-      /** Finnzo de la validez actual de la instancia de un objeto.
+      /** Finalización de la validez actual de la instancia de un objeto.
        */
       !!@ ili2db.dispName = "Versión de fin de vida útil"
       Fin_Vida_Util_Version : INTERLIS.XMLDateTime;
@@ -9965,7 +9965,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
      */
     CLASS COL_DRR (ABSTRACT)
     EXTENDS ObjetoVersionado =
-      /** Descripción relatical al derecho, la responsabilidad o la restricción.
+      /** Descripción asociada al derecho, la responsabilidad o la restricción.
        */
       !!@ ili2db.dispName = "Descripción"
       Descripcion : CharacterString;
@@ -10898,7 +10898,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Habitacional,
       /** Se califica con destino industrial, aquellos predios donde se desarrollan actividades de producción, fabricación, preparación, recuperación, reproducción, ensamblaje, construcción, transformación, tratamiento y manipulación de materias primas para producir bienes o productos materiales y que no estén clasificados dentro de los predios mineros.
        */
-      !!@ ili2db.dispName = "Institucional"
+      !!@ ili2db.dispName = "Industrial"
       Industrial,
       /** Se califica con destino infraestructura asociada a la producción agropecuaria, aquellos predios sobre los cuales se encuentra la infraestructura requerida dentro de la actividad agropecuaria y que son de interés para el sector agropecuario, como: bancos de maquinaria, plantas de almacenamiento, centros de acopio, centros de transformación agrícola, mataderos, etc.
        */
@@ -11064,7 +11064,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Cedula_Ciudadania,
       /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
        */
-      !!@ ili2db.dispName = "Cédula de estranjería"
+      !!@ ili2db.dispName = "Cédula de extranjería"
       Cedula_Extranjeria,
       /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
        */
@@ -14417,7 +14417,7 @@ END Submodelo_Integracion_Insumos_V1_0.
 ,('ch.ehi.ili2db.createMetaInfo','True')
 ,('ch.ehi.ili2db.createTypeConstraint','True')
 ,('ch.ehi.ili2db.defaultSrsAuthority','EPSG')
-,('ch.ehi.ili2db.defaultSrsCode','38820')
+,('ch.ehi.ili2db.defaultSrsCode','9377')
 ;
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES 
 ('ch.ehi.ili2db.inheritanceTrafo','smart2')
@@ -16738,7 +16738,7 @@ INSERT INTO test_ladm_col.col_areatipo (seq,iliCode,itfCode,dispName,inactive,de
 INSERT INTO test_ladm_col.lc_construcciontipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Convencional',0,'Convencional','0','Se refiere aquellas construcciones de uso residencial, comercial e industrial.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_ConstruccionTipo',NULL);
 INSERT INTO test_ladm_col.lc_construcciontipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'No_Convencional',1,'No convencional','0','Se refiere aquellas construcciones consideradas anexos de construcción.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_ConstruccionTipo',NULL);
 INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Cedula_Ciudadania',0,'Cédula de ciudadanía','0','Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
-INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Cedula_Extranjeria',1,'Cédula de estranjería','0','Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
+INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Cedula_Extranjeria',1,'Cédula de extranjería','0','Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
 INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'NIT',2,'NIT','0','El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
 INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Tarjeta_Identidad',3,'Tarjeta de identidad','0','Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
 INSERT INTO test_ladm_col.lc_interesadodocumentotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Registro_Civil',4,'Registro civil','0','Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_InteresadoDocumentoTipo',NULL);
@@ -16924,7 +16924,7 @@ económica de los inmuebles a través del uso de de sensores
 remotos, integración registros administrativos, modelos ísticos y
 econométricos, análisis de Big Data y fuentes secundarias como
 observatorios inmobiliarios, su posterior incorporación en la base catastral.','LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo',NULL);
-INSERT INTO test_ladm_col.col_metodoproducciontipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Medoto_Declarativo_y_Colaborativo',2,'Metodo declarativo y colaborativo','0','Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.','LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo',NULL);
+INSERT INTO test_ladm_col.col_metodoproducciontipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Metodo_Declarativo_y_Colaborativo',2,'Metodo declarativo y colaborativo','0','Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.','LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo',NULL);
 INSERT INTO test_ladm_col.lc_derechotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Dominio',0,'Dominio','0','El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC): 0100 0101 0102 0103 0106 0107 0108 0109 0110 0111 0112 0113 0114 0115 0116 0117 0118 0119 0120 0121 0122 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0135 0137 0138 0139 0140 0141 0142 0143 0144 0145 0146 0147 0148 0150 0151 0152 0153 0154 0155 0156 0157 0158 0159 0160 0161 0163 0164 0165 0166 0167 0168 0169 0171 0172 0173 0175 0177 0178 0179 0180 0181 0182 0183 0184 0185 0186 0187 0188 0189 0190 0191 0192 0193 0194 0195 0196 0197 0198 0199 01003 01004 01005 01006 01007 01008 01009 01010 01012 01013 01014 0301 0307 0321 0332 0348 0356 0374 0375 0376 0377 0906 0907 0910 0911 0912 0913 0915 0917 0918 0919 0920 0924 0935 0959 0962 0963','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_DerechoTipo',NULL);
 INSERT INTO test_ladm_col.lc_derechotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Ocupacion',1,'Ocupación','0','En el ámbito de la gestión catastral, es el polígono que representa el asentamiento de personas naturales o jurídicas dentro de un terreno baldío, el cual puede contar o no con construcciones y/o edificaciones.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_DerechoTipo',NULL);
 INSERT INTO test_ladm_col.lc_derechotipo (seq,iliCode,itfCode,dispName,inactive,description,thisClass,baseClass) VALUES (NULL,'Posesion',2,'Posesión','0','En el ámbito de la gestión catastral, es el polígono que representa el asentamiento de personas naturales o jurídicas, con ánimo de señor y dueño sobre un predio privado, el cual puede contar o no con construcciones y/o edificaciones.','Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.LC_DerechoTipo',NULL);
@@ -17246,7 +17246,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('ini_predioinsumos',NULL,'observaciones','ch.ehi.ili2db.dispName','Observaciones');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_predio',NULL,'avaluo_catastral','ch.ehi.ili2db.unit','COP');
@@ -17279,7 +17279,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'codigo','ch.ehi.ili2db.dispName','Código');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_datosphcondominio',NULL,'total_unidades_privadas','ch.ehi.ili2db.dispName','Total de unidades privadas');
@@ -17293,7 +17293,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesunidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'numero_pisos','ch.ehi.ili2db.dispName','Número de pisos');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_predio',NULL,'numero_predial','ch.ehi.ili2db.dispName','Número predial');
@@ -17334,7 +17334,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_propietario',NULL,'digito_verificacion','ch.ehi.ili2db.dispName','Dígito de verificación');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extinteresado',NULL,'extredserviciosfisica_ext_interesado_administrador_id','ch.ehi.ili2db.foreignKey','extredserviciosfisica');
@@ -17344,7 +17344,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_manzana',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'espacio_de_nombres','ch.ehi.ili2db.dispName','Espacio de nombres');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('snr_predioregistro',NULL,'fecha_datos','ch.ehi.ili2db.dispName','Fecha de datos');
@@ -17354,7 +17354,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorrural',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extarchivo',NULL,'fecha_entrega','ch.ehi.ili2db.dispName','Fecha de entrega');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.coordDimension','3');
@@ -17365,7 +17365,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'numero_sotanos','ch.ehi.ili2db.dispName','Número de sótanos');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_miembros',NULL,'interesado_lc_interesado','ch.ehi.ili2db.foreignKey','lc_interesado');
@@ -17418,7 +17418,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_volumenvalor',NULL,'volumen_medicion','ch.ehi.ili2db.unit','m');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_volumenvalor',NULL,'volumen_medicion','ch.ehi.ili2db.dispName','Volumen medición');
@@ -17446,7 +17446,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'localizacion','ch.ehi.ili2db.dispName','Localización');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('snr_titular',NULL,'segundo_apellido','ch.ehi.ili2db.dispName','Segundo apellido');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_datosadicionaleslevantamientocatastral',NULL,'segundo_nombre_reconocedor','ch.ehi.ili2db.dispName','Segundo nombre del reconocedor');
@@ -17482,7 +17482,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.geomType','POLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface2dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_datosadicionaleslevantamientocatastral',NULL,'clase_suelo','ch.ehi.ili2db.foreignKey','lc_clasesuelotipo');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_datosadicionaleslevantamientocatastral',NULL,'clase_suelo','ch.ehi.ili2db.dispName','Clase de suelo');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_contactovisita',NULL,'segundo_apellido_quien_atendio','ch.ehi.ili2db.dispName','Segundo apellido de quien atendió');
@@ -17516,7 +17516,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_comisionesterreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_interesadocontacto',NULL,'correo_electronico','ch.ehi.ili2db.dispName','Correo electrónico');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_construccion',NULL,'anio_construccion','ch.ehi.ili2db.dispName','Año de la construcción');
@@ -17531,7 +17531,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_direccion',NULL,'geometria_referencia','ch.ehi.ili2db.dispName','Geometría de referencia');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_derecho',NULL,'local_id','ch.ehi.ili2db.dispName','Local ID');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_perimetro',NULL,'codigo_nombre','ch.ehi.ili2db.dispName','Código nombre');
@@ -17542,7 +17542,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_sectorurbano',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'ue_lc_unidadconstruccion','ch.ehi.ili2db.foreignKey','lc_unidadconstruccion');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_fuenteadministrativa',NULL,'numero_fuente','ch.ehi.ili2db.dispName','Número de fuente');
@@ -17560,7 +17560,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_construccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'nombre','ch.ehi.ili2db.dispName','Nombre');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_interesadocontacto',NULL,'vereda','ch.ehi.ili2db.dispName','Vereda');
@@ -17605,7 +17605,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_puntocl',NULL,'punto_lc_puntocontrol','ch.ehi.ili2db.foreignKey','lc_puntocontrol');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('snr_predioregistro',NULL,'numero_predial_anterior_en_fmi','ch.ehi.ili2db.dispName','Número predial anterior en FMI');
@@ -17638,7 +17638,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gm_surface3dlistvalue',NULL,'avalue','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'posicion_interpolacion','ch.ehi.ili2db.foreignKey','col_interpolaciontipo');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolindero',NULL,'posicion_interpolacion','ch.ehi.ili2db.dispName','Posición interpolación');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('snr_fuentederecho',NULL,'tipo_documento','ch.ehi.ili2db.foreignKey','snr_fuentetipo');
@@ -17661,7 +17661,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntolevantamiento',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('extdireccion',NULL,'es_direccion_principal','ch.ehi.ili2db.dispName','Es dirección principal');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_prediocatastro',NULL,'circulo_registral','ch.ehi.ili2db.dispName','Círculo registral');
@@ -17708,7 +17708,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.coordDimension','2');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c1Max','5700000.000');
@@ -17716,7 +17716,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_vereda',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_prediocatastro',NULL,'fecha_datos','ch.ehi.ili2db.dispName','Fecha de los datos');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_interesado',NULL,'documento_identidad','ch.ehi.ili2db.dispName','Documento de identidad');
@@ -17780,7 +17780,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_transformacion',NULL,'localizacion_transformada','ch.ehi.ili2db.dispName','Localización transformada');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'dimension','ch.ehi.ili2db.foreignKey','col_dimensiontipo');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_terreno',NULL,'dimension','ch.ehi.ili2db.dispName','Dimensión');
@@ -17911,7 +17911,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_barrio',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'comienzo_vida_util_version','ch.ehi.ili2db.dispName','Versión de comienzo de vida útil');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'exactitud_horizontal','ch.ehi.ili2db.unit','m');
@@ -17924,7 +17924,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('col_menoscl',NULL,'ue_menos_lc_terreno','ch.ehi.ili2db.foreignKey','lc_terreno');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_puntocontrol',NULL,'tipo_punto_control','ch.ehi.ili2db.foreignKey','lc_puntocontroltipo');
@@ -17993,7 +17993,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_unidadconstruccion',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_interesado',NULL,'primer_apellido','ch.ehi.ili2db.dispName','Primer apellido');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('snr_titular',NULL,'tipo_persona','ch.ehi.ili2db.foreignKey','snr_personatitulartipo');
@@ -18025,7 +18025,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.geomType','MULTIPOLYGON');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.c1Min','3980000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_terreno',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('gc_unidadconstruccion',NULL,'uso','ch.ehi.ili2db.dispName','Uso');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_predio',NULL,'id_operacion','ch.ehi.ili2db.dispName','Identificador único de operación');
@@ -18050,7 +18050,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c2Min','1080000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c3Min','-5000.000');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.c3Max','6000.000');
-INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.srid','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.srid','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_lindero',NULL,'geometria','ch.ehi.ili2db.dispName','Geometría');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_interesadocontacto',NULL,'departamento','ch.ehi.ili2db.dispName','Departamento');
 INSERT INTO test_ladm_col.T_ILI2DB_COLUMN_PROP (tablename,subtype,columnname,tag,setting) VALUES ('lc_servidumbretransito',NULL,'area_servidumbre','ch.ehi.ili2db.unit','m2');
@@ -18478,7 +18478,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.
          */
         !!@ ili2db.dispName = "Metodo declarativo y colaborativo"
-        Medoto_Declarativo_y_Colaborativo
+        Metodo_Declarativo_y_Colaborativo
       );
 
       COL_PuntoTipo = (
@@ -18795,7 +18795,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
        */
       !!@ ili2db.dispName = "Versión de comienzo de vida útil"
       Comienzo_Vida_Util_Version : MANDATORY INTERLIS.XMLDateTime;
-      /** Finnzo de la validez actual de la instancia de un objeto.
+      /** Finalización de la validez actual de la instancia de un objeto.
        */
       !!@ ili2db.dispName = "Versión de fin de vida útil"
       Fin_Vida_Util_Version : INTERLIS.XMLDateTime;
@@ -19057,7 +19057,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
      */
     CLASS COL_DRR (ABSTRACT)
     EXTENDS ObjetoVersionado =
-      /** Descripción relatical al derecho, la responsabilidad o la restricción.
+      /** Descripción asociada al derecho, la responsabilidad o la restricción.
        */
       !!@ ili2db.dispName = "Descripción"
       Descripcion : CharacterString;
@@ -19990,7 +19990,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Habitacional,
       /** Se califica con destino industrial, aquellos predios donde se desarrollan actividades de producción, fabricación, preparación, recuperación, reproducción, ensamblaje, construcción, transformación, tratamiento y manipulación de materias primas para producir bienes o productos materiales y que no estén clasificados dentro de los predios mineros.
        */
-      !!@ ili2db.dispName = "Institucional"
+      !!@ ili2db.dispName = "Industrial"
       Industrial,
       /** Se califica con destino infraestructura asociada a la producción agropecuaria, aquellos predios sobre los cuales se encuentra la infraestructura requerida dentro de la actividad agropecuaria y que son de interés para el sector agropecuario, como: bancos de maquinaria, plantas de almacenamiento, centros de acopio, centros de transformación agrícola, mataderos, etc.
        */
@@ -20156,7 +20156,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Cedula_Ciudadania,
       /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
        */
-      !!@ ili2db.dispName = "Cédula de estranjería"
+      !!@ ili2db.dispName = "Cédula de extranjería"
       Cedula_Extranjeria,
       /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
        */
@@ -23570,7 +23570,7 @@ INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.createForeignKey','yes');
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.sqlgen.createGeomIndex','True');
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.defaultSrsAuthority','EPSG');
-INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.defaultSrsCode','38820');
+INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.defaultSrsCode','9377');
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.uuidDefaultValue','NEWID()');
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.StrokeArcs','enable');
 INSERT INTO test_ladm_col.T_ILI2DB_SETTINGS (tag,setting) VALUES ('ch.ehi.ili2db.multiLineTrafo','coalesce');
