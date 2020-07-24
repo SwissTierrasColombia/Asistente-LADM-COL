@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Target data base                                                                               </string>
+            <string>Target data base</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_13">
             <item row="0" column="0">

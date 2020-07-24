@@ -116,72 +116,84 @@
 <context>
     <name>AppCoreInterface</name>
     <message>
-        <location filename="../core/app_core_interface.py" line="132"/>
+        <location filename="../core/app_core_interface.py" line="134"/>
         <source>Extracting relations and domains from the database... This is done only once per session!</source>
         <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="206"/>
-        <location filename="../core/app_core_interface.py" line="263"/>
+        <location filename="../core/app_core_interface.py" line="208"/>
+        <location filename="../core/app_core_interface.py" line="265"/>
         <source>Loading LADM-COL layers to QGIS and configuring their relations and forms...</source>
         <translation>Cargando capas LADM-COL a QGIS y configurando sus formularios y relaciones...</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="235"/>
+        <location filename="../core/app_core_interface.py" line="237"/>
         <source>{layer_name} layer couldn&apos;t be found... {description}</source>
         <translation>No se encontró la capa {layer_name}... {description}</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="273"/>
+        <location filename="../core/app_core_interface.py" line="275"/>
         <source>Relations have been fixed for all LADM-COL loaded layers!</source>
         <translation>¡Se han configurado las relaciones para todas las capas LADM-COL cargadas en el proyecto!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="275"/>
+        <location filename="../core/app_core_interface.py" line="277"/>
         <source>No layers to fix their relations.</source>
         <translation>No hay capas para configurar sus relaciones.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1002"/>
+        <location filename="../core/app_core_interface.py" line="1009"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1034"/>
+        <location filename="../core/app_core_interface.py" line="1041"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1058"/>
+        <location filename="../core/app_core_interface.py" line="1065"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1079"/>
+        <location filename="../core/app_core_interface.py" line="1086"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1082"/>
-        <source>No point was added to &apos;{}&apos;.</source>
-        <translation>No se agregó ningún punto a &apos;{}&apos;.</translation>
+        <location filename="../core/app_core_interface.py" line="1089"/>
+        <source>No point was added to &apos;{}&apos;. Most likely, the CSV does not have the required structure.</source>
+        <translation>No se agregaron puntos a &apos;{}&apos;. Probablemente, el CSV no tiene la estructura requerida.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1097"/>
-        <location filename="../core/app_core_interface.py" line="1131"/>
+        <location filename="../core/app_core_interface.py" line="1128"/>
+        <source>The output of the ETL-model has no features! Most likely, the CSV does not have the required structure.</source>
+        <translation>¡El resultado del ETL no tiene ningún registro! Probablemente, el CSV no tiene la estructura requerida.</translation>
+    </message>
+    <message>
+        <location filename="../core/app_core_interface.py" line="1132"/>
+        <location filename="../core/app_core_interface.py" line="1187"/>
+        <source>Model &apos;{}&apos; was not found and cannot be opened!</source>
+        <translation>¡No se encontró el modelo &apos;{}&apos; y por ello no puede ser abierto!</translation>
+    </message>
+    <message>
+        <source>No point was added to &apos;{}&apos;.</source>
+        <translation type="vanished">No se agregó ningún punto a &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../core/app_core_interface.py" line="1104"/>
+        <location filename="../core/app_core_interface.py" line="1143"/>
         <source>You need to close the edit session on layer &apos;{}&apos; before using this tool!</source>
         <translation>¡Necesitas cerrar la sesión de edición sobre la capa &apos;{}&apos; antes de usar esta herramienta!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1116"/>
         <source>The output of the ETL-model has no features!</source>
-        <translation>¡La salida del modelo ETL-model no tiene registros!</translation>
+        <translation type="vanished">¡La salida del modelo ETL-model no tiene registros!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1120"/>
-        <location filename="../core/app_core_interface.py" line="1170"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
-        <translation>¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
+        <translation type="vanished">¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
     </message>
     <message>
         <location filename="../app_interface.py" line="100"/>
@@ -657,7 +669,7 @@
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1456"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1477"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -678,22 +690,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1274"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1295"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1285"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1306"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1393"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1414"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1394"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1415"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -748,13 +760,13 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="569"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="747"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="768"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="571"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="752"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="773"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -763,7 +775,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="736"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="757"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -971,12 +983,12 @@
         <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1198"/>
+        <location filename="../core/app_core_interface.py" line="1215"/>
         <source>&apos;{}&apos; tool has been closed because there was a problem loading the requeries layers.</source>
         <translation>La herramienta &apos;{}&apos; se ha cerrado porque hubo un problema cargando las capas requeridas.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1219"/>
+        <location filename="../core/app_core_interface.py" line="1236"/>
         <source>&apos;{}&apos; cannot be opened until the following layers are not in edit mode &apos;{}&apos;.</source>
         <translation>No se puede abrir &apos;{}&apos; hasta que las siguientes capas dejen de estar en edición: &apos;{}&apos;.</translation>
     </message>
@@ -1959,12 +1971,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1180"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1201"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1182"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1203"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -4184,8 +4196,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="368"/>
+        <source>The {} (Colombian National Origin) is recommended,&lt;br&gt;since official models were created for that projection.</source>
+        <translation>Se recomienda el {} (Origen Nacional),&lt;br&gt;pues los modelos oficiales fueron creados para trabajar con esa proyección.</translation>
+    </message>
+    <message>
         <source>USER crs are only valid for one machine. We&apos;ll use the default {}</source>
-        <translation>Los CRSs tipo &apos;USER&apos; solo son válidos para un computador. Usaremos el predeterminado {}</translation>
+        <translation type="vanished">Los CRSs tipo &apos;USER&apos; solo son válidos para un computador. Usaremos el predeterminado {}</translation>
     </message>
     <message>
         <source>Please set a valid model(s) before creating the LADM-COL structure.</source>
@@ -4226,7 +4242,7 @@ Done!</source>
         <translation type="vanished">Selecciona un código EPSG de Sistema de Referencia de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="373"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="371"/>
         <source>Coordinate Reference System</source>
         <translation>Sistema de Referencia de Coordenadas</translation>
     </message>
@@ -4235,12 +4251,12 @@ Done!</source>
         <translation type="vanished">La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="440"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="436"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="443"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="439"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -5011,19 +5027,19 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="131"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="128"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="20"/>
         <source>Create schema</source>
         <translation>Crear esquema</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="151"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="148"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="40"/>
         <source>[Leave empty to use standard host: localhost]</source>
         <translation>[Deja vacío para usar el host predeterminado: localhost]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="86"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="83"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="47"/>
         <source>Port</source>
         <translation>Puerto</translation>
@@ -5035,33 +5051,33 @@ p, li { white-space: pre-wrap; }
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="48"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="45"/>
         <source>[Leave empty to use dynamic or standard port 1433]</source>
         <translation>[Deja vacío para usar puerto dinámico o estándar 1433]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="55"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="52"/>
         <source>[Leave empty to use default instance]</source>
         <translation>[Deja vacío para usar la instancia predeterminada]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="62"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="59"/>
         <source>Odbc Driver</source>
         <translation>Controlador ODBC</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="76"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="73"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="127"/>
         <source>Password</source>
         <translation>Contraseña</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="107"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="104"/>
         <source>Instance</source>
         <translation>Instancia</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="69"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="66"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="75"/>
         <source>Host</source>
         <translation>Host</translation>
@@ -5073,7 +5089,7 @@ p, li { white-space: pre-wrap; }
         <translation>Crear base de datos</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="93"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="90"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="85"/>
         <source>Schema</source>
         <translation>Esquema</translation>
@@ -5084,7 +5100,7 @@ p, li { white-space: pre-wrap; }
         <translation>[Deja vacío para usar la contraseña del sistema]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="100"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="97"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="92"/>
         <source>Database</source>
         <translation>Base de datos</translation>
@@ -5095,13 +5111,13 @@ p, li { white-space: pre-wrap; }
         <translation>[Deja vacío para usar puerto estándar 5432]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="114"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="111"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="106"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="121"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="118"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="113"/>
         <source>Refresh databases and schemas</source>
         <translation>Refrescar bases de datos y esquemas</translation>
@@ -5202,7 +5218,7 @@ Rol:</translation>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="144"/>
         <source>Unidad construcción Comp</source>
-        <translation type="unfinished"></translation>
+        <translation>Unidad construcción Comp</translation>
     </message>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="220"/>
@@ -5217,7 +5233,7 @@ Rol:</translation>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="375"/>
         <source>Predio bloqueo</source>
-        <translation type="unfinished"></translation>
+        <translation>Predio bloqueo</translation>
     </message>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="315"/>
@@ -5981,12 +5997,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="847"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="868"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="851"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="872"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6787,17 +6803,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="814"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="835"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="822"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="843"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="834"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="855"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7045,67 +7061,67 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>MSSQLConnector</name>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="162"/>
+        <location filename="../lib/db/mssql_connector.py" line="161"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="188"/>
+        <location filename="../lib/db/mssql_connector.py" line="187"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="210"/>
+        <location filename="../lib/db/mssql_connector.py" line="209"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="391"/>
+        <location filename="../lib/db/mssql_connector.py" line="390"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="394"/>
+        <location filename="../lib/db/mssql_connector.py" line="393"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="399"/>
+        <location filename="../lib/db/mssql_connector.py" line="398"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="406"/>
+        <location filename="../lib/db/mssql_connector.py" line="405"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al motor de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="429"/>
+        <location filename="../lib/db/mssql_connector.py" line="428"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="448"/>
+        <location filename="../lib/db/mssql_connector.py" line="447"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="453"/>
+        <location filename="../lib/db/mssql_connector.py" line="452"/>
         <source>The schema &apos;{}&apos; is not a valid LADM_COL schema. That is, the schema doesn&apos;t have the structure of the LADM_COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM-COL. Esto es, el esquema no es conforme con el modelo LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="459"/>
+        <location filename="../lib/db/mssql_connector.py" line="458"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="476"/>
+        <location filename="../lib/db/mssql_connector.py" line="475"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="480"/>
+        <location filename="../lib/db/mssql_connector.py" line="479"/>
         <source>The schema &apos;{}&apos; has a valid LADM_COL structure!</source>
         <translation>¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
@@ -9108,7 +9124,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/supplies/snc_data_sources_widget.py" line="67"/>
         <source>Select the unidad construcción comp .csv file with SNC data </source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona el archivo .csv del SNC con datos de &apos;unidad construcción comp&apos; </translation>
     </message>
     <message>
         <location filename="../gui/supplies/snc_data_sources_widget.py" line="72"/>
@@ -9290,41 +9306,41 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Debes seleccionar un Sistema de Referencia con EPSG válido!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="922"/>
+        <location filename="../core/app_core_interface.py" line="924"/>
         <source>The tested service is valid to connect with Transitional System!</source>
         <translation>¡El servicio del Sistema de Transición es válido!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="927"/>
-        <location filename="../core/app_core_interface.py" line="931"/>
+        <location filename="../core/app_core_interface.py" line="929"/>
+        <location filename="../core/app_core_interface.py" line="933"/>
         <source>Response from the tested service is not as expected.</source>
         <translation>La respuesta del servidor no es la esperada. Servicio inválido.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="869"/>
+        <location filename="../core/app_core_interface.py" line="871"/>
         <source>The tested service is valid to upload files!</source>
         <translation>¡El servicio probado es válido para subir archivos!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="874"/>
+        <location filename="../core/app_core_interface.py" line="876"/>
         <source>The tested upload service is not compatible: no valid &apos;id&apos; found in response.</source>
         <translation>El servicio probado no es compatible: no se encontró un &apos;id&apos; válido en la respuesta.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="878"/>
+        <location filename="../core/app_core_interface.py" line="880"/>
         <source>Response from the tested service is not compatible: not valid JSON found.</source>
         <translation>La respuesta desde el servicio probado no es compatible: no se encontró un JSON válido.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="882"/>
-        <location filename="../core/app_core_interface.py" line="935"/>
+        <location filename="../core/app_core_interface.py" line="884"/>
+        <location filename="../core/app_core_interface.py" line="937"/>
         <location filename="../gui/queries/dockwidget_queries.py" line="493"/>
         <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.</source>
         <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="886"/>
-        <location filename="../core/app_core_interface.py" line="939"/>
+        <location filename="../core/app_core_interface.py" line="888"/>
+        <location filename="../core/app_core_interface.py" line="941"/>
         <location filename="../gui/queries/dockwidget_queries.py" line="497"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
@@ -9335,8 +9351,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>La URL no es válida</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="890"/>
-        <location filename="../core/app_core_interface.py" line="943"/>
+        <location filename="../core/app_core_interface.py" line="892"/>
+        <location filename="../core/app_core_interface.py" line="945"/>
         <source>Not valid service URL to test!</source>
         <translation>¡La URL del servicio no es válida!</translation>
     </message>
@@ -11036,7 +11052,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/wizards/abs_wizard_factory.py" line="135"/>
         <location filename="../gui/wizards/survey/wiz_create_parcel_survey.py" line="291"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="239"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="243"/>
         <source>Error while saving changes. {} could not be created.</source>
         <translation>Error al guardar los cambios. {} no se pudo crear.</translation>
     </message>
@@ -11046,26 +11062,26 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>La herramienta &apos;{}&apos; ha sido cerrada porque acabas de cerrar el formulario.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/multi_page_spatial_wizard_factory.py" line="73"/>
+        <location filename="../gui/wizards/multi_page_spatial_wizard_factory.py" line="76"/>
         <location filename="../gui/wizards/multi_page_wizard_factory.py" line="74"/>
-        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="66"/>
+        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="68"/>
         <location filename="../gui/wizards/single_page_wizard_factory.py" line="66"/>
         <location filename="../gui/wizards/survey/wiz_create_plot_survey.py" line="113"/>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="116"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="84"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="117"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="86"/>
         <location filename="../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py" line="72"/>
         <location filename="../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py" line="84"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/multi_page_spatial_wizard_factory.py" line="84"/>
+        <location filename="../gui/wizards/multi_page_spatial_wizard_factory.py" line="88"/>
         <location filename="../gui/wizards/multi_page_wizard_factory.py" line="84"/>
-        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="73"/>
+        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="76"/>
         <location filename="../gui/wizards/single_page_wizard_factory.py" line="73"/>
         <location filename="../gui/wizards/survey/wiz_create_plot_survey.py" line="123"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="93"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="102"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="95"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="105"/>
         <location filename="../gui/wizards/valuation/wiz_create_building_unit_qualification_valuation.py" line="91"/>
         <source>Create</source>
         <translation>Crear</translation>
@@ -11081,12 +11097,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Hay algunos valores inválidos en la columna &apos;denominador&apos;. Arréglalos antes de continuar...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="79"/>
+        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="82"/>
         <location filename="../gui/wizards/single_page_wizard_factory.py" line="79"/>
         <location filename="../gui/wizards/survey/dlg_create_group_party_survey.py" line="374"/>
         <location filename="../gui/wizards/survey/wiz_create_ext_address_survey.py" line="147"/>
         <location filename="../gui/wizards/survey/wiz_create_parcel_survey.py" line="59"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="194"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="198"/>
         <location filename="../gui/wizards/survey/wiz_create_rrr_survey.py" line="42"/>
         <location filename="../gui/wizards/survey/wiz_create_spatial_source_survey.py" line="20"/>
         <location filename="../gui/wizards/valuation/wiz_create_building_unit_valuation.py" line="23"/>
@@ -11109,14 +11125,21 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>La nueva agrupación de interesados (t_id={}) se ha creado exitosamente pero esta no fue asociada con uno de su(s) interesado(s)</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/spatial_wizard_factory.py" line="105"/>
+        <location filename="../gui/wizards/spatial_wizard_factory.py" line="107"/>
         <location filename="../gui/wizards/survey/dlg_create_group_party_survey.py" line="438"/>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="269"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="145"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="334"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="272"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="149"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="349"/>
         <location filename="../gui/wizards/wizard_factory.py" line="98"/>
         <source>&apos;{}&apos; tool has been closed.</source>
         <translation>La herramienta &apos;{}&apos; ha sido cerrada.</translation>
+    </message>
+    <message>
+        <location filename="../gui/wizards/spatial_wizard_factory.py" line="163"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="488"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="270"/>
+        <source>This layer will be reprojected for you to &apos;{}&apos; (Colombian National Origin),&lt;br&gt;before attempting to import it into LADM-COL.</source>
+        <translation>Esta capa será (re)proyectada a &apos;{}&apos; (Origen Nacional),&lt;br&gt;antes de intentar importarla a LADM-COL.</translation>
     </message>
     <message>
         <location filename="../gui/wizards/survey/wiz_create_ext_address_survey.py" line="60"/>
@@ -11150,7 +11173,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/wizards/single_page_wizard_factory.py" line="89"/>
         <location filename="../gui/wizards/survey/wiz_create_ext_address_survey.py" line="161"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="203"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="207"/>
         <source>The new {} (t_id={}) was successfully created </source>
         <translation>El nuevo {} (t_id = {}) se creó con éxito </translation>
     </message>
@@ -11160,9 +11183,9 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>La herramienta &apos;{}&apos; se ha cerrado porque cuando intentaba crear {} no era posible asociar una unidad espacial.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/spatial_wizard_factory.py" line="131"/>
+        <location filename="../gui/wizards/spatial_wizard_factory.py" line="133"/>
         <location filename="../gui/wizards/survey/wiz_create_ext_address_survey.py" line="266"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="190"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="194"/>
         <source>You can now start capturing {} digitizing on the map...</source>
         <translation>Ahora puede comenzar a capturar {} digitalizando en el mapa ...</translation>
     </message>
@@ -11255,100 +11278,110 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="186"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="187"/>
         <source>The current model does not support 3D geometries</source>
         <translation>El modelo empleado no soporta geometrías 3D</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="223"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="226"/>
         <source>Load data to Boundary Points...</source>
         <translation>Cargar datos a Punto Lindero...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="224"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="227"/>
         <source>Configure CSV data source for Boundary Points...</source>
         <translation>Configurar fuente de datos CSV para Punto Lindero...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="227"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="230"/>
         <source>Load data to Survey Points...</source>
         <translation>Cargar datos a Puntos de Levantamiento...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="228"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="231"/>
         <source>Configure CSV data source for Survey Points...</source>
         <translation>Configurar fuente de datos CSV para Puntos de Levantamiento...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="231"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="234"/>
         <source>Load data to Control Points...</source>
         <translation>Cargar datos a Punto Control...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="232"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="235"/>
         <source>Configure CSV data source for Control Points...</source>
         <translation>Configurar fuente de datos CSV para Puntos de Control...</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/spatial_wizard_factory.py" line="74"/>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="259"/>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="129"/>
+        <location filename="../gui/wizards/spatial_wizard_factory.py" line="76"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="262"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="133"/>
         <location filename="../gui/wizards/wizard_factory.py" line="68"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="286"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="289"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="407"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="352"/>
+        <source>Your CSV data will be reprojected for you to &apos;{}&apos; (Colombian National Origin),&lt;br&gt;before attempting to import it into LADM-COL.</source>
+        <translation>Tus datos CSV serán (re)proyectados a &apos;{}&apos; (Origen Nacional),&lt;br&gt;antes de intentar importarlos a LADM-COL.</translation>
+    </message>
+    <message>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="356"/>
+        <source>Coordinate Reference System</source>
+        <translation>Sistema de Referencia de Coordenadas</translation>
+    </message>
+    <message>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="417"/>
         <source>It was not possible to read field names from the CSV. Check the file and try again.</source>
         <translation>No se pudieron leer los nombres de los campos del archivo CSV. Revisa el archivo e intenta de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="443"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="453"/>
         <source>Save File</source>
         <translation>Guardar archivo</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="446"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="456"/>
         <source>CSV File (*.csv *.txt)</source>
         <translation>CSV File (*.csv *.txt)</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="455"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="465"/>
         <source>CSV file not found. Update your plugin. For details see log.</source>
         <translation>No se pudo encontrar el archivo CSV. Actualiza el plugin. Para más detalles ver el registro.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="470"/>
+        <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="480"/>
         <source>The file couldn&apos;t be saved.</source>
         <translation>No se pudo guardar el archivo.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="199"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="203"/>
         <source>&apos;{}&apos; tool has been closed. Feature not found in layer {}... It&apos;s not posible create a {}. </source>
         <translation>La herramienta &apos;{}&apos; se ha cerrado. Entidades no encontrada en la capa {} ... No es posible crear una {}. </translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="304"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="319"/>
         <source>Geometry is invalid. Do you want to return to the editing session?</source>
         <translation>La geometría no es válida. ¿Desea volver a la sesión de edición?</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="307"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="322"/>
         <source>Geometry was not created. Do you want to return to the editing session?</source>
         <translation>La geometría no fue creada. ¿Desea volver a la sesión de edición?</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="309"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="324"/>
         <source>Many geometries were created but one was expected. Do you want to return to the editing session?</source>
         <translation>Se crearon varias geometrías pero se esperaba una. ¿Desea volver a la sesión de edición?</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="324"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="339"/>
         <source>Continue editing?</source>
         <translation>¿Seguir editando?</translation>
     </message>
@@ -11357,7 +11390,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Si</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="326"/>
+        <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="341"/>
         <source>No, close the wizard</source>
         <translation>No, cierra el asistente</translation>
     </message>
@@ -11402,13 +11435,13 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>&lt;b&gt;Control&lt;/b&gt;: {count} Registro(s) seleccionado(s)</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="84"/>
+        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="87"/>
         <location filename="../gui/wizards/single_page_wizard_factory.py" line="84"/>
         <source>&apos;{}&apos; tool has been closed. Feature not found in layer {}... It&apos;s not posible create it.</source>
         <translation>La herramienta &apos;{}&apos; se ha cerrado. Registro no encontrada en la capa {} ... No es posible crearla.</translation>
     </message>
     <message>
-        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="89"/>
+        <location filename="../gui/wizards/single_page_spatial_wizard_factory.py" line="92"/>
         <source>The new {} (t_id={}) was successfully created!</source>
         <translation>¡El nuevo {} (t_id={}) se creó con éxito!</translation>
     </message>
@@ -11929,17 +11962,9 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -13286,12 +13311,17 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite elegir cuál ETL se desea ejecutar, dependiendo de la proveniencia de los datos fuente. Se ofrecen dos opciones: ETL para datos del &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Sistema Nacional Catastral (SNC)&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; o ETL para datos de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Cobol&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite elegir cuál ETL se desea ejecutar, dependiendo de la proveniencia de los datos fuente. Se ofrecen dos opciones: ETL para datos del &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Sistema Nacional Catastral (SNC)&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; o ETL para datos de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Cobol&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="213"/>
         <source>Target data base                                                                               </source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Base de datos destino</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="299"/>
@@ -13300,7 +13330,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="344"/>
@@ -13309,7 +13343,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="368"/>
@@ -13318,7 +13356,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Aquí se presentan los resultados del ETL ejecutado, permitiendo observar a manera de reporte el número de elementos cargados a la base de datos LADM-COL.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Aquí se presentan los resultados del ETL ejecutado, permitiendo observar a manera de reporte el número de elementos cargados a la base de datos LADM-COL.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -13337,8 +13379,9 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="213"/>
         <source>Target data base</source>
-        <translation type="vanished">Base de datos destino</translation>
+        <translation>Base de datos destino</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="225"/>
