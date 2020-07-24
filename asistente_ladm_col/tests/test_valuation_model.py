@@ -68,11 +68,11 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -101,11 +101,11 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():

@@ -201,7 +201,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.
          */
         !!@ ili2db.dispName = "Metodo declarativo y colaborativo"
-        Medoto_Declarativo_y_Colaborativo
+        Metodo_Declarativo_y_Colaborativo
       );
 
       COL_PuntoTipo = (
@@ -518,7 +518,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
        */
       !!@ ili2db.dispName = "Versión de comienzo de vida útil"
       Comienzo_Vida_Util_Version : MANDATORY INTERLIS.XMLDateTime;
-      /** Finnzo de la validez actual de la instancia de un objeto.
+      /** Finalización de la validez actual de la instancia de un objeto.
        */
       !!@ ili2db.dispName = "Versión de fin de vida útil"
       Fin_Vida_Util_Version : INTERLIS.XMLDateTime;
@@ -780,7 +780,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
      */
     CLASS COL_DRR (ABSTRACT)
     EXTENDS ObjetoVersionado =
-      /** Descripción relatical al derecho, la responsabilidad o la restricción.
+      /** Descripción asociada al derecho, la responsabilidad o la restricción.
        */
       !!@ ili2db.dispName = "Descripción"
       Descripcion : CharacterString;

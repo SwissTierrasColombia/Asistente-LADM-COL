@@ -63,7 +63,7 @@ class LADMNames(metaclass=Singleton):
     SNR_DATA_SUPPLIES_MODEL_KEY = "Submodelo_Insumos_SNR"
     SUPPLIES_INTEGRATION_MODEL_KEY = "Submodelo_Integracion_Insumos"
     CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
-    VALUATION_MODEL_KEY = "Sumodelo_Avaluos"
+    VALUATION_MODEL_KEY = "Submodelo_Avaluos"
     ISO19107_MODEL_KEY = "ISO19107_PLANAS"
 
     DEFAULT_INHERITANCE = 'smart2'

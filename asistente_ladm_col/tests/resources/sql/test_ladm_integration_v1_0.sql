@@ -5,7 +5,7 @@
 -- Dumped from database version 11.8 (Ubuntu 11.8-1.pgdg20.04+1)
 -- Dumped by pg_dump version 12.3 (Ubuntu 12.3-1.pgdg20.04+1)
 
--- Started on 2020-07-15 12:05:30 -05
+-- Started on 2020-07-22 11:13:45 -05
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 13 (class 2615 OID 322615)
+-- TOC entry 11 (class 2615 OID 375911)
 -- Name: test_ladm_integration; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -30,7 +30,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 ALTER SCHEMA test_ladm_integration OWNER TO postgres;
 
 --
--- TOC entry 1195 (class 1259 OID 322616)
+-- TOC entry 795 (class 1259 OID 375912)
 -- Name: t_ili2db_seq; Type: SEQUENCE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -47,7 +47,7 @@ ALTER TABLE test_ladm_integration.t_ili2db_seq OWNER TO postgres;
 SET default_tablespace = '';
 
 --
--- TOC entry 1196 (class 1259 OID 322618)
+-- TOC entry 800 (class 1259 OID 375948)
 -- Name: extarchivo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -68,8 +68,8 @@ CREATE TABLE test_ladm_integration.extarchivo (
 ALTER TABLE test_ladm_integration.extarchivo OWNER TO postgres;
 
 --
--- TOC entry 8045 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6564 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: TABLE extarchivo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -77,8 +77,8 @@ COMMENT ON TABLE test_ladm_integration.extarchivo IS 'Referencia a clase externa
 
 
 --
--- TOC entry 8046 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6565 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.fecha_aceptacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -86,8 +86,8 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.fecha_aceptacion IS 'Fecha en
 
 
 --
--- TOC entry 8047 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6566 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.datos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -95,8 +95,8 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.datos IS 'Datos que contiene 
 
 
 --
--- TOC entry 8048 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6567 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.extraccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -104,8 +104,8 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.extraccion IS 'Última fecha 
 
 
 --
--- TOC entry 8049 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6568 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.fecha_grabacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -113,8 +113,8 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.fecha_grabacion IS 'Fecha en 
 
 
 --
--- TOC entry 8050 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6569 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.fecha_entrega; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -122,8 +122,8 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.fecha_entrega IS 'Fecha en la
 
 
 --
--- TOC entry 8051 (class 0 OID 0)
--- Dependencies: 1196
+-- TOC entry 6570 (class 0 OID 0)
+-- Dependencies: 800
 -- Name: COLUMN extarchivo.snr_fuentecabidalndros_archivo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -131,7 +131,7 @@ COMMENT ON COLUMN test_ladm_integration.extarchivo.snr_fuentecabidalndros_archiv
 
 
 --
--- TOC entry 1197 (class 1259 OID 322625)
+-- TOC entry 801 (class 1259 OID 375958)
 -- Name: gc_barrio; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -141,15 +141,15 @@ CREATE TABLE test_ladm_integration.gc_barrio (
     codigo character varying(13),
     nombre character varying(100),
     codigo_sector character varying(9),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_barrio OWNER TO postgres;
 
 --
--- TOC entry 8052 (class 0 OID 0)
--- Dependencies: 1197
+-- TOC entry 6571 (class 0 OID 0)
+-- Dependencies: 801
 -- Name: TABLE gc_barrio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -157,8 +157,8 @@ COMMENT ON TABLE test_ladm_integration.gc_barrio IS 'Dato geografico aportado po
 
 
 --
--- TOC entry 8053 (class 0 OID 0)
--- Dependencies: 1197
+-- TOC entry 6572 (class 0 OID 0)
+-- Dependencies: 801
 -- Name: COLUMN gc_barrio.codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -166,8 +166,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_barrio.codigo IS 'Código de identifi
 
 
 --
--- TOC entry 8054 (class 0 OID 0)
--- Dependencies: 1197
+-- TOC entry 6573 (class 0 OID 0)
+-- Dependencies: 801
 -- Name: COLUMN gc_barrio.nombre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -175,8 +175,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_barrio.nombre IS 'Nombre del barrio.'
 
 
 --
--- TOC entry 8055 (class 0 OID 0)
--- Dependencies: 1197
+-- TOC entry 6574 (class 0 OID 0)
+-- Dependencies: 801
 -- Name: COLUMN gc_barrio.codigo_sector; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -184,8 +184,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_barrio.codigo_sector IS 'Código del 
 
 
 --
--- TOC entry 8056 (class 0 OID 0)
--- Dependencies: 1197
+-- TOC entry 6575 (class 0 OID 0)
+-- Dependencies: 801
 -- Name: COLUMN gc_barrio.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -193,7 +193,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_barrio.geometria IS 'Tipo de geometr�
 
 
 --
--- TOC entry 1198 (class 1259 OID 322632)
+-- TOC entry 802 (class 1259 OID 375968)
 -- Name: gc_calificacionunidadconstruccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -212,8 +212,8 @@ CREATE TABLE test_ladm_integration.gc_calificacionunidadconstruccion (
 ALTER TABLE test_ladm_integration.gc_calificacionunidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 8057 (class 0 OID 0)
--- Dependencies: 1198
+-- TOC entry 6576 (class 0 OID 0)
+-- Dependencies: 802
 -- Name: TABLE gc_calificacionunidadconstruccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -221,8 +221,8 @@ COMMENT ON TABLE test_ladm_integration.gc_calificacionunidadconstruccion IS 'Rel
 
 
 --
--- TOC entry 8058 (class 0 OID 0)
--- Dependencies: 1198
+-- TOC entry 6577 (class 0 OID 0)
+-- Dependencies: 802
 -- Name: COLUMN gc_calificacionunidadconstruccion.componente; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -230,8 +230,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_calificacionunidadconstruccion.compon
 
 
 --
--- TOC entry 8059 (class 0 OID 0)
--- Dependencies: 1198
+-- TOC entry 6578 (class 0 OID 0)
+-- Dependencies: 802
 -- Name: COLUMN gc_calificacionunidadconstruccion.elemento_calificacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -239,8 +239,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_calificacionunidadconstruccion.elemen
 
 
 --
--- TOC entry 8060 (class 0 OID 0)
--- Dependencies: 1198
+-- TOC entry 6579 (class 0 OID 0)
+-- Dependencies: 802
 -- Name: COLUMN gc_calificacionunidadconstruccion.detalle_calificacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -248,8 +248,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_calificacionunidadconstruccion.detall
 
 
 --
--- TOC entry 8061 (class 0 OID 0)
--- Dependencies: 1198
+-- TOC entry 6580 (class 0 OID 0)
+-- Dependencies: 802
 -- Name: COLUMN gc_calificacionunidadconstruccion.puntos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -257,7 +257,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_calificacionunidadconstruccion.puntos
 
 
 --
--- TOC entry 1199 (class 1259 OID 322640)
+-- TOC entry 803 (class 1259 OID 375978)
 -- Name: gc_comisionesconstruccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -265,15 +265,15 @@ CREATE TABLE test_ladm_integration.gc_comisionesconstruccion (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_ili_tid character varying(200),
     numero_predial character varying(30) NOT NULL,
-    geometria public.geometry(MultiPolygonZ,38820)
+    geometria public.geometry(MultiPolygonZ,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_comisionesconstruccion OWNER TO postgres;
 
 --
--- TOC entry 8062 (class 0 OID 0)
--- Dependencies: 1199
+-- TOC entry 6581 (class 0 OID 0)
+-- Dependencies: 803
 -- Name: TABLE gc_comisionesconstruccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -281,8 +281,8 @@ COMMENT ON TABLE test_ladm_integration.gc_comisionesconstruccion IS 'Construccio
 
 
 --
--- TOC entry 8063 (class 0 OID 0)
--- Dependencies: 1199
+-- TOC entry 6582 (class 0 OID 0)
+-- Dependencies: 803
 -- Name: COLUMN gc_comisionesconstruccion.numero_predial; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -290,8 +290,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_comisionesconstruccion.numero_predial
 
 
 --
--- TOC entry 8064 (class 0 OID 0)
--- Dependencies: 1199
+-- TOC entry 6583 (class 0 OID 0)
+-- Dependencies: 803
 -- Name: COLUMN gc_comisionesconstruccion.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -299,7 +299,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_comisionesconstruccion.geometria IS '
 
 
 --
--- TOC entry 1200 (class 1259 OID 322647)
+-- TOC entry 804 (class 1259 OID 375988)
 -- Name: gc_comisionesterreno; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -307,15 +307,15 @@ CREATE TABLE test_ladm_integration.gc_comisionesterreno (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_ili_tid character varying(200),
     numero_predial character varying(30) NOT NULL,
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_comisionesterreno OWNER TO postgres;
 
 --
--- TOC entry 8065 (class 0 OID 0)
--- Dependencies: 1200
+-- TOC entry 6584 (class 0 OID 0)
+-- Dependencies: 804
 -- Name: TABLE gc_comisionesterreno; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -323,8 +323,8 @@ COMMENT ON TABLE test_ladm_integration.gc_comisionesterreno IS 'Terrenos que no 
 
 
 --
--- TOC entry 8066 (class 0 OID 0)
--- Dependencies: 1200
+-- TOC entry 6585 (class 0 OID 0)
+-- Dependencies: 804
 -- Name: COLUMN gc_comisionesterreno.numero_predial; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -333,8 +333,8 @@ alfanumérica en la base de datos catastral.';
 
 
 --
--- TOC entry 8067 (class 0 OID 0)
--- Dependencies: 1200
+-- TOC entry 6586 (class 0 OID 0)
+-- Dependencies: 804
 -- Name: COLUMN gc_comisionesterreno.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -342,7 +342,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_comisionesterreno.geometria IS 'Terre
 
 
 --
--- TOC entry 1201 (class 1259 OID 322654)
+-- TOC entry 805 (class 1259 OID 375998)
 -- Name: gc_comisionesunidadconstruccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -350,15 +350,15 @@ CREATE TABLE test_ladm_integration.gc_comisionesunidadconstruccion (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_ili_tid character varying(200),
     numero_predial character varying(30) NOT NULL,
-    geometria public.geometry(MultiPolygonZ,38820)
+    geometria public.geometry(MultiPolygonZ,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_comisionesunidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 8068 (class 0 OID 0)
--- Dependencies: 1201
+-- TOC entry 6587 (class 0 OID 0)
+-- Dependencies: 805
 -- Name: TABLE gc_comisionesunidadconstruccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -366,8 +366,8 @@ COMMENT ON TABLE test_ladm_integration.gc_comisionesunidadconstruccion IS 'Unida
 
 
 --
--- TOC entry 8069 (class 0 OID 0)
--- Dependencies: 1201
+-- TOC entry 6588 (class 0 OID 0)
+-- Dependencies: 805
 -- Name: COLUMN gc_comisionesunidadconstruccion.numero_predial; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -375,8 +375,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_comisionesunidadconstruccion.numero_p
 
 
 --
--- TOC entry 8070 (class 0 OID 0)
--- Dependencies: 1201
+-- TOC entry 6589 (class 0 OID 0)
+-- Dependencies: 805
 -- Name: COLUMN gc_comisionesunidadconstruccion.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -384,7 +384,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_comisionesunidadconstruccion.geometri
 
 
 --
--- TOC entry 1202 (class 1259 OID 322661)
+-- TOC entry 840 (class 1259 OID 376321)
 -- Name: gc_condicionprediotipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -404,7 +404,7 @@ CREATE TABLE test_ladm_integration.gc_condicionprediotipo (
 ALTER TABLE test_ladm_integration.gc_condicionprediotipo OWNER TO postgres;
 
 --
--- TOC entry 1203 (class 1259 OID 322668)
+-- TOC entry 806 (class 1259 OID 376008)
 -- Name: gc_construccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -422,7 +422,7 @@ CREATE TABLE test_ladm_integration.gc_construccion (
     codigo_edificacion integer,
     codigo_terreno character varying(30),
     area_construida numeric(16,2),
-    geometria public.geometry(MultiPolygonZ,38820),
+    geometria public.geometry(MultiPolygonZ,9377),
     gc_predio bigint NOT NULL,
     CONSTRAINT gc_construccion_area_construida_check CHECK (((area_construida >= 0.0) AND (area_construida <= 99999999999999.98))),
     CONSTRAINT gc_construccion_codigo_edificacion_check CHECK (((codigo_edificacion >= 0) AND (codigo_edificacion <= 2147483647))),
@@ -436,8 +436,8 @@ CREATE TABLE test_ladm_integration.gc_construccion (
 ALTER TABLE test_ladm_integration.gc_construccion OWNER TO postgres;
 
 --
--- TOC entry 8071 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6590 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: TABLE gc_construccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -445,8 +445,8 @@ COMMENT ON TABLE test_ladm_integration.gc_construccion IS 'Datos de las construc
 
 
 --
--- TOC entry 8072 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6591 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.identificador; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -454,8 +454,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.identificador IS 'Identi
 
 
 --
--- TOC entry 8073 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6592 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.etiqueta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -463,8 +463,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.etiqueta IS 'Etiqueta de
 
 
 --
--- TOC entry 8074 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6593 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -472,8 +472,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.tipo_construccion IS 'In
 
 
 --
--- TOC entry 8075 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6594 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -481,8 +481,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.tipo_dominio IS 'Indica 
 
 
 --
--- TOC entry 8076 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6595 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.numero_pisos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -490,8 +490,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.numero_pisos IS 'Número
 
 
 --
--- TOC entry 8077 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6596 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.numero_sotanos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -499,8 +499,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.numero_sotanos IS 'Núme
 
 
 --
--- TOC entry 8078 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6597 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.numero_mezanines; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -508,8 +508,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.numero_mezanines IS 'Nú
 
 
 --
--- TOC entry 8079 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6598 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.numero_semisotanos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -517,8 +517,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.numero_semisotanos IS 'N
 
 
 --
--- TOC entry 8080 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6599 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.codigo_edificacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -526,8 +526,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.codigo_edificacion IS 'C
 
 
 --
--- TOC entry 8081 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6600 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.codigo_terreno; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -535,8 +535,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.codigo_terreno IS 'Códi
 
 
 --
--- TOC entry 8082 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6601 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.area_construida; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -544,8 +544,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.area_construida IS 'Áre
 
 
 --
--- TOC entry 8083 (class 0 OID 0)
--- Dependencies: 1203
+-- TOC entry 6602 (class 0 OID 0)
+-- Dependencies: 806
 -- Name: COLUMN gc_construccion.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -553,7 +553,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_construccion.geometria IS 'Polígono 
 
 
 --
--- TOC entry 1204 (class 1259 OID 322681)
+-- TOC entry 820 (class 1259 OID 376146)
 -- Name: gc_copropiedad; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -569,8 +569,8 @@ CREATE TABLE test_ladm_integration.gc_copropiedad (
 ALTER TABLE test_ladm_integration.gc_copropiedad OWNER TO postgres;
 
 --
--- TOC entry 8084 (class 0 OID 0)
--- Dependencies: 1204
+-- TOC entry 6603 (class 0 OID 0)
+-- Dependencies: 820
 -- Name: TABLE gc_copropiedad; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -578,7 +578,7 @@ COMMENT ON TABLE test_ladm_integration.gc_copropiedad IS 'Clase que relaciona la
 
 
 --
--- TOC entry 1205 (class 1259 OID 322686)
+-- TOC entry 807 (class 1259 OID 376020)
 -- Name: gc_datosphcondominio; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -606,8 +606,8 @@ CREATE TABLE test_ladm_integration.gc_datosphcondominio (
 ALTER TABLE test_ladm_integration.gc_datosphcondominio OWNER TO postgres;
 
 --
--- TOC entry 8085 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6604 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: TABLE gc_datosphcondominio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -615,8 +615,8 @@ COMMENT ON TABLE test_ladm_integration.gc_datosphcondominio IS 'Clase que contie
 
 
 --
--- TOC entry 8086 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6605 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.area_total_terreno_privada; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -624,8 +624,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 8087 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6606 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.area_total_terreno_comun; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -633,8 +633,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 8088 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6607 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.area_total_construida_privada; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -642,8 +642,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 8089 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6608 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.area_total_construida_comun; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -651,8 +651,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 8090 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6609 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.total_unidades_privadas; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -660,8 +660,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.total_unidades_priv
 
 
 --
--- TOC entry 8091 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6610 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.total_unidades_sotano; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -669,8 +669,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.total_unidades_sota
 
 
 --
--- TOC entry 8092 (class 0 OID 0)
--- Dependencies: 1205
+-- TOC entry 6611 (class 0 OID 0)
+-- Dependencies: 807
 -- Name: COLUMN gc_datosphcondominio.valor_total_avaluo_catastral; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -678,7 +678,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_datosphcondominio.valor_total_avaluo_
 
 
 --
--- TOC entry 1206 (class 1259 OID 322697)
+-- TOC entry 808 (class 1259 OID 376027)
 -- Name: gc_datostorreph; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -702,8 +702,8 @@ CREATE TABLE test_ladm_integration.gc_datostorreph (
 ALTER TABLE test_ladm_integration.gc_datostorreph OWNER TO postgres;
 
 --
--- TOC entry 8093 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6612 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: TABLE gc_datostorreph; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -711,8 +711,8 @@ COMMENT ON TABLE test_ladm_integration.gc_datostorreph IS 'Relaciona la informac
 
 
 --
--- TOC entry 8094 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6613 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: COLUMN gc_datostorreph.torre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -720,8 +720,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datostorreph.torre IS 'Número de tor
 
 
 --
--- TOC entry 8095 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6614 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: COLUMN gc_datostorreph.total_pisos_torre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -729,8 +729,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datostorreph.total_pisos_torre IS 'To
 
 
 --
--- TOC entry 8096 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6615 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: COLUMN gc_datostorreph.total_unidades_privadas; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -738,8 +738,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datostorreph.total_unidades_privadas 
 
 
 --
--- TOC entry 8097 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6616 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: COLUMN gc_datostorreph.total_sotanos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -747,8 +747,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_datostorreph.total_sotanos IS 'Total 
 
 
 --
--- TOC entry 8098 (class 0 OID 0)
--- Dependencies: 1206
+-- TOC entry 6617 (class 0 OID 0)
+-- Dependencies: 808
 -- Name: COLUMN gc_datostorreph.total_unidades_sotano; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -756,7 +756,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_datostorreph.total_unidades_sotano IS
 
 
 --
--- TOC entry 1207 (class 1259 OID 322706)
+-- TOC entry 809 (class 1259 OID 376034)
 -- Name: gc_direccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -765,7 +765,7 @@ CREATE TABLE test_ladm_integration.gc_direccion (
     t_seq bigint,
     valor character varying(255),
     principal boolean,
-    geometria_referencia public.geometry(LineStringZ,38820),
+    geometria_referencia public.geometry(LineStringZ,9377),
     gc_prediocatastro_direcciones bigint
 );
 
@@ -773,8 +773,8 @@ CREATE TABLE test_ladm_integration.gc_direccion (
 ALTER TABLE test_ladm_integration.gc_direccion OWNER TO postgres;
 
 --
--- TOC entry 8099 (class 0 OID 0)
--- Dependencies: 1207
+-- TOC entry 6618 (class 0 OID 0)
+-- Dependencies: 809
 -- Name: COLUMN gc_direccion.valor; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -782,8 +782,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_direccion.valor IS 'Registros de la d
 
 
 --
--- TOC entry 8100 (class 0 OID 0)
--- Dependencies: 1207
+-- TOC entry 6619 (class 0 OID 0)
+-- Dependencies: 809
 -- Name: COLUMN gc_direccion.principal; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -791,8 +791,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_direccion.principal IS 'Indica si el 
 
 
 --
--- TOC entry 8101 (class 0 OID 0)
--- Dependencies: 1207
+-- TOC entry 6620 (class 0 OID 0)
+-- Dependencies: 809
 -- Name: COLUMN gc_direccion.geometria_referencia; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -800,8 +800,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_direccion.geometria_referencia IS 'L�
 
 
 --
--- TOC entry 8102 (class 0 OID 0)
--- Dependencies: 1207
+-- TOC entry 6621 (class 0 OID 0)
+-- Dependencies: 809
 -- Name: COLUMN gc_direccion.gc_prediocatastro_direcciones; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -809,7 +809,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_direccion.gc_prediocatastro_direccion
 
 
 --
--- TOC entry 1208 (class 1259 OID 322713)
+-- TOC entry 810 (class 1259 OID 376045)
 -- Name: gc_estadopredio; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -826,8 +826,8 @@ CREATE TABLE test_ladm_integration.gc_estadopredio (
 ALTER TABLE test_ladm_integration.gc_estadopredio OWNER TO postgres;
 
 --
--- TOC entry 8103 (class 0 OID 0)
--- Dependencies: 1208
+-- TOC entry 6622 (class 0 OID 0)
+-- Dependencies: 810
 -- Name: TABLE gc_estadopredio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -835,8 +835,8 @@ COMMENT ON TABLE test_ladm_integration.gc_estadopredio IS 'Estructura que contie
 
 
 --
--- TOC entry 8104 (class 0 OID 0)
--- Dependencies: 1208
+-- TOC entry 6623 (class 0 OID 0)
+-- Dependencies: 810
 -- Name: COLUMN gc_estadopredio.estado_alerta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -844,8 +844,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_estadopredio.estado_alerta IS 'Indica
 
 
 --
--- TOC entry 8105 (class 0 OID 0)
--- Dependencies: 1208
+-- TOC entry 6624 (class 0 OID 0)
+-- Dependencies: 810
 -- Name: COLUMN gc_estadopredio.entidad_emisora_alerta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -853,8 +853,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_estadopredio.entidad_emisora_alerta I
 
 
 --
--- TOC entry 8106 (class 0 OID 0)
--- Dependencies: 1208
+-- TOC entry 6625 (class 0 OID 0)
+-- Dependencies: 810
 -- Name: COLUMN gc_estadopredio.fecha_alerta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -862,8 +862,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_estadopredio.fecha_alerta IS 'Fecha d
 
 
 --
--- TOC entry 8107 (class 0 OID 0)
--- Dependencies: 1208
+-- TOC entry 6626 (class 0 OID 0)
+-- Dependencies: 810
 -- Name: COLUMN gc_estadopredio.gc_prediocatastro_estado_predio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -871,7 +871,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_estadopredio.gc_prediocatastro_estado
 
 
 --
--- TOC entry 1209 (class 1259 OID 322717)
+-- TOC entry 811 (class 1259 OID 376052)
 -- Name: gc_manzana; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -881,15 +881,15 @@ CREATE TABLE test_ladm_integration.gc_manzana (
     codigo character varying(17),
     codigo_anterior character varying(255),
     codigo_barrio character varying(13),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_manzana OWNER TO postgres;
 
 --
--- TOC entry 8108 (class 0 OID 0)
--- Dependencies: 1209
+-- TOC entry 6627 (class 0 OID 0)
+-- Dependencies: 811
 -- Name: TABLE gc_manzana; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -897,8 +897,8 @@ COMMENT ON TABLE test_ladm_integration.gc_manzana IS 'Dato geografico aportado p
 
 
 --
--- TOC entry 8109 (class 0 OID 0)
--- Dependencies: 1209
+-- TOC entry 6628 (class 0 OID 0)
+-- Dependencies: 811
 -- Name: COLUMN gc_manzana.codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -906,8 +906,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_manzana.codigo IS 'Código catastral 
 
 
 --
--- TOC entry 8110 (class 0 OID 0)
--- Dependencies: 1209
+-- TOC entry 6629 (class 0 OID 0)
+-- Dependencies: 811
 -- Name: COLUMN gc_manzana.codigo_anterior; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -915,8 +915,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_manzana.codigo_anterior IS 'Código c
 
 
 --
--- TOC entry 8111 (class 0 OID 0)
--- Dependencies: 1209
+-- TOC entry 6630 (class 0 OID 0)
+-- Dependencies: 811
 -- Name: COLUMN gc_manzana.codigo_barrio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -924,8 +924,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_manzana.codigo_barrio IS 'Código cat
 
 
 --
--- TOC entry 8112 (class 0 OID 0)
--- Dependencies: 1209
+-- TOC entry 6631 (class 0 OID 0)
+-- Dependencies: 811
 -- Name: COLUMN gc_manzana.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -933,7 +933,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_manzana.geometria IS 'Polígonos de l
 
 
 --
--- TOC entry 1210 (class 1259 OID 322724)
+-- TOC entry 812 (class 1259 OID 376062)
 -- Name: gc_perimetro; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -945,15 +945,15 @@ CREATE TABLE test_ladm_integration.gc_perimetro (
     tipo_avaluo character varying(30),
     nombre_geografico character varying(50),
     codigo_nombre character varying(255),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_perimetro OWNER TO postgres;
 
 --
--- TOC entry 8113 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6632 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: TABLE gc_perimetro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -961,8 +961,8 @@ COMMENT ON TABLE test_ladm_integration.gc_perimetro IS 'Dato geografico aportado
 
 
 --
--- TOC entry 8114 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6633 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.codigo_departamento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -970,8 +970,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.codigo_departamento IS 'Có
 
 
 --
--- TOC entry 8115 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6634 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.codigo_municipio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -979,8 +979,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.codigo_municipio IS 'Códig
 
 
 --
--- TOC entry 8116 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6635 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.tipo_avaluo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -988,8 +988,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.tipo_avaluo IS 'Tipo de ava
 
 
 --
--- TOC entry 8117 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6636 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.nombre_geografico; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -997,8 +997,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.nombre_geografico IS 'Nombr
 
 
 --
--- TOC entry 8118 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6637 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.codigo_nombre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1006,8 +1006,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.codigo_nombre IS 'Código d
 
 
 --
--- TOC entry 8119 (class 0 OID 0)
--- Dependencies: 1210
+-- TOC entry 6638 (class 0 OID 0)
+-- Dependencies: 812
 -- Name: COLUMN gc_perimetro.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1015,7 +1015,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_perimetro.geometria IS 'Polígono del
 
 
 --
--- TOC entry 1211 (class 1259 OID 322731)
+-- TOC entry 819 (class 1259 OID 376135)
 -- Name: gc_prediocatastro; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1039,8 +1039,8 @@ CREATE TABLE test_ladm_integration.gc_prediocatastro (
 ALTER TABLE test_ladm_integration.gc_prediocatastro OWNER TO postgres;
 
 --
--- TOC entry 8120 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6639 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: TABLE gc_prediocatastro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1048,8 +1048,8 @@ COMMENT ON TABLE test_ladm_integration.gc_prediocatastro IS 'Información existe
 
 
 --
--- TOC entry 8121 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6640 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.tipo_catastro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1057,8 +1057,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.tipo_catastro IS 'Indi
 
 
 --
--- TOC entry 8122 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6641 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.numero_predial; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1066,8 +1066,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.numero_predial IS 'Có
 
 
 --
--- TOC entry 8123 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6642 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.numero_predial_anterior; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1075,8 +1075,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.numero_predial_anterio
 
 
 --
--- TOC entry 8124 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6643 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.nupre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1084,8 +1084,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.nupre IS 'Es un códig
 
 
 --
--- TOC entry 8125 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6644 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.circulo_registral; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1093,8 +1093,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.circulo_registral IS '
 
 
 --
--- TOC entry 8126 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6645 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.matricula_inmobiliaria_catastro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1102,8 +1102,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.matricula_inmobiliaria
 
 
 --
--- TOC entry 8127 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6646 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.tipo_predio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1111,8 +1111,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.tipo_predio IS 'Tipo d
 
 
 --
--- TOC entry 8128 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6647 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.condicion_predio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1120,8 +1120,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.condicion_predio IS 'C
 
 
 --
--- TOC entry 8129 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6648 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.destinacion_economica; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1129,8 +1129,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.destinacion_economica 
 
 
 --
--- TOC entry 8130 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6649 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.sistema_procedencia_datos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1138,8 +1138,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.sistema_procedencia_da
 
 
 --
--- TOC entry 8131 (class 0 OID 0)
--- Dependencies: 1211
+-- TOC entry 6650 (class 0 OID 0)
+-- Dependencies: 819
 -- Name: COLUMN gc_prediocatastro.fecha_datos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1147,7 +1147,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_prediocatastro.fecha_datos IS 'Fecha 
 
 
 --
--- TOC entry 1212 (class 1259 OID 322738)
+-- TOC entry 813 (class 1259 OID 376072)
 -- Name: gc_propietario; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1169,8 +1169,8 @@ CREATE TABLE test_ladm_integration.gc_propietario (
 ALTER TABLE test_ladm_integration.gc_propietario OWNER TO postgres;
 
 --
--- TOC entry 8132 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6651 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: TABLE gc_propietario; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1178,8 +1178,8 @@ COMMENT ON TABLE test_ladm_integration.gc_propietario IS 'Datos de los propietar
 
 
 --
--- TOC entry 8133 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6652 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.tipo_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1187,8 +1187,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.tipo_documento IS 'Tipo d
 
 
 --
--- TOC entry 8134 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6653 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.numero_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1196,8 +1196,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.numero_documento IS 'Núm
 
 
 --
--- TOC entry 8135 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6654 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.digito_verificacion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1205,8 +1205,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.digito_verificacion IS 'D
 
 
 --
--- TOC entry 8136 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6655 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.primer_nombre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1214,8 +1214,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.primer_nombre IS 'Primer 
 
 
 --
--- TOC entry 8137 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6656 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.segundo_nombre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1223,8 +1223,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.segundo_nombre IS 'Segund
 
 
 --
--- TOC entry 8138 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6657 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.primer_apellido; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1232,8 +1232,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.primer_apellido IS 'Prime
 
 
 --
--- TOC entry 8139 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6658 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.segundo_apellido; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1241,8 +1241,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.segundo_apellido IS 'Segu
 
 
 --
--- TOC entry 8140 (class 0 OID 0)
--- Dependencies: 1212
+-- TOC entry 6659 (class 0 OID 0)
+-- Dependencies: 813
 -- Name: COLUMN gc_propietario.razon_social; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1250,7 +1250,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_propietario.razon_social IS 'Razon so
 
 
 --
--- TOC entry 1213 (class 1259 OID 322745)
+-- TOC entry 814 (class 1259 OID 376082)
 -- Name: gc_sectorrural; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1258,15 +1258,15 @@ CREATE TABLE test_ladm_integration.gc_sectorrural (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_ili_tid character varying(200),
     codigo character varying(9),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_sectorrural OWNER TO postgres;
 
 --
--- TOC entry 8141 (class 0 OID 0)
--- Dependencies: 1213
+-- TOC entry 6660 (class 0 OID 0)
+-- Dependencies: 814
 -- Name: TABLE gc_sectorrural; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1274,8 +1274,8 @@ COMMENT ON TABLE test_ladm_integration.gc_sectorrural IS 'Dato geografico aporta
 
 
 --
--- TOC entry 8142 (class 0 OID 0)
--- Dependencies: 1213
+-- TOC entry 6661 (class 0 OID 0)
+-- Dependencies: 814
 -- Name: COLUMN gc_sectorrural.codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1283,8 +1283,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_sectorrural.codigo IS 'Código catast
 
 
 --
--- TOC entry 8143 (class 0 OID 0)
--- Dependencies: 1213
+-- TOC entry 6662 (class 0 OID 0)
+-- Dependencies: 814
 -- Name: COLUMN gc_sectorrural.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1292,7 +1292,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_sectorrural.geometria IS 'Polígono d
 
 
 --
--- TOC entry 1214 (class 1259 OID 322752)
+-- TOC entry 815 (class 1259 OID 376092)
 -- Name: gc_sectorurbano; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1300,15 +1300,15 @@ CREATE TABLE test_ladm_integration.gc_sectorurbano (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_ili_tid character varying(200),
     codigo character varying(9),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_sectorurbano OWNER TO postgres;
 
 --
--- TOC entry 8144 (class 0 OID 0)
--- Dependencies: 1214
+-- TOC entry 6663 (class 0 OID 0)
+-- Dependencies: 815
 -- Name: TABLE gc_sectorurbano; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1316,8 +1316,8 @@ COMMENT ON TABLE test_ladm_integration.gc_sectorurbano IS 'Dato geografico aport
 
 
 --
--- TOC entry 8145 (class 0 OID 0)
--- Dependencies: 1214
+-- TOC entry 6664 (class 0 OID 0)
+-- Dependencies: 815
 -- Name: COLUMN gc_sectorurbano.codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1325,8 +1325,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_sectorurbano.codigo IS 'Código catas
 
 
 --
--- TOC entry 8146 (class 0 OID 0)
--- Dependencies: 1214
+-- TOC entry 6665 (class 0 OID 0)
+-- Dependencies: 815
 -- Name: COLUMN gc_sectorurbano.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1334,7 +1334,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_sectorurbano.geometria IS 'Polígono 
 
 
 --
--- TOC entry 1215 (class 1259 OID 322759)
+-- TOC entry 838 (class 1259 OID 376303)
 -- Name: gc_sistemaprocedenciadatostipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1354,7 +1354,7 @@ CREATE TABLE test_ladm_integration.gc_sistemaprocedenciadatostipo (
 ALTER TABLE test_ladm_integration.gc_sistemaprocedenciadatostipo OWNER TO postgres;
 
 --
--- TOC entry 1216 (class 1259 OID 322766)
+-- TOC entry 816 (class 1259 OID 376102)
 -- Name: gc_terreno; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1365,7 +1365,7 @@ CREATE TABLE test_ladm_integration.gc_terreno (
     area_terreno_digital numeric(16,2),
     manzana_vereda_codigo character varying(17),
     numero_subterraneos integer,
-    geometria public.geometry(MultiPolygon,38820),
+    geometria public.geometry(MultiPolygon,9377),
     gc_predio bigint NOT NULL,
     CONSTRAINT gc_terreno_area_terreno_alfanumerica_check CHECK (((area_terreno_alfanumerica >= 0.0) AND (area_terreno_alfanumerica <= 99999999999999.98))),
     CONSTRAINT gc_terreno_area_terreno_digital_check CHECK (((area_terreno_digital >= 0.0) AND (area_terreno_digital <= 99999999999999.98))),
@@ -1376,8 +1376,8 @@ CREATE TABLE test_ladm_integration.gc_terreno (
 ALTER TABLE test_ladm_integration.gc_terreno OWNER TO postgres;
 
 --
--- TOC entry 8147 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6666 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: TABLE gc_terreno; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1385,8 +1385,8 @@ COMMENT ON TABLE test_ladm_integration.gc_terreno IS 'Datos de los terrenos insc
 
 
 --
--- TOC entry 8148 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6667 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: COLUMN gc_terreno.area_terreno_alfanumerica; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1394,8 +1394,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_terreno.area_terreno_alfanumerica IS 
 
 
 --
--- TOC entry 8149 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6668 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: COLUMN gc_terreno.area_terreno_digital; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1403,8 +1403,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_terreno.area_terreno_digital IS 'Áre
 
 
 --
--- TOC entry 8150 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6669 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: COLUMN gc_terreno.manzana_vereda_codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1412,8 +1412,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_terreno.manzana_vereda_codigo IS 'Có
 
 
 --
--- TOC entry 8151 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6670 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: COLUMN gc_terreno.numero_subterraneos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1421,8 +1421,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_terreno.numero_subterraneos IS 'Núme
 
 
 --
--- TOC entry 8152 (class 0 OID 0)
--- Dependencies: 1216
+-- TOC entry 6671 (class 0 OID 0)
+-- Dependencies: 816
 -- Name: COLUMN gc_terreno.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1430,7 +1430,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_terreno.geometria IS 'Polígono de la
 
 
 --
--- TOC entry 1217 (class 1259 OID 322776)
+-- TOC entry 817 (class 1259 OID 376113)
 -- Name: gc_unidadconstruccion; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1452,7 +1452,7 @@ CREATE TABLE test_ladm_integration.gc_unidadconstruccion (
     area_construida numeric(16,2),
     area_privada numeric(16,2),
     codigo_terreno character varying(30),
-    geometria public.geometry(MultiPolygonZ,38820),
+    geometria public.geometry(MultiPolygonZ,9377),
     gc_construccion bigint NOT NULL,
     CONSTRAINT gc_unidadconstruccion_anio_construccion_check CHECK (((anio_construccion >= 1512) AND (anio_construccion <= 2500))),
     CONSTRAINT gc_unidadconstruccion_area_construida_check CHECK (((area_construida >= 0.0) AND (area_construida <= 99999999999999.98))),
@@ -1468,8 +1468,8 @@ CREATE TABLE test_ladm_integration.gc_unidadconstruccion (
 ALTER TABLE test_ladm_integration.gc_unidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 8153 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6672 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: TABLE gc_unidadconstruccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1477,8 +1477,8 @@ COMMENT ON TABLE test_ladm_integration.gc_unidadconstruccion IS 'Datos de las un
 
 
 --
--- TOC entry 8154 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6673 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.identificador; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1486,8 +1486,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.identificador IS '
 
 
 --
--- TOC entry 8155 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6674 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.etiqueta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1495,8 +1495,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.etiqueta IS 'Etiqu
 
 
 --
--- TOC entry 8156 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6675 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1504,8 +1504,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.tipo_dominio IS 'I
 
 
 --
--- TOC entry 8157 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6676 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1513,8 +1513,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.tipo_construccion 
 
 
 --
--- TOC entry 8158 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6677 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.planta; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1522,8 +1522,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.planta IS 'Indica 
 
 
 --
--- TOC entry 8159 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6678 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.total_habitaciones; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1531,8 +1531,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.total_habitaciones
 
 
 --
--- TOC entry 8160 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6679 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.total_banios; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1540,8 +1540,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.total_banios IS 'N
 
 
 --
--- TOC entry 8161 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6680 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.total_locales; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1549,8 +1549,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.total_locales IS '
 
 
 --
--- TOC entry 8162 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6681 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.total_pisos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1558,8 +1558,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.total_pisos IS 'N�
 
 
 --
--- TOC entry 8163 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6682 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.uso; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1567,8 +1567,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.uso IS 'Actividad 
 
 
 --
--- TOC entry 8164 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6683 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.anio_construccion; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1576,8 +1576,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.anio_construccion 
 
 
 --
--- TOC entry 8165 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6684 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.puntaje; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1585,8 +1585,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.puntaje IS 'Puntaj
 
 
 --
--- TOC entry 8166 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6685 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.area_construida; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1594,8 +1594,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.area_construida IS
 
 
 --
--- TOC entry 8167 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6686 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.area_privada; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1603,8 +1603,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.area_privada IS '�
 
 
 --
--- TOC entry 8168 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6687 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.codigo_terreno; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1612,8 +1612,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.codigo_terreno IS 
 
 
 --
--- TOC entry 8169 (class 0 OID 0)
--- Dependencies: 1217
+-- TOC entry 6688 (class 0 OID 0)
+-- Dependencies: 817
 -- Name: COLUMN gc_unidadconstruccion.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1621,7 +1621,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_unidadconstruccion.geometria IS 'Pol�
 
 
 --
--- TOC entry 1218 (class 1259 OID 322791)
+-- TOC entry 837 (class 1259 OID 376294)
 -- Name: gc_unidadconstrucciontipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1641,7 +1641,7 @@ CREATE TABLE test_ladm_integration.gc_unidadconstrucciontipo (
 ALTER TABLE test_ladm_integration.gc_unidadconstrucciontipo OWNER TO postgres;
 
 --
--- TOC entry 1219 (class 1259 OID 322798)
+-- TOC entry 818 (class 1259 OID 376125)
 -- Name: gc_vereda; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1652,15 +1652,15 @@ CREATE TABLE test_ladm_integration.gc_vereda (
     codigo_anterior character varying(13),
     nombre character varying(100),
     codigo_sector character varying(9),
-    geometria public.geometry(MultiPolygon,38820)
+    geometria public.geometry(MultiPolygon,9377)
 );
 
 
 ALTER TABLE test_ladm_integration.gc_vereda OWNER TO postgres;
 
 --
--- TOC entry 8170 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6689 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: TABLE gc_vereda; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1668,8 +1668,8 @@ COMMENT ON TABLE test_ladm_integration.gc_vereda IS 'Dato geografico aportado po
 
 
 --
--- TOC entry 8171 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6690 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: COLUMN gc_vereda.codigo; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1677,8 +1677,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_vereda.codigo IS 'Código catastral d
 
 
 --
--- TOC entry 8172 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6691 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: COLUMN gc_vereda.codigo_anterior; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1686,8 +1686,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_vereda.codigo_anterior IS 'Código ca
 
 
 --
--- TOC entry 8173 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6692 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: COLUMN gc_vereda.nombre; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1695,8 +1695,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_vereda.nombre IS 'Nombre de la vereda
 
 
 --
--- TOC entry 8174 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6693 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: COLUMN gc_vereda.codigo_sector; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1704,8 +1704,8 @@ COMMENT ON COLUMN test_ladm_integration.gc_vereda.codigo_sector IS 'Código cata
 
 
 --
--- TOC entry 8175 (class 0 OID 0)
--- Dependencies: 1219
+-- TOC entry 6694 (class 0 OID 0)
+-- Dependencies: 818
 -- Name: COLUMN gc_vereda.geometria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1713,7 +1713,7 @@ COMMENT ON COLUMN test_ladm_integration.gc_vereda.geometria IS 'Geometría en 2D
 
 
 --
--- TOC entry 1220 (class 1259 OID 322805)
+-- TOC entry 797 (class 1259 OID 375925)
 -- Name: gm_multisurface2d; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1726,7 +1726,7 @@ CREATE TABLE test_ladm_integration.gm_multisurface2d (
 ALTER TABLE test_ladm_integration.gm_multisurface2d OWNER TO postgres;
 
 --
--- TOC entry 1221 (class 1259 OID 322809)
+-- TOC entry 799 (class 1259 OID 375942)
 -- Name: gm_multisurface3d; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1739,14 +1739,14 @@ CREATE TABLE test_ladm_integration.gm_multisurface3d (
 ALTER TABLE test_ladm_integration.gm_multisurface3d OWNER TO postgres;
 
 --
--- TOC entry 1222 (class 1259 OID 322813)
+-- TOC entry 796 (class 1259 OID 375914)
 -- Name: gm_surface2dlistvalue; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
 CREATE TABLE test_ladm_integration.gm_surface2dlistvalue (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_seq bigint,
-    avalue public.geometry(Polygon,38820) NOT NULL,
+    avalue public.geometry(Polygon,9377) NOT NULL,
     gm_multisurface2d_geometry bigint
 );
 
@@ -1754,14 +1754,14 @@ CREATE TABLE test_ladm_integration.gm_surface2dlistvalue (
 ALTER TABLE test_ladm_integration.gm_surface2dlistvalue OWNER TO postgres;
 
 --
--- TOC entry 1223 (class 1259 OID 322820)
+-- TOC entry 798 (class 1259 OID 375931)
 -- Name: gm_surface3dlistvalue; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
 CREATE TABLE test_ladm_integration.gm_surface3dlistvalue (
     t_id bigint DEFAULT nextval('test_ladm_integration.t_ili2db_seq'::regclass) NOT NULL,
     t_seq bigint,
-    avalue public.geometry(PolygonZ,38820) NOT NULL,
+    avalue public.geometry(PolygonZ,9377) NOT NULL,
     gm_multisurface3d_geometry bigint
 );
 
@@ -1769,7 +1769,7 @@ CREATE TABLE test_ladm_integration.gm_surface3dlistvalue (
 ALTER TABLE test_ladm_integration.gm_surface3dlistvalue OWNER TO postgres;
 
 --
--- TOC entry 1224 (class 1259 OID 322827)
+-- TOC entry 835 (class 1259 OID 376276)
 -- Name: ini_emparejamientotipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1789,7 +1789,7 @@ CREATE TABLE test_ladm_integration.ini_emparejamientotipo (
 ALTER TABLE test_ladm_integration.ini_emparejamientotipo OWNER TO postgres;
 
 --
--- TOC entry 1225 (class 1259 OID 322834)
+-- TOC entry 828 (class 1259 OID 376220)
 -- Name: ini_predioinsumos; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1806,8 +1806,8 @@ CREATE TABLE test_ladm_integration.ini_predioinsumos (
 ALTER TABLE test_ladm_integration.ini_predioinsumos OWNER TO postgres;
 
 --
--- TOC entry 8176 (class 0 OID 0)
--- Dependencies: 1225
+-- TOC entry 6695 (class 0 OID 0)
+-- Dependencies: 828
 -- Name: TABLE ini_predioinsumos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1815,8 +1815,8 @@ COMMENT ON TABLE test_ladm_integration.ini_predioinsumos IS 'Clase que relaciona
 
 
 --
--- TOC entry 8177 (class 0 OID 0)
--- Dependencies: 1225
+-- TOC entry 6696 (class 0 OID 0)
+-- Dependencies: 828
 -- Name: COLUMN ini_predioinsumos.tipo_emparejamiento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1824,8 +1824,8 @@ COMMENT ON COLUMN test_ladm_integration.ini_predioinsumos.tipo_emparejamiento IS
 
 
 --
--- TOC entry 8178 (class 0 OID 0)
--- Dependencies: 1225
+-- TOC entry 6697 (class 0 OID 0)
+-- Dependencies: 828
 -- Name: COLUMN ini_predioinsumos.observaciones; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1833,7 +1833,7 @@ COMMENT ON COLUMN test_ladm_integration.ini_predioinsumos.observaciones IS 'Obse
 
 
 --
--- TOC entry 1226 (class 1259 OID 322841)
+-- TOC entry 842 (class 1259 OID 376339)
 -- Name: snr_calidadderechotipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1853,7 +1853,7 @@ CREATE TABLE test_ladm_integration.snr_calidadderechotipo (
 ALTER TABLE test_ladm_integration.snr_calidadderechotipo OWNER TO postgres;
 
 --
--- TOC entry 1227 (class 1259 OID 322848)
+-- TOC entry 839 (class 1259 OID 376312)
 -- Name: snr_clasepredioregistrotipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1873,7 +1873,7 @@ CREATE TABLE test_ladm_integration.snr_clasepredioregistrotipo (
 ALTER TABLE test_ladm_integration.snr_clasepredioregistrotipo OWNER TO postgres;
 
 --
--- TOC entry 1228 (class 1259 OID 322855)
+-- TOC entry 821 (class 1259 OID 376154)
 -- Name: snr_derecho; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1890,8 +1890,8 @@ CREATE TABLE test_ladm_integration.snr_derecho (
 ALTER TABLE test_ladm_integration.snr_derecho OWNER TO postgres;
 
 --
--- TOC entry 8179 (class 0 OID 0)
--- Dependencies: 1228
+-- TOC entry 6698 (class 0 OID 0)
+-- Dependencies: 821
 -- Name: TABLE snr_derecho; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1899,8 +1899,8 @@ COMMENT ON TABLE test_ladm_integration.snr_derecho IS 'Datos del derecho inscrit
 
 
 --
--- TOC entry 8180 (class 0 OID 0)
--- Dependencies: 1228
+-- TOC entry 6699 (class 0 OID 0)
+-- Dependencies: 821
 -- Name: COLUMN snr_derecho.calidad_derecho_registro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1908,8 +1908,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_derecho.calidad_derecho_registro IS 
 
 
 --
--- TOC entry 8181 (class 0 OID 0)
--- Dependencies: 1228
+-- TOC entry 6700 (class 0 OID 0)
+-- Dependencies: 821
 -- Name: COLUMN snr_derecho.codigo_naturaleza_juridica; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1917,7 +1917,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_derecho.codigo_naturaleza_juridica I
 
 
 --
--- TOC entry 1229 (class 1259 OID 322859)
+-- TOC entry 836 (class 1259 OID 376285)
 -- Name: snr_documentotitulartipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1937,7 +1937,7 @@ CREATE TABLE test_ladm_integration.snr_documentotitulartipo (
 ALTER TABLE test_ladm_integration.snr_documentotitulartipo OWNER TO postgres;
 
 --
--- TOC entry 1230 (class 1259 OID 322866)
+-- TOC entry 822 (class 1259 OID 376163)
 -- Name: snr_estructuramatriculamatriz; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1953,8 +1953,8 @@ CREATE TABLE test_ladm_integration.snr_estructuramatriculamatriz (
 ALTER TABLE test_ladm_integration.snr_estructuramatriculamatriz OWNER TO postgres;
 
 --
--- TOC entry 8182 (class 0 OID 0)
--- Dependencies: 1230
+-- TOC entry 6701 (class 0 OID 0)
+-- Dependencies: 822
 -- Name: COLUMN snr_estructuramatriculamatriz.codigo_orip; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1962,8 +1962,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_estructuramatriculamatriz.codigo_ori
 
 
 --
--- TOC entry 8183 (class 0 OID 0)
--- Dependencies: 1230
+-- TOC entry 6702 (class 0 OID 0)
+-- Dependencies: 822
 -- Name: COLUMN snr_estructuramatriculamatriz.matricula_inmobiliaria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1971,8 +1971,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_estructuramatriculamatriz.matricula_
 
 
 --
--- TOC entry 8184 (class 0 OID 0)
--- Dependencies: 1230
+-- TOC entry 6703 (class 0 OID 0)
+-- Dependencies: 822
 -- Name: COLUMN snr_estructuramatriculamatriz.snr_predioregistro_matricula_inmobiliaria_matriz; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1980,7 +1980,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_estructuramatriculamatriz.snr_predio
 
 
 --
--- TOC entry 1231 (class 1259 OID 322870)
+-- TOC entry 823 (class 1259 OID 376170)
 -- Name: snr_fuentecabidalinderos; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -1998,8 +1998,8 @@ CREATE TABLE test_ladm_integration.snr_fuentecabidalinderos (
 ALTER TABLE test_ladm_integration.snr_fuentecabidalinderos OWNER TO postgres;
 
 --
--- TOC entry 8185 (class 0 OID 0)
--- Dependencies: 1231
+-- TOC entry 6704 (class 0 OID 0)
+-- Dependencies: 823
 -- Name: TABLE snr_fuentecabidalinderos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2007,8 +2007,8 @@ COMMENT ON TABLE test_ladm_integration.snr_fuentecabidalinderos IS 'Datos del do
 
 
 --
--- TOC entry 8186 (class 0 OID 0)
--- Dependencies: 1231
+-- TOC entry 6705 (class 0 OID 0)
+-- Dependencies: 823
 -- Name: COLUMN snr_fuentecabidalinderos.tipo_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2016,8 +2016,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentecabidalinderos.tipo_documento 
 
 
 --
--- TOC entry 8187 (class 0 OID 0)
--- Dependencies: 1231
+-- TOC entry 6706 (class 0 OID 0)
+-- Dependencies: 823
 -- Name: COLUMN snr_fuentecabidalinderos.numero_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2025,8 +2025,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentecabidalinderos.numero_document
 
 
 --
--- TOC entry 8188 (class 0 OID 0)
--- Dependencies: 1231
+-- TOC entry 6707 (class 0 OID 0)
+-- Dependencies: 823
 -- Name: COLUMN snr_fuentecabidalinderos.ente_emisor; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2034,8 +2034,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentecabidalinderos.ente_emisor IS 
 
 
 --
--- TOC entry 8189 (class 0 OID 0)
--- Dependencies: 1231
+-- TOC entry 6708 (class 0 OID 0)
+-- Dependencies: 823
 -- Name: COLUMN snr_fuentecabidalinderos.ciudad_emisora; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2043,7 +2043,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentecabidalinderos.ciudad_emisora 
 
 
 --
--- TOC entry 1232 (class 1259 OID 322877)
+-- TOC entry 824 (class 1259 OID 376180)
 -- Name: snr_fuentederecho; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2061,8 +2061,8 @@ CREATE TABLE test_ladm_integration.snr_fuentederecho (
 ALTER TABLE test_ladm_integration.snr_fuentederecho OWNER TO postgres;
 
 --
--- TOC entry 8190 (class 0 OID 0)
--- Dependencies: 1232
+-- TOC entry 6709 (class 0 OID 0)
+-- Dependencies: 824
 -- Name: TABLE snr_fuentederecho; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2070,8 +2070,8 @@ COMMENT ON TABLE test_ladm_integration.snr_fuentederecho IS 'Datos del documento
 
 
 --
--- TOC entry 8191 (class 0 OID 0)
--- Dependencies: 1232
+-- TOC entry 6710 (class 0 OID 0)
+-- Dependencies: 824
 -- Name: COLUMN snr_fuentederecho.tipo_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2079,8 +2079,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentederecho.tipo_documento IS 'Tip
 
 
 --
--- TOC entry 8192 (class 0 OID 0)
--- Dependencies: 1232
+-- TOC entry 6711 (class 0 OID 0)
+-- Dependencies: 824
 -- Name: COLUMN snr_fuentederecho.numero_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2088,8 +2088,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentederecho.numero_documento IS 'I
 
 
 --
--- TOC entry 8193 (class 0 OID 0)
--- Dependencies: 1232
+-- TOC entry 6712 (class 0 OID 0)
+-- Dependencies: 824
 -- Name: COLUMN snr_fuentederecho.ente_emisor; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2097,8 +2097,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentederecho.ente_emisor IS 'Es tip
 
 
 --
--- TOC entry 8194 (class 0 OID 0)
--- Dependencies: 1232
+-- TOC entry 6713 (class 0 OID 0)
+-- Dependencies: 824
 -- Name: COLUMN snr_fuentederecho.ciudad_emisora; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2106,7 +2106,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_fuentederecho.ciudad_emisora IS 'Es 
 
 
 --
--- TOC entry 1233 (class 1259 OID 322884)
+-- TOC entry 841 (class 1259 OID 376330)
 -- Name: snr_fuentetipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2126,7 +2126,7 @@ CREATE TABLE test_ladm_integration.snr_fuentetipo (
 ALTER TABLE test_ladm_integration.snr_fuentetipo OWNER TO postgres;
 
 --
--- TOC entry 1234 (class 1259 OID 322891)
+-- TOC entry 843 (class 1259 OID 376348)
 -- Name: snr_personatitulartipo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2146,7 +2146,7 @@ CREATE TABLE test_ladm_integration.snr_personatitulartipo (
 ALTER TABLE test_ladm_integration.snr_personatitulartipo OWNER TO postgres;
 
 --
--- TOC entry 1235 (class 1259 OID 322898)
+-- TOC entry 826 (class 1259 OID 376201)
 -- Name: snr_predioregistro; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2168,8 +2168,8 @@ CREATE TABLE test_ladm_integration.snr_predioregistro (
 ALTER TABLE test_ladm_integration.snr_predioregistro OWNER TO postgres;
 
 --
--- TOC entry 8195 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6714 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: TABLE snr_predioregistro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2177,8 +2177,8 @@ COMMENT ON TABLE test_ladm_integration.snr_predioregistro IS 'Datos del predio e
 
 
 --
--- TOC entry 8196 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6715 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.codigo_orip; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2186,8 +2186,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.codigo_orip IS 'Es el
 
 
 --
--- TOC entry 8197 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6716 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.matricula_inmobiliaria; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2195,8 +2195,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.matricula_inmobiliari
 
 
 --
--- TOC entry 8198 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6717 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.numero_predial_nuevo_en_fmi; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2204,8 +2204,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.numero_predial_nuevo_
 
 
 --
--- TOC entry 8199 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6718 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.numero_predial_anterior_en_fmi; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2213,8 +2213,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.numero_predial_anteri
 
 
 --
--- TOC entry 8200 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6719 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.nomenclatura_registro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2222,8 +2222,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.nomenclatura_registro
 
 
 --
--- TOC entry 8201 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6720 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.cabida_linderos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2231,8 +2231,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.cabida_linderos IS 'E
 
 
 --
--- TOC entry 8202 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6721 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.clase_suelo_registro; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2240,8 +2240,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.clase_suelo_registro 
 
 
 --
--- TOC entry 8203 (class 0 OID 0)
--- Dependencies: 1235
+-- TOC entry 6722 (class 0 OID 0)
+-- Dependencies: 826
 -- Name: COLUMN snr_predioregistro.fecha_datos; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2249,7 +2249,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_predioregistro.fecha_datos IS 'Fecha
 
 
 --
--- TOC entry 1236 (class 1259 OID 322905)
+-- TOC entry 825 (class 1259 OID 376190)
 -- Name: snr_titular; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2269,8 +2269,8 @@ CREATE TABLE test_ladm_integration.snr_titular (
 ALTER TABLE test_ladm_integration.snr_titular OWNER TO postgres;
 
 --
--- TOC entry 8204 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6723 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: TABLE snr_titular; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2278,8 +2278,8 @@ COMMENT ON TABLE test_ladm_integration.snr_titular IS 'Datos de titulares de der
 
 
 --
--- TOC entry 8205 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6724 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.tipo_persona; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2287,8 +2287,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.tipo_persona IS 'Tipo de per
 
 
 --
--- TOC entry 8206 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6725 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.tipo_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2296,8 +2296,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.tipo_documento IS 'Tipo de d
 
 
 --
--- TOC entry 8207 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6726 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.numero_documento; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2305,8 +2305,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.numero_documento IS 'Documen
 
 
 --
--- TOC entry 8208 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6727 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.nombres; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2314,8 +2314,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.nombres IS 'Nombres de la pe
 
 
 --
--- TOC entry 8209 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6728 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.primer_apellido; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2323,8 +2323,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.primer_apellido IS 'Primer a
 
 
 --
--- TOC entry 8210 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6729 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.segundo_apellido; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2332,8 +2332,8 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.segundo_apellido IS 'Segundo
 
 
 --
--- TOC entry 8211 (class 0 OID 0)
--- Dependencies: 1236
+-- TOC entry 6730 (class 0 OID 0)
+-- Dependencies: 825
 -- Name: COLUMN snr_titular.razon_social; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2341,7 +2341,7 @@ COMMENT ON COLUMN test_ladm_integration.snr_titular.razon_social IS 'Nombre con 
 
 
 --
--- TOC entry 1237 (class 1259 OID 322912)
+-- TOC entry 827 (class 1259 OID 376212)
 -- Name: snr_titular_derecho; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2357,8 +2357,8 @@ CREATE TABLE test_ladm_integration.snr_titular_derecho (
 ALTER TABLE test_ladm_integration.snr_titular_derecho OWNER TO postgres;
 
 --
--- TOC entry 8212 (class 0 OID 0)
--- Dependencies: 1237
+-- TOC entry 6731 (class 0 OID 0)
+-- Dependencies: 827
 -- Name: TABLE snr_titular_derecho; Type: COMMENT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2366,7 +2366,7 @@ COMMENT ON TABLE test_ladm_integration.snr_titular_derecho IS 'Datos del titular
 
 
 --
--- TOC entry 1238 (class 1259 OID 322916)
+-- TOC entry 845 (class 1259 OID 376365)
 -- Name: t_ili2db_attrname; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2381,7 +2381,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_attrname (
 ALTER TABLE test_ladm_integration.t_ili2db_attrname OWNER TO postgres;
 
 --
--- TOC entry 1239 (class 1259 OID 322922)
+-- TOC entry 829 (class 1259 OID 376232)
 -- Name: t_ili2db_basket; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2398,7 +2398,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_basket (
 ALTER TABLE test_ladm_integration.t_ili2db_basket OWNER TO postgres;
 
 --
--- TOC entry 1240 (class 1259 OID 322928)
+-- TOC entry 844 (class 1259 OID 376357)
 -- Name: t_ili2db_classname; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2411,7 +2411,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_classname (
 ALTER TABLE test_ladm_integration.t_ili2db_classname OWNER TO postgres;
 
 --
--- TOC entry 1241 (class 1259 OID 322934)
+-- TOC entry 846 (class 1259 OID 376373)
 -- Name: t_ili2db_column_prop; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2427,7 +2427,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_column_prop (
 ALTER TABLE test_ladm_integration.t_ili2db_column_prop OWNER TO postgres;
 
 --
--- TOC entry 1242 (class 1259 OID 322940)
+-- TOC entry 830 (class 1259 OID 376241)
 -- Name: t_ili2db_dataset; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2440,7 +2440,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_dataset (
 ALTER TABLE test_ladm_integration.t_ili2db_dataset OWNER TO postgres;
 
 --
--- TOC entry 1243 (class 1259 OID 322943)
+-- TOC entry 831 (class 1259 OID 376246)
 -- Name: t_ili2db_inheritance; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2453,7 +2453,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_inheritance (
 ALTER TABLE test_ladm_integration.t_ili2db_inheritance OWNER TO postgres;
 
 --
--- TOC entry 1244 (class 1259 OID 322949)
+-- TOC entry 848 (class 1259 OID 376385)
 -- Name: t_ili2db_meta_attrs; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2467,7 +2467,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_meta_attrs (
 ALTER TABLE test_ladm_integration.t_ili2db_meta_attrs OWNER TO postgres;
 
 --
--- TOC entry 1245 (class 1259 OID 322955)
+-- TOC entry 834 (class 1259 OID 376268)
 -- Name: t_ili2db_model; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2483,7 +2483,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_model (
 ALTER TABLE test_ladm_integration.t_ili2db_model OWNER TO postgres;
 
 --
--- TOC entry 1246 (class 1259 OID 322961)
+-- TOC entry 832 (class 1259 OID 376254)
 -- Name: t_ili2db_settings; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2496,7 +2496,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_settings (
 ALTER TABLE test_ladm_integration.t_ili2db_settings OWNER TO postgres;
 
 --
--- TOC entry 1247 (class 1259 OID 322967)
+-- TOC entry 847 (class 1259 OID 376379)
 -- Name: t_ili2db_table_prop; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2510,7 +2510,7 @@ CREATE TABLE test_ladm_integration.t_ili2db_table_prop (
 ALTER TABLE test_ladm_integration.t_ili2db_table_prop OWNER TO postgres;
 
 --
--- TOC entry 1248 (class 1259 OID 322973)
+-- TOC entry 833 (class 1259 OID 376262)
 -- Name: t_ili2db_trafo; Type: TABLE; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2524,8 +2524,8 @@ CREATE TABLE test_ladm_integration.t_ili2db_trafo (
 ALTER TABLE test_ladm_integration.t_ili2db_trafo OWNER TO postgres;
 
 --
--- TOC entry 7987 (class 0 OID 322618)
--- Dependencies: 1196
+-- TOC entry 6510 (class 0 OID 375948)
+-- Dependencies: 800
 -- Data for Name: extarchivo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2534,8 +2534,8 @@ COPY test_ladm_integration.extarchivo (t_id, t_seq, fecha_aceptacion, datos, ext
 
 
 --
--- TOC entry 7988 (class 0 OID 322625)
--- Dependencies: 1197
+-- TOC entry 6511 (class 0 OID 375958)
+-- Dependencies: 801
 -- Data for Name: gc_barrio; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2544,8 +2544,8 @@ COPY test_ladm_integration.gc_barrio (t_id, t_ili_tid, codigo, nombre, codigo_se
 
 
 --
--- TOC entry 7989 (class 0 OID 322632)
--- Dependencies: 1198
+-- TOC entry 6512 (class 0 OID 375968)
+-- Dependencies: 802
 -- Data for Name: gc_calificacionunidadconstruccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2554,8 +2554,8 @@ COPY test_ladm_integration.gc_calificacionunidadconstruccion (t_id, t_ili_tid, c
 
 
 --
--- TOC entry 7990 (class 0 OID 322640)
--- Dependencies: 1199
+-- TOC entry 6513 (class 0 OID 375978)
+-- Dependencies: 803
 -- Data for Name: gc_comisionesconstruccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2564,8 +2564,8 @@ COPY test_ladm_integration.gc_comisionesconstruccion (t_id, t_ili_tid, numero_pr
 
 
 --
--- TOC entry 7991 (class 0 OID 322647)
--- Dependencies: 1200
+-- TOC entry 6514 (class 0 OID 375988)
+-- Dependencies: 804
 -- Data for Name: gc_comisionesterreno; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2574,8 +2574,8 @@ COPY test_ladm_integration.gc_comisionesterreno (t_id, t_ili_tid, numero_predial
 
 
 --
--- TOC entry 7992 (class 0 OID 322654)
--- Dependencies: 1201
+-- TOC entry 6515 (class 0 OID 375998)
+-- Dependencies: 805
 -- Data for Name: gc_comisionesunidadconstruccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2584,29 +2584,29 @@ COPY test_ladm_integration.gc_comisionesunidadconstruccion (t_id, t_ili_tid, num
 
 
 --
--- TOC entry 7993 (class 0 OID 322661)
--- Dependencies: 1202
+-- TOC entry 6550 (class 0 OID 376321)
+-- Dependencies: 840
 -- Data for Name: gc_condicionprediotipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.gc_condicionprediotipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-4	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	0	NPH	\N	f	No propiedad horizontal	Predio no sometido al régimen de propiedad horizontal.
-5	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	1	PH.Matriz	\N	f	(PH) Matriz	Predio matriz del régimen de propiedad horizontal sobre el cual se segregan todas las unidades prediales.
-6	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	2	PH.Unidad_Predial	\N	f	(PH) Unidad predial	Apartamento, garaje, depósito o cualquier otro tipo de unidad predial dentro del PH que se encuentra debidamente inscrito en el registro de instrumentos públicos
-7	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	3	Condominio.Matriz	\N	f	(Condominio) Matriz	Predio matriz del condominio sobre el cual se segregan todas las unidades prediales.
-8	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	4	Condominio.Unidad_Predial	\N	f	(Condominio) Unidad predial	Unidad predial dentro del condominio matriz.
-9	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	5	Mejora.PH	\N	f	(Mejora) Propiedad horizontal	Mejora sobre un predio sometido a régimen de propiedad horizontal
-10	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	6	Mejora.NPH	\N	f	(Mejora) No propiedad horizontal	Mejora sobre un predio no sometido a régimen de propiedad horizontal.
-11	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	7	Parque_Cementerio.Matriz	\N	f	(Parque cementerio) Matriz	Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.
-12	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	8	Parque_Cementerio.Unidad_Predial	\N	f	(Parque cementerio) Unidad predial	Área o sección de terreno con función de tumba, esta debe encontrarse inscrita en el registro de instrumentos públicos.
-13	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	9	Via	\N	f	Vía	Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros.
-14	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	10	Bien_Uso_Publico	\N	f	Bien de uso público	Inmuebles que siendo de dominio de la Nación, o una entidad territorial o de particulares, están destinados al uso de los habitantes.
+26	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	0	NPH	\N	f	No propiedad horizontal	Predio no sometido al régimen de propiedad horizontal.
+27	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	1	PH.Matriz	\N	f	(PH) Matriz	Predio matriz del régimen de propiedad horizontal sobre el cual se segregan todas las unidades prediales.
+28	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	2	PH.Unidad_Predial	\N	f	(PH) Unidad predial	Apartamento, garaje, depósito o cualquier otro tipo de unidad predial dentro del PH que se encuentra debidamente inscrito en el registro de instrumentos públicos
+29	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	3	Condominio.Matriz	\N	f	(Condominio) Matriz	Predio matriz del condominio sobre el cual se segregan todas las unidades prediales.
+30	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	4	Condominio.Unidad_Predial	\N	f	(Condominio) Unidad predial	Unidad predial dentro del condominio matriz.
+31	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	5	Mejora.PH	\N	f	(Mejora) Propiedad horizontal	Mejora sobre un predio sometido a régimen de propiedad horizontal
+32	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	6	Mejora.NPH	\N	f	(Mejora) No propiedad horizontal	Mejora sobre un predio no sometido a régimen de propiedad horizontal.
+33	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	7	Parque_Cementerio.Matriz	\N	f	(Parque cementerio) Matriz	Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.
+34	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	8	Parque_Cementerio.Unidad_Predial	\N	f	(Parque cementerio) Unidad predial	Área o sección de terreno con función de tumba, esta debe encontrarse inscrita en el registro de instrumentos públicos.
+35	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	9	Via	\N	f	Vía	Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros.
+36	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo	\N	10	Bien_Uso_Publico	\N	f	Bien de uso público	Inmuebles que siendo de dominio de la Nación, o una entidad territorial o de particulares, están destinados al uso de los habitantes.
 \.
 
 
 --
--- TOC entry 7994 (class 0 OID 322668)
--- Dependencies: 1203
+-- TOC entry 6516 (class 0 OID 376008)
+-- Dependencies: 806
 -- Data for Name: gc_construccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2615,8 +2615,8 @@ COPY test_ladm_integration.gc_construccion (t_id, t_ili_tid, identificador, etiq
 
 
 --
--- TOC entry 7995 (class 0 OID 322681)
--- Dependencies: 1204
+-- TOC entry 6530 (class 0 OID 376146)
+-- Dependencies: 820
 -- Data for Name: gc_copropiedad; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2625,8 +2625,8 @@ COPY test_ladm_integration.gc_copropiedad (t_id, gc_matriz, gc_unidad, coeficien
 
 
 --
--- TOC entry 7996 (class 0 OID 322686)
--- Dependencies: 1205
+-- TOC entry 6517 (class 0 OID 376020)
+-- Dependencies: 807
 -- Data for Name: gc_datosphcondominio; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2635,8 +2635,8 @@ COPY test_ladm_integration.gc_datosphcondominio (t_id, t_ili_tid, area_total_ter
 
 
 --
--- TOC entry 7997 (class 0 OID 322697)
--- Dependencies: 1206
+-- TOC entry 6518 (class 0 OID 376027)
+-- Dependencies: 808
 -- Data for Name: gc_datostorreph; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2645,8 +2645,8 @@ COPY test_ladm_integration.gc_datostorreph (t_id, t_ili_tid, torre, total_pisos_
 
 
 --
--- TOC entry 7998 (class 0 OID 322706)
--- Dependencies: 1207
+-- TOC entry 6519 (class 0 OID 376034)
+-- Dependencies: 809
 -- Data for Name: gc_direccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2655,8 +2655,8 @@ COPY test_ladm_integration.gc_direccion (t_id, t_seq, valor, principal, geometri
 
 
 --
--- TOC entry 7999 (class 0 OID 322713)
--- Dependencies: 1208
+-- TOC entry 6520 (class 0 OID 376045)
+-- Dependencies: 810
 -- Data for Name: gc_estadopredio; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2665,8 +2665,8 @@ COPY test_ladm_integration.gc_estadopredio (t_id, t_seq, estado_alerta, entidad_
 
 
 --
--- TOC entry 8000 (class 0 OID 322717)
--- Dependencies: 1209
+-- TOC entry 6521 (class 0 OID 376052)
+-- Dependencies: 811
 -- Data for Name: gc_manzana; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2675,8 +2675,8 @@ COPY test_ladm_integration.gc_manzana (t_id, t_ili_tid, codigo, codigo_anterior,
 
 
 --
--- TOC entry 8001 (class 0 OID 322724)
--- Dependencies: 1210
+-- TOC entry 6522 (class 0 OID 376062)
+-- Dependencies: 812
 -- Data for Name: gc_perimetro; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2685,8 +2685,8 @@ COPY test_ladm_integration.gc_perimetro (t_id, t_ili_tid, codigo_departamento, c
 
 
 --
--- TOC entry 8002 (class 0 OID 322731)
--- Dependencies: 1211
+-- TOC entry 6529 (class 0 OID 376135)
+-- Dependencies: 819
 -- Data for Name: gc_prediocatastro; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2695,8 +2695,8 @@ COPY test_ladm_integration.gc_prediocatastro (t_id, t_ili_tid, tipo_catastro, nu
 
 
 --
--- TOC entry 8003 (class 0 OID 322738)
--- Dependencies: 1212
+-- TOC entry 6523 (class 0 OID 376072)
+-- Dependencies: 813
 -- Data for Name: gc_propietario; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2705,8 +2705,8 @@ COPY test_ladm_integration.gc_propietario (t_id, t_ili_tid, tipo_documento, nume
 
 
 --
--- TOC entry 8004 (class 0 OID 322745)
--- Dependencies: 1213
+-- TOC entry 6524 (class 0 OID 376082)
+-- Dependencies: 814
 -- Data for Name: gc_sectorrural; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2715,8 +2715,8 @@ COPY test_ladm_integration.gc_sectorrural (t_id, t_ili_tid, codigo, geometria) F
 
 
 --
--- TOC entry 8005 (class 0 OID 322752)
--- Dependencies: 1214
+-- TOC entry 6525 (class 0 OID 376092)
+-- Dependencies: 815
 -- Data for Name: gc_sectorurbano; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2725,20 +2725,20 @@ COPY test_ladm_integration.gc_sectorurbano (t_id, t_ili_tid, codigo, geometria) 
 
 
 --
--- TOC entry 8006 (class 0 OID 322759)
--- Dependencies: 1215
+-- TOC entry 6548 (class 0 OID 376303)
+-- Dependencies: 838
 -- Data for Name: gc_sistemaprocedenciadatostipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.gc_sistemaprocedenciadatostipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-22	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo	\N	0	SNC	\N	f	Sistema Nacional Catastral	Datos extraídos del Sistema Nacional Catastral del IGAC.
-23	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo	\N	1	Cobol	\N	f	Cobol	Datos extraídos del Sistema COBOL del IGAC.
+21	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo	\N	0	SNC	\N	f	Sistema Nacional Catastral	Datos extraídos del Sistema Nacional Catastral del IGAC.
+22	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo	\N	1	Cobol	\N	f	Cobol	Datos extraídos del Sistema COBOL del IGAC.
 \.
 
 
 --
--- TOC entry 8007 (class 0 OID 322766)
--- Dependencies: 1216
+-- TOC entry 6526 (class 0 OID 376102)
+-- Dependencies: 816
 -- Data for Name: gc_terreno; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2747,8 +2747,8 @@ COPY test_ladm_integration.gc_terreno (t_id, t_ili_tid, area_terreno_alfanumeric
 
 
 --
--- TOC entry 8008 (class 0 OID 322776)
--- Dependencies: 1217
+-- TOC entry 6527 (class 0 OID 376113)
+-- Dependencies: 817
 -- Data for Name: gc_unidadconstruccion; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2757,20 +2757,20 @@ COPY test_ladm_integration.gc_unidadconstruccion (t_id, t_ili_tid, identificador
 
 
 --
--- TOC entry 8009 (class 0 OID 322791)
--- Dependencies: 1218
+-- TOC entry 6547 (class 0 OID 376294)
+-- Dependencies: 837
 -- Data for Name: gc_unidadconstrucciontipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.gc_unidadconstrucciontipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-42	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo	\N	0	Convencional	\N	f	Convencional	Se refiere aquellas construcciones de uso residencial, comercial e industrial.
-43	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo	\N	1	No_Convencional	\N	f	No convencional	Se refiere aquellas construcciones considereadas anexos de construcción.
+19	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo	\N	0	Convencional	\N	f	Convencional	Se refiere aquellas construcciones de uso residencial, comercial e industrial.
+20	Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo	\N	1	No_Convencional	\N	f	No convencional	Se refiere aquellas construcciones considereadas anexos de construcción.
 \.
 
 
 --
--- TOC entry 8010 (class 0 OID 322798)
--- Dependencies: 1219
+-- TOC entry 6528 (class 0 OID 376125)
+-- Dependencies: 818
 -- Data for Name: gc_vereda; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2779,8 +2779,8 @@ COPY test_ladm_integration.gc_vereda (t_id, t_ili_tid, codigo, codigo_anterior, 
 
 
 --
--- TOC entry 8011 (class 0 OID 322805)
--- Dependencies: 1220
+-- TOC entry 6507 (class 0 OID 375925)
+-- Dependencies: 797
 -- Data for Name: gm_multisurface2d; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2789,8 +2789,8 @@ COPY test_ladm_integration.gm_multisurface2d (t_id, t_seq) FROM stdin;
 
 
 --
--- TOC entry 8012 (class 0 OID 322809)
--- Dependencies: 1221
+-- TOC entry 6509 (class 0 OID 375942)
+-- Dependencies: 799
 -- Data for Name: gm_multisurface3d; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2799,8 +2799,8 @@ COPY test_ladm_integration.gm_multisurface3d (t_id, t_seq) FROM stdin;
 
 
 --
--- TOC entry 8013 (class 0 OID 322813)
--- Dependencies: 1222
+-- TOC entry 6506 (class 0 OID 375914)
+-- Dependencies: 796
 -- Data for Name: gm_surface2dlistvalue; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2809,8 +2809,8 @@ COPY test_ladm_integration.gm_surface2dlistvalue (t_id, t_seq, avalue, gm_multis
 
 
 --
--- TOC entry 8014 (class 0 OID 322820)
--- Dependencies: 1223
+-- TOC entry 6508 (class 0 OID 375931)
+-- Dependencies: 798
 -- Data for Name: gm_surface3dlistvalue; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2819,29 +2819,29 @@ COPY test_ladm_integration.gm_surface3dlistvalue (t_id, t_seq, avalue, gm_multis
 
 
 --
--- TOC entry 8015 (class 0 OID 322827)
--- Dependencies: 1224
+-- TOC entry 6545 (class 0 OID 376276)
+-- Dependencies: 835
 -- Data for Name: ini_emparejamientotipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.ini_emparejamientotipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-31	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	0	Tipo_1	\N	f	Tipo 1	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR
-32	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	1	Tipo_2	\N	f	Tipo 2	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR
-33	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	2	Tipo_3	\N	f	Tipo 3	FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial Anterior SNR
-34	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	3	Tipo_4	\N	f	Tipo 4	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial Anterior SNR
-35	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	4	Tipo_5	\N	f	Tipo 5	FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial SNR
-36	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	5	Tipo_6	\N	f	Tipo 6	Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR
-37	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	6	Tipo_7	\N	f	Tipo 7	Número Predial IGAC - Número predial SNR
-38	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	7	Tipo_8	\N	f	Tipo 8	Número predial Anterior IGAC - Número predial Anterior SNR
-39	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	8	Tipo_9	\N	f	Tipo 9	Número Predial IGAC - Número predial Anterior SNR
-40	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	9	Tipo_10	\N	f	Tipo 10	Número predial Anterior IGAC - Número predial SNR
-41	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	10	Tipo_11	\N	f	Tipo 11	FMI SNR - Matricula Inmobiliaria IGAC
+1	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	0	Tipo_1	\N	f	Tipo 1	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR
+2	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	1	Tipo_2	\N	f	Tipo 2	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR
+3	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	2	Tipo_3	\N	f	Tipo 3	FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial Anterior SNR
+4	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	3	Tipo_4	\N	f	Tipo 4	FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial Anterior SNR
+5	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	4	Tipo_5	\N	f	Tipo 5	FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial SNR
+6	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	5	Tipo_6	\N	f	Tipo 6	Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR
+7	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	6	Tipo_7	\N	f	Tipo 7	Número Predial IGAC - Número predial SNR
+8	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	7	Tipo_8	\N	f	Tipo 8	Número predial Anterior IGAC - Número predial Anterior SNR
+9	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	8	Tipo_9	\N	f	Tipo 9	Número Predial IGAC - Número predial Anterior SNR
+10	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	9	Tipo_10	\N	f	Tipo 10	Número predial Anterior IGAC - Número predial SNR
+11	Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo	\N	10	Tipo_11	\N	f	Tipo 11	FMI SNR - Matricula Inmobiliaria IGAC
 \.
 
 
 --
--- TOC entry 8016 (class 0 OID 322834)
--- Dependencies: 1225
+-- TOC entry 6538 (class 0 OID 376220)
+-- Dependencies: 828
 -- Data for Name: ini_predioinsumos; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2850,36 +2850,36 @@ COPY test_ladm_integration.ini_predioinsumos (t_id, t_ili_tid, tipo_emparejamien
 
 
 --
--- TOC entry 8017 (class 0 OID 322841)
--- Dependencies: 1226
+-- TOC entry 6552 (class 0 OID 376339)
+-- Dependencies: 842
 -- Data for Name: snr_calidadderechotipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.snr_calidadderechotipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-44	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	0	Dominio	\N	f	Dominio	El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):\n\n0100\n0101\n0102\n0103\n0106\n0107\n0108\n0109\n0110\n0111\n0112\n0113\n0114\n0115\n0116\n0117\n0118\n0119\n0120\n0121\n0122\n0124\n0125\n0126\n0127\n0128\n0129\n0130\n0131\n0132\n0133\n0135\n0137\n0138\n0139\n0140\n0141\n0142\n0143\n0144\n0145\n0146\n0147\n0148\n0150\n0151\n0152\n0153\n0154\n0155\n0156\n0157\n0158\n0159\n0160\n0161\n0163\n0164\n0165\n0166\n0167\n0168\n0169\n0171\n0172\n0173\n0175\n0177\n0178\n0179\n0180\n0181\n0182\n0183\n0184\n0185\n0186\n0187\n0188\n0189\n0190\n0191\n0192\n0193\n0194\n0195\n0196\n0197\n0198\n0199\n01003\n01004\n01005\n01006\n01007\n01008\n01009\n01010\n01012\n01013\n01014\n0301\n0307\n0321\n0332\n0348\n0356\n0374\n0375\n0376\n0377\n0906\n0907\n0910\n0911\n0912\n0913\n0915\n0917\n0918\n0919\n0920\n0924\n0935\n0959\n0962\n0963
-45	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	1	Falsa_Tradicion	\N	f	Falsa tradición	Es la inscripción en la Oficina de Registro de Instrumentos Públicos, de todo acto de transferencia de un derecho incompleto que se hace a favor de una persona, por parte de quien carece del derecho de dominio sobre determinado inmueble:\n\n0600\n0601\n0602\n0604\n0605\n0606\n0607\n0608\n0609\n0610\n0611\n0613\n0614\n0615\n0616\n0617\n0618\n0619\n0620\n0621\n0622\n0136\n0508\n0927
-46	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	2	Nuda_Propiedad	\N	f	Nuda propiedad	La propiedad separada del goce de la cosa se llama mera o nuda propiedad (art 669 CC):\n\nCódigos:\n\n0302\n0308\n0322\n0349\n0379
-47	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	3	Derecho_Propiedad_Colectiva	\N	f	Derecho de propiedad colectiva	Es la propiedad de toda una comunidad sea indígena o negra. Adjudicacion Baldios En Propiedad Colectiva A Comunidades Negras, Adjudicacion Baldios Resguardos Indigenas, Constitución Resguardo Indigena,\nAmpliación De Resguardo Indígena\n\nCódigos:\n\n0104\n0105\n01001\n01002
-48	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	4	Usufructo	\N	f	Usufructo	El derecho de usufructo es un derecho real que consiste en la facultad de gozar de una cosa con cargo de conservar su forma y sustancia, y de restituir a su dueño, si la cosa no es fungible; o con cargo de volver igual cantidad y calidad del mismo género, o de pagar su valor si la cosa es fungible. (art. 823 CC):\n\n0310\n0314\n0323\n0333\n0378\n0380\n0382\n0383
+42	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	0	Dominio	\N	f	Dominio	El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):\n\n0100\n0101\n0102\n0103\n0106\n0107\n0108\n0109\n0110\n0111\n0112\n0113\n0114\n0115\n0116\n0117\n0118\n0119\n0120\n0121\n0122\n0124\n0125\n0126\n0127\n0128\n0129\n0130\n0131\n0132\n0133\n0135\n0137\n0138\n0139\n0140\n0141\n0142\n0143\n0144\n0145\n0146\n0147\n0148\n0150\n0151\n0152\n0153\n0154\n0155\n0156\n0157\n0158\n0159\n0160\n0161\n0163\n0164\n0165\n0166\n0167\n0168\n0169\n0171\n0172\n0173\n0175\n0177\n0178\n0179\n0180\n0181\n0182\n0183\n0184\n0185\n0186\n0187\n0188\n0189\n0190\n0191\n0192\n0193\n0194\n0195\n0196\n0197\n0198\n0199\n01003\n01004\n01005\n01006\n01007\n01008\n01009\n01010\n01012\n01013\n01014\n0301\n0307\n0321\n0332\n0348\n0356\n0374\n0375\n0376\n0377\n0906\n0907\n0910\n0911\n0912\n0913\n0915\n0917\n0918\n0919\n0920\n0924\n0935\n0959\n0962\n0963
+43	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	1	Falsa_Tradicion	\N	f	Falsa tradición	Es la inscripción en la Oficina de Registro de Instrumentos Públicos, de todo acto de transferencia de un derecho incompleto que se hace a favor de una persona, por parte de quien carece del derecho de dominio sobre determinado inmueble:\n\n0600\n0601\n0602\n0604\n0605\n0606\n0607\n0608\n0609\n0610\n0611\n0613\n0614\n0615\n0616\n0617\n0618\n0619\n0620\n0621\n0622\n0136\n0508\n0927
+44	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	2	Nuda_Propiedad	\N	f	Nuda propiedad	La propiedad separada del goce de la cosa se llama mera o nuda propiedad (art 669 CC):\n\nCódigos:\n\n0302\n0308\n0322\n0349\n0379
+45	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	3	Derecho_Propiedad_Colectiva	\N	f	Derecho de propiedad colectiva	Es la propiedad de toda una comunidad sea indígena o negra. Adjudicacion Baldios En Propiedad Colectiva A Comunidades Negras, Adjudicacion Baldios Resguardos Indigenas, Constitución Resguardo Indigena,\nAmpliación De Resguardo Indígena\n\nCódigos:\n\n0104\n0105\n01001\n01002
+46	Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo	\N	4	Usufructo	\N	f	Usufructo	El derecho de usufructo es un derecho real que consiste en la facultad de gozar de una cosa con cargo de conservar su forma y sustancia, y de restituir a su dueño, si la cosa no es fungible; o con cargo de volver igual cantidad y calidad del mismo género, o de pagar su valor si la cosa es fungible. (art. 823 CC):\n\n0310\n0314\n0323\n0333\n0378\n0380\n0382\n0383
 \.
 
 
 --
--- TOC entry 8018 (class 0 OID 322848)
--- Dependencies: 1227
+-- TOC entry 6549 (class 0 OID 376312)
+-- Dependencies: 839
 -- Data for Name: snr_clasepredioregistrotipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.snr_clasepredioregistrotipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-1	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	0	Rural	\N	f	Rural	Constituyen esta categoría los terrenos no aptos para el uso urbano, por razones de oportunidad, o por su destinación a usos agrícolas, ganaderos, forestales, de explotación de recursos naturales y actividades análogas. (Artículo 33, Ley 388 de 1997)
-2	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	1	Urbano	\N	f	Urbano	Constituyen el suelo urbano, las áreas del territorio distrital o municipal destinadas a usos urbanos por el plan de ordenamiento, que cuenten con infraestructura vial y redes primarias de energía, acueducto y alcantarillado, posibilitándose su urbanización y edificación, según sea el caso. Podrán pertenecer a esta categoría aquellas zonas con procesos de urbanización incompletos, comprendidos en áreas consolidadas con edificación, que se definan como áreas de mejoramiento integral en los planes de ordenamiento territorial.\n\nLas áreas que conforman el suelo urbano serán delimitadas por perímetros y podrán incluir los centros poblados de los corregimientos. En ningún caso el perímetro urbano podrá ser mayor que el denominado perímetro de servicios públicos o sanitario. (Artículo 31, Ley 388 de 1997)
-3	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	2	Sin_Informacion	\N	f	Sin información	\N
+23	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	0	Rural	\N	f	Rural	Constituyen esta categoría los terrenos no aptos para el uso urbano, por razones de oportunidad, o por su destinación a usos agrícolas, ganaderos, forestales, de explotación de recursos naturales y actividades análogas. (Artículo 33, Ley 388 de 1997)
+24	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	1	Urbano	\N	f	Urbano	Constituyen el suelo urbano, las áreas del territorio distrital o municipal destinadas a usos urbanos por el plan de ordenamiento, que cuenten con infraestructura vial y redes primarias de energía, acueducto y alcantarillado, posibilitándose su urbanización y edificación, según sea el caso. Podrán pertenecer a esta categoría aquellas zonas con procesos de urbanización incompletos, comprendidos en áreas consolidadas con edificación, que se definan como áreas de mejoramiento integral en los planes de ordenamiento territorial.\n\nLas áreas que conforman el suelo urbano serán delimitadas por perímetros y podrán incluir los centros poblados de los corregimientos. En ningún caso el perímetro urbano podrá ser mayor que el denominado perímetro de servicios públicos o sanitario. (Artículo 31, Ley 388 de 1997)
+25	Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo	\N	2	Sin_Informacion	\N	f	Sin información	\N
 \.
 
 
 --
--- TOC entry 8019 (class 0 OID 322855)
--- Dependencies: 1228
+-- TOC entry 6531 (class 0 OID 376154)
+-- Dependencies: 821
 -- Data for Name: snr_derecho; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2888,25 +2888,25 @@ COPY test_ladm_integration.snr_derecho (t_id, t_ili_tid, calidad_derecho_registr
 
 
 --
--- TOC entry 8020 (class 0 OID 322859)
--- Dependencies: 1229
+-- TOC entry 6546 (class 0 OID 376285)
+-- Dependencies: 836
 -- Data for Name: snr_documentotitulartipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.snr_documentotitulartipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-24	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	0	Cedula_Ciudadania	\N	f	Cédula de ciudadanía	Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.
-25	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	1	Cedula_Extranjeria	\N	f	Cédula de extranjería	Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
-26	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	2	NIT	\N	f	NIT	El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
-27	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	3	Tarjeta_Identidad	\N	f	Tarjeta de identidad	Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.
-28	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	4	Registro_Civil	\N	f	Registro civil	Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.
-29	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	5	NUIP	\N	f	NUIP	El Número Único de Identificación Personal, es el número que permite identificar a los colombianos durante toda su vida.
-30	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	6	Secuencial_SNR	\N	f	Secuencial SNR	Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.
+12	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	0	Cedula_Ciudadania	\N	f	Cédula de ciudadanía	Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.
+13	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	1	Cedula_Extranjeria	\N	f	Cédula de extranjería	Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
+14	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	2	NIT	\N	f	NIT	El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
+15	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	3	Tarjeta_Identidad	\N	f	Tarjeta de identidad	Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.
+16	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	4	Registro_Civil	\N	f	Registro civil	Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.
+17	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	5	NUIP	\N	f	NUIP	El Número Único de Identificación Personal, es el número que permite identificar a los colombianos durante toda su vida.
+18	Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo	\N	6	Secuencial_SNR	\N	f	Secuencial SNR	Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.
 \.
 
 
 --
--- TOC entry 8021 (class 0 OID 322866)
--- Dependencies: 1230
+-- TOC entry 6532 (class 0 OID 376163)
+-- Dependencies: 822
 -- Data for Name: snr_estructuramatriculamatriz; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2915,8 +2915,8 @@ COPY test_ladm_integration.snr_estructuramatriculamatriz (t_id, t_seq, codigo_or
 
 
 --
--- TOC entry 8022 (class 0 OID 322870)
--- Dependencies: 1231
+-- TOC entry 6533 (class 0 OID 376170)
+-- Dependencies: 823
 -- Data for Name: snr_fuentecabidalinderos; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2925,8 +2925,8 @@ COPY test_ladm_integration.snr_fuentecabidalinderos (t_id, t_ili_tid, tipo_docum
 
 
 --
--- TOC entry 8023 (class 0 OID 322877)
--- Dependencies: 1232
+-- TOC entry 6534 (class 0 OID 376180)
+-- Dependencies: 824
 -- Data for Name: snr_fuentederecho; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2935,35 +2935,35 @@ COPY test_ladm_integration.snr_fuentederecho (t_id, t_ili_tid, tipo_documento, n
 
 
 --
--- TOC entry 8024 (class 0 OID 322884)
--- Dependencies: 1233
+-- TOC entry 6551 (class 0 OID 376330)
+-- Dependencies: 841
 -- Data for Name: snr_fuentetipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.snr_fuentetipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-15	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	0	Acto_Administrativo	\N	f	Acto administrativo	Un acto administrativo es toda manifestación o declaración emanada de la administración pública en el ejercicio de potestades administrativas, mediante el que impone su voluntad sobre los derechos, libertades o intereses de otros sujetos públicos o privados y que queda bajo el del comienzo.
-16	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	1	Escritura_Publica	\N	f	Escritura pública	Una escritura pública es un documento público en el que se realiza ante un notario público un determinado hecho o un derecho autorizado por dicho fedatario público, que firma con el otorgante u otorgantes,mostrando sobre la capacidad jurídica del contenido y de la fecha en que se realizó
-17	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	2	Sentencia_Judicial	\N	f	Sentencia judicial	La sentencia es la resolución judicial definitiva dictada por un juez o tribunal que pone fin a la litis o caso sometido a su conocimiento y cierra definitivamente su actuación en el mismo
-18	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	3	Documento_Privado	\N	f	Documento privado	Documento que contiene un compromiso entre dos o más personas que lo firman.
-19	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	4	Sin_Documento	\N	f	Sin documento	Cuando no se haya documento soporte pero puede ser una declaración verbal.
+37	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	0	Acto_Administrativo	\N	f	Acto administrativo	Un acto administrativo es toda manifestación o declaración emanada de la administración pública en el ejercicio de potestades administrativas, mediante el que impone su voluntad sobre los derechos, libertades o intereses de otros sujetos públicos o privados y que queda bajo el del comienzo.
+38	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	1	Escritura_Publica	\N	f	Escritura pública	Una escritura pública es un documento público en el que se realiza ante un notario público un determinado hecho o un derecho autorizado por dicho fedatario público, que firma con el otorgante u otorgantes,mostrando sobre la capacidad jurídica del contenido y de la fecha en que se realizó
+39	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	2	Sentencia_Judicial	\N	f	Sentencia judicial	La sentencia es la resolución judicial definitiva dictada por un juez o tribunal que pone fin a la litis o caso sometido a su conocimiento y cierra definitivamente su actuación en el mismo
+40	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	3	Documento_Privado	\N	f	Documento privado	Documento que contiene un compromiso entre dos o más personas que lo firman.
+41	Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo	\N	4	Sin_Documento	\N	f	Sin documento	Cuando no se haya documento soporte pero puede ser una declaración verbal.
 \.
 
 
 --
--- TOC entry 8025 (class 0 OID 322891)
--- Dependencies: 1234
+-- TOC entry 6553 (class 0 OID 376348)
+-- Dependencies: 843
 -- Data for Name: snr_personatitulartipo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.snr_personatitulartipo (t_id, thisclass, baseclass, itfcode, ilicode, seq, inactive, dispname, description) FROM stdin;
-20	Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo	\N	0	Persona_Natural	\N	f	Persona natural	Se refiere a la persona humana.
-21	Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo	\N	1	Persona_Juridica	\N	f	Persona jurídica	Se llama persona jurídica, una persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente. Las personas jurídicas son de dos especies: corporaciones y fundaciones de beneficencia pública.
+47	Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo	\N	0	Persona_Natural	\N	f	Persona natural	Se refiere a la persona humana.
+48	Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo	\N	1	Persona_Juridica	\N	f	Persona jurídica	Se llama persona jurídica, una persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente. Las personas jurídicas son de dos especies: corporaciones y fundaciones de beneficencia pública.
 \.
 
 
 --
--- TOC entry 8026 (class 0 OID 322898)
--- Dependencies: 1235
+-- TOC entry 6536 (class 0 OID 376201)
+-- Dependencies: 826
 -- Data for Name: snr_predioregistro; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2972,8 +2972,8 @@ COPY test_ladm_integration.snr_predioregistro (t_id, t_ili_tid, codigo_orip, mat
 
 
 --
--- TOC entry 8027 (class 0 OID 322905)
--- Dependencies: 1236
+-- TOC entry 6535 (class 0 OID 376190)
+-- Dependencies: 825
 -- Data for Name: snr_titular; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2982,8 +2982,8 @@ COPY test_ladm_integration.snr_titular (t_id, t_ili_tid, tipo_persona, tipo_docu
 
 
 --
--- TOC entry 8028 (class 0 OID 322912)
--- Dependencies: 1237
+-- TOC entry 6537 (class 0 OID 376212)
+-- Dependencies: 827
 -- Data for Name: snr_titular_derecho; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -2992,8 +2992,8 @@ COPY test_ladm_integration.snr_titular_derecho (t_id, t_ili_tid, snr_titular, sn
 
 
 --
--- TOC entry 8029 (class 0 OID 322916)
--- Dependencies: 1238
+-- TOC entry 6555 (class 0 OID 376365)
+-- Dependencies: 845
 -- Data for Name: t_ili2db_attrname; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -3169,8 +3169,8 @@ Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular.Primer_Apellido	primer_apellido
 
 
 --
--- TOC entry 8030 (class 0 OID 322922)
--- Dependencies: 1239
+-- TOC entry 6539 (class 0 OID 376232)
+-- Dependencies: 829
 -- Data for Name: t_ili2db_basket; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -3179,8 +3179,8 @@ COPY test_ladm_integration.t_ili2db_basket (t_id, dataset, topic, t_ili_tid, att
 
 
 --
--- TOC entry 8031 (class 0 OID 322928)
--- Dependencies: 1240
+-- TOC entry 6554 (class 0 OID 376357)
+-- Dependencies: 844
 -- Data for Name: t_ili2db_classname; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -3243,8 +3243,8 @@ Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo	snr_personatitulartipo
 
 
 --
--- TOC entry 8032 (class 0 OID 322934)
--- Dependencies: 1241
+-- TOC entry 6556 (class 0 OID 376373)
+-- Dependencies: 846
 -- Data for Name: t_ili2db_column_prop; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -3304,7 +3304,7 @@ gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
 gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.c3Min	-5000.000
 gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.c3Max	6000.000
-gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_unidadconstruccion	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_vereda	\N	geometria	ch.ehi.ili2db.coordDimension	2
 gc_vereda	\N	geometria	ch.ehi.ili2db.c1Max	5700000.000
@@ -3312,7 +3312,7 @@ gc_vereda	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_vereda	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_vereda	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_vereda	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_vereda	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_vereda	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_vereda	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_terreno	\N	area_terreno_digital	ch.ehi.ili2db.unit	m2
 gc_terreno	\N	area_terreno_digital	ch.ehi.ili2db.dispName	Área terreno digital
@@ -3346,7 +3346,7 @@ gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.c2Max	3100000.000
 gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.geomType	POLYGON
 gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.c1Min	3980000.000
 gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.c2Min	1080000.000
-gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.srid	38820
+gm_surface2dlistvalue	\N	avalue	ch.ehi.ili2db.srid	9377
 gc_vereda	\N	codigo_anterior	ch.ehi.ili2db.dispName	Código anterior
 gc_barrio	\N	geometria	ch.ehi.ili2db.coordDimension	2
 gc_barrio	\N	geometria	ch.ehi.ili2db.c1Max	5700000.000
@@ -3354,7 +3354,7 @@ gc_barrio	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_barrio	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_barrio	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_barrio	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_barrio	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_barrio	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_barrio	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_construccion	\N	area_construida	ch.ehi.ili2db.unit	m2
 gc_construccion	\N	area_construida	ch.ehi.ili2db.dispName	Área construida
@@ -3375,7 +3375,7 @@ gc_perimetro	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_perimetro	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_perimetro	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_perimetro	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_perimetro	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_perimetro	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_perimetro	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_prediocatastro	\N	tipo_predio	ch.ehi.ili2db.dispName	Tipo de predio
 gc_prediocatastro	\N	sistema_procedencia_datos	ch.ehi.ili2db.foreignKey	gc_sistemaprocedenciadatostipo
@@ -3390,7 +3390,7 @@ gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_comisionesterreno	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_prediocatastro	\N	tipo_catastro	ch.ehi.ili2db.dispName	Tipo de catastro
 gc_prediocatastro	\N	destinacion_economica	ch.ehi.ili2db.dispName	Destinación económica
@@ -3403,7 +3403,7 @@ gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.c1Min	3980000.000
 gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.c2Min	1080000.000
 gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.c3Min	-5000.000
 gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.c3Max	6000.000
-gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.srid	38820
+gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.srid	9377
 gc_direccion	\N	geometria_referencia	ch.ehi.ili2db.dispName	Geometría de referencia
 gc_perimetro	\N	codigo_nombre	ch.ehi.ili2db.dispName	Código nombre
 gc_propietario	\N	primer_apellido	ch.ehi.ili2db.dispName	Primer apellido
@@ -3413,7 +3413,7 @@ gc_sectorurbano	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_sectorurbano	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_sectorurbano	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_sectorurbano	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_sectorurbano	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_sectorurbano	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_sectorurbano	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 snr_predioregistro	\N	codigo_orip	ch.ehi.ili2db.dispName	Código ORIP
 gc_datosphcondominio	\N	valor_total_avaluo_catastral	ch.ehi.ili2db.unit	COP
@@ -3430,7 +3430,7 @@ gc_construccion	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_construccion	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
 gc_construccion	\N	geometria	ch.ehi.ili2db.c3Min	-5000.000
 gc_construccion	\N	geometria	ch.ehi.ili2db.c3Max	6000.000
-gc_construccion	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_construccion	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_construccion	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_vereda	\N	nombre	ch.ehi.ili2db.dispName	Nombre
 gc_sectorurbano	\N	codigo	ch.ehi.ili2db.dispName	Código
@@ -3446,7 +3446,7 @@ gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
 gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.c3Min	-5000.000
 gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.c3Max	6000.000
-gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_comisionesunidadconstruccion	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_construccion	\N	numero_pisos	ch.ehi.ili2db.dispName	Número de pisos
 snr_predioregistro	\N	matricula_inmobiliaria	ch.ehi.ili2db.dispName	Matrícula inmobiliaria
@@ -3481,7 +3481,7 @@ gc_terreno	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_terreno	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_terreno	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_terreno	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_terreno	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_terreno	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_terreno	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_datosphcondominio	\N	area_total_terreno_comun	ch.ehi.ili2db.unit	m2
 gc_datosphcondominio	\N	area_total_terreno_comun	ch.ehi.ili2db.dispName	Área total de terreno común
@@ -3495,7 +3495,7 @@ gc_manzana	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_manzana	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_manzana	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_manzana	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_manzana	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_manzana	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_manzana	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_estadopredio	\N	gc_prediocatastro_estado_predio	ch.ehi.ili2db.foreignKey	gc_prediocatastro
 gc_unidadconstruccion	\N	uso	ch.ehi.ili2db.dispName	Uso
@@ -3509,7 +3509,7 @@ gc_sectorrural	\N	geometria	ch.ehi.ili2db.c2Max	3100000.000
 gc_sectorrural	\N	geometria	ch.ehi.ili2db.geomType	MULTIPOLYGON
 gc_sectorrural	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_sectorrural	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
-gc_sectorrural	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_sectorrural	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_sectorrural	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_unidadconstruccion	\N	total_locales	ch.ehi.ili2db.dispName	Total de locales
 gc_unidadconstruccion	\N	etiqueta	ch.ehi.ili2db.dispName	Etiqueta
@@ -3524,7 +3524,7 @@ gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.c1Min	3980000.000
 gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.c2Min	1080000.000
 gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.c3Min	-5000.000
 gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.c3Max	6000.000
-gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.srid	38820
+gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.srid	9377
 gc_comisionesconstruccion	\N	geometria	ch.ehi.ili2db.dispName	Geometría
 gc_construccion	\N	etiqueta	ch.ehi.ili2db.dispName	Etiqueta
 gc_propietario	\N	gc_predio_catastro	ch.ehi.ili2db.foreignKey	gc_prediocatastro
@@ -3543,7 +3543,7 @@ gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.c1Min	3980000.000
 gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.c2Min	1080000.000
 gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.c3Min	-5000.000
 gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.c3Max	6000.000
-gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.srid	38820
+gm_surface3dlistvalue	\N	avalue	ch.ehi.ili2db.srid	9377
 gc_construccion	\N	tipo_dominio	ch.ehi.ili2db.dispName	Tipo de dominio
 snr_predioregistro	\N	clase_suelo_registro	ch.ehi.ili2db.foreignKey	snr_clasepredioregistrotipo
 snr_predioregistro	\N	clase_suelo_registro	ch.ehi.ili2db.dispName	Clase del suelo según registro
@@ -3557,8 +3557,8 @@ gc_propietario	\N	tipo_documento	ch.ehi.ili2db.dispName	Tipo de documento
 
 
 --
--- TOC entry 8033 (class 0 OID 322940)
--- Dependencies: 1242
+-- TOC entry 6540 (class 0 OID 376241)
+-- Dependencies: 830
 -- Data for Name: t_ili2db_dataset; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -3567,63 +3567,63 @@ COPY test_ladm_integration.t_ili2db_dataset (t_id, datasetname) FROM stdin;
 
 
 --
--- TOC entry 8034 (class 0 OID 322943)
--- Dependencies: 1243
+-- TOC entry 6541 (class 0 OID 376246)
+-- Dependencies: 831
 -- Data for Name: t_ili2db_inheritance; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.t_ili2db_inheritance (thisclass, baseclass) FROM stdin;
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_FuenteDerecho	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_UnidadConstruccion	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_EstructuraMatriculaMatriz	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Derecho	\N
-Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.INI_PredioInsumos	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_titular_derecho	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_SectorRural	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Construccion	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Manzana	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesConstruccion	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesUnidadConstruccion	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Propietario	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_unidadconstruccion_calificacionunidadconstruccion	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_PredioRegistro	\N
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_propietario_predio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio	\N
-Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.ini_predio_integracion_gc	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_terreno_predio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Barrio	\N
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_CalificacionUnidadConstruccion	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosPHCondominio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesTerreno	\N
-ISO19107_PLANAS_V3_0.GM_MultiSurface3D	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Perimetro	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_predio_registro_fuente_cabidalinderos	\N
-ISO19107_PLANAS_V3_0.GM_Surface3DListValue	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_fuente_derecho	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_ph_predio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_copropiedad	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Direccion	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_predio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_SectorUrbano	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Construccion	\N
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Terreno	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_FuenteDerecho	\N
+ISO19107_PLANAS_V3_0.GM_MultiSurface3D	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesConstruccion	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_construccion_predio	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_unidadconstruccion_calificacionunidadconstruccion	\N
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Vereda	\N
 Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.ini_predio_integracion_snr	\N
-ISO19107_PLANAS_V3_0.GM_MultiSurface2D	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_construccion_predio	\N
-Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_construccion_unidad	\N
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_datosphcondominio_datostorreph	\N
-Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular	\N
-ISO19107_PLANAS_V3_0.GM_Surface2DListValue	\N
-LADM_COL_V3_0.LADM_Nucleo.ExtArchivo	\N
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_FuenteCabidaLinderos	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_titular_derecho	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Barrio	\N
+ISO19107_PLANAS_V3_0.GM_Surface2DListValue	\N
+ISO19107_PLANAS_V3_0.GM_Surface3DListValue	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Direccion	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Derecho	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_PredioRegistro	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Manzana	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Propietario	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_UnidadConstruccion	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_copropiedad	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_construccion_unidad	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_EstructuraMatriculaMatriz	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Perimetro	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesTerreno	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosTorrePH	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_predio_registro_fuente_cabidalinderos	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_terreno_predio	\N
+LADM_COL_V3_0.LADM_Nucleo.ExtArchivo	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular	\N
+Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.INI_PredioInsumos	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosPHCondominio	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_SectorRural	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_predio	\N
+Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos.ini_predio_integracion_gc	\N
+Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_fuente_derecho	\N
+ISO19107_PLANAS_V3_0.GM_MultiSurface2D	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_ComisionesUnidadConstruccion	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_SectorUrbano	\N
+Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_ph_predio	\N
 \.
 
 
 --
--- TOC entry 8035 (class 0 OID 322949)
--- Dependencies: 1244
+-- TOC entry 6558 (class 0 OID 376385)
+-- Dependencies: 848
 -- Data for Name: t_ili2db_meta_attrs; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4014,6 +4014,7 @@ LADM_COL_V3_0.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora	ili2db.dispName	Letr
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion	ili2db.ili.attrCardinalityMax	1
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion	ili2db.ili.attrCardinalityMin	0
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Propietario.Digito_Verificacion	ili2db.dispName	Dígito de verificación
+LADM_COL_V3_0.LADM_Nucleo.col_puntoReferencia.ue	hidden	True
 LADM_COL_V3_0.LADM_Nucleo.col_puntoReferencia.ue	ili2db.ili.assocCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.col_puntoReferencia.ue	ili2db.ili.assocCardinalityMax	1
 LADM_COL_V3_0.LADM_Nucleo.col_puntoReferencia.ue	ili2db.ili.assocKind	ASSOCIATE
@@ -4107,6 +4108,7 @@ LADM_COL_V3_0.LADM_Nucleo.col_ueFuente.ue	ili2db.ili.assocKind	ASSOCIATE
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_fuente_derecho.snr_fuente_derecho	ili2db.ili.assocCardinalityMin	1
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_fuente_derecho.snr_fuente_derecho	ili2db.ili.assocCardinalityMax	1
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_derecho_fuente_derecho.snr_fuente_derecho	ili2db.ili.assocKind	ASSOCIATE
+LADM_COL_V3_0.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID	hidden	True
 LADM_COL_V3_0.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID	ili2db.ili.attrCardinalityMax	1
 LADM_COL_V3_0.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID	ili2db.ili.attrCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID	ili2db.dispName	Ext dirección id
@@ -4152,6 +4154,7 @@ Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_FuenteCabidaLinderos	ili2db.dispName	(S
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_predio_registro_fuente_cabidalinderos.snr_predio_registro	ili2db.ili.assocCardinalityMin	0
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_predio_registro_fuente_cabidalinderos.snr_predio_registro	ili2db.ili.assocCardinalityMax	*
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.snr_predio_registro_fuente_cabidalinderos.snr_predio_registro	ili2db.ili.assocKind	ASSOCIATE
+LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID	hidden	True
 LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID	ili2db.ili.attrCardinalityMax	1
 LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID	ili2db.ili.attrCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica.Ext_Direccion_ID	ili2db.dispName	Ext dirección id
@@ -4381,6 +4384,7 @@ Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_ph_predio.gc_d
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.gc_ph_predio.gc_datos_ph	ili2db.ili.assocKind	ASSOCIATE
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Barrio	ili2db.dispName	(GC) Barrio
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro.Destinacion_Economica	ili2db.ili.attrCardinalityMax	1
+LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre	ili2db.ili.attrCardinalityMin	0
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro.Destinacion_Economica	ili2db.ili.attrCardinalityMin	0
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro.Destinacion_Economica	ili2db.dispName	Destinación económica
 Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Direccion.Valor	ili2db.ili.attrCardinalityMax	1
@@ -4442,7 +4446,6 @@ LADM_COL_V3_0.LADM_Nucleo.COL_Interesado.Nombre	ili2db.ili.attrCardinalityMax	1
 LADM_COL_V3_0.LADM_Nucleo.COL_Interesado.Nombre	ili2db.ili.attrCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.COL_Interesado.Nombre	ili2db.dispName	Nombre
 LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre	ili2db.ili.attrCardinalityMax	1
-LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre	ili2db.ili.attrCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre	ili2db.dispName	Nombre
 LADM_COL_V3_0.LADM_Nucleo.col_rrrInteresado.interesado	ili2db.ili.assocCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.col_rrrInteresado.interesado	ili2db.ili.assocCardinalityMax	1
@@ -4480,6 +4483,7 @@ LADM_COL_V3_0.LADM_Nucleo.CC_MetodoOperacion.Formula	ili2db.dispName	Fórmula
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular.Nombres	ili2db.ili.attrCardinalityMax	1
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular.Nombres	ili2db.ili.attrCardinalityMin	0
 Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_Titular.Nombres	ili2db.dispName	Nombres
+LADM_COL_V3_0.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID	hidden	True
 LADM_COL_V3_0.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID	ili2db.ili.attrCardinalityMax	*
 LADM_COL_V3_0.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID	ili2db.ili.attrCardinalityMin	0
 LADM_COL_V3_0.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID	ili2db.dispName	Ext dirección id
@@ -4606,21 +4610,21 @@ Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosPHCondomi
 
 
 --
--- TOC entry 8036 (class 0 OID 322955)
--- Dependencies: 1245
+-- TOC entry 6544 (class 0 OID 376268)
+-- Dependencies: 834
 -- Data for Name: t_ili2db_model; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
 COPY test_ladm_integration.t_ili2db_model (filename, iliversion, modelname, content, importdate) FROM stdin;
-LADM_COL_V3_0.ili	2.3	LADM_COL_V3_0{ ISO19107_PLANAS_V3_0}	INTERLIS 2.3;\n\n/** ISO 19152 LADM country profile COL Core Model.\n * \n * -----------------------------------------------------------\n * \n * LADM es un modelo conceptual de la realidad que concreta una ontología y establece una semántica para la administración del territorio.\n * \n * -----------------------------------------------------------\n *  revision history\n * -----------------------------------------------------------\n * \n *  30.01.2018/fm : Cambio del tipo de dato del atributo Ext_Direccion de la clase Unidad Espacial a ExtDireccion; atributo ext_PID de la calse LA_Interesado cambia de OID a ExtInteresado; Cambio de cardinalidad en relacion miembros entre LA_Interesado y LA_Agrupacion_Interesados de 0..1 a 0..*\n *  07.02.2018/fm-gc: Ajuste al tipo de dato de la unidad Peso, pasa a tener precision 1 para evitar ser tratado cmo atributo entero y aumentar su tamaño\n *  19.02.2018/fm-gc: ampliación del dominio al tipo de dato Peso\n *  26.02.2018/fm-lj: cambio del nombre del dominio ISO19125_Type a ISO19125_Tipo\n *  19.04.2018/vb fm: Ajuste al constraint Fraccion, denominador mayor a 0\n *  19.04.2018/vb fm: Cambio en la cardinalidad del atributo u_Local_Id de la clase LA_BAUnit de 0..1 a 1\n * 17.07.2018/fm : se incluye escritura en dominio COL_FuenteAdministrativaTipo\n * 10.08.2018/fm : Se eliminan los atributos ai_local_id y ai_espacio_de_nombres de la clase LA_Agrupacion_Interesados\n * 27.08.2018/fm : Ajuste a la cardinalidad de asociacion puntoFuente de 1..* a 0..*\n * 25.09.2018/at: Se ajusta la longitud del atributo Codigo_Registral_Transaccion en la clase COL_FuenteAdministrativa a 5 caracteres de acuerdo a la Resolución 3973 de 2018\n * -----------------------------------------------------------\n * \n *  (c) IGAC y SNR con apoyo de la Cooperacion Suiza\n * \n * -----------------------------------------------------------\n */\nMODEL LADM_COL_V3_0 (es)\nAT "http://www.proadmintierra.info/"\nVERSION "V1.2.0"  // 2019-08-13 // =\n  IMPORTS ISO19107_PLANAS_V3_0;\n\n  UNIT\n\n    PesoColombiano [COP] EXTENDS INTERLIS.MONEY;\n\n    Area (ABSTRACT) = (INTERLIS.LENGTH * INTERLIS.LENGTH);\n\n    MetroCuadrado [m2] EXTENDS Area = (INTERLIS.m * INTERLIS.m);\n\n    Centrimetro [cm] = 1 / 100 [INTERLIS.m];\n\n  TOPIC LADM_Nucleo(ABSTRACT) =\n\n    DOMAIN\n\n      CharacterString = TEXT*255;\n\n      /** Traducción del dominio CI_PresentationFormCode de la norma ISO 19115:2003. Indica el modo en el que se representan los datos.\n       */\n      CI_Forma_Presentacion_Codigo = (\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Imagen"\n        Imagen,\n        !!@ ili2db.dispName = "Documento"\n        Documento,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Mapa"\n        Mapa,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Video"\n        Video,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_AreaTipo = (\n        /** Corresponde al área gráfica inscrita en la base de datos catastral sobre un predio antes de efectuar la transformación al nuevo sistema de proyección para catastro.\n         */\n        !!@ ili2db.dispName = "Area catastral gráfica del predio"\n        Area_Catastral_Grafica,\n        /** Corresponde al área alfanumérica inscrita en la base de datos catastral sobre un predio antes de efectuar la transformación al nuevo sistema de proyección para catastro. En la mayoría de los casos el área alfanumérica corresponde al valor de área inscrita en los datos de Registro.\n         */\n        !!@ ili2db.dispName = "Area catastral alfanumérica"\n        Area_Catastral_Alfanumerica\n      );\n\n      COL_ContenidoNivelTipo = (\n        !!@ ili2db.dispName = "Construcción convencional"\n        Construccion_Convencional,\n        !!@ ili2db.dispName = "Construcción no convencional"\n        Construccion_No_Convencional,\n        !!@ ili2db.dispName = "Consuetudinario"\n        Consuetudinario,\n        !!@ ili2db.dispName = "Formal"\n        Formal,\n        !!@ ili2db.dispName = "Informal"\n        Informal,\n        !!@ ili2db.dispName = "Responsabilidad"\n        Responsabilidad,\n        !!@ ili2db.dispName = "Restricción derecho público"\n        Restriccion_Derecho_Publico,\n        !!@ ili2db.dispName = "Restricción derecho privado"\n        Restriccion_Derecho_Privado\n      );\n\n      COL_DimensionTipo = (\n        !!@ ili2db.dispName = "Dimensión 2D"\n        Dim2D,\n        !!@ ili2db.dispName = "Dimensión 3D"\n        Dim3D,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_EstadoRedServiciosTipo = (\n        !!@ ili2db.dispName = "Planeado"\n        Planeado,\n        !!@ ili2db.dispName = "En uso"\n        En_Uso,\n        !!@ ili2db.dispName = "Fuera de servicio"\n        Fuera_De_Servicio,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_EstructuraTipo = (\n        !!@ ili2db.dispName = "Croquis"\n        Croquis,\n        !!@ ili2db.dispName = "Línea no estructurada"\n        Linea_no_Estructurada,\n        !!@ ili2db.dispName = "Texto"\n        Texto,\n        !!@ ili2db.dispName = "Topológico"\n        Topologico\n      );\n\n      COL_FuenteEspacialTipo = (\n        /** Ilustración análoga del levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Croquis de campo"\n        Croquis_Campo,\n        /** Datos tomados por un equipo GNSS sin ningún tipo de postprocesamiento.\n         */\n        !!@ ili2db.dispName = "Datos crudos (GPS, Estación total, LiDAR, etc.)"\n        Datos_Crudos,\n        /** Imagen producto de la toma de fotografías aéreas o satélites, en la cual han sido corregidos los desplazamientos causados por la inclinación de la cámara o sensor y la curvatura de la superficie del terreno. Está referida a un sistema de proyección cartográfica, por lo que posee las características geométricas de un mapa con el factor adicional de que los objetos se encuentran representados de forma real en la imagen de la fotográfica.\n         */\n        !!@ ili2db.dispName = "Ortofoto"\n        Ortofoto,\n        /** Informe técnico de levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Informe técnico"\n        Informe_Tecnico,\n        /** Registro fotográfico del levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Registro fotográfico"\n        Registro_Fotografico\n      );\n\n      COL_GrupoInteresadoTipo = (\n        /** Agrupación de personas naturales.\n         */\n        !!@ ili2db.dispName = "Grupo civil"\n        Grupo_Civil,\n        /** Agrupación de personas jurídicas.\n         */\n        !!@ ili2db.dispName = "Grupo empresarial"\n        Grupo_Empresarial,\n        /** Agrupación de personas pertenecientes a un grupo étnico.\n         */\n        !!@ ili2db.dispName = "Grupo étnico"\n        Grupo_Etnico,\n        /** Agrupación de personas naturales y jurídicas.\n         */\n        !!@ ili2db.dispName = "Grupo mixto"\n        Grupo_Mixto\n      );\n\n      /** Si ha sido situado por interpolación, de qué manera se ha hecho.\n       */\n      COL_InterpolacionTipo = (\n        !!@ ili2db.dispName = "Aislado"\n        Aislado,\n        !!@ ili2db.dispName = "Intermedio arco"\n        Intermedio_Arco,\n        !!@ ili2db.dispName = "Intermedio línea"\n        Intermedio_Linea\n      );\n\n      COL_MetodoProduccionTipo = (\n        /** Aquellos que requieren una visita campo con el fin de\n         * recolectar la realidad de los bienes inmuebles.\n         */\n        !!@ ili2db.dispName = "Método directo"\n        Metodo_Directo,\n        /** aquellos métodos identificación física, jurídica y\n         * económica de los inmuebles a través del uso de de sensores\n         * remotos, integración registros administrativos, modelos ísticos y\n         * econométricos, análisis de Big Data y fuentes secundarias como\n         * observatorios inmobiliarios, su posterior incorporación en la base catastral.\n         */\n        !!@ ili2db.dispName = "Método indirecto"\n        Metodo_Indirecto,\n        /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.\n         */\n        !!@ ili2db.dispName = "Metodo declarativo y colaborativo"\n        Medoto_Declarativo_y_Colaborativo\n      );\n\n      COL_PuntoTipo = (\n        !!@ ili2db.dispName = "Control"\n        Control,\n        !!@ ili2db.dispName = "Catastro"\n        Catastro,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_RegistroTipo = (\n        !!@ ili2db.dispName = "Rural"\n        Rural,\n        !!@ ili2db.dispName = "Urbano"\n        Urbano,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_UnidadAdministrativaBasicaTipo = (\n        /** Unidad administrativa básica de la temática predial.\n         */\n        !!@ ili2db.dispName = "Predio"\n        Predio,\n        /** Unidad administrativa básica de la temática de ordenamiento territorial.\n         */\n        !!@ ili2db.dispName = "Ordenamiento territorial"\n        Ordenamiento_Territorial,\n        /** Unidad administrativa básica de la temática de servicios públicos.\n         */\n        !!@ ili2db.dispName = "Servicios públicos"\n        Servicios_Publicos,\n        /** Unidad administrativa básica de la temática de reservas naturales.\n         */\n        !!@ ili2db.dispName = "Reservas naturales"\n        Reservas_Naturales,\n        /** Unidad administrativa básica de la temática de parques naturales.\n         */\n        !!@ ili2db.dispName = "Parques naturales"\n        Parques_Naturales,\n        /** Unidad administrativa básica de la temática de amenazas de riesgo.\n         */\n        !!@ ili2db.dispName = "Amenazas de riesgos"\n        Amenazas_Riesgos,\n        /** Unidad administrativa básica de la temática de servidumbres.\n         */\n        !!@ ili2db.dispName = "Servidumbre"\n        Servidumbre,\n        /** Unidad administrativa básica de la temática de superficies de agua.\n         */\n        !!@ ili2db.dispName = "Superficies de agua"\n        Superficies_Agua,\n        /** Unidad administrativa básica de la temática de transporte.\n         */\n        !!@ ili2db.dispName = "Transporte"\n        Transporte\n      );\n\n      COL_VolumenTipo = (\n        !!@ ili2db.dispName = "Oficial"\n        Oficial,\n        !!@ ili2db.dispName = "Calculado"\n        Calculado,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      Integer = 0 .. 999999999;\n\n      COL_EstadoDisponibilidadTipo = (\n        /** La fuente fue convertida o recibió algún tratamiento.\n         */\n        !!@ ili2db.dispName = "Convertido"\n        Convertido,\n        /** Se desconoce la disponibilidad de la fuente.\n         */\n        !!@ ili2db.dispName = "Desconocido"\n        Desconocido,\n        /** La fuente está disponible.\n         */\n        !!@ ili2db.dispName = "Disponible"\n        Disponible\n      );\n\n      COL_ISO19125_Tipo = (\n        !!@ ili2db.dispName = "Disjunto"\n        Disjunto,\n        !!@ ili2db.dispName = "Toca"\n        Toca,\n        !!@ ili2db.dispName = "Superpone"\n        Superpone,\n        !!@ ili2db.dispName = "Desconocido"\n        Desconocido\n      );\n\n      COL_RelacionSuperficieTipo = (\n        !!@ ili2db.dispName = "En rasante"\n        En_Rasante,\n        !!@ ili2db.dispName = "En vuelo"\n        En_Vuelo,\n        !!@ ili2db.dispName = "En subsuelo"\n        En_Subsuelo,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_UnidadEdificacionTipo = (\n        !!@ ili2db.dispName = "Compartido"\n        Compartido,\n        !!@ ili2db.dispName = "Individual"\n        Individual\n      );\n\n      Currency = -2000000000.00 .. 2000000000.00;\n\n      Real = 0.000 .. 999999999.999;\n\n    /** Estructura que proviene de la traducción de la clase CC_OperationMethod de la ISO 19111. Indica el método utilizado, mediante un algoritmo o un procedimiento, para realizar operaciones con coordenadas.\n     */\n    STRUCTURE CC_MetodoOperacion =\n      /** Fórmulas o procedimientos utilizadoa por este método de operación de coordenadas. Esto puede ser una referencia a una publicación. Tenga en cuenta que el método de operación puede no ser analítico, en cuyo caso este atributo hace referencia o contiene el procedimiento, no una fórmula analítica.\n       */\n      !!@ ili2db.dispName = "Fórmula"\n      Formula : MANDATORY CharacterString;\n      /** Número de dimensiones en la fuente CRS de este método de operación de coordenadas.\n       */\n      !!@ ili2db.dispName = "Dimensiones origen"\n      Dimensiones_Origen : Integer;\n      /** Número de dimensiones en el CRS de destino de este método de operación de coordenadas.\n       */\n      !!@ ili2db.dispName = "Ddimensiones objetivo"\n      Ddimensiones_Objetivo : Integer;\n    END CC_MetodoOperacion;\n\n    !!@ ili2db.dispName = "Valores de área"\n    STRUCTURE COL_AreaValor =\n      /** Indica si el valor a registrar corresponde al área gráfica o alfanumérica de la base de datos catastral.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_AreaTipo;\n      /** Corresponde al valor del área registrada en la base de datos catastral.\n       */\n      !!@ ili2db.dispName = "Área"\n      Area : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];\n      /** Parametros de la proyección utilizada para el cálculo del área de la forma proj, ejemplo: 'EPSG:3116', '+proj=tmerc +lat_0=4.59620041666667 +lon_0=-74.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'\n       */\n      !!@ ili2db.dispName = "Datos de la proyección"\n      Datos_Proyeccion : TEXT;\n    END COL_AreaValor;\n\n    /** Referencia a una clase externa para gestionar direcciones.\n     */\n    !!@ ili2db.dispName = "Dirección"\n    STRUCTURE ExtDireccion =\n      !!@ ili2db.dispName = "Tipo de dirección"\n      Tipo_Direccion : MANDATORY (\n        !!@ ili2db.dispName = "Estructurada"\n        Estructurada,\n        !!@ ili2db.dispName = "No estructurada"\n        No_Estructurada\n      );\n      !!@ ili2db.dispName = "Es dirección principal"\n      Es_Direccion_Principal : BOOLEAN;\n      /** Par de valores georreferenciados (x,y) en la que se encuentra la dirección.\n       */\n      !!@ ili2db.dispName = "Localización"\n      Localizacion : ISO19107_PLANAS_V3_0.GM_Point3D;\n      !!@ ili2db.dispName = "Código postal"\n      Codigo_Postal : CharacterString;\n      !!@ ili2db.dispName = "Clase de vía principal"\n      Clase_Via_Principal : (\n        !!@ ili2db.dispName = "Avenida calle"\n        Avenida_Calle,\n        !!@ ili2db.dispName = "Avenida carrera"\n        Avenida_Carrera,\n        !!@ ili2db.dispName = "Avenida"\n        Avenida,\n        !!@ ili2db.dispName = "Autopista"\n        Autopista,\n        !!@ ili2db.dispName = "Circunvalar"\n        Circunvalar,\n        !!@ ili2db.dispName = "Calle"\n        Calle,\n        !!@ ili2db.dispName = "Carrera"\n        Carrera,\n        !!@ ili2db.dispName = "Diagonal"\n        Diagonal,\n        !!@ ili2db.dispName = "Transversal"\n        Transversal,\n        !!@ ili2db.dispName = "Circular"\n        Circular\n      );\n      !!@ ili2db.dispName = "Valor vía principal"\n      Valor_Via_Principal : TEXT*100;\n      !!@ ili2db.dispName = "Letra vía principal"\n      Letra_Via_Principal : TEXT*20;\n      !!@ ili2db.dispName = "Sector de la ciudad"\n      Sector_Ciudad : (\n        Norte,\n        Sur,\n        Este,\n        Oeste\n      );\n      !!@ ili2db.dispName = "Valor de vía generadora"\n      Valor_Via_Generadora : TEXT*100;\n      !!@ ili2db.dispName = "Letra de vía generadora"\n      Letra_Via_Generadora : TEXT*20;\n      !!@ ili2db.dispName = "Número del predio"\n      Numero_Predio : TEXT*20;\n      !!@ ili2db.dispName = "Sector del predio"\n      Sector_Predio : (\n        Norte,\n        Sur,\n        Este,\n        Oeste\n      );\n      !!@ ili2db.dispName = "Complemento"\n      Complemento : TEXT*255;\n      !!@ ili2db.dispName = "Nombre del predio"\n      Nombre_Predio : TEXT*255;\n    END ExtDireccion;\n\n    /** Estructura para la definición de un tipo de dato personalizado que permite indicar una fracción o quebrado cona serie específica de condiciones.\n     */\n    STRUCTURE Fraccion =\n      /** Parte inferior de la fracción. Debe ser mayor que 0. Debe ser mayor que el numerador.\n       */\n      !!@ ili2db.dispName = "Denominador"\n      Denominador : MANDATORY Integer;\n      /** Parte superior de la fracción. Debe ser mayor que 0. Debe sder menor que el denominador.\n       */\n      !!@ ili2db.dispName = "Numerador"\n      Numerador : MANDATORY Integer;\n      MANDATORY CONSTRAINT\n        Denominador > 0;\n      MANDATORY CONSTRAINT\n        Numerador > 0;\n      MANDATORY CONSTRAINT\n        Denominador >= Numerador;\n    END Fraccion;\n\n    CLASS Oid (ABSTRACT) =\n      /** Identificador único global. Corresponde al atributo de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Espacio de nombres"\n      Espacio_De_Nombres : MANDATORY CharacterString;\n      /** Identificador único local.\n       */\n      !!@ ili2db.dispName = "Local ID"\n      Local_Id : MANDATORY CharacterString;\n    END Oid;\n\n    DOMAIN\n\n      COL_FuenteAdministrativaTipo = (\n        /** Documento público es el otorgado por el funcionario público en ejercicio de sus funciones o con su intervención. Así mismo, es público el documento otorgado por un particular en ejercicio de funciones públicas o con su intervención. Cuando consiste en un escrito autorizado o suscrito por el respectivo funcionario, es instrumento público; cuando es autorizado por un notario o quien haga sus veces y ha sido incorporado en el respectivo protocolo, se denomina escritura pública.\n         */\n        !!@ ili2db.dispName = "Documento público"\n        Documento_Publico,\n        /** El documento privado es aquel documento que no cumple los requisitos del documento público, es decir, es un documento que no ha sido elaborado por un funcionario público, ni ha habido intervención de éste para su elaboración.\n         */\n        !!@ ili2db.dispName = "Documento privado"\n        Documento_Privado\n      );\n\n      COL_RedServiciosTipo = (\n        !!@ ili2db.dispName = "Petróleo"\n        Petroleo,\n        !!@ ili2db.dispName = "Químicos"\n        Quimicos,\n        !!@ ili2db.dispName = "Red térmica"\n        Red_Termica,\n        !!@ ili2db.dispName = "Telecomunicación"\n        Telecomunicacion\n      );\n\n      Peso = 0.0 .. 999999999999999.0 [LADM_COL_V3_0.COP];\n\n    /** Registro de la fórmula o procedimiento utilizado en la transformación y de su resultado.\n     */\n    STRUCTURE COL_Transformacion =\n      /** Fórmula o procedimiento utilizado en la transformación.\n       */\n      !!@ ili2db.dispName = "Transformación"\n      Transformacion : MANDATORY LADM_COL_V3_0.LADM_Nucleo.CC_MetodoOperacion;\n      /** Geometría una vez realizado el proceso de transformación.\n       */\n      !!@ ili2db.dispName = "Localización transformada"\n      Localizacion_Transformada : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_Transformacion;\n\n    /** Control externo de la unidad de edificación física.\n     */\n    STRUCTURE ExtUnidadEdificacionFisica =\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n    END ExtUnidadEdificacionFisica;\n\n    /** Referencia a una imagen mediante su url.\n     */\n    STRUCTURE Imagen =\n      /** url de la imagen.\n       */\n      !!@ ili2db.dispName = "uri"\n      uri : CharacterString;\n    END Imagen;\n\n    /** Clase abstracta que permite gestionar el histórico del conjunto de clases, las cuales heredan de esta, excepto las fuentes.\n     */\n    CLASS ObjetoVersionado (ABSTRACT)\n    EXTENDS Oid =\n      /** Comienzo de la validez actual de la instancia de un objeto.\n       */\n      !!@ ili2db.dispName = "Versión de comienzo de vida útil"\n      Comienzo_Vida_Util_Version : MANDATORY INTERLIS.XMLDateTime;\n      /** Finnzo de la validez actual de la instancia de un objeto.\n       */\n      !!@ ili2db.dispName = "Versión de fin de vida útil"\n      Fin_Vida_Util_Version : INTERLIS.XMLDateTime;\n      MANDATORY CONSTRAINT\n        Fin_Vida_Util_Version >= Comienzo_Vida_Util_Version;\n    END ObjetoVersionado;\n\n    /** Referencia a una clase externa para gestionar direcciones.\n     */\n    STRUCTURE ExtInteresado =\n      /** Identificador externo del interesado.\n       */\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n      /** Imagen de la huella dactilar del interesado.\n       */\n      !!@ ili2db.dispName = "Huella dactilar"\n      Huella_Dactilar : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Campo de nombre del interesado.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Fotografía del interesado.\n       */\n      !!@ ili2db.dispName = "Fotografía"\n      Fotografia : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Firma del interesado.\n       */\n      !!@ ili2db.dispName = "Firma"\n      Firma : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Ruta de almacenamiento del documento escaneado del interesado.\n       */\n      !!@ ili2db.dispName = "Documento escaneado"\n      Documento_Escaneado : CharacterString;\n    END ExtInteresado;\n\n    /** Referencia a una clase externa para gestionar las redes físicas de servicios.\n     */\n    STRUCTURE ExtRedServiciosFisica =\n      /** Indica si la red de servicios tiene un gradiente o no.\n       */\n      !!@ ili2db.dispName = "Orientada"\n      Orientada : BOOLEAN;\n      /** Identificador de referencia a un interesado externo que es el administrador.\n       */\n      !!@ ili2db.dispName = "Ext interesado administrador id"\n      Ext_Interesado_Administrador_ID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;\n    END ExtRedServiciosFisica;\n\n    /** Referencia a clase externa desde donde se gestiona el repositorio de archivos.\n     */\n    !!@ ili2db.dispName = "Archivo fuente"\n    STRUCTURE ExtArchivo =\n      /** Fecha en la que ha sido aceptado el documento.\n       */\n      !!@ ili2db.dispName = "Fecha de aceptación"\n      Fecha_Aceptacion : INTERLIS.XMLDate;\n      /** Datos que contiene el documento.\n       */\n      !!@ ili2db.dispName = "Datos"\n      Datos : CharacterString;\n      /** Última fecha de extracción del documento.\n       */\n      !!@ ili2db.dispName = "Extracción"\n      Extraccion : INTERLIS.XMLDate;\n      /** Fecha en la que el documento es aceptado en el sistema.\n       */\n      !!@ ili2db.dispName = "Fecha de grabación"\n      Fecha_Grabacion : INTERLIS.XMLDate;\n      /** Fecha en la que fue entregado el documento.\n       */\n      !!@ ili2db.dispName = "Fecha de entrega"\n      Fecha_Entrega : INTERLIS.XMLDate;\n      !!@ ili2db.dispName = "Espacio de nombres"\n      Espacio_De_Nombres : MANDATORY CharacterString;\n      !!@ ili2db.dispName = "Local ID"\n      Local_Id : MANDATORY CharacterString;\n    END ExtArchivo;\n\n    /** Clase abstracta. Esta clase es la personalización en el modelo del perfil colombiano de la clase de LADM LA_Source.\n     */\n    CLASS COL_Fuente (ABSTRACT)\n    EXTENDS Oid =\n      /** Indica si la fuente está o no disponible y en qué condiciones. También puede indicar porqué ha dejado de estar disponible, si ha ocurrido.\n       */\n      !!@ ili2db.dispName = "Estado de disponibilidad"\n      Estado_Disponibilidad : MANDATORY COL_EstadoDisponibilidadTipo;\n      /** Identificador del archivo fuente controlado por una clase externa.\n       */\n      !!@ ili2db.dispName = "Ext archivo id"\n      Ext_Archivo_ID : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;\n      /** Tipo de formato en el que es presentada la fuente, de acuerdo con el registro de metadatos.\n       */\n      !!@ ili2db.dispName = "Tipo principal"\n      Tipo_Principal : CI_Forma_Presentacion_Codigo;\n      /** Fecha de expedición del documento de la fuente.\n       */\n      !!@ ili2db.dispName = "Fecha de documento fuente"\n      Fecha_Documento_Fuente : INTERLIS.XMLDate;\n    END COL_Fuente;\n\n    /** Estructura para la definición de un tipo de dato personalizado que permite indicar la medición de un volumen y la naturaleza de este.\n     */\n    STRUCTURE COL_VolumenValor =\n      /** Medición del volumen en m3.\n       */\n      !!@ ili2db.dispName = "Volumen medición"\n      Volumen_Medicion : MANDATORY 0.0 .. 99999999999999.9 [INTERLIS.m];\n      /** Indicación de si el volumen es calculado, si figura como oficial o si se da otra circunstancia.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_VolumenTipo;\n    END COL_VolumenValor;\n\n    /** Especialización de la clase COL_Fuente para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.\n     */\n    CLASS COL_FuenteAdministrativa (ABSTRACT)\n    EXTENDS COL_Fuente =\n      /** Observaciones o descripción del documento de la fuente administrativa.\n       */\n      !!@ ili2db.dispName = "Observación"\n      Observacion : CharacterString;\n      /** Tipo de documento de fuente administrativa.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_FuenteAdministrativaTipo;\n      /** Identificador del documento, ejemplo: número de la resolución, número de la escritura pública o número de radicado de una sentencia.\n       */\n      !!@ ili2db.dispName = "Número de fuente"\n      Numero_Fuente : TEXT*150;\n    END COL_FuenteAdministrativa;\n\n    /** Representación gráfica del terreno, construcción, unidad de construcción y/o servidumbre de paso.\n     */\n    CLASS COL_UnidadEspacial (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Registros del área en diferentes sistemas.\n       */\n      !!@ ili2db.dispName = "Área"\n      Area : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;\n      /** Dimensión del objeto.\n       */\n      !!@ ili2db.dispName = "Dimensión"\n      Dimension : COL_DimensionTipo;\n      /** Corresponde al atributo extAddressID de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n      /** Corresponde al atributo label de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Etiqueta"\n      Etiqueta : CharacterString;\n      /** Corresponde al atributo surfaceRelation de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Relación superficie"\n      Relacion_Superficie : COL_RelacionSuperficieTipo;\n      /** Corresponde al atributo volume de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Volumen"\n      Volumen : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;\n      /** Materializacion del metodo createArea(). Almacena de forma permanente la geometría de tipo poligonal.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\n    END COL_UnidadEspacial;\n\n    /** Agrupa unidades espaciales, es decir, representaciones geográficas de las unidades administrativas básicas (clase LA_BAUnit) para representar otras unidades espaciales que se forman en base a estas, como puede ser el caso de los polígonos catastrales.\n     */\n    CLASS COL_AgrupacionUnidadesEspaciales (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Nivel jerárquico de la agrupación, dentro del anidamiento de diferentes agrupaciones.\n       */\n      !!@ ili2db.dispName = "Nivel jerárquico"\n      Nivel_Jerarquico : MANDATORY Integer;\n      /** Definición de la agrupación.\n       */\n      !!@ ili2db.dispName = "Etiqueta"\n      Etiqueta : CharacterString;\n      /** Nombre que recibe la agrupación.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Punto de referencia de toda la agrupación, a modo de centro de masas.\n       */\n      !!@ ili2db.dispName = "Punto de referencia"\n      Punto_Referencia : ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_AgrupacionUnidadesEspaciales;\n\n    /** Traducción al español de la clase LA_LegalSpaceBuildingUnit. Sus intancias son las unidades de edificación\n     */\n    CLASS COL_EspacioJuridicoUnidadEdificacion (ABSTRACT)\n    EXTENDS COL_UnidadEspacial =\n      /** Identificador de la unidad de edificación.\n       */\n      !!@ ili2db.dispName = "Ext unidad edificación física id"\n      Ext_Unidad_Edificacion_Fisica_ID : LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica;\n      /** Tipo de unidad de edificación de la que se trata.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_UnidadEdificacionTipo;\n    END COL_EspacioJuridicoUnidadEdificacion;\n\n    ASSOCIATION col_ueJerarquiaGrupo =\n      agrupacion -<> {0..1} COL_AgrupacionUnidadesEspaciales;\n      elemento -- {0..*} COL_AgrupacionUnidadesEspaciales;\n    END col_ueJerarquiaGrupo;\n\n    /** Traducción al español de la clase LA_LegalSpaceUtilityNetwork. Representa un tipo de unidad espacial (LA_UNidadEspacial) cuyas instancias son las redes de servicios.\n     */\n    CLASS COL_EspacioJuridicoRedServicios (ABSTRACT)\n    EXTENDS COL_UnidadEspacial =\n      /** Identificador de la red física hacia una referencia externa.\n       */\n      !!@ ili2db.dispName = "Ext id red física"\n      ext_ID_Red_Fisica : LADM_COL_V3_0.LADM_Nucleo.ExtRedServiciosFisica;\n      /** Estado de operatividad de la red.\n       */\n      !!@ ili2db.dispName = "Estado"\n      Estado : COL_EstadoRedServiciosTipo;\n      /** Tipo de servicio que presta.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_RedServiciosTipo;\n    END COL_EspacioJuridicoRedServicios;\n\n    ASSOCIATION col_ueUeGrupo =\n      parte -- {0..*} COL_UnidadEspacial;\n      todo -- {0..*} COL_AgrupacionUnidadesEspaciales;\n    END col_ueUeGrupo;\n\n    /** Traducción de la clase LA_Level de LADM.\n     */\n    CLASS COL_Nivel (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      !!@ ili2db.dispName = "Tipo de registro"\n      Registro_Tipo : COL_RegistroTipo;\n      !!@ ili2db.dispName = "Estructura"\n      Estructura : COL_EstructuraTipo;\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_ContenidoNivelTipo;\n    END COL_Nivel;\n\n    /** Traducción al español de la clase LA_RequiredRelationshipSpatialUnit de LADM.\n     */\n    CLASS COL_RelacionNecesariaUnidadesEspaciales (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Relación"\n      Relacion : MANDATORY COL_ISO19125_Tipo;\n    END COL_RelacionNecesariaUnidadesEspaciales;\n\n    ASSOCIATION col_ueNivel =\n      ue -- {0..*} COL_UnidadEspacial;\n      nivel -- {0..1} COL_Nivel;\n    END col_ueNivel;\n\n    /** Clase abstracta que agrupa los atributos comunes de las clases para los derechos (rights), las responsabilidades (responsabilities) y las restricciones (restrictions).\n     */\n    CLASS COL_DRR (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Descripción relatical al derecho, la responsabilidad o la restricción.\n       */\n      !!@ ili2db.dispName = "Descripción"\n      Descripcion : CharacterString;\n    END COL_DRR;\n\n    /** De forma genérica, representa el objeto territorial legal (Catastro 2014) que se gestiona en el modelo, en este caso, la parcela catastral o predio. Es independiente del conocimiento de su realidad espacial y se centra en su existencia conocida y reconocida.\n     */\n    CLASS COL_UnidadAdministrativaBasica (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Nombre que recibe la unidad administrativa básica, en muchos casos toponímico, especialmente en terrenos rústicos.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Tipo de derecho que la reconoce.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_UnidadAdministrativaBasicaTipo;\n    END COL_UnidadAdministrativaBasica;\n\n    ASSOCIATION col_rrrFuente =\n      fuente_administrativa -- {1..*} COL_FuenteAdministrativa;\n      rrr -- {0..*} COL_DRR;\n    END col_rrrFuente;\n\n    /** Traducción de la clase LA_RequiredRelationshipBAUnit de LADM.\n     */\n    CLASS COL_RelacionNecesariaBAUnits (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Relación"\n      Relacion : MANDATORY CharacterString;\n    END COL_RelacionNecesariaBAUnits;\n\n    ASSOCIATION col_baunitRrr =\n      unidad -- {1} COL_UnidadAdministrativaBasica;\n      rrr -- {1..*} COL_DRR;\n    END col_baunitRrr;\n\n    ASSOCIATION col_ueBaunit =\n      ue (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n      baunit -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_ueBaunit;\n\n    ASSOCIATION col_relacionFuente =\n      fuente_administrativa -- {0..*} COL_FuenteAdministrativa;\n      relacionrequeridaBaunit -- {0..*} COL_RelacionNecesariaBAUnits;\n    END col_relacionFuente;\n\n    ASSOCIATION col_unidadFuente =\n      fuente_administrativa -- {0..*} COL_FuenteAdministrativa;\n      unidad -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_unidadFuente;\n\n    /** Clase especializada para la administración de los tipos de puntos.\n     */\n    CLASS COL_Punto (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Posición de interpolación.\n       */\n      !!@ ili2db.dispName = "Posición interpolación"\n      Posicion_Interpolacion : COL_InterpolacionTipo;\n      /** Clasificación del tipo de punto identificado en el levantamiento catastral.\n       */\n      !!@ ili2db.dispName = "Tipo de punto"\n      PuntoTipo : MANDATORY COL_PuntoTipo;\n      /** Indica si el método de levantamiento catastral: método directo o indirecto.\n       */\n      !!@ ili2db.dispName = "Método de producción"\n      MetodoProduccion : MANDATORY COL_MetodoProduccionTipo;\n      /** Transformación y Resultado.\n       */\n      !!@ ili2db.dispName = "Transformación y resultado"\n      Transformacion_Y_Resultado : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;\n      /** Geometria punto para administración de los objetos: punto de lindero, punto levantamiento y punto de control.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_Punto;\n\n    /** Especialización de la clase COL_Fuente para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios\n     */\n    CLASS COL_FuenteEspacial (ABSTRACT)\n    EXTENDS COL_Fuente =\n      /** Nombre de la fuente espacial del levantamiento catastral de un predio.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : MANDATORY TEXT*255;\n      /** Tipo de fuente espacial.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_FuenteEspacialTipo;\n      /** Descripción de la fuente espacial.\n       */\n      !!@ ili2db.dispName = "Descripción"\n      Descripcion : MANDATORY MTEXT;\n      /** Metadato de la fuente espacial.\n       */\n      !!@ ili2db.dispName = "Metadato"\n      Metadato : MTEXT;\n    END COL_FuenteEspacial;\n\n    /** Traducción al español de la clase LA_BoundaryFaceString de LADM. Define los linderos y a su vez puede estar definida por una descrición textual o por dos o más puntos. Puede estar asociada a una fuente espacial o más.\n     */\n    CLASS COL_CadenaCarasLimite (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Geometría lineal que define el lindero. Puede estar asociada a geometrías de tipo punto que definen sus vértices o ser una entidad lineal independiente.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_Curve3D;\n      /** Descripción de la localización, cuando esta se basa en texto.\n       */\n      !!@ ili2db.dispName = "Localización textual"\n      Localizacion_Textual : CharacterString;\n    END COL_CadenaCarasLimite;\n\n    /** Traducción de la clase LA_BoundaryFace de LADM. De forma similar a LA_CadenaCarasLindero, representa los límites, pero en este caso permite representación 3D.\n     */\n    CLASS COL_CarasLindero (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Geometría en 3D del límite o lindero, asociada a putos o a descripciones textuales.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\n      /** Cuando la localización del límte está dada por una descripción textual, aquí se recoge esta.\n       */\n      !!@ ili2db.dispName = "Localización textual"\n      Localizacion_Textual : CharacterString;\n    END COL_CarasLindero;\n\n    ASSOCIATION col_puntoReferencia =\n      ue (EXTERNAL) -- {0..1} COL_UnidadEspacial;\n      punto -- {0..1} COL_Punto;\n    END col_puntoReferencia;\n\n    ASSOCIATION col_puntoFuente =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      punto -- {0..*} COL_Punto;\n    END col_puntoFuente;\n\n    ASSOCIATION col_ueFuente =\n      ue (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_ueFuente;\n\n    ASSOCIATION col_baunitFuente =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      unidad (EXTERNAL) -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_baunitFuente;\n\n    ASSOCIATION col_relacionFuenteUespacial =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      relacionrequeridaUe (EXTERNAL) -- {0..*} COL_RelacionNecesariaUnidadesEspaciales;\n    END col_relacionFuenteUespacial;\n\n    ASSOCIATION col_cclFuente =\n      ccl -- {0..*} COL_CadenaCarasLimite;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_cclFuente;\n\n    ASSOCIATION col_menosCcl =\n      ccl_menos -- {0..*} COL_CadenaCarasLimite;\n      ue_menos (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_menosCcl;\n\n    ASSOCIATION col_masCcl =\n      ccl_mas -- {0..*} COL_CadenaCarasLimite;\n      ue_mas (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_masCcl;\n\n    ASSOCIATION col_puntoCcl =\n      punto -- {2..*} COL_Punto;\n      ccl -- {0..*} COL_CadenaCarasLimite;\n    END col_puntoCcl;\n\n    ASSOCIATION col_clFuente =\n      cl -- {0..*} COL_CarasLindero;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_clFuente;\n\n    ASSOCIATION col_menosCl =\n      cl_menos -- {0..*} COL_CarasLindero;\n      ue_menos (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_menosCl;\n\n    ASSOCIATION col_masCl =\n      cl_mas -- {0..*} COL_CarasLindero;\n      ue_mas (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_masCl;\n\n    ASSOCIATION col_puntoCl =\n      punto -- {3..*} COL_Punto;\n      cl -- {0..*} COL_CarasLindero;\n    END col_puntoCl;\n\n    /** Traducción de la clase LA_Party de LADM. Representa a las personas que ejercen derechos y responsabilidades  o sufren restricciones respecto a una BAUnit.\n     */\n    CLASS COL_Interesado (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Identificador del interesado.\n       */\n      !!@ ili2db.dispName = "Ext PID"\n      ext_PID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;\n      /** Nombre del interesado.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n    END COL_Interesado;\n\n    /** Relaciona los interesados que ostentan la propiedad, posesión u ocupación de un predio. Se registra el grupo en si e independientemete las personas por separado.\n     */\n    CLASS COL_AgrupacionInteresados (ABSTRACT)\n    EXTENDS COL_Interesado =\n      /** Indica el tipo de agrupación del que se trata.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_GrupoInteresadoTipo;\n    END COL_AgrupacionInteresados;\n\n    ASSOCIATION col_baunitComoInteresado =\n      interesado -- {0..*} COL_Interesado;\n      unidad (EXTERNAL) -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_baunitComoInteresado;\n\n    ASSOCIATION col_responsableFuente =\n      fuente_administrativa (EXTERNAL) -- {0..*} COL_FuenteAdministrativa;\n      interesado -- {0..*} COL_Interesado;\n    END col_responsableFuente;\n\n    ASSOCIATION col_rrrInteresado =\n      rrr (EXTERNAL) -- {0..*} COL_DRR;\n      interesado -- {0..1} COL_Interesado;\n    END col_rrrInteresado;\n\n    ASSOCIATION col_topografoFuente =\n      fuente_espacial (EXTERNAL) -- {0..*} COL_FuenteEspacial;\n      topografo -- {0..*} COL_Interesado;\n    END col_topografoFuente;\n\n    ASSOCIATION col_miembros =\n      interesado -- {2..*} COL_Interesado;\n      agrupacion -<> {0..*} COL_AgrupacionInteresados;\n      participacion : LADM_COL_V3_0.LADM_Nucleo.Fraccion;\n    END col_miembros;\n\n  END LADM_Nucleo;\n\nEND LADM_COL_V3_0.\n	2020-06-17 14:21:28.379
-ISO19107_PLANAS_V3_0.ili	2.3	ISO19107_PLANAS_V3_0	INTERLIS 2.3;\r\n\r\nTYPE MODEL ISO19107_PLANAS_V3_0 (es)\r\nAT "http://www.swisslm.ch/models"\r\nVERSION "2016-03-07"  =\r\n\r\n  DOMAIN\r\n\r\n    GM_Point2D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m] ,ROTATION 2 -> 1;\r\n\r\n    GM_Curve2D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Surface2D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Point3D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m], -5000.000 .. 6000.000 [INTERLIS.m] ,ROTATION 2 -> 1;\r\n\r\n    GM_Curve3D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Surface3D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;\r\n\r\n  STRUCTURE GM_Geometry2DListValue =\r\n  END GM_Geometry2DListValue;\r\n\r\n  STRUCTURE GM_Curve2DListValue =\r\n    value : MANDATORY GM_Curve2D;\r\n  END GM_Curve2DListValue;\r\n\r\n  STRUCTURE GM_Surface2DListValue =\r\n    value : MANDATORY GM_Surface2D;\r\n  END GM_Surface2DListValue;\r\n\r\n  !!@ ili2db.mapping = "MultiLine"\r\nSTRUCTURE GM_MultiCurve2D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve2DListValue;\r\n  END GM_MultiCurve2D;\r\n\r\n  !!@ ili2db.mapping = "MultiSurface"\r\nSTRUCTURE GM_MultiSurface2D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface2DListValue;\r\n  END GM_MultiSurface2D;\r\n\r\n  STRUCTURE GM_Curve3DListValue =\r\n    value : MANDATORY GM_Curve3D;\r\n  END GM_Curve3DListValue;\r\n\r\n  STRUCTURE GM_Surface3DListValue =\r\n    value : MANDATORY GM_Surface3D;\r\n  END GM_Surface3DListValue;\r\n\r\n  !!@ ili2db.mapping = "MultiLine"\r\nSTRUCTURE GM_MultiCurve3D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve3DListValue;\r\n  END GM_MultiCurve3D;\r\n\r\n  !!@ ili2db.mapping = "MultiSurface"\r\nSTRUCTURE GM_MultiSurface3D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface3DListValue;\r\n  END GM_MultiSurface3D;\r\n\r\nEND ISO19107_PLANAS_V3_0.\r\n	2020-06-17 14:21:28.379
-Submodelo_Insumos_V1_0.ili	2.3	Submodelo_Insumos_Gestor_Catastral_V1_0{ LADM_COL_V3_0 ISO19107_PLANAS_V3_0} Submodelo_Insumos_SNR_V1_0{ LADM_COL_V3_0} Submodelo_Integracion_Insumos_V1_0{ Submodelo_Insumos_Gestor_Catastral_V1_0 Submodelo_Insumos_SNR_V1_0}	INTERLIS 2.3;\r\n\r\nMODEL Submodelo_Insumos_Gestor_Catastral_V1_0 (es)\r\nAT "mailto:PC4@localhost"\r\nVERSION "2019-08-01"  =\r\n  IMPORTS ISO19107_PLANAS_V3_0,LADM_COL_V3_0;\r\n\r\n  DOMAIN\r\n\r\n    GC_CondicionPredioTipo = (\r\n      /** Predio no sometido al régimen de propiedad horizontal.\r\n       */\r\n      !!@ ili2db.dispName = "No propiedad horizontal"\r\n      NPH,\r\n      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada\r\n       */\r\n      !!@ ili2db.dispName = "Propiedad horizontal"\r\n      PH(\r\n        /** Predio matriz del régimen de propiedad horizontal sobre el cual se segregan todas las unidades prediales.\r\n         */\r\n        !!@ ili2db.dispName = "(PH) Matriz"\r\n        Matriz,\r\n        /** Apartamento, garaje, depósito o cualquier otro tipo de unidad predial dentro del PH que se encuentra debidamente inscrito en el registro de instrumentos públicos\r\n         */\r\n        !!@ ili2db.dispName = "(PH) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada en cuyo reglamento define para cada unidad predial un área privada de terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Condiminio"\r\n      Condominio(\r\n        /** Predio matriz del condominio sobre el cual se segregan todas las unidades prediales.\r\n         */\r\n        !!@ ili2db.dispName = "(Condominio) Matriz"\r\n        Matriz,\r\n        /** Unidad predial dentro del condominio matriz.\r\n         */\r\n        !!@ ili2db.dispName = "(Condominio) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Es la construcción o edificación instalada por una persona natural o jurídica sobre un predio que no le pertenece.\r\n       */\r\n      !!@ ili2db.dispName = "Mejora"\r\n      Mejora(\r\n        /** Mejora sobre un predio sometido a régimen de propiedad horizontal\r\n         */\r\n        !!@ ili2db.dispName = "(Mejora) Propiedad horizontal"\r\n        PH,\r\n        /** Mejora sobre un predio no sometido a régimen de propiedad horizontal.\r\n         */\r\n        !!@ ili2db.dispName = "(Mejora) No propiedad horizontal"\r\n        NPH\r\n      ),\r\n      /** Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.\r\n       */\r\n      !!@ ili2db.dispName = "Parque cementerio"\r\n      Parque_Cementerio(\r\n        /** Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.\r\n         */\r\n        !!@ ili2db.dispName = "(Parque cementerio) Matriz"\r\n        Matriz,\r\n        /** Área o sección de terreno con función de tumba, esta debe encontrarse inscrita en el registro de instrumentos públicos.\r\n         */\r\n        !!@ ili2db.dispName = "(Parque cementerio) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros.\r\n       */\r\n      !!@ ili2db.dispName = "Vía"\r\n      Via,\r\n      /** Inmuebles que siendo de dominio de la Nación, o una entidad territorial o de particulares, están destinados al uso de los habitantes.\r\n       */\r\n      !!@ ili2db.dispName = "Bien de uso público"\r\n      Bien_Uso_Publico\r\n    );\r\n\r\n    GC_SistemaProcedenciaDatosTipo = (\r\n      /** Datos extraídos del Sistema Nacional Catastral del IGAC.\r\n       */\r\n      !!@ ili2db.dispName = "Sistema Nacional Catastral"\r\n      SNC,\r\n      /** Datos extraídos del Sistema COBOL del IGAC.\r\n       */\r\n      !!@ ili2db.dispName = "Cobol"\r\n      Cobol\r\n    );\r\n\r\n    GC_UnidadConstruccionTipo = (\r\n      /** Se refiere aquellas construcciones de uso residencial, comercial e industrial.\r\n       */\r\n      !!@ ili2db.dispName = "Convencional"\r\n      Convencional,\r\n      /** Se refiere aquellas construcciones considereadas anexos de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "No convencional"\r\n      No_Convencional\r\n    );\r\n\r\n  TOPIC Datos_Gestor_Catastral =\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los barrios de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Barrio"\r\n    CLASS GC_Barrio =\r\n      /** Código de identificación del barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*13;\r\n      /** Nombre del barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre"\r\n      Nombre : TEXT*100;\r\n      /** Código del sector donde se encuentra localizado el barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Código sector"\r\n      Codigo_Sector : TEXT*9;\r\n      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Barrio;\r\n\r\n    /** Relaciona la calificación de las unidades de construcción de los datos de insumos del Gestor Catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Calificación unidad de construcción"\r\n    CLASS GC_CalificacionUnidadConstruccion =\r\n      /** Indica el componente de la calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Componente"\r\n      Componente : TEXT*255;\r\n      /** Indica el elemento de calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Elemento de calificación"\r\n      Elemento_Calificacion : TEXT*255;\r\n      /** Indica el detalle de calificación del elemento de calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Detalle de calificación"\r\n      Detalle_Calificacion : TEXT*255;\r\n      /** Puntaje asociado al detalle del elemento de calificación.\r\n       */\r\n      !!@ ili2db.dispName = "Puntos"\r\n      Puntos : 0 .. 100;\r\n    END GC_CalificacionUnidadConstruccion;\r\n\r\n    /** Construcciones que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Construcción"\r\n    CLASS GC_ComisionesConstruccion =\r\n      /** Numero Predial del Construcciones que no cuentan con información alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Construcciones que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_ComisionesConstruccion;\r\n\r\n    /** Terrenos que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Terreno"\r\n    CLASS GC_ComisionesTerreno =\r\n      /** Numero Predial del terreno que no cuentan con información\r\n       * alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Terrenos que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_ComisionesTerreno;\r\n\r\n    /** Unidades de construcción que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Unidad Construcción"\r\n    CLASS GC_ComisionesUnidadConstruccion =\r\n      /** Numero Predial del terreno que no cuentan con información alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Unidades de construcción que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_ComisionesUnidadConstruccion;\r\n\r\n    /** Datos de las construcciones inscritas en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Construcción"\r\n    CLASS GC_Construccion =\r\n      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.\r\n       */\r\n      !!@ ili2db.dispName = "Identificador"\r\n      Identificador : TEXT*30;\r\n      /** Etiqueta de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Etiqueta"\r\n      Etiqueta : TEXT*50;\r\n      /** Indica si la construcción es de tipo convencional o no convencional.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de construcción"\r\n      Tipo_Construccion : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo;\r\n      /** Indica el tipo de dominio de la unidad de construcción: común y privado.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de dominio"\r\n      Tipo_Dominio : TEXT*20;\r\n      /** Número total de pisos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de pisos"\r\n      Numero_Pisos : 0 .. 200;\r\n      /** Número total de sótanos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de sótanos"\r\n      Numero_Sotanos : 0 .. 99;\r\n      /** Número total de mezanines de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de mezanines"\r\n      Numero_Mezanines : 0 .. 99;\r\n      /** Número total de semisótanos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de semisótanos"\r\n      Numero_Semisotanos : 0 .. 99;\r\n      /** Código catastral de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código de edificación"\r\n      Codigo_Edificacion : 0 .. 10000000000000000000;\r\n      /** Código de terreno donde se encuentra ubicada la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código de terreno"\r\n      Codigo_Terreno : TEXT*30;\r\n      /** Área total construida.\r\n       */\r\n      !!@ ili2db.dispName = "Área construida"\r\n      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Polígono de la construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_Construccion;\r\n\r\n    /** Clase que contiene los datos principales del predio matriz sometido al regimen de propiedad horizontal inscrito en las bases de datos catastrales.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Datos Propiedad Horizontal Condominio"\r\n    CLASS GC_DatosPHCondominio =\r\n      /** Área total privada del terreno del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total de terreno privada"\r\n      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total de terreno común del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total de terreno común"\r\n      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total construida privada del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total construida privada"\r\n      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total construida común del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total construida común"\r\n      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Total de unidades privadas en el PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades privadas"\r\n      Total_Unidades_Privadas : 0 .. 99999999;\r\n      /** Total de unidades prediales en el sótano del PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades de sótano"\r\n      Total_Unidades_Sotano : 0 .. 99999999;\r\n      /** Avalúo catastral total de la propiedad horizontal o condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Valor total avaúo catastral"\r\n      Valor_Total_Avaluo_Catastral : LADM_COL_V3_0.LADM_Nucleo.Peso;\r\n    END GC_DatosPHCondominio;\r\n\r\n    /** Relaciona la información de las torres asociadas al PH o Condominio de los datos insumos del Gestor Catastral\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Datos torre PH"\r\n    CLASS GC_DatosTorrePH =\r\n      /** Número de torre en el PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Torre"\r\n      Torre : 0 .. 1500;\r\n      /** Total de pisos de la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de pisos torre"\r\n      Total_Pisos_Torre : 0 .. 100;\r\n      /** Total de unidades privadas en la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades privadas"\r\n      Total_Unidades_Privadas : 0 .. 99999999;\r\n      /** Total de sótanos en la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de sótanos"\r\n      Total_Sotanos : 0 .. 99;\r\n      /** Total de unidades prediales en el sótano de la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades sótano"\r\n      Total_Unidades_Sotano : 0 .. 99999999;\r\n    END GC_DatosTorrePH;\r\n\r\n    !!@ ili2db.dispName = "(GC) Dirección"\r\n    STRUCTURE GC_Direccion =\r\n      /** Registros de la direcciones del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Valor"\r\n      Valor : TEXT*255;\r\n      /** Indica si el registro de la dirección corresponde a la principal.\r\n       */\r\n      !!@ ili2db.dispName = "Principal"\r\n      Principal : BOOLEAN;\r\n      /** Línea de donde se encuentra la placa de nomenclatura del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría de referencia"\r\n      Geometria_Referencia : ISO19107_PLANAS_V3_0.GM_Curve3D;\r\n    END GC_Direccion;\r\n\r\n    /** Estructura que contiene el estado del predio en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) EstadoPredio"\r\n    STRUCTURE GC_EstadoPredio =\r\n      /** Indica el estado del predio en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Estado alerta"\r\n      Estado_Alerta : TEXT*30;\r\n      /** Entidad emisora del estado de alerta del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Entidad emisora de la alerta"\r\n      Entidad_Emisora_Alerta : TEXT*255;\r\n      /** Fecha de la alerta en el sistema de gestión catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de alerta"\r\n      Fecha_Alerta : INTERLIS.XMLDate;\r\n    END GC_EstadoPredio;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de las manzanas de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Manzana"\r\n    CLASS GC_Manzana =\r\n      /** Código catastral de 17 dígitos de la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*17;\r\n      /** Código catastral anterior de la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código anterior"\r\n      Codigo_Anterior : TEXT*255;\r\n      /** Código catastral de 13 dígitos del barrio donde se encuentra la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código de barrio"\r\n      Codigo_Barrio : TEXT*13;\r\n      /** Polígonos de la manzanas catastrales.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Manzana;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto del perimetro urbano de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Perímetro"\r\n    CLASS GC_Perimetro =\r\n      /** Código de 2 dígitos del Departamento según clasificación de Divipola.\r\n       */\r\n      !!@ ili2db.dispName = "Código del departamento"\r\n      Codigo_Departamento : TEXT*2;\r\n      /** Código de 5 dígitos que une los 2 dígitos del Departamento y los 3 dígitos del municipio según la clasificación de Divipola.\r\n       */\r\n      !!@ ili2db.dispName = "Código del municipio"\r\n      Codigo_Municipio : TEXT*5;\r\n      /** Tipo de avalúo catastral del perímetro urbano.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de avalúo"\r\n      Tipo_Avaluo : TEXT*30;\r\n      /** Nombre geográfico del perímetro municipal, por ejemplo el nombre del municipio.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre geográfico"\r\n      Nombre_Geografico : TEXT*50;\r\n      /** Código del nombre geográfico.\r\n       */\r\n      !!@ ili2db.dispName = "Código nombre"\r\n      Codigo_Nombre : TEXT*255;\r\n      /** Polígono del perímetro urbano.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Perimetro;\r\n\r\n    /** Datos de los propietarios inscritos en las bases de datos catastrales que tienen relación con un predio.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Propietario"\r\n    CLASS GC_Propietario =\r\n      /** Tipo de documento del propietario registrado en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : TEXT*100;\r\n      /** Número de documento del propietario registrado en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*50;\r\n      /** Dígito de verificación de las personas jurídicas.\r\n       */\r\n      !!@ ili2db.dispName = "Dígito de verificación"\r\n      Digito_Verificacion : TEXT*1;\r\n      /** Primer nombre del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Primer nombre"\r\n      Primer_Nombre : TEXT*255;\r\n      /** Segundo nombre del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo nombre"\r\n      Segundo_Nombre : TEXT*255;\r\n      /** Primer apellido del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Primer apellido"\r\n      Primer_Apellido : TEXT*255;\r\n      /** Segundo apellido del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo apellido"\r\n      Segundo_Apellido : TEXT*255;\r\n      /** Razon social de las personas jurídicas inscritas como propietarios en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Razón social"\r\n      Razon_Social : TEXT*255;\r\n    END GC_Propietario;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los sectores catastrales rurales de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Sector Rural"\r\n    CLASS GC_SectorRural =\r\n      /** Código catastral de 9 dígitos del sector catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*9;\r\n      /** Polígono de los sectores catastrales existentes en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_SectorRural;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los sectores catastrales urbanos de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Sector Urbano"\r\n    CLASS GC_SectorUrbano =\r\n      /** Código catastral de 9 dígitos del sector catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*9;\r\n      /** Polígono de los sectores catastrales existentes en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_SectorUrbano;\r\n\r\n    /** Datos de los terrenos inscritos en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Terreno"\r\n    CLASS GC_Terreno =\r\n      /** Área de terreno alfanumérica registrada en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Área terreno alfanumérica"\r\n      Area_Terreno_Alfanumerica : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área de terreno digital registrada en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Área terreno digital"\r\n      Area_Terreno_Digital : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Código de la manzana o vereda donde se localiza el terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Código de manzana vereda"\r\n      Manzana_Vereda_Codigo : TEXT*17;\r\n      /** Número de subterráneos en el terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Número de subterráneos"\r\n      Numero_Subterraneos : 0 .. 999999999999999;\r\n      /** Polígono de la unidad de construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Terreno;\r\n\r\n    /** Datos de las unidades de construcción inscritas en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Unidad Construcción"\r\n    CLASS GC_UnidadConstruccion =\r\n      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.\r\n       */\r\n      !!@ ili2db.dispName = "Identificador"\r\n      Identificador : TEXT*2;\r\n      /** Etiqueta de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Etiqueta"\r\n      Etiqueta : TEXT*50;\r\n      /** Indica el tipo de dominio de la unidad de construcción: común y privado.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de dominio"\r\n      Tipo_Dominio : TEXT*20;\r\n      /** Indica si la construcción es de tipo convencional o no convencional.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de construcción"\r\n      Tipo_Construccion : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo;\r\n      /** Indica numéricamente la ubicación del predio de acuerdo al tipo de planta.\r\n       */\r\n      !!@ ili2db.dispName = "Planta"\r\n      Planta : TEXT*10;\r\n      /** Número total de  habitaciones en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de habitaciones"\r\n      Total_Habitaciones : 0 .. 999999;\r\n      /** Número total de baños en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de baños"\r\n      Total_Banios : 0 .. 999999;\r\n      /** Número total de locales en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de locales"\r\n      Total_Locales : 0 .. 999999;\r\n      /** Número total de pisos en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de pisos"\r\n      Total_Pisos : 0 .. 150;\r\n      /** Actividad que se desarrolla en una unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Uso"\r\n      Uso : TEXT*255;\r\n      /** Año de construcción de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Año de construcción"\r\n      Anio_Construccion : 1512 .. 2500;\r\n      /** Puntaje total de la calificación de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Puntaje"\r\n      Puntaje : 0 .. 200;\r\n      /** Área total construida en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Área construida"\r\n      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total privada de la unidad de construcción para los predios en régimen de propiedad horizontal.\r\n       */\r\n      !!@ ili2db.dispName = "Área privada"\r\n      Area_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Código catastral del terreno donde se encuentra localizada la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código terreno"\r\n      Codigo_Terreno : TEXT*30;\r\n      /** Polígono de la unidad de construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_UnidadConstruccion;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de las veredades de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Vereda"\r\n    CLASS GC_Vereda =\r\n      /** Código catastral de 17 dígitos de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*17;\r\n      /** Código catastral de 13 dígitos de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código anterior"\r\n      Codigo_Anterior : TEXT*13;\r\n      /** Nombre de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre"\r\n      Nombre : TEXT*100;\r\n      /** Código catastral de 9 dígitos del código de sector donde se encuentra la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código del sector"\r\n      Codigo_Sector : TEXT*9;\r\n      /** Geometría en 2D de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Vereda;\r\n\r\n    /** Información existente en las bases de datos catastrales respecto de los predios en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Predio Catastro"\r\n    CLASS GC_PredioCatastro =\r\n      /** Indica si el predio se encuentra en catastro fiscal o Ley 14.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de catastro"\r\n      Tipo_Catastro : TEXT*255;\r\n      /** Código numérico de 30 dígitos que permita localizarlo inequívocamente en los respectivos documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustín Codazzi.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : TEXT*30;\r\n      /** Código numérico de 20 dígitos que permita localizarlo inequívocamente en los respectivos documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustín Codazzi.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial anterior"\r\n      Numero_Predial_Anterior : TEXT*20;\r\n      /** Es un código único para identificar los inmuebles tanto en los sistemas de información catastral como registral. El NUPRE no implicará supresión de la numeración catastral ni registral asociada a la cédula catastral ni a la matrícula inmobiliaria actual.\r\n       */\r\n      !!@ ili2db.dispName = "Número único predial"\r\n      NUPRE : TEXT*11;\r\n      /** Circulo registral al que se encuentra inscrito el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Círculo registral"\r\n      Circulo_Registral : TEXT*4;\r\n      /** Identificador único asignado por las oficinas de registro de instrumentos públicos.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria catastro"\r\n      Matricula_Inmobiliaria_Catastro : TEXT*80;\r\n      /** Direcciones del predio inscritas en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Direcciones"\r\n      Direcciones : BAG {0..*} OF Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Direccion;\r\n      /** Tipo de predio inscrito en catastro: Nacional, Departamental, Municipal, Particular, Baldío, Ejido, Resguardo Indígena, Tierra de comunidades negras y Reservas Naturales.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de predio"\r\n      Tipo_Predio : TEXT*100;\r\n      /** Caracterización temática del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Condición del predio"\r\n      Condicion_Predio : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo;\r\n      /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.\r\n       */\r\n      !!@ ili2db.dispName = "Destinación económica"\r\n      Destinacion_Economica : TEXT*150;\r\n      /** Estado del predio en la base de datos catastral según los actos administrativos o judiciales que versan sobre el mismo.\r\n       */\r\n      !!@ ili2db.dispName = "Estado del predio"\r\n      Estado_Predio : BAG {0..*} OF Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio;\r\n      /** Indica el sistema de gestión catastral de donde proceden los datos, en el caso del IGAC puede ser COBOL o SNC.\r\n       */\r\n      !!@ ili2db.dispName = "Sistema procedencia de los datos"\r\n      Sistema_Procedencia_Datos : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo;\r\n      /** Fecha de la vigencia de los datos.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de los datos"\r\n      Fecha_Datos : MANDATORY INTERLIS.XMLDate;\r\n    END GC_PredioCatastro;\r\n\r\n    ASSOCIATION gc_construccion_unidad =\r\n      gc_unidad_construccion -- {0..*} GC_UnidadConstruccion;\r\n      gc_construccion -- {1} GC_Construccion;\r\n    END gc_construccion_unidad;\r\n\r\n    ASSOCIATION gc_datosphcondominio_datostorreph =\r\n      gc_datostorreph -- {0..*} GC_DatosTorrePH;\r\n      gc_datosphcondominio -- {0..1} GC_DatosPHCondominio;\r\n    END gc_datosphcondominio_datostorreph;\r\n\r\n    ASSOCIATION gc_unidadconstruccion_calificacionunidadconstruccion =\r\n      gc_unidadconstruccion -- {0..1} GC_UnidadConstruccion;\r\n      gc_calificacionunidadconstruccion -- {0..*} GC_CalificacionUnidadConstruccion;\r\n    END gc_unidadconstruccion_calificacionunidadconstruccion;\r\n\r\n    ASSOCIATION gc_construccion_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_construccion -- {0..*} GC_Construccion;\r\n    END gc_construccion_predio;\r\n\r\n    /** Clase que relaciona las unidades prediales a los predios matrices bajo el regimen de propiedad horizontal inscritos en las bases de datos catastrales.\r\n     */\r\n    ASSOCIATION gc_copropiedad =\r\n      gc_matriz -<> {0..1} GC_PredioCatastro;\r\n      gc_unidad -- {0..*} GC_PredioCatastro;\r\n      Coeficiente_Copropiedad : 0.0000000 .. 100.0000000;\r\n    END gc_copropiedad;\r\n\r\n    ASSOCIATION gc_ph_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_datos_ph -- {0..1} GC_DatosPHCondominio;\r\n    END gc_ph_predio;\r\n\r\n    ASSOCIATION gc_propietario_predio =\r\n      gc_predio_catastro -- {1} GC_PredioCatastro;\r\n      gc_propietario -- {0..*} GC_Propietario;\r\n    END gc_propietario_predio;\r\n\r\n    ASSOCIATION gc_terreno_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_terreno -- {0..*} GC_Terreno;\r\n    END gc_terreno_predio;\r\n\r\n  END Datos_Gestor_Catastral;\r\n\r\nEND Submodelo_Insumos_Gestor_Catastral_V1_0.\r\n\r\nMODEL Submodelo_Insumos_SNR_V1_0 (es)\r\nAT "http://www.proadmintierra.info/"\r\nVERSION "V2.3"  // 2019-07-31 // =\r\n  IMPORTS LADM_COL_V3_0;\r\n\r\n  DOMAIN\r\n\r\n    SNR_CalidadDerechoTipo = (\r\n      /** El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):\r\n       * \r\n       * 0100\r\n       * 0101\r\n       * 0102\r\n       * 0103\r\n       * 0106\r\n       * 0107\r\n       * 0108\r\n       * 0109\r\n       * 0110\r\n       * 0111\r\n       * 0112\r\n       * 0113\r\n       * 0114\r\n       * 0115\r\n       * 0116\r\n       * 0117\r\n       * 0118\r\n       * 0119\r\n       * 0120\r\n       * 0121\r\n       * 0122\r\n       * 0124\r\n       * 0125\r\n       * 0126\r\n       * 0127\r\n       * 0128\r\n       * 0129\r\n       * 0130\r\n       * 0131\r\n       * 0132\r\n       * 0133\r\n       * 0135\r\n       * 0137\r\n       * 0138\r\n       * 0139\r\n       * 0140\r\n       * 0141\r\n       * 0142\r\n       * 0143\r\n       * 0144\r\n       * 0145\r\n       * 0146\r\n       * 0147\r\n       * 0148\r\n       * 0150\r\n       * 0151\r\n       * 0152\r\n       * 0153\r\n       * 0154\r\n       * 0155\r\n       * 0156\r\n       * 0157\r\n       * 0158\r\n       * 0159\r\n       * 0160\r\n       * 0161\r\n       * 0163\r\n       * 0164\r\n       * 0165\r\n       * 0166\r\n       * 0167\r\n       * 0168\r\n       * 0169\r\n       * 0171\r\n       * 0172\r\n       * 0173\r\n       * 0175\r\n       * 0177\r\n       * 0178\r\n       * 0179\r\n       * 0180\r\n       * 0181\r\n       * 0182\r\n       * 0183\r\n       * 0184\r\n       * 0185\r\n       * 0186\r\n       * 0187\r\n       * 0188\r\n       * 0189\r\n       * 0190\r\n       * 0191\r\n       * 0192\r\n       * 0193\r\n       * 0194\r\n       * 0195\r\n       * 0196\r\n       * 0197\r\n       * 0198\r\n       * 0199\r\n       * 01003\r\n       * 01004\r\n       * 01005\r\n       * 01006\r\n       * 01007\r\n       * 01008\r\n       * 01009\r\n       * 01010\r\n       * 01012\r\n       * 01013\r\n       * 01014\r\n       * 0301\r\n       * 0307\r\n       * 0321\r\n       * 0332\r\n       * 0348\r\n       * 0356\r\n       * 0374\r\n       * 0375\r\n       * 0376\r\n       * 0377\r\n       * 0906\r\n       * 0907\r\n       * 0910\r\n       * 0911\r\n       * 0912\r\n       * 0913\r\n       * 0915\r\n       * 0917\r\n       * 0918\r\n       * 0919\r\n       * 0920\r\n       * 0924\r\n       * 0935\r\n       * 0959\r\n       * 0962\r\n       * 0963\r\n       */\r\n      !!@ ili2db.dispName = "Dominio"\r\n      Dominio,\r\n      /** Es la inscripción en la Oficina de Registro de Instrumentos Públicos, de todo acto de transferencia de un derecho incompleto que se hace a favor de una persona, por parte de quien carece del derecho de dominio sobre determinado inmueble: \r\n       * \r\n       * 0600\r\n       * 0601\r\n       * 0602\r\n       * 0604\r\n       * 0605\r\n       * 0606\r\n       * 0607\r\n       * 0608\r\n       * 0609\r\n       * 0610\r\n       * 0611\r\n       * 0613\r\n       * 0614\r\n       * 0615\r\n       * 0616\r\n       * 0617\r\n       * 0618\r\n       * 0619\r\n       * 0620\r\n       * 0621\r\n       * 0622\r\n       * 0136\r\n       * 0508\r\n       * 0927\r\n       */\r\n      !!@ ili2db.dispName = "Falsa tradición"\r\n      Falsa_Tradicion,\r\n      /** La propiedad separada del goce de la cosa se llama mera o nuda propiedad (art 669 CC):\r\n       * \r\n       * Códigos:\r\n       * \r\n       * 0302\r\n       * 0308\r\n       * 0322\r\n       * 0349\r\n       * 0379\r\n       */\r\n      !!@ ili2db.dispName = "Nuda propiedad"\r\n      Nuda_Propiedad,\r\n      /** Es la propiedad de toda una comunidad sea indígena o negra. Adjudicacion Baldios En Propiedad Colectiva A Comunidades Negras, Adjudicacion Baldios Resguardos Indigenas, Constitución Resguardo Indigena,\r\n       * Ampliación De Resguardo Indígena\r\n       * \r\n       * Códigos:\r\n       * \r\n       * 0104\r\n       * 0105\r\n       * 01001\r\n       * 01002\r\n       */\r\n      !!@ ili2db.dispName = "Derecho de propiedad colectiva"\r\n      Derecho_Propiedad_Colectiva,\r\n      /** El derecho de usufructo es un derecho real que consiste en la facultad de gozar de una cosa con cargo de conservar su forma y sustancia, y de restituir a su dueño, si la cosa no es fungible; o con cargo de volver igual cantidad y calidad del mismo género, o de pagar su valor si la cosa es fungible. (art. 823 CC):\r\n       * \r\n       * 0310\r\n       * 0314\r\n       * 0323\r\n       * 0333\r\n       * 0378\r\n       * 0380\r\n       * 0382\r\n       * 0383\r\n       */\r\n      !!@ ili2db.dispName = "Usufructo"\r\n      Usufructo\r\n    );\r\n\r\n    SNR_ClasePredioRegistroTipo = (\r\n      /** Constituyen esta categoría los terrenos no aptos para el uso urbano, por razones de oportunidad, o por su destinación a usos agrícolas, ganaderos, forestales, de explotación de recursos naturales y actividades análogas. (Artículo 33, Ley 388 de 1997)\r\n       */\r\n      !!@ ili2db.dispName = "Rural"\r\n      Rural,\r\n      /** Constituyen el suelo urbano, las áreas del territorio distrital o municipal destinadas a usos urbanos por el plan de ordenamiento, que cuenten con infraestructura vial y redes primarias de energía, acueducto y alcantarillado, posibilitándose su urbanización y edificación, según sea el caso. Podrán pertenecer a esta categoría aquellas zonas con procesos de urbanización incompletos, comprendidos en áreas consolidadas con edificación, que se definan como áreas de mejoramiento integral en los planes de ordenamiento territorial.\r\n       * \r\n       * Las áreas que conforman el suelo urbano serán delimitadas por perímetros y podrán incluir los centros poblados de los corregimientos. En ningún caso el perímetro urbano podrá ser mayor que el denominado perímetro de servicios públicos o sanitario. (Artículo 31, Ley 388 de 1997)\r\n       */\r\n      !!@ ili2db.dispName = "Urbano"\r\n      Urbano,\r\n      !!@ ili2db.dispName = "Sin información"\r\n      Sin_Informacion\r\n    );\r\n\r\n    SNR_DocumentoTitularTipo = (\r\n      /** Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.\r\n       */\r\n      !!@ ili2db.dispName = "Cédula de ciudadanía"\r\n      Cedula_Ciudadania,\r\n      /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.\r\n       */\r\n      !!@ ili2db.dispName = "Cédula de extranjería"\r\n      Cedula_Extranjeria,\r\n      /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.\r\n       */\r\n      !!@ ili2db.dispName = "NIT"\r\n      NIT,\r\n      /** Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.\r\n       */\r\n      !!@ ili2db.dispName = "Tarjeta de identidad"\r\n      Tarjeta_Identidad,\r\n      /** Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.\r\n       */\r\n      !!@ ili2db.dispName = "Registro civil"\r\n      Registro_Civil,\r\n      /** El Número Único de Identificación Personal, es el número que permite identificar a los colombianos durante toda su vida.\r\n       */\r\n      !!@ ili2db.dispName = "NUIP"\r\n      NUIP,\r\n      /** Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.\r\n       */\r\n      !!@ ili2db.dispName = "Secuencial SNR"\r\n      Secuencial_SNR\r\n    );\r\n\r\n    SNR_FuenteTipo = (\r\n      /** Un acto administrativo es toda manifestación o declaración emanada de la administración pública en el ejercicio de potestades administrativas, mediante el que impone su voluntad sobre los derechos, libertades o intereses de otros sujetos públicos o privados y que queda bajo el del comienzo.\r\n       */\r\n      !!@ ili2db.dispName = "Acto administrativo"\r\n      Acto_Administrativo,\r\n      /** Una escritura pública es un documento público en el que se realiza ante un notario público un determinado hecho o un derecho autorizado por dicho fedatario público, que firma con el otorgante u otorgantes,mostrando sobre la capacidad jurídica del contenido y de la fecha en que se realizó\r\n       */\r\n      !!@ ili2db.dispName = "Escritura pública"\r\n      Escritura_Publica,\r\n      /** La sentencia es la resolución judicial definitiva dictada por un juez o tribunal que pone fin a la litis o caso sometido a su conocimiento y cierra definitivamente su actuación en el mismo\r\n       */\r\n      !!@ ili2db.dispName = "Sentencia judicial"\r\n      Sentencia_Judicial,\r\n      /** Documento que contiene un compromiso entre dos o más personas que lo firman.\r\n       */\r\n      !!@ ili2db.dispName = "Documento privado"\r\n      Documento_Privado,\r\n      /** Cuando no se haya documento soporte pero puede ser una declaración verbal.\r\n       */\r\n      !!@ ili2db.dispName = "Sin documento"\r\n      Sin_Documento\r\n    );\r\n\r\n    SNR_PersonaTitularTipo = (\r\n      /** Se refiere a la persona humana.\r\n       */\r\n      !!@ ili2db.dispName = "Persona natural"\r\n      Persona_Natural,\r\n      /** Se llama persona jurídica, una persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente. Las personas jurídicas son de dos especies: corporaciones y fundaciones de beneficencia pública.\r\n       */\r\n      !!@ ili2db.dispName = "Persona jurídica"\r\n      Persona_Juridica\r\n    );\r\n\r\n  TOPIC Datos_SNR =\r\n\r\n    /** Datos del derecho inscrito en la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Derecho"\r\n    CLASS SNR_Derecho =\r\n      /** Calidad de derecho en registro\r\n       */\r\n      !!@ ili2db.dispName = "Calidad derecho registro"\r\n      Calidad_Derecho_Registro : MANDATORY Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo;\r\n      /** es el número asignado en el registro a cada acto sujeto a registro.\r\n       */\r\n      !!@ ili2db.dispName = "Código naturaleza jurídica"\r\n      Codigo_Naturaleza_Juridica : TEXT*5;\r\n    END SNR_Derecho;\r\n\r\n    !!@ ili2db.dispName = "(SNR) Estructura Matrícula Matriz"\r\n    STRUCTURE SNR_EstructuraMatriculaMatriz =\r\n      /** Es el nùmero que se ha asignado a la Oficina de Registro de Instrumentos públicos correspondiente.\r\n       */\r\n      !!@ ili2db.dispName = "Código ORIP"\r\n      Codigo_ORIP : TEXT*20;\r\n      /** Es el consecutivo que se asigna a cada predio jurídico abierto en la ORIP.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria"\r\n      Matricula_Inmobiliaria : TEXT*20;\r\n    END SNR_EstructuraMatriculaMatriz;\r\n\r\n    /** Datos del documento que soporta la descripción de cabida y linderos.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Fuente Cabida Linderos"\r\n    CLASS SNR_FuenteCabidaLinderos =\r\n      /** Tipo de documento que soporta la relación de tenencia entre el interesado con el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo;\r\n      /** Identificador del documento, ejemplo: numero de la resolución\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*255;\r\n      !!@ ili2db.dispName = "Fecha de documento"\r\n      Fecha_Documento : INTERLIS.XMLDate;\r\n      /** Es tipo de oficina que emite el documento (notaria, juzgado)\r\n       */\r\n      !!@ ili2db.dispName = "Ente emisor"\r\n      Ente_Emisor : TEXT*255;\r\n      /** Es la ciudad donde se encuentra ubicada la oficina que expide el documento.\r\n       */\r\n      !!@ ili2db.dispName = "Ciudad emisora"\r\n      Ciudad_Emisora : TEXT*255;\r\n      /** Identificador del archivo fuente controlado por una clase externa.\r\n       */\r\n      !!@ ili2db.dispName = "Archivo"\r\n      Archivo : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;\r\n    END SNR_FuenteCabidaLinderos;\r\n\r\n    /** Datos del documento que soporta el derecho.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Fuente Derecho"\r\n    CLASS SNR_FuenteDerecho =\r\n      /** Tipo de documento que soporta la relación de tenencia entre el interesado con el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo;\r\n      /** Identificador del documento, ejemplo: numero de la resolución\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*255;\r\n      !!@ ili2db.dispName = "Fecha del documento"\r\n      Fecha_Documento : INTERLIS.XMLDate;\r\n      /** Es tipo de oficina que emite el documento (notaria, juzgado)\r\n       */\r\n      !!@ ili2db.dispName = "Ente emisor"\r\n      Ente_Emisor : MTEXT*255;\r\n      /** Es la ciudad donde se encuentra ubicada la oficina que expide el documento.\r\n       */\r\n      !!@ ili2db.dispName = "Ciudad emisora"\r\n      Ciudad_Emisora : TEXT*255;\r\n    END SNR_FuenteDerecho;\r\n\r\n    /** Datos de titulares de derecho inscritos en la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Titular"\r\n    CLASS SNR_Titular =\r\n      /** Tipo de persona\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de persona"\r\n      Tipo_Persona : Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo;\r\n      /** Tipo de documento del que se trata.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo;\r\n      /** Documento de identidad del interesado.\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : MANDATORY TEXT*50;\r\n      /** Nombres de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Nombres"\r\n      Nombres : TEXT*500;\r\n      /** Primer apellido de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Primer apellido"\r\n      Primer_Apellido : TEXT*255;\r\n      /** Segundo apellido de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo apellido"\r\n      Segundo_Apellido : TEXT*255;\r\n      /** Nombre con el que está inscrita la persona jurídica\r\n       */\r\n      !!@ ili2db.dispName = "Razón social"\r\n      Razon_Social : MTEXT*255;\r\n    END SNR_Titular;\r\n\r\n    /** Datos del predio entregados por la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Predio Registro"\r\n    CLASS SNR_PredioRegistro =\r\n      /** Es el nùmero que se ha asignado a la Oficina de Registro de Instrumentos públicos correspondiente.\r\n       */\r\n      !!@ ili2db.dispName = "Código ORIP"\r\n      Codigo_ORIP : TEXT*3;\r\n      /** Es el consecutivo que se asigna a cada predio jurídico abierto en la ORIP.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria"\r\n      Matricula_Inmobiliaria : TEXT*80;\r\n      /** Nuevo código númerico de treinta (30) dígitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi, registrado en SNR.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial nuevo en FMI"\r\n      Numero_Predial_Nuevo_en_FMI : TEXT*100;\r\n      /** Anterior código númerico de veinte (20) digitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi, registrado en SNR.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial anterior en FMI"\r\n      Numero_Predial_Anterior_en_FMI : TEXT*100;\r\n      /** Conjunto de símbolos alfanuméricos, los cuales designan vías y predios de la ciudad.\r\n       */\r\n      !!@ ili2db.dispName = "Nomenclatura según registro"\r\n      Nomenclatura_Registro : TEXT*255;\r\n      /** El texto de cabida y linderosque está consignado en el registro público de la propiedad sobre el cual se ejercen los derechos.\r\n       */\r\n      !!@ ili2db.dispName = "Cabida y linderos"\r\n      Cabida_Linderos : MTEXT;\r\n      /** Corresponde al dato de tipo de predio incorporado en las bases de datos registrales\r\n       */\r\n      !!@ ili2db.dispName = "Clase del suelo según registro"\r\n      Clase_Suelo_Registro : Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo;\r\n      /** Es la matrícula por la cual se dio apertura al predio objeto de estudio (la madre).\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria matriz"\r\n      Matricula_Inmobiliaria_Matriz : BAG {0..*} OF Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_EstructuraMatriculaMatriz;\r\n      /** Fecha de la generación de datos.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de datos"\r\n      Fecha_Datos : MANDATORY INTERLIS.XMLDate;\r\n    END SNR_PredioRegistro;\r\n\r\n    ASSOCIATION snr_derecho_fuente_derecho =\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n      snr_fuente_derecho -- {1} SNR_FuenteDerecho;\r\n    END snr_derecho_fuente_derecho;\r\n\r\n    /** Datos del titular del derecho con relación al porcentaje de participación en el derecho\r\n     */\r\n    ASSOCIATION snr_titular_derecho =\r\n      snr_titular -- {1..*} SNR_Titular;\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n      Porcentaje_Participacion : TEXT*100;\r\n    END snr_titular_derecho;\r\n\r\n    ASSOCIATION snr_derecho_predio =\r\n      snr_predio_registro -- {1} SNR_PredioRegistro;\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n    END snr_derecho_predio;\r\n\r\n    ASSOCIATION snr_predio_registro_fuente_cabidalinderos =\r\n      snr_predio_registro -- {0..*} SNR_PredioRegistro;\r\n      snr_fuente_cabidalinderos -- {0..1} SNR_FuenteCabidaLinderos;\r\n    END snr_predio_registro_fuente_cabidalinderos;\r\n\r\n  END Datos_SNR;\r\n\r\nEND Submodelo_Insumos_SNR_V1_0.\r\n\r\nMODEL Submodelo_Integracion_Insumos_V1_0 (es)\r\nAT "mailto:PC4@localhost"\r\nVERSION "2019-09-06"  =\r\n  IMPORTS Submodelo_Insumos_Gestor_Catastral_V1_0,Submodelo_Insumos_SNR_V1_0;\r\n\r\n  DOMAIN\r\n\r\n    INI_EmparejamientoTipo = (\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 1"\r\n      Tipo_1,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 2"\r\n      Tipo_2,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 3"\r\n      Tipo_3,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 4"\r\n      Tipo_4,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 5"\r\n      Tipo_5,\r\n      /** Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 6"\r\n      Tipo_6,\r\n      /** Número Predial IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 7"\r\n      Tipo_7,\r\n      /** Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 8"\r\n      Tipo_8,\r\n      /** Número Predial IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 9"\r\n      Tipo_9,\r\n      /** Número predial Anterior IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 10"\r\n      Tipo_10,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 11"\r\n      Tipo_11\r\n    );\r\n\r\n  TOPIC Datos_Integracion_Insumos =\r\n    DEPENDS ON Submodelo_Insumos_SNR_V1_0.Datos_SNR,Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral;\r\n\r\n    /** Clase que relaciona los predios en los modelos de insumos para el Gestor Catastral y la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(Integración Insumos) Predio Insumos"\r\n    CLASS INI_PredioInsumos =\r\n      /** Tipo de emparejamiento de insumos Catastro-Registro\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de emparejamiento"\r\n      Tipo_Emparejamiento : Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo;\r\n      /** Observaciones de la relación.\r\n       */\r\n      !!@ ili2db.dispName = "Observaciones"\r\n      Observaciones : TEXT;\r\n    END INI_PredioInsumos;\r\n\r\n    ASSOCIATION ini_predio_integracion_gc =\r\n      gc_predio_catastro (EXTERNAL) -- {0..1} Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro;\r\n      ini_predio_insumos -- {0..*} INI_PredioInsumos;\r\n    END ini_predio_integracion_gc;\r\n\r\n    ASSOCIATION ini_predio_integracion_snr =\r\n      snr_predio_juridico (EXTERNAL) -- {0..1} Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_PredioRegistro;\r\n      ini_predio -- {0..*} INI_PredioInsumos;\r\n    END ini_predio_integracion_snr;\r\n\r\n  END Datos_Integracion_Insumos;\r\n\r\nEND Submodelo_Integracion_Insumos_V1_0.\r\n	2020-06-17 14:21:28.379
+LADM_COL_V3_0.ili	2.3	LADM_COL_V3_0{ ISO19107_PLANAS_V3_0}	INTERLIS 2.3;\n\n/** ISO 19152 LADM country profile COL Core Model.\n * \n * -----------------------------------------------------------\n * \n * LADM es un modelo conceptual de la realidad que concreta una ontología y establece una semántica para la administración del territorio.\n * \n * -----------------------------------------------------------\n *  revision history\n * -----------------------------------------------------------\n * \n *  30.01.2018/fm : Cambio del tipo de dato del atributo Ext_Direccion de la clase Unidad Espacial a ExtDireccion; atributo ext_PID de la calse LA_Interesado cambia de OID a ExtInteresado; Cambio de cardinalidad en relacion miembros entre LA_Interesado y LA_Agrupacion_Interesados de 0..1 a 0..*\n *  07.02.2018/fm-gc: Ajuste al tipo de dato de la unidad Peso, pasa a tener precision 1 para evitar ser tratado cmo atributo entero y aumentar su tamaño\n *  19.02.2018/fm-gc: ampliación del dominio al tipo de dato Peso\n *  26.02.2018/fm-lj: cambio del nombre del dominio ISO19125_Type a ISO19125_Tipo\n *  19.04.2018/vb fm: Ajuste al constraint Fraccion, denominador mayor a 0\n *  19.04.2018/vb fm: Cambio en la cardinalidad del atributo u_Local_Id de la clase LA_BAUnit de 0..1 a 1\n * 17.07.2018/fm : se incluye escritura en dominio COL_FuenteAdministrativaTipo\n * 10.08.2018/fm : Se eliminan los atributos ai_local_id y ai_espacio_de_nombres de la clase LA_Agrupacion_Interesados\n * 27.08.2018/fm : Ajuste a la cardinalidad de asociacion puntoFuente de 1..* a 0..*\n * 25.09.2018/at: Se ajusta la longitud del atributo Codigo_Registral_Transaccion en la clase COL_FuenteAdministrativa a 5 caracteres de acuerdo a la Resolución 3973 de 2018\n * -----------------------------------------------------------\n * \n *  (c) IGAC y SNR con apoyo de la Cooperacion Suiza\n * \n * -----------------------------------------------------------\n */\nMODEL LADM_COL_V3_0 (es)\nAT "http://www.proadmintierra.info/"\nVERSION "V1.2.0"  // 2019-08-13 // =\n  IMPORTS ISO19107_PLANAS_V3_0;\n\n  UNIT\n\n    PesoColombiano [COP] EXTENDS INTERLIS.MONEY;\n\n    Area (ABSTRACT) = (INTERLIS.LENGTH * INTERLIS.LENGTH);\n\n    MetroCuadrado [m2] EXTENDS Area = (INTERLIS.m * INTERLIS.m);\n\n    Centrimetro [cm] = 1 / 100 [INTERLIS.m];\n\n  TOPIC LADM_Nucleo(ABSTRACT) =\n\n    DOMAIN\n\n      CharacterString = TEXT*255;\n\n      /** Traducción del dominio CI_PresentationFormCode de la norma ISO 19115:2003. Indica el modo en el que se representan los datos.\n       */\n      CI_Forma_Presentacion_Codigo = (\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Imagen"\n        Imagen,\n        !!@ ili2db.dispName = "Documento"\n        Documento,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Mapa"\n        Mapa,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Video"\n        Video,\n        /** Definición en la ISO 19115:2003.\n         */\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_AreaTipo = (\n        /** Corresponde al área gráfica inscrita en la base de datos catastral sobre un predio antes de efectuar la transformación al nuevo sistema de proyección para catastro.\n         */\n        !!@ ili2db.dispName = "Area catastral gráfica del predio"\n        Area_Catastral_Grafica,\n        /** Corresponde al área alfanumérica inscrita en la base de datos catastral sobre un predio antes de efectuar la transformación al nuevo sistema de proyección para catastro. En la mayoría de los casos el área alfanumérica corresponde al valor de área inscrita en los datos de Registro.\n         */\n        !!@ ili2db.dispName = "Area catastral alfanumérica"\n        Area_Catastral_Alfanumerica\n      );\n\n      COL_ContenidoNivelTipo = (\n        !!@ ili2db.dispName = "Construcción convencional"\n        Construccion_Convencional,\n        !!@ ili2db.dispName = "Construcción no convencional"\n        Construccion_No_Convencional,\n        !!@ ili2db.dispName = "Consuetudinario"\n        Consuetudinario,\n        !!@ ili2db.dispName = "Formal"\n        Formal,\n        !!@ ili2db.dispName = "Informal"\n        Informal,\n        !!@ ili2db.dispName = "Responsabilidad"\n        Responsabilidad,\n        !!@ ili2db.dispName = "Restricción derecho público"\n        Restriccion_Derecho_Publico,\n        !!@ ili2db.dispName = "Restricción derecho privado"\n        Restriccion_Derecho_Privado\n      );\n\n      COL_DimensionTipo = (\n        !!@ ili2db.dispName = "Dimensión 2D"\n        Dim2D,\n        !!@ ili2db.dispName = "Dimensión 3D"\n        Dim3D,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_EstadoRedServiciosTipo = (\n        !!@ ili2db.dispName = "Planeado"\n        Planeado,\n        !!@ ili2db.dispName = "En uso"\n        En_Uso,\n        !!@ ili2db.dispName = "Fuera de servicio"\n        Fuera_De_Servicio,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_EstructuraTipo = (\n        !!@ ili2db.dispName = "Croquis"\n        Croquis,\n        !!@ ili2db.dispName = "Línea no estructurada"\n        Linea_no_Estructurada,\n        !!@ ili2db.dispName = "Texto"\n        Texto,\n        !!@ ili2db.dispName = "Topológico"\n        Topologico\n      );\n\n      COL_FuenteEspacialTipo = (\n        /** Ilustración análoga del levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Croquis de campo"\n        Croquis_Campo,\n        /** Datos tomados por un equipo GNSS sin ningún tipo de postprocesamiento.\n         */\n        !!@ ili2db.dispName = "Datos crudos (GPS, Estación total, LiDAR, etc.)"\n        Datos_Crudos,\n        /** Imagen producto de la toma de fotografías aéreas o satélites, en la cual han sido corregidos los desplazamientos causados por la inclinación de la cámara o sensor y la curvatura de la superficie del terreno. Está referida a un sistema de proyección cartográfica, por lo que posee las características geométricas de un mapa con el factor adicional de que los objetos se encuentran representados de forma real en la imagen de la fotográfica.\n         */\n        !!@ ili2db.dispName = "Ortofoto"\n        Ortofoto,\n        /** Informe técnico de levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Informe técnico"\n        Informe_Tecnico,\n        /** Registro fotográfico del levantamiento catastral de un predio.\n         */\n        !!@ ili2db.dispName = "Registro fotográfico"\n        Registro_Fotografico\n      );\n\n      COL_GrupoInteresadoTipo = (\n        /** Agrupación de personas naturales.\n         */\n        !!@ ili2db.dispName = "Grupo civil"\n        Grupo_Civil,\n        /** Agrupación de personas jurídicas.\n         */\n        !!@ ili2db.dispName = "Grupo empresarial"\n        Grupo_Empresarial,\n        /** Agrupación de personas pertenecientes a un grupo étnico.\n         */\n        !!@ ili2db.dispName = "Grupo étnico"\n        Grupo_Etnico,\n        /** Agrupación de personas naturales y jurídicas.\n         */\n        !!@ ili2db.dispName = "Grupo mixto"\n        Grupo_Mixto\n      );\n\n      /** Si ha sido situado por interpolación, de qué manera se ha hecho.\n       */\n      COL_InterpolacionTipo = (\n        !!@ ili2db.dispName = "Aislado"\n        Aislado,\n        !!@ ili2db.dispName = "Intermedio arco"\n        Intermedio_Arco,\n        !!@ ili2db.dispName = "Intermedio línea"\n        Intermedio_Linea\n      );\n\n      COL_MetodoProduccionTipo = (\n        /** Aquellos que requieren una visita campo con el fin de\n         * recolectar la realidad de los bienes inmuebles.\n         */\n        !!@ ili2db.dispName = "Método directo"\n        Metodo_Directo,\n        /** aquellos métodos identificación física, jurídica y\n         * económica de los inmuebles a través del uso de de sensores\n         * remotos, integración registros administrativos, modelos ísticos y\n         * econométricos, análisis de Big Data y fuentes secundarias como\n         * observatorios inmobiliarios, su posterior incorporación en la base catastral.\n         */\n        !!@ ili2db.dispName = "Método indirecto"\n        Metodo_Indirecto,\n        /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.\n         */\n        !!@ ili2db.dispName = "Metodo declarativo y colaborativo"\n        Metodo_Declarativo_y_Colaborativo\n      );\n\n      COL_PuntoTipo = (\n        !!@ ili2db.dispName = "Control"\n        Control,\n        !!@ ili2db.dispName = "Catastro"\n        Catastro,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_RegistroTipo = (\n        !!@ ili2db.dispName = "Rural"\n        Rural,\n        !!@ ili2db.dispName = "Urbano"\n        Urbano,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_UnidadAdministrativaBasicaTipo = (\n        /** Unidad administrativa básica de la temática predial.\n         */\n        !!@ ili2db.dispName = "Predio"\n        Predio,\n        /** Unidad administrativa básica de la temática de ordenamiento territorial.\n         */\n        !!@ ili2db.dispName = "Ordenamiento territorial"\n        Ordenamiento_Territorial,\n        /** Unidad administrativa básica de la temática de servicios públicos.\n         */\n        !!@ ili2db.dispName = "Servicios públicos"\n        Servicios_Publicos,\n        /** Unidad administrativa básica de la temática de reservas naturales.\n         */\n        !!@ ili2db.dispName = "Reservas naturales"\n        Reservas_Naturales,\n        /** Unidad administrativa básica de la temática de parques naturales.\n         */\n        !!@ ili2db.dispName = "Parques naturales"\n        Parques_Naturales,\n        /** Unidad administrativa básica de la temática de amenazas de riesgo.\n         */\n        !!@ ili2db.dispName = "Amenazas de riesgos"\n        Amenazas_Riesgos,\n        /** Unidad administrativa básica de la temática de servidumbres.\n         */\n        !!@ ili2db.dispName = "Servidumbre"\n        Servidumbre,\n        /** Unidad administrativa básica de la temática de superficies de agua.\n         */\n        !!@ ili2db.dispName = "Superficies de agua"\n        Superficies_Agua,\n        /** Unidad administrativa básica de la temática de transporte.\n         */\n        !!@ ili2db.dispName = "Transporte"\n        Transporte\n      );\n\n      COL_VolumenTipo = (\n        !!@ ili2db.dispName = "Oficial"\n        Oficial,\n        !!@ ili2db.dispName = "Calculado"\n        Calculado,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      Integer = 0 .. 999999999;\n\n      COL_EstadoDisponibilidadTipo = (\n        /** La fuente fue convertida o recibió algún tratamiento.\n         */\n        !!@ ili2db.dispName = "Convertido"\n        Convertido,\n        /** Se desconoce la disponibilidad de la fuente.\n         */\n        !!@ ili2db.dispName = "Desconocido"\n        Desconocido,\n        /** La fuente está disponible.\n         */\n        !!@ ili2db.dispName = "Disponible"\n        Disponible\n      );\n\n      COL_ISO19125_Tipo = (\n        !!@ ili2db.dispName = "Disjunto"\n        Disjunto,\n        !!@ ili2db.dispName = "Toca"\n        Toca,\n        !!@ ili2db.dispName = "Superpone"\n        Superpone,\n        !!@ ili2db.dispName = "Desconocido"\n        Desconocido\n      );\n\n      COL_RelacionSuperficieTipo = (\n        !!@ ili2db.dispName = "En rasante"\n        En_Rasante,\n        !!@ ili2db.dispName = "En vuelo"\n        En_Vuelo,\n        !!@ ili2db.dispName = "En subsuelo"\n        En_Subsuelo,\n        !!@ ili2db.dispName = "Otro"\n        Otro\n      );\n\n      COL_UnidadEdificacionTipo = (\n        !!@ ili2db.dispName = "Compartido"\n        Compartido,\n        !!@ ili2db.dispName = "Individual"\n        Individual\n      );\n\n      Currency = -2000000000.00 .. 2000000000.00;\n\n      Real = 0.000 .. 999999999.999;\n\n    /** Estructura que proviene de la traducción de la clase CC_OperationMethod de la ISO 19111. Indica el método utilizado, mediante un algoritmo o un procedimiento, para realizar operaciones con coordenadas.\n     */\n    STRUCTURE CC_MetodoOperacion =\n      /** Fórmulas o procedimientos utilizadoa por este método de operación de coordenadas. Esto puede ser una referencia a una publicación. Tenga en cuenta que el método de operación puede no ser analítico, en cuyo caso este atributo hace referencia o contiene el procedimiento, no una fórmula analítica.\n       */\n      !!@ ili2db.dispName = "Fórmula"\n      Formula : MANDATORY CharacterString;\n      /** Número de dimensiones en la fuente CRS de este método de operación de coordenadas.\n       */\n      !!@ ili2db.dispName = "Dimensiones origen"\n      Dimensiones_Origen : Integer;\n      /** Número de dimensiones en el CRS de destino de este método de operación de coordenadas.\n       */\n      !!@ ili2db.dispName = "Ddimensiones objetivo"\n      Ddimensiones_Objetivo : Integer;\n    END CC_MetodoOperacion;\n\n    !!@ ili2db.dispName = "Valores de área"\n    STRUCTURE COL_AreaValor =\n      /** Indica si el valor a registrar corresponde al área gráfica o alfanumérica de la base de datos catastral.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_AreaTipo;\n      /** Corresponde al valor del área registrada en la base de datos catastral.\n       */\n      !!@ ili2db.dispName = "Área"\n      Area : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];\n      /** Parametros de la proyección utilizada para el cálculo del área de la forma proj, ejemplo: 'EPSG:3116', '+proj=tmerc +lat_0=4.59620041666667 +lon_0=-74.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'\n       */\n      !!@ ili2db.dispName = "Datos de la proyección"\n      Datos_Proyeccion : TEXT;\n    END COL_AreaValor;\n\n    /** Referencia a una clase externa para gestionar direcciones.\n     */\n    !!@ ili2db.dispName = "Dirección"\n    STRUCTURE ExtDireccion =\n      !!@ ili2db.dispName = "Tipo de dirección"\n      Tipo_Direccion : MANDATORY (\n        !!@ ili2db.dispName = "Estructurada"\n        Estructurada,\n        !!@ ili2db.dispName = "No estructurada"\n        No_Estructurada\n      );\n      !!@ ili2db.dispName = "Es dirección principal"\n      Es_Direccion_Principal : BOOLEAN;\n      /** Par de valores georreferenciados (x,y) en la que se encuentra la dirección.\n       */\n      !!@ ili2db.dispName = "Localización"\n      Localizacion : ISO19107_PLANAS_V3_0.GM_Point3D;\n      !!@ ili2db.dispName = "Código postal"\n      Codigo_Postal : CharacterString;\n      !!@ ili2db.dispName = "Clase de vía principal"\n      Clase_Via_Principal : (\n        !!@ ili2db.dispName = "Avenida calle"\n        Avenida_Calle,\n        !!@ ili2db.dispName = "Avenida carrera"\n        Avenida_Carrera,\n        !!@ ili2db.dispName = "Avenida"\n        Avenida,\n        !!@ ili2db.dispName = "Autopista"\n        Autopista,\n        !!@ ili2db.dispName = "Circunvalar"\n        Circunvalar,\n        !!@ ili2db.dispName = "Calle"\n        Calle,\n        !!@ ili2db.dispName = "Carrera"\n        Carrera,\n        !!@ ili2db.dispName = "Diagonal"\n        Diagonal,\n        !!@ ili2db.dispName = "Transversal"\n        Transversal,\n        !!@ ili2db.dispName = "Circular"\n        Circular\n      );\n      !!@ ili2db.dispName = "Valor vía principal"\n      Valor_Via_Principal : TEXT*100;\n      !!@ ili2db.dispName = "Letra vía principal"\n      Letra_Via_Principal : TEXT*20;\n      !!@ ili2db.dispName = "Sector de la ciudad"\n      Sector_Ciudad : (\n        Norte,\n        Sur,\n        Este,\n        Oeste\n      );\n      !!@ ili2db.dispName = "Valor de vía generadora"\n      Valor_Via_Generadora : TEXT*100;\n      !!@ ili2db.dispName = "Letra de vía generadora"\n      Letra_Via_Generadora : TEXT*20;\n      !!@ ili2db.dispName = "Número del predio"\n      Numero_Predio : TEXT*20;\n      !!@ ili2db.dispName = "Sector del predio"\n      Sector_Predio : (\n        Norte,\n        Sur,\n        Este,\n        Oeste\n      );\n      !!@ ili2db.dispName = "Complemento"\n      Complemento : TEXT*255;\n      !!@ ili2db.dispName = "Nombre del predio"\n      Nombre_Predio : TEXT*255;\n    END ExtDireccion;\n\n    /** Estructura para la definición de un tipo de dato personalizado que permite indicar una fracción o quebrado cona serie específica de condiciones.\n     */\n    STRUCTURE Fraccion =\n      /** Parte inferior de la fracción. Debe ser mayor que 0. Debe ser mayor que el numerador.\n       */\n      !!@ ili2db.dispName = "Denominador"\n      Denominador : MANDATORY Integer;\n      /** Parte superior de la fracción. Debe ser mayor que 0. Debe sder menor que el denominador.\n       */\n      !!@ ili2db.dispName = "Numerador"\n      Numerador : MANDATORY Integer;\n      MANDATORY CONSTRAINT\n        Denominador > 0;\n      MANDATORY CONSTRAINT\n        Numerador > 0;\n      MANDATORY CONSTRAINT\n        Denominador >= Numerador;\n    END Fraccion;\n\n    CLASS Oid (ABSTRACT) =\n      /** Identificador único global. Corresponde al atributo de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Espacio de nombres"\n      Espacio_De_Nombres : MANDATORY CharacterString;\n      /** Identificador único local.\n       */\n      !!@ ili2db.dispName = "Local ID"\n      Local_Id : MANDATORY CharacterString;\n    END Oid;\n\n    DOMAIN\n\n      COL_FuenteAdministrativaTipo = (\n        /** Documento público es el otorgado por el funcionario público en ejercicio de sus funciones o con su intervención. Así mismo, es público el documento otorgado por un particular en ejercicio de funciones públicas o con su intervención. Cuando consiste en un escrito autorizado o suscrito por el respectivo funcionario, es instrumento público; cuando es autorizado por un notario o quien haga sus veces y ha sido incorporado en el respectivo protocolo, se denomina escritura pública.\n         */\n        !!@ ili2db.dispName = "Documento público"\n        Documento_Publico,\n        /** El documento privado es aquel documento que no cumple los requisitos del documento público, es decir, es un documento que no ha sido elaborado por un funcionario público, ni ha habido intervención de éste para su elaboración.\n         */\n        !!@ ili2db.dispName = "Documento privado"\n        Documento_Privado\n      );\n\n      COL_RedServiciosTipo = (\n        !!@ ili2db.dispName = "Petróleo"\n        Petroleo,\n        !!@ ili2db.dispName = "Químicos"\n        Quimicos,\n        !!@ ili2db.dispName = "Red térmica"\n        Red_Termica,\n        !!@ ili2db.dispName = "Telecomunicación"\n        Telecomunicacion\n      );\n\n      Peso = 0.0 .. 999999999999999.0 [LADM_COL_V3_0.COP];\n\n    /** Registro de la fórmula o procedimiento utilizado en la transformación y de su resultado.\n     */\n    STRUCTURE COL_Transformacion =\n      /** Fórmula o procedimiento utilizado en la transformación.\n       */\n      !!@ ili2db.dispName = "Transformación"\n      Transformacion : MANDATORY LADM_COL_V3_0.LADM_Nucleo.CC_MetodoOperacion;\n      /** Geometría una vez realizado el proceso de transformación.\n       */\n      !!@ ili2db.dispName = "Localización transformada"\n      Localizacion_Transformada : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_Transformacion;\n\n    /** Control externo de la unidad de edificación física.\n     */\n    STRUCTURE ExtUnidadEdificacionFisica =\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n    END ExtUnidadEdificacionFisica;\n\n    /** Referencia a una imagen mediante su url.\n     */\n    STRUCTURE Imagen =\n      /** url de la imagen.\n       */\n      !!@ ili2db.dispName = "uri"\n      uri : CharacterString;\n    END Imagen;\n\n    /** Clase abstracta que permite gestionar el histórico del conjunto de clases, las cuales heredan de esta, excepto las fuentes.\n     */\n    CLASS ObjetoVersionado (ABSTRACT)\n    EXTENDS Oid =\n      /** Comienzo de la validez actual de la instancia de un objeto.\n       */\n      !!@ ili2db.dispName = "Versión de comienzo de vida útil"\n      Comienzo_Vida_Util_Version : MANDATORY INTERLIS.XMLDateTime;\n      /** Finalización de la validez actual de la instancia de un objeto.\n       */\n      !!@ ili2db.dispName = "Versión de fin de vida útil"\n      Fin_Vida_Util_Version : INTERLIS.XMLDateTime;\n      MANDATORY CONSTRAINT\n        Fin_Vida_Util_Version >= Comienzo_Vida_Util_Version;\n    END ObjetoVersionado;\n\n    /** Referencia a una clase externa para gestionar direcciones.\n     */\n    STRUCTURE ExtInteresado =\n      /** Identificador externo del interesado.\n       */\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n      /** Imagen de la huella dactilar del interesado.\n       */\n      !!@ ili2db.dispName = "Huella dactilar"\n      Huella_Dactilar : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Campo de nombre del interesado.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Fotografía del interesado.\n       */\n      !!@ ili2db.dispName = "Fotografía"\n      Fotografia : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Firma del interesado.\n       */\n      !!@ ili2db.dispName = "Firma"\n      Firma : LADM_COL_V3_0.LADM_Nucleo.Imagen;\n      /** Ruta de almacenamiento del documento escaneado del interesado.\n       */\n      !!@ ili2db.dispName = "Documento escaneado"\n      Documento_Escaneado : CharacterString;\n    END ExtInteresado;\n\n    /** Referencia a una clase externa para gestionar las redes físicas de servicios.\n     */\n    STRUCTURE ExtRedServiciosFisica =\n      /** Indica si la red de servicios tiene un gradiente o no.\n       */\n      !!@ ili2db.dispName = "Orientada"\n      Orientada : BOOLEAN;\n      /** Identificador de referencia a un interesado externo que es el administrador.\n       */\n      !!@ ili2db.dispName = "Ext interesado administrador id"\n      Ext_Interesado_Administrador_ID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;\n    END ExtRedServiciosFisica;\n\n    /** Referencia a clase externa desde donde se gestiona el repositorio de archivos.\n     */\n    !!@ ili2db.dispName = "Archivo fuente"\n    STRUCTURE ExtArchivo =\n      /** Fecha en la que ha sido aceptado el documento.\n       */\n      !!@ ili2db.dispName = "Fecha de aceptación"\n      Fecha_Aceptacion : INTERLIS.XMLDate;\n      /** Datos que contiene el documento.\n       */\n      !!@ ili2db.dispName = "Datos"\n      Datos : CharacterString;\n      /** Última fecha de extracción del documento.\n       */\n      !!@ ili2db.dispName = "Extracción"\n      Extraccion : INTERLIS.XMLDate;\n      /** Fecha en la que el documento es aceptado en el sistema.\n       */\n      !!@ ili2db.dispName = "Fecha de grabación"\n      Fecha_Grabacion : INTERLIS.XMLDate;\n      /** Fecha en la que fue entregado el documento.\n       */\n      !!@ ili2db.dispName = "Fecha de entrega"\n      Fecha_Entrega : INTERLIS.XMLDate;\n      !!@ ili2db.dispName = "Espacio de nombres"\n      Espacio_De_Nombres : MANDATORY CharacterString;\n      !!@ ili2db.dispName = "Local ID"\n      Local_Id : MANDATORY CharacterString;\n    END ExtArchivo;\n\n    /** Clase abstracta. Esta clase es la personalización en el modelo del perfil colombiano de la clase de LADM LA_Source.\n     */\n    CLASS COL_Fuente (ABSTRACT)\n    EXTENDS Oid =\n      /** Indica si la fuente está o no disponible y en qué condiciones. También puede indicar porqué ha dejado de estar disponible, si ha ocurrido.\n       */\n      !!@ ili2db.dispName = "Estado de disponibilidad"\n      Estado_Disponibilidad : MANDATORY COL_EstadoDisponibilidadTipo;\n      /** Identificador del archivo fuente controlado por una clase externa.\n       */\n      !!@ ili2db.dispName = "Ext archivo id"\n      Ext_Archivo_ID : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;\n      /** Tipo de formato en el que es presentada la fuente, de acuerdo con el registro de metadatos.\n       */\n      !!@ ili2db.dispName = "Tipo principal"\n      Tipo_Principal : CI_Forma_Presentacion_Codigo;\n      /** Fecha de expedición del documento de la fuente.\n       */\n      !!@ ili2db.dispName = "Fecha de documento fuente"\n      Fecha_Documento_Fuente : INTERLIS.XMLDate;\n    END COL_Fuente;\n\n    /** Estructura para la definición de un tipo de dato personalizado que permite indicar la medición de un volumen y la naturaleza de este.\n     */\n    STRUCTURE COL_VolumenValor =\n      /** Medición del volumen en m3.\n       */\n      !!@ ili2db.dispName = "Volumen medición"\n      Volumen_Medicion : MANDATORY 0.0 .. 99999999999999.9 [INTERLIS.m];\n      /** Indicación de si el volumen es calculado, si figura como oficial o si se da otra circunstancia.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_VolumenTipo;\n    END COL_VolumenValor;\n\n    /** Especialización de la clase COL_Fuente para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.\n     */\n    CLASS COL_FuenteAdministrativa (ABSTRACT)\n    EXTENDS COL_Fuente =\n      /** Observaciones o descripción del documento de la fuente administrativa.\n       */\n      !!@ ili2db.dispName = "Observación"\n      Observacion : CharacterString;\n      /** Tipo de documento de fuente administrativa.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_FuenteAdministrativaTipo;\n      /** Identificador del documento, ejemplo: número de la resolución, número de la escritura pública o número de radicado de una sentencia.\n       */\n      !!@ ili2db.dispName = "Número de fuente"\n      Numero_Fuente : TEXT*150;\n    END COL_FuenteAdministrativa;\n\n    /** Representación gráfica del terreno, construcción, unidad de construcción y/o servidumbre de paso.\n     */\n    CLASS COL_UnidadEspacial (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Registros del área en diferentes sistemas.\n       */\n      !!@ ili2db.dispName = "Área"\n      Area : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;\n      /** Dimensión del objeto.\n       */\n      !!@ ili2db.dispName = "Dimensión"\n      Dimension : COL_DimensionTipo;\n      /** Corresponde al atributo extAddressID de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Ext dirección id"\n      Ext_Direccion_ID : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;\n      /** Corresponde al atributo label de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Etiqueta"\n      Etiqueta : CharacterString;\n      /** Corresponde al atributo surfaceRelation de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Relación superficie"\n      Relacion_Superficie : COL_RelacionSuperficieTipo;\n      /** Corresponde al atributo volume de la clase en LADM.\n       */\n      !!@ ili2db.dispName = "Volumen"\n      Volumen : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;\n      /** Materializacion del metodo createArea(). Almacena de forma permanente la geometría de tipo poligonal.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\n    END COL_UnidadEspacial;\n\n    /** Agrupa unidades espaciales, es decir, representaciones geográficas de las unidades administrativas básicas (clase LA_BAUnit) para representar otras unidades espaciales que se forman en base a estas, como puede ser el caso de los polígonos catastrales.\n     */\n    CLASS COL_AgrupacionUnidadesEspaciales (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Nivel jerárquico de la agrupación, dentro del anidamiento de diferentes agrupaciones.\n       */\n      !!@ ili2db.dispName = "Nivel jerárquico"\n      Nivel_Jerarquico : MANDATORY Integer;\n      /** Definición de la agrupación.\n       */\n      !!@ ili2db.dispName = "Etiqueta"\n      Etiqueta : CharacterString;\n      /** Nombre que recibe la agrupación.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Punto de referencia de toda la agrupación, a modo de centro de masas.\n       */\n      !!@ ili2db.dispName = "Punto de referencia"\n      Punto_Referencia : ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_AgrupacionUnidadesEspaciales;\n\n    /** Traducción al español de la clase LA_LegalSpaceBuildingUnit. Sus intancias son las unidades de edificación\n     */\n    CLASS COL_EspacioJuridicoUnidadEdificacion (ABSTRACT)\n    EXTENDS COL_UnidadEspacial =\n      /** Identificador de la unidad de edificación.\n       */\n      !!@ ili2db.dispName = "Ext unidad edificación física id"\n      Ext_Unidad_Edificacion_Fisica_ID : LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica;\n      /** Tipo de unidad de edificación de la que se trata.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_UnidadEdificacionTipo;\n    END COL_EspacioJuridicoUnidadEdificacion;\n\n    ASSOCIATION col_ueJerarquiaGrupo =\n      agrupacion -<> {0..1} COL_AgrupacionUnidadesEspaciales;\n      elemento -- {0..*} COL_AgrupacionUnidadesEspaciales;\n    END col_ueJerarquiaGrupo;\n\n    /** Traducción al español de la clase LA_LegalSpaceUtilityNetwork. Representa un tipo de unidad espacial (LA_UNidadEspacial) cuyas instancias son las redes de servicios.\n     */\n    CLASS COL_EspacioJuridicoRedServicios (ABSTRACT)\n    EXTENDS COL_UnidadEspacial =\n      /** Identificador de la red física hacia una referencia externa.\n       */\n      !!@ ili2db.dispName = "Ext id red física"\n      ext_ID_Red_Fisica : LADM_COL_V3_0.LADM_Nucleo.ExtRedServiciosFisica;\n      /** Estado de operatividad de la red.\n       */\n      !!@ ili2db.dispName = "Estado"\n      Estado : COL_EstadoRedServiciosTipo;\n      /** Tipo de servicio que presta.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_RedServiciosTipo;\n    END COL_EspacioJuridicoRedServicios;\n\n    ASSOCIATION col_ueUeGrupo =\n      parte -- {0..*} COL_UnidadEspacial;\n      todo -- {0..*} COL_AgrupacionUnidadesEspaciales;\n    END col_ueUeGrupo;\n\n    /** Traducción de la clase LA_Level de LADM.\n     */\n    CLASS COL_Nivel (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      !!@ ili2db.dispName = "Tipo de registro"\n      Registro_Tipo : COL_RegistroTipo;\n      !!@ ili2db.dispName = "Estructura"\n      Estructura : COL_EstructuraTipo;\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : COL_ContenidoNivelTipo;\n    END COL_Nivel;\n\n    /** Traducción al español de la clase LA_RequiredRelationshipSpatialUnit de LADM.\n     */\n    CLASS COL_RelacionNecesariaUnidadesEspaciales (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Relación"\n      Relacion : MANDATORY COL_ISO19125_Tipo;\n    END COL_RelacionNecesariaUnidadesEspaciales;\n\n    ASSOCIATION col_ueNivel =\n      ue -- {0..*} COL_UnidadEspacial;\n      nivel -- {0..1} COL_Nivel;\n    END col_ueNivel;\n\n    /** Clase abstracta que agrupa los atributos comunes de las clases para los derechos (rights), las responsabilidades (responsabilities) y las restricciones (restrictions).\n     */\n    CLASS COL_DRR (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Descripción asociada al derecho, la responsabilidad o la restricción.\n       */\n      !!@ ili2db.dispName = "Descripción"\n      Descripcion : CharacterString;\n    END COL_DRR;\n\n    /** De forma genérica, representa el objeto territorial legal (Catastro 2014) que se gestiona en el modelo, en este caso, la parcela catastral o predio. Es independiente del conocimiento de su realidad espacial y se centra en su existencia conocida y reconocida.\n     */\n    CLASS COL_UnidadAdministrativaBasica (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Nombre que recibe la unidad administrativa básica, en muchos casos toponímico, especialmente en terrenos rústicos.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n      /** Tipo de derecho que la reconoce.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_UnidadAdministrativaBasicaTipo;\n    END COL_UnidadAdministrativaBasica;\n\n    ASSOCIATION col_rrrFuente =\n      fuente_administrativa -- {1..*} COL_FuenteAdministrativa;\n      rrr -- {0..*} COL_DRR;\n    END col_rrrFuente;\n\n    /** Traducción de la clase LA_RequiredRelationshipBAUnit de LADM.\n     */\n    CLASS COL_RelacionNecesariaBAUnits (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      !!@ ili2db.dispName = "Relación"\n      Relacion : MANDATORY CharacterString;\n    END COL_RelacionNecesariaBAUnits;\n\n    ASSOCIATION col_baunitRrr =\n      unidad -- {1} COL_UnidadAdministrativaBasica;\n      rrr -- {1..*} COL_DRR;\n    END col_baunitRrr;\n\n    ASSOCIATION col_ueBaunit =\n      ue (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n      baunit -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_ueBaunit;\n\n    ASSOCIATION col_relacionFuente =\n      fuente_administrativa -- {0..*} COL_FuenteAdministrativa;\n      relacionrequeridaBaunit -- {0..*} COL_RelacionNecesariaBAUnits;\n    END col_relacionFuente;\n\n    ASSOCIATION col_unidadFuente =\n      fuente_administrativa -- {0..*} COL_FuenteAdministrativa;\n      unidad -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_unidadFuente;\n\n    /** Clase especializada para la administración de los tipos de puntos.\n     */\n    CLASS COL_Punto (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Posición de interpolación.\n       */\n      !!@ ili2db.dispName = "Posición interpolación"\n      Posicion_Interpolacion : COL_InterpolacionTipo;\n      /** Clasificación del tipo de punto identificado en el levantamiento catastral.\n       */\n      !!@ ili2db.dispName = "Tipo de punto"\n      PuntoTipo : MANDATORY COL_PuntoTipo;\n      /** Indica si el método de levantamiento catastral: método directo o indirecto.\n       */\n      !!@ ili2db.dispName = "Método de producción"\n      MetodoProduccion : MANDATORY COL_MetodoProduccionTipo;\n      /** Transformación y Resultado.\n       */\n      !!@ ili2db.dispName = "Transformación y resultado"\n      Transformacion_Y_Resultado : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;\n      /** Geometria punto para administración de los objetos: punto de lindero, punto levantamiento y punto de control.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;\n    END COL_Punto;\n\n    /** Especialización de la clase COL_Fuente para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios\n     */\n    CLASS COL_FuenteEspacial (ABSTRACT)\n    EXTENDS COL_Fuente =\n      /** Nombre de la fuente espacial del levantamiento catastral de un predio.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : MANDATORY TEXT*255;\n      /** Tipo de fuente espacial.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_FuenteEspacialTipo;\n      /** Descripción de la fuente espacial.\n       */\n      !!@ ili2db.dispName = "Descripción"\n      Descripcion : MANDATORY MTEXT;\n      /** Metadato de la fuente espacial.\n       */\n      !!@ ili2db.dispName = "Metadato"\n      Metadato : MTEXT;\n    END COL_FuenteEspacial;\n\n    /** Traducción al español de la clase LA_BoundaryFaceString de LADM. Define los linderos y a su vez puede estar definida por una descrición textual o por dos o más puntos. Puede estar asociada a una fuente espacial o más.\n     */\n    CLASS COL_CadenaCarasLimite (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Geometría lineal que define el lindero. Puede estar asociada a geometrías de tipo punto que definen sus vértices o ser una entidad lineal independiente.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_Curve3D;\n      /** Descripción de la localización, cuando esta se basa en texto.\n       */\n      !!@ ili2db.dispName = "Localización textual"\n      Localizacion_Textual : CharacterString;\n    END COL_CadenaCarasLimite;\n\n    /** Traducción de la clase LA_BoundaryFace de LADM. De forma similar a LA_CadenaCarasLindero, representa los límites, pero en este caso permite representación 3D.\n     */\n    CLASS COL_CarasLindero (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Geometría en 3D del límite o lindero, asociada a putos o a descripciones textuales.\n       */\n      !!@ ili2db.dispName = "Geometría"\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\n      /** Cuando la localización del límte está dada por una descripción textual, aquí se recoge esta.\n       */\n      !!@ ili2db.dispName = "Localización textual"\n      Localizacion_Textual : CharacterString;\n    END COL_CarasLindero;\n\n    ASSOCIATION col_puntoReferencia =\n      ue (EXTERNAL) -- {0..1} COL_UnidadEspacial;\n      punto -- {0..1} COL_Punto;\n    END col_puntoReferencia;\n\n    ASSOCIATION col_puntoFuente =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      punto -- {0..*} COL_Punto;\n    END col_puntoFuente;\n\n    ASSOCIATION col_ueFuente =\n      ue (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_ueFuente;\n\n    ASSOCIATION col_baunitFuente =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      unidad (EXTERNAL) -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_baunitFuente;\n\n    ASSOCIATION col_relacionFuenteUespacial =\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n      relacionrequeridaUe (EXTERNAL) -- {0..*} COL_RelacionNecesariaUnidadesEspaciales;\n    END col_relacionFuenteUespacial;\n\n    ASSOCIATION col_cclFuente =\n      ccl -- {0..*} COL_CadenaCarasLimite;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_cclFuente;\n\n    ASSOCIATION col_menosCcl =\n      ccl_menos -- {0..*} COL_CadenaCarasLimite;\n      ue_menos (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_menosCcl;\n\n    ASSOCIATION col_masCcl =\n      ccl_mas -- {0..*} COL_CadenaCarasLimite;\n      ue_mas (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_masCcl;\n\n    ASSOCIATION col_puntoCcl =\n      punto -- {2..*} COL_Punto;\n      ccl -- {0..*} COL_CadenaCarasLimite;\n    END col_puntoCcl;\n\n    ASSOCIATION col_clFuente =\n      cl -- {0..*} COL_CarasLindero;\n      fuente_espacial -- {0..*} COL_FuenteEspacial;\n    END col_clFuente;\n\n    ASSOCIATION col_menosCl =\n      cl_menos -- {0..*} COL_CarasLindero;\n      ue_menos (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_menosCl;\n\n    ASSOCIATION col_masCl =\n      cl_mas -- {0..*} COL_CarasLindero;\n      ue_mas (EXTERNAL) -- {0..*} COL_UnidadEspacial;\n    END col_masCl;\n\n    ASSOCIATION col_puntoCl =\n      punto -- {3..*} COL_Punto;\n      cl -- {0..*} COL_CarasLindero;\n    END col_puntoCl;\n\n    /** Traducción de la clase LA_Party de LADM. Representa a las personas que ejercen derechos y responsabilidades  o sufren restricciones respecto a una BAUnit.\n     */\n    CLASS COL_Interesado (ABSTRACT)\n    EXTENDS ObjetoVersionado =\n      /** Identificador del interesado.\n       */\n      !!@ ili2db.dispName = "Ext PID"\n      ext_PID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;\n      /** Nombre del interesado.\n       */\n      !!@ ili2db.dispName = "Nombre"\n      Nombre : CharacterString;\n    END COL_Interesado;\n\n    /** Relaciona los interesados que ostentan la propiedad, posesión u ocupación de un predio. Se registra el grupo en si e independientemete las personas por separado.\n     */\n    CLASS COL_AgrupacionInteresados (ABSTRACT)\n    EXTENDS COL_Interesado =\n      /** Indica el tipo de agrupación del que se trata.\n       */\n      !!@ ili2db.dispName = "Tipo"\n      Tipo : MANDATORY COL_GrupoInteresadoTipo;\n    END COL_AgrupacionInteresados;\n\n    ASSOCIATION col_baunitComoInteresado =\n      interesado -- {0..*} COL_Interesado;\n      unidad (EXTERNAL) -- {0..*} COL_UnidadAdministrativaBasica;\n    END col_baunitComoInteresado;\n\n    ASSOCIATION col_responsableFuente =\n      fuente_administrativa (EXTERNAL) -- {0..*} COL_FuenteAdministrativa;\n      interesado -- {0..*} COL_Interesado;\n    END col_responsableFuente;\n\n    ASSOCIATION col_rrrInteresado =\n      rrr (EXTERNAL) -- {0..*} COL_DRR;\n      interesado -- {0..1} COL_Interesado;\n    END col_rrrInteresado;\n\n    ASSOCIATION col_topografoFuente =\n      fuente_espacial (EXTERNAL) -- {0..*} COL_FuenteEspacial;\n      topografo -- {0..*} COL_Interesado;\n    END col_topografoFuente;\n\n    ASSOCIATION col_miembros =\n      interesado -- {2..*} COL_Interesado;\n      agrupacion -<> {0..*} COL_AgrupacionInteresados;\n      participacion : LADM_COL_V3_0.LADM_Nucleo.Fraccion;\n    END col_miembros;\n\n  END LADM_Nucleo;\n\nEND LADM_COL_V3_0.\n	2020-07-22 11:12:04.283
+ISO19107_PLANAS_V3_0.ili	2.3	ISO19107_PLANAS_V3_0	INTERLIS 2.3;\r\n\r\nTYPE MODEL ISO19107_PLANAS_V3_0 (es)\r\nAT "http://www.swisslm.ch/models"\r\nVERSION "2016-03-07"  =\r\n\r\n  DOMAIN\r\n\r\n    GM_Point2D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m] ,ROTATION 2 -> 1;\r\n\r\n    GM_Curve2D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Surface2D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point2D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Point3D = COORD 3980000.000 .. 5700000.000 [INTERLIS.m], 1080000.000 .. 3100000.000 [INTERLIS.m], -5000.000 .. 6000.000 [INTERLIS.m] ,ROTATION 2 -> 1;\r\n\r\n    GM_Curve3D = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;\r\n\r\n    GM_Surface3D = SURFACE WITH (ARCS,STRAIGHTS) VERTEX GM_Point3D WITHOUT OVERLAPS>0.001;\r\n\r\n  STRUCTURE GM_Geometry2DListValue =\r\n  END GM_Geometry2DListValue;\r\n\r\n  STRUCTURE GM_Curve2DListValue =\r\n    value : MANDATORY GM_Curve2D;\r\n  END GM_Curve2DListValue;\r\n\r\n  STRUCTURE GM_Surface2DListValue =\r\n    value : MANDATORY GM_Surface2D;\r\n  END GM_Surface2DListValue;\r\n\r\n  !!@ ili2db.mapping = "MultiLine"\r\nSTRUCTURE GM_MultiCurve2D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve2DListValue;\r\n  END GM_MultiCurve2D;\r\n\r\n  !!@ ili2db.mapping = "MultiSurface"\r\nSTRUCTURE GM_MultiSurface2D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface2DListValue;\r\n  END GM_MultiSurface2D;\r\n\r\n  STRUCTURE GM_Curve3DListValue =\r\n    value : MANDATORY GM_Curve3D;\r\n  END GM_Curve3DListValue;\r\n\r\n  STRUCTURE GM_Surface3DListValue =\r\n    value : MANDATORY GM_Surface3D;\r\n  END GM_Surface3DListValue;\r\n\r\n  !!@ ili2db.mapping = "MultiLine"\r\nSTRUCTURE GM_MultiCurve3D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Curve3DListValue;\r\n  END GM_MultiCurve3D;\r\n\r\n  !!@ ili2db.mapping = "MultiSurface"\r\nSTRUCTURE GM_MultiSurface3D =\r\n    geometry : LIST {1..*} OF ISO19107_PLANAS_V3_0.GM_Surface3DListValue;\r\n  END GM_MultiSurface3D;\r\n\r\nEND ISO19107_PLANAS_V3_0.\r\n	2020-07-22 11:12:04.283
+Submodelo_Insumos_V1_0.ili	2.3	Submodelo_Insumos_Gestor_Catastral_V1_0{ LADM_COL_V3_0 ISO19107_PLANAS_V3_0} Submodelo_Insumos_SNR_V1_0{ LADM_COL_V3_0} Submodelo_Integracion_Insumos_V1_0{ Submodelo_Insumos_Gestor_Catastral_V1_0 Submodelo_Insumos_SNR_V1_0}	INTERLIS 2.3;\r\n\r\nMODEL Submodelo_Insumos_Gestor_Catastral_V1_0 (es)\r\nAT "mailto:PC4@localhost"\r\nVERSION "2019-08-01"  =\r\n  IMPORTS ISO19107_PLANAS_V3_0,LADM_COL_V3_0;\r\n\r\n  DOMAIN\r\n\r\n    GC_CondicionPredioTipo = (\r\n      /** Predio no sometido al régimen de propiedad horizontal.\r\n       */\r\n      !!@ ili2db.dispName = "No propiedad horizontal"\r\n      NPH,\r\n      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada\r\n       */\r\n      !!@ ili2db.dispName = "Propiedad horizontal"\r\n      PH(\r\n        /** Predio matriz del régimen de propiedad horizontal sobre el cual se segregan todas las unidades prediales.\r\n         */\r\n        !!@ ili2db.dispName = "(PH) Matriz"\r\n        Matriz,\r\n        /** Apartamento, garaje, depósito o cualquier otro tipo de unidad predial dentro del PH que se encuentra debidamente inscrito en el registro de instrumentos públicos\r\n         */\r\n        !!@ ili2db.dispName = "(PH) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada en cuyo reglamento define para cada unidad predial un área privada de terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Condiminio"\r\n      Condominio(\r\n        /** Predio matriz del condominio sobre el cual se segregan todas las unidades prediales.\r\n         */\r\n        !!@ ili2db.dispName = "(Condominio) Matriz"\r\n        Matriz,\r\n        /** Unidad predial dentro del condominio matriz.\r\n         */\r\n        !!@ ili2db.dispName = "(Condominio) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Es la construcción o edificación instalada por una persona natural o jurídica sobre un predio que no le pertenece.\r\n       */\r\n      !!@ ili2db.dispName = "Mejora"\r\n      Mejora(\r\n        /** Mejora sobre un predio sometido a régimen de propiedad horizontal\r\n         */\r\n        !!@ ili2db.dispName = "(Mejora) Propiedad horizontal"\r\n        PH,\r\n        /** Mejora sobre un predio no sometido a régimen de propiedad horizontal.\r\n         */\r\n        !!@ ili2db.dispName = "(Mejora) No propiedad horizontal"\r\n        NPH\r\n      ),\r\n      /** Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.\r\n       */\r\n      !!@ ili2db.dispName = "Parque cementerio"\r\n      Parque_Cementerio(\r\n        /** Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.\r\n         */\r\n        !!@ ili2db.dispName = "(Parque cementerio) Matriz"\r\n        Matriz,\r\n        /** Área o sección de terreno con función de tumba, esta debe encontrarse inscrita en el registro de instrumentos públicos.\r\n         */\r\n        !!@ ili2db.dispName = "(Parque cementerio) Unidad predial"\r\n        Unidad_Predial\r\n      ),\r\n      /** Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros.\r\n       */\r\n      !!@ ili2db.dispName = "Vía"\r\n      Via,\r\n      /** Inmuebles que siendo de dominio de la Nación, o una entidad territorial o de particulares, están destinados al uso de los habitantes.\r\n       */\r\n      !!@ ili2db.dispName = "Bien de uso público"\r\n      Bien_Uso_Publico\r\n    );\r\n\r\n    GC_SistemaProcedenciaDatosTipo = (\r\n      /** Datos extraídos del Sistema Nacional Catastral del IGAC.\r\n       */\r\n      !!@ ili2db.dispName = "Sistema Nacional Catastral"\r\n      SNC,\r\n      /** Datos extraídos del Sistema COBOL del IGAC.\r\n       */\r\n      !!@ ili2db.dispName = "Cobol"\r\n      Cobol\r\n    );\r\n\r\n    GC_UnidadConstruccionTipo = (\r\n      /** Se refiere aquellas construcciones de uso residencial, comercial e industrial.\r\n       */\r\n      !!@ ili2db.dispName = "Convencional"\r\n      Convencional,\r\n      /** Se refiere aquellas construcciones considereadas anexos de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "No convencional"\r\n      No_Convencional\r\n    );\r\n\r\n  TOPIC Datos_Gestor_Catastral =\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los barrios de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Barrio"\r\n    CLASS GC_Barrio =\r\n      /** Código de identificación del barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*13;\r\n      /** Nombre del barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre"\r\n      Nombre : TEXT*100;\r\n      /** Código del sector donde se encuentra localizado el barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Código sector"\r\n      Codigo_Sector : TEXT*9;\r\n      /** Tipo de geometría y su representación georrefenciada que definen los límites y el área ocupada por el barrio.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Barrio;\r\n\r\n    /** Relaciona la calificación de las unidades de construcción de los datos de insumos del Gestor Catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Calificación unidad de construcción"\r\n    CLASS GC_CalificacionUnidadConstruccion =\r\n      /** Indica el componente de la calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Componente"\r\n      Componente : TEXT*255;\r\n      /** Indica el elemento de calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Elemento de calificación"\r\n      Elemento_Calificacion : TEXT*255;\r\n      /** Indica el detalle de calificación del elemento de calificación de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Detalle de calificación"\r\n      Detalle_Calificacion : TEXT*255;\r\n      /** Puntaje asociado al detalle del elemento de calificación.\r\n       */\r\n      !!@ ili2db.dispName = "Puntos"\r\n      Puntos : 0 .. 100;\r\n    END GC_CalificacionUnidadConstruccion;\r\n\r\n    /** Construcciones que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Construcción"\r\n    CLASS GC_ComisionesConstruccion =\r\n      /** Numero Predial del Construcciones que no cuentan con información alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Construcciones que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_ComisionesConstruccion;\r\n\r\n    /** Terrenos que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Terreno"\r\n    CLASS GC_ComisionesTerreno =\r\n      /** Numero Predial del terreno que no cuentan con información\r\n       * alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Terrenos que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_ComisionesTerreno;\r\n\r\n    /** Unidades de construcción que no cuentan con información alfanumérica en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Comisiones Unidad Construcción"\r\n    CLASS GC_ComisionesUnidadConstruccion =\r\n      /** Numero Predial del terreno que no cuentan con información alfanumérica en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : MANDATORY TEXT*30;\r\n      /** Unidades de construcción que no cuentan con información alfanumérica en la base catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_ComisionesUnidadConstruccion;\r\n\r\n    /** Datos de las construcciones inscritas en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Construcción"\r\n    CLASS GC_Construccion =\r\n      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.\r\n       */\r\n      !!@ ili2db.dispName = "Identificador"\r\n      Identificador : TEXT*30;\r\n      /** Etiqueta de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Etiqueta"\r\n      Etiqueta : TEXT*50;\r\n      /** Indica si la construcción es de tipo convencional o no convencional.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de construcción"\r\n      Tipo_Construccion : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo;\r\n      /** Indica el tipo de dominio de la unidad de construcción: común y privado.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de dominio"\r\n      Tipo_Dominio : TEXT*20;\r\n      /** Número total de pisos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de pisos"\r\n      Numero_Pisos : 0 .. 200;\r\n      /** Número total de sótanos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de sótanos"\r\n      Numero_Sotanos : 0 .. 99;\r\n      /** Número total de mezanines de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de mezanines"\r\n      Numero_Mezanines : 0 .. 99;\r\n      /** Número total de semisótanos de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Número de semisótanos"\r\n      Numero_Semisotanos : 0 .. 99;\r\n      /** Código catastral de la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código de edificación"\r\n      Codigo_Edificacion : 0 .. 10000000000000000000;\r\n      /** Código de terreno donde se encuentra ubicada la construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código de terreno"\r\n      Codigo_Terreno : TEXT*30;\r\n      /** Área total construida.\r\n       */\r\n      !!@ ili2db.dispName = "Área construida"\r\n      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Polígono de la construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_Construccion;\r\n\r\n    /** Clase que contiene los datos principales del predio matriz sometido al regimen de propiedad horizontal inscrito en las bases de datos catastrales.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Datos Propiedad Horizontal Condominio"\r\n    CLASS GC_DatosPHCondominio =\r\n      /** Área total privada del terreno del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total de terreno privada"\r\n      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total de terreno común del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total de terreno común"\r\n      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total construida privada del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total construida privada"\r\n      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total construida común del PH o Condominio Matriz.\r\n       */\r\n      !!@ ili2db.dispName = "Área total construida común"\r\n      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Total de unidades privadas en el PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades privadas"\r\n      Total_Unidades_Privadas : 0 .. 99999999;\r\n      /** Total de unidades prediales en el sótano del PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades de sótano"\r\n      Total_Unidades_Sotano : 0 .. 99999999;\r\n      /** Avalúo catastral total de la propiedad horizontal o condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Valor total avaúo catastral"\r\n      Valor_Total_Avaluo_Catastral : LADM_COL_V3_0.LADM_Nucleo.Peso;\r\n    END GC_DatosPHCondominio;\r\n\r\n    /** Relaciona la información de las torres asociadas al PH o Condominio de los datos insumos del Gestor Catastral\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Datos torre PH"\r\n    CLASS GC_DatosTorrePH =\r\n      /** Número de torre en el PH o Condominio.\r\n       */\r\n      !!@ ili2db.dispName = "Torre"\r\n      Torre : 0 .. 1500;\r\n      /** Total de pisos de la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de pisos torre"\r\n      Total_Pisos_Torre : 0 .. 100;\r\n      /** Total de unidades privadas en la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades privadas"\r\n      Total_Unidades_Privadas : 0 .. 99999999;\r\n      /** Total de sótanos en la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de sótanos"\r\n      Total_Sotanos : 0 .. 99;\r\n      /** Total de unidades prediales en el sótano de la torre.\r\n       */\r\n      !!@ ili2db.dispName = "Total de unidades sótano"\r\n      Total_Unidades_Sotano : 0 .. 99999999;\r\n    END GC_DatosTorrePH;\r\n\r\n    !!@ ili2db.dispName = "(GC) Dirección"\r\n    STRUCTURE GC_Direccion =\r\n      /** Registros de la direcciones del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Valor"\r\n      Valor : TEXT*255;\r\n      /** Indica si el registro de la dirección corresponde a la principal.\r\n       */\r\n      !!@ ili2db.dispName = "Principal"\r\n      Principal : BOOLEAN;\r\n      /** Línea de donde se encuentra la placa de nomenclatura del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría de referencia"\r\n      Geometria_Referencia : ISO19107_PLANAS_V3_0.GM_Curve3D;\r\n    END GC_Direccion;\r\n\r\n    /** Estructura que contiene el estado del predio en la base de datos catastral.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) EstadoPredio"\r\n    STRUCTURE GC_EstadoPredio =\r\n      /** Indica el estado del predio en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Estado alerta"\r\n      Estado_Alerta : TEXT*30;\r\n      /** Entidad emisora del estado de alerta del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Entidad emisora de la alerta"\r\n      Entidad_Emisora_Alerta : TEXT*255;\r\n      /** Fecha de la alerta en el sistema de gestión catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de alerta"\r\n      Fecha_Alerta : INTERLIS.XMLDate;\r\n    END GC_EstadoPredio;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de las manzanas de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Manzana"\r\n    CLASS GC_Manzana =\r\n      /** Código catastral de 17 dígitos de la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*17;\r\n      /** Código catastral anterior de la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código anterior"\r\n      Codigo_Anterior : TEXT*255;\r\n      /** Código catastral de 13 dígitos del barrio donde se encuentra la manzana.\r\n       */\r\n      !!@ ili2db.dispName = "Código de barrio"\r\n      Codigo_Barrio : TEXT*13;\r\n      /** Polígonos de la manzanas catastrales.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Manzana;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto del perimetro urbano de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Perímetro"\r\n    CLASS GC_Perimetro =\r\n      /** Código de 2 dígitos del Departamento según clasificación de Divipola.\r\n       */\r\n      !!@ ili2db.dispName = "Código del departamento"\r\n      Codigo_Departamento : TEXT*2;\r\n      /** Código de 5 dígitos que une los 2 dígitos del Departamento y los 3 dígitos del municipio según la clasificación de Divipola.\r\n       */\r\n      !!@ ili2db.dispName = "Código del municipio"\r\n      Codigo_Municipio : TEXT*5;\r\n      /** Tipo de avalúo catastral del perímetro urbano.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de avalúo"\r\n      Tipo_Avaluo : TEXT*30;\r\n      /** Nombre geográfico del perímetro municipal, por ejemplo el nombre del municipio.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre geográfico"\r\n      Nombre_Geografico : TEXT*50;\r\n      /** Código del nombre geográfico.\r\n       */\r\n      !!@ ili2db.dispName = "Código nombre"\r\n      Codigo_Nombre : TEXT*255;\r\n      /** Polígono del perímetro urbano.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Perimetro;\r\n\r\n    /** Datos de los propietarios inscritos en las bases de datos catastrales que tienen relación con un predio.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Propietario"\r\n    CLASS GC_Propietario =\r\n      /** Tipo de documento del propietario registrado en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : TEXT*100;\r\n      /** Número de documento del propietario registrado en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*50;\r\n      /** Dígito de verificación de las personas jurídicas.\r\n       */\r\n      !!@ ili2db.dispName = "Dígito de verificación"\r\n      Digito_Verificacion : TEXT*1;\r\n      /** Primer nombre del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Primer nombre"\r\n      Primer_Nombre : TEXT*255;\r\n      /** Segundo nombre del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo nombre"\r\n      Segundo_Nombre : TEXT*255;\r\n      /** Primer apellido del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Primer apellido"\r\n      Primer_Apellido : TEXT*255;\r\n      /** Segundo apellido del propietario en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo apellido"\r\n      Segundo_Apellido : TEXT*255;\r\n      /** Razon social de las personas jurídicas inscritas como propietarios en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Razón social"\r\n      Razon_Social : TEXT*255;\r\n    END GC_Propietario;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los sectores catastrales rurales de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Sector Rural"\r\n    CLASS GC_SectorRural =\r\n      /** Código catastral de 9 dígitos del sector catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*9;\r\n      /** Polígono de los sectores catastrales existentes en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_SectorRural;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de los sectores catastrales urbanos de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Sector Urbano"\r\n    CLASS GC_SectorUrbano =\r\n      /** Código catastral de 9 dígitos del sector catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*9;\r\n      /** Polígono de los sectores catastrales existentes en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_SectorUrbano;\r\n\r\n    /** Datos de los terrenos inscritos en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Terreno"\r\n    CLASS GC_Terreno =\r\n      /** Área de terreno alfanumérica registrada en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Área terreno alfanumérica"\r\n      Area_Terreno_Alfanumerica : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área de terreno digital registrada en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Área terreno digital"\r\n      Area_Terreno_Digital : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Código de la manzana o vereda donde se localiza el terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Código de manzana vereda"\r\n      Manzana_Vereda_Codigo : TEXT*17;\r\n      /** Número de subterráneos en el terreno.\r\n       */\r\n      !!@ ili2db.dispName = "Número de subterráneos"\r\n      Numero_Subterraneos : 0 .. 999999999999999;\r\n      /** Polígono de la unidad de construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Terreno;\r\n\r\n    /** Datos de las unidades de construcción inscritas en las bases de datos catastrales en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Unidad Construcción"\r\n    CLASS GC_UnidadConstruccion =\r\n      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.\r\n       */\r\n      !!@ ili2db.dispName = "Identificador"\r\n      Identificador : TEXT*2;\r\n      /** Etiqueta de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Etiqueta"\r\n      Etiqueta : TEXT*50;\r\n      /** Indica el tipo de dominio de la unidad de construcción: común y privado.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de dominio"\r\n      Tipo_Dominio : TEXT*20;\r\n      /** Indica si la construcción es de tipo convencional o no convencional.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de construcción"\r\n      Tipo_Construccion : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_UnidadConstruccionTipo;\r\n      /** Indica numéricamente la ubicación del predio de acuerdo al tipo de planta.\r\n       */\r\n      !!@ ili2db.dispName = "Planta"\r\n      Planta : TEXT*10;\r\n      /** Número total de  habitaciones en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de habitaciones"\r\n      Total_Habitaciones : 0 .. 999999;\r\n      /** Número total de baños en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de baños"\r\n      Total_Banios : 0 .. 999999;\r\n      /** Número total de locales en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de locales"\r\n      Total_Locales : 0 .. 999999;\r\n      /** Número total de pisos en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Total de pisos"\r\n      Total_Pisos : 0 .. 150;\r\n      /** Actividad que se desarrolla en una unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Uso"\r\n      Uso : TEXT*255;\r\n      /** Año de construcción de la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Año de construcción"\r\n      Anio_Construccion : 1512 .. 2500;\r\n      /** Puntaje total de la calificación de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Puntaje"\r\n      Puntaje : 0 .. 200;\r\n      /** Área total construida en la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Área construida"\r\n      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Área total privada de la unidad de construcción para los predios en régimen de propiedad horizontal.\r\n       */\r\n      !!@ ili2db.dispName = "Área privada"\r\n      Area_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];\r\n      /** Código catastral del terreno donde se encuentra localizada la unidad de construcción.\r\n       */\r\n      !!@ ili2db.dispName = "Código terreno"\r\n      Codigo_Terreno : TEXT*30;\r\n      /** Polígono de la unidad de construcción existente en la base de datos catastral.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;\r\n    END GC_UnidadConstruccion;\r\n\r\n    /** Dato geografico aportado por el Gestor Catastral respecto de las veredades de una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Vereda"\r\n    CLASS GC_Vereda =\r\n      /** Código catastral de 17 dígitos de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código"\r\n      Codigo : TEXT*17;\r\n      /** Código catastral de 13 dígitos de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código anterior"\r\n      Codigo_Anterior : TEXT*13;\r\n      /** Nombre de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Nombre"\r\n      Nombre : TEXT*100;\r\n      /** Código catastral de 9 dígitos del código de sector donde se encuentra la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Código del sector"\r\n      Codigo_Sector : TEXT*9;\r\n      /** Geometría en 2D de la vereda.\r\n       */\r\n      !!@ ili2db.dispName = "Geometría"\r\n      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;\r\n    END GC_Vereda;\r\n\r\n    /** Información existente en las bases de datos catastrales respecto de los predios en una entidad territorial.\r\n     */\r\n    !!@ ili2db.dispName = "(GC) Predio Catastro"\r\n    CLASS GC_PredioCatastro =\r\n      /** Indica si el predio se encuentra en catastro fiscal o Ley 14.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de catastro"\r\n      Tipo_Catastro : TEXT*255;\r\n      /** Código numérico de 30 dígitos que permita localizarlo inequívocamente en los respectivos documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustín Codazzi.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial"\r\n      Numero_Predial : TEXT*30;\r\n      /** Código numérico de 20 dígitos que permita localizarlo inequívocamente en los respectivos documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustín Codazzi.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial anterior"\r\n      Numero_Predial_Anterior : TEXT*20;\r\n      /** Es un código único para identificar los inmuebles tanto en los sistemas de información catastral como registral. El NUPRE no implicará supresión de la numeración catastral ni registral asociada a la cédula catastral ni a la matrícula inmobiliaria actual.\r\n       */\r\n      !!@ ili2db.dispName = "Número único predial"\r\n      NUPRE : TEXT*11;\r\n      /** Circulo registral al que se encuentra inscrito el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Círculo registral"\r\n      Circulo_Registral : TEXT*4;\r\n      /** Identificador único asignado por las oficinas de registro de instrumentos públicos.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria catastro"\r\n      Matricula_Inmobiliaria_Catastro : TEXT*80;\r\n      /** Direcciones del predio inscritas en catastro.\r\n       */\r\n      !!@ ili2db.dispName = "Direcciones"\r\n      Direcciones : BAG {0..*} OF Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_Direccion;\r\n      /** Tipo de predio inscrito en catastro: Nacional, Departamental, Municipal, Particular, Baldío, Ejido, Resguardo Indígena, Tierra de comunidades negras y Reservas Naturales.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de predio"\r\n      Tipo_Predio : TEXT*100;\r\n      /** Caracterización temática del predio.\r\n       */\r\n      !!@ ili2db.dispName = "Condición del predio"\r\n      Condicion_Predio : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_CondicionPredioTipo;\r\n      /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.\r\n       */\r\n      !!@ ili2db.dispName = "Destinación económica"\r\n      Destinacion_Economica : TEXT*150;\r\n      /** Estado del predio en la base de datos catastral según los actos administrativos o judiciales que versan sobre el mismo.\r\n       */\r\n      !!@ ili2db.dispName = "Estado del predio"\r\n      Estado_Predio : BAG {0..*} OF Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_EstadoPredio;\r\n      /** Indica el sistema de gestión catastral de donde proceden los datos, en el caso del IGAC puede ser COBOL o SNC.\r\n       */\r\n      !!@ ili2db.dispName = "Sistema procedencia de los datos"\r\n      Sistema_Procedencia_Datos : Submodelo_Insumos_Gestor_Catastral_V1_0.GC_SistemaProcedenciaDatosTipo;\r\n      /** Fecha de la vigencia de los datos.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de los datos"\r\n      Fecha_Datos : MANDATORY INTERLIS.XMLDate;\r\n    END GC_PredioCatastro;\r\n\r\n    ASSOCIATION gc_construccion_unidad =\r\n      gc_unidad_construccion -- {0..*} GC_UnidadConstruccion;\r\n      gc_construccion -- {1} GC_Construccion;\r\n    END gc_construccion_unidad;\r\n\r\n    ASSOCIATION gc_datosphcondominio_datostorreph =\r\n      gc_datostorreph -- {0..*} GC_DatosTorrePH;\r\n      gc_datosphcondominio -- {0..1} GC_DatosPHCondominio;\r\n    END gc_datosphcondominio_datostorreph;\r\n\r\n    ASSOCIATION gc_unidadconstruccion_calificacionunidadconstruccion =\r\n      gc_unidadconstruccion -- {0..1} GC_UnidadConstruccion;\r\n      gc_calificacionunidadconstruccion -- {0..*} GC_CalificacionUnidadConstruccion;\r\n    END gc_unidadconstruccion_calificacionunidadconstruccion;\r\n\r\n    ASSOCIATION gc_construccion_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_construccion -- {0..*} GC_Construccion;\r\n    END gc_construccion_predio;\r\n\r\n    /** Clase que relaciona las unidades prediales a los predios matrices bajo el regimen de propiedad horizontal inscritos en las bases de datos catastrales.\r\n     */\r\n    ASSOCIATION gc_copropiedad =\r\n      gc_matriz -<> {0..1} GC_PredioCatastro;\r\n      gc_unidad -- {0..*} GC_PredioCatastro;\r\n      Coeficiente_Copropiedad : 0.0000000 .. 100.0000000;\r\n    END gc_copropiedad;\r\n\r\n    ASSOCIATION gc_ph_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_datos_ph -- {0..1} GC_DatosPHCondominio;\r\n    END gc_ph_predio;\r\n\r\n    ASSOCIATION gc_propietario_predio =\r\n      gc_predio_catastro -- {1} GC_PredioCatastro;\r\n      gc_propietario -- {0..*} GC_Propietario;\r\n    END gc_propietario_predio;\r\n\r\n    ASSOCIATION gc_terreno_predio =\r\n      gc_predio -- {1} GC_PredioCatastro;\r\n      gc_terreno -- {0..*} GC_Terreno;\r\n    END gc_terreno_predio;\r\n\r\n  END Datos_Gestor_Catastral;\r\n\r\nEND Submodelo_Insumos_Gestor_Catastral_V1_0.\r\n\r\nMODEL Submodelo_Insumos_SNR_V1_0 (es)\r\nAT "http://www.proadmintierra.info/"\r\nVERSION "V2.3"  // 2019-07-31 // =\r\n  IMPORTS LADM_COL_V3_0;\r\n\r\n  DOMAIN\r\n\r\n    SNR_CalidadDerechoTipo = (\r\n      /** El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):\r\n       * \r\n       * 0100\r\n       * 0101\r\n       * 0102\r\n       * 0103\r\n       * 0106\r\n       * 0107\r\n       * 0108\r\n       * 0109\r\n       * 0110\r\n       * 0111\r\n       * 0112\r\n       * 0113\r\n       * 0114\r\n       * 0115\r\n       * 0116\r\n       * 0117\r\n       * 0118\r\n       * 0119\r\n       * 0120\r\n       * 0121\r\n       * 0122\r\n       * 0124\r\n       * 0125\r\n       * 0126\r\n       * 0127\r\n       * 0128\r\n       * 0129\r\n       * 0130\r\n       * 0131\r\n       * 0132\r\n       * 0133\r\n       * 0135\r\n       * 0137\r\n       * 0138\r\n       * 0139\r\n       * 0140\r\n       * 0141\r\n       * 0142\r\n       * 0143\r\n       * 0144\r\n       * 0145\r\n       * 0146\r\n       * 0147\r\n       * 0148\r\n       * 0150\r\n       * 0151\r\n       * 0152\r\n       * 0153\r\n       * 0154\r\n       * 0155\r\n       * 0156\r\n       * 0157\r\n       * 0158\r\n       * 0159\r\n       * 0160\r\n       * 0161\r\n       * 0163\r\n       * 0164\r\n       * 0165\r\n       * 0166\r\n       * 0167\r\n       * 0168\r\n       * 0169\r\n       * 0171\r\n       * 0172\r\n       * 0173\r\n       * 0175\r\n       * 0177\r\n       * 0178\r\n       * 0179\r\n       * 0180\r\n       * 0181\r\n       * 0182\r\n       * 0183\r\n       * 0184\r\n       * 0185\r\n       * 0186\r\n       * 0187\r\n       * 0188\r\n       * 0189\r\n       * 0190\r\n       * 0191\r\n       * 0192\r\n       * 0193\r\n       * 0194\r\n       * 0195\r\n       * 0196\r\n       * 0197\r\n       * 0198\r\n       * 0199\r\n       * 01003\r\n       * 01004\r\n       * 01005\r\n       * 01006\r\n       * 01007\r\n       * 01008\r\n       * 01009\r\n       * 01010\r\n       * 01012\r\n       * 01013\r\n       * 01014\r\n       * 0301\r\n       * 0307\r\n       * 0321\r\n       * 0332\r\n       * 0348\r\n       * 0356\r\n       * 0374\r\n       * 0375\r\n       * 0376\r\n       * 0377\r\n       * 0906\r\n       * 0907\r\n       * 0910\r\n       * 0911\r\n       * 0912\r\n       * 0913\r\n       * 0915\r\n       * 0917\r\n       * 0918\r\n       * 0919\r\n       * 0920\r\n       * 0924\r\n       * 0935\r\n       * 0959\r\n       * 0962\r\n       * 0963\r\n       */\r\n      !!@ ili2db.dispName = "Dominio"\r\n      Dominio,\r\n      /** Es la inscripción en la Oficina de Registro de Instrumentos Públicos, de todo acto de transferencia de un derecho incompleto que se hace a favor de una persona, por parte de quien carece del derecho de dominio sobre determinado inmueble: \r\n       * \r\n       * 0600\r\n       * 0601\r\n       * 0602\r\n       * 0604\r\n       * 0605\r\n       * 0606\r\n       * 0607\r\n       * 0608\r\n       * 0609\r\n       * 0610\r\n       * 0611\r\n       * 0613\r\n       * 0614\r\n       * 0615\r\n       * 0616\r\n       * 0617\r\n       * 0618\r\n       * 0619\r\n       * 0620\r\n       * 0621\r\n       * 0622\r\n       * 0136\r\n       * 0508\r\n       * 0927\r\n       */\r\n      !!@ ili2db.dispName = "Falsa tradición"\r\n      Falsa_Tradicion,\r\n      /** La propiedad separada del goce de la cosa se llama mera o nuda propiedad (art 669 CC):\r\n       * \r\n       * Códigos:\r\n       * \r\n       * 0302\r\n       * 0308\r\n       * 0322\r\n       * 0349\r\n       * 0379\r\n       */\r\n      !!@ ili2db.dispName = "Nuda propiedad"\r\n      Nuda_Propiedad,\r\n      /** Es la propiedad de toda una comunidad sea indígena o negra. Adjudicacion Baldios En Propiedad Colectiva A Comunidades Negras, Adjudicacion Baldios Resguardos Indigenas, Constitución Resguardo Indigena,\r\n       * Ampliación De Resguardo Indígena\r\n       * \r\n       * Códigos:\r\n       * \r\n       * 0104\r\n       * 0105\r\n       * 01001\r\n       * 01002\r\n       */\r\n      !!@ ili2db.dispName = "Derecho de propiedad colectiva"\r\n      Derecho_Propiedad_Colectiva,\r\n      /** El derecho de usufructo es un derecho real que consiste en la facultad de gozar de una cosa con cargo de conservar su forma y sustancia, y de restituir a su dueño, si la cosa no es fungible; o con cargo de volver igual cantidad y calidad del mismo género, o de pagar su valor si la cosa es fungible. (art. 823 CC):\r\n       * \r\n       * 0310\r\n       * 0314\r\n       * 0323\r\n       * 0333\r\n       * 0378\r\n       * 0380\r\n       * 0382\r\n       * 0383\r\n       */\r\n      !!@ ili2db.dispName = "Usufructo"\r\n      Usufructo\r\n    );\r\n\r\n    SNR_ClasePredioRegistroTipo = (\r\n      /** Constituyen esta categoría los terrenos no aptos para el uso urbano, por razones de oportunidad, o por su destinación a usos agrícolas, ganaderos, forestales, de explotación de recursos naturales y actividades análogas. (Artículo 33, Ley 388 de 1997)\r\n       */\r\n      !!@ ili2db.dispName = "Rural"\r\n      Rural,\r\n      /** Constituyen el suelo urbano, las áreas del territorio distrital o municipal destinadas a usos urbanos por el plan de ordenamiento, que cuenten con infraestructura vial y redes primarias de energía, acueducto y alcantarillado, posibilitándose su urbanización y edificación, según sea el caso. Podrán pertenecer a esta categoría aquellas zonas con procesos de urbanización incompletos, comprendidos en áreas consolidadas con edificación, que se definan como áreas de mejoramiento integral en los planes de ordenamiento territorial.\r\n       * \r\n       * Las áreas que conforman el suelo urbano serán delimitadas por perímetros y podrán incluir los centros poblados de los corregimientos. En ningún caso el perímetro urbano podrá ser mayor que el denominado perímetro de servicios públicos o sanitario. (Artículo 31, Ley 388 de 1997)\r\n       */\r\n      !!@ ili2db.dispName = "Urbano"\r\n      Urbano,\r\n      !!@ ili2db.dispName = "Sin información"\r\n      Sin_Informacion\r\n    );\r\n\r\n    SNR_DocumentoTitularTipo = (\r\n      /** Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.\r\n       */\r\n      !!@ ili2db.dispName = "Cédula de ciudadanía"\r\n      Cedula_Ciudadania,\r\n      /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.\r\n       */\r\n      !!@ ili2db.dispName = "Cédula de extranjería"\r\n      Cedula_Extranjeria,\r\n      /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.\r\n       */\r\n      !!@ ili2db.dispName = "NIT"\r\n      NIT,\r\n      /** Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.\r\n       */\r\n      !!@ ili2db.dispName = "Tarjeta de identidad"\r\n      Tarjeta_Identidad,\r\n      /** Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.\r\n       */\r\n      !!@ ili2db.dispName = "Registro civil"\r\n      Registro_Civil,\r\n      /** El Número Único de Identificación Personal, es el número que permite identificar a los colombianos durante toda su vida.\r\n       */\r\n      !!@ ili2db.dispName = "NUIP"\r\n      NUIP,\r\n      /** Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.\r\n       */\r\n      !!@ ili2db.dispName = "Secuencial SNR"\r\n      Secuencial_SNR\r\n    );\r\n\r\n    SNR_FuenteTipo = (\r\n      /** Un acto administrativo es toda manifestación o declaración emanada de la administración pública en el ejercicio de potestades administrativas, mediante el que impone su voluntad sobre los derechos, libertades o intereses de otros sujetos públicos o privados y que queda bajo el del comienzo.\r\n       */\r\n      !!@ ili2db.dispName = "Acto administrativo"\r\n      Acto_Administrativo,\r\n      /** Una escritura pública es un documento público en el que se realiza ante un notario público un determinado hecho o un derecho autorizado por dicho fedatario público, que firma con el otorgante u otorgantes,mostrando sobre la capacidad jurídica del contenido y de la fecha en que se realizó\r\n       */\r\n      !!@ ili2db.dispName = "Escritura pública"\r\n      Escritura_Publica,\r\n      /** La sentencia es la resolución judicial definitiva dictada por un juez o tribunal que pone fin a la litis o caso sometido a su conocimiento y cierra definitivamente su actuación en el mismo\r\n       */\r\n      !!@ ili2db.dispName = "Sentencia judicial"\r\n      Sentencia_Judicial,\r\n      /** Documento que contiene un compromiso entre dos o más personas que lo firman.\r\n       */\r\n      !!@ ili2db.dispName = "Documento privado"\r\n      Documento_Privado,\r\n      /** Cuando no se haya documento soporte pero puede ser una declaración verbal.\r\n       */\r\n      !!@ ili2db.dispName = "Sin documento"\r\n      Sin_Documento\r\n    );\r\n\r\n    SNR_PersonaTitularTipo = (\r\n      /** Se refiere a la persona humana.\r\n       */\r\n      !!@ ili2db.dispName = "Persona natural"\r\n      Persona_Natural,\r\n      /** Se llama persona jurídica, una persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente. Las personas jurídicas son de dos especies: corporaciones y fundaciones de beneficencia pública.\r\n       */\r\n      !!@ ili2db.dispName = "Persona jurídica"\r\n      Persona_Juridica\r\n    );\r\n\r\n  TOPIC Datos_SNR =\r\n\r\n    /** Datos del derecho inscrito en la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Derecho"\r\n    CLASS SNR_Derecho =\r\n      /** Calidad de derecho en registro\r\n       */\r\n      !!@ ili2db.dispName = "Calidad derecho registro"\r\n      Calidad_Derecho_Registro : MANDATORY Submodelo_Insumos_SNR_V1_0.SNR_CalidadDerechoTipo;\r\n      /** es el número asignado en el registro a cada acto sujeto a registro.\r\n       */\r\n      !!@ ili2db.dispName = "Código naturaleza jurídica"\r\n      Codigo_Naturaleza_Juridica : TEXT*5;\r\n    END SNR_Derecho;\r\n\r\n    !!@ ili2db.dispName = "(SNR) Estructura Matrícula Matriz"\r\n    STRUCTURE SNR_EstructuraMatriculaMatriz =\r\n      /** Es el nùmero que se ha asignado a la Oficina de Registro de Instrumentos públicos correspondiente.\r\n       */\r\n      !!@ ili2db.dispName = "Código ORIP"\r\n      Codigo_ORIP : TEXT*20;\r\n      /** Es el consecutivo que se asigna a cada predio jurídico abierto en la ORIP.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria"\r\n      Matricula_Inmobiliaria : TEXT*20;\r\n    END SNR_EstructuraMatriculaMatriz;\r\n\r\n    /** Datos del documento que soporta la descripción de cabida y linderos.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Fuente Cabida Linderos"\r\n    CLASS SNR_FuenteCabidaLinderos =\r\n      /** Tipo de documento que soporta la relación de tenencia entre el interesado con el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo;\r\n      /** Identificador del documento, ejemplo: numero de la resolución\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*255;\r\n      !!@ ili2db.dispName = "Fecha de documento"\r\n      Fecha_Documento : INTERLIS.XMLDate;\r\n      /** Es tipo de oficina que emite el documento (notaria, juzgado)\r\n       */\r\n      !!@ ili2db.dispName = "Ente emisor"\r\n      Ente_Emisor : TEXT*255;\r\n      /** Es la ciudad donde se encuentra ubicada la oficina que expide el documento.\r\n       */\r\n      !!@ ili2db.dispName = "Ciudad emisora"\r\n      Ciudad_Emisora : TEXT*255;\r\n      /** Identificador del archivo fuente controlado por una clase externa.\r\n       */\r\n      !!@ ili2db.dispName = "Archivo"\r\n      Archivo : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;\r\n    END SNR_FuenteCabidaLinderos;\r\n\r\n    /** Datos del documento que soporta el derecho.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Fuente Derecho"\r\n    CLASS SNR_FuenteDerecho =\r\n      /** Tipo de documento que soporta la relación de tenencia entre el interesado con el predio.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_FuenteTipo;\r\n      /** Identificador del documento, ejemplo: numero de la resolución\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : TEXT*255;\r\n      !!@ ili2db.dispName = "Fecha del documento"\r\n      Fecha_Documento : INTERLIS.XMLDate;\r\n      /** Es tipo de oficina que emite el documento (notaria, juzgado)\r\n       */\r\n      !!@ ili2db.dispName = "Ente emisor"\r\n      Ente_Emisor : MTEXT*255;\r\n      /** Es la ciudad donde se encuentra ubicada la oficina que expide el documento.\r\n       */\r\n      !!@ ili2db.dispName = "Ciudad emisora"\r\n      Ciudad_Emisora : TEXT*255;\r\n    END SNR_FuenteDerecho;\r\n\r\n    /** Datos de titulares de derecho inscritos en la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Titular"\r\n    CLASS SNR_Titular =\r\n      /** Tipo de persona\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de persona"\r\n      Tipo_Persona : Submodelo_Insumos_SNR_V1_0.SNR_PersonaTitularTipo;\r\n      /** Tipo de documento del que se trata.\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de documento"\r\n      Tipo_Documento : Submodelo_Insumos_SNR_V1_0.SNR_DocumentoTitularTipo;\r\n      /** Documento de identidad del interesado.\r\n       */\r\n      !!@ ili2db.dispName = "Número de documento"\r\n      Numero_Documento : MANDATORY TEXT*50;\r\n      /** Nombres de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Nombres"\r\n      Nombres : TEXT*500;\r\n      /** Primer apellido de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Primer apellido"\r\n      Primer_Apellido : TEXT*255;\r\n      /** Segundo apellido de la persona física.\r\n       */\r\n      !!@ ili2db.dispName = "Segundo apellido"\r\n      Segundo_Apellido : TEXT*255;\r\n      /** Nombre con el que está inscrita la persona jurídica\r\n       */\r\n      !!@ ili2db.dispName = "Razón social"\r\n      Razon_Social : MTEXT*255;\r\n    END SNR_Titular;\r\n\r\n    /** Datos del predio entregados por la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(SNR) Predio Registro"\r\n    CLASS SNR_PredioRegistro =\r\n      /** Es el nùmero que se ha asignado a la Oficina de Registro de Instrumentos públicos correspondiente.\r\n       */\r\n      !!@ ili2db.dispName = "Código ORIP"\r\n      Codigo_ORIP : TEXT*3;\r\n      /** Es el consecutivo que se asigna a cada predio jurídico abierto en la ORIP.\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria"\r\n      Matricula_Inmobiliaria : TEXT*80;\r\n      /** Nuevo código númerico de treinta (30) dígitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi, registrado en SNR.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial nuevo en FMI"\r\n      Numero_Predial_Nuevo_en_FMI : TEXT*100;\r\n      /** Anterior código númerico de veinte (20) digitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi, registrado en SNR.\r\n       */\r\n      !!@ ili2db.dispName = "Número predial anterior en FMI"\r\n      Numero_Predial_Anterior_en_FMI : TEXT*100;\r\n      /** Conjunto de símbolos alfanuméricos, los cuales designan vías y predios de la ciudad.\r\n       */\r\n      !!@ ili2db.dispName = "Nomenclatura según registro"\r\n      Nomenclatura_Registro : TEXT*255;\r\n      /** El texto de cabida y linderosque está consignado en el registro público de la propiedad sobre el cual se ejercen los derechos.\r\n       */\r\n      !!@ ili2db.dispName = "Cabida y linderos"\r\n      Cabida_Linderos : MTEXT;\r\n      /** Corresponde al dato de tipo de predio incorporado en las bases de datos registrales\r\n       */\r\n      !!@ ili2db.dispName = "Clase del suelo según registro"\r\n      Clase_Suelo_Registro : Submodelo_Insumos_SNR_V1_0.SNR_ClasePredioRegistroTipo;\r\n      /** Es la matrícula por la cual se dio apertura al predio objeto de estudio (la madre).\r\n       */\r\n      !!@ ili2db.dispName = "Matrícula inmobiliaria matriz"\r\n      Matricula_Inmobiliaria_Matriz : BAG {0..*} OF Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_EstructuraMatriculaMatriz;\r\n      /** Fecha de la generación de datos.\r\n       */\r\n      !!@ ili2db.dispName = "Fecha de datos"\r\n      Fecha_Datos : MANDATORY INTERLIS.XMLDate;\r\n    END SNR_PredioRegistro;\r\n\r\n    ASSOCIATION snr_derecho_fuente_derecho =\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n      snr_fuente_derecho -- {1} SNR_FuenteDerecho;\r\n    END snr_derecho_fuente_derecho;\r\n\r\n    /** Datos del titular del derecho con relación al porcentaje de participación en el derecho\r\n     */\r\n    ASSOCIATION snr_titular_derecho =\r\n      snr_titular -- {1..*} SNR_Titular;\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n      Porcentaje_Participacion : TEXT*100;\r\n    END snr_titular_derecho;\r\n\r\n    ASSOCIATION snr_derecho_predio =\r\n      snr_predio_registro -- {1} SNR_PredioRegistro;\r\n      snr_derecho -- {1..*} SNR_Derecho;\r\n    END snr_derecho_predio;\r\n\r\n    ASSOCIATION snr_predio_registro_fuente_cabidalinderos =\r\n      snr_predio_registro -- {0..*} SNR_PredioRegistro;\r\n      snr_fuente_cabidalinderos -- {0..1} SNR_FuenteCabidaLinderos;\r\n    END snr_predio_registro_fuente_cabidalinderos;\r\n\r\n  END Datos_SNR;\r\n\r\nEND Submodelo_Insumos_SNR_V1_0.\r\n\r\nMODEL Submodelo_Integracion_Insumos_V1_0 (es)\r\nAT "mailto:PC4@localhost"\r\nVERSION "2019-09-06"  =\r\n  IMPORTS Submodelo_Insumos_Gestor_Catastral_V1_0,Submodelo_Insumos_SNR_V1_0;\r\n\r\n  DOMAIN\r\n\r\n    INI_EmparejamientoTipo = (\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 1"\r\n      Tipo_1,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 2"\r\n      Tipo_2,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 3"\r\n      Tipo_3,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número Predial IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 4"\r\n      Tipo_4,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC ; Número predial Anterior IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 5"\r\n      Tipo_5,\r\n      /** Número Predial IGAC - Número predial SNR ; Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 6"\r\n      Tipo_6,\r\n      /** Número Predial IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 7"\r\n      Tipo_7,\r\n      /** Número predial Anterior IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 8"\r\n      Tipo_8,\r\n      /** Número Predial IGAC - Número predial Anterior SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 9"\r\n      Tipo_9,\r\n      /** Número predial Anterior IGAC - Número predial SNR\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 10"\r\n      Tipo_10,\r\n      /** FMI SNR - Matricula Inmobiliaria IGAC\r\n       */\r\n      !!@ ili2db.dispName = "Tipo 11"\r\n      Tipo_11\r\n    );\r\n\r\n  TOPIC Datos_Integracion_Insumos =\r\n    DEPENDS ON Submodelo_Insumos_SNR_V1_0.Datos_SNR,Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral;\r\n\r\n    /** Clase que relaciona los predios en los modelos de insumos para el Gestor Catastral y la SNR.\r\n     */\r\n    !!@ ili2db.dispName = "(Integración Insumos) Predio Insumos"\r\n    CLASS INI_PredioInsumos =\r\n      /** Tipo de emparejamiento de insumos Catastro-Registro\r\n       */\r\n      !!@ ili2db.dispName = "Tipo de emparejamiento"\r\n      Tipo_Emparejamiento : Submodelo_Integracion_Insumos_V1_0.INI_EmparejamientoTipo;\r\n      /** Observaciones de la relación.\r\n       */\r\n      !!@ ili2db.dispName = "Observaciones"\r\n      Observaciones : TEXT;\r\n    END INI_PredioInsumos;\r\n\r\n    ASSOCIATION ini_predio_integracion_gc =\r\n      gc_predio_catastro (EXTERNAL) -- {0..1} Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro;\r\n      ini_predio_insumos -- {0..*} INI_PredioInsumos;\r\n    END ini_predio_integracion_gc;\r\n\r\n    ASSOCIATION ini_predio_integracion_snr =\r\n      snr_predio_juridico (EXTERNAL) -- {0..1} Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_PredioRegistro;\r\n      ini_predio -- {0..*} INI_PredioInsumos;\r\n    END ini_predio_integracion_snr;\r\n\r\n  END Datos_Integracion_Insumos;\r\n\r\nEND Submodelo_Integracion_Insumos_V1_0.\r\n	2020-07-22 11:12:04.283
 \.
 
 
 --
--- TOC entry 8037 (class 0 OID 322961)
--- Dependencies: 1246
+-- TOC entry 6542 (class 0 OID 376254)
+-- Dependencies: 832
 -- Data for Name: t_ili2db_settings; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4635,7 +4639,7 @@ ch.ehi.ili2db.sender	ili2pg-4.4.3-658b7daf37ba45ed2330ca3e3a3c3d59c96e91fa
 ch.ehi.ili2db.createForeignKey	yes
 ch.ehi.sqlgen.createGeomIndex	True
 ch.ehi.ili2db.defaultSrsAuthority	EPSG
-ch.ehi.ili2db.defaultSrsCode	38820
+ch.ehi.ili2db.defaultSrsCode	9377
 ch.ehi.ili2db.uuidDefaultValue	uuid_generate_v4()
 ch.ehi.ili2db.StrokeArcs	enable
 ch.ehi.ili2db.multiLineTrafo	coalesce
@@ -4655,8 +4659,8 @@ ch.ehi.ili2db.multilingualTrafo	expand
 
 
 --
--- TOC entry 8038 (class 0 OID 322967)
--- Dependencies: 1247
+-- TOC entry 6557 (class 0 OID 376379)
+-- Dependencies: 847
 -- Data for Name: t_ili2db_table_prop; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4666,10 +4670,10 @@ gc_calificacionunidadconstruccion	ch.ehi.ili2db.tableKind	CLASS
 gc_calificacionunidadconstruccion	ch.ehi.ili2db.dispName	(GC) Calificación unidad de construcción
 gm_surface3dlistvalue	ch.ehi.ili2db.tableKind	STRUCTURE
 snr_documentotitulartipo	ch.ehi.ili2db.tableKind	ENUM
-ini_predioinsumos	ch.ehi.ili2db.tableKind	CLASS
-ini_predioinsumos	ch.ehi.ili2db.dispName	(Integración Insumos) Predio Insumos
 gc_terreno	ch.ehi.ili2db.tableKind	CLASS
 gc_terreno	ch.ehi.ili2db.dispName	(GC) Terreno
+ini_predioinsumos	ch.ehi.ili2db.tableKind	CLASS
+ini_predioinsumos	ch.ehi.ili2db.dispName	(Integración Insumos) Predio Insumos
 snr_fuentetipo	ch.ehi.ili2db.tableKind	ENUM
 gc_unidadconstrucciontipo	ch.ehi.ili2db.tableKind	ENUM
 gc_direccion	ch.ehi.ili2db.tableKind	STRUCTURE
@@ -4684,21 +4688,21 @@ gc_propietario	ch.ehi.ili2db.tableKind	CLASS
 gc_propietario	ch.ehi.ili2db.dispName	(GC) Propietario
 gc_unidadconstruccion	ch.ehi.ili2db.tableKind	CLASS
 gc_unidadconstruccion	ch.ehi.ili2db.dispName	(GC) Unidad Construcción
+gm_multisurface2d	ch.ehi.ili2db.tableKind	STRUCTURE
 snr_fuentecabidalinderos	ch.ehi.ili2db.tableKind	CLASS
 snr_fuentecabidalinderos	ch.ehi.ili2db.dispName	(SNR) Fuente Cabida Linderos
-gm_multisurface2d	ch.ehi.ili2db.tableKind	STRUCTURE
 snr_predioregistro	ch.ehi.ili2db.tableKind	CLASS
 snr_predioregistro	ch.ehi.ili2db.dispName	(SNR) Predio Registro
-snr_titular_derecho	ch.ehi.ili2db.tableKind	ASSOCIATION
 gc_perimetro	ch.ehi.ili2db.tableKind	CLASS
 gc_perimetro	ch.ehi.ili2db.dispName	(GC) Perímetro
+snr_titular_derecho	ch.ehi.ili2db.tableKind	ASSOCIATION
 snr_calidadderechotipo	ch.ehi.ili2db.tableKind	ENUM
+gc_estadopredio	ch.ehi.ili2db.tableKind	STRUCTURE
+gc_estadopredio	ch.ehi.ili2db.dispName	(GC) EstadoPredio
 gc_datostorreph	ch.ehi.ili2db.tableKind	CLASS
 gc_datostorreph	ch.ehi.ili2db.dispName	(GC) Datos torre PH
 snr_fuentederecho	ch.ehi.ili2db.tableKind	CLASS
 snr_fuentederecho	ch.ehi.ili2db.dispName	(SNR) Fuente Derecho
-gc_estadopredio	ch.ehi.ili2db.tableKind	STRUCTURE
-gc_estadopredio	ch.ehi.ili2db.dispName	(GC) EstadoPredio
 gc_copropiedad	ch.ehi.ili2db.tableKind	ASSOCIATION
 gc_prediocatastro	ch.ehi.ili2db.tableKind	CLASS
 gc_prediocatastro	ch.ehi.ili2db.dispName	(GC) Predio Catastro
@@ -4723,10 +4727,10 @@ snr_estructuramatriculamatriz	ch.ehi.ili2db.tableKind	STRUCTURE
 snr_estructuramatriculamatriz	ch.ehi.ili2db.dispName	(SNR) Estructura Matrícula Matriz
 gm_multisurface3d	ch.ehi.ili2db.tableKind	STRUCTURE
 snr_personatitulartipo	ch.ehi.ili2db.tableKind	ENUM
-snr_derecho	ch.ehi.ili2db.tableKind	CLASS
-snr_derecho	ch.ehi.ili2db.dispName	(SNR) Derecho
 gc_barrio	ch.ehi.ili2db.tableKind	CLASS
 gc_barrio	ch.ehi.ili2db.dispName	(GC) Barrio
+snr_derecho	ch.ehi.ili2db.tableKind	CLASS
+snr_derecho	ch.ehi.ili2db.dispName	(SNR) Derecho
 ini_emparejamientotipo	ch.ehi.ili2db.tableKind	ENUM
 gc_comisionesunidadconstruccion	ch.ehi.ili2db.tableKind	CLASS
 gc_comisionesunidadconstruccion	ch.ehi.ili2db.dispName	(GC) Comisiones Unidad Construcción
@@ -4734,8 +4738,8 @@ gc_comisionesunidadconstruccion	ch.ehi.ili2db.dispName	(GC) Comisiones Unidad Co
 
 
 --
--- TOC entry 8039 (class 0 OID 322973)
--- Dependencies: 1248
+-- TOC entry 6543 (class 0 OID 376262)
+-- Dependencies: 833
 -- Data for Name: t_ili2db_trafo; Type: TABLE DATA; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4801,8 +4805,8 @@ Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro
 
 
 --
--- TOC entry 8213 (class 0 OID 0)
--- Dependencies: 1195
+-- TOC entry 6732 (class 0 OID 0)
+-- Dependencies: 795
 -- Name: t_ili2db_seq; Type: SEQUENCE SET; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4810,7 +4814,7 @@ SELECT pg_catalog.setval('test_ladm_integration.t_ili2db_seq', 48, true);
 
 
 --
--- TOC entry 7676 (class 2606 OID 322982)
+-- TOC entry 6207 (class 2606 OID 375956)
 -- Name: extarchivo extarchivo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4819,7 +4823,7 @@ ALTER TABLE ONLY test_ladm_integration.extarchivo
 
 
 --
--- TOC entry 7680 (class 2606 OID 322984)
+-- TOC entry 6211 (class 2606 OID 375966)
 -- Name: gc_barrio gc_barrio_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4828,7 +4832,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_barrio
 
 
 --
--- TOC entry 7682 (class 2606 OID 322986)
+-- TOC entry 6213 (class 2606 OID 375976)
 -- Name: gc_calificacionunidadconstruccion gc_calificacionunidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4837,7 +4841,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_calificacionunidadconstruccion
 
 
 --
--- TOC entry 7686 (class 2606 OID 322988)
+-- TOC entry 6217 (class 2606 OID 375986)
 -- Name: gc_comisionesconstruccion gc_comisionesconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4846,7 +4850,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_comisionesconstruccion
 
 
 --
--- TOC entry 7689 (class 2606 OID 322990)
+-- TOC entry 6220 (class 2606 OID 375996)
 -- Name: gc_comisionesterreno gc_comisionesterreno_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4855,7 +4859,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_comisionesterreno
 
 
 --
--- TOC entry 7692 (class 2606 OID 322992)
+-- TOC entry 6223 (class 2606 OID 376006)
 -- Name: gc_comisionesunidadconstruccion gc_comisionesunidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4864,7 +4868,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_comisionesunidadconstruccion
 
 
 --
--- TOC entry 7694 (class 2606 OID 322994)
+-- TOC entry 6333 (class 2606 OID 376329)
 -- Name: gc_condicionprediotipo gc_condicionprediotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4873,7 +4877,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_condicionprediotipo
 
 
 --
--- TOC entry 7698 (class 2606 OID 322996)
+-- TOC entry 6227 (class 2606 OID 376016)
 -- Name: gc_construccion gc_construccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4882,7 +4886,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_construccion
 
 
 --
--- TOC entry 7704 (class 2606 OID 322998)
+-- TOC entry 6277 (class 2606 OID 376151)
 -- Name: gc_copropiedad gc_copropiedad_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4891,7 +4895,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_copropiedad
 
 
 --
--- TOC entry 7707 (class 2606 OID 323000)
+-- TOC entry 6231 (class 2606 OID 376025)
 -- Name: gc_datosphcondominio gc_datosphcondominio_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4900,7 +4904,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_datosphcondominio
 
 
 --
--- TOC entry 7710 (class 2606 OID 323002)
+-- TOC entry 6234 (class 2606 OID 376032)
 -- Name: gc_datostorreph gc_datostorreph_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4909,7 +4913,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_datostorreph
 
 
 --
--- TOC entry 7714 (class 2606 OID 323004)
+-- TOC entry 6238 (class 2606 OID 376042)
 -- Name: gc_direccion gc_direccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4918,7 +4922,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_direccion
 
 
 --
--- TOC entry 7717 (class 2606 OID 323006)
+-- TOC entry 6241 (class 2606 OID 376050)
 -- Name: gc_estadopredio gc_estadopredio_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4927,7 +4931,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_estadopredio
 
 
 --
--- TOC entry 7720 (class 2606 OID 323008)
+-- TOC entry 6244 (class 2606 OID 376060)
 -- Name: gc_manzana gc_manzana_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4936,7 +4940,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_manzana
 
 
 --
--- TOC entry 7723 (class 2606 OID 323010)
+-- TOC entry 6247 (class 2606 OID 376070)
 -- Name: gc_perimetro gc_perimetro_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4945,7 +4949,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_perimetro
 
 
 --
--- TOC entry 7726 (class 2606 OID 323012)
+-- TOC entry 6271 (class 2606 OID 376143)
 -- Name: gc_prediocatastro gc_prediocatastro_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4954,7 +4958,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_prediocatastro
 
 
 --
--- TOC entry 7730 (class 2606 OID 323014)
+-- TOC entry 6250 (class 2606 OID 376080)
 -- Name: gc_propietario gc_propietario_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4963,7 +4967,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_propietario
 
 
 --
--- TOC entry 7733 (class 2606 OID 323016)
+-- TOC entry 6253 (class 2606 OID 376090)
 -- Name: gc_sectorrural gc_sectorrural_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4972,7 +4976,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_sectorrural
 
 
 --
--- TOC entry 7736 (class 2606 OID 323018)
+-- TOC entry 6256 (class 2606 OID 376100)
 -- Name: gc_sectorurbano gc_sectorurbano_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4981,7 +4985,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_sectorurbano
 
 
 --
--- TOC entry 7738 (class 2606 OID 323020)
+-- TOC entry 6329 (class 2606 OID 376311)
 -- Name: gc_sistemaprocedenciadatostipo gc_sistemaprocedenciadatostipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4990,7 +4994,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_sistemaprocedenciadatostipo
 
 
 --
--- TOC entry 7742 (class 2606 OID 323022)
+-- TOC entry 6260 (class 2606 OID 376110)
 -- Name: gc_terreno gc_terreno_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -4999,7 +5003,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_terreno
 
 
 --
--- TOC entry 7746 (class 2606 OID 323024)
+-- TOC entry 6264 (class 2606 OID 376121)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5008,7 +5012,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_unidadconstruccion
 
 
 --
--- TOC entry 7749 (class 2606 OID 323026)
+-- TOC entry 6327 (class 2606 OID 376302)
 -- Name: gc_unidadconstrucciontipo gc_unidadconstrucciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5017,7 +5021,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_unidadconstrucciontipo
 
 
 --
--- TOC entry 7752 (class 2606 OID 323028)
+-- TOC entry 6268 (class 2606 OID 376133)
 -- Name: gc_vereda gc_vereda_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5026,7 +5030,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_vereda
 
 
 --
--- TOC entry 7754 (class 2606 OID 323030)
+-- TOC entry 6199 (class 2606 OID 375930)
 -- Name: gm_multisurface2d gm_multisurface2d_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5035,7 +5039,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_multisurface2d
 
 
 --
--- TOC entry 7756 (class 2606 OID 323032)
+-- TOC entry 6205 (class 2606 OID 375947)
 -- Name: gm_multisurface3d gm_multisurface3d_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5044,7 +5048,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_multisurface3d
 
 
 --
--- TOC entry 7760 (class 2606 OID 323034)
+-- TOC entry 6197 (class 2606 OID 375922)
 -- Name: gm_surface2dlistvalue gm_surface2dlistvalue_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5053,7 +5057,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_surface2dlistvalue
 
 
 --
--- TOC entry 7764 (class 2606 OID 323036)
+-- TOC entry 6203 (class 2606 OID 375939)
 -- Name: gm_surface3dlistvalue gm_surface3dlistvalue_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5062,7 +5066,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_surface3dlistvalue
 
 
 --
--- TOC entry 7766 (class 2606 OID 323038)
+-- TOC entry 6323 (class 2606 OID 376284)
 -- Name: ini_emparejamientotipo ini_emparejamientotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5071,7 +5075,7 @@ ALTER TABLE ONLY test_ladm_integration.ini_emparejamientotipo
 
 
 --
--- TOC entry 7769 (class 2606 OID 323040)
+-- TOC entry 6306 (class 2606 OID 376228)
 -- Name: ini_predioinsumos ini_predioinsumos_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5080,7 +5084,7 @@ ALTER TABLE ONLY test_ladm_integration.ini_predioinsumos
 
 
 --
--- TOC entry 7773 (class 2606 OID 323042)
+-- TOC entry 6337 (class 2606 OID 376347)
 -- Name: snr_calidadderechotipo snr_calidadderechotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5089,7 +5093,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_calidadderechotipo
 
 
 --
--- TOC entry 7775 (class 2606 OID 323044)
+-- TOC entry 6331 (class 2606 OID 376320)
 -- Name: snr_clasepredioregistrotipo snr_clasepredioregistrotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5098,7 +5102,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_clasepredioregistrotipo
 
 
 --
--- TOC entry 7778 (class 2606 OID 323046)
+-- TOC entry 6280 (class 2606 OID 376159)
 -- Name: snr_derecho snr_derecho_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5107,7 +5111,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_derecho
 
 
 --
--- TOC entry 7782 (class 2606 OID 323048)
+-- TOC entry 6325 (class 2606 OID 376293)
 -- Name: snr_documentotitulartipo snr_documentotitulartipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5116,7 +5120,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_documentotitulartipo
 
 
 --
--- TOC entry 7785 (class 2606 OID 323050)
+-- TOC entry 6285 (class 2606 OID 376168)
 -- Name: snr_estructuramatriculamatriz snr_estructuramatriculamatriz_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5125,7 +5129,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_estructuramatriculamatriz
 
 
 --
--- TOC entry 7787 (class 2606 OID 323052)
+-- TOC entry 6287 (class 2606 OID 376178)
 -- Name: snr_fuentecabidalinderos snr_fuentecabidalinderos_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5134,7 +5138,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_fuentecabidalinderos
 
 
 --
--- TOC entry 7790 (class 2606 OID 323054)
+-- TOC entry 6290 (class 2606 OID 376188)
 -- Name: snr_fuentederecho snr_fuentederecho_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5143,7 +5147,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_fuentederecho
 
 
 --
--- TOC entry 7793 (class 2606 OID 323056)
+-- TOC entry 6335 (class 2606 OID 376338)
 -- Name: snr_fuentetipo snr_fuentetipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5152,7 +5156,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_fuentetipo
 
 
 --
--- TOC entry 7795 (class 2606 OID 323058)
+-- TOC entry 6339 (class 2606 OID 376356)
 -- Name: snr_personatitulartipo snr_personatitulartipo_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5161,7 +5165,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_personatitulartipo
 
 
 --
--- TOC entry 7798 (class 2606 OID 323060)
+-- TOC entry 6298 (class 2606 OID 376209)
 -- Name: snr_predioregistro snr_predioregistro_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5170,7 +5174,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_predioregistro
 
 
 --
--- TOC entry 7805 (class 2606 OID 323062)
+-- TOC entry 6301 (class 2606 OID 376217)
 -- Name: snr_titular_derecho snr_titular_derecho_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5179,7 +5183,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular_derecho
 
 
 --
--- TOC entry 7801 (class 2606 OID 323064)
+-- TOC entry 6293 (class 2606 OID 376198)
 -- Name: snr_titular snr_titular_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5188,7 +5192,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular
 
 
 --
--- TOC entry 7809 (class 2606 OID 323066)
+-- TOC entry 6343 (class 2606 OID 376372)
 -- Name: t_ili2db_attrname t_ili2db_attrname_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5197,7 +5201,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_attrname
 
 
 --
--- TOC entry 7813 (class 2606 OID 323068)
+-- TOC entry 6311 (class 2606 OID 376239)
 -- Name: t_ili2db_basket t_ili2db_basket_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5206,7 +5210,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_basket
 
 
 --
--- TOC entry 7815 (class 2606 OID 323070)
+-- TOC entry 6341 (class 2606 OID 376364)
 -- Name: t_ili2db_classname t_ili2db_classname_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5215,7 +5219,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_classname
 
 
 --
--- TOC entry 7818 (class 2606 OID 323072)
+-- TOC entry 6314 (class 2606 OID 376245)
 -- Name: t_ili2db_dataset t_ili2db_dataset_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5224,7 +5228,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_dataset
 
 
 --
--- TOC entry 7820 (class 2606 OID 323074)
+-- TOC entry 6316 (class 2606 OID 376253)
 -- Name: t_ili2db_inheritance t_ili2db_inheritance_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5233,7 +5237,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_inheritance
 
 
 --
--- TOC entry 7823 (class 2606 OID 323076)
+-- TOC entry 6321 (class 2606 OID 376275)
 -- Name: t_ili2db_model t_ili2db_model_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5242,7 +5246,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_model
 
 
 --
--- TOC entry 7825 (class 2606 OID 323078)
+-- TOC entry 6318 (class 2606 OID 376261)
 -- Name: t_ili2db_settings t_ili2db_settings_pkey; Type: CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5251,7 +5255,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_settings
 
 
 --
--- TOC entry 7677 (class 1259 OID 323079)
+-- TOC entry 6208 (class 1259 OID 375957)
 -- Name: extarchivo_snr_fuentecabdlndrs_rchivo_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5259,7 +5263,7 @@ CREATE INDEX extarchivo_snr_fuentecabdlndrs_rchivo_idx ON test_ladm_integration.
 
 
 --
--- TOC entry 7678 (class 1259 OID 323080)
+-- TOC entry 6209 (class 1259 OID 375967)
 -- Name: gc_barrio_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5267,7 +5271,7 @@ CREATE INDEX gc_barrio_geometria_idx ON test_ladm_integration.gc_barrio USING gi
 
 
 --
--- TOC entry 7683 (class 1259 OID 323081)
+-- TOC entry 6214 (class 1259 OID 375977)
 -- Name: gc_calificacnnddcnstrccion_gc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5275,7 +5279,7 @@ CREATE INDEX gc_calificacnnddcnstrccion_gc_unidadconstruccion_idx ON test_ladm_i
 
 
 --
--- TOC entry 7684 (class 1259 OID 323082)
+-- TOC entry 6215 (class 1259 OID 375987)
 -- Name: gc_comisionesconstruccion_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5283,7 +5287,7 @@ CREATE INDEX gc_comisionesconstruccion_geometria_idx ON test_ladm_integration.gc
 
 
 --
--- TOC entry 7690 (class 1259 OID 323083)
+-- TOC entry 6221 (class 1259 OID 376007)
 -- Name: gc_comisionesnddcnstrccion_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5291,7 +5295,7 @@ CREATE INDEX gc_comisionesnddcnstrccion_geometria_idx ON test_ladm_integration.g
 
 
 --
--- TOC entry 7687 (class 1259 OID 323084)
+-- TOC entry 6218 (class 1259 OID 375997)
 -- Name: gc_comisionesterreno_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5299,7 +5303,7 @@ CREATE INDEX gc_comisionesterreno_geometria_idx ON test_ladm_integration.gc_comi
 
 
 --
--- TOC entry 7695 (class 1259 OID 323085)
+-- TOC entry 6224 (class 1259 OID 376019)
 -- Name: gc_construccion_gc_predio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5307,7 +5311,7 @@ CREATE INDEX gc_construccion_gc_predio_idx ON test_ladm_integration.gc_construcc
 
 
 --
--- TOC entry 7696 (class 1259 OID 323086)
+-- TOC entry 6225 (class 1259 OID 376018)
 -- Name: gc_construccion_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5315,7 +5319,7 @@ CREATE INDEX gc_construccion_geometria_idx ON test_ladm_integration.gc_construcc
 
 
 --
--- TOC entry 7699 (class 1259 OID 323087)
+-- TOC entry 6228 (class 1259 OID 376017)
 -- Name: gc_construccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5323,7 +5327,7 @@ CREATE INDEX gc_construccion_tipo_construccion_idx ON test_ladm_integration.gc_c
 
 
 --
--- TOC entry 7700 (class 1259 OID 323088)
+-- TOC entry 6273 (class 1259 OID 376152)
 -- Name: gc_copropiedad_gc_matriz_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5331,7 +5335,7 @@ CREATE INDEX gc_copropiedad_gc_matriz_idx ON test_ladm_integration.gc_copropieda
 
 
 --
--- TOC entry 7701 (class 1259 OID 323089)
+-- TOC entry 6274 (class 1259 OID 376153)
 -- Name: gc_copropiedad_gc_unidad_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5339,7 +5343,7 @@ CREATE INDEX gc_copropiedad_gc_unidad_idx ON test_ladm_integration.gc_copropieda
 
 
 --
--- TOC entry 7702 (class 1259 OID 323090)
+-- TOC entry 6275 (class 1259 OID 376501)
 -- Name: gc_copropiedad_gc_unidad_key; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5347,7 +5351,7 @@ CREATE UNIQUE INDEX gc_copropiedad_gc_unidad_key ON test_ladm_integration.gc_cop
 
 
 --
--- TOC entry 7705 (class 1259 OID 323091)
+-- TOC entry 6229 (class 1259 OID 376026)
 -- Name: gc_datosphcondominio_gc_predio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5355,7 +5359,7 @@ CREATE INDEX gc_datosphcondominio_gc_predio_idx ON test_ladm_integration.gc_dato
 
 
 --
--- TOC entry 7708 (class 1259 OID 323092)
+-- TOC entry 6232 (class 1259 OID 376033)
 -- Name: gc_datostorreph_gc_datosphcondominio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5363,7 +5367,7 @@ CREATE INDEX gc_datostorreph_gc_datosphcondominio_idx ON test_ladm_integration.g
 
 
 --
--- TOC entry 7711 (class 1259 OID 323093)
+-- TOC entry 6235 (class 1259 OID 376044)
 -- Name: gc_direccion_gc_prediocatastro_dirccnes_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5371,7 +5375,7 @@ CREATE INDEX gc_direccion_gc_prediocatastro_dirccnes_idx ON test_ladm_integratio
 
 
 --
--- TOC entry 7712 (class 1259 OID 323094)
+-- TOC entry 6236 (class 1259 OID 376043)
 -- Name: gc_direccion_geometria_referencia_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5379,7 +5383,7 @@ CREATE INDEX gc_direccion_geometria_referencia_idx ON test_ladm_integration.gc_d
 
 
 --
--- TOC entry 7715 (class 1259 OID 323095)
+-- TOC entry 6239 (class 1259 OID 376051)
 -- Name: gc_estadopredio_gc_prediocatastr_std_prdio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5387,7 +5391,7 @@ CREATE INDEX gc_estadopredio_gc_prediocatastr_std_prdio_idx ON test_ladm_integra
 
 
 --
--- TOC entry 7718 (class 1259 OID 323096)
+-- TOC entry 6242 (class 1259 OID 376061)
 -- Name: gc_manzana_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5395,7 +5399,7 @@ CREATE INDEX gc_manzana_geometria_idx ON test_ladm_integration.gc_manzana USING 
 
 
 --
--- TOC entry 7721 (class 1259 OID 323097)
+-- TOC entry 6245 (class 1259 OID 376071)
 -- Name: gc_perimetro_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5403,7 +5407,7 @@ CREATE INDEX gc_perimetro_geometria_idx ON test_ladm_integration.gc_perimetro US
 
 
 --
--- TOC entry 7724 (class 1259 OID 323098)
+-- TOC entry 6269 (class 1259 OID 376144)
 -- Name: gc_prediocatastro_condicion_predio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5411,7 +5415,7 @@ CREATE INDEX gc_prediocatastro_condicion_predio_idx ON test_ladm_integration.gc_
 
 
 --
--- TOC entry 7727 (class 1259 OID 323099)
+-- TOC entry 6272 (class 1259 OID 376145)
 -- Name: gc_prediocatastro_sistema_procedencia_datos_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5419,7 +5423,7 @@ CREATE INDEX gc_prediocatastro_sistema_procedencia_datos_idx ON test_ladm_integr
 
 
 --
--- TOC entry 7728 (class 1259 OID 323100)
+-- TOC entry 6248 (class 1259 OID 376081)
 -- Name: gc_propietario_gc_predio_catastro_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5427,7 +5431,7 @@ CREATE INDEX gc_propietario_gc_predio_catastro_idx ON test_ladm_integration.gc_p
 
 
 --
--- TOC entry 7731 (class 1259 OID 323101)
+-- TOC entry 6251 (class 1259 OID 376091)
 -- Name: gc_sectorrural_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5435,7 +5439,7 @@ CREATE INDEX gc_sectorrural_geometria_idx ON test_ladm_integration.gc_sectorrura
 
 
 --
--- TOC entry 7734 (class 1259 OID 323102)
+-- TOC entry 6254 (class 1259 OID 376101)
 -- Name: gc_sectorurbano_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5443,7 +5447,7 @@ CREATE INDEX gc_sectorurbano_geometria_idx ON test_ladm_integration.gc_sectorurb
 
 
 --
--- TOC entry 7739 (class 1259 OID 323103)
+-- TOC entry 6257 (class 1259 OID 376112)
 -- Name: gc_terreno_gc_predio_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5451,7 +5455,7 @@ CREATE INDEX gc_terreno_gc_predio_idx ON test_ladm_integration.gc_terreno USING 
 
 
 --
--- TOC entry 7740 (class 1259 OID 323104)
+-- TOC entry 6258 (class 1259 OID 376111)
 -- Name: gc_terreno_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5459,7 +5463,7 @@ CREATE INDEX gc_terreno_geometria_idx ON test_ladm_integration.gc_terreno USING 
 
 
 --
--- TOC entry 7743 (class 1259 OID 323105)
+-- TOC entry 6261 (class 1259 OID 376124)
 -- Name: gc_unidadconstruccion_gc_construccion_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5467,7 +5471,7 @@ CREATE INDEX gc_unidadconstruccion_gc_construccion_idx ON test_ladm_integration.
 
 
 --
--- TOC entry 7744 (class 1259 OID 323106)
+-- TOC entry 6262 (class 1259 OID 376123)
 -- Name: gc_unidadconstruccion_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5475,7 +5479,7 @@ CREATE INDEX gc_unidadconstruccion_geometria_idx ON test_ladm_integration.gc_uni
 
 
 --
--- TOC entry 7747 (class 1259 OID 323107)
+-- TOC entry 6265 (class 1259 OID 376122)
 -- Name: gc_unidadconstruccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5483,7 +5487,7 @@ CREATE INDEX gc_unidadconstruccion_tipo_construccion_idx ON test_ladm_integratio
 
 
 --
--- TOC entry 7750 (class 1259 OID 323108)
+-- TOC entry 6266 (class 1259 OID 376134)
 -- Name: gc_vereda_geometria_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5491,7 +5495,7 @@ CREATE INDEX gc_vereda_geometria_idx ON test_ladm_integration.gc_vereda USING gi
 
 
 --
--- TOC entry 7757 (class 1259 OID 323109)
+-- TOC entry 6194 (class 1259 OID 375923)
 -- Name: gm_surface2dlistvalue_avalue_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5499,7 +5503,7 @@ CREATE INDEX gm_surface2dlistvalue_avalue_idx ON test_ladm_integration.gm_surfac
 
 
 --
--- TOC entry 7758 (class 1259 OID 323110)
+-- TOC entry 6195 (class 1259 OID 375924)
 -- Name: gm_surface2dlistvalue_gm_multisurface2d_geometry_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5507,7 +5511,7 @@ CREATE INDEX gm_surface2dlistvalue_gm_multisurface2d_geometry_idx ON test_ladm_i
 
 
 --
--- TOC entry 7761 (class 1259 OID 323111)
+-- TOC entry 6200 (class 1259 OID 375940)
 -- Name: gm_surface3dlistvalue_avalue_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5515,7 +5519,7 @@ CREATE INDEX gm_surface3dlistvalue_avalue_idx ON test_ladm_integration.gm_surfac
 
 
 --
--- TOC entry 7762 (class 1259 OID 323112)
+-- TOC entry 6201 (class 1259 OID 375941)
 -- Name: gm_surface3dlistvalue_gm_multisurface3d_geometry_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5523,7 +5527,7 @@ CREATE INDEX gm_surface3dlistvalue_gm_multisurface3d_geometry_idx ON test_ladm_i
 
 
 --
--- TOC entry 7767 (class 1259 OID 323113)
+-- TOC entry 6304 (class 1259 OID 376230)
 -- Name: ini_predioinsumos_gc_predio_catastro_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5531,7 +5535,7 @@ CREATE INDEX ini_predioinsumos_gc_predio_catastro_idx ON test_ladm_integration.i
 
 
 --
--- TOC entry 7770 (class 1259 OID 323114)
+-- TOC entry 6307 (class 1259 OID 376231)
 -- Name: ini_predioinsumos_snr_predio_juridico_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5539,7 +5543,7 @@ CREATE INDEX ini_predioinsumos_snr_predio_juridico_idx ON test_ladm_integration.
 
 
 --
--- TOC entry 7771 (class 1259 OID 323115)
+-- TOC entry 6308 (class 1259 OID 376229)
 -- Name: ini_predioinsumos_tipo_emparejamiento_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5547,7 +5551,7 @@ CREATE INDEX ini_predioinsumos_tipo_emparejamiento_idx ON test_ladm_integration.
 
 
 --
--- TOC entry 7776 (class 1259 OID 323116)
+-- TOC entry 6278 (class 1259 OID 376160)
 -- Name: snr_derecho_calidad_derecho_registro_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5555,7 +5559,7 @@ CREATE INDEX snr_derecho_calidad_derecho_registro_idx ON test_ladm_integration.s
 
 
 --
--- TOC entry 7779 (class 1259 OID 323117)
+-- TOC entry 6281 (class 1259 OID 376161)
 -- Name: snr_derecho_snr_fuente_derecho_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5563,7 +5567,7 @@ CREATE INDEX snr_derecho_snr_fuente_derecho_idx ON test_ladm_integration.snr_der
 
 
 --
--- TOC entry 7780 (class 1259 OID 323118)
+-- TOC entry 6282 (class 1259 OID 376162)
 -- Name: snr_derecho_snr_predio_registro_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5571,7 +5575,7 @@ CREATE INDEX snr_derecho_snr_predio_registro_idx ON test_ladm_integration.snr_de
 
 
 --
--- TOC entry 7783 (class 1259 OID 323119)
+-- TOC entry 6283 (class 1259 OID 376169)
 -- Name: snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5579,7 +5583,7 @@ CREATE INDEX snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_idx ON test_l
 
 
 --
--- TOC entry 7788 (class 1259 OID 323120)
+-- TOC entry 6288 (class 1259 OID 376179)
 -- Name: snr_fuentecabidalinderos_tipo_documento_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5587,7 +5591,7 @@ CREATE INDEX snr_fuentecabidalinderos_tipo_documento_idx ON test_ladm_integratio
 
 
 --
--- TOC entry 7791 (class 1259 OID 323121)
+-- TOC entry 6291 (class 1259 OID 376189)
 -- Name: snr_fuentederecho_tipo_documento_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5595,7 +5599,7 @@ CREATE INDEX snr_fuentederecho_tipo_documento_idx ON test_ladm_integration.snr_f
 
 
 --
--- TOC entry 7796 (class 1259 OID 323122)
+-- TOC entry 6296 (class 1259 OID 376210)
 -- Name: snr_predioregistro_clase_suelo_registro_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5603,7 +5607,7 @@ CREATE INDEX snr_predioregistro_clase_suelo_registro_idx ON test_ladm_integratio
 
 
 --
--- TOC entry 7799 (class 1259 OID 323123)
+-- TOC entry 6299 (class 1259 OID 376211)
 -- Name: snr_predioregistro_snr_fuente_cabidalinderos_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5611,7 +5615,7 @@ CREATE INDEX snr_predioregistro_snr_fuente_cabidalinderos_idx ON test_ladm_integ
 
 
 --
--- TOC entry 7806 (class 1259 OID 323124)
+-- TOC entry 6302 (class 1259 OID 376219)
 -- Name: snr_titular_derecho_snr_derecho_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5619,7 +5623,7 @@ CREATE INDEX snr_titular_derecho_snr_derecho_idx ON test_ladm_integration.snr_ti
 
 
 --
--- TOC entry 7807 (class 1259 OID 323125)
+-- TOC entry 6303 (class 1259 OID 376218)
 -- Name: snr_titular_derecho_snr_titular_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5627,7 +5631,7 @@ CREATE INDEX snr_titular_derecho_snr_titular_idx ON test_ladm_integration.snr_ti
 
 
 --
--- TOC entry 7802 (class 1259 OID 323126)
+-- TOC entry 6294 (class 1259 OID 376200)
 -- Name: snr_titular_tipo_documento_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5635,7 +5639,7 @@ CREATE INDEX snr_titular_tipo_documento_idx ON test_ladm_integration.snr_titular
 
 
 --
--- TOC entry 7803 (class 1259 OID 323127)
+-- TOC entry 6295 (class 1259 OID 376199)
 -- Name: snr_titular_tipo_persona_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5643,7 +5647,7 @@ CREATE INDEX snr_titular_tipo_persona_idx ON test_ladm_integration.snr_titular U
 
 
 --
--- TOC entry 7810 (class 1259 OID 323128)
+-- TOC entry 6344 (class 1259 OID 376595)
 -- Name: t_ili2db_attrname_sqlname_colowner_key; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5651,7 +5655,7 @@ CREATE UNIQUE INDEX t_ili2db_attrname_sqlname_colowner_key ON test_ladm_integrat
 
 
 --
--- TOC entry 7811 (class 1259 OID 323129)
+-- TOC entry 6309 (class 1259 OID 376240)
 -- Name: t_ili2db_basket_dataset_idx; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5659,7 +5663,7 @@ CREATE INDEX t_ili2db_basket_dataset_idx ON test_ladm_integration.t_ili2db_baske
 
 
 --
--- TOC entry 7816 (class 1259 OID 323130)
+-- TOC entry 6312 (class 1259 OID 376593)
 -- Name: t_ili2db_dataset_datasetname_key; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5667,7 +5671,7 @@ CREATE UNIQUE INDEX t_ili2db_dataset_datasetname_key ON test_ladm_integration.t_
 
 
 --
--- TOC entry 7821 (class 1259 OID 323131)
+-- TOC entry 6319 (class 1259 OID 376594)
 -- Name: t_ili2db_model_iliversion_modelname_key; Type: INDEX; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5675,7 +5679,7 @@ CREATE UNIQUE INDEX t_ili2db_model_iliversion_modelname_key ON test_ladm_integra
 
 
 --
--- TOC entry 7826 (class 2606 OID 323132)
+-- TOC entry 6347 (class 2606 OID 376401)
 -- Name: extarchivo extarchivo_snr_fuentecabdlndrs_rchivo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5684,7 +5688,7 @@ ALTER TABLE ONLY test_ladm_integration.extarchivo
 
 
 --
--- TOC entry 7827 (class 2606 OID 323137)
+-- TOC entry 6348 (class 2606 OID 376407)
 -- Name: gc_calificacionunidadconstruccion gc_calificacnnddcnstrccion_gc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5693,7 +5697,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_calificacionunidadconstruccion
 
 
 --
--- TOC entry 7828 (class 2606 OID 323142)
+-- TOC entry 6349 (class 2606 OID 376423)
 -- Name: gc_construccion gc_construccion_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5702,7 +5706,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_construccion
 
 
 --
--- TOC entry 7829 (class 2606 OID 323147)
+-- TOC entry 6350 (class 2606 OID 376412)
 -- Name: gc_construccion gc_construccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5711,7 +5715,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_construccion
 
 
 --
--- TOC entry 7830 (class 2606 OID 323152)
+-- TOC entry 6361 (class 2606 OID 376502)
 -- Name: gc_copropiedad gc_copropiedad_gc_matriz_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5720,7 +5724,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_copropiedad
 
 
 --
--- TOC entry 7831 (class 2606 OID 323157)
+-- TOC entry 6362 (class 2606 OID 376507)
 -- Name: gc_copropiedad gc_copropiedad_gc_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5729,7 +5733,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_copropiedad
 
 
 --
--- TOC entry 7832 (class 2606 OID 323162)
+-- TOC entry 6351 (class 2606 OID 376435)
 -- Name: gc_datosphcondominio gc_datosphcondominio_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5738,7 +5742,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_datosphcondominio
 
 
 --
--- TOC entry 7833 (class 2606 OID 323167)
+-- TOC entry 6352 (class 2606 OID 376445)
 -- Name: gc_datostorreph gc_datostorreph_gc_datosphcondominio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5747,7 +5751,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_datostorreph
 
 
 --
--- TOC entry 7834 (class 2606 OID 323172)
+-- TOC entry 6353 (class 2606 OID 376450)
 -- Name: gc_direccion gc_direccion_gc_prediocatastro_dirccnes_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5756,7 +5760,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_direccion
 
 
 --
--- TOC entry 7835 (class 2606 OID 323177)
+-- TOC entry 6354 (class 2606 OID 376455)
 -- Name: gc_estadopredio gc_estadopredio_gc_prediocatastr_std_prdio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5765,7 +5769,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_estadopredio
 
 
 --
--- TOC entry 7836 (class 2606 OID 323182)
+-- TOC entry 6359 (class 2606 OID 376491)
 -- Name: gc_prediocatastro gc_prediocatastro_condicion_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5774,7 +5778,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_prediocatastro
 
 
 --
--- TOC entry 7837 (class 2606 OID 323187)
+-- TOC entry 6360 (class 2606 OID 376496)
 -- Name: gc_prediocatastro gc_prediocatastro_sistema_procedencia_datos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5783,7 +5787,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_prediocatastro
 
 
 --
--- TOC entry 7838 (class 2606 OID 323192)
+-- TOC entry 6355 (class 2606 OID 376460)
 -- Name: gc_propietario gc_propietario_gc_predio_catastro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5792,7 +5796,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_propietario
 
 
 --
--- TOC entry 7839 (class 2606 OID 323197)
+-- TOC entry 6356 (class 2606 OID 376468)
 -- Name: gc_terreno gc_terreno_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5801,7 +5805,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_terreno
 
 
 --
--- TOC entry 7840 (class 2606 OID 323202)
+-- TOC entry 6357 (class 2606 OID 376486)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_gc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5810,7 +5814,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_unidadconstruccion
 
 
 --
--- TOC entry 7841 (class 2606 OID 323207)
+-- TOC entry 6358 (class 2606 OID 376473)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5819,7 +5823,7 @@ ALTER TABLE ONLY test_ladm_integration.gc_unidadconstruccion
 
 
 --
--- TOC entry 7842 (class 2606 OID 323212)
+-- TOC entry 6345 (class 2606 OID 376391)
 -- Name: gm_surface2dlistvalue gm_surface2dlistvalue_gm_multisurface2d_geometry_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5828,7 +5832,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_surface2dlistvalue
 
 
 --
--- TOC entry 7843 (class 2606 OID 323217)
+-- TOC entry 6346 (class 2606 OID 376396)
 -- Name: gm_surface3dlistvalue gm_surface3dlistvalue_gm_multisurface3d_geometry_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5837,7 +5841,7 @@ ALTER TABLE ONLY test_ladm_integration.gm_surface3dlistvalue
 
 
 --
--- TOC entry 7844 (class 2606 OID 323222)
+-- TOC entry 6375 (class 2606 OID 376578)
 -- Name: ini_predioinsumos ini_predioinsumos_gc_predio_catastro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5846,7 +5850,7 @@ ALTER TABLE ONLY test_ladm_integration.ini_predioinsumos
 
 
 --
--- TOC entry 7845 (class 2606 OID 323227)
+-- TOC entry 6376 (class 2606 OID 376583)
 -- Name: ini_predioinsumos ini_predioinsumos_snr_predio_juridico_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5855,7 +5859,7 @@ ALTER TABLE ONLY test_ladm_integration.ini_predioinsumos
 
 
 --
--- TOC entry 7846 (class 2606 OID 323232)
+-- TOC entry 6377 (class 2606 OID 376573)
 -- Name: ini_predioinsumos ini_predioinsumos_tipo_emparejamiento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5864,7 +5868,7 @@ ALTER TABLE ONLY test_ladm_integration.ini_predioinsumos
 
 
 --
--- TOC entry 7847 (class 2606 OID 323237)
+-- TOC entry 6363 (class 2606 OID 376513)
 -- Name: snr_derecho snr_derecho_calidad_derecho_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5873,7 +5877,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_derecho
 
 
 --
--- TOC entry 7848 (class 2606 OID 323242)
+-- TOC entry 6364 (class 2606 OID 376518)
 -- Name: snr_derecho snr_derecho_snr_fuente_derecho_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5882,7 +5886,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_derecho
 
 
 --
--- TOC entry 7849 (class 2606 OID 323247)
+-- TOC entry 6365 (class 2606 OID 376523)
 -- Name: snr_derecho snr_derecho_snr_predio_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5891,7 +5895,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_derecho
 
 
 --
--- TOC entry 7850 (class 2606 OID 323252)
+-- TOC entry 6366 (class 2606 OID 376528)
 -- Name: snr_estructuramatriculamatriz snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5900,7 +5904,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_estructuramatriculamatriz
 
 
 --
--- TOC entry 7851 (class 2606 OID 323257)
+-- TOC entry 6367 (class 2606 OID 376533)
 -- Name: snr_fuentecabidalinderos snr_fuentecabidalinderos_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5909,7 +5913,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_fuentecabidalinderos
 
 
 --
--- TOC entry 7852 (class 2606 OID 323262)
+-- TOC entry 6368 (class 2606 OID 376538)
 -- Name: snr_fuentederecho snr_fuentederecho_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5918,7 +5922,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_fuentederecho
 
 
 --
--- TOC entry 7853 (class 2606 OID 323267)
+-- TOC entry 6371 (class 2606 OID 376553)
 -- Name: snr_predioregistro snr_predioregistro_clase_suelo_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5927,7 +5931,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_predioregistro
 
 
 --
--- TOC entry 7854 (class 2606 OID 323272)
+-- TOC entry 6372 (class 2606 OID 376558)
 -- Name: snr_predioregistro snr_predioregistro_snr_fuente_cabidalinderos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5936,7 +5940,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_predioregistro
 
 
 --
--- TOC entry 7857 (class 2606 OID 323277)
+-- TOC entry 6373 (class 2606 OID 376568)
 -- Name: snr_titular_derecho snr_titular_derecho_snr_derecho_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5945,7 +5949,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular_derecho
 
 
 --
--- TOC entry 7858 (class 2606 OID 323282)
+-- TOC entry 6374 (class 2606 OID 376563)
 -- Name: snr_titular_derecho snr_titular_derecho_snr_titular_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5954,7 +5958,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular_derecho
 
 
 --
--- TOC entry 7855 (class 2606 OID 323287)
+-- TOC entry 6369 (class 2606 OID 376548)
 -- Name: snr_titular snr_titular_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5963,7 +5967,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular
 
 
 --
--- TOC entry 7856 (class 2606 OID 323292)
+-- TOC entry 6370 (class 2606 OID 376543)
 -- Name: snr_titular snr_titular_tipo_persona_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5972,7 +5976,7 @@ ALTER TABLE ONLY test_ladm_integration.snr_titular
 
 
 --
--- TOC entry 7859 (class 2606 OID 323297)
+-- TOC entry 6378 (class 2606 OID 376588)
 -- Name: t_ili2db_basket t_ili2db_basket_dataset_fkey; Type: FK CONSTRAINT; Schema: test_ladm_integration; Owner: postgres
 --
 
@@ -5980,7 +5984,7 @@ ALTER TABLE ONLY test_ladm_integration.t_ili2db_basket
     ADD CONSTRAINT t_ili2db_basket_dataset_fkey FOREIGN KEY (dataset) REFERENCES test_ladm_integration.t_ili2db_dataset(t_id) DEFERRABLE INITIALLY DEFERRED;
 
 
--- Completed on 2020-07-15 12:05:30 -05
+-- Completed on 2020-07-22 11:13:45 -05
 
 --
 -- PostgreSQL database dump complete

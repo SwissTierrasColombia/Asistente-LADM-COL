@@ -683,7 +683,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Habitacional,
       /** Se califica con destino industrial, aquellos predios donde se desarrollan actividades de producción, fabricación, preparación, recuperación, reproducción, ensamblaje, construcción, transformación, tratamiento y manipulación de materias primas para producir bienes o productos materiales y que no estén clasificados dentro de los predios mineros.
        */
-      !!@ ili2db.dispName = "Institucional"
+      !!@ ili2db.dispName = "Industrial"
       Industrial,
       /** Se califica con destino infraestructura asociada a la producción agropecuaria, aquellos predios sobre los cuales se encuentra la infraestructura requerida dentro de la actividad agropecuaria y que son de interés para el sector agropecuario, como: bancos de maquinaria, plantas de almacenamiento, centros de acopio, centros de transformación agrícola, mataderos, etc.
        */
@@ -849,7 +849,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       Cedula_Ciudadania,
       /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
        */
-      !!@ ili2db.dispName = "Cédula de estranjería"
+      !!@ ili2db.dispName = "Cédula de extranjería"
       Cedula_Extranjeria,
       /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
        */
