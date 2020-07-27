@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.0.0</b></p>
+<p>Cambios en la version <b>3.1.0</b></p>
 <ul>
-<li>Soporte para el <strong>modelo LADM-COL v3.0</strong>, el Modelo de Aplicaci&oacute;n de<strong> Levantamiento Catastral v1.0</strong>, y los submodelos de Insumos (SNR, Gestor Catastral e integraci&oacute;n), Cartograf&iacute;a Catastral y Aval&uacute;os.</li>
-<li>Soporte para la <strong>proyecci&oacute;n con or&iacute;gen &uacute;nico nacional</strong> (CTM12).</li>
-<li>Soporte de <strong>tolerancias para reglas de calidad</strong> (topolog&iacute;a).</li>
-<li>Soporte (parcial) para un nuevo motor de bases de datos: <strong>MS SQL Server</strong>. Ver <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL#soporte-de-funcionalidades-por-motor-de-base-de-datos">matriz de soporte por m&oacute;dulo</a>.</li>
-<li>Mejoras de usabilidad:
-<ul>
-<li><strong>Instalaci&oacute;n autom&aacute;tica de plugins</strong> (cuando se trata de versiones personalizadas).</li>
-</ul>
-</li>
+<li>Soporte para el código EPSG oficial de la proyección "Origen Nacional" (CTM12); esto es: <b>EPSG:9377</b>.</li>
+<li>Soporte de importación masiva de datos <b>(Modelo ETL) para QGIS v3.14</b> (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/350">#350</a>).</li>
+<li>Soporte de <b>reproyección (automática) a EPSG:9377</b> cuando se importan datos masivamente desde otros sistemas de referencia (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/337">#337</a>).</li>
+<li><b>Valores predeterminados para dominios</b>. Por ejemplo, al crear un interesado, en el campo "Tipo" se mostrará el valor "Interesado Natural" por defecto.</li>
 </ul>
 </body>
 </html>

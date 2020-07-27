@@ -27,14 +27,14 @@ class TestCadastralCartographyModel(unittest.TestCase):
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for reference cadastral cartography model in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_pg)
 
     def test_required_models_gpkg(self):
         print("\nINFO: Validate if the schema for reference cadastral cartography model in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_gpkg)
 
     def check_required_models(self, db_connection):
@@ -47,8 +47,8 @@ class TestCadastralCartographyModel(unittest.TestCase):
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Reference cadastral cartography data model (edge case for field keys)...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 179)
@@ -73,8 +73,8 @@ class TestCadastralCartographyModel(unittest.TestCase):
 
     def test_names_from_model_gpkg(self):
         print("\nINFO: Validate names for Reference cadastral cartography data model (edge case for field keys) in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 179)
@@ -99,14 +99,14 @@ class TestCadastralCartographyModel(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_pg)
 
     def test_required_table_names_gpkg(self):
         print("\nINFO: Validate minimum required tables from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
@@ -118,14 +118,14 @@ class TestCadastralCartographyModel(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_pg)
 
     def test_required_field_names_gpkg(self):
         print("\nINFO: Validate minimum required fields from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):

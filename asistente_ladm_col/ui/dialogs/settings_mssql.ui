@@ -24,7 +24,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</iconset>
+       <normaloff>:/Asistente-LADM-COL/resources/images/create_db.png</normaloff>:/Asistente-LADM-COL/resources/images/create_db.png</iconset>
      </property>
     </widget>
    </item>
@@ -36,10 +36,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLineEdit" name="txt_password">
-     <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
-     </property>
+    <widget class="QgsPasswordLineEdit" name="txt_password">
     </widget>
    </item>
    <item row="2" column="1">
@@ -135,7 +132,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
+       <normaloff>:/Asistente-LADM-COL/resources/images/schema.png</normaloff>:/Asistente-LADM-COL/resources/images/schema.png</iconset>
      </property>
     </widget>
    </item>
@@ -154,12 +151,19 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>selected_odbc_driver</tabstop>
   <tabstop>txt_host</tabstop>
   <tabstop>txt_port</tabstop>
-  <tabstop>txt_user</tabstop>
   <tabstop>txt_instance</tabstop>
+  <tabstop>txt_user</tabstop>
   <tabstop>txt_password</tabstop>
   <tabstop>refresh_db_button</tabstop>
   <tabstop>selected_db_combobox</tabstop>

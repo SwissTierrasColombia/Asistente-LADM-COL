@@ -181,12 +181,12 @@
     <message>
         <location filename="../core/app_core_interface.py" line="1089"/>
         <source>No point was added to &apos;{}&apos;. Most likely, the CSV does not have the required structure.</source>
-        <translation>Ningún punto fue agregado a &apos;{}&apos;. Probablemente, el CSV no tiene la estructura requerida.</translation>
+        <translation>No se agregaron puntos a &apos;{}&apos;. Probablemente, el CSV no tiene la estructura requerida.</translation>
     </message>
     <message>
         <location filename="../core/app_core_interface.py" line="1128"/>
         <source>The output of the ETL-model has no features! Most likely, the CSV does not have the required structure.</source>
-        <translation>El resultado del modelo ETL no tiene registros! Probablemente, el CSV no tiene la estructura requerida.</translation>
+        <translation>¡El resultado del ETL no tiene ningún registro! Probablemente, el CSV no tiene la estructura requerida.</translation>
     </message>
     <message>
         <location filename="../core/app_core_interface.py" line="1132"/>
@@ -4249,7 +4249,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="368"/>
         <source>The {} (Colombian National Origin) is recommended,&lt;br&gt;since official models were created for that projection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se recomienda el {} (Origen Nacional),&lt;br&gt;pues los modelos oficiales fueron creados para trabajar con esa proyección.</translation>
     </message>
     <message>
         <source>USER crs are only valid for one machine. We&apos;ll use the default {}</source>
@@ -5094,19 +5094,19 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="131"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="128"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="20"/>
         <source>Create schema</source>
         <translation>Crear esquema</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="151"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="148"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="40"/>
         <source>[Leave empty to use standard host: localhost]</source>
         <translation>[Deja vacío para usar el host predeterminado: localhost]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="86"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="83"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="47"/>
         <source>Port</source>
         <translation>Puerto</translation>
@@ -5118,33 +5118,33 @@ p, li { white-space: pre-wrap; }
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="48"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="45"/>
         <source>[Leave empty to use dynamic or standard port 1433]</source>
         <translation>[Deja vacío para usar puerto dinámico o estándar 1433]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="55"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="52"/>
         <source>[Leave empty to use default instance]</source>
         <translation>[Deja vacío para usar la instancia predeterminada]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="62"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="59"/>
         <source>Odbc Driver</source>
         <translation>Controlador ODBC</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="76"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="73"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="127"/>
         <source>Password</source>
         <translation>Contraseña</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="107"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="104"/>
         <source>Instance</source>
         <translation>Instancia</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="69"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="66"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="75"/>
         <source>Host</source>
         <translation>Host</translation>
@@ -5156,7 +5156,7 @@ p, li { white-space: pre-wrap; }
         <translation>Crear base de datos</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="93"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="90"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="85"/>
         <source>Schema</source>
         <translation>Esquema</translation>
@@ -5167,7 +5167,7 @@ p, li { white-space: pre-wrap; }
         <translation>[Deja vacío para usar la contraseña del sistema]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="100"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="97"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="92"/>
         <source>Database</source>
         <translation>Base de datos</translation>
@@ -5178,13 +5178,13 @@ p, li { white-space: pre-wrap; }
         <translation>[Deja vacío para usar puerto estándar 5432]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="114"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="111"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="106"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/settings_mssql.ui" line="121"/>
+        <location filename="../ui/dialogs/settings_mssql.ui" line="118"/>
         <location filename="../ui/dialogs/settings_pg.ui" line="113"/>
         <source>Refresh databases and schemas</source>
         <translation>Refrescar bases de datos y esquemas</translation>
@@ -5285,7 +5285,7 @@ Rol:</translation>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="144"/>
         <source>Unidad construcción Comp</source>
-        <translation type="unfinished"></translation>
+        <translation>Unidad construcción Comp</translation>
     </message>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="220"/>
@@ -5300,7 +5300,7 @@ Rol:</translation>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="375"/>
         <source>Predio bloqueo</source>
-        <translation type="unfinished"></translation>
+        <translation>Predio bloqueo</translation>
     </message>
     <message>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="315"/>
@@ -7168,67 +7168,67 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>MSSQLConnector</name>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="162"/>
+        <location filename="../lib/db/mssql_connector.py" line="161"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="188"/>
+        <location filename="../lib/db/mssql_connector.py" line="187"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="210"/>
+        <location filename="../lib/db/mssql_connector.py" line="209"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="391"/>
+        <location filename="../lib/db/mssql_connector.py" line="390"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="394"/>
+        <location filename="../lib/db/mssql_connector.py" line="393"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="399"/>
+        <location filename="../lib/db/mssql_connector.py" line="398"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="406"/>
+        <location filename="../lib/db/mssql_connector.py" line="405"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al motor de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="429"/>
+        <location filename="../lib/db/mssql_connector.py" line="428"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="448"/>
+        <location filename="../lib/db/mssql_connector.py" line="447"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="453"/>
+        <location filename="../lib/db/mssql_connector.py" line="452"/>
         <source>The schema &apos;{}&apos; is not a valid LADM_COL schema. That is, the schema doesn&apos;t have the structure of the LADM_COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM-COL. Esto es, el esquema no es conforme con el modelo LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="459"/>
+        <location filename="../lib/db/mssql_connector.py" line="458"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="476"/>
+        <location filename="../lib/db/mssql_connector.py" line="475"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
     <message>
-        <location filename="../lib/db/mssql_connector.py" line="480"/>
+        <location filename="../lib/db/mssql_connector.py" line="479"/>
         <source>The schema &apos;{}&apos; has a valid LADM_COL structure!</source>
         <translation>¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
@@ -9231,7 +9231,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/supplies/snc_data_sources_widget.py" line="67"/>
         <source>Select the unidad construcción comp .csv file with SNC data </source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona el archivo .csv del SNC con datos de &apos;unidad construcción comp&apos; </translation>
     </message>
     <message>
         <location filename="../gui/supplies/snc_data_sources_widget.py" line="72"/>
@@ -11251,7 +11251,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="488"/>
         <location filename="../gui/wizards/survey/wiz_create_right_of_way_survey.py" line="270"/>
         <source>This layer will be reprojected for you to &apos;{}&apos; (Colombian National Origin),&lt;br&gt;before attempting to import it into LADM-COL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta capa será (re)proyectada a &apos;{}&apos; (Origen Nacional),&lt;br&gt;antes de intentar importarla a LADM-COL.</translation>
     </message>
     <message>
         <location filename="../gui/wizards/survey/wiz_create_ext_address_survey.py" line="60"/>
@@ -11440,12 +11440,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="352"/>
         <source>Your CSV data will be reprojected for you to &apos;{}&apos; (Colombian National Origin),&lt;br&gt;before attempting to import it into LADM-COL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tus datos CSV serán (re)proyectados a &apos;{}&apos; (Origen Nacional),&lt;br&gt;antes de intentar importarlos a LADM-COL.</translation>
     </message>
     <message>
         <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="356"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Sistema de Referencia de Coordenadas</translation>
+        <translation>Sistema de Referencia de Coordenadas</translation>
     </message>
     <message>
         <location filename="../gui/wizards/survey/wiz_create_points_survey.py" line="417"/>
@@ -13518,12 +13518,17 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite elegir cuál ETL se desea ejecutar, dependiendo de la proveniencia de los datos fuente. Se ofrecen dos opciones: ETL para datos del &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Sistema Nacional Catastral (SNC)&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; o ETL para datos de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Cobol&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite elegir cuál ETL se desea ejecutar, dependiendo de la proveniencia de los datos fuente. Se ofrecen dos opciones: ETL para datos del &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Sistema Nacional Catastral (SNC)&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; o ETL para datos de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Cobol&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="213"/>
         <source>Target data base                                                                               </source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Base de datos destino</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="299"/>
@@ -13532,7 +13537,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="344"/>
@@ -13541,7 +13550,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="368"/>
@@ -13550,7 +13563,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Aquí se presentan los resultados del ETL ejecutado, permitiendo observar a manera de reporte el número de elementos cargados a la base de datos LADM-COL.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Aquí se presentan los resultados del ETL ejecutado, permitiendo observar a manera de reporte el número de elementos cargados a la base de datos LADM-COL.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -13569,8 +13586,9 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="213"/>
         <source>Target data base</source>
-        <translation type="vanished">Base de datos destino</translation>
+        <translation>Base de datos destino</translation>
     </message>
     <message>
         <location filename="../ui/supplies/wiz_supplies_etl.ui" line="225"/>

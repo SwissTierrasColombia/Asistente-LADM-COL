@@ -76,11 +76,11 @@ class TestAllModels(unittest.TestCase):
                              "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio_catastro",
                              "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro": "snr_predio_juridico"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -115,11 +115,11 @@ class TestAllModels(unittest.TestCase):
                              "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_gc.gc_predio_catastro..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio_catastro",
                              "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.ini_predio_integracion_snr.snr_predio_juridico..Submodelo_Insumos_SNR.Datos_SNR.SNR_PredioRegistro": "snr_predio_juridico"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():

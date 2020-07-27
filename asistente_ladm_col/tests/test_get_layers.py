@@ -36,38 +36,38 @@ class TestGetLayers(unittest.TestCase):
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layer(self.db_pg)
 
     def test_get_layer_in_gpkg(self):
         print("\nINFO: Validating get_layer() method in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layer(self.db_gpkg)
 
     def test_get_layers_in_pg(self):
         print("\nINFO: Validating get_layers() method in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layers(self.db_pg)
 
     def test_get_layers_in_gpkg(self):
         print("\nINFO: Validating get_layers() method in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layers(self.db_gpkg)
 
     def test_get_layer_in_mssql(self):
         print("\nINFO: Validating get_layer() method in SQL Server...")
-        result = self.db_mssql.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_mssql.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layer(self.db_mssql)
 
     def test_get_layers_in_mssql(self):
         print("\nINFO: Validating get_layers() method in SQL Server...")
-        result = self.db_mssql.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_mssql.test_connection()
+        self.assertTrue(res, msg)
         self.check_get_layers(self.db_mssql)
 
     def check_get_layer(self, db):

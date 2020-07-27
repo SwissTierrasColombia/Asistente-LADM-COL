@@ -28,14 +28,14 @@ class TestValuationModel(unittest.TestCase):
 
     def test_required_models_pg(self):
         print("\nINFO: Validate if the schema for valuation model in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_pg)
 
     def test_required_models_gpkg(self):
         print("\nINFO: Validate if the schema for valuation model in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_models(self.db_gpkg)
 
     def check_required_models(self, db_connection):
@@ -48,8 +48,8 @@ class TestValuationModel(unittest.TestCase):
 
     def test_names_from_model_pg(self):
         print("\nINFO: Validate names for Valuation model from db in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_pg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 181)
@@ -68,11 +68,11 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -81,8 +81,8 @@ class TestValuationModel(unittest.TestCase):
 
     def test_names_from_model_gpkg(self):
         print("\nINFO: Validate names for Valuation model in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
 
         dict_names = self.db_gpkg.get_table_and_field_names()
         self.assertEqual(len(dict_names), 181)
@@ -101,11 +101,11 @@ class TestValuationModel(unittest.TestCase):
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Terreno.Numero_Subterraneos": "numero_subterraneos",
                              "Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.gc_terreno_predio.gc_predio..Submodelo_Insumos_Gestor_Catastral.Datos_Gestor_Catastral.GC_PredioCatastro": "gc_predio"
                          },
-                         "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
+                         "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion": {
                              "table_name": "av_tablacalificacionconstruccion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
-                             "Sumodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Puntuacion": "puntuacion",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Uso": "uso",
+                             "Submodelo_Avaluos.Avaluos.AV_TablaCalificacionConstruccion.Valor_M2_Construccion": "valor_m2_construccion"
                          }}
 
         for k,v in expected_dict.items():
@@ -114,14 +114,14 @@ class TestValuationModel(unittest.TestCase):
 
     def test_required_table_names_pg(self):
         print("\nINFO: Validate minimum required tables from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_pg)
 
     def test_required_table_names_gpkg(self):
         print("\nINFO: Validate minimum required tables from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_table_names(self.db_gpkg)
 
     def check_required_table_names(self, db_connection):
@@ -132,14 +132,14 @@ class TestValuationModel(unittest.TestCase):
 
     def test_required_field_names_pg(self):
         print("\nINFO: Validate minimum required fields from names in PG...")
-        result = self.db_pg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_pg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_pg)
 
     def test_required_field_names_gpkg(self):
         print("\nINFO: Validate minimum required fields from names in GPKG...")
-        result = self.db_gpkg.test_connection()
-        self.assertTrue(result[0], 'The test connection is not working')
+        res, code, msg = self.db_gpkg.test_connection()
+        self.assertTrue(res, msg)
         self.check_required_field_names(self.db_gpkg)
 
     def check_required_field_names(self, db_connection):

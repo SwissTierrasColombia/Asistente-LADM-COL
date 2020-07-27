@@ -1,6 +1,6 @@
 Espacio_De_Nombres;Local_Id;Comienzo_Vida_Util_Version;PuntoTipo;MetodoProduccion;ID_Punto_Lindero;Acuerdo;Fotoidentificacion;Exactitud_Horizontal;Exactitud_Vertical;x;y;z
 LC_PUNTOLINDERO;"1";2020-07-07T15:54:24.541;Mojon;Metodo_Directo;"1";Acuerdo;Estimado;"0.002";"0.001";4844497.854;2143710.556;1497.147
 LC_PUNTOLINDERO;"2";2020-07-07T15:54:24.548;Mojon;Metodo_Directo;"2";Acuerdo;;"0.001";;4844839.943;2143689.902;2052.4
-LC_PUNTOLINDERO;"3";2020-07-07T15:54:24.554;Poste;Medoto_Declarativo_y_Colaborativo;"3";Desacuerdo;;"1.000";;4844466.873;2143395.576;2503.098
+LC_PUNTOLINDERO;"3";2020-07-07T15:54:24.554;Poste;Metodo_Declarativo_y_Colaborativo;"3";Desacuerdo;;"1.000";;4844466.873;2143395.576;2503.098
 LC_PUNTOLINDERO;"4";2020-07-07T15:54:24.561;Mojon;Metodo_Directo;"4";Acuerdo;Visible;"0.005";"0.003";4844838.652;2143389.122;1234.382
 LC_PUNTOLINDERO;"5";2020-07-07T15:57:40.443;Pilastra;Metodo_Directo;"5";Acuerdo;Visible;"0.005";"0.006";4844210.832;2143566.965;2492.355

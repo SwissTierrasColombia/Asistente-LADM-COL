@@ -472,8 +472,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         msg = {'text': '', 'level': Qgis.Warning}
         if url:
             self.logger.info(__name__, "Downloading file from {}".format(url))
-            msg = "Downloading image from document repository (this might take a while)..."
-            with ProcessWithStatus(msg):
+            msg_status_bar = "Downloading image from document repository (this might take a while)..."
+            with ProcessWithStatus(msg_status_bar):
                 if is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
