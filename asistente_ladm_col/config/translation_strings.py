@@ -43,7 +43,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E301103,
                                                             QUALITY_RULE_ERROR_CODE_E400101,
                                                             QUALITY_RULE_ERROR_CODE_E400102,
-                                                            # QUALITY_RULE_ERROR_CODE_E400201,
+                                                            QUALITY_RULE_ERROR_CODE_E400201,
                                                             QUALITY_RULE_ERROR_CODE_E400301,
                                                             QUALITY_RULE_ERROR_CODE_E400401,
                                                             QUALITY_RULE_ERROR_CODE_E400501,
@@ -86,8 +86,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E401901,
                                                             QUALITY_RULE_ERROR_CODE_E402001,
                                                             QUALITY_RULE_ERROR_CODE_E402101,
-                                                            QUALITY_RULE_ERROR_CODE_E402201,
-                                                            QUALITY_RULE_ERROR_CODE_E402301)
+                                                            QUALITY_RULE_ERROR_CODE_E402201)
 
 ERROR_LAYER_GROUP = "ERROR_LAYER_GROUP"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
@@ -225,7 +224,7 @@ class TranslatableConfigStrings(QObject):
             # ERROR CODES FOR LOGIC QUALITY RULES
             QUALITY_RULE_ERROR_CODE_E400101: QCoreApplication.translate("TranslatableConfigStrings", "El predio tiene más de un derecho de dominio asociado"),
             QUALITY_RULE_ERROR_CODE_E400102: QCoreApplication.translate("TranslatableConfigStrings", "El predio no tiene derecho asociado"),
-            # 4002 could be taken if needed
+            QUALITY_RULE_ERROR_CODE_E400201: QCoreApplication.translate("TranslatableConfigStrings", "Fuente Administrativa no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E400301: QCoreApplication.translate("TranslatableConfigStrings", "Los porcentajes de participación de la agrupación de interesados deben sumar uno (1)"),
             QUALITY_RULE_ERROR_CODE_E400401: QCoreApplication.translate("TranslatableConfigStrings", "El código de departamento debe tener dos caracteres numéricos"),
             QUALITY_RULE_ERROR_CODE_E400501: QCoreApplication.translate("TranslatableConfigStrings", "El código de municipio debe tener tres caracteres numéricos"),
@@ -269,7 +268,6 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E402001: QCoreApplication.translate("TranslatableConfigStrings", "Interesado no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402101: QCoreApplication.translate("TranslatableConfigStrings", "Derecho no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402201: QCoreApplication.translate("TranslatableConfigStrings", "Restricción no debe tener registros repetidos"),
-            QUALITY_RULE_ERROR_CODE_E402301: QCoreApplication.translate("TranslatableConfigStrings", "Fuente Administrativa no debe tener registros repetidos"),
             ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         }
