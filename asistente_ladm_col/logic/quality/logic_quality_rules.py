@@ -28,11 +28,15 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E400101,
                                                             QUALITY_RULE_ERROR_CODE_E400102,
+                                                            QUALITY_RULE_ERROR_CODE_E400201,
                                                             QUALITY_RULE_ERROR_CODE_E400301,
                                                             QUALITY_RULE_ERROR_CODE_E400401,
                                                             QUALITY_RULE_ERROR_CODE_E400501,
                                                             QUALITY_RULE_ERROR_CODE_E400601,
                                                             QUALITY_RULE_ERROR_CODE_E400701,
+                                                            QUALITY_RULE_ERROR_CODE_E400702,
+                                                            QUALITY_RULE_ERROR_CODE_E400703,
+                                                            QUALITY_RULE_ERROR_CODE_E400704,
                                                             QUALITY_RULE_ERROR_CODE_E400801,
                                                             QUALITY_RULE_ERROR_CODE_E400802,
                                                             QUALITY_RULE_ERROR_CODE_E400803,
@@ -41,6 +45,10 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E400902,
                                                             QUALITY_RULE_ERROR_CODE_E400903,
                                                             QUALITY_RULE_ERROR_CODE_E400904,
+                                                            QUALITY_RULE_ERROR_CODE_E400905,
+                                                            QUALITY_RULE_ERROR_CODE_E400906,
+                                                            QUALITY_RULE_ERROR_CODE_E400907,
+                                                            QUALITY_RULE_ERROR_CODE_E400908,
                                                             QUALITY_RULE_ERROR_CODE_E401001,
                                                             QUALITY_RULE_ERROR_CODE_E401002,
                                                             QUALITY_RULE_ERROR_CODE_E401003,
@@ -49,17 +57,9 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E401006,
                                                             QUALITY_RULE_ERROR_CODE_E401007,
                                                             QUALITY_RULE_ERROR_CODE_E401008,
-                                                            QUALITY_RULE_ERROR_CODE_E401101,
-                                                            QUALITY_RULE_ERROR_CODE_E401102,
-                                                            QUALITY_RULE_ERROR_CODE_E401103,
-                                                            QUALITY_RULE_ERROR_CODE_E401104,
-                                                            QUALITY_RULE_ERROR_CODE_E401105,
-                                                            QUALITY_RULE_ERROR_CODE_E401106,
-                                                            QUALITY_RULE_ERROR_CODE_E401107,
-                                                            QUALITY_RULE_ERROR_CODE_E401108,
-                                                            QUALITY_RULE_ERROR_CODE_E401109,
-                                                            QUALITY_RULE_ERROR_CODE_E401110,
-                                                            QUALITY_RULE_ERROR_CODE_E401111)
+                                                            QUALITY_RULE_ERROR_CODE_E401009,
+                                                            QUALITY_RULE_ERROR_CODE_E401010,
+                                                            QUALITY_RULE_ERROR_CODE_E401011)
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
@@ -165,8 +165,8 @@ class LogicQualityRules:
                                                                   {0: dict_uuid_group_party.get(record['agrupacion']),  # Field alias as defined in the sql query
                                                                    1: ",".join([str(dict_uuid_members.get(int(t_id))) for t_id in record['miembros'].split(',')]),
                                                                    2: record['suma_fracciones'],
-                                                                   3: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400301),
-                                                                   4: QUALITY_RULE_ERROR_CODE_E400301})
+                                                                   3: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400201),
+                                                                   4: QUALITY_RULE_ERROR_CODE_E400201})
                 new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
@@ -178,25 +178,25 @@ class LogicQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_invalid_department_code(db)
         if res:
-            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400401)
+            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400301)
 
     def check_parcels_with_invalid_municipality_code(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS)
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_invalid_municipality_code(db)
         if res:
-            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400501)
+            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400401)
 
     def check_parcels_with_invalid_parcel_number(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS)
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_invalid_parcel_number(db)
         if res:
-            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400601)
+            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400501)
 
     def check_parcels_with_invalid_previous_parcel_number(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS)
         res, records = self.get_ladm_queries(db.engine).get_parcels_with_invalid_previous_parcel_number(db)
         if res:
-            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400701)
+            return self.basic_logic_validations(db, records, rule, QUALITY_RULE_ERROR_CODE_E400601)
 
     def check_invalid_col_party_type_natural(self, db):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE)
@@ -212,27 +212,27 @@ class LogicQualityRules:
             for record in records:
                 if record[db.names.LC_PARTY_T_BUSINESS_NAME_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                              {0: record[db.names.T_ILI_TID_F],
-                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400801),
-                               2: QUALITY_RULE_ERROR_CODE_E400801})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400701),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400701})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_SURNAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                              {0: record[db.names.T_ILI_TID_F],
-                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400802),
-                               2: QUALITY_RULE_ERROR_CODE_E400802})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400702),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400702})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_FIRST_NAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                              {0: record[db.names.T_ILI_TID_F],
-                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400803),
-                               2: QUALITY_RULE_ERROR_CODE_E400803})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400703),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400703})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_DOCUMENT_TYPE_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                              {0: record[db.names.T_ILI_TID_F],
-                               1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400804),
-                               2: QUALITY_RULE_ERROR_CODE_E400804})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400704),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400704})
                     new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
@@ -254,27 +254,27 @@ class LogicQualityRules:
             for record in records:
                 if record[db.names.LC_PARTY_T_BUSINESS_NAME_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                      {0: record[db.names.T_ILI_TID_F],
-                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400901),
-                                       2: QUALITY_RULE_ERROR_CODE_E400901})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400801),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400801})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_SURNAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                      {0: record[db.names.T_ILI_TID_F],
-                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400902),
-                                       2: QUALITY_RULE_ERROR_CODE_E400902})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400802),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400802})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_FIRST_NAME_1_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                      {0: record[db.names.T_ILI_TID_F],
-                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400903),
-                                       2: QUALITY_RULE_ERROR_CODE_E400903})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400803),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400803})
                     new_features.append(new_feature)
                 if record[db.names.LC_PARTY_T_DOCUMENT_TYPE_F] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
-                                      {0: record[db.names.T_ILI_TID_F],
-                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400904),
-                                       2: QUALITY_RULE_ERROR_CODE_E400904})
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400804),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400804})
                     new_features.append(new_feature)
             error_layer.dataProvider().addFeatures(new_features)
         else:
@@ -296,21 +296,21 @@ class LogicQualityRules:
             for record in records:
                 error_code = None
                 if record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401005
+                    error_code = QUALITY_RULE_ERROR_CODE_E400905
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT):
-                    error_code = QUALITY_RULE_ERROR_CODE_E401007
+                    error_code = QUALITY_RULE_ERROR_CODE_E400907
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT, LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT):
-                    error_code = QUALITY_RULE_ERROR_CODE_E401002
+                    error_code = QUALITY_RULE_ERROR_CODE_E400902
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] in (LADMNames.PARCEL_TYPE_CEMETERY_PARENT, LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT):
-                    error_code = QUALITY_RULE_ERROR_CODE_E401006
+                    error_code = QUALITY_RULE_ERROR_CODE_E400906
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401004
+                    error_code = QUALITY_RULE_ERROR_CODE_E400904
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401003
+                    error_code = QUALITY_RULE_ERROR_CODE_E400903
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401008
+                    error_code = QUALITY_RULE_ERROR_CODE_E400908
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401001
+                    error_code = QUALITY_RULE_ERROR_CODE_E400901
 
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                   QgsGeometry(),
@@ -342,27 +342,27 @@ class LogicQualityRules:
                 building_unit_count = record['sum_uc']  # count of building units associated to the parcel
 
                 if record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401111
+                    error_code = QUALITY_RULE_ERROR_CODE_E401011
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401108
+                    error_code = QUALITY_RULE_ERROR_CODE_E401008
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401102
+                    error_code = QUALITY_RULE_ERROR_CODE_E401002
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARENT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401106
+                    error_code = QUALITY_RULE_ERROR_CODE_E401006
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_PUBLIC_USE:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401101
+                    error_code = QUALITY_RULE_ERROR_CODE_E401001
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401103
+                    error_code = QUALITY_RULE_ERROR_CODE_E401003
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_ROAD:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401110
+                    error_code = QUALITY_RULE_ERROR_CODE_E401010
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401107
+                    error_code = QUALITY_RULE_ERROR_CODE_E401007
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401109
+                    error_code = QUALITY_RULE_ERROR_CODE_E401009
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401105
+                    error_code = QUALITY_RULE_ERROR_CODE_E401005
                 elif record[db.names.LC_PARCEL_T_PARCEL_TYPE_F] == LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA:
-                    error_code = QUALITY_RULE_ERROR_CODE_E401104
+                    error_code = QUALITY_RULE_ERROR_CODE_E401004
 
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer,
                                   QgsGeometry(),
