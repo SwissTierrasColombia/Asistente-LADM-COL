@@ -44,17 +44,17 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
              ),
             _punto_lindero_externos_seleccionados AS (
                  SELECT DISTINCT {MORE_BFS_T}.{MORE_BFS_T_LC_PLOT_F}, {LC_BOUNDARY_POINT_T}.{T_ID_F}
-                 FROM {schema}.{LC_BOUNDARY_POINT_T} LEFT JOIN {schema}.{POINT_BFS_T} ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_POINT_F}
-                 LEFT JOIN {schema}.{LC_BOUNDARY_T} ON {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_F} = {LC_BOUNDARY_T}.{T_ID_F}
-                 LEFT JOIN {schema}.{MORE_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {MORE_BFS_T}.{MORE_BFS_T_LC_BOUNDARY_F}
+                 FROM {schema}.{LC_BOUNDARY_POINT_T} JOIN {schema}.{POINT_BFS_T} ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_POINT_F}
+                 JOIN {schema}.{LC_BOUNDARY_T} ON {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_F} = {LC_BOUNDARY_T}.{T_ID_F}
+                 JOIN {schema}.{MORE_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {MORE_BFS_T}.{MORE_BFS_T_LC_BOUNDARY_F}
                  WHERE {MORE_BFS_T}.{MORE_BFS_T_LC_PLOT_F} IN (SELECT * FROM _terrenos_seleccionados)
                  ORDER BY {MORE_BFS_T}.{MORE_BFS_T_LC_PLOT_F}, {LC_BOUNDARY_POINT_T}.{T_ID_F}
             ),
             _punto_lindero_internos_seleccionados AS (
                 SELECT DISTINCT {LESS_BFS_T}.{LESS_BFS_T_LC_PLOT_F}, {LC_BOUNDARY_POINT_T}.{T_ID_F}
-                FROM {schema}.{LC_BOUNDARY_POINT_T} LEFT JOIN {schema}.{POINT_BFS_T} ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_POINT_F}
-                LEFT JOIN {schema}.{LC_BOUNDARY_T} ON {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_F} = {LC_BOUNDARY_T}.{T_ID_F}
-                LEFT JOIN {schema}.{LESS_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {LESS_BFS_T}.{LESS_BFS_T_LC_BOUNDARY_F}
+                FROM {schema}.{LC_BOUNDARY_POINT_T} JOIN {schema}.{POINT_BFS_T} ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_POINT_F}
+                JOIN {schema}.{LC_BOUNDARY_T} ON {POINT_BFS_T}.{POINT_BFS_T_LC_BOUNDARY_F} = {LC_BOUNDARY_T}.{T_ID_F}
+                JOIN {schema}.{LESS_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {LESS_BFS_T}.{LESS_BFS_T_LC_BOUNDARY_F}
                 WHERE {LESS_BFS_T}.{LESS_BFS_T_LC_PLOT_F} IN (SELECT * FROM _terrenos_seleccionados)
               ORDER BY {LESS_BFS_T}.{LESS_BFS_T_LC_PLOT_F}, {LC_BOUNDARY_POINT_T}.{T_ID_F}
             ),
@@ -157,7 +157,7 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                             JSON_BUILD_OBJECT('id', {LC_BOUNDARY_T}.{T_ID_F},
                                                    'attributes', JSON_BUILD_OBJECT(CONCAT('Longitud' , (SELECT * FROM _unidad_longitud_lindero)), {LC_BOUNDARY_T}.{LC_BOUNDARY_T_LENGTH_F}))
                     ORDER BY {LC_BOUNDARY_T}.{T_ID_F}) FILTER(WHERE {LC_BOUNDARY_T}.{T_ID_F} IS NOT NULL) AS _lindero_
-                FROM {schema}.{LC_BOUNDARY_T} LEFT JOIN {schema}.{MORE_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {MORE_BFS_T}.{MORE_BFS_T_LC_BOUNDARY_F}
+                FROM {schema}.{LC_BOUNDARY_T} JOIN {schema}.{MORE_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {MORE_BFS_T}.{MORE_BFS_T_LC_BOUNDARY_F}
                 WHERE {MORE_BFS_T}.{MORE_BFS_T_LC_PLOT_F} IN (SELECT * FROM _terrenos_seleccionados)
                 GROUP BY {MORE_BFS_T}.{MORE_BFS_T_LC_PLOT_F}
              ),
@@ -167,7 +167,7 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                             JSON_BUILD_OBJECT('id', {LC_BOUNDARY_T}.{T_ID_F},
                                                    'attributes', JSON_BUILD_OBJECT(CONCAT('Longitud' , (SELECT * FROM _unidad_longitud_lindero)), {LC_BOUNDARY_T}.{LC_BOUNDARY_T_LENGTH_F}))
                     ORDER BY {LC_BOUNDARY_T}.{T_ID_F}) FILTER(WHERE {LC_BOUNDARY_T}.{T_ID_F} IS NOT NULL) AS _lindero_
-                FROM {schema}.{LC_BOUNDARY_T} LEFT JOIN {schema}.{LESS_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {LESS_BFS_T}.{LESS_BFS_T_LC_BOUNDARY_F}
+                FROM {schema}.{LC_BOUNDARY_T} JOIN {schema}.{LESS_BFS_T} ON {LC_BOUNDARY_T}.{T_ID_F} = {LESS_BFS_T}.{LESS_BFS_T_LC_BOUNDARY_F}
                 WHERE {LESS_BFS_T}.{LESS_BFS_T_LC_PLOT_F} IN (SELECT * FROM _terrenos_seleccionados)
                 GROUP BY {LESS_BFS_T}.{LESS_BFS_T_LC_PLOT_F}
              ),
@@ -180,7 +180,7 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                                                                                                  ' ', st_y({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F}),
                                                                                                  CASE WHEN st_z({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F}) IS NOT NULL THEN concat(' ', st_z({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F})) END))
                         ) ORDER BY {LC_BOUNDARY_POINT_T}.{T_ID_F}) FILTER(WHERE {LC_BOUNDARY_POINT_T}.{T_ID_F} IS NOT NULL) AS _puntolindero_
-                FROM {schema}.{LC_BOUNDARY_POINT_T} LEFT JOIN _punto_lindero_externos_seleccionados ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = _punto_lindero_externos_seleccionados.{T_ID_F}
+                FROM {schema}.{LC_BOUNDARY_POINT_T} JOIN _punto_lindero_externos_seleccionados ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = _punto_lindero_externos_seleccionados.{T_ID_F}
                 WHERE _punto_lindero_externos_seleccionados.{MORE_BFS_T_LC_PLOT_F} IS NOT NULL
                 GROUP BY _punto_lindero_externos_seleccionados.{MORE_BFS_T_LC_PLOT_F}
              ),
@@ -193,7 +193,7 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                                                                                                  ' ', st_y({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F}),
                                                                                                  CASE WHEN st_z({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F}) IS NOT NULL THEN concat(' ', st_z({LC_BOUNDARY_POINT_T}.{COL_POINT_T_ORIGINAL_LOCATION_F})) END))
                         ) ORDER BY {LC_BOUNDARY_POINT_T}.{T_ID_F}) FILTER(WHERE {LC_BOUNDARY_POINT_T}.{T_ID_F} IS NOT NULL) AS _puntolindero_
-                 FROM {schema}.{LC_BOUNDARY_POINT_T} LEFT JOIN _punto_lindero_internos_seleccionados ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = _punto_lindero_internos_seleccionados.{T_ID_F}
+                 FROM {schema}.{LC_BOUNDARY_POINT_T} JOIN _punto_lindero_internos_seleccionados ON {LC_BOUNDARY_POINT_T}.{T_ID_F} = _punto_lindero_internos_seleccionados.{T_ID_F}
                  WHERE _punto_lindero_internos_seleccionados.{LESS_BFS_T_LC_PLOT_F} IS NOT NULL
                  GROUP BY _punto_lindero_internos_seleccionados.{LESS_BFS_T_LC_PLOT_F}
              ),
