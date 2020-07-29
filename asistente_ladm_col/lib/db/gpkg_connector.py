@@ -23,11 +23,11 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumTestConnectionMsg
-from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DISPLAY_NAME_KEY,
-                                                      ILICODE_KEY,
-                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
+                                                         T_ILI_TID_KEY,
+                                                         DISPLAY_NAME_KEY,
+                                                         ILICODE_KEY,
+                                                         DESCRIPTION_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
@@ -286,7 +286,7 @@ class GPKGConnector(FileDB):
             return res, code, msg
 
         # Validate table and field names
-        if not self._table_and_field_names:
+        if self._should_update_db_mapping_values:
             self._initialize_names()
 
         res, msg = self.names.test_names(self._table_and_field_names)

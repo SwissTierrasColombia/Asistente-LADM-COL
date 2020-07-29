@@ -43,7 +43,7 @@ from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   FilterSubLevel)
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.enums import (EnumSpatialOperationType,
                                              EnumLADMQueryType)
 

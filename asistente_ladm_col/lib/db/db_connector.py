@@ -26,14 +26,13 @@ from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
-from asistente_ladm_col.config.mapping_config import (TableAndFieldNames,
-                                                      T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DISPLAY_NAME_KEY,
-                                                      ILICODE_KEY,
-                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.core.db_mapping_registry import (DBMappingRegistry,
+                                                         T_ID_KEY,
+                                                         T_ILI_TID_KEY,
+                                                         DISPLAY_NAME_KEY,
+                                                         ILICODE_KEY,
+                                                         DESCRIPTION_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname
 
@@ -55,8 +54,15 @@ class DBConnector(QObject):
         self.schema = None
         self.conn = None
         self._dict_conn_params = None
-        self.names = TableAndFieldNames()
-        self._table_and_field_names = list()  # Table/field names should be read only once per connector
+        self.names = DBMappingRegistry()
+        self.__db_mapping = None  # To cache query response from the DB getting table and field names.
+
+        # Flag to control whether the DB connector should update the name registry. It should be True in two scenarios:
+        # 1) when the DB connector is created, and 2) when the plugin's active role has changed.
+        self._should_update_db_mapping_values = True
+
+        # Table/field names in the DB. Should be read only once per connector. Note: Only a list of names. No structure.
+        self._table_and_field_names = list()
         
         if uri is not None:
             self.uri = uri
@@ -201,7 +207,20 @@ class DBConnector(QObject):
     def get_ili2db_version(self):
         raise NotImplementedError
 
-    def get_table_and_field_names(self):  # TODO: Add test
+    def get_db_mapping(self):
+        """
+        Cache the get_db_mapping call, which should be called only once per db connector. Also fills the
+        table_and_field_names variable, which is very related to __db_mapping, but flattened.
+
+        :return: A dict with table ilinames as keys and dict as values. See __get_db_mapping for details.
+        """
+        if not self.__db_mapping:
+            self.__db_mapping = self.__get_db_mapping()
+            self._set_table_and_field_names_list()
+
+        return self.__db_mapping
+
+    def __get_db_mapping(self):
         """
         Get table and field names from the DB. Should be called only once for a single connection.
 
@@ -263,7 +282,7 @@ class DBConnector(QObject):
     def _get_table_and_field_names(self):
         """Gets both table and field names from DB. Only includes field names that are not FKs.
 
-        Execute below Sql statement (seudo-SQL):
+        Execute below Sql statement (pseudo-SQL):
         SELECT
           IliName AS {QueryNames.TABLE_ILINAME}, -- (1)
           table_name AS {QueryNames.TABLE_NAME}, -- (2)
@@ -319,28 +338,38 @@ class DBConnector(QObject):
         """Returns field common names of databases. T_Id, T_Ili_Tid, dispName, iliCode and description.
 
         :return: Dictionary with the next keys:
-                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, and DESCRIPTION_KEY from mapping_config.py file
+                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, and DESCRIPTION_KEY from db_mapping_registry
         """
         raise NotImplementedError
 
     def _initialize_names(self):
         """
-        Gets table and field names from the DB, initializes Names() and sets the member list for table and field names.
-        Should be called only once per DB connector.
+        Gets table and field names from the DB and initializes the db mapping values in the registry.
+
+        Could be called more than once per connector, namely, when the role changes, the db mapping registry values
+        should be updated.
         """
-        dict_names = self.get_table_and_field_names()
-        self.names.initialize_table_and_field_names(dict_names)
-        self._set_table_and_field_names_list(dict_names)
+        self.logger.info(__name__, "Resetting db mapping registry values from the DB!")
+        self.names.initialize_table_and_field_names(self.get_db_mapping())
+        self._should_update_db_mapping_values = False  # Since we just updated, avoid it for the next test_connection.
 
         # self.logger.debug(__name__, "DEBUG DICT: {}".format(dict_names["Operacion.Operacion.OP_Derecho"]))
 
-    def _set_table_and_field_names_list(self, dict_names):
+    def reset_db_mapping_values(self):
         """
-        Fill table_and_field_names list.
-        :param dict_names: See docs in _get_table_and_field_names
+        Call it to let the connector know it has to update the DB mapping values in the DB Mapping Registry (e.g., when
+        the active role has changed, since the new one could support other models).
+        """
+        self._should_update_db_mapping_values = True
+
+    def _set_table_and_field_names_list(self):
+        """
+        Fill table_and_field_names list. Unlike __db_mapping, this one has no hierarchical structure (it's a list).
+
+        Should be called only once per db connector.
         """
         # Fill table names
-        for k,v in dict_names.items():
+        for k,v in self.__db_mapping.items():
             if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
                 self._table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():

@@ -10,7 +10,7 @@ from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
 DEPENDENCIES_BASE_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM-COL')
 
-DEFAULT_LOG_MODE = EnumLogMode.USER
+DEFAULT_LOG_MODE = EnumLogMode.DEV
 DEFAULT_LOG_FILE = ''
 
 # Constants for reports

@@ -11,7 +11,7 @@ MODEL_CHECKED_BY_DEFAULT = "MODEL_CHECKED_BY_DEFAULT"
 
 class LADMNames(metaclass=Singleton):
     """
-    Singleton to handle domain values ('which are not dependent on the database engine') a single point of access.
+    Singleton to handle domain values (which are not dependent on the database engine) in a single point of access.
     """
     """
     USEFUL DOMAIN VALUES

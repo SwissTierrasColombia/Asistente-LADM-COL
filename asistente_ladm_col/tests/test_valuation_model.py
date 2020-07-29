@@ -7,12 +7,11 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
-from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DESCRIPTION_KEY,
-                                                      DISPLAY_NAME_KEY)
+from asistente_ladm_col.core.db_mapping_registry import (ILICODE_KEY,
+                                                         T_ID_KEY,
+                                                         T_ILI_TID_KEY,
+                                                         DESCRIPTION_KEY,
+                                                         DISPLAY_NAME_KEY)
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)
@@ -51,7 +50,7 @@ class TestValuationModel(unittest.TestCase):
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
 
-        dict_names = self.db_pg.get_table_and_field_names()
+        dict_names = self.db_pg.get_db_mapping()
         self.assertEqual(len(dict_names), 181)
 
         expected_dict = {T_ID_KEY: 't_id',
@@ -84,7 +83,7 @@ class TestValuationModel(unittest.TestCase):
         res, code, msg = self.db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
-        dict_names = self.db_gpkg.get_table_and_field_names()
+        dict_names = self.db_gpkg.get_db_mapping()
         self.assertEqual(len(dict_names), 181)
 
         expected_dict = {T_ID_KEY: 'T_Id',

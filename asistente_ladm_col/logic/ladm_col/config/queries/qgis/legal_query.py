@@ -1,5 +1,5 @@
 from asistente_ladm_col.logic.ladm_col.config.queries.queries_config_utils import get_full_alias
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.logic.ladm_col.ladm_query_objects import (OwnField,
                                                                   DomainOwnField,
                                                                   EvalExpressionOwnField,

@@ -41,6 +41,7 @@ from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import ROLE_CONFIG
+from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture import DockWidgetFieldDataCapture
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
@@ -212,7 +213,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.set_core_interface(AppCoreInterface())
         self.app.set_gui_interface(AppGUIInterface(self.iface))
 
-        self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
+        self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
         self.report_generator = ReportGenerator(self.ladm_data)
@@ -234,7 +235,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.configure_plugin_for_new_active_role()
             self.initialize_requirements()
 
-        # Add LADM-COL provider, models and sripts to QGIS
+        # Add LADM-COL provider, models and scripts to QGIS
         self.initialize_processing_resources()
 
     def create_actions(self):
@@ -316,12 +317,19 @@ class AsistenteLADMCOLPlugin(QObject):
         # Update supported models
         self.model_registry.refresh_models_for_role()
 
+        # Update db mappings in the registry
+        # self.get_db_connection().names.refresh_mapping_for_role()
+
+        # Let the DB know it has to reset db mapping registry values (deferred until the next test_connection call)
+        self.get_db_connection().reset_db_mapping_values()
+
         # Call refresh gui adding proper parameters
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
         """
-        Refreshes the plugin's GUI after a new user is active or a db connection has changed
+        Refresh the plugin's GUI after a new user is active or a db connection has changed
+
         :param db: DBConnector object
         :param res: Whether the DB is LADM-COL compliant or not
         :param db_source: Whether the db source is COLLECTED or SUPPLIES
