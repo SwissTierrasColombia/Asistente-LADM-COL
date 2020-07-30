@@ -361,6 +361,15 @@ VERSION "2020-07-21"  =
       Anexo
     );
 
+    D_VolumenTipo = (
+      !!@ ili2db.dispName = "Oficial"
+      Oficial,
+      !!@ ili2db.dispName = "Calculado"
+      Calculado,
+      !!@ ili2db.dispName = "Otro"
+      Otro
+    );
+
     SNR_CalidadDerechoTipo = (
       /** El dominio que se llama también propiedad es el derecho real en una cosa corporal, para gozar y disponer de ella arbitrariamente, no siendo contra ley o contra derecho ajeno. (Art. 669 CC):
        * 
@@ -584,14 +593,14 @@ VERSION "2020-07-21"  =
       ano_construccion : 1550 .. 2500;
       !!@ ili2db.dispName = "Ávaluo de construcción"
       avaluo_construccion : LADM_COL_V3_0.LADM_Nucleo.Peso;
-      !!@ ili2db.dispName = "Área construccion"
-      area_construccion : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área construcción alfanúmerica"
+      area_construccion_alfanumerica : 0.0 .. 99999999999999.9;
+      !!@ ili2db.dispName = "Área construcción digital"
+      area_construccion_digital : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
       !!@ ili2db.dispName = "Altura"
       altura : TEXT*20;
       !!@ ili2db.dispName = "Observaciones"
       observaciones : TEXT*20;
-      !!@ ili2db.dispName = "Área"
-      area : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;
       !!@ ili2db.dispName = "Dimensión"
       dimension : LADM_COL_V3_0.LADM_Nucleo.COL_DimensionTipo;
       !!@ ili2db.dispName = "Ext dirección id"
@@ -601,7 +610,9 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "Relación superficie"
       relacion_superficie : LADM_COL_V3_0.LADM_Nucleo.COL_RelacionSuperficieTipo;
       !!@ ili2db.dispName = "Volumen"
-      volumen : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;
+      volumen : 0.0 .. 99999999999999.9;
+      !!@ ili2db.dispName = "Volumen tipo"
+      volumen_tipo : Captura_Geo_V0_1.D_VolumenTipo;
       geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
     END Construccion;
 
@@ -620,14 +631,6 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "Fecha"
       fecha : TEXT*20;
     END Derecho;
-
-    STRUCTURE Direccion =
-      !!@ ili2db.dispName = "Valor"
-      valor : TEXT*20;
-      !!@ ili2db.dispName = "Principal"
-      principal : TEXT*20;
-      geometria : ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
-    END Direccion;
 
     /** Linea de división que separa un bien inmueble de otro, que puede o no estar materializada físicamente.
      */
@@ -730,48 +733,38 @@ VERSION "2020-07-21"  =
     END propietario_Contacto;
 
     !!@ ili2db.dispName = "Punto"
-    CLASS punto =
+    CLASS punto (ABSTRACT) =
       !!@ ili2db.dispName = "Posición interpolación"
       posicion_interpolacion : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
       !!@ ili2db.dispName = "Punto tipo"
       punto_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
-      !!@ ili2db.dispName = "Método de producción"
+      !!@ ili2db.dispName = "Método producción tipo"
       metodo_produccion_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
-      !!@ ili2db.dispName = "Transformación y resultado"
-      transformacion_y_resultado : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;
-      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;
+      geometria : ISO19107_PLANAS_V3_0.GM_Point3D;
     END punto;
 
-    CLASS Punto_levantamiento =
-      !!@ ili2db.dispName = "Posición interpolación"
-      posicion_interpolacion_lev : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
-      !!@ ili2db.dispName = "Tipo de punto"
-      PuntoTipo : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
-      !!@ ili2db.dispName = "Metodo produccion tipo"
-      metodo_produccion_tipo_lev : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
-      !!@ ili2db.dispName = "Transformación y resultado"
-      transformacion_y_resultado : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;
-      !!@ ili2db.dispName = "ID del punto de levantamiento"
-      id_punto_levantamiento : MANDATORY TEXT*20;
-      !!@ ili2db.dispName = "Punto tipo levantamiento"
-      punto_tipo_lev : MANDATORY Captura_Geo_V0_1.D_PuntoTipo;
-      !!@ ili2db.dispName = "Tipo punto levantamiento"
-      tipo_punto_levantamiento : MANDATORY Captura_Geo_V0_1.D_puntoLevTipo;
-      !!@ ili2db.dispName = "fotoidentificación"
-      fotoidentificacion : Captura_Geo_V0_1.D_FotoTipo;
-      !!@ ili2db.dispName = "Exactitud horizonta"
-      exactitud_horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
-      !!@ ili2db.dispName = "Exactitud vertical"
-      exactitud_vertical : 0.000 .. 10.000 [INTERLIS.m];
-      geometria_lev : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;
-    END Punto_levantamiento;
+    !!@ ili2db.dispName = "Reconocedores"
+    CLASS reconocedores =
+      !!@ ili2db.dispName = "Primer nombre"
+      primer_nombre : TEXT*20;
+      !!@ ili2db.dispName = "Segundo nombre"
+      segundo_nombre : TEXT*20;
+      !!@ ili2db.dispName = "Primer apellido"
+      primer_apellido : TEXT*20;
+      !!@ ili2db.dispName = "Segundo apellido"
+      segundo_apellido : TEXT*20;
+      !!@ ili2db.dispName = "Tipo documento"
+      tipo_documento : TEXT*20;
+      !!@ ili2db.dispName = "Número documento"
+      numero_documento : TEXT*20;
+    END reconocedores;
 
     /** Porción de tierra con una extensión geográfica definida.
      */
     !!@ ili2db.dispName = "Terreno"
     CLASS terreno =
       !!@ ili2db.dispName = "Área terreno alfanumérica"
-      area_terreno_alfanumerica : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;
+      area_terreno_alfanumerica : 0.0 .. 99999999999999.9;
       !!@ ili2db.dispName = "Área terreno digital"
       area_terreno_digital : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
       !!@ ili2db.dispName = "Dimensión"
@@ -783,7 +776,9 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "Relación superficie"
       relacion_superficie : LADM_COL_V3_0.LADM_Nucleo.COL_RelacionSuperficieTipo;
       !!@ ili2db.dispName = "Volumen"
-      volumen : LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;
+      volumen : 0.0 .. 99999999999999.9;
+      !!@ ili2db.dispName = "Volumen tipo"
+      volumen_tipo : Captura_Geo_V0_1.D_VolumenTipo;
       /** Numero predial hasta la posición 21
        */
       !!@ ili2db.dispName = "Manzana, Vereda código"
@@ -792,6 +787,8 @@ VERSION "2020-07-21"  =
       avaluo_terreno : LADM_COL_V3_0.LADM_Nucleo.Peso;
       !!@ ili2db.dispName = "Número subterraneos"
       num_subterraneos : TEXT*20;
+      !!@ ili2db.dispName = "Proyección"
+      proyeccion : TEXT*20;
       geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
     END terreno;
 
@@ -850,6 +847,28 @@ VERSION "2020-07-21"  =
       exactitud_vertical : MANDATORY TEXT*20;
     END Punto_control;
 
+    CLASS Punto_levantamiento
+    EXTENDS punto =
+      !!@ ili2db.dispName = "Posición interpolación"
+      posicion_interpolacion_lev : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
+      !!@ ili2db.dispName = "Tipo de punto"
+      PuntoTipo : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
+      !!@ ili2db.dispName = "Metodo produccion tipo"
+      metodo_produccion_tipo_lev : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
+      !!@ ili2db.dispName = "ID del punto de levantamiento"
+      id_punto_levantamiento : MANDATORY TEXT*20;
+      !!@ ili2db.dispName = "Punto tipo levantamiento"
+      punto_tipo_lev : MANDATORY Captura_Geo_V0_1.D_PuntoTipo;
+      !!@ ili2db.dispName = "Tipo punto levantamiento"
+      tipo_punto_levantamiento : MANDATORY Captura_Geo_V0_1.D_puntoLevTipo;
+      !!@ ili2db.dispName = "fotoidentificación"
+      fotoidentificacion : Captura_Geo_V0_1.D_FotoTipo;
+      !!@ ili2db.dispName = "Exactitud horizonta"
+      exactitud_horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
+      !!@ ili2db.dispName = "Exactitud vertical"
+      exactitud_vertical : 0.000 .. 10.000 [INTERLIS.m];
+    END Punto_levantamiento;
+
     /** Puntos que definen los lindero de un terreno. La sucesión de estos puntos forman una línea que representa el límite entre dos terrenos.
      */
     !!@ ili2db.dispName = "Punto lindero"
@@ -869,25 +888,15 @@ VERSION "2020-07-21"  =
       exactitud_vertical : TEXT*20;
     END Punto_lindero;
 
-    ASSOCIATION construccion_punto_levantamiento =
-      construccion -- {0..*} Construccion;
-      punto_levantamiento -- {3..*} Punto_levantamiento;
-    END construccion_punto_levantamiento;
-
     ASSOCIATION construccion_unidad_construccion =
       construccion -- {1} Construccion;
       unidad_construccion -- {0..*} unidad_construccion;
     END construccion_unidad_construccion;
 
     ASSOCIATION derecho_propietario =
-      propietario -- {0..*} propietario;
+      propietario -- {0..1} propietario;
       derecho -- {0..*} Derecho;
     END derecho_propietario;
-
-    ASSOCIATION lindero_punto =
-      lindero -- {0..*} lindero;
-      punto -- {2..*} punto;
-    END lindero_punto;
 
     ASSOCIATION predio_construccion =
       predio -- {1} predio;
@@ -906,13 +915,8 @@ VERSION "2020-07-21"  =
 
     ASSOCIATION propietario_propietario_contacto =
       propietario_contacto -- {0..*} propietario_Contacto;
-      propietario -- {0..*} propietario;
+      propietario -- {1} propietario;
     END propietario_propietario_contacto;
-
-    ASSOCIATION terreno_lindero =
-      terreno -- {1..*} terreno;
-      lindero -- {2..*} lindero;
-    END terreno_lindero;
 
   END Captura_Geo_V0_1;
 

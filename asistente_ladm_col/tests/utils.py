@@ -33,6 +33,7 @@ from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
+from ..config.query_names import QueryNames
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -235,8 +236,8 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
 def get_required_fields(db_connection):
     required_fields = list()
     for key, value in db_connection.names.TABLE_DICT.items():
-        for key_field, value_field in value[db_connection.names.FIELDS_DICT].items():
-            if getattr(db_connection.names, value_field):
+        for key_field, value_field in value[QueryNames.FIELDS_DICT].items():
+            if key_field in db_connection.get_table_and_field_names():  # Both in names and in the DB
                 required_fields.append(value_field)
     return required_fields
 
@@ -244,8 +245,8 @@ def get_required_fields(db_connection):
 def get_required_tables(db_connection):
     required_tables = list()
     for key, value in db_connection.names.TABLE_DICT.items():
-        if getattr(db_connection.names, value[db_connection.names.VARIABLE_NAME]):
-            required_tables.append(value[db_connection.names.VARIABLE_NAME])
+        if key in db_connection.get_table_and_field_names():  # Both in names and in the DB
+            required_tables.append(value[QueryNames.VARIABLE_NAME])
     return required_tables
 
 def testdata_path(path):

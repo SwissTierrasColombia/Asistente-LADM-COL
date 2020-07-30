@@ -626,7 +626,7 @@ class PGConnector(ClientServerDB):
         if self._should_update_db_mapping_values:
             self._initialize_names()
 
-        res, msg = self.names.test_names(self._table_and_field_names)
+        res, msg = self.names.test_names(self.get_table_and_field_names())
         if not res:
             return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(

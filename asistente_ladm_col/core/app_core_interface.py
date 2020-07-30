@@ -60,6 +60,7 @@ from qgis.core import (Qgis,
 
 import processing
 
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
                                                                                  get_insert_ctm12_query,
@@ -378,15 +379,17 @@ class AppCoreInterface(QObject):
 
     def post_load_configurations(self, db, layer, layer_name, layer_modifiers=dict()):
         # Do some post-load work, such as setting styles or setting automatic fields for that layer
+        models = self.get_active_models_per_db(db)  # What models are active (allowed for active role and in the db)
+
         self.configure_missing_relations(db, layer, layer_name)
         self.configure_missing_bags_of_enum(db, layer, layer_name)
-        self.set_display_expressions(db, layer, layer_name)
-        self.set_layer_variables(db, layer, layer_name)
-        self.set_custom_widgets(db, layer, layer_name)
+        self.set_display_expressions(db, layer, layer_name, models)
+        self.set_layer_variables(db, layer, layer_name, models)
+        self.set_custom_widgets(db, layer, layer_name, models)
         self.set_custom_read_only_fiels(db, layer, layer_name)
-        self.set_custom_events(db, layer, layer_name)
-        self.set_automatic_fields(db, layer, layer_name)
-        self.set_layer_constraints(db, layer, layer_name)
+        self.set_custom_events(db, layer, layer_name, models)
+        self.set_automatic_fields(db, layer, layer_name, models)
+        self.set_layer_constraints(db, layer, layer_name, models)
         self.set_form_groups(db, layer, layer_name)
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
@@ -529,19 +532,19 @@ class AppCoreInterface(QObject):
         node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
         self.set_node_visibility_requested.emit(node, visible)
 
-    def set_display_expressions(self, db, layer, layer_name):
-        dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names)
+    def set_display_expressions(self, db, layer, layer_name, models):
+        dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names, models)
         if layer_name in dict_display_expressions:
             layer.setDisplayExpression(dict_display_expressions[layer_name])
 
-    def set_layer_variables(self, db, layer, layer_name):
-        layer_variables = LayerConfig.get_layer_variables(db.names)
+    def set_layer_variables(self, db, layer, layer_name, models):
+        layer_variables = LayerConfig.get_layer_variables(db.names, models)
         if layer_name in layer_variables:
             for variable, value in layer_variables[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
-    def set_custom_widgets(self, db, layer, layer_name):
-        custom_widget_configuration = LayerConfig.get_custom_widget_configuration(db.names)
+    def set_custom_widgets(self, db, layer, layer_name, models):
+        custom_widget_configuration = LayerConfig.get_custom_widget_configuration(db.names, models)
         if layer_name in custom_widget_configuration:
             editor_widget_setup = QgsEditorWidgetSetup(custom_widget_configuration[layer_name]['type'],
                                                        custom_widget_configuration[layer_name]['config'])
@@ -566,13 +569,13 @@ class AppCoreInterface(QObject):
             formConfig.setReadOnly(field_idx, read_only)
             layer.setEditFormConfig(formConfig)
 
-    def set_custom_events(self, db, layer, layer_name):
-        if layer_name == db.names.EXT_ARCHIVE_S:
+    def set_custom_events(self, db, layer, layer_name, models):
+        if LADMNames.LADM_COL_MODEL_KEY in models and layer_name == db.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
             self._source_handler.handle_source_upload(db, layer, db.names.EXT_ARCHIVE_S_DATA_F)
 
-    def set_layer_constraints(self, db, layer, layer_name):
-        layer_constraints = LayerConfig.get_layer_constraints(db.names)
+    def set_layer_constraints(self, db, layer, layer_name, models):
+        layer_constraints = LayerConfig.get_layer_constraints(db.names, models)
         if layer_name in layer_constraints:
             for field_name, value in layer_constraints[layer_name].items():
                 idx = layer.fields().indexOf(field_name)
@@ -685,7 +688,7 @@ class AppCoreInterface(QObject):
     def reset_automatic_fields(self, layer, list_fields):
         self.configure_automatic_fields(layer, {field: "" for field in list_fields})
 
-    def set_automatic_fields(self, db, layer, layer_name):
+    def set_automatic_fields(self, db, layer, layer_name, models):
         """
         Set all automatic fields for a layer. That includes both,
         those enabled in Settings dialog, and those from layer config
@@ -694,10 +697,11 @@ class AppCoreInterface(QObject):
 
         dict_field_expression = dict()
 
-        if layer.fields().indexFromName(db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
+        blv_f = getattr(db.names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)
+        if blv_f and layer.fields().indexFromName(blv_f) != -1:
             dict_field_expression[db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F] = "now()"
 
-        dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name)
+        dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name, models)
         if dict_automatic_values:
             dict_field_expression.update(dict_automatic_values)
 
@@ -740,7 +744,7 @@ class AppCoreInterface(QObject):
     def get_namespace_field_and_value(self, names, layer_name):
         """Handy function to get up-to-date configuration of namespace field"""
         namespace_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool)
-        namespace_field = names.OID_T_NAMESPACE_F
+        namespace_field = getattr(names, "OID_T_NAMESPACE_F", None)
 
         if namespace_field is not None:
             namespace = str(QSettings().value('Asistente-LADM-COL/automatic_values/namespace_prefix', ""))
@@ -753,7 +757,7 @@ class AppCoreInterface(QObject):
     def get_local_id_field_and_value(self, names):
         """Handy function to get up-to-date configuration of local_id field"""
         local_id_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool)
-        local_id_field = names.OID_T_LOCAL_ID_F
+        local_id_field = getattr(names, "OID_T_LOCAL_ID_F", None)
 
         if local_id_field is not None:
             # TODO: Update expression to update local_id incrementally
@@ -767,7 +771,7 @@ class AppCoreInterface(QObject):
     def get_t_ili_tid_field_and_value(self, names):
         """Handy function to get up-to-date configuration of t_ili_tid field"""
         t_ili_tid_enabled = QSettings().value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool)
-        t_ili_tid_field = names.T_ILI_TID_F
+        t_ili_tid_field = getattr(names, "T_ILI_TID_F", None)
 
         if t_ili_tid_field is not None:
             t_ili_tid_value = "substr(uuid(), 2, 36)"
@@ -1377,3 +1381,12 @@ class AppCoreInterface(QObject):
             res = processing.run("native:fixgeometries", params)['OUTPUT']
 
         return res
+
+    def get_active_models_per_db(self, db):
+        """
+        Get models that are both allowed for current role and present in the db.
+        It can be seen as the intersection of DB models and role models.
+
+        :return: List of model keys that are in DB and are allowed for current role
+        """
+        return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]

@@ -412,5 +412,6 @@ class RefactorFieldsMappings:
                 if field['name'] == t_ili_tid_field:
                     field['expression'] = '{}'.format(t_ili_tid_value)
 
-            if field['name'] == names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F:
+            blv_f = getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)
+            if blv_f and field['name'] == names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F:
                 field['expression'] = 'now()'

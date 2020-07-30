@@ -73,7 +73,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
-        self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T)
+        self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))
         delete_features(layer_cadastral_parcel)
         count_before = layer_cadastral_parcel.featureCount()
 
@@ -99,7 +99,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
-        self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T)
+        self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))
         delete_features(layer_cadastral_parcel)
         count_before = layer_cadastral_parcel.featureCount()
 

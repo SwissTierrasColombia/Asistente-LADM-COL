@@ -62,7 +62,7 @@ class DBConnector(QObject):
         self._should_update_db_mapping_values = True
 
         # Table/field names in the DB. Should be read only once per connector. Note: Only a list of names. No structure.
-        self._table_and_field_names = list()
+        self.__table_and_field_names = list()
         
         if uri is not None:
             self.uri = uri
@@ -362,6 +362,9 @@ class DBConnector(QObject):
         """
         self._should_update_db_mapping_values = True
 
+    def get_table_and_field_names(self):
+        return self.__table_and_field_names
+
     def _set_table_and_field_names_list(self):
         """
         Fill table_and_field_names list. Unlike __db_mapping, this one has no hierarchical structure (it's a list).
@@ -371,10 +374,10 @@ class DBConnector(QObject):
         # Fill table names
         for k,v in self.__db_mapping.items():
             if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
-                self._table_and_field_names.append(k)  # Table names
+                self.__table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:
-                        self._table_and_field_names.append(k1)  # Field names
+                        self.__table_and_field_names.append(k1)  # Field names
 
     def check_db_models(self, required_models):
         res = True

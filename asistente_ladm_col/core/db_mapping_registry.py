@@ -32,8 +32,10 @@ DISPLAY_NAME_KEY = 'display_name'
 
 class DBMappingRegistry():
     """
-    Note: Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
-          one could shorten table and field names via ili2db.
+    Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
+    one could shorten table and field names via ili2db.
+
+    Therefore, each DB connector has its own DBMappingRegistry.
     """
     def __init__(self):
         self.id = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -52,15 +54,12 @@ class DBMappingRegistry():
 
         # Main mapping dictionary: {table_key: {variable: 'table_variable_name', field_dict:{field_key: 'field_variable'}}}
         self.TABLE_DICT = dict()
-    
+
     def register_db_mapping(self, mapping):
         self.TABLE_DICT.update(mapping.copy())
 
     def refresh_mapping_for_role(self):
-        role_key = RoleRegistry().get_active_role()
-        role_models = RoleRegistry().get_role_models(role_key)
-
-        for model_key in role_models[ROLE_SUPPORTED_MODELS]:
+        for model_key in RoleRegistry().get_active_role_supported_models():
             if model_key in DB_MAPPING_CONFIG:
                 self.register_db_mapping(DB_MAPPING_CONFIG[model_key])
 
