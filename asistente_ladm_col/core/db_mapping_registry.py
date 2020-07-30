@@ -36,6 +36,10 @@ class DBMappingRegistry():
     one could shorten table and field names via ili2db.
 
     Therefore, each DB connector has its own DBMappingRegistry.
+
+    At any time, the DBMapping Registry has all table and field names that are both in the models the active user has
+    access to and those which are present in the DB. That is, variable members in DBMapping Registry can be seen as the
+    intersection of current active role model objects and current DB connection objects.
     """
     def __init__(self):
         self.id = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')

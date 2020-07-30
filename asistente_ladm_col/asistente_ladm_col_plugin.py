@@ -141,7 +141,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_layers_in_editing_mode_with_changes,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _survey_model_required)
+                                                 _survey_model_required,
+                                                 _field_data_capture_model_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -934,13 +935,17 @@ class AsistenteLADMCOLPlugin(QObject):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
 
+    @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
+    @_field_data_capture_model_required
     def show_allocate_parcels_field_data_capture(self, *args):
         self.show_field_data_capture_dockwidget(True)
 
+    @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
+    @_field_data_capture_model_required
     def show_synchronize_field_data(self):
         self.show_field_data_capture_dockwidget(False)
 
