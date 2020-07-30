@@ -666,28 +666,29 @@ class LayerConfig:
 
         for model_key in models:
             if model_key == LADMNames.LADM_COL_MODEL_KEY:
-                widget_config.update({
-                    names.EXT_ARCHIVE_S: {
-                        'type': 'ExternalResource',
-                        'config': {
-                            'PropertyCollection': {
-                                'properties': {},
-                                'name': NULL,
-                                'type': 'collection'
-                            },
-                            'UseLink': True,
-                            'FullUrl': True,
-                            'FileWidget': True,
-                            'DocumentViewer': 0,
-                            'RelativeStorage': 0,
-                            'StorageMode': 0,
-                            'FileWidgetButton': True,
-                            'DocumentViewerHeight': 0,
-                            'DocumentViewerWidth': 0,
-                            'FileWidgetFilter': ''
+                if getattr(names, "EXT_ARCHIVE_S", None):
+                    widget_config.update({
+                        names.EXT_ARCHIVE_S: {
+                            'type': 'ExternalResource',
+                            'config': {
+                                'PropertyCollection': {
+                                    'properties': {},
+                                    'name': NULL,
+                                    'type': 'collection'
+                                },
+                                'UseLink': True,
+                                'FullUrl': True,
+                                'FileWidget': True,
+                                'DocumentViewer': 0,
+                                'RelativeStorage': 0,
+                                'StorageMode': 0,
+                                'FileWidgetButton': True,
+                                'DocumentViewerHeight': 0,
+                                'DocumentViewerWidth': 0,
+                                'FileWidgetFilter': ''
+                            }
                         }
-                    }
-                })
+                    })
 
         return widget_config
 

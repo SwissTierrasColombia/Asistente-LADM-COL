@@ -57,7 +57,6 @@ class UploadProgressDialog(QDialog, DIALOG_UI):
         self.set_total_process_label(step)
 
     def update_current_progress(self, current, total):
-        print(current, total)
         if total == 0 and current == 0 or total == -1:
             self.current_progress_bar.setRange(0, 0)
         elif total > 0:

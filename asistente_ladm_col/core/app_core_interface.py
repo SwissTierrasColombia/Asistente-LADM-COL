@@ -394,7 +394,7 @@ class AppCoreInterface(QObject):
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
         if layer.isSpatial():
-            self.set_layer_style(db, layer, layer_modifiers)
+            self.set_layer_style(db, layer, layer_modifiers, models)
 
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
@@ -512,7 +512,7 @@ class AppCoreInterface(QObject):
         if full_layer_name and full_layer_name != layer_name:
             layer.setName(full_layer_name)
 
-    def set_layer_style(self, db, layer, layer_modifiers):
+    def set_layer_style(self, db, layer, layer_modifiers, models):
         """
         Handy function to set the style for a layer
 
@@ -520,7 +520,7 @@ class AppCoreInterface(QObject):
         :param layer: QgsMapLayer object
         :param layer_modifiers: dict with symbology_group property that modifies default layer properties
         """
-        SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+        SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers, models=models)
 
     def set_layer_visibility(self, layer, visible):
         """
@@ -570,7 +570,7 @@ class AppCoreInterface(QObject):
             layer.setEditFormConfig(formConfig)
 
     def set_custom_events(self, db, layer, layer_name, models):
-        if LADMNames.LADM_COL_MODEL_KEY in models and layer_name == db.names.EXT_ARCHIVE_S:
+        if LADMNames.LADM_COL_MODEL_KEY in models and getattr(db.names, "EXT_ARCHIVE_S", None) and layer_name == db.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
             self._source_handler.handle_source_upload(db, layer, db.names.EXT_ARCHIVE_S_DATA_F)
 
