@@ -954,6 +954,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dock_widget_field_data_capture = DockWidgetFieldDataCapture(self.iface,
                                                                    self.get_db_connection(),
+                                                                   self.ladm_data,
                                                                    allocate_mode=allocate)
         self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
         self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)

@@ -822,3 +822,53 @@ class LADMData():
                 domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
 
         return res
+
+
+    def get_fdc_parcel_data(self, db, fdc_parcel_layer=None):
+        if not fdc_parcel_layer:
+            fdc_parcel_layer = self.app.core.get_layer(db, db.names.FDC_PARCEL_T, load=True)
+            if not fdc_parcel_layer:
+                return dict()
+
+        request = QgsFeatureRequest()
+        request.setSubsetOfAttributes([db.names.FDC_PARCEL_T_PARCEL_NUMBER_F], fdc_parcel_layer.fields())
+
+        return {f.id():f[db.names.FDC_PARCEL_T_PARCEL_NUMBER_F] for f in fdc_parcel_layer.getFeatures(request)}
+
+    def get_plots_related_to_parcels_field_data_capture(self, db, t_ids, field_name, fdc_plot_layer=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids in supplies model
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param fdc_plot_layer: Plot QGIS layer, in case it exists already in the caller
+        :return: list of plot ids related to the parcel from supplies model
+        """
+        if not t_ids:
+            return []
+
+        layers = {db.names.FDC_PLOT_T: None}
+
+        if fdc_plot_layer is not None:
+            del layers[db.names.FDC_PLOT_T]
+
+        if layers:
+            self.app.core.get_layers(db, layers, load=True)
+            if not layers:
+                return None
+
+            if db.names.FDC_PLOT_T in layers:
+                fdc_plot_layer = layers[db.names.FDC_PLOT_T]
+
+        expression = QgsExpression("{} IN ('{}') ".format(db.names.FDC_PLOT_T_PARCEL_F, "','".join([str(t_id) for t_id in t_ids])))
+        features = self.get_features_by_expression(fdc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+
+        plot_ids = list()
+        for feature in features:
+            if field_name is None:  # We are only interested in the QGIS internal id, no need to get other fields
+                plot_ids.append(feature.id())
+            else:
+                field_found = fdc_plot_layer.fields().indexOf(field_name) != -1
+                if field_found:
+                    plot_ids.append(feature[field_name])
+
+        return plot_ids

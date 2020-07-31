@@ -439,7 +439,7 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.Captura_Geo.Punto_lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUNDARY_POINT_T", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.construccion_unidad_construccion": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.derecho_propietario": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUDARY_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUNDARY_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.predio": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.predio.numero_predial": "FDC_PARCEL_T_PARCEL_NUMBER_F"
         }},

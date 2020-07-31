@@ -270,7 +270,7 @@ class ChangeDetectionUtils(QObject):
                     self._layers[layer_name].willBeDeleted.connect(self.change_detection_layer_removed)
 
             for layer_name in self._supplies_layers:
-                if self._supplies_layers[layer_name]: # Layer was found, listen to its removal so that we can react properly
+                if self._supplies_layers[layer_name]:  # Layer was found, listen to its removal so that we can react properly
                     try:
                         self._supplies_layers[layer_name].willBeDeleted.disconnect(self.change_detection_layer_removed)
                     except:

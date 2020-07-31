@@ -102,7 +102,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.update_available_layers()
 
     def update_available_layers(self):
-        self.trw_layers.setUpdatesEnabled(False) # Don't render until we're ready
+        self.trw_layers.setUpdatesEnabled(False)  # Don't render until we're ready
 
         # Grab some context data
         show_domains = self.chk_show_domains.isChecked()
@@ -170,7 +170,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
         # Set selection
         iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
-        self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
+        self.trw_layers.blockSignals(True)  # We don't want to get itemSelectionChanged here
         while iterator.value():
             item = iterator.value()
             if item.text(0) in self.selected_items_dict:
@@ -276,8 +276,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
         # Select predefined layers in the view (some layers might not be visible)
         if select_layers_list:
-            self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
-            count = len(select_layers_list) # We can stop before iterating all layers
+            self.trw_layers.blockSignals(True)  # We don't want to get itemSelectionChanged here
+            count = len(select_layers_list)  # We can stop before iterating all layers
             iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
             while iterator.value():
                 item = iterator.value()
