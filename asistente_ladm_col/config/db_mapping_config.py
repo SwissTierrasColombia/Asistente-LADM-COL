@@ -450,7 +450,10 @@ DB_MAPPING_CONFIG = {
         #"Captura_Geo.Captura_Geo.propietario_Contacto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.propietario_propietario_contacto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.punto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.reconocedores": {QueryNames.VARIABLE_NAME: "FDC_SURVEYOR_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.reconocedores": {QueryNames.VARIABLE_NAME: "FDC_SURVEYOR_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.reconocedores.primer_nombre": "FDC_SURVEYOR_T_FIRST_NAME_F",
+            "Captura_Geo.Captura_Geo.reconocedores.primer_apellido": "FDC_SURVEYOR_T_FIRST_LAST_NAME_F"
+        }},
         "Captura_Geo.Captura_Geo.terreno": {QueryNames.VARIABLE_NAME: "FDC_PLOT_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.predio_terreno.predio..Captura_Geo.Captura_Geo.predio": "FDC_PLOT_T_PARCEL_F"
         }},

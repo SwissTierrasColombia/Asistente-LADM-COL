@@ -58,6 +58,7 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         if allocate_mode:
             self.add_layers()
             self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self, self.controller)
+            self.allocate_panel.allocate_parcels_to_surveyor_panel_requested.connect(self.show_allocate_parcels_to_surveyor_panel)
             self.widget.setMainPanel(self.allocate_panel)
             self.allocate_panel.fill_data()
         else:  # Synchronize mode
@@ -82,7 +83,7 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             self.widget.showPanel(self.configure_surveyors_panel)
             self.lst_configure_surveyors_panel.append(self.configure_surveyors_panel)
 
-    def show_allocate_parcels_to_surveyor_panel(self):
+    def show_allocate_parcels_to_surveyor_panel(self, selected_parcels):
         with OverrideCursor(Qt.WaitCursor):
             if self.lst_allocate_parcels_to_surveyor_panel:
                 for panel in self.lst_allocate_parcels_to_surveyor_panel:
@@ -94,7 +95,9 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
                 self.lst_allocate_parcels_to_surveyor_panel = list()
                 self.allocate_parcels_to_surveyor_panel = None
 
-            self.allocate_parcels_to_surveyor_panel = AllocateParcelsToSurveyorPanelWidget(self)
+            self.allocate_parcels_to_surveyor_panel = AllocateParcelsToSurveyorPanelWidget(self,
+                                                                                           self.controller,
+                                                                                           selected_parcels)
             self.widget.showPanel(self.allocate_parcels_to_surveyor_panel)
             self.lst_allocate_parcels_to_surveyor_panel.append(self.allocate_parcels_to_surveyor_panel)
 
@@ -189,6 +192,9 @@ class FieldDataCaptureController(QObject):
     def parcel_layer(self):
         return self._layers[self._db.names.FDC_PARCEL_T]
 
+    def surveyor_layer(self):
+        return self._layers[self._db.names.FDC_SURVEYOR_T]
+
     def update_plot_selection(self, parcel_ids):
         plot_ids = self.ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
                                                                                   parcel_ids,
@@ -202,3 +208,17 @@ class FieldDataCaptureController(QObject):
                                                                               plot_ids,
                                                                               self.plot_layer(),
                                                                               self.parcel_layer())
+
+    def save_allocation_for_surveyor(self, parcel_ids, surveyor_id):
+        # self.ladm_data.save_allocation_for_surveyor(parcel_ids, surveyor_id)
+        pass
+
+    def get_surveyors_data(self):
+        surveyors_data = dict()
+        for feature in self.surveyor_layer().getFeatures():
+            name = "{} {}".format(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F],
+                                  feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
+            surveyors_data[feature.id()] = name
+
+        return surveyors_data
+

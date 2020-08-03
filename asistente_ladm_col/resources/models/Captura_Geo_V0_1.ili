@@ -904,9 +904,14 @@ VERSION "2020-07-21"  =
     END predio_construccion;
 
     ASSOCIATION predio_derecho =
-      derecho -- {1..*} Derecho;
+      derecho -- {0..*} Derecho;
       predio -- {1} predio;
     END predio_derecho;
+
+    ASSOCIATION predio_reconedores =
+      predio -- {0..*} predio;
+      reconocedor -- {0..1} reconocedores;
+    END predio_reconedores;
 
     ASSOCIATION predio_terreno =
       predio -- {1} predio;

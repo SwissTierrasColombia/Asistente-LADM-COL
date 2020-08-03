@@ -17,7 +17,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt)
+                              Qt,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.gui import QgsPanelWidget
 
@@ -27,6 +28,8 @@ WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widg
 
 
 class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
+    allocate_parcels_to_surveyor_panel_requested = pyqtSignal(dict)  # {parcel_fid: parcel_number}
+
     def __init__(self, parent, controller):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
@@ -43,11 +46,11 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.txt_search.valueChanged.connect(self.search_value_changed)
         self.tbl_parcels.itemSelectionChanged.connect(self.selection_changed)
         self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_surveyors_panel)
-        self.btn_allocate.clicked.connect(self.parent.show_allocate_parcels_to_surveyor_panel)
+        self.btn_allocate.clicked.connect(self.call_allocate_parcels_to_surveyor_panel)
 
         self.connect_to_plot_selection(True)
 
-        self.__parcel_data = dict()
+        self.__parcel_data = dict()  # {parcel_fid: (parcel_number, role_fid)}
         self.__selected_items = dict()  # {parcel_fid: parcel_number}
 
     def _parcel_data(self):
@@ -77,6 +80,7 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_parcels.blockSignals(False)  # We don't want to get itemSelectionChanged here
 
         self.tbl_parcels.setSortingEnabled(True)
+        self.tbl_parcels.resizeColumnsToContents()
 
     def fill_row(self, parcel_fid, parcel_number, role_fid, row):
         item = QTableWidgetItem(parcel_number)
@@ -146,5 +150,8 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         # Disconnect signals
         try:
             self.connect_to_plot_selection(False)
-        except TypeError:
+        except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
             pass
+
+    def call_allocate_parcels_to_surveyor_panel(self):
+        self.allocate_parcels_to_surveyor_panel_requested.emit(self.__selected_items)
