@@ -56,9 +56,9 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.lst_allocate_parcels_to_surveyor_panel = list()
 
         if allocate_mode:
+            self.add_layers()
             self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self, self.controller)
             self.widget.setMainPanel(self.allocate_panel)
-            self.add_layers()
             self.allocate_panel.fill_data()
         else:  # Synchronize mode
             # self.synchronize_panel = ChangesPerParcelPanelWidget(self, self.utils)
@@ -100,6 +100,9 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
     def closeEvent(self, event):
         # Close here open signals in other panels (if needed)
+        if self.allocate_panel:
+            self.allocate_panel.close_panel()
+
         self.close_dock_widget()
 
     def add_layers(self):
@@ -177,3 +180,25 @@ class FieldDataCaptureController(QObject):
 
         return self.allocated_parcels
 
+    def db(self):
+        return self._db
+
+    def plot_layer(self):
+        return self._layers[self._db.names.FDC_PLOT_T]
+
+    def parcel_layer(self):
+        return self._layers[self._db.names.FDC_PARCEL_T]
+
+    def update_plot_selection(self, parcel_ids):
+        plot_ids = self.ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
+                                                                                  parcel_ids,
+                                                                                  self.parcel_layer(),
+                                                                                  self.plot_layer())
+        self.plot_layer().selectByIds(plot_ids)
+
+    def get_parcel_numbers_from_selected_plots(self):
+        plot_ids = self.plot_layer().selectedFeatureIds()
+        return self.ladm_data.get_parcels_related_to_plots_field_data_capture(self._db.names,
+                                                                              plot_ids,
+                                                                              self.plot_layer(),
+                                                                              self.parcel_layer())

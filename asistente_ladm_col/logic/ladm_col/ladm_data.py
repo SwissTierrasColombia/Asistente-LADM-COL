@@ -40,12 +40,6 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
-# TODO: Update with correct field
-# PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
-#                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,
-#                                           PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD,
-#                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
-
 
 class LADMData():
     """
@@ -646,6 +640,14 @@ class LADMData():
 
         return [feature for feature in layer.getFeatures(request)]
 
+    @staticmethod
+    def get_t_ids_from_fids(layer, t_id_name, fids):
+        request = QgsFeatureRequest(fids)
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        field_idx = layer.fields().indexFromName(t_id_name)
+        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
+
+        return [feature[t_id_name] for feature in layer.getFeatures(request)]
 
     # Two different models (supplies and survey), different field names
     # in each model, so we need to map them to a common key for each field
@@ -823,7 +825,6 @@ class LADMData():
 
         return res
 
-
     def get_fdc_parcel_data(self, db, fdc_parcel_layer=None):
         if not fdc_parcel_layer:
             fdc_parcel_layer = self.app.core.get_layer(db, db.names.FDC_PARCEL_T, load=True)
@@ -835,40 +836,41 @@ class LADMData():
 
         return {f.id():f[db.names.FDC_PARCEL_T_PARCEL_NUMBER_F] for f in fdc_parcel_layer.getFeatures(request)}
 
-    def get_plots_related_to_parcels_field_data_capture(self, db, t_ids, field_name, fdc_plot_layer=None):
+    @staticmethod
+    def get_plots_related_to_parcels_field_data_capture(names, fids, fdc_parcel_layer, fdc_plot_layer):
         """
-        :param db: DB Connector object
-        :param t_ids: list of parcel t_ids in supplies model
-        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
-        :param fdc_plot_layer: Plot QGIS layer, in case it exists already in the caller
-        :return: list of plot ids related to the parcel from supplies model
+        :param names: Table and field names from the DB
+        :param fids: list of parcel fids
+        :param fdc_parcel_layer: parcel layer from the Field Data Capture model
+        :param fdc_plot_layer: plot layer from the Field Data Capture model
+        :return: list of plot fids related to the given parcel fids
         """
-        if not t_ids:
-            return []
+        t_ids = LADMData.get_t_ids_from_fids(fdc_parcel_layer, names.T_ID_F, fids)
 
-        layers = {db.names.FDC_PLOT_T: None}
+        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.FDC_PLOT_T_PARCEL_F, ",".join([str(t_id) for t_id in t_ids]))))
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setNoAttributes()
 
-        if fdc_plot_layer is not None:
-            del layers[db.names.FDC_PLOT_T]
+        return [feature.id() for feature in fdc_plot_layer.getFeatures(request)]
 
-        if layers:
-            self.app.core.get_layers(db, layers, load=True)
-            if not layers:
-                return None
+    @staticmethod
+    def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer):
+        """
+        :param names: Table and field names from the DB
+        :param fids: list of parcel fids
+        :param fdc_parcel_layer: parcel layer from the Field Data Capture model
+        :param fdc_plot_layer: plot layer from the Field Data Capture model
+        :return: list of plot fids related to the given parcel fids
+        """
+        request = QgsFeatureRequest(fids)
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        field_idx = fdc_plot_layer.fields().indexFromName(names.FDC_PLOT_T_PARCEL_F)
+        request.setSubsetOfAttributes([field_idx])
+        parcel_t_ids = [feature[names.FDC_PLOT_T_PARCEL_F] for feature in fdc_plot_layer.getFeatures(request)]
 
-            if db.names.FDC_PLOT_T in layers:
-                fdc_plot_layer = layers[db.names.FDC_PLOT_T]
+        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.T_ID_F, ",".join([str(t_id) for t_id in parcel_t_ids]))))
+        field_idx = fdc_parcel_layer.fields().indexFromName(names.FDC_PARCEL_T_PARCEL_NUMBER_F)
+        request.setSubsetOfAttributes([field_idx])
 
-        expression = QgsExpression("{} IN ('{}') ".format(db.names.FDC_PLOT_T_PARCEL_F, "','".join([str(t_id) for t_id in t_ids])))
-        features = self.get_features_by_expression(fdc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+        return [feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F] for feature in fdc_parcel_layer.getFeatures(request)]
 
-        plot_ids = list()
-        for feature in features:
-            if field_name is None:  # We are only interested in the QGIS internal id, no need to get other fields
-                plot_ids.append(feature.id())
-            else:
-                field_found = fdc_plot_layer.fields().indexOf(field_name) != -1
-                if field_found:
-                    plot_ids.append(feature[field_name])
-
-        return plot_ids

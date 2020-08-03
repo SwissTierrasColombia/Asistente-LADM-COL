@@ -45,6 +45,8 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_surveyors_panel)
         self.btn_allocate.clicked.connect(self.parent.show_allocate_parcels_to_surveyor_panel)
 
+        self.connect_to_plot_selection(True)
+
         self.__parcel_data = dict()
         self.__selected_items = dict()  # {parcel_fid: parcel_number}
 
@@ -114,3 +116,35 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def selection_changed(self):
         self.update_selected_items()
+
+        self.connect_to_plot_selection(False)  # This plot selection should not trigger a table view selection refresh
+        self.controller.update_plot_selection(list(self.__selected_items.keys()))
+        self.connect_to_plot_selection(True)
+
+    def update_parcel_selection(self, selected, deselected, clear_and_select):
+        """React upon a plot selection"""
+        self.tbl_parcels.blockSignals(True)  # We don't want to get itemSelectionChanged here
+        self.tbl_parcels.clearSelection()
+        parcel_numbers = self.controller.get_parcel_numbers_from_selected_plots()
+
+        for parcel_number in parcel_numbers:
+            items = self.tbl_parcels.findItems(parcel_number, Qt.MatchExactly)
+            if items:
+                items[0].setSelected(True)  # Select item in column 0
+                self.tbl_parcels.item(items[0].row(), 1).setSelected(True)  # Select item in column 1
+
+        self.tbl_parcels.blockSignals(False)
+        self.update_selected_items()  # Update the internal selection dict
+
+    def connect_to_plot_selection(self, connect):
+        if connect:
+            self.controller.plot_layer().selectionChanged.connect(self.update_parcel_selection)
+        else:
+            self.controller.plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
+
+    def close_panel(self):
+        # Disconnect signals
+        try:
+            self.connect_to_plot_selection(False)
+        except TypeError:
+            pass
