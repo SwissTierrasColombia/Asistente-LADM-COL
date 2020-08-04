@@ -98,6 +98,7 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             self.allocate_parcels_to_surveyor_panel = AllocateParcelsToSurveyorPanelWidget(self,
                                                                                            self.controller,
                                                                                            selected_parcels)
+            self.allocate_parcels_to_surveyor_panel.refresh_parcel_data_requested.connect(self.allocate_panel.panel_accepted_refresh_parcel_data)
             self.widget.showPanel(self.allocate_parcels_to_surveyor_panel)
             self.lst_allocate_parcels_to_surveyor_panel.append(self.allocate_parcels_to_surveyor_panel)
 
@@ -146,7 +147,7 @@ class FieldDataCaptureController(QObject):
         self._layers = dict()
         self.initialize_layers()
 
-        self.allocated_parcels = dict()  # {t_id: {parcel_number: t_id_surveyor}}
+        self.__parcel_data = dict()  # {t_id: {parcel_number: t_id_surveyor}}
 
     def initialize_layers(self):
         self._layers = {
@@ -178,10 +179,13 @@ class FieldDataCaptureController(QObject):
                     self._layers[layer_name].willBeDeleted.connect(self.field_data_capture_layer_removed)
 
     def get_parcel_surveyor_data(self):
-        for fid, parcel_number in self.ladm_data.get_fdc_parcel_data(self._db, self._layers[self._db.names.FDC_PARCEL_T]).items():
-            self.allocated_parcels[fid] = (parcel_number, None)
+        surveyors_dict = self.get_surveyors_data(False)  # Just first letter of each name part
 
-        return self.allocated_parcels
+        for fid, pair in self.ladm_data.get_parcel_data_field_data_capture(self._db.names, self.parcel_layer()).items():
+            # pair: parcel_number, surveyor_t_id
+            self.__parcel_data[fid] = (pair[0], surveyors_dict[pair[1]] if pair[1] else None)
+
+        return self.__parcel_data
 
     def db(self):
         return self._db
@@ -209,16 +213,32 @@ class FieldDataCaptureController(QObject):
                                                                               self.plot_layer(),
                                                                               self.parcel_layer())
 
-    def save_allocation_for_surveyor(self, parcel_ids, surveyor_id):
-        # self.ladm_data.save_allocation_for_surveyor(parcel_ids, surveyor_id)
-        pass
+    def save_allocation_for_surveyor(self, parcel_ids, surveyor_t_id):
+        return self.ladm_data.save_allocation_for_surveyor_field_data_capture(self._db.names, parcel_ids, surveyor_t_id, self.parcel_layer())
 
-    def get_surveyors_data(self):
+    def get_surveyors_data(self, full_name=True):
         surveyors_data = dict()
         for feature in self.surveyor_layer().getFeatures():
-            name = "{} {}".format(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F],
-                                  feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
-            surveyors_data[feature.id()] = name
+            if full_name:
+                name = "{} {}".format(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F],
+                                      feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
+            else:  # Just initial letters for each name part
+                name = "{}{}{}{}".format(self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F]),
+                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_SECOND_NAME_F]),
+                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F]),
+                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_SECOND_LAST_NAME_F]))
+                name.replace(" ", "")  # Remove all (even intermediate) blank spaces
+                name = name or '-'  # No names? Then avoid falsy value
+
+            surveyors_data[feature[self._db.names.T_ID_F]] = name.strip()
 
         return surveyors_data
 
+    def get_first_letter(self, string):
+        return string[:1] if string else ''
+
+    def get_already_allocated_parcels_for_surveyor(self, surveyor_t_id):
+        return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names, surveyor_t_id, self.parcel_layer())
+
+    def discard_parcel_allocation(self, parcel_ids):
+        return self.ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())

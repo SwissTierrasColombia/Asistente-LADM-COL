@@ -19,9 +19,13 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               pyqtSignal)
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt.QtGui import QBrush
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QMessageBox)
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widget.ui')
@@ -30,11 +34,14 @@ WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widg
 class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
     allocate_parcels_to_surveyor_panel_requested = pyqtSignal(dict)  # {parcel_fid: parcel_number}
 
+    STATUS_COL = 1
+
     def __init__(self, parent, controller):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
         self.parent = parent
         self.controller = controller
+        self.logger = Logger()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
@@ -50,23 +57,23 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.connect_to_plot_selection(True)
 
-        self.__parcel_data = dict()  # {parcel_fid: (parcel_number, role_fid)}
+        self.__parcel_data = dict()  # {parcel_fid: (parcel_number, surveyor_name)}
         self.__selected_items = dict()  # {parcel_fid: parcel_number}
 
-    def _parcel_data(self):
-        if not self.__parcel_data:
+    def _parcel_data(self, refresh_parcel_data=False):
+        if not self.__parcel_data or refresh_parcel_data:
             self.__parcel_data = self.controller.get_parcel_surveyor_data()
 
         return self.__parcel_data
 
-    def fill_data(self):
+    def fill_data(self, refresh_parcel_data=False):
         self.update_selected_items()  # Save selection
 
         self.tbl_parcels.blockSignals(True)  # We don't want to get itemSelectionChanged here
         self.tbl_parcels.clearContents()
         self.tbl_parcels.blockSignals(False)  # We don't want to get itemSelectionChanged here
 
-        parcel_data = self._parcel_data()
+        parcel_data = self._parcel_data(refresh_parcel_data)
         parcel_data = self.filter_data_by_search_string(parcel_data)
 
         number_of_rows = len(parcel_data)
@@ -75,21 +82,22 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.tbl_parcels.blockSignals(True)  # We don't want to get itemSelectionChanged here
         for row, data in enumerate(parcel_data.items()):
-            parcel_number, role_fid = data[1]
-            self.fill_row(data[0], parcel_number, role_fid, row)
+            parcel_number, surveyor = data[1]
+            self.fill_row(data[0], parcel_number, surveyor, row)
         self.tbl_parcels.blockSignals(False)  # We don't want to get itemSelectionChanged here
 
         self.tbl_parcels.setSortingEnabled(True)
         self.tbl_parcels.resizeColumnsToContents()
 
-    def fill_row(self, parcel_fid, parcel_number, role_fid, row):
+    def fill_row(self, parcel_fid, parcel_number, surveyor, row):
         item = QTableWidgetItem(parcel_number)
         item.setData(Qt.UserRole, parcel_fid)
         self.tbl_parcels.setItem(row, 0, item)
 
-        item2 = QTableWidgetItem(
-            QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocated") if role_fid is not None else QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Not allocated"))
-        self.tbl_parcels.setItem(row, 1, item2)
+        item2 = QTableWidgetItem(surveyor or '')
+        if not surveyor:
+            item2.setBackground(QBrush(NOT_ALLOCATED_PARCEL_COLOR))
+        self.tbl_parcels.setItem(row, self.STATUS_COL, item2)
 
         if parcel_fid in self.__selected_items:
             item.setSelected(True)
@@ -107,11 +115,12 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.fill_data()
 
     def update_selected_items(self):
-        selected_items = [item.data(Qt.UserRole) for item in self.tbl_parcels.selectedItems()]
+        """Update the internal selected_items dict"""
+        selected_gui_items = [item.data(Qt.UserRole) for item in self.tbl_parcels.selectedItems()]
         for row in range(self.tbl_parcels.rowCount()):
             item = self.tbl_parcels.item(row, 0)
             fid = item.data(Qt.UserRole)
-            if fid in selected_items:
+            if fid in selected_gui_items:
                 self.__selected_items[fid] = item.text()
             else:
                 if fid in self.__selected_items:
@@ -119,6 +128,7 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
                     del self.__selected_items[fid]
 
     def selection_changed(self):
+        """React upon manual selection in the table widget"""
         self.update_selected_items()
 
         self.connect_to_plot_selection(False)  # This plot selection should not trigger a table view selection refresh
@@ -128,14 +138,20 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
     def update_parcel_selection(self, selected, deselected, clear_and_select):
         """React upon a plot selection"""
         self.tbl_parcels.blockSignals(True)  # We don't want to get itemSelectionChanged here
-        self.tbl_parcels.clearSelection()
-        parcel_numbers = self.controller.get_parcel_numbers_from_selected_plots()
+        self.tbl_parcels.clearSelection()  # Reset GUI selection
+        self.__selected_items = dict()  # Reset internal selection dict
+        parcel_ids = self.controller.get_parcel_numbers_from_selected_plots()
 
-        for parcel_number in parcel_numbers:
-            items = self.tbl_parcels.findItems(parcel_number, Qt.MatchExactly)
-            if items:
-                items[0].setSelected(True)  # Select item in column 0
-                self.tbl_parcels.item(items[0].row(), 1).setSelected(True)  # Select item in column 1
+        for parcel_id in parcel_ids:
+            if parcel_id in self._parcel_data():
+                parcel_number = self._parcel_data()[parcel_id][0]
+                items = self.tbl_parcels.findItems(parcel_number, Qt.MatchExactly)
+                if items:
+                    items[0].setSelected(True)  # Select item in column 0
+                    self.tbl_parcels.item(items[0].row(), self.STATUS_COL).setSelected(True)  # Select item in column 1
+                else:  # parcel is not currently shown, so select it in internal dict
+                    if parcel_id in self._parcel_data():
+                        self.__selected_items[parcel_id] = parcel_number
 
         self.tbl_parcels.blockSignals(False)
         self.update_selected_items()  # Update the internal selection dict
@@ -153,5 +169,61 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
             pass
 
+    def panel_accepted_refresh_parcel_data(self):
+        """Slot for refreshing parcel data when it has changed in other panels"""
+        self.fill_data(True)
+
     def call_allocate_parcels_to_surveyor_panel(self):
-        self.allocate_parcels_to_surveyor_panel_requested.emit(self.__selected_items)
+        # Make sure that all selected items are not yet allocated, otherwise, allow users to deallocate selected
+        already_allocated = list()  # {parcel_fid: (item1, item2)}
+        for parcel_fid, parcel_number in self.__selected_items.items():
+            if parcel_fid in self._parcel_data():
+                if self._parcel_data()[parcel_fid][1]:  # surveyor_name
+                    already_allocated.append(parcel_fid)
+
+        if already_allocated:
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Question)
+            msg.setText(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget",
+                                                   "Some selected parcels are already allocated!\n\nWhat would you like to do with selected parcels that are already allocated?"))
+            msg.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Warning"))
+            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            msg.button(QMessageBox.Yes).setText(
+                QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Deselect them and continue"))
+            msg.button(QMessageBox.No).setText(
+                QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Reallocate and continue"))
+            reply = msg.exec_()
+
+            if reply == QMessageBox.Yes:  # Ignore
+                # Remove selection of allocated parcels, reload table widget data and continue
+                for allocated_parcel_id in already_allocated:
+                    if allocated_parcel_id in self._parcel_data():
+                        items = self.tbl_parcels.findItems(self._parcel_data()[allocated_parcel_id][0], Qt.MatchExactly)
+                        if items:  # Item is currently shown, so deselect it in GUI
+                            items[0].setSelected(False)  # Deselect item in column 0
+                            self.tbl_parcels.item(items[0].row(), self.STATUS_COL).setSelected(False)  # Deselect item in column 1
+                        else:  # Item is not currently shown, deselected in internal selection dict
+                            if allocated_parcel_id in self.__selected_items:
+                                del self.__selected_items[allocated_parcel_id]
+
+                self.fill_data()
+
+                if not self.__selected_items:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget",
+                                                                       "Ignoring selected parcels, there are none to be allocated! First select some!"), 10)
+                    return
+
+            elif reply == QMessageBox.No:  # Reallocate
+                # Preserve the selected_items dict, but remove allocation before continuing
+                if self.controller.discard_parcel_allocation(already_allocated):
+                    self.fill_data(True)  # Refresh parcel data and continue
+                else:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "There were troubles reallocating parcels!"))
+                    return
+            else:  # QMessageBox.Cancel
+                return
+
+        if self.__selected_items:
+            self.allocate_parcels_to_surveyor_panel_requested.emit(self.__selected_items)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "First select some parcels to be allocated!"), 5)

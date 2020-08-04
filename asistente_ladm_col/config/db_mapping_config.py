@@ -441,7 +441,8 @@ DB_MAPPING_CONFIG = {
         #"Captura_Geo.Captura_Geo.derecho_propietario": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUNDARY_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.predio": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_T", QueryNames.FIELDS_DICT: {
-            "Captura_Geo.Captura_Geo.predio.numero_predial": "FDC_PARCEL_T_PARCEL_NUMBER_F"
+            "Captura_Geo.Captura_Geo.predio.numero_predial": "FDC_PARCEL_T_PARCEL_NUMBER_F",
+            "Captura_Geo.Captura_Geo.predio_reconedores.reconocedor..Captura_Geo.Captura_Geo.reconocedores": "FDC_PARCEL_T_SURVEYOR_F"
         }},
         #"Captura_Geo.Captura_Geo.predio_construccion": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.predio_derecho": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
@@ -452,7 +453,9 @@ DB_MAPPING_CONFIG = {
         #"Captura_Geo.Captura_Geo.punto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.reconocedores": {QueryNames.VARIABLE_NAME: "FDC_SURVEYOR_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.reconocedores.primer_nombre": "FDC_SURVEYOR_T_FIRST_NAME_F",
-            "Captura_Geo.Captura_Geo.reconocedores.primer_apellido": "FDC_SURVEYOR_T_FIRST_LAST_NAME_F"
+            "Captura_Geo.Captura_Geo.reconocedores.segundo_nombre": "FDC_SURVEYOR_T_SECOND_NAME_F",
+            "Captura_Geo.Captura_Geo.reconocedores.primer_apellido": "FDC_SURVEYOR_T_FIRST_LAST_NAME_F",
+            "Captura_Geo.Captura_Geo.reconocedores.segundo_apellido": "FDC_SURVEYOR_T_SECOND_LAST_NAME_F"
         }},
         "Captura_Geo.Captura_Geo.terreno": {QueryNames.VARIABLE_NAME: "FDC_PLOT_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.predio_terreno.predio..Captura_Geo.Captura_Geo.predio": "FDC_PLOT_T_PARCEL_F"

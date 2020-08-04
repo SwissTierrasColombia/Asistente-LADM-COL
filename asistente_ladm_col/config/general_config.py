@@ -166,6 +166,9 @@ CHECKED_COLOR = QColor(166, 255, 152, 255)
 UNCHECKED_COLOR = QColor(255, 245, 152, 255)
 GRAY_COLOR = QColor(219, 219, 219, 255)
 
+# Colors for non allocatet parcels in field data capture
+NOT_ALLOCATED_PARCEL_COLOR = QColor(255, 165, 0, 255)  # Orange
+
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 

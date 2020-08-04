@@ -825,16 +825,11 @@ class LADMData():
 
         return res
 
-    def get_fdc_parcel_data(self, db, fdc_parcel_layer=None):
-        if not fdc_parcel_layer:
-            fdc_parcel_layer = self.app.core.get_layer(db, db.names.FDC_PARCEL_T, load=True)
-            if not fdc_parcel_layer:
-                return dict()
-
+    def get_parcel_data_field_data_capture(self, names, fdc_parcel_layer):
         request = QgsFeatureRequest()
-        request.setSubsetOfAttributes([db.names.FDC_PARCEL_T_PARCEL_NUMBER_F], fdc_parcel_layer.fields())
+        request.setSubsetOfAttributes([names.FDC_PARCEL_T_PARCEL_NUMBER_F, names.FDC_PARCEL_T_SURVEYOR_F], fdc_parcel_layer.fields())
 
-        return {f.id():f[db.names.FDC_PARCEL_T_PARCEL_NUMBER_F] for f in fdc_parcel_layer.getFeatures(request)}
+        return {feature.id():(feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[names.FDC_PARCEL_T_SURVEYOR_F]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
     def get_plots_related_to_parcels_field_data_capture(names, fids, fdc_parcel_layer, fdc_plot_layer):
@@ -857,10 +852,10 @@ class LADMData():
     def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer):
         """
         :param names: Table and field names from the DB
-        :param fids: list of parcel fids
-        :param fdc_parcel_layer: parcel layer from the Field Data Capture model
+        :param fids: list of plot ids
         :param fdc_plot_layer: plot layer from the Field Data Capture model
-        :return: list of plot fids related to the given parcel fids
+        :param fdc_parcel_layer: parcel layer from the Field Data Capture model
+        :return: list of parcel ids related to the given plot ids
         """
         request = QgsFeatureRequest(fids)
         request.setFlags(QgsFeatureRequest.NoGeometry)
@@ -869,8 +864,28 @@ class LADMData():
         parcel_t_ids = [feature[names.FDC_PLOT_T_PARCEL_F] for feature in fdc_plot_layer.getFeatures(request)]
 
         request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.T_ID_F, ",".join([str(t_id) for t_id in parcel_t_ids]))))
+        request.setNoAttributes()
+
+        return [feature.id() for feature in fdc_parcel_layer.getFeatures(request)]
+
+    @staticmethod
+    def save_allocation_for_surveyor_field_data_capture(names, parcel_ids, surveyor_t_id, fdc_parcel_layer):
+        field_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
+        attr_map = {parcel_id: {field_idx: surveyor_t_id} for parcel_id in parcel_ids}
+
+        return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
+
+    @staticmethod
+    def get_parcels_for_surveyor_field_data_capture(names, surveyor_t_id, fdc_parcel_layer):
+        request = QgsFeatureRequest(QgsExpression("{} = {}".format(names.FDC_PARCEL_T_SURVEYOR_F, surveyor_t_id)))
         field_idx = fdc_parcel_layer.fields().indexFromName(names.FDC_PARCEL_T_PARCEL_NUMBER_F)
         request.setSubsetOfAttributes([field_idx])
 
-        return [feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F] for feature in fdc_parcel_layer.getFeatures(request)]
+        return {feature.id(): feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F] for feature in fdc_parcel_layer.getFeatures(request)}
 
+    @staticmethod
+    def discard_parcel_allocation_field_data_capture(names, parcel_ids, fdc_parcel_layer):
+        field_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
+        attr_map = {parcel_id: {field_idx: NULL} for parcel_id in parcel_ids}
+
+        return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
