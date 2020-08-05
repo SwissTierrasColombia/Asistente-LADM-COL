@@ -12,17 +12,13 @@ from qgis.utils import (isPluginLoaded,
                         startPlugin)
 
 from asistente_ladm_col.lib.context import SettingsContext
-from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from asistente_ladm_col.utils.utils import (is_plugin_version_valid,
-                                            Utils)
-from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
+from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
@@ -38,7 +34,10 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CLOSE)
+                                                      LOG_QUALITY_LIST_ITEM_CLOSE,
+                                                      QFIELD_SYNC_REQUIRED_VERSION_URL,
+                                                      QFIELD_SYNC_MIN_REQUIRED_VERSION,
+                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
 
@@ -392,7 +391,7 @@ def _map_swipe_tool_required(func_to_decorate):
                 # and it is not the latest version, show a download link
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                  "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Click the button to install it.").format(
-                                                    MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                                                    MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION)
 
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
                 button = QPushButton(widget)
@@ -412,6 +411,43 @@ def _map_swipe_tool_required(func_to_decorate):
 
             inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."))
+
+    return decorated_function
+
+# TODO: Unify all plugin required decorators into one with plugin data as argument
+def _qfield_sync_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        # Check if Map Swipe Tool is installed and active, disable access if not
+        if inst.qfs_plugin.check_if_dependency_is_valid():
+            func_to_decorate(*args, **kwargs)
+        else:
+            if QFIELD_SYNC_REQUIRED_VERSION_URL:
+                # If we depend on a specific version of Map Swipe Tool (only on that one)
+                # and it is not the latest version, show a download link
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                 "The plugin 'QField Sync' version {} is required, but couldn't be found. Click the button to install it.").format(
+                                                    QFIELD_SYNC_MIN_REQUIRED_VERSION)
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Install plugin"))
+                button.pressed.connect(inst.qfs_plugin.install)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            else:  # Shouldn't be necessary because QGIS handles official plugin dependencies
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QField Sync' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(QFIELD_SYNC_MIN_REQUIRED_VERSION, '' if QFIELD_SYNC_EXACT_REQUIRED_VERSION else '(or higher) ')
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                button.pressed.connect(inst.show_plugin_manager)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+
+            inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, QField Sync not found."))
 
     return decorated_function
 

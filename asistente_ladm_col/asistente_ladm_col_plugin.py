@@ -70,7 +70,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_RIGHT_SURVEY,
                                                       WIZARD_CREATE_RESTRICTION_SURVEY,
                                                       WIZARD_CREATE_SPATIAL_SOURCE_SURVEY,
-                                                      WIZARD_CREATE_PARCEL_SURVEY, WIZARD_CREATE_PLOT_SURVEY,
+                                                      WIZARD_CREATE_PARCEL_SURVEY,
+                                                      WIZARD_CREATE_PLOT_SURVEY,
                                                       WIZARD_CREATE_EXT_ADDRESS_SURVEY,
                                                       WIZARD_CREATE_RIGHT_OF_WAY_SURVEY,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
@@ -84,7 +85,11 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
+                                                      QFIELD_SYNC_PLUGIN_NAME,
+                                                      QFIELD_SYNC_MIN_REQUIRED_VERSION,
+                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION,
+                                                      QFIELD_SYNC_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -142,7 +147,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _survey_model_required,
-                                                 _field_data_capture_model_required)
+                                                 _field_data_capture_model_required,
+                                                 _qfield_sync_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -196,6 +202,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                            MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+        self.qfs_plugin = PluginDependency(QFIELD_SYNC_PLUGIN_NAME,
+                                           QFIELD_SYNC_MIN_REQUIRED_VERSION,
+                                           QFIELD_SYNC_EXACT_REQUIRED_VERSION,
+                                           QFIELD_SYNC_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -937,6 +947,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_qfield_sync_required
     @_db_connection_required
     @_field_data_capture_model_required
     def show_allocate_parcels_field_data_capture(self, *args):
@@ -944,6 +955,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
+    @_qfield_sync_required
     @_db_connection_required
     @_field_data_capture_model_required
     def show_synchronize_field_data(self):

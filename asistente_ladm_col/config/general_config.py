@@ -150,6 +150,12 @@ MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
 
+# Configure QField Sync Dependency
+QFIELD_SYNC_PLUGIN_NAME = "qfieldsync"
+QFIELD_SYNC_MIN_REQUIRED_VERSION = "3.2.0.1"
+QFIELD_SYNC_EXACT_REQUIRED_VERSION = True
+QFIELD_SYNC_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/qfieldsync/releases/download/v3.2.0.1/qfieldsync_3201.zip'  # ''
+
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
 COLLECTED_DB_SOURCE = 'COLLECTED'
