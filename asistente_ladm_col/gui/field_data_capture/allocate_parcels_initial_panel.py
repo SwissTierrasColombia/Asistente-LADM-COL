@@ -239,6 +239,7 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
                                                       QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Select folder to store offline projects"),
                                                       self.app.settings.export_dir_offline_projects)
         if export_dir:
+            self.app.settings.export_dir_offline_projects = export_dir
             self.prb_to_offline.setVisible(True)
             self.prb_to_offline.setRange(0, 100)
             self.prb_to_offline.setValue(0)

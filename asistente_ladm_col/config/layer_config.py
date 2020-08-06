@@ -457,6 +457,12 @@ class LayerConfig:
                                                                                                          names.CI_CODE_PRESENTATION_FORM_D,
                                                                                                          LADMNames.CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V))
                     }
+            elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                if layer_name == names.FDC_SURVEYOR_T:
+                    dict_automatic_values = {names.FDC_SURVEYOR_T_DOCUMENT_TYPE_F: "{}".format(
+                        ladm_data.get_domain_code_from_value(db,
+                                                             names.FDC_PARTY_DOCUMENT_TYPE_D,
+                                                             LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V))}
 
         return dict_automatic_values
 
@@ -736,6 +742,8 @@ class LayerConfig:
             layer_config[names.FDC_PARCEL_TYPE_D] = SyncAction.NO_ACTION
         if getattr(names, "FDC_LANDCLASS_TYPE_D", None):
             layer_config[names.FDC_LANDCLASS_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_PARTY_DOCUMENT_TYPE_D", None):
+            layer_config[names.FDC_PARTY_DOCUMENT_TYPE_D] = SyncAction.NO_ACTION
 
         return layer_config
 
