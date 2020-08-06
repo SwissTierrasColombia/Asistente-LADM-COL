@@ -282,24 +282,17 @@ class PGConnector(ClientServerDB):
         else:
             return cur.fetchall()[0][0]
 
-    def get_ant_map_neighbouring_change_data(self, plot_id, mode='only_id'):
+    def get_ant_map_neighbouring_change_data(self, plot_id):
         res, msg = self.check_and_fix_connection()
         if not res:
             return (res, msg)
 
-        where_id = ""
-        if mode != 'all':
-            where_id = "WHERE t.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
-
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.names, self.schema, where_id)
+        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.names, self.schema, plot_id)
         cur.execute(query)
 
-        if mode == 'only_id':
-            return cur.fetchone()[0]
-        else:
-            return cur.fetchall()[0][0]
+        return cur.fetchone()[0]
 
     def execute_sql_query(self, query):
         """
