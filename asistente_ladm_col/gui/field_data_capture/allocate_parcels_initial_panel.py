@@ -21,9 +21,12 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import (QTableWidgetItem,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QFileDialog)
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -42,6 +45,7 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.controller = controller
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
@@ -50,10 +54,12 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_parcels.resizeColumnsToContents()
         self.prb_to_offline.setVisible(False)
 
+        self.controller.convert_to_offline_progress.connect(self.update_progress)
         self.txt_search.valueChanged.connect(self.search_value_changed)
         self.tbl_parcels.itemSelectionChanged.connect(self.selection_changed)
         self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_surveyors_panel)
         self.btn_allocate.clicked.connect(self.call_allocate_parcels_to_surveyor_panel)
+        self.btn_generate_offline_projects.clicked.connect(self.generate_offline_projects)
 
         self.connect_to_plot_selection(True)
 
@@ -160,14 +166,14 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         if connect:
             self.controller.plot_layer().selectionChanged.connect(self.update_parcel_selection)
         else:
-            self.controller.plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
+            try:
+                self.controller.plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
+            except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
+                pass
 
     def close_panel(self):
         # Disconnect signals
-        try:
-            self.connect_to_plot_selection(False)
-        except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
-            pass
+        self.connect_to_plot_selection(False)
 
     def panel_accepted_refresh_parcel_data(self):
         """Slot for refreshing parcel data when it has changed in other panels"""
@@ -227,3 +233,24 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
             self.allocate_parcels_to_surveyor_panel_requested.emit(self.__selected_items)
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "First select some parcels to be allocated!"), 5)
+
+    def generate_offline_projects(self):
+        export_dir = QFileDialog.getExistingDirectory(self.parent,
+                                                      QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Select folder to store offline projects"),
+                                                      self.app.settings.export_dir_offline_projects)
+        if export_dir:
+            self.prb_to_offline.setVisible(True)
+            self.prb_to_offline.setRange(0, 100)
+            self.prb_to_offline.setValue(0)
+
+            res, msg = self.controller.convert_to_offline(export_dir)
+
+            self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
+
+            self.fill_data(True)  # Refresh data in table widget, as it might be out of sync with newly added layers
+            self.tbl_parcels.clearSelection()  # Selection might be remembered from the status before converting to offline
+
+            self.prb_to_offline.setVisible(False)
+
+    def update_progress(self, progress):
+        self.prb_to_offline.setValue(progress)

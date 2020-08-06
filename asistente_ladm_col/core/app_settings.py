@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.PyQt.QtCore import QSettings
 
 from asistente_ladm_col.config.general_config import (TOLERANCE_MAX_VALUE,
@@ -27,6 +29,7 @@ class AppSettings:
     Centralize application setting handlers and keys
     """
     ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
+    EXPORT_DIR_OFFLINE_PROJECTS = "Asistente-LADM-COL/field_data_capture/export_dir"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
 
     def __init__(self):
@@ -48,3 +51,11 @@ class AppSettings:
     @tolerance.setter
     def tolerance(self, value):
         self.settings.setValue(self.TOLERANCE_KEY, value if value <= TOLERANCE_MAX_VALUE else TOLERANCE_MAX_VALUE)
+
+    @property
+    def export_dir_offline_projects(self):
+        self.settings.value(self.EXPORT_DIR_OFFLINE_PROJECTS, os.path.expanduser('~'))
+
+    @export_dir_offline_projects.setter
+    def export_dir_offline_projects(self, value):
+        self.settings.setValue(self.EXPORT_DIR_OFFLINE_PROJECTS, value)

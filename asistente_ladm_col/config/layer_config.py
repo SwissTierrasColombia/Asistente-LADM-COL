@@ -1,4 +1,6 @@
 from qgis.core import NULL
+
+from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
@@ -493,6 +495,11 @@ class LayerConfig:
                     names.SNR_PARCEL_REGISTRY_T: "concat('(', {}, ') ', {})".format(names.T_ID_F,
                                                                                     names.SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F)
                 })
+            if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                display_expressions.update({
+                    names.FDC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.FDC_PARCEL_T_PARCEL_NUMBER_F),
+                    names.FDC_SURVEYOR_T: "concat({}, ' ', {})".format(names.FDC_SURVEYOR_T_FIRST_NAME_F, names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F)
+                })
 
         return display_expressions
 
@@ -702,3 +709,33 @@ class LayerConfig:
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
+
+    @staticmethod
+    def get_field_data_capture_layer_config(names):
+        import sys
+        sys.path.append(PLUGINS_DIR)
+
+        layer_config = dict()
+
+        from qfieldsync.core.layer import SyncAction
+        if getattr(names, "FDC_PARCEL_T", None):
+            layer_config[names.FDC_PARCEL_T] = SyncAction.OFFLINE
+        if getattr(names, "FDC_PLOT_T", None):
+            layer_config[names.FDC_PLOT_T] = SyncAction.OFFLINE
+        if getattr(names, "FDC_SURVEYOR_T", None):
+            layer_config[names.FDC_SURVEYOR_T] = SyncAction.NO_ACTION
+        if getattr(names, "COL_DIMENSION_TYPE_D", None):
+            layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):
+            layer_config[names.COL_SURFACE_RELATION_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_VOLUME_TYPE_D", None):
+            layer_config[names.FDC_VOLUME_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_CONDITION_PARCEL_TYPE_D", None):
+            layer_config[names.FDC_CONDITION_PARCEL_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_PARCEL_TYPE_D", None):
+            layer_config[names.FDC_PARCEL_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_LANDCLASS_TYPE_D", None):
+            layer_config[names.FDC_LANDCLASS_TYPE_D] = SyncAction.NO_ACTION
+
+        return layer_config
+

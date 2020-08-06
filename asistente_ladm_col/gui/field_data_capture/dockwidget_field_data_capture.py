@@ -28,6 +28,7 @@ from asistente_ladm_col.gui.field_data_capture.allocate_parcels_initial_panel im
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import \
     AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
+from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 from asistente_ladm_col.utils import get_ui_class
 
 from asistente_ladm_col.lib.logger import Logger
@@ -133,8 +134,8 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
 
 class FieldDataCaptureController(QObject):
-
     field_data_capture_layer_removed = pyqtSignal()
+    convert_to_offline_progress = pyqtSignal(int)  # total progress (percentage)
 
     def __init__(self, iface, db, ladm_data):
         QObject.__init__(self)
@@ -156,9 +157,9 @@ class FieldDataCaptureController(QObject):
             self._db.names.FDC_SURVEYOR_T: None
         }
 
-    def add_layers(self):
+    def add_layers(self, force=False):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[self._db.names.FDC_PLOT_T] is None:
+        if self._layers[self._db.names.FDC_PLOT_T] is None or force:
             self.app.gui.freeze_map(True)
 
             self.app.core.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
@@ -201,9 +202,9 @@ class FieldDataCaptureController(QObject):
 
     def update_plot_selection(self, parcel_ids):
         plot_ids = self.ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
-                                                                                  parcel_ids,
                                                                                   self.parcel_layer(),
-                                                                                  self.plot_layer())
+                                                                                  self.plot_layer(),
+                                                                                  fids=parcel_ids)
         self.plot_layer().selectByIds(plot_ids)
 
     def get_parcel_numbers_from_selected_plots(self):
@@ -219,26 +220,40 @@ class FieldDataCaptureController(QObject):
     def get_surveyors_data(self, full_name=True):
         surveyors_data = dict()
         for feature in self.surveyor_layer().getFeatures():
-            if full_name:
-                name = "{} {}".format(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F],
-                                      feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
-            else:  # Just initial letters for each name part
-                name = "{}{}{}{}".format(self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_FIRST_NAME_F]),
-                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_SECOND_NAME_F]),
-                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F]),
-                                         self.get_first_letter(feature[self._db.names.FDC_SURVEYOR_T_SECOND_LAST_NAME_F]))
-                name.replace(" ", "")  # Remove all (even intermediate) blank spaces
-                name = name or '-'  # No names? Then avoid falsy value
-
-            surveyors_data[feature[self._db.names.T_ID_F]] = name.strip()
+            name = self.ladm_data.get_surveyor_name(self._db.names, feature, full_name)
+            surveyors_data[feature[self._db.names.T_ID_F]] = name
 
         return surveyors_data
 
-    def get_first_letter(self, string):
-        return string[:1] if string else ''
 
     def get_already_allocated_parcels_for_surveyor(self, surveyor_t_id):
-        return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names, surveyor_t_id, self.parcel_layer())
+        return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names,
+                                                                          self._db.names.FDC_PARCEL_T_PARCEL_NUMBER_F,
+                                                                          surveyor_t_id,
+                                                                          self.parcel_layer())
 
     def discard_parcel_allocation(self, parcel_ids):
         return self.ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())
+
+    def convert_to_offline(self, export_dir):
+        surveyor_expressions_dict = self.ladm_data.get_layer_ids_related_to_parcels_field_data_capture(self._db.names,
+                                                                                                       self.parcel_layer(),
+                                                                                                       self.plot_layer(),
+                                                                                                       self.surveyor_layer())
+
+        # Disconnect so that we don't close the panel while converting to offline
+        for layer_name in self._layers:
+            if self._layers[layer_name]:
+                try:
+                    self._layers[layer_name].willBeDeleted.disconnect(self.field_data_capture_layer_removed)
+                except:
+                    pass
+
+        field_data_capture = FieldDataCapture()
+        field_data_capture.total_progress_updated.connect(self.convert_to_offline_progress)  # Signal chaining
+        res, msg = field_data_capture.convert_to_offline(self._db, surveyor_expressions_dict, export_dir)
+
+        if res:
+            self.add_layers(True)  # Update self._layers with the newly loaded layers
+
+        return res, msg

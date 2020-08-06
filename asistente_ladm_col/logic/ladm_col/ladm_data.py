@@ -832,15 +832,17 @@ class LADMData():
         return {feature.id():(feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[names.FDC_PARCEL_T_SURVEYOR_F]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def get_plots_related_to_parcels_field_data_capture(names, fids, fdc_parcel_layer, fdc_plot_layer):
+    def get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, fids=list(), t_ids=list()):
         """
         :param names: Table and field names from the DB
-        :param fids: list of parcel fids
         :param fdc_parcel_layer: parcel layer from the Field Data Capture model
         :param fdc_plot_layer: plot layer from the Field Data Capture model
+        :param fids: list of parcel fids.
+        :param t_ids: list of parcel t_ids. If present, they'll be used, no matter that fids is also passed.
         :return: list of plot fids related to the given parcel fids
         """
-        t_ids = LADMData.get_t_ids_from_fids(fdc_parcel_layer, names.T_ID_F, fids)
+        if not t_ids:
+            t_ids = LADMData.get_t_ids_from_fids(fdc_parcel_layer, names.T_ID_F, fids)
 
         request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.FDC_PLOT_T_PARCEL_F, ",".join([str(t_id) for t_id in t_ids]))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
@@ -876,12 +878,12 @@ class LADMData():
         return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_parcels_for_surveyor_field_data_capture(names, surveyor_t_id, fdc_parcel_layer):
+    def get_parcels_for_surveyor_field_data_capture(names, attr_name, surveyor_t_id, fdc_parcel_layer):
         request = QgsFeatureRequest(QgsExpression("{} = {}".format(names.FDC_PARCEL_T_SURVEYOR_F, surveyor_t_id)))
-        field_idx = fdc_parcel_layer.fields().indexFromName(names.FDC_PARCEL_T_PARCEL_NUMBER_F)
-        request.setSubsetOfAttributes([field_idx])
+        if attr_name:
+            request.setSubsetOfAttributes([attr_name], fdc_parcel_layer.fields())
 
-        return {feature.id(): feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F] for feature in fdc_parcel_layer.getFeatures(request)}
+        return {feature.id(): feature[attr_name] for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
     def discard_parcel_allocation_field_data_capture(names, parcel_ids, fdc_parcel_layer):
@@ -889,3 +891,65 @@ class LADMData():
         attr_map = {parcel_id: {field_idx: NULL} for parcel_id in parcel_ids}
 
         return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
+
+    @staticmethod
+    def get_surveyor_name(names, feature, full_name=True):
+        if full_name:
+            name = "{} {}".format(feature[names.FDC_SURVEYOR_T_FIRST_NAME_F],
+                                  feature[names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
+        else:  # Just initial letters for each name part, except the last name (e.g., gacarrillor)
+            name = "{}{}{}{}".format(LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_FIRST_NAME_F]),
+                                     LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_SECOND_NAME_F]),
+                                     feature[names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F],
+                                     LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_SECOND_LAST_NAME_F]))
+            name.replace(" ", "")  # Remove all (even intermediate) blank spaces
+            name = name.lower()
+            name = name or '-'  # No names? Then avoid falsy value
+
+        return name.strip()
+
+    @staticmethod
+    def get_first_letter(string):
+        return string[:1] if string else ''
+
+    @staticmethod
+    def get_layer_ids_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, fdc_surveyor_layer):
+        surveyor_related_ids = dict()  # {surveyor_t_id: {parcel_ids: [], plot_ids: [], ...}
+        # Get unique values from parcel layer (surveyor)
+        surveyor_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
+        surveyor_t_ids = fdc_parcel_layer.uniqueValues(surveyor_idx)
+
+        surveyors = LADMData.get_features_from_t_ids(fdc_surveyor_layer, names.T_ID_F, surveyor_t_ids)
+        surveyor_dict = {feature[names.T_ID_F]: (feature.id(), LADMData.get_surveyor_name(names, feature, False)) for feature in surveyors}
+
+        for surveyor_t_id in surveyor_t_ids:
+            # Get parcels per surveyor t_id --> {parcel_id: parcel_t_id}
+            parcel_data = LADMData.get_parcels_for_surveyor_field_data_capture(names, names.T_ID_F, surveyor_t_id, fdc_parcel_layer)
+            parcel_ids = list(parcel_data.keys())
+            parcel_t_ids = list(parcel_data.values())
+
+            # Get plots from parcels
+            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, t_ids=parcel_t_ids)
+
+            # TODO: Do the same with other tables (rights, parties, etc.)
+
+            #surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: parcel_ids,
+            #                                                         names.FDC_PLOT_T: plot_ids,
+            #                                                         names.FDC_SURVEYOR_T: [surveyor_dict[surveyor_t_id][0]]}
+
+            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_id_expression(parcel_ids),
+                                                                     names.FDC_PLOT_T: LADMData.build_id_expression(plot_ids),
+                                                                     names.FDC_SURVEYOR_T: LADMData.build_id_expression([surveyor_dict[surveyor_t_id][0]]   )}
+
+        return surveyor_related_ids
+
+    @staticmethod
+    def build_id_expression(fids):
+        expression = ""
+        if fids:
+            if len(fids) == 1:
+                expression = "$id = {}".format(fids[0])
+            else:  # len(fids) > 1
+                expression = "$id in ({})".format(",".join([str(fid) for fid in fids]))
+
+        return expression

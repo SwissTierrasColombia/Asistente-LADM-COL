@@ -27,7 +27,7 @@ DEFAULT_SRS_AUTHID = "EPSG:9377"
 
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
-# PLUGIN_DIR (set in translator.py)
+PLUGINS_DIR = os.path.dirname(PLUGIN_DIR)
 
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
