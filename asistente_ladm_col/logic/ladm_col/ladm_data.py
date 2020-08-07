@@ -937,19 +937,21 @@ class LADMData():
             #                                                         names.FDC_PLOT_T: plot_ids,
             #                                                         names.FDC_SURVEYOR_T: [surveyor_dict[surveyor_t_id][0]]}
 
-            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_id_expression(parcel_ids),
-                                                                     names.FDC_PLOT_T: LADMData.build_id_expression(plot_ids),
-                                                                     names.FDC_SURVEYOR_T: LADMData.build_id_expression([surveyor_dict[surveyor_t_id][0]]   )}
+            # Warning: Use QGIS ids if you're sure it'll get always the same records.
+            # For some reason that does not happen with parcels, that's why we prefer t_ids.
+            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_id_expression(parcel_t_ids, names.T_ID_F),
+                                                                     names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
+                                                                     names.FDC_SURVEYOR_T: LADMData.build_layer_expression([surveyor_dict[surveyor_t_id][0]])}
 
         return surveyor_related_ids
 
     @staticmethod
-    def build_id_expression(fids):
+    def build_layer_expression(values, field='$id'):
         expression = ""
-        if fids:
-            if len(fids) == 1:
-                expression = "$id = {}".format(fids[0])
+        if values:
+            if len(values) == 1:
+                expression = "{} = {}".format(field, values[0])
             else:  # len(fids) > 1
-                expression = "$id in ({})".format(",".join([str(fid) for fid in fids]))
+                expression = "{} in ({})".format(field, ",".join([str(fid) for fid in values]))
 
         return expression
