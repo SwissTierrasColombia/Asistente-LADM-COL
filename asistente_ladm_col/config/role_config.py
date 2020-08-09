@@ -84,6 +84,7 @@ supplies_provider_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_SCHEMA_IMPORT,
         ACTION_RUN_ETL_SUPPLIES,
         ACTION_FIND_MISSING_COBOL_SUPPLIES,
+        ACTION_FIND_MISSING_SNC_SUPPLIES,
         ACTION_LOAD_LAYERS,
         ACTION_EXPORT_DATA
     ]
@@ -250,6 +251,7 @@ ROLE_CONFIG = {
         ROLE_ACTIONS: [
             ACTION_RUN_ETL_SUPPLIES,
             ACTION_FIND_MISSING_COBOL_SUPPLIES,
+            ACTION_FIND_MISSING_SNC_SUPPLIES,
             ACTION_ST_LOGIN,
             ACTION_ST_LOGOUT
         ],
