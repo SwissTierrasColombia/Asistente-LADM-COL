@@ -20,7 +20,8 @@ from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsFeature,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsVectorLayerUtils)
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.config.general_config import DEFAULT_LOG_MODE
 from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY,
@@ -649,6 +650,14 @@ class LADMData():
 
         return [feature[t_id_name] for feature in layer.getFeatures(request)]
 
+    @staticmethod
+    def get_fids_from_t_ids(layer, t_id_name, t_ids):
+        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(t_id_name, ",".join(str(t_id) for t_id in t_ids))))
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setNoAttributes()  # Note: this adds a new flag
+
+        return [feature.id() for feature in layer.getFeatures(request)]
+
     # Two different models (supplies and survey), different field names
     # in each model, so we need to map them to a common key for each field
 
@@ -825,6 +834,9 @@ class LADMData():
 
         return res
 
+    """
+    FIELD DATA CAPTURE Model
+    """
     def get_parcel_data_field_data_capture(self, names, fdc_parcel_layer):
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([names.FDC_PARCEL_T_PARCEL_NUMBER_F, names.FDC_PARCEL_T_SURVEYOR_F], fdc_parcel_layer.fields())
@@ -955,3 +967,30 @@ class LADMData():
                 expression = "{} in ({})".format(field, ",".join([str(fid) for fid in values]))
 
         return expression
+
+    @staticmethod
+    def get_surveyors_data(names, fdc_surveyor_layer, full_name=True):
+        surveyors_data = dict()
+        for feature in fdc_surveyor_layer.getFeatures():
+            surveyors_data[feature[names.T_ID_F]] = (LADMData.get_surveyor_name(names, feature, full_name),
+                                                     feature[names.FDC_SURVEYOR_T_DOCUMENT_ID_F])
+
+        return surveyors_data
+
+    def save_surveyor(self, db, surveyor_data, fdc_surveyor_layer):
+        attrs = dict()
+        for field_name, value in surveyor_data.items():
+            val = value
+            if field_name == db.names.FDC_SURVEYOR_T_DOCUMENT_TYPE_F:
+                val = self.get_domain_code_from_value(db, db.names.FDC_PARTY_DOCUMENT_TYPE_D, value)
+
+            attrs[fdc_surveyor_layer.fields().indexOf(field_name)] = val
+
+        feature = QgsVectorLayerUtils().createFeature(fdc_surveyor_layer, attributes=attrs)
+        return fdc_surveyor_layer.dataProvider().addFeatures([feature])
+
+    @staticmethod
+    def delete_surveyor(names, surveyor_t_id, fdc_surveyor_layer):
+        return fdc_surveyor_layer.dataProvider().deleteFeatures(LADMData.get_fids_from_t_ids(fdc_surveyor_layer,
+                                                                                             names.T_ID_F,
+                                                                                             [surveyor_t_id]))

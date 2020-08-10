@@ -456,7 +456,8 @@ DB_MAPPING_CONFIG = {
             "Captura_Geo.Captura_Geo.reconocedores.segundo_nombre": "FDC_SURVEYOR_T_SECOND_NAME_F",
             "Captura_Geo.Captura_Geo.reconocedores.primer_apellido": "FDC_SURVEYOR_T_FIRST_LAST_NAME_F",
             "Captura_Geo.Captura_Geo.reconocedores.segundo_apellido": "FDC_SURVEYOR_T_SECOND_LAST_NAME_F",
-            "Captura_Geo.Captura_Geo.reconocedores.tipo_documento": "FDC_SURVEYOR_T_DOCUMENT_TYPE_F"
+            "Captura_Geo.Captura_Geo.reconocedores.tipo_documento": "FDC_SURVEYOR_T_DOCUMENT_TYPE_F",
+            "Captura_Geo.Captura_Geo.reconocedores.numero_documento": "FDC_SURVEYOR_T_DOCUMENT_ID_F"
         }},
         "Captura_Geo.Captura_Geo.terreno": {QueryNames.VARIABLE_NAME: "FDC_PLOT_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.predio_terreno.predio..Captura_Geo.Captura_Geo.predio": "FDC_PLOT_T_PARCEL_F"

@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="txt_group_name"/>
+      <widget class="QLineEdit" name="txt_first_name"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_4">
@@ -34,7 +34,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="txt_second_name"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_5">
@@ -44,7 +44,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="txt_group_name_2"/>
+      <widget class="QLineEdit" name="txt_first_last_name"/>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_6">
@@ -54,10 +54,10 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="txt_second_last_name"/>
      </item>
      <item row="4" column="0">
-      <widget class="QComboBox" name="cbo_group_type">
+      <widget class="QComboBox" name="cbo_document_type">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -67,7 +67,11 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="lineEdit_3"/>
+      <widget class="QLineEdit" name="txt_document_id">
+       <property name="maxLength">
+        <number>11</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -87,7 +91,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_add_surveyor">
+      <widget class="QPushButton" name="btn_save">
        <property name="text">
         <string>Add surveyor</string>
        </property>
@@ -116,6 +120,9 @@
      <property name="editTriggers">
       <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
      </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
@@ -129,7 +136,7 @@
       <bool>true</bool>
      </property>
      <property name="columnCount">
-      <number>5</number>
+      <number>2</number>
      </property>
      <attribute name="horizontalHeaderVisible">
       <bool>true</bool>
@@ -139,6 +146,9 @@
      </attribute>
      <attribute name="horizontalHeaderDefaultSectionSize">
       <number>60</number>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
@@ -159,9 +169,6 @@
        <string>Document</string>
       </property>
      </column>
-     <column/>
-     <column/>
-     <column/>
     </widget>
    </item>
    <item row="3" column="0">
@@ -180,24 +187,13 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_remove_selected">
+      <widget class="QPushButton" name="btn_delete">
        <property name="text">
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
+        <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/missing_supplies.svg</normaloff>:/Asistente-LADM-COL/resources/images/missing_supplies.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_save_surveyors">
-       <property name="text">
-        <string>Save surveyors</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/Asistente-LADM-COL/resources/images/save.svg</normaloff>:/Asistente-LADM-COL/resources/images/save.svg</iconset>
        </property>
       </widget>
      </item>
@@ -205,5 +201,6 @@
    </item>
   </layout>
  </widget>
+ <resources/>
  <connections/>
 </ui>

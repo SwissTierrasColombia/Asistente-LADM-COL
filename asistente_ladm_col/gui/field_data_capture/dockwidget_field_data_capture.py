@@ -80,7 +80,7 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
                 self.lst_configure_surveyors_panel = list()
                 self.configure_surveyors_panel = None
 
-            self.configure_surveyors_panel = ConfigureSurveyorsPanelWidget(self)
+            self.configure_surveyors_panel = ConfigureSurveyorsPanelWidget(self, self.controller)
             self.widget.showPanel(self.configure_surveyors_panel)
             self.lst_configure_surveyors_panel.append(self.configure_surveyors_panel)
 
@@ -184,7 +184,7 @@ class FieldDataCaptureController(QObject):
 
         for fid, pair in self.ladm_data.get_parcel_data_field_data_capture(self._db.names, self.parcel_layer()).items():
             # pair: parcel_number, surveyor_t_id
-            self.__parcel_data[fid] = (pair[0], surveyors_dict[pair[1]] if pair[1] else None)
+            self.__parcel_data[fid] = (pair[0], surveyors_dict[pair[1]][0] if pair[1] else None)
 
         return self.__parcel_data
 
@@ -217,14 +217,13 @@ class FieldDataCaptureController(QObject):
     def save_allocation_for_surveyor(self, parcel_ids, surveyor_t_id):
         return self.ladm_data.save_allocation_for_surveyor_field_data_capture(self._db.names, parcel_ids, surveyor_t_id, self.parcel_layer())
 
-    def get_surveyors_data(self, full_name=True):
+    def _get_surveyors_data(self, full_name=True):
         surveyors_data = dict()
         for feature in self.surveyor_layer().getFeatures():
             name = self.ladm_data.get_surveyor_name(self._db.names, feature, full_name)
             surveyors_data[feature[self._db.names.T_ID_F]] = name
 
         return surveyors_data
-
 
     def get_already_allocated_parcels_for_surveyor(self, surveyor_t_id):
         return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names,
@@ -257,3 +256,12 @@ class FieldDataCaptureController(QObject):
             self.add_layers(True)  # Update self._layers with the newly loaded layers
 
         return res, msg
+
+    def get_surveyors_data(self, full_name=True):
+        return self.ladm_data.get_surveyors_data(self.db().names, self.surveyor_layer(), full_name)
+
+    def save_surveyor(self, surveyor_data):
+        return self.ladm_data.save_surveyor(self.db(), surveyor_data, self.surveyor_layer())
+
+    def delete_surveyor(self, surveyor_t_id):
+        return self.ladm_data.delete_surveyor(self.db().names, surveyor_t_id, self.surveyor_layer())
