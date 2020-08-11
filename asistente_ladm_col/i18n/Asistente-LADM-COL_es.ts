@@ -271,7 +271,7 @@
         <translation>¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="124"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="128"/>
         <source>Missing supplies report successfully generated in folder &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! The output Geopackage database can be found in &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</source>
         <translation>¡El reporte de Omisiones y Comisiones se generó exitósamente en la carpeta &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! La base de datos Geopackage con los resultados se encuentra en &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</translation>
     </message>
@@ -305,12 +305,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="451"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="459"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="455"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="463"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -356,19 +356,19 @@
         <translation>Gestión de insumos</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="225"/>
+        <location filename="../config/gui/gui_config.py" line="226"/>
         <location filename="../config/role_config.py" line="23"/>
-        <location filename="../config/role_config.py" line="152"/>
+        <location filename="../config/role_config.py" line="153"/>
         <source>Create Survey objects</source>
         <translation>Crear objetos de Levantamiento</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="39"/>
-        <location filename="../config/gui/gui_config.py" line="199"/>
-        <location filename="../config/gui/gui_config.py" line="216"/>
+        <location filename="../config/gui/gui_config.py" line="200"/>
+        <location filename="../config/gui/gui_config.py" line="217"/>
         <location filename="../config/role_config.py" line="77"/>
-        <location filename="../config/role_config.py" line="100"/>
-        <location filename="../config/role_config.py" line="143"/>
+        <location filename="../config/role_config.py" line="101"/>
+        <location filename="../config/role_config.py" line="144"/>
         <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
@@ -377,7 +377,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="425"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="433"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -386,7 +386,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="589"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="597"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -404,34 +404,39 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="399"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="400"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="417"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="410"/>
+        <source>Find missing SNC supplies</source>
+        <translation>Encontrar insumos faltantes SNC</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="425"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="421"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="433"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="544"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="552"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="446"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="540"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="454"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="548"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -444,17 +449,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="467"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="475"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -467,17 +472,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="460"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="468"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="464"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="472"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="482"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -514,12 +519,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="587"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="595"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="609"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="617"/>
         <location filename="../utils/decorators.py" line="89"/>
         <location filename="../utils/decorators.py" line="249"/>
         <location filename="../utils/decorators.py" line="284"/>
@@ -528,12 +533,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="612"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="620"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="614"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="622"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -571,11 +576,11 @@
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="52"/>
-        <location filename="../config/gui/gui_config.py" line="212"/>
+        <location filename="../config/gui/gui_config.py" line="213"/>
         <location filename="../config/role_config.py" line="9"/>
         <location filename="../config/role_config.py" line="73"/>
-        <location filename="../config/role_config.py" line="96"/>
-        <location filename="../config/role_config.py" line="139"/>
+        <location filename="../config/role_config.py" line="97"/>
+        <location filename="../config/role_config.py" line="140"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
@@ -584,63 +589,63 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="608"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="603"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="611"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="606"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="614"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="176"/>
-        <location filename="../config/role_config.py" line="126"/>
+        <location filename="../config/gui/gui_config.py" line="177"/>
+        <location filename="../config/role_config.py" line="127"/>
         <source>Reports</source>
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="604"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="445"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="293"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="294"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="307"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="308"/>
         <source>CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="328"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="329"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="381"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="382"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="385"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="386"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -649,27 +654,27 @@
         <translation type="vanished">Cargar datos de Cobol</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="405"/>
         <source>Find missing Cobol supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="449"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="487"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="573"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="581"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1498"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -690,22 +695,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1295"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1316"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1306"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1327"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1414"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1435"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1415"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1436"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -714,7 +719,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="531"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="539"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -739,34 +744,34 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="548"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="556"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="552"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="560"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="556"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="564"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="187"/>
+        <location filename="../config/gui/gui_config.py" line="188"/>
         <source>Change detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="569"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="768"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="577"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="776"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="571"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="773"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="579"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="781"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -775,7 +780,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="757"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="765"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -998,7 +1003,7 @@
         <translation>Herramientas de estructuración</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="197"/>
+        <location filename="../config/role_config.py" line="198"/>
         <source>Basic</source>
         <translation>Básico</translation>
     </message>
@@ -1007,7 +1012,7 @@
         <translation type="vanished">El rol &lt;b&gt;Básico&lt;/b&gt; te permite explorar las principales funcionalidades del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="237"/>
+        <location filename="../config/role_config.py" line="238"/>
         <source>Supplies Provider</source>
         <translation>Proveedor de Insumos</translation>
     </message>
@@ -1016,7 +1021,7 @@
         <translation type="vanished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="260"/>
+        <location filename="../config/role_config.py" line="262"/>
         <source>Operator</source>
         <translation>Operador</translation>
     </message>
@@ -1025,12 +1030,12 @@
         <translation type="vanished">El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="114"/>
+        <location filename="../config/role_config.py" line="115"/>
         <source>Change Detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="198"/>
+        <location filename="../config/role_config.py" line="199"/>
         <source>The &lt;b&gt;Basic&lt;/b&gt; role helps you to explore the LADM-COL assistant main functionalities.&lt;br&gt;&lt;br&gt;This is the &lt;b&gt;recommended role&lt;/b&gt; if you are just getting started with the LADM-COL assistant.</source>
         <translation>El rol &lt;b&gt;Básico&lt;/b&gt; te permite explorar las principales funcionalidades del Asistente LADM-COL.&lt;br&gt;&lt;br&gt;Este es el &lt;b&gt;rol recomendado&lt;/b&gt; si estás empezando a usar el Asistente LADM-COL.</translation>
     </message>
@@ -1039,27 +1044,27 @@
         <translation type="vanished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="238"/>
+        <location filename="../config/role_config.py" line="239"/>
         <source>The &lt;b&gt;Supplies Provider&lt;/b&gt; role generates a XTF file with supplies data for the operators.</source>
         <translation>El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de insumos para los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="261"/>
+        <location filename="../config/role_config.py" line="263"/>
         <source>The &lt;b&gt;Operator&lt;/b&gt; is in charge of capturing current cadastral data.</source>
         <translation>El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="299"/>
+        <location filename="../config/role_config.py" line="301"/>
         <source>Manager</source>
         <translation>Gestor</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="300"/>
+        <location filename="../config/role_config.py" line="302"/>
         <source>The &lt;b&gt;Manager&lt;/b&gt; is in charge of preparing supplies for operators as well as validating and managing the data provided by operators.</source>
         <translation>El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="319"/>
+        <location filename="../config/role_config.py" line="321"/>
         <source>The &lt;b&gt;Advanced&lt;/b&gt; role has access to all the functionality.</source>
         <translation>El rol &lt;b&gt;Avanzado&lt;/b&gt; tiene acceso a todas las funcionalidades del Asistente LADM-COL.</translation>
     </message>
@@ -1072,7 +1077,7 @@
         <translation type="vanished">El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="318"/>
+        <location filename="../config/role_config.py" line="320"/>
         <source>Advanced</source>
         <translation>Avanzado</translation>
     </message>
@@ -1355,69 +1360,56 @@
 <context>
     <name>CobolBaseDialog</name>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="72"/>
         <source>Import</source>
-        <translation>Importar</translation>
+        <translation type="vanished">Importar</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="79"/>
         <source>Select the BLO .lis file with Cobol data </source>
-        <translation>Selecciona el archivo BLO .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo BLO .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="84"/>
         <source>Select the UNI .lis file with Cobol data </source>
-        <translation>Selecciona el archivo UNI .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo UNI .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="89"/>
         <source>Select the TER .lis file with Cobol data </source>
-        <translation>Selecciona el archivo TER .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo TER .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="94"/>
         <source>Select the PRO .lis file with Cobol data </source>
-        <translation>Selecciona el archivo PRO .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo PRO .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="163"/>
         <source>Warning</source>
-        <translation>Advertencia</translation>
+        <translation type="vanished">Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="164"/>
         <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
-        <translation>La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
+        <translation type="vanished">La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="171"/>
         <source>The &apos;{}&apos; tool was cancelled.</source>
-        <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
+        <translation type="vanished">La herramienta &apos;{}&apos; fue cancelada.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="237"/>
         <source>LIS Supplies</source>
-        <translation>Insumos LIS</translation>
+        <translation type="vanished">Insumos LIS</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="266"/>
         <source>There were troubles loading the GDB.</source>
-        <translation>Hubo problemas cargando la GeoDatabase.</translation>
+        <translation type="vanished">Hubo problemas cargando la GeoDatabase.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="271"/>
         <source>GDB Supplies</source>
-        <translation>Insumos GDB</translation>
+        <translation type="vanished">Insumos GDB</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="282"/>
         <source>The GDB does not have the required layers!</source>
-        <translation>¡La GeoDatabase no tiene las capas requeridas!</translation>
+        <translation type="vanished">¡La GeoDatabase no tiene las capas requeridas!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_cobol_base.py" line="289"/>
         <source>There was a problem loading layers from the &apos;Supplies&apos; model!</source>
-        <translation>¡Hubo un problema cargando capas del modelo Insumos!</translation>
+        <translation type="vanished">¡Hubo un problema cargando capas del modelo Insumos!</translation>
     </message>
     <message>
         <source>The database is not defined!</source>
@@ -1971,12 +1963,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1201"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1222"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1203"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1224"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -3662,18 +3654,15 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_import_from_excel.ui" line="70"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="81"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="94"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="107"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="187"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="88"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="104"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="145"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
         <source>Etl Cobol to Supplies</source>
-        <translation>ETL: Datos de Cobol al modelo de Insumos</translation>
+        <translation type="vanished">ETL: Datos de Cobol al modelo de Insumos</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="35"/>
@@ -3681,63 +3670,76 @@ Do you want to replace it?</source>
         <translation>Configurar datos fuente</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="47"/>
         <source>Parcels blocked</source>
         <translation>Predios bloqueados</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="53"/>
         <source>BLO</source>
-        <translation>BLO</translation>
+        <translation type="vanished">BLO</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="133"/>
         <source>Owners</source>
-        <translation>Propietarios</translation>
+        <translation type="vanished">Propietarios</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="136"/>
         <source>PRO</source>
-        <translation>PRO</translation>
+        <translation type="vanished">PRO</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="165"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
+        <source>Missing Supplies</source>
+        <translation type="unfinished">Omisiones y Comisiones</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
+        <source>PREDIO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="69"/>
         <source>Parcels</source>
         <translation>Predios</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="168"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="72"/>
         <source>UNI</source>
         <translation>UNI</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="203"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="117"/>
         <source>GeoDatabase</source>
         <translation>GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="206"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
         <source>GDB</source>
         <translation>GDB</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="222"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="173"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Building units</source>
-        <translation>Unidades de construcción</translation>
+        <translation type="vanished">Unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="225"/>
         <source>TER</source>
-        <translation>TER</translation>
+        <translation type="vanished">TER</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="256"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -5282,24 +5284,20 @@ Rol:</translation>
 <context>
     <name>Form_missing_supplies_cobol</name>
     <message>
-        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="14"/>
         <source>Form</source>
-        <translation>Form</translation>
+        <translation type="vanished">Form</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="26"/>
         <source>Export data</source>
-        <translation>Exportar datos</translation>
+        <translation type="vanished">Exportar datos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="38"/>
         <source>Folder</source>
-        <translation>Carpeta</translation>
+        <translation type="vanished">Carpeta</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wig_missing_cobol_supplies_export.ui" line="62"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="vanished">...</translation>
     </message>
 </context>
 <context>
@@ -5740,57 +5738,67 @@ Rol:</translation>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Calificación de Unidad de Construcción No Convencional&lt;/b&gt; con un formulario.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="336"/>
+        <location filename="../config/help_strings.py" line="319"/>
+        <source>This dialog allows you generate &lt;b&gt;Sistema nacional catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
+        <translation>Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="325"/>
+        <source>This dialog allows you generate &lt;b&gt;Cobol&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the UNI.lis file.</source>
+        <translation>Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="348"/>
         <source>When the type of parcel is &lt;b&gt;&apos;No Horizontal Property&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos; and &apos;Building Units&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;No Propiedad Horizontal&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o mas &apos;construcciones&apos; y &apos;unidades de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="340"/>
+        <location filename="../config/help_strings.py" line="352"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="344"/>
+        <location filename="../config/help_strings.py" line="356"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be one or more &apos;Building Units&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una o más &apos;unidades de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="348"/>
+        <location filename="../config/help_strings.py" line="360"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Condominium Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz Condominio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="352"/>
+        <location filename="../config/help_strings.py" line="364"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Condominium Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial Condominio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="356"/>
+        <location filename="../config/help_strings.py" line="368"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Horizontal Property Mejora&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Building&apos; or &apos;Building Unit&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Mejora PH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una &apos;construcción&apos; o &apos;unidad de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="360"/>
+        <location filename="../config/help_strings.py" line="372"/>
         <source>When the type of parcel is &lt;b&gt;&apos;No Horizontal Property Mejora&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Building&apos; or &apos;Building Unit&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Mejora NPH&apos;&lt;/b&gt; la unidad espacial asociada debe ser una &apos;construcción&apos; o &apos;unidad de construcción&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="364"/>
+        <location filename="../config/help_strings.py" line="376"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Cemetery Parent&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Matriz Parque Cementerio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="368"/>
+        <location filename="../config/help_strings.py" line="380"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Cemetery Parcel Unit&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Unidad Predial Parque Cementerio&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="372"/>
+        <location filename="../config/help_strings.py" line="384"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Road&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Vía&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="376"/>
+        <location filename="../config/help_strings.py" line="388"/>
         <source>When the type of parcel is &lt;b&gt;&apos;Public Use&apos;&lt;/b&gt; the spatial unit associated must be a &apos;Plot&apos; and optionally one or more &apos;Buildings&apos;</source>
         <translation>Cuando el tipo de predio es &lt;b&gt;&apos;Bien de Uso Público&apos;&lt;/b&gt; la unidad espacial asociada debe ser un &apos;terreno&apos; y opcionalmente una o más &apos;construcciones&apos;</translation>
     </message>
@@ -5815,7 +5823,7 @@ Rol:</translation>
         <translation type="obsolete">When the type of parcel is &lt;b&gt;&apos;{parcel_type}&apos;&lt;/b&gt; the spatial unit associated must be a &apos;{plot_table}&apos;</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="324"/>
+        <location filename="../config/help_strings.py" line="336"/>
         <source>               Choose this option to open a window that allows you to import data from a source {type} into the LADM-COL &lt;b&gt;{name}&lt;/b&gt; {type}.                &lt;br&gt;&lt;br&gt;               If the field structure of input and target {type}s differs, you can set a field mapping to define field transformations and correspondence.               &lt;br&gt;&lt;br&gt;               You can select previous mappings in the &lt;b&gt;Recent mappings&lt;/b&gt; list, which can save you time taking advantage of mappings that you already used.                </source>
         <translation>               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM-COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.               &lt;br&gt;&lt;br&gt;               Puedes seleccionar mapeos previos en el listado &lt;b&gt;Mapeos recientes&lt;/b&gt;, lo cual puede ahorrarte tiempo aprovechando mapeos que ya has usado.                </translation>
     </message>
@@ -5824,12 +5832,12 @@ Rol:</translation>
         <translation type="vanished">               Elige esta opción para abrir una ventana que te permite importar datos desde una {type} fuente hacia la {type} &lt;b&gt;{name}&lt;/b&gt; de LADM-COL.                &lt;br&gt;&lt;br&gt;               Si la estructura de campos de las {type}s de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.                </translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="332"/>
+        <location filename="../config/help_strings.py" line="344"/>
         <source>layer</source>
         <translation>capa</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="332"/>
+        <location filename="../config/help_strings.py" line="344"/>
         <source>table</source>
         <translation>tabla</translation>
     </message>
@@ -5997,12 +6005,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="868"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="876"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="872"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="880"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6803,17 +6811,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="835"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="843"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="843"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="851"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="855"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="863"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7129,49 +7137,49 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>MissingCobolSupplies</name>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="55"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="57"/>
         <source>Missing Supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="56"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="58"/>
         <source>Find missing Cobol supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="64"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="67"/>
         <source>Select folder to save data</source>
         <translation>Selecciona una carpeta para guardar los resultados</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="161"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="172"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="183"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="168"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="179"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="190"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="162"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="169"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="173"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="180"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="184"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="191"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="261"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="268"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="267"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="274"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -8282,22 +8290,22 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityDialog</name>
     <message>
-        <location filename="../config/quality_rules_config.py" line="128"/>
+        <location filename="../config/quality_rules_config.py" line="127"/>
         <source>Rules for Points</source>
         <translation>Reglas para Puntos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="182"/>
+        <location filename="../config/quality_rules_config.py" line="181"/>
         <source>Rules for Lines</source>
         <translation>Reglas para Líneas</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="252"/>
+        <location filename="../config/quality_rules_config.py" line="251"/>
         <source>Rules for Polygons</source>
         <translation>Reglas para Polígonos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="394"/>
+        <location filename="../config/quality_rules_config.py" line="393"/>
         <source>Logic consistency rules</source>
         <translation>Reglas de Consistencia Lógica</translation>
     </message>
@@ -8369,317 +8377,18 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityRulesConfig</name>
     <message>
-        <location filename="../config/quality_rules_config.py" line="133"/>
+        <location filename="../config/quality_rules_config.py" line="132"/>
         <source>punto_lindero_superposicion</source>
         <translation>punto_lindero_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="135"/>
+        <location filename="../config/quality_rules_config.py" line="134"/>
         <source>ids_punto_lindero</source>
         <translation>ids_punto_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="136"/>
-        <location filename="../config/quality_rules_config.py" line="148"/>
-        <location filename="../config/quality_rules_config.py" line="542"/>
-        <location filename="../config/quality_rules_config.py" line="554"/>
-        <location filename="../config/quality_rules_config.py" line="566"/>
-        <location filename="../config/quality_rules_config.py" line="578"/>
-        <location filename="../config/quality_rules_config.py" line="590"/>
-        <location filename="../config/quality_rules_config.py" line="602"/>
-        <location filename="../config/quality_rules_config.py" line="614"/>
-        <location filename="../config/quality_rules_config.py" line="626"/>
-        <location filename="../config/quality_rules_config.py" line="638"/>
-        <location filename="../config/quality_rules_config.py" line="650"/>
-        <location filename="../config/quality_rules_config.py" line="662"/>
-        <location filename="../config/quality_rules_config.py" line="674"/>
-        <source>conteo</source>
-        <translation>conteo</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="145"/>
-        <source>punto_control_superposicion</source>
-        <translation>punto_control_superposicion</translation>
-    </message>
-    <message>
+        <location filename="../config/quality_rules_config.py" line="135"/>
         <location filename="../config/quality_rules_config.py" line="147"/>
-        <source>ids_punto_control</source>
-        <translation>ids_punto_control</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="157"/>
-        <source>punto_lindero_no_cubierto_por_nodo_lindero</source>
-        <translation>punto_lindero_no_cubierto_por_nodo_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="159"/>
-        <location filename="../config/quality_rules_config.py" line="173"/>
-        <location filename="../config/quality_rules_config.py" line="229"/>
-        <source>id_punto_lindero</source>
-        <translation>id_punto_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="160"/>
-        <location filename="../config/quality_rules_config.py" line="189"/>
-        <location filename="../config/quality_rules_config.py" line="201"/>
-        <location filename="../config/quality_rules_config.py" line="212"/>
-        <location filename="../config/quality_rules_config.py" line="228"/>
-        <location filename="../config/quality_rules_config.py" line="242"/>
-        <location filename="../config/quality_rules_config.py" line="296"/>
-        <source>id_lindero</source>
-        <translation>id_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="171"/>
-        <source>punto_lindero_no_cubierto_por_nodo_terreno</source>
-        <translation>punto_lindero_no_cubierto_por_nodo_terreno</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="187"/>
-        <source>lindero_superposicion</source>
-        <translation>lindero_superposicion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="190"/>
-        <source>id_lindero_superpone</source>
-        <translation>id_lindero_superpone</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="199"/>
-        <source>lindero_no_cambio_colindancia</source>
-        <translation>lindero_no_cambio_colindancia</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="210"/>
-        <source>lindero_no_cubierto_por_limite_terreno</source>
-        <translation>lindero_no_cubierto_por_limite_terreno</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="213"/>
-        <location filename="../config/quality_rules_config.py" line="259"/>
-        <location filename="../config/quality_rules_config.py" line="295"/>
-        <location filename="../config/quality_rules_config.py" line="346"/>
-        <location filename="../logic/quality/polygon_quality_rules.py" line="168"/>
-        <source>id_terreno</source>
-        <translation>id_terreno</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="226"/>
-        <source>nodo_lindero_no_cubierto_por_punto_lindero</source>
-        <translation>nodo_lindero_no_cubierto_por_punto_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="240"/>
-        <source>lindero_nodos_no_conectados</source>
-        <translation>lindero_nodos_no_conectados</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="257"/>
-        <source>terreno_superposicion</source>
-        <translation>terreno_superposicion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="260"/>
-        <source>id_terreno_superpone</source>
-        <translation>id_terreno_superpone</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="269"/>
-        <source>construccion_superposicion</source>
-        <translation>construccion_superposicion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="271"/>
-        <location filename="../config/quality_rules_config.py" line="312"/>
-        <location filename="../config/quality_rules_config.py" line="357"/>
-        <source>id_construccion</source>
-        <translation>id_construccion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="272"/>
-        <source>id_construccion_superpone</source>
-        <translation>id_construccion_superpone</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="281"/>
-        <source>servidumbre_de_paso_superposicion</source>
-        <translation>servidumbre_de_paso_superposicion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="283"/>
-        <source>id_servidumbre</source>
-        <translation>id_servidumbre</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="284"/>
-        <source>id_servidumbre_superpone</source>
-        <translation>id_servidumbre_superpone</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="293"/>
-        <source>limite_terreno_no_cubierto_por_lindero</source>
-        <translation>limite_terreno_no_cubierto_por_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="309"/>
-        <source>servidumbre_de_paso_no_superposicion_construccion</source>
-        <translation>servidumbre_de_paso_no_superposicion_construccion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="311"/>
-        <location filename="../config/quality_rules_config.py" line="335"/>
-        <source>id_servidumbre_paso</source>
-        <translation>id_servidumbre_paso</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="321"/>
-        <source>terrenos_huecos_entre_ellos</source>
-        <translation>terrenos_huecos_entre_ellos</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="323"/>
-        <source>id_hueco</source>
-        <translation>id_hueco</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="324"/>
-        <source>ids_terrenos</source>
-        <translation>ids_terrenos</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="333"/>
-        <source>servidumbre_de_paso_multiparte</source>
-        <translation>servidumbre_de_paso_multiparte</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="344"/>
-        <source>nodo_terreno_no_cubierto_por_punto_lindero</source>
-        <translation>nodo_terreno_no_cubierto_por_punto_lindero</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="355"/>
-        <source>construccion_no_contenida_por_terreno_asociado</source>
-        <translation>construccion_no_contenida_por_terreno_asociado</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="367"/>
-        <source>unidades_construccion_no_contenida_por_terreno_asociado</source>
-        <translation>unidades_construccion_no_contenida_por_terreno_asociado</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="369"/>
-        <location filename="../config/quality_rules_config.py" line="382"/>
-        <source>id_unidad_construccion</source>
-        <translation>id_unidad_construccion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="380"/>
-        <source>unidades_construccion_no_contenida_por_construccion_asociada</source>
-        <translation>unidades_construccion_no_contenida_por_construccion_asociada</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="399"/>
-        <source>predio_error_derecho</source>
-        <translation>predio_error_derecho</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="401"/>
-        <location filename="../config/quality_rules_config.py" line="427"/>
-        <location filename="../config/quality_rules_config.py" line="438"/>
-        <location filename="../config/quality_rules_config.py" line="449"/>
-        <location filename="../config/quality_rules_config.py" line="460"/>
-        <location filename="../config/quality_rules_config.py" line="499"/>
-        <location filename="../config/quality_rules_config.py" line="517"/>
-        <source>id_predio</source>
-        <translation>id_predio</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="412"/>
-        <source>participaciones_agrupacion_no_suman_1</source>
-        <translation>participaciones_agrupacion_no_suman_1</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="414"/>
-        <source>id_agrupacion</source>
-        <translation>id_agrupacion</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="415"/>
-        <source>miembros</source>
-        <translation>miembros</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="416"/>
-        <source>suma_participaciones</source>
-        <translation>suma_participaciones</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="425"/>
-        <source>predio_error_codigo_departamento</source>
-        <translation>predio_error_codigo_departamento</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="436"/>
-        <source>predio_error_codigo_municipio</source>
-        <translation>predio_error_codigo_municipio</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="447"/>
-        <source>predio_error_numero_predial</source>
-        <translation>predio_error_numero_predial</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="458"/>
-        <source>predio_error_numero_predial_anterior</source>
-        <translation>predio_error_numero_predial_anterior</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="469"/>
-        <source>interesado_natural_inconsistente</source>
-        <translation>interesado_natural_inconsistente</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="471"/>
-        <location filename="../config/quality_rules_config.py" line="485"/>
-        <source>id_interesado</source>
-        <translation>id_interesado</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="483"/>
-        <source>interesado_juridico_inconsistente</source>
-        <translation>interesado_juridico_inconsistente</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="497"/>
-        <source>predio_error_condicion_predio</source>
-        <translation>predio_error_condicion_predio</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="515"/>
-        <source>unidad_espacial_no_corresponde_a_predio</source>
-        <translation>unidad_espacial_no_corresponde_a_predio</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="518"/>
-        <source>numero_terrenos_asociados</source>
-        <translation>numero_terrenos_asociados</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="519"/>
-        <source>numero_construcciones_asociadas</source>
-        <translation>numero_construcciones_asociadas</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="520"/>
-        <source>numero_unidades_construccion_asociadas</source>
-        <translation>numero_unidades_construccion_asociadas</translation>
-    </message>
-    <message>
-        <location filename="../config/quality_rules_config.py" line="539"/>
-        <source>punto_lindero_con_registro_repetido</source>
-        <translation>punto_lindero_con_registro_repetido</translation>
-    </message>
-    <message>
         <location filename="../config/quality_rules_config.py" line="541"/>
         <location filename="../config/quality_rules_config.py" line="553"/>
         <location filename="../config/quality_rules_config.py" line="565"/>
@@ -8692,61 +8401,360 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../config/quality_rules_config.py" line="649"/>
         <location filename="../config/quality_rules_config.py" line="661"/>
         <location filename="../config/quality_rules_config.py" line="673"/>
+        <source>conteo</source>
+        <translation>conteo</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="144"/>
+        <source>punto_control_superposicion</source>
+        <translation>punto_control_superposicion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="146"/>
+        <source>ids_punto_control</source>
+        <translation>ids_punto_control</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="156"/>
+        <source>punto_lindero_no_cubierto_por_nodo_lindero</source>
+        <translation>punto_lindero_no_cubierto_por_nodo_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="158"/>
+        <location filename="../config/quality_rules_config.py" line="172"/>
+        <location filename="../config/quality_rules_config.py" line="228"/>
+        <source>id_punto_lindero</source>
+        <translation>id_punto_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="159"/>
+        <location filename="../config/quality_rules_config.py" line="188"/>
+        <location filename="../config/quality_rules_config.py" line="200"/>
+        <location filename="../config/quality_rules_config.py" line="211"/>
+        <location filename="../config/quality_rules_config.py" line="227"/>
+        <location filename="../config/quality_rules_config.py" line="241"/>
+        <location filename="../config/quality_rules_config.py" line="295"/>
+        <source>id_lindero</source>
+        <translation>id_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="170"/>
+        <source>punto_lindero_no_cubierto_por_nodo_terreno</source>
+        <translation>punto_lindero_no_cubierto_por_nodo_terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="186"/>
+        <source>lindero_superposicion</source>
+        <translation>lindero_superposicion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="189"/>
+        <source>id_lindero_superpone</source>
+        <translation>id_lindero_superpone</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="198"/>
+        <source>lindero_no_cambio_colindancia</source>
+        <translation>lindero_no_cambio_colindancia</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="209"/>
+        <source>lindero_no_cubierto_por_limite_terreno</source>
+        <translation>lindero_no_cubierto_por_limite_terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="212"/>
+        <location filename="../config/quality_rules_config.py" line="258"/>
+        <location filename="../config/quality_rules_config.py" line="294"/>
+        <location filename="../config/quality_rules_config.py" line="345"/>
+        <location filename="../logic/quality/polygon_quality_rules.py" line="168"/>
+        <source>id_terreno</source>
+        <translation>id_terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="225"/>
+        <source>nodo_lindero_no_cubierto_por_punto_lindero</source>
+        <translation>nodo_lindero_no_cubierto_por_punto_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="239"/>
+        <source>lindero_nodos_no_conectados</source>
+        <translation>lindero_nodos_no_conectados</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="256"/>
+        <source>terreno_superposicion</source>
+        <translation>terreno_superposicion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="259"/>
+        <source>id_terreno_superpone</source>
+        <translation>id_terreno_superpone</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="268"/>
+        <source>construccion_superposicion</source>
+        <translation>construccion_superposicion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="270"/>
+        <location filename="../config/quality_rules_config.py" line="311"/>
+        <location filename="../config/quality_rules_config.py" line="356"/>
+        <source>id_construccion</source>
+        <translation>id_construccion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="271"/>
+        <source>id_construccion_superpone</source>
+        <translation>id_construccion_superpone</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="280"/>
+        <source>servidumbre_de_paso_superposicion</source>
+        <translation>servidumbre_de_paso_superposicion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="282"/>
+        <source>id_servidumbre</source>
+        <translation>id_servidumbre</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="283"/>
+        <source>id_servidumbre_superpone</source>
+        <translation>id_servidumbre_superpone</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="292"/>
+        <source>limite_terreno_no_cubierto_por_lindero</source>
+        <translation>limite_terreno_no_cubierto_por_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="308"/>
+        <source>servidumbre_de_paso_no_superposicion_construccion</source>
+        <translation>servidumbre_de_paso_no_superposicion_construccion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="310"/>
+        <location filename="../config/quality_rules_config.py" line="334"/>
+        <source>id_servidumbre_paso</source>
+        <translation>id_servidumbre_paso</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="320"/>
+        <source>terrenos_huecos_entre_ellos</source>
+        <translation>terrenos_huecos_entre_ellos</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="322"/>
+        <source>id_hueco</source>
+        <translation>id_hueco</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="323"/>
+        <source>ids_terrenos</source>
+        <translation>ids_terrenos</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="332"/>
+        <source>servidumbre_de_paso_multiparte</source>
+        <translation>servidumbre_de_paso_multiparte</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="343"/>
+        <source>nodo_terreno_no_cubierto_por_punto_lindero</source>
+        <translation>nodo_terreno_no_cubierto_por_punto_lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="354"/>
+        <source>construccion_no_contenida_por_terreno_asociado</source>
+        <translation>construccion_no_contenida_por_terreno_asociado</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="366"/>
+        <source>unidades_construccion_no_contenida_por_terreno_asociado</source>
+        <translation>unidades_construccion_no_contenida_por_terreno_asociado</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="368"/>
+        <location filename="../config/quality_rules_config.py" line="381"/>
+        <source>id_unidad_construccion</source>
+        <translation>id_unidad_construccion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="379"/>
+        <source>unidades_construccion_no_contenida_por_construccion_asociada</source>
+        <translation>unidades_construccion_no_contenida_por_construccion_asociada</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="398"/>
+        <source>predio_error_derecho</source>
+        <translation>predio_error_derecho</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="400"/>
+        <location filename="../config/quality_rules_config.py" line="426"/>
+        <location filename="../config/quality_rules_config.py" line="437"/>
+        <location filename="../config/quality_rules_config.py" line="448"/>
+        <location filename="../config/quality_rules_config.py" line="459"/>
+        <location filename="../config/quality_rules_config.py" line="498"/>
+        <location filename="../config/quality_rules_config.py" line="516"/>
+        <source>id_predio</source>
+        <translation>id_predio</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="411"/>
+        <source>participaciones_agrupacion_no_suman_1</source>
+        <translation>participaciones_agrupacion_no_suman_1</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="413"/>
+        <source>id_agrupacion</source>
+        <translation>id_agrupacion</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="414"/>
+        <source>miembros</source>
+        <translation>miembros</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="415"/>
+        <source>suma_participaciones</source>
+        <translation>suma_participaciones</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="424"/>
+        <source>predio_error_codigo_departamento</source>
+        <translation>predio_error_codigo_departamento</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="435"/>
+        <source>predio_error_codigo_municipio</source>
+        <translation>predio_error_codigo_municipio</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="446"/>
+        <source>predio_error_numero_predial</source>
+        <translation>predio_error_numero_predial</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="457"/>
+        <source>predio_error_numero_predial_anterior</source>
+        <translation>predio_error_numero_predial_anterior</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="468"/>
+        <source>interesado_natural_inconsistente</source>
+        <translation>interesado_natural_inconsistente</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="470"/>
+        <location filename="../config/quality_rules_config.py" line="484"/>
+        <source>id_interesado</source>
+        <translation>id_interesado</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="482"/>
+        <source>interesado_juridico_inconsistente</source>
+        <translation>interesado_juridico_inconsistente</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="496"/>
+        <source>predio_error_condicion_predio</source>
+        <translation>predio_error_condicion_predio</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="514"/>
+        <source>unidad_espacial_no_corresponde_a_predio</source>
+        <translation>unidad_espacial_no_corresponde_a_predio</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="517"/>
+        <source>numero_terrenos_asociados</source>
+        <translation>numero_terrenos_asociados</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="518"/>
+        <source>numero_construcciones_asociadas</source>
+        <translation>numero_construcciones_asociadas</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="519"/>
+        <source>numero_unidades_construccion_asociadas</source>
+        <translation>numero_unidades_construccion_asociadas</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="538"/>
+        <source>punto_lindero_con_registro_repetido</source>
+        <translation>punto_lindero_con_registro_repetido</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="540"/>
+        <location filename="../config/quality_rules_config.py" line="552"/>
+        <location filename="../config/quality_rules_config.py" line="564"/>
+        <location filename="../config/quality_rules_config.py" line="576"/>
+        <location filename="../config/quality_rules_config.py" line="588"/>
+        <location filename="../config/quality_rules_config.py" line="600"/>
+        <location filename="../config/quality_rules_config.py" line="612"/>
+        <location filename="../config/quality_rules_config.py" line="624"/>
+        <location filename="../config/quality_rules_config.py" line="636"/>
+        <location filename="../config/quality_rules_config.py" line="648"/>
+        <location filename="../config/quality_rules_config.py" line="660"/>
+        <location filename="../config/quality_rules_config.py" line="672"/>
         <source>ids_duplicados</source>
         <translation>ids_duplicados</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="551"/>
+        <location filename="../config/quality_rules_config.py" line="550"/>
         <source>punto_levantamiento_con_registro_repetido</source>
         <translation>punto_levantamiento_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="563"/>
+        <location filename="../config/quality_rules_config.py" line="562"/>
         <source>punto_control_con_registro_repetido</source>
         <translation>punto_control_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="575"/>
+        <location filename="../config/quality_rules_config.py" line="574"/>
         <source>lindero_con_registro_repetido</source>
         <translation>lindero_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="587"/>
+        <location filename="../config/quality_rules_config.py" line="586"/>
         <source>terreno_con_registro_repetido</source>
         <translation>terreno_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="599"/>
+        <location filename="../config/quality_rules_config.py" line="598"/>
         <source>construccion_con_registro_repetido</source>
         <translation>construccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="611"/>
+        <location filename="../config/quality_rules_config.py" line="610"/>
         <source>unidad_construccion_con_registro_repetido</source>
         <translation>unidad_construccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="623"/>
+        <location filename="../config/quality_rules_config.py" line="622"/>
         <source>predio_con_registro_repetido</source>
         <translation>predio_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="635"/>
+        <location filename="../config/quality_rules_config.py" line="634"/>
         <source>interesado_con_registro_repetido</source>
         <translation>interesado_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="647"/>
+        <location filename="../config/quality_rules_config.py" line="646"/>
         <source>derecho_con_registro_repetido</source>
         <translation>derecho_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="659"/>
+        <location filename="../config/quality_rules_config.py" line="658"/>
         <source>restriccion_con_registro_repetido</source>
         <translation>restriccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="671"/>
+        <location filename="../config/quality_rules_config.py" line="670"/>
         <source>fuente_administrativa_con_registro_repetido</source>
         <translation>fuente_administrativa_con_registro_repetido</translation>
     </message>

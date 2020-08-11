@@ -40,12 +40,12 @@ from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.ui import load_ui
-from asistente_ladm_col.gui.supplies.dlg_missing_supplies_base import CobolBaseDialog
+from asistente_ladm_col.gui.supplies.dlg_missing_supplies_base import MissingSuppliesBaseDialog
 
 
-class MissingSncSupplies(CobolBaseDialog):
+class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
     def __init__(self, db, conn_manager, parent=None):
-        CobolBaseDialog.__init__(self, db, conn_manager, parent)
+        MissingSuppliesBaseDialog.__init__(self, db, conn_manager, parent)
         self._db = db
         self.conn_manager = conn_manager
         self.parent = parent
@@ -54,26 +54,24 @@ class MissingSncSupplies(CobolBaseDialog):
         self.help_strings = HelpStrings()
         self.progress_configuration(0, 2)  # Start from: 0, number of steps: 2
         self._running_tool = False
-        self.tool_name = QCoreApplication.translate("MissingSncSupplies", "Missing Supplies")
-        self.setWindowTitle(QCoreApplication.translate("MissingSncSupplies", "Find missing SNC supplies"))
+        self.tool_name = QCoreApplication.translate("MissingSncSuppliesDialog", "Missing Supplies")
+        self.setWindowTitle(QCoreApplication.translate("MissingSncSuppliesDialog", "Find missing SNC supplies"))
         self.txt_help_page.setHtml(self.help_strings.DLG_MISSING_SNC_SUPPLIES)
 
+        # Enable SNC widget
         load_ui('supplies/wig_missing_supplies_export.ui', self.target_data)
         self.target_data.setVisible(True)
 
-        self.disable_widgets()
-
+        # Set connections
         self.target_data.btn_browse_file_folder_supplies.clicked.connect(
                 make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
-                "MissingSncSupplies", "Select folder to save data"), parent=None))
+                "MissingSncSuppliesDialog", "Select folder to save data"), parent=None))
 
+        # Set validations
         dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
         self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
         self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
-
-        self.restore_settings()
-        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_cobol/folder_path', ''))
 
         # Trigger validations right now
         self.txt_file_path_predio.textChanged.emit(self.txt_file_path_predio.text())
@@ -81,20 +79,25 @@ class MissingSncSupplies(CobolBaseDialog):
         self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
 
+        # Initialize
+        self.disable_widgets()
+        self.restore_settings('snc')
+        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_snc/folder_path', ''))
+
     def accepted(self):
         self.bar.clearWidgets()
-        self.save_settings()
-        QSettings().setValue('Asistente-LADM-COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
+        self.save_settings('snc')
+        QSettings().setValue('Asistente-LADM-COL/etl_snc/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
         self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingSncSupplies', 'missing_supplies_cobol.gpkg'))
+                'MissingSncSuppliesDialog', 'missing_supplies_snc.gpkg'))
         self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingSncSupplies', 'missing_supplies_cobol.xlsx'))
+                'MissingSncSuppliesDialog', 'missing_supplies_snc.xlsx'))
 
         reply = self.validate_files_in_folder()
 
-        lis_paths = {'uni': self.txt_file_path_uni.text().strip()}
+        csv_paths = {'PREDIO': self.txt_file_path_predio.text().strip()}
 
         required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
                             ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
@@ -102,8 +105,8 @@ class MissingSncSupplies(CobolBaseDialog):
         if reply == QMessageBox.Yes:
             with OverrideCursor(Qt.WaitCursor):
                 self.set_gui_controls_enabled(False)
-                res_lis, msg_lis = self.load_lis_files(lis_paths)
-                if res_lis:
+                res_csv, msg_csv = self.load_csv_files(csv_paths)
+                if res_csv:
                     res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                     if res_gdb:
                         self._running_tool = True
@@ -152,15 +155,18 @@ class MissingSncSupplies(CobolBaseDialog):
                     else:
                         self.show_message(msg_gdb, Qgis.Warning)
                 else:
-                    self.show_message(msg_lis, Qgis.Warning)
+                    self.show_message(msg_csv, Qgis.Warning)
 
             self.set_gui_controls_enabled(True)
 
     def validate_files_in_folder(self):
+        """
+        This function allows verifying if gpkg path or xlsx path exists.
+        """
         if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
-                QCoreApplication.translate("MissingSncSupplies", "Warning"),
-                QCoreApplication.translate("MissingSncSupplies", "The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder"
+                QCoreApplication.translate("MissingSncSuppliesDialog", "Warning"),
+                QCoreApplication.translate("MissingSncSuppliesDialog", "The <b>xlsx</b> and the <b>gpkg</b> already exist in the folder"
                                                                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -170,8 +176,8 @@ class MissingSncSupplies(CobolBaseDialog):
 
         if reply == QMessageBox.Yes and os.path.isfile(self.gpkg_path):
             reply = QMessageBox.question(self,
-                QCoreApplication.translate("MissingSncSupplies", "Warning"),
-                QCoreApplication.translate("MissingSncSupplies", "The <b>gpkg</b> already exist in the folder"
+                QCoreApplication.translate("MissingSncSuppliesDialog", "Warning"),
+                QCoreApplication.translate("MissingSncSuppliesDialog", "The <b>gpkg</b> already exist in the folder"
                                                                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -181,8 +187,8 @@ class MissingSncSupplies(CobolBaseDialog):
 
         if reply == QMessageBox.Yes and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
-                QCoreApplication.translate("MissingSncSupplies", "Warning"),
-                QCoreApplication.translate("MissingSncSupplies", "The <b>xlsx</b> already exist in the folder"
+                QCoreApplication.translate("MissingSncSuppliesDialog", "Warning"),
+                QCoreApplication.translate("MissingSncSuppliesDialog", "The <b>xlsx</b> already exist in the folder"
                                                                    ".<br/><br/>If you run the function, the data will be overwritten.<br/><br/>Do you still want to continue?"),
                 QMessageBox.Yes, QMessageBox.No)
 
@@ -197,16 +203,16 @@ class MissingSncSupplies(CobolBaseDialog):
         self.logger.info(__name__, "Running Missing Cobol Supplies model...")
 
         try:
-            self.output_etl_missing_cobol = processing.run("model:ETL_O_M_Cobol",
-                                                           {'rconstruccion': self.gdb_paths['R_CONSTRUCCION'],
-                'rterreno': self.gdb_paths['R_TERRENO'],
-                'runidad': self.gdb_paths['R_UNIDAD'],
-                'rvereda': self.gdb_paths['R_VEREDA'],
-                'uconstruccion': self.gdb_paths['U_CONSTRUCCION'],
-                'umanzana': self.gdb_paths['U_MANZANA'],
-                'uni':self.lis_paths['uni'],
-                'uterreno': self.gdb_paths['U_TERRENO'],
-                'uunidad': self.gdb_paths['U_UNIDAD'],
+            self.output_etl_missing_cobol = processing.run("model:ETL_Omisiones_Comisiones_SNC",
+                {'manzana': self.gdb_layer_paths['U_MANZANA'],
+                'predio': self.alphanumeric_file_paths['PREDIO'],
+                'rconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
+                'rterreno': self.gdb_layer_paths['R_TERRENO'],
+                'runidad': self.gdb_layer_paths['R_UNIDAD'],
+                'uconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
+                'uterreno':self.gdb_layer_paths['U_TERRENO'],
+                'uunidad': self.gdb_layer_paths['U_UNIDAD'],
+                'vereda': self.gdb_layer_paths['R_VEREDA'],
                 'qgis:refactorfields_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
                 'qgis:refactorfields_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
                 'qgis:refactorfields_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
@@ -259,13 +265,13 @@ class MissingSncSupplies(CobolBaseDialog):
                 self.show_message(msg, Qgis.Critical)
 
         root = QgsProject.instance().layerTreeRoot()
-        results_group = root.addGroup(QCoreApplication.translate("MissingSncSupplies", "Results missing supplies"))
+        results_group = root.addGroup(QCoreApplication.translate("MissingSncSuppliesDialog", "Results missing supplies"))
 
         for layer_path in output_geopackage['OUTPUT_LAYERS']:
             layer = QgsVectorLayer(layer_path, layer_path.split('layername=')[1], 'ogr')
             self.names_gpkg += '{} '.format(layer_path.split('layername=')[1])
             if not layer.isValid():
-                return False, QCoreApplication.translate("MissingSncSupplies", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
+                return False, QCoreApplication.translate("MissingSncSuppliesDialog", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
             LayerNode = root.findLayer(layer.id())
@@ -287,9 +293,13 @@ class MissingSncSupplies(CobolBaseDialog):
         self.btn_browse_file_uni.setVisible(False)
 
     def validate_inputs(self):
+        """
+        The dialog has inputs that are necessary to model works. so this function validates than the file exists and has the correct extension.
+        """
+        predio_path = self.txt_file_path_predio.validator().validate(self.txt_file_path_predio.text().strip(), 0)[0]
         state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
 
-        if state_path == QValidator.Acceptable and self.validate_common_inputs():
+        if predio_path == QValidator.Acceptable and state_path == QValidator.Acceptable and self.validate_common_inputs():
             return True
         else:
             return False
