@@ -28,6 +28,7 @@ from asistente_ladm_col.gui.field_data_capture.allocate_parcels_initial_panel im
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import \
     AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
+from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
 from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 from asistente_ladm_col.utils import get_ui_class
 
@@ -56,10 +57,14 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.allocate_parcels_to_surveyor_panel = None
         self.lst_allocate_parcels_to_surveyor_panel = list()
 
+        self.convert_to_offline_panel = None
+        self.lst_convert_to_offline_panel = list()
+
         if allocate_mode:
             self.add_layers()
             self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self, self.controller)
             self.allocate_panel.allocate_parcels_to_surveyor_panel_requested.connect(self.show_allocate_parcels_to_surveyor_panel)
+            self.allocate_panel.convert_to_offline_panel_requested.connect(self.show_convert_to_offline_panel)
             self.widget.setMainPanel(self.allocate_panel)
             self.allocate_panel.fill_data()
         else:  # Synchronize mode
@@ -102,6 +107,23 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             self.allocate_parcels_to_surveyor_panel.refresh_parcel_data_requested.connect(self.allocate_panel.panel_accepted_refresh_parcel_data)
             self.widget.showPanel(self.allocate_parcels_to_surveyor_panel)
             self.lst_allocate_parcels_to_surveyor_panel.append(self.allocate_parcels_to_surveyor_panel)
+
+    def show_convert_to_offline_panel(self):
+        with OverrideCursor(Qt.WaitCursor):
+            if self.lst_convert_to_offline_panel:
+                for panel in self.lst_convert_to_offline_panel:
+                    try:
+                        self.widget.closePanel(panel)
+                    except RuntimeError as e:  # Panel in C++ could be already closed...
+                        pass
+
+                self.lst_convert_to_offline_panel = list()
+                self.convert_to_offline_panel = None
+
+            self.convert_to_offline_panel = ConvertToOfflinePanelWidget(self, self.controller)
+            self.convert_to_offline_panel.refresh_parcel_data_clear_selection_requested.connect(self.allocate_panel.panel_accepted_refresh_and_clear_selection)
+            self.widget.showPanel(self.convert_to_offline_panel)
+            self.lst_convert_to_offline_panel.append(self.convert_to_offline_panel)
 
     def closeEvent(self, event):
         # Close here open signals in other panels (if needed)
@@ -265,3 +287,6 @@ class FieldDataCaptureController(QObject):
 
     def delete_surveyor(self, surveyor_t_id):
         return self.ladm_data.delete_surveyor(self.db().names, surveyor_t_id, self.surveyor_layer())
+
+    def get_summary_data(self):
+        return self.ladm_data.get_summary_of_allocation_field_data_capture(self.db().names, self.parcel_layer())

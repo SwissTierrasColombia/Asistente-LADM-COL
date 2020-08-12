@@ -930,6 +930,8 @@ class LADMData():
         # Get unique values from parcel layer (surveyor)
         surveyor_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
         surveyor_t_ids = fdc_parcel_layer.uniqueValues(surveyor_idx)
+        if NULL in surveyor_t_ids:
+            surveyor_t_ids.remove(NULL)
 
         surveyors = LADMData.get_features_from_t_ids(fdc_surveyor_layer, names.T_ID_F, surveyor_t_ids)
         surveyor_dict = {feature[names.T_ID_F]: (feature.id(), LADMData.get_surveyor_name(names, feature, False)) for feature in surveyors}
@@ -951,7 +953,7 @@ class LADMData():
 
             # Warning: Use QGIS ids if you're sure it'll get always the same records.
             # For some reason that does not happen with parcels, that's why we prefer t_ids.
-            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_id_expression(parcel_t_ids, names.T_ID_F),
+            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_layer_expression(parcel_t_ids, names.T_ID_F),
                                                                      names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
                                                                      names.FDC_SURVEYOR_T: LADMData.build_layer_expression([surveyor_dict[surveyor_t_id][0]])}
 
@@ -994,3 +996,6 @@ class LADMData():
         return fdc_surveyor_layer.dataProvider().deleteFeatures(LADMData.get_fids_from_t_ids(fdc_surveyor_layer,
                                                                                              names.T_ID_F,
                                                                                              [surveyor_t_id]))
+
+    def get_summary_of_allocation_field_data_capture(self, names, fdc_parcel_layer):
+        pass

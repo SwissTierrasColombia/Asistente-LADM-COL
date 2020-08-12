@@ -36,6 +36,7 @@ WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widg
 
 class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
     allocate_parcels_to_surveyor_panel_requested = pyqtSignal(dict)  # {parcel_fid: parcel_number}
+    convert_to_offline_panel_requested = pyqtSignal()
 
     STATUS_COL = 1
 
@@ -52,14 +53,12 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
 
         self.tbl_parcels.resizeColumnsToContents()
-        self.prb_to_offline.setVisible(False)
 
-        self.controller.convert_to_offline_progress.connect(self.update_progress)
         self.txt_search.valueChanged.connect(self.search_value_changed)
         self.tbl_parcels.itemSelectionChanged.connect(self.selection_changed)
         self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_surveyors_panel)
         self.btn_allocate.clicked.connect(self.call_allocate_parcels_to_surveyor_panel)
-        self.btn_generate_offline_projects.clicked.connect(self.generate_offline_projects)
+        self.btn_show_summary.clicked.connect(self.convert_to_offline_panel_requested)
 
         self.connect_to_plot_selection(True)
 
@@ -179,6 +178,10 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
         """Slot for refreshing parcel data when it has changed in other panels"""
         self.fill_data(True)
 
+    def panel_accepted_refresh_and_clear_selection(self):
+        self.panel_accepted_refresh_parcel_data()  # Refresh data in table widget, as it might be out of sync with newly added layers
+        self.tbl_parcels.clearSelection()  # Selection might be remembered from the status before converting to offline
+
     def call_allocate_parcels_to_surveyor_panel(self):
         # Make sure that all selected items are not yet allocated, otherwise, allow users to deallocate selected
         already_allocated = list()  # {parcel_fid: (item1, item2)}
@@ -233,25 +236,3 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
             self.allocate_parcels_to_surveyor_panel_requested.emit(self.__selected_items)
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "First select some parcels to be allocated!"), 5)
-
-    def generate_offline_projects(self):
-        export_dir = QFileDialog.getExistingDirectory(self.parent,
-                                                      QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Select folder to store offline projects"),
-                                                      self.app.settings.export_dir_offline_projects)
-        if export_dir:
-            self.app.settings.export_dir_offline_projects = export_dir
-            self.prb_to_offline.setVisible(True)
-            self.prb_to_offline.setRange(0, 100)
-            self.prb_to_offline.setValue(0)
-
-            res, msg = self.controller.convert_to_offline(export_dir)
-
-            self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
-
-            self.fill_data(True)  # Refresh data in table widget, as it might be out of sync with newly added layers
-            self.tbl_parcels.clearSelection()  # Selection might be remembered from the status before converting to offline
-
-            self.prb_to_offline.setVisible(False)
-
-    def update_progress(self, progress):
-        self.prb_to_offline.setValue(progress)

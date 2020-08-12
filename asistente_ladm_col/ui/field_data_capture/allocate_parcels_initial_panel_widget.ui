@@ -17,20 +17,6 @@
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QPushButton" name="btn_generate_offline_projects">
-       <property name="toolTip">
-        <string>Generate offline projects</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/Asistente-LADM-COL/resources/images/save.svg</normaloff>:/Asistente-LADM-COL/resources/images/save.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btn_show_summary">
        <property name="toolTip">
         <string>Show summary</string>
@@ -41,16 +27,6 @@
        <property name="icon">
         <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QProgressBar" name="prb_to_offline">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="value">
-        <number>24</number>
        </property>
       </widget>
      </item>
