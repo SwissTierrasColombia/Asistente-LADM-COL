@@ -57,6 +57,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.tool_name = QCoreApplication.translate("MissingCobolSuppliesDialog", "Missing Supplies")
         self.setWindowTitle(QCoreApplication.translate("MissingCobolSuppliesDialog", "Find missing Cobol supplies"))
         self.txt_help_page.setHtml(self.help_strings.DLG_MISSING_COBOL_SUPPLIES)
+        self.system_data = 'cobol'
 
         # Enable COBOL widget
         load_ui('supplies/wig_missing_supplies_export.ui', self.target_data)
@@ -75,7 +76,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
         # Initialize
         self.disable_widgets()
-        self.restore_settings('cobol')
+        self.restore_settings(self.system_data)
         self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_cobol/folder_path', ''))
 
         # Trigger validations right now
@@ -86,7 +87,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def accepted(self):
         self.bar.clearWidgets()
-        self.save_settings('cobol')
+        self.save_settings(self.system_data)
         QSettings().setValue('Asistente-LADM-COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
         self.folder_path = self.target_data.txt_file_path_folder_supplies.text()

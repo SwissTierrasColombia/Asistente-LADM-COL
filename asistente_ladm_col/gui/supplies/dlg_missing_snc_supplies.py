@@ -57,6 +57,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
         self.tool_name = QCoreApplication.translate("MissingSncSuppliesDialog", "Missing Supplies")
         self.setWindowTitle(QCoreApplication.translate("MissingSncSuppliesDialog", "Find missing SNC supplies"))
         self.txt_help_page.setHtml(self.help_strings.DLG_MISSING_SNC_SUPPLIES)
+        self.system_data = 'snc'
 
         # Enable SNC widget
         load_ui('supplies/wig_missing_supplies_export.ui', self.target_data)
@@ -81,12 +82,12 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
 
         # Initialize
         self.disable_widgets()
-        self.restore_settings('snc')
+        self.restore_settings(self.system_data)
         self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_snc/folder_path', ''))
 
     def accepted(self):
         self.bar.clearWidgets()
-        self.save_settings('snc')
+        self.save_settings(self.system_data)
         QSettings().setValue('Asistente-LADM-COL/etl_snc/folder_path', self.target_data.txt_file_path_folder_supplies.text())
 
         self.folder_path = self.target_data.txt_file_path_folder_supplies.text()

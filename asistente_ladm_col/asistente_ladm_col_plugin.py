@@ -114,8 +114,8 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
-from asistente_ladm_col.gui.supplies.dlg_missing_snc_supplies import MissingSncSupplies
+from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSuppliesDialog
+from asistente_ladm_col.gui.supplies.dlg_missing_snc_supplies import MissingSncSuppliesDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -909,7 +909,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = MissingCobolSupplies(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        dlg = MissingCobolSuppliesDialog(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
@@ -922,7 +922,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = MissingSncSupplies(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        dlg = MissingSncSuppliesDialog(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()

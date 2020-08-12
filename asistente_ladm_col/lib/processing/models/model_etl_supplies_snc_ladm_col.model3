@@ -1,63 +1,6 @@
 <!DOCTYPE model>
 <Option type="Map">
   <Option name="children" type="Map">
-    <Option name="ladm_col:fieldcalculatorforinputlayer_1" type="Map">
-      <Option name="active" type="bool" value="true"/>
-      <Option name="alg_config"/>
-      <Option name="alg_id" type="QString" value="ladm_col:fieldcalculatorforinputlayer"/>
-      <Option name="component_description" type="QString" value="Field calculator for input layer"/>
-      <Option name="component_pos_x" type="double" value="331.0410602448435"/>
-      <Option name="component_pos_y" type="double" value="1203.3854948343492"/>
-      <Option name="dependencies"/>
-      <Option name="id" type="QString" value="ladm_col:fieldcalculatorforinputlayer_1"/>
-      <Option name="outputs"/>
-      <Option name="outputs_collapsed" type="bool" value="true"/>
-      <Option name="parameters_collapsed" type="bool" value="true"/>
-      <Option name="params" type="Map">
-        <Option name="FIELD_LENGTH" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="80"/>
-          </Option>
-        </Option>
-        <Option name="FIELD_NAME" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="QString" value="ID"/>
-          </Option>
-        </Option>
-        <Option name="FIELD_PRECISION" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="0"/>
-          </Option>
-        </Option>
-        <Option name="FIELD_TYPE" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="int" value="2"/>
-          </Option>
-        </Option>
-        <Option name="FORMULA" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="QString" value="''"/>
-          </Option>
-        </Option>
-        <Option name="INPUT" type="List">
-          <Option type="Map">
-            <Option name="parameter_name" type="QString" value="gcunidadconstruccion"/>
-            <Option name="source" type="int" value="0"/>
-          </Option>
-        </Option>
-        <Option name="NEW_FIELD" type="List">
-          <Option type="Map">
-            <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="bool" value="true"/>
-          </Option>
-        </Option>
-      </Option>
-    </Option>
     <Option name="ladm_col:insertfeaturestolayer_1" type="Map">
       <Option name="active" type="bool" value="true"/>
       <Option name="alg_config"/>
@@ -566,12 +509,10 @@
       <Option name="active" type="bool" value="true"/>
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="ladm_col:insertfeaturestolayer"/>
-      <Option name="component_description" type="QString" value="Insert features to layer"/>
+      <Option name="component_description" type="QString" value="Ingresando datos a la capa GC_UNIDAD_CONSTRUCCION"/>
       <Option name="component_pos_x" type="double" value="568.2961239742237"/>
       <Option name="component_pos_y" type="double" value="1293.1035440502324"/>
-      <Option name="dependencies" type="StringList">
-        <Option type="QString" value="ladm_col:fieldcalculatorforinputlayer_1"/>
-      </Option>
+      <Option name="dependencies"/>
       <Option name="id" type="QString" value="ladm_col:insertfeaturestolayer_8"/>
       <Option name="outputs"/>
       <Option name="outputs_collapsed" type="bool" value="true"/>
@@ -596,7 +537,7 @@
       <Option name="active" type="bool" value="true"/>
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="ladm_col:insertfeaturestolayer"/>
-      <Option name="component_description" type="QString" value="Insert features to layer"/>
+      <Option name="component_description" type="QString" value="Ingresando datos a la capa GC_COMSIONES_UNIDAD_CONSTRUCCION"/>
       <Option name="component_pos_x" type="double" value="1361.912549847144"/>
       <Option name="component_pos_y" type="double" value="1293.1035440502326"/>
       <Option name="dependencies"/>
@@ -1465,7 +1406,9 @@
       <Option name="component_description" type="QString" value="Uniendo la capa UNIDAD_CONSTRUCION_COMP con la capa GC_UNIDAD_CONSTRUCCION"/>
       <Option name="component_pos_x" type="double" value="383.29624618091316"/>
       <Option name="component_pos_y" type="double" value="1401.474219547667"/>
-      <Option name="dependencies"/>
+      <Option name="dependencies" type="StringList">
+        <Option type="QString" value="ladm_col:insertfeaturestolayer_8"/>
+      </Option>
       <Option name="id" type="QString" value="native:joinattributestable_15"/>
       <Option name="outputs"/>
       <Option name="outputs_collapsed" type="bool" value="true"/>
@@ -1503,8 +1446,9 @@
         </Option>
         <Option name="INPUT_2" type="List">
           <Option type="Map">
-            <Option name="parameter_name" type="QString" value="gcunidadconstruccion"/>
-            <Option name="source" type="int" value="0"/>
+            <Option name="child_id" type="QString" value="native:mergevectorlayers_8"/>
+            <Option name="output_name" type="QString" value="OUTPUT"/>
+            <Option name="source" type="int" value="1"/>
           </Option>
         </Option>
         <Option name="METHOD" type="List">
@@ -2839,11 +2783,11 @@
             <Option name="source" type="int" value="2"/>
             <Option name="static_value" type="QgsCoordinateReferenceSystem">
               <spatialrefsys>
-                <proj4>+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80  +units=m +no_defs</proj4>
-                <srsid>100004</srsid>
-                <srid>0</srid>
-                <authid>USER:100004</authid>
-                <description> * Generated CRS (+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80  +units=m +no_defs)</description>
+                <proj4>+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+                <srsid>9377</srsid>
+                <srid>9377</srid>
+                <authid>EPSG:9377</authid>
+                <description>MAGNA-SIRGAS / CTM12</description>
                 <projectionacronym>tmerc</projectionacronym>
                 <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
                 <geographicflag>false</geographicflag>
@@ -2881,7 +2825,18 @@
         <Option name="CRS" type="List">
           <Option type="Map">
             <Option name="source" type="int" value="2"/>
-            <Option name="static_value" type="invalid"/>
+            <Option name="static_value" type="QgsCoordinateReferenceSystem">
+              <spatialrefsys>
+                <proj4>+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+                <srsid>9377</srsid>
+                <srid>9377</srid>
+                <authid>EPSG:9377</authid>
+                <description>MAGNA-SIRGAS / CTM12</description>
+                <projectionacronym>tmerc</projectionacronym>
+                <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+                <geographicflag>false</geographicflag>
+              </spatialrefsys>
+            </Option>
           </Option>
         </Option>
         <Option name="LAYERS" type="List">
@@ -3832,8 +3787,8 @@
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="qgis:refactorfields"/>
       <Option name="component_description" type="QString" value="Mapeando campos de la capa UNIDAD_CONSTRUCCION_COMP"/>
-      <Option name="component_pos_x" type="double" value="611.1996865900403"/>
-      <Option name="component_pos_y" type="double" value="1400.8150088814168"/>
+      <Option name="component_pos_x" type="double" value="610.1996865900403"/>
+      <Option name="component_pos_y" type="double" value="1399.8150088814168"/>
       <Option name="dependencies"/>
       <Option name="id" type="QString" value="qgis:refactorfields_13"/>
       <Option name="outputs"/>
