@@ -18,7 +18,8 @@
 """
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt)
+                              Qt,
+                              pyqtSignal)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.lib.logger import Logger
@@ -28,6 +29,8 @@ WIDGET_UI = get_ui_class('field_data_capture/configure_surveyors_panel_widget.ui
 
 
 class ConfigureSurveyorsPanelWidget(QgsPanelWidget, WIDGET_UI):
+    clear_message_bar_requested = pyqtSignal()
+
     def __init__(self, parent, controller):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
@@ -37,6 +40,7 @@ class ConfigureSurveyorsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure surveyors"))
+        self.panelAccepted.connect(self.panel_accepted)
         self.tbl_surveyors.itemSelectionChanged.connect(self.selection_changed)
         self.btn_save.clicked.connect(self.save_surveyor)
         self.btn_delete.clicked.connect(self.delete_surveyor)
@@ -44,6 +48,9 @@ class ConfigureSurveyorsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_delete.setEnabled(False)
         self.fill_data()
         self.tbl_surveyors.resizeColumnsToContents()
+
+    def panel_accepted(self):
+        self.clear_message_bar_requested.emit()
 
     def fill_data(self):
         self.tbl_surveyors.clearContents()

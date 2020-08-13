@@ -28,6 +28,12 @@
         <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -55,6 +61,12 @@
         <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -68,6 +80,12 @@
        <property name="icon">
         <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -167,6 +185,12 @@
        <property name="icon">
         <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/process.svg</normaloff>:/Asistente-LADM-COL/resources/images/process.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>

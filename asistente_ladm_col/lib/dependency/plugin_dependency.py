@@ -62,7 +62,7 @@ class PluginDependency(Dependency):
     def __install_plugin_from_zip(self):
         if os.path.isfile(self.tmp_file):
             pyplugin_installer.instance().installFromZipFile(self.tmp_file)
-            self.logger.info_msg(__name__, QCoreApplication.translate("Dependency",
+            self.logger.success_msg(__name__, QCoreApplication.translate("Dependency",
                 "The plugin '{}' was successfully installed!").format(self.plugin_name))
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("Dependency",

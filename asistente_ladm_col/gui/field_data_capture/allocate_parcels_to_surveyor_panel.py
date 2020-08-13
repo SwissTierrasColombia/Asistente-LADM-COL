@@ -22,7 +22,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QBrush
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QMessageBox)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
@@ -42,6 +43,8 @@ class AllocateParcelsToSurveyorPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.controller = controller
         self.logger = Logger()
 
+        # Main dicts to store parcels that are not yet allocated but were selected
+        # from the previous panel and parcels that are already allocated in the DB
         self.__parcels_to_be_allocated = parcels_to_be_allocated  # {parcel_fid: parcel_number}
         self.__parcels_already_allocated = dict()  # {parcel_fid: parcel_number}
         
@@ -91,6 +94,7 @@ class AllocateParcelsToSurveyorPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         text = QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget", "Already allocated") if allocated else QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget", "To be allocated")
         item2 = QTableWidgetItem(text)
+        item2.setData(Qt.UserRole, allocated)
         if not allocated:
             item2.setBackground(QBrush(NOT_ALLOCATED_PARCEL_COLOR))
         self.tbl_parcels.setItem(row, 1, item2)
@@ -111,12 +115,62 @@ class AllocateParcelsToSurveyorPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Take 2 cases into account:
         # 1) an already allocated parcel is being discarded --> fill_table()
         # 2) a 'to be allocated' parcel is being discarded --> fill_table(refresh_allocated_parcels=False)
-        pass
+        already_allocated = list()
+        to_be_allocated = list()
+
+        selected_gui_items = [item.data(Qt.UserRole) for item in self.tbl_parcels.selectedItems()]
+        for row in range(self.tbl_parcels.rowCount()):
+            item = self.tbl_parcels.item(row, 0)
+            fid = item.data(Qt.UserRole)
+            if fid in selected_gui_items:
+                item2 = self.tbl_parcels.item(row, 1)
+                if item2.data(Qt.UserRole):  # Allocated?
+                    already_allocated.append(fid)
+                else:
+                    to_be_allocated.append(fid)
+
+        if not already_allocated and not to_be_allocated:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
+                                                                         "First select some parcels in the list."))
+            return
+
+        reply = QMessageBox.question(self,
+                                     QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget", "Do you confirm?"),
+                                     QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
+                                                                "Are you sure you want to remove the allocation of selected parcels in the list?"),
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            res = False
+            # 1)
+            if already_allocated:
+                res = self.controller.discard_parcel_allocation(already_allocated)
+
+            # 2)
+            for parcel_fid in to_be_allocated:
+                del self.__parcels_to_be_allocated[parcel_fid]
+                res = True
+
+            if res:
+                self.logger.success_msg(__name__, QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
+                                                                             "Selected parcels were successfully discarded!"))
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
+                                                                             "There were troubles discarding parcels!"))
+
+            # Finally, reload the table, refreshing from data source only when already-allocated parcels were discarded
+            # For safety, we reload even if not res, just to make sure our data is totally in sync
+            self.fill_table(bool(already_allocated))
 
     def save_allocation(self):
+        if not self.__parcels_to_be_allocated:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
+                                    "There are no parcels to be allocated! Go back and select some parcels first."))
+            return
+
         parcel_ids_to_allocate = list(self.__parcels_to_be_allocated.keys())
-        res = self.controller.save_allocation_for_surveyor(parcel_ids_to_allocate,
-                                                                              self.cbo_surveyor.currentData())
+
+        res = self.controller.save_allocation_for_surveyor(parcel_ids_to_allocate, self.cbo_surveyor.currentData())
         if res:
             self.logger.success_msg(__name__,
                                     QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget",
