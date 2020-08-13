@@ -289,4 +289,10 @@ class FieldDataCaptureController(QObject):
         return self.ladm_data.delete_surveyor(self.db().names, surveyor_t_id, self.surveyor_layer())
 
     def get_summary_data(self):
-        return self.ladm_data.get_summary_of_allocation_field_data_capture(self.db().names, self.parcel_layer())
+        return self.ladm_data.get_summary_of_allocation_field_data_capture(self.db().names,
+                                                                           self.parcel_layer(),
+                                                                           self.surveyor_layer())
+
+    def get_count_of_not_allocated_parcels(self):
+        return self.ladm_data.get_count_of_not_allocated_parcels_field_data_capture(self.db().names,
+                                                                                    self.parcel_layer())

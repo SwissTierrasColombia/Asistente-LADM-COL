@@ -16,12 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
+import locale
+
 from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsFeature,
                        QgsVectorLayer,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsAggregateCalculator)
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.config.general_config import DEFAULT_LOG_MODE
 from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY,
@@ -997,5 +1000,27 @@ class LADMData():
                                                                                              names.T_ID_F,
                                                                                              [surveyor_t_id]))
 
-    def get_summary_of_allocation_field_data_capture(self, names, fdc_parcel_layer):
-        pass
+    @staticmethod
+    def get_summary_of_allocation_field_data_capture(names, fdc_parcel_layer, fdc_surveyor_layer):
+        # Get unique values from parcel layer (surveyor)
+        surveyor_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
+        surveyor_t_ids = fdc_parcel_layer.uniqueValues(surveyor_idx)  # Get all surveyors with allocated parcels
+        if NULL in surveyor_t_ids:
+            surveyor_t_ids.remove(NULL)
+
+        all_surveyors_data = LADMData.get_surveyors_data(names, fdc_surveyor_layer)  # May include surveyors with no allocation
+        surveyor_parcel_count = dict()  # {surveyor_name: parcel_count}
+        params = QgsAggregateCalculator.AggregateParameters()
+        for surveyor_t_id in surveyor_t_ids:
+            params.filter = "{} = {}".format(names.FDC_PARCEL_T_SURVEYOR_F, surveyor_t_id)
+            surveyor_name = all_surveyors_data[surveyor_t_id][0]  # (name, doc_id)
+            surveyor_parcel_count[surveyor_name] = int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
+                                                                                  names.FDC_PARCEL_T_SURVEYOR_F,
+                                                                                  params)[0])  # val (float), res (bool)
+
+        return sorted(surveyor_parcel_count.items(), key=lambda x:locale.strxfrm(x[0]))
+
+    @staticmethod
+    def get_count_of_not_allocated_parcels_field_data_capture(names, fdc_parcel_layer):
+        return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.CountMissing,
+                                              names.FDC_PARCEL_T_SURVEYOR_F)[0])  # val (float), res (bool)
