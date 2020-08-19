@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 import os
+import sys
 from shutil import copyfile
 from sys import platform
 import subprocess
@@ -193,13 +193,9 @@ def import_qgis_model_baker():
         qgis.utils.plugins["QgisModelBaker"] = pg
 
 def import_processing():
-    global iface
-    plugin_found = "processing" in qgis.utils.plugins
-    if not plugin_found:
-        processing_plugin = processing.classFactory(iface)
-        qgis.utils.plugins["processing"] = processing_plugin
-        qgis.utils.active_plugins.append("processing")
-
+    if not "processing" in qgis.utils.plugins:
+        sys.path.append("/usr/share/qgis/python/plugins/")
+        import processing
         from processing.core.Processing import Processing
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
