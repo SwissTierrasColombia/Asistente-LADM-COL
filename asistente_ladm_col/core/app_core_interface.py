@@ -683,7 +683,7 @@ class AppCoreInterface(QObject):
         """
         # Relation reference are widgets for FKs, they shouldn't be applied on update
         res = layer.editorWidgetSetup(field_index).type() != 'RelationReference'
-        if res:
+        if res and names:
             # Additionally, begin_lifespan, t_ili_tid, local_id and namespace should not be applied on update
             res = field_name not in [names.T_ILI_TID_F,
                                      names.OID_T_LOCAL_ID_F,
