@@ -46,20 +46,23 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.controller.field_data_capture_layer_removed.connect(self.layer_removed)
 
         # Configure panels
-        self.configure_surveyors_panel = None
-        self.lst_configure_surveyors_panel = list()
+        self.configure_receivers_panel = None
+        self.lst_configure_receivers_panel = list()
 
-        self.allocate_parcels_to_surveyor_panel = None
-        self.lst_allocate_parcels_to_surveyor_panel = list()
+        self.allocate_parcels_to_receiver_panel = None
+        self.lst_allocate_parcels_to_receiver_panel = list()
 
-        self.convert_to_offline_panel = None
-        self.lst_convert_to_offline_panel = list()
+        self.split_data_for_receivers_panel = None
+        self.lst_split_data_for_receivers_panel = list()
+
+        self.allocate_panel = None
 
         if allocate_mode:
             self.add_layers()
             self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self, self.controller)
-            self.allocate_panel.allocate_parcels_to_surveyor_panel_requested.connect(self.show_allocate_parcels_to_surveyor_panel)
-            self.allocate_panel.convert_to_offline_panel_requested.connect(self.show_convert_to_offline_panel)
+            self.allocate_panel.allocate_parcels_to_surveyor_panel_requested.connect(
+                self.show_allocate_parcels_to_receiver_panel)
+            self.allocate_panel.convert_to_offline_panel_requested.connect(self.show_split_data_for_receivers_panel)
             self.widget.setMainPanel(self.allocate_panel)
             self.allocate_panel.fill_data()
         else:  # Synchronize mode
@@ -68,58 +71,47 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             # self.lst_parcel_panels.append(self.synchronize_panel)
             pass
 
-    def show_configure_surveyors_panel(self):
-        with OverrideCursor(Qt.WaitCursor):
-            if self.lst_configure_surveyors_panel:
-                for panel in self.lst_configure_surveyors_panel:
-                    try:
-                        self.widget.closePanel(panel)
-                    except RuntimeError as e:  # Panel in C++ could be already closed...
-                        pass
+    def show_configure_receivers_panel(self):
+        raise NotImplementedError
 
-                self.lst_configure_surveyors_panel = list()
-                self.configure_surveyors_panel = None
+    def _reset_receivers_panel_vars(self):
+        if self.lst_configure_receivers_panel:
+            for panel in self.lst_configure_receivers_panel:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
 
-            self.configure_surveyors_panel = ConfigureSurveyorsPanelWidget(self, self.controller)
-            self.configure_surveyors_panel.clear_message_bar_requested.connect(self.allocate_panel.panel_accepted_clear_message_bar)
-            self.widget.showPanel(self.configure_surveyors_panel)
-            self.lst_configure_surveyors_panel.append(self.configure_surveyors_panel)
+            self.lst_configure_receivers_panel = list()
+            self.configure_receivers_panel = None
 
-    def show_allocate_parcels_to_surveyor_panel(self, selected_parcels):
-        with OverrideCursor(Qt.WaitCursor):
-            if self.lst_allocate_parcels_to_surveyor_panel:
-                for panel in self.lst_allocate_parcels_to_surveyor_panel:
-                    try:
-                        self.widget.closePanel(panel)
-                    except RuntimeError as e:  # Panel in C++ could be already closed...
-                        pass
+    def show_allocate_parcels_to_receiver_panel(self, selected_parcels):
+        raise NotImplementedError
 
-                self.lst_allocate_parcels_to_surveyor_panel = list()
-                self.allocate_parcels_to_surveyor_panel = None
+    def _reset_allocate_parcels_to_receiver_panel_vars(self):
+        if self.lst_allocate_parcels_to_receiver_panel:
+            for panel in self.lst_allocate_parcels_to_receiver_panel:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
 
-            self.allocate_parcels_to_surveyor_panel = AllocateParcelsToSurveyorPanelWidget(self,
-                                                                                           self.controller,
-                                                                                           selected_parcels)
-            self.allocate_parcels_to_surveyor_panel.refresh_parcel_data_requested.connect(self.allocate_panel.panel_accepted_refresh_parcel_data)
-            self.widget.showPanel(self.allocate_parcels_to_surveyor_panel)
-            self.lst_allocate_parcels_to_surveyor_panel.append(self.allocate_parcels_to_surveyor_panel)
+            self.lst_allocate_parcels_to_receiver_panel = list()
+            self.allocate_parcels_to_receiver_panel = None
 
-    def show_convert_to_offline_panel(self):
-        with OverrideCursor(Qt.WaitCursor):
-            if self.lst_convert_to_offline_panel:
-                for panel in self.lst_convert_to_offline_panel:
-                    try:
-                        self.widget.closePanel(panel)
-                    except RuntimeError as e:  # Panel in C++ could be already closed...
-                        pass
+    def show_split_data_for_receivers_panel(self):
+        raise NotImplementedError
 
-                self.lst_convert_to_offline_panel = list()
-                self.convert_to_offline_panel = None
+    def _reset_split_data_for_receivers_panel_vars(self):
+        if self.lst_split_data_for_receivers_panel:
+            for panel in self.lst_split_data_for_receivers_panel:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
 
-            self.convert_to_offline_panel = ConvertToOfflinePanelWidget(self, self.controller)
-            self.convert_to_offline_panel.refresh_parcel_data_clear_selection_requested.connect(self.allocate_panel.panel_accepted_refresh_and_clear_selection)
-            self.widget.showPanel(self.convert_to_offline_panel)
-            self.lst_convert_to_offline_panel.append(self.convert_to_offline_panel)
+            self.lst_split_data_for_receivers_panel = list()
+            self.split_data_for_receivers_panel = None
 
     def closeEvent(self, event):
         # Close here open signals in other panels (if needed)

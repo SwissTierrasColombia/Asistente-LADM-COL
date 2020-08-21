@@ -56,7 +56,7 @@ class AllocateParcelsFieldDataCapturePanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.txt_search.valueChanged.connect(self.search_value_changed)
         self.tbl_parcels.itemSelectionChanged.connect(self.selection_changed)
-        self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_surveyors_panel)
+        self.btn_configure_surveyors.clicked.connect(self.parent.show_configure_receivers_panel)
         self.btn_allocate.clicked.connect(self.call_allocate_parcels_to_surveyor_panel)
         self.btn_reallocate.clicked.connect(self.reallocate_clicked)
         self.btn_show_summary.clicked.connect(self.convert_to_offline_panel_requested)

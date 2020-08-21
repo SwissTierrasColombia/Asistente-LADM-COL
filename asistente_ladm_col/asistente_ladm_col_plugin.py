@@ -42,7 +42,8 @@ from processing.script import ScriptUtils
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import ROLE_CONFIG
 from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
-from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture import DockWidgetFieldDataCapture
+from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
+from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
@@ -964,10 +965,17 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_field_data_capture_dockwidget(self, allocate=True):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_FIELD_DATA_CAPTURE])
 
-        dock_widget_field_data_capture = DockWidgetFieldDataCapture(self.iface,
-                                                                   self.get_db_connection(),
-                                                                   self.ladm_data,
-                                                                   allocate_mode=allocate)
+        if self.role_registry.get_active_role() == FIELD_COORDINATOR_ROLE:
+            dock_widget_field_data_capture = DockWidgetFieldDataCaptureCoordinatorSurveyor(self.iface,
+                                                                                           self.get_db_connection(),
+                                                                                           self.ladm_data,
+                                                                                           allocate_mode=allocate)
+        else:  # FIELD_ADMIN_ROLE
+            dock_widget_field_data_capture = DockWidgetFieldDataCaptureAdminCoordinator(self.iface,
+                                                                                           self.get_db_connection(),
+                                                                                           self.ladm_data,
+                                                                                           allocate_mode=allocate)
+
         self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
         self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
