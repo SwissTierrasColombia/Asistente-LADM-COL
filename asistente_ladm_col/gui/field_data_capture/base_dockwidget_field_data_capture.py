@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.field_data_capture.allocate_parcels_initial_panel import AllocateParcelsFieldDataCapturePanelWidget
+from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
@@ -33,17 +33,17 @@ from asistente_ladm_col.utils.qt_utils import OverrideCursor
 DOCKWIDGET_UI = get_ui_class('field_data_capture/dockwidget_field_data_capture.ui')
 
 
-class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
+class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
     def __init__(self, iface, db, ladm_data, allocate_mode=True):
-        super(DockWidgetFieldDataCapture, self).__init__(None)
+        super(BaseDockWidgetFieldDataCapture, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.logger = Logger()
         self.logger.clear_message_bar()  # Clear QGIS message bar
 
-        self.controller = FieldDataCaptureController(iface, db, ladm_data)
-        self.controller.field_data_capture_layer_removed.connect(self.layer_removed)
+        self._controller = FieldDataCaptureController(iface, db, ladm_data)
+        self._controller.field_data_capture_layer_removed.connect(self.layer_removed)
 
         # Configure panels
         self.configure_receivers_panel = None
@@ -58,18 +58,18 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.allocate_panel = None
 
         if allocate_mode:
-            self.add_layers()
-            self.allocate_panel = AllocateParcelsFieldDataCapturePanelWidget(self, self.controller)
-            self.allocate_panel.allocate_parcels_to_surveyor_panel_requested.connect(
-                self.show_allocate_parcels_to_receiver_panel)
-            self.allocate_panel.convert_to_offline_panel_requested.connect(self.show_split_data_for_receivers_panel)
-            self.widget.setMainPanel(self.allocate_panel)
-            self.allocate_panel.fill_data()
+            self._initialize_allocate_initial_panel()
         else:  # Synchronize mode
             # self.synchronize_panel = ChangesPerParcelPanelWidget(self, self.utils)
             # self.widget.setMainPanel(self.synchronize_panel)
             # self.lst_parcel_panels.append(self.synchronize_panel)
-            pass
+            self._initialize_synchronize_initial_panel()
+
+    def _initialize_allocate_initial_panel(self):
+        raise NotImplementedError
+
+    def _initialize_synchronize_initial_panel(self):
+        raise NotImplementedError
 
     def show_configure_receivers_panel(self):
         raise NotImplementedError
@@ -121,7 +121,7 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.close_dock_widget()
 
     def add_layers(self):
-        self.controller.add_layers()
+        self._controller.add_layers()
 
     def layer_removed(self):
         self.logger.info_msg(__name__, QCoreApplication.translate("DockWidgetFieldDataCapture",
@@ -133,11 +133,11 @@ class DockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
     def close_dock_widget(self):
         try:
-            self.controller.field_data_capture_layer_removed.disconnect()  # disconnect layer signals
+            self._controller.field_data_capture_layer_removed.disconnect()  # disconnect layer signals
         except:
             pass
 
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def initialize_layers(self):
-        self.controller.initialize_layers()
+        self._controller.initialize_layers()

@@ -134,12 +134,12 @@
        </attribute>
        <column>
         <property name="text">
-         <string>Número predial</string>
+         <string>Parcel number</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Estado</string>
+         <string>Status</string>
         </property>
        </column>
       </widget>
@@ -175,9 +175,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_configure_surveyors">
+      <widget class="QPushButton" name="btn_configure_receivers">
        <property name="toolTip">
-        <string>Configure surveyors</string>
+        <string>Configure receivers</string>
        </property>
        <property name="text">
         <string/>

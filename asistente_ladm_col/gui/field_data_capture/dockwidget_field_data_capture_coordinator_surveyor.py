@@ -18,30 +18,38 @@
 """
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
-from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.field_data_capture.allocate_parcels_initial_panel import AllocateParcelsFieldDataCapturePanelWidget
+from asistente_ladm_col.gui.field_data_capture.allocate_parcels_coordinator_initial_panel import AllocateParcelsCoordinatorInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import DockWidgetFieldDataCapture
+from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
-from asistente_ladm_col.gui.field_data_capture.field_data_capture_controller import FieldDataCaptureController
-from asistente_ladm_col.utils import get_ui_class
 
-from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 
-class DockWidgetFieldDataCaptureCoordinatorSurveyor(DockWidgetFieldDataCapture):
+class DockWidgetFieldDataCaptureCoordinatorSurveyor(BaseDockWidgetFieldDataCapture):
     def __init__(self, iface, db, ladm_data, allocate_mode=True):
-        DockWidgetFieldDataCapture.__init__(self, iface, db, ladm_data, allocate_mode)
+        BaseDockWidgetFieldDataCapture.__init__(self, iface, db, ladm_data, allocate_mode)
         self.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels Coordinator-Surveyor"))
+
+    def _initialize_allocate_initial_panel(self):
+        self.add_layers()
+        self.allocate_panel = AllocateParcelsCoordinatorInitialPanelWidget(self, self._controller)
+        self.allocate_panel.allocate_parcels_to_receiver_panel_requested.connect(self.show_allocate_parcels_to_receiver_panel)
+        self.allocate_panel.configure_receivers_panel_requested.connect(self.show_configure_receivers_panel)
+        self.allocate_panel.split_data_for_receivers_panel_requested.connect(self.show_split_data_for_receivers_panel)
+        self.widget.setMainPanel(self.allocate_panel)
+        self.allocate_panel.fill_data()
+
+    def _initialize_synchronize_initial_panel(self):
+        pass
 
     def show_configure_receivers_panel(self):
         with OverrideCursor(Qt.WaitCursor):
             self._reset_receivers_panel_vars()
 
-            self.configure_receivers_panel = ConfigureSurveyorsPanelWidget(self, self.controller)
+            self.configure_receivers_panel = ConfigureSurveyorsPanelWidget(self, self._controller)
             self.configure_receivers_panel.clear_message_bar_requested.connect(
                 self.allocate_panel.panel_accepted_clear_message_bar)
             self.widget.showPanel(self.configure_receivers_panel)
@@ -52,7 +60,7 @@ class DockWidgetFieldDataCaptureCoordinatorSurveyor(DockWidgetFieldDataCapture):
             self._reset_allocate_parcels_to_receiver_panel_vars()
 
             self.allocate_parcels_to_receiver_panel = AllocateParcelsToSurveyorPanelWidget(self,
-                                                                                           self.controller,
+                                                                                           self._controller,
                                                                                            selected_parcels)
             self.allocate_parcels_to_receiver_panel.refresh_parcel_data_requested.connect(
                 self.allocate_panel.panel_accepted_refresh_parcel_data)
@@ -63,7 +71,7 @@ class DockWidgetFieldDataCaptureCoordinatorSurveyor(DockWidgetFieldDataCapture):
         with OverrideCursor(Qt.WaitCursor):
             self._reset_split_data_for_receivers_panel_vars()
 
-            self.split_data_for_receivers_panel = ConvertToOfflinePanelWidget(self, self.controller)
+            self.split_data_for_receivers_panel = ConvertToOfflinePanelWidget(self, self._controller)
             self.split_data_for_receivers_panel.refresh_parcel_data_clear_selection_requested.connect(
                 self.allocate_panel.panel_accepted_refresh_and_clear_selection)
             self.widget.showPanel(self.split_data_for_receivers_panel)
