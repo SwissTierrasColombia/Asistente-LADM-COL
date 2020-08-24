@@ -685,10 +685,11 @@ class AppCoreInterface(QObject):
         res = layer.editorWidgetSetup(field_index).type() != 'RelationReference'
         if res and names:
             # Additionally, begin_lifespan, t_ili_tid, local_id and namespace should not be applied on update
-            res = field_name not in [names.T_ILI_TID_F,
-                                     names.OID_T_LOCAL_ID_F,
-                                     names.OID_T_NAMESPACE_F,
-                                     names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F]
+            # (Using getattr because some models do not have all these names)
+            res = field_name not in [getattr(names, "T_ILI_TID_F", None),
+                                     getattr(names, "OID_T_LOCAL_ID_F", None),
+                                     getattr(names, "OID_T_NAMESPACE_F", None),
+                                     getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)]
 
         return res
 
