@@ -22,7 +22,7 @@ from qgis.gui import QgsDockWidget
 
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
-from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
+from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
 from asistente_ladm_col.gui.field_data_capture.field_data_capture_controller import FieldDataCaptureController
 from asistente_ladm_col.utils import get_ui_class
@@ -30,7 +30,7 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
-DOCKWIDGET_UI = get_ui_class('field_data_capture/dockwidget_field_data_capture.ui')
+DOCKWIDGET_UI = get_ui_class('field_data_capture/base_dockwidget_field_data_capture.ui')
 
 
 class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
@@ -72,9 +72,16 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         raise NotImplementedError
 
     def show_configure_receivers_panel(self):
-        raise NotImplementedError
+        with OverrideCursor(Qt.WaitCursor):
+            self.__reset_receivers_panel_vars()
 
-    def _reset_receivers_panel_vars(self):
+            self.configure_receivers_panel = self._get_receivers_panel()
+            self.configure_receivers_panel.clear_message_bar_requested.connect(
+                self.allocate_panel.panel_accepted_clear_message_bar)
+            self.widget.showPanel(self.configure_receivers_panel)
+            self.lst_configure_receivers_panel.append(self.configure_receivers_panel)
+
+    def __reset_receivers_panel_vars(self):
         if self.lst_configure_receivers_panel:
             for panel in self.lst_configure_receivers_panel:
                 try:
@@ -84,6 +91,9 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
             self.lst_configure_receivers_panel = list()
             self.configure_receivers_panel = None
+
+    def _get_receivers_panel(self):
+        raise NotImplementedError
 
     def show_allocate_parcels_to_receiver_panel(self, selected_parcels):
         raise NotImplementedError

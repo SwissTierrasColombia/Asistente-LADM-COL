@@ -910,13 +910,13 @@ class LADMData():
     @staticmethod
     def get_surveyor_name(names, feature, full_name=True):
         if full_name:
-            name = "{} {}".format(feature[names.FDC_SURVEYOR_T_FIRST_NAME_F],
-                                  feature[names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F])
+            name = "{} {}".format(feature[names.FDC_USER_T_FIRST_NAME_F],
+                                  feature[names.FDC_USER_T_FIRST_LAST_NAME_F])
         else:  # Just initial letters for each name part, except the last name (e.g., gacarrillor)
-            name = "{}{}{}{}".format(LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_FIRST_NAME_F]),
-                                     LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_SECOND_NAME_F]),
-                                     feature[names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F],
-                                     LADMData.get_first_letter(feature[names.FDC_SURVEYOR_T_SECOND_LAST_NAME_F]))
+            name = "{}{}{}{}".format(LADMData.get_first_letter(feature[names.FDC_USER_T_FIRST_NAME_F]),
+                                     LADMData.get_first_letter(feature[names.FDC_USER_T_SECOND_NAME_F]),
+                                     feature[names.FDC_USER_T_FIRST_LAST_NAME_F],
+                                     LADMData.get_first_letter(feature[names.FDC_USER_T_SECOND_LAST_NAME_F]))
             name.replace(" ", "")  # Remove all (even intermediate) blank spaces
             name = name.lower()
             name = name or '-'  # No names? Then avoid falsy value
@@ -952,13 +952,13 @@ class LADMData():
 
             #surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: parcel_ids,
             #                                                         names.FDC_PLOT_T: plot_ids,
-            #                                                         names.FDC_SURVEYOR_T: [surveyor_dict[surveyor_t_id][0]]}
+            #                                                         names.FDC_USER_T: [surveyor_dict[surveyor_t_id][0]]}
 
             # Warning: Use QGIS ids if you're sure it'll get always the same records.
             # For some reason that does not happen with parcels, that's why we prefer t_ids.
             surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_layer_expression(parcel_t_ids, names.T_ID_F),
                                                                      names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
-                                                                     names.FDC_SURVEYOR_T: LADMData.build_layer_expression([surveyor_dict[surveyor_t_id][0]])}
+                                                                     names.FDC_USER_T: LADMData.build_layer_expression([surveyor_dict[surveyor_t_id][0]])}
 
         return surveyor_related_ids
 
@@ -978,7 +978,7 @@ class LADMData():
         surveyors_data = dict()
         for feature in fdc_surveyor_layer.getFeatures():
             surveyors_data[feature[names.T_ID_F]] = (LADMData.get_surveyor_name(names, feature, full_name),
-                                                     feature[names.FDC_SURVEYOR_T_DOCUMENT_ID_F])
+                                                     feature[names.FDC_USER_T_DOCUMENT_ID_F])
 
         return surveyors_data
 
@@ -986,7 +986,7 @@ class LADMData():
         attrs = dict()
         for field_name, value in surveyor_data.items():
             val = value
-            if field_name == db.names.FDC_SURVEYOR_T_DOCUMENT_TYPE_F:
+            if field_name == db.names.FDC_USER_T_DOCUMENT_TYPE_F:
                 val = self.get_domain_code_from_value(db, db.names.FDC_PARTY_DOCUMENT_TYPE_D, value)
 
             attrs[fdc_surveyor_layer.fields().indexOf(field_name)] = val

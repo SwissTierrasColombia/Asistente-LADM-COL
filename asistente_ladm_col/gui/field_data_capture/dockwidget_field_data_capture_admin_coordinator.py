@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import (Qt,
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_admin_initial_panel import AllocateParcelsAdminInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
-from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
+from asistente_ladm_col.gui.field_data_capture.configure_coordinators_panel import ConfigureCoordinatorsPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
@@ -44,15 +44,8 @@ class DockWidgetFieldDataCaptureAdminCoordinator(BaseDockWidgetFieldDataCapture)
     def _initialize_synchronize_initial_panel(self):
         pass
 
-    def show_configure_receivers_panel(self):
-        with OverrideCursor(Qt.WaitCursor):
-            self._reset_receivers_panel_vars()
-
-            self.configure_receivers_panel = ConfigureSurveyorsPanelWidget(self, self._controller)
-            self.configure_receivers_panel.clear_message_bar_requested.connect(
-                self.allocate_panel.panel_accepted_clear_message_bar)
-            self.widget.showPanel(self.configure_receivers_panel)
-            self.lst_configure_receivers_panel.append(self.configure_receivers_panel)
+    def _get_receivers_panel(self):
+        return ConfigureCoordinatorsPanelWidget(self, self._controller)
 
     def show_allocate_parcels_to_receiver_panel(self, selected_parcels):
         with OverrideCursor(Qt.WaitCursor):

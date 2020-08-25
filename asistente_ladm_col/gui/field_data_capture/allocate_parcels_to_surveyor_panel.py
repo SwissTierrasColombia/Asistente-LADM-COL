@@ -101,7 +101,7 @@ class AllocateParcelsToSurveyorPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_surveyors(self):
         self.cbo_surveyor.clear()
-        for surveyor_t_id, surveyor_data in sorted(self.controller.get_surveyors_data().items(), key=lambda x:locale.strxfrm(str(x[1][0]))):
+        for surveyor_t_id, surveyor_data in sorted(self.controller.get_receivers_data().items(), key=lambda x:locale.strxfrm(str(x[1][0]))):
             self.cbo_surveyor.addItem(surveyor_data[0], surveyor_t_id)  # surveyor_data: (name, doc id)
 
     def surveyor_changed(self, index):

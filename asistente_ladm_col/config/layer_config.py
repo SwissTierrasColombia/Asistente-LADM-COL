@@ -458,8 +458,8 @@ class LayerConfig:
                                                                                                          LADMNames.CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V))
                     }
             elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
-                if layer_name == names.FDC_SURVEYOR_T:
-                    dict_automatic_values = {names.FDC_SURVEYOR_T_DOCUMENT_TYPE_F: "{}".format(
+                if layer_name == names.FDC_USER_T:
+                    dict_automatic_values = {names.FDC_USER_T_DOCUMENT_TYPE_F: "{}".format(
                         ladm_data.get_domain_code_from_value(db,
                                                              names.FDC_PARTY_DOCUMENT_TYPE_D,
                                                              LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V))}
@@ -504,7 +504,7 @@ class LayerConfig:
             if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
                 display_expressions.update({
                     names.FDC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.FDC_PARCEL_T_PARCEL_NUMBER_F),
-                    names.FDC_SURVEYOR_T: "concat({}, ' ', {})".format(names.FDC_SURVEYOR_T_FIRST_NAME_F, names.FDC_SURVEYOR_T_FIRST_LAST_NAME_F)
+                    names.FDC_USER_T: "concat({}, ' ', {})".format(names.FDC_USER_T_FIRST_NAME_F, names.FDC_USER_T_FIRST_LAST_NAME_F)
                 })
 
         return display_expressions
@@ -728,8 +728,8 @@ class LayerConfig:
             layer_config[names.FDC_PARCEL_T] = SyncAction.OFFLINE
         if getattr(names, "FDC_PLOT_T", None):
             layer_config[names.FDC_PLOT_T] = SyncAction.OFFLINE
-        if getattr(names, "FDC_SURVEYOR_T", None):
-            layer_config[names.FDC_SURVEYOR_T] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_USER_T", None):
+            layer_config[names.FDC_USER_T] = SyncAction.NO_ACTION
         if getattr(names, "COL_DIMENSION_TYPE_D", None):
             layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
         if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):

@@ -43,7 +43,7 @@ class FieldDataCaptureController(QObject):
         self._layers = {
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
-            self._db.names.FDC_SURVEYOR_T: None
+            self._db.names.FDC_USER_T: None
         }
 
     def add_layers(self, force=False):
@@ -69,7 +69,7 @@ class FieldDataCaptureController(QObject):
                     self._layers[layer_name].willBeDeleted.connect(self.field_data_capture_layer_removed)
 
     def get_parcel_surveyor_data(self):
-        surveyors_dict = self.get_surveyors_data(False)  # Just first letter of each name part
+        surveyors_dict = self.get_receivers_data(False)  # Just first letter of each name part
 
         for fid, pair in self.ladm_data.get_parcel_data_field_data_capture(self._db.names, self.parcel_layer()).items():
             # pair: parcel_number, surveyor_t_id
@@ -86,8 +86,8 @@ class FieldDataCaptureController(QObject):
     def parcel_layer(self):
         return self._layers[self._db.names.FDC_PARCEL_T]
 
-    def surveyor_layer(self):
-        return self._layers[self._db.names.FDC_SURVEYOR_T]
+    def user_layer(self):
+        return self._layers[self._db.names.FDC_USER_T]
 
     def update_plot_selection(self, parcel_ids):
         plot_ids = self.ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
@@ -106,14 +106,6 @@ class FieldDataCaptureController(QObject):
     def save_allocation_for_surveyor(self, parcel_ids, surveyor_t_id):
         return self.ladm_data.save_allocation_for_surveyor_field_data_capture(self._db.names, parcel_ids, surveyor_t_id, self.parcel_layer())
 
-    def _get_surveyors_data(self, full_name=True):
-        surveyors_data = dict()
-        for feature in self.surveyor_layer().getFeatures():
-            name = self.ladm_data.get_surveyor_name(self._db.names, feature, full_name)
-            surveyors_data[feature[self._db.names.T_ID_F]] = name
-
-        return surveyors_data
-
     def get_already_allocated_parcels_for_surveyor(self, surveyor_t_id):
         return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names,
                                                                           self._db.names.FDC_PARCEL_T_PARCEL_NUMBER_F,
@@ -127,7 +119,7 @@ class FieldDataCaptureController(QObject):
         surveyor_expressions_dict = self.ladm_data.get_layer_ids_related_to_parcels_field_data_capture(self._db.names,
                                                                                                        self.parcel_layer(),
                                                                                                        self.plot_layer(),
-                                                                                                       self.surveyor_layer())
+                                                                                                       self.user_layer())
 
         # Disconnect so that we don't close the panel while converting to offline
         for layer_name in self._layers:
@@ -146,19 +138,19 @@ class FieldDataCaptureController(QObject):
 
         return res, msg
 
-    def get_surveyors_data(self, full_name=True):
-        return self.ladm_data.get_surveyors_data(self.db().names, self.surveyor_layer(), full_name)
+    def get_receivers_data(self, full_name=True):
+        return self.ladm_data.get_surveyors_data(self.db().names, self.user_layer(), full_name)
 
-    def save_surveyor(self, surveyor_data):
-        return self.ladm_data.save_surveyor(self.db(), surveyor_data, self.surveyor_layer())
+    def save_receiver(self, surveyor_data):
+        return self.ladm_data.save_surveyor(self.db(), surveyor_data, self.user_layer())
 
-    def delete_surveyor(self, surveyor_t_id):
-        return self.ladm_data.delete_surveyor(self.db().names, surveyor_t_id, self.surveyor_layer())
+    def delete_receiver(self, surveyor_t_id):
+        return self.ladm_data.delete_surveyor(self.db().names, surveyor_t_id, self.user_layer())
 
     def get_summary_data(self):
         return self.ladm_data.get_summary_of_allocation_field_data_capture(self.db().names,
                                                                            self.parcel_layer(),
-                                                                           self.surveyor_layer())
+                                                                           self.user_layer())
 
     def get_count_of_not_allocated_parcels(self):
         return self.ladm_data.get_count_of_not_allocated_parcels_field_data_capture(self.db().names,

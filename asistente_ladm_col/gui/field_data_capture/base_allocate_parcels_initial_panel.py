@@ -31,7 +31,7 @@ from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
-WIDGET_UI = get_ui_class('field_data_capture/allocate_parcels_initial_panel_widget.ui')
+WIDGET_UI = get_ui_class('field_data_capture/base_allocate_parcels_initial_panel_widget.ui')
 
 
 class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wid_configure_surveyors</class>
- <widget class="QWidget" name="wid_configure_surveyors">
+ <class>wid_configure_receivers</class>
+ <widget class="QWidget" name="wid_configure_receivers">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Panel Widget Configure Surveyors</string>
+   <string>Panel Widget Configure Receivers</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -93,7 +93,7 @@
      <item>
       <widget class="QPushButton" name="btn_save">
        <property name="text">
-        <string>Add surveyor</string>
+        <string>Add receiver</string>
        </property>
       </widget>
      </item>
@@ -113,7 +113,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <widget class="QTableWidget" name="tbl_surveyors">
+    <widget class="QTableWidget" name="tbl_receivers">
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
