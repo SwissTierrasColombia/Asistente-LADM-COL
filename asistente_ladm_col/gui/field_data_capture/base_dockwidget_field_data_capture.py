@@ -24,7 +24,7 @@ from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_pan
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.field_data_capture_controller import FieldDataCaptureController
+from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.utils import get_ui_class
 
 from asistente_ladm_col.lib.logger import Logger
@@ -42,7 +42,7 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.logger = Logger()
         self.logger.clear_message_bar()  # Clear QGIS message bar
 
-        self._controller = FieldDataCaptureController(iface, db, ladm_data)
+        self._controller = self._get_controller(iface, db, ladm_data)
         self._controller.field_data_capture_layer_removed.connect(self.layer_removed)
 
         # Configure panels
@@ -64,6 +64,9 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
             # self.widget.setMainPanel(self.synchronize_panel)
             # self.lst_parcel_panels.append(self.synchronize_panel)
             self._initialize_synchronize_initial_panel()
+
+    def _get_controller(self, iface, db, ladm_data):
+        raise NotImplementedError
 
     def _initialize_allocate_initial_panel(self):
         raise NotImplementedError

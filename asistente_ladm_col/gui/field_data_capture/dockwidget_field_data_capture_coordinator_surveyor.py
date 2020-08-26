@@ -22,6 +22,7 @@ from asistente_ladm_col.gui.field_data_capture.allocate_parcels_coordinator_init
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
+from asistente_ladm_col.gui.field_data_capture.field_data_capture_coordinator_controller import FieldDataCaptureCoordinatorController
 from asistente_ladm_col.gui.field_data_capture.split_data_for_surveyors_panel import SplitDataForSurveyorsPanelWidget
 
 
@@ -29,6 +30,9 @@ class DockWidgetFieldDataCaptureCoordinatorSurveyor(BaseDockWidgetFieldDataCaptu
     def __init__(self, iface, db, ladm_data, allocate_mode=True):
         BaseDockWidgetFieldDataCapture.__init__(self, iface, db, ladm_data, allocate_mode)
         self.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels Coordinator-Surveyor"))
+
+    def _get_controller(self, iface, db, ladm_data):
+        return FieldDataCaptureCoordinatorController(iface, db, ladm_data)
 
     def _initialize_allocate_initial_panel(self):
         self.add_layers()

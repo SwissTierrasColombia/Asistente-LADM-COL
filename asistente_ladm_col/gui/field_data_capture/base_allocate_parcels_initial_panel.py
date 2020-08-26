@@ -70,7 +70,7 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def _parcel_data(self, refresh_parcel_data=False):
         if not self.__parcel_data or refresh_parcel_data:
-            self.__parcel_data = self._controller.get_parcel_surveyor_data()
+            self.__parcel_data = self._controller.get_parcel_receiver_data()
 
         return self.__parcel_data
 

@@ -22,6 +22,7 @@ from asistente_ladm_col.gui.field_data_capture.allocate_parcels_admin_initial_pa
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_coordinator_panel import AllocateParcelsToCoordinatorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.configure_coordinators_panel import ConfigureCoordinatorsPanelWidget
+from asistente_ladm_col.gui.field_data_capture.field_data_capture_admin_controller import FieldDataCaptureAdminController
 from asistente_ladm_col.gui.field_data_capture.split_data_for_coordinators_panel import SplitDataForCoordinatorsPanelWidget
 
 
@@ -29,6 +30,9 @@ class DockWidgetFieldDataCaptureAdminCoordinator(BaseDockWidgetFieldDataCapture)
     def __init__(self, iface, db, ladm_data, allocate_mode=True):
         BaseDockWidgetFieldDataCapture.__init__(self, iface, db, ladm_data, allocate_mode)
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFieldDataCaptureAdminCoordinator", "Allocate parcels Admin-Coordinator"))
+
+    def _get_controller(self, iface, db, ladm_data):
+        return FieldDataCaptureAdminController(iface, db, ladm_data)
 
     def _initialize_allocate_initial_panel(self):
         self.add_layers()
