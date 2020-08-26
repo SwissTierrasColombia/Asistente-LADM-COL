@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>wdg_split_data_for_receivers</class>
+ <widget class="QWidget" name="wdg_split_data_for_receivers">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Panel Widget Convert to Offline</string>
+   <string>Panel Widget Split Data for Receivers</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -30,7 +30,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="lbl_surveyor">
+       <widget class="QLabel" name="lbl_receiver">
         <property name="font">
          <font>
           <weight>75</weight>
@@ -38,7 +38,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;b&gt;Surveyor&lt;/b&gt;</string>
+         <string>&lt;b&gt;Receiver&lt;/b&gt;</string>
         </property>
         <property name="textFormat">
          <enum>Qt::RichText</enum>
@@ -125,7 +125,7 @@
    <item row="2" column="0">
     <widget class="QgsFileWidget" name="mQgsFileWidget">
      <property name="dialogTitle">
-      <string>Select the folder to store offline projects</string>
+      <string>Select the folder to store data for receivers</string>
      </property>
      <property name="storageMode">
       <enum>QgsFileWidget::GetDirectory</enum>
@@ -138,7 +138,7 @@
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QProgressBar" name="prb_to_offline">
+      <widget class="QProgressBar" name="prb_export_field_data">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -148,7 +148,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_generate_offline_projects">
+      <widget class="QPushButton" name="btn_split_data">
        <property name="toolTip">
         <string>Generate offline projects</string>
        </property>

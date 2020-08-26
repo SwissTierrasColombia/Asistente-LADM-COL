@@ -24,7 +24,7 @@ from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 
 class FieldDataCaptureController(QObject):
     field_data_capture_layer_removed = pyqtSignal()
-    convert_to_offline_progress = pyqtSignal(int)  # total progress (percentage)
+    export_field_data_progress = pyqtSignal(int)  # total progress (percentage)
 
     def __init__(self, iface, db, ladm_data):
         QObject.__init__(self)
@@ -115,7 +115,7 @@ class FieldDataCaptureController(QObject):
     def discard_parcel_allocation(self, parcel_ids):
         return self.ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())
 
-    def convert_to_offline(self, export_dir):
+    def export_field_data(self, export_dir):
         surveyor_expressions_dict = self.ladm_data.get_layer_ids_related_to_parcels_field_data_capture(self._db.names,
                                                                                                        self.parcel_layer(),
                                                                                                        self.plot_layer(),
@@ -130,7 +130,7 @@ class FieldDataCaptureController(QObject):
                     pass
 
         field_data_capture = FieldDataCapture()
-        field_data_capture.total_progress_updated.connect(self.convert_to_offline_progress)  # Signal chaining
+        field_data_capture.total_progress_updated.connect(self.export_field_data_progress)  # Signal chaining
         res, msg = field_data_capture.convert_to_offline(self._db, surveyor_expressions_dict, export_dir)
 
         if res:

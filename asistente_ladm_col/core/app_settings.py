@@ -29,7 +29,7 @@ class AppSettings:
     Centralize application setting handlers and keys
     """
     ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
-    EXPORT_DIR_OFFLINE_PROJECTS = "Asistente-LADM-COL/field_data_capture/export_dir"
+    EXPORT_DIR_FIELD_DATA = "Asistente-LADM-COL/field_data_capture/export_dir"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
 
     def __init__(self):
@@ -53,9 +53,9 @@ class AppSettings:
         self.settings.setValue(self.TOLERANCE_KEY, value if value <= TOLERANCE_MAX_VALUE else TOLERANCE_MAX_VALUE)
 
     @property
-    def export_dir_offline_projects(self):
-        self.settings.value(self.EXPORT_DIR_OFFLINE_PROJECTS, os.path.expanduser('~'))
+    def export_dir_field_data(self):
+        self.settings.value(self.EXPORT_DIR_FIELD_DATA, os.path.expanduser('~'))
 
-    @export_dir_offline_projects.setter
-    def export_dir_offline_projects(self, value):
-        self.settings.setValue(self.EXPORT_DIR_OFFLINE_PROJECTS, value)
+    @export_dir_field_data.setter
+    def export_dir_field_data(self, value):
+        self.settings.setValue(self.EXPORT_DIR_FIELD_DATA, value)

@@ -16,15 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication)
+from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_coordinator_initial_panel import AllocateParcelsCoordinatorInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.configure_surveyors_panel import ConfigureSurveyorsPanelWidget
-from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.gui.field_data_capture.split_data_for_surveyors_panel import SplitDataForSurveyorsPanelWidget
 
 
 class DockWidgetFieldDataCaptureCoordinatorSurveyor(BaseDockWidgetFieldDataCapture):
@@ -52,13 +50,6 @@ class DockWidgetFieldDataCaptureCoordinatorSurveyor(BaseDockWidgetFieldDataCaptu
                                                     self._controller,
                                                     selected_parcels)
 
-    def show_split_data_for_receivers_panel(self):
-        with OverrideCursor(Qt.WaitCursor):
-            self._reset_split_data_for_receivers_panel_vars()
-
-            self.split_data_for_receivers_panel = ConvertToOfflinePanelWidget(self, self._controller)
-            self.split_data_for_receivers_panel.refresh_parcel_data_clear_selection_requested.connect(
-                self.allocate_panel.panel_accepted_refresh_and_clear_selection)
-            self.widget.showPanel(self.split_data_for_receivers_panel)
-            self.lst_split_data_for_receivers_panel.append(self.split_data_for_receivers_panel)
+    def _get_split_data_for_receivers_panel(self):
+        return SplitDataForSurveyorsPanelWidget(self, self._controller)
 

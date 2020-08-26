@@ -23,7 +23,7 @@ from qgis.gui import QgsDockWidget
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
+from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
 from asistente_ladm_col.gui.field_data_capture.field_data_capture_controller import FieldDataCaptureController
 from asistente_ladm_col.utils import get_ui_class
 
@@ -120,6 +120,16 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         raise NotImplementedError
 
     def show_split_data_for_receivers_panel(self):
+        with OverrideCursor(Qt.WaitCursor):
+            self._reset_split_data_for_receivers_panel_vars()
+
+            self.split_data_for_receivers_panel = self._get_split_data_for_receivers_panel()
+            self.split_data_for_receivers_panel.refresh_parcel_data_clear_selection_requested.connect(
+                self.allocate_panel.panel_accepted_refresh_and_clear_selection)
+            self.widget.showPanel(self.split_data_for_receivers_panel)
+            self.lst_split_data_for_receivers_panel.append(self.split_data_for_receivers_panel)
+
+    def _get_split_data_for_receivers_panel(self):
         raise NotImplementedError
 
     def _reset_split_data_for_receivers_panel_vars(self):
