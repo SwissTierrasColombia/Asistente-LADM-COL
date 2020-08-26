@@ -88,7 +88,7 @@ class ETLCobol(ETLSupplies):
 
     def run_etl_model(self, custom_feedback):
         self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies",
+        processing.run("model:ETL_COBOL",
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
                         'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
                         'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],

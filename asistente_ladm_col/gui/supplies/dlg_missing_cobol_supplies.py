@@ -238,7 +238,8 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def package_results(self, output):  
         for name in output.keys():
-            output[name].setName(name.split(':')[2])
+            if isinstance(output[name], QgsVectorLayer):
+                output[name].setName(name.split(':')[2])
 
         try:
             output_geopackage = processing.run("native:package", {'LAYERS': [
