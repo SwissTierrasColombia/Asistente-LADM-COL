@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wid_allocate_to_operator</class>
- <widget class="QWidget" name="wid_allocate_to_operator">
+ <class>wid_allocate_to_receiver</class>
+ <widget class="QWidget" name="wid_allocate_to_receiver">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,14 +17,14 @@
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QLabel" name="lbl_surveyor">
+      <widget class="QLabel" name="lbl_receiver">
        <property name="text">
-        <string>Surveyor</string>
+        <string>Receiver</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QComboBox" name="cbo_surveyor">
+      <widget class="QComboBox" name="cbo_receiver">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>

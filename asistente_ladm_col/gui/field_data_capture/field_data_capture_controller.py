@@ -103,10 +103,10 @@ class FieldDataCaptureController(QObject):
                                                                               self.plot_layer(),
                                                                               self.parcel_layer())
 
-    def save_allocation_for_surveyor(self, parcel_ids, surveyor_t_id):
+    def save_allocation_for_receiver(self, parcel_ids, surveyor_t_id):
         return self.ladm_data.save_allocation_for_surveyor_field_data_capture(self._db.names, parcel_ids, surveyor_t_id, self.parcel_layer())
 
-    def get_already_allocated_parcels_for_surveyor(self, surveyor_t_id):
+    def get_already_allocated_parcels_for_receiver(self, surveyor_t_id):
         return self.ladm_data.get_parcels_for_surveyor_field_data_capture(self._db.names,
                                                                           self._db.names.FDC_PARCEL_T_PARCEL_NUMBER_F,
                                                                           surveyor_t_id,

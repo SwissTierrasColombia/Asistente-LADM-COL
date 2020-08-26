@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
 
 
-class AllocateParcelsToSurveyorPanelWidget(BaseAllocateParcelsToReceiverPanelWidget):
+class AllocateParcelsToCoordinatorPanelWidget(BaseAllocateParcelsToReceiverPanelWidget):
     def __init__(self, parent, controller, parcels_to_be_allocated):
         BaseAllocateParcelsToReceiverPanelWidget.__init__(self, parent, controller, parcels_to_be_allocated)
-        self.setPanelTitle(QCoreApplication.translate("AllocateParcelsToSurveyorPanelWidget", "Allocate parcels to surveyor"))
+        self.setPanelTitle(QCoreApplication.translate("AllocateParcelsToCoordinatorPanelWidget", "Allocate parcels to coordinator"))

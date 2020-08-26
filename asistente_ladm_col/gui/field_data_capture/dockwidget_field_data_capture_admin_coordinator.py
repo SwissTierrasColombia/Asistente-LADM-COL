@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 
 from asistente_ladm_col.gui.field_data_capture.allocate_parcels_admin_initial_panel import AllocateParcelsAdminInitialPanelWidget
-from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
+from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_coordinator_panel import AllocateParcelsToCoordinatorPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_dockwidget_field_data_capture import BaseDockWidgetFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.configure_coordinators_panel import ConfigureCoordinatorsPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
@@ -47,17 +47,10 @@ class DockWidgetFieldDataCaptureAdminCoordinator(BaseDockWidgetFieldDataCapture)
     def _get_receivers_panel(self):
         return ConfigureCoordinatorsPanelWidget(self, self._controller)
 
-    def show_allocate_parcels_to_receiver_panel(self, selected_parcels):
-        with OverrideCursor(Qt.WaitCursor):
-            self._reset_allocate_parcels_to_receiver_panel_vars()
-
-            self.allocate_parcels_to_receiver_panel = AllocateParcelsToSurveyorPanelWidget(self,
-                                                                                           self._controller,
-                                                                                           selected_parcels)
-            self.allocate_parcels_to_receiver_panel.refresh_parcel_data_requested.connect(
-                self.allocate_panel.panel_accepted_refresh_parcel_data)
-            self.widget.showPanel(self.allocate_parcels_to_receiver_panel)
-            self.lst_allocate_parcels_to_receiver_panel.append(self.allocate_parcels_to_receiver_panel)
+    def _get_allocate_to_receiver_panel(self, selected_parcels):
+        return AllocateParcelsToCoordinatorPanelWidget(self,
+                                                       self._controller,
+                                                       selected_parcels)
 
     def show_split_data_for_receivers_panel(self):
         with OverrideCursor(Qt.WaitCursor):

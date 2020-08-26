@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.gui import QgsDockWidget
 
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
-from asistente_ladm_col.gui.field_data_capture.allocate_parcels_to_surveyor_panel import AllocateParcelsToSurveyorPanelWidget
+from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
 from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
 from asistente_ladm_col.gui.field_data_capture.convert_to_offline_panel import ConvertToOfflinePanelWidget
 from asistente_ladm_col.gui.field_data_capture.field_data_capture_controller import FieldDataCaptureController
@@ -96,7 +96,14 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         raise NotImplementedError
 
     def show_allocate_parcels_to_receiver_panel(self, selected_parcels):
-        raise NotImplementedError
+        with OverrideCursor(Qt.WaitCursor):
+            self._reset_allocate_parcels_to_receiver_panel_vars()
+
+            self.allocate_parcels_to_receiver_panel = self._get_allocate_to_receiver_panel(selected_parcels)
+            self.allocate_parcels_to_receiver_panel.refresh_parcel_data_requested.connect(
+                self.allocate_panel.panel_accepted_refresh_parcel_data)
+            self.widget.showPanel(self.allocate_parcels_to_receiver_panel)
+            self.lst_allocate_parcels_to_receiver_panel.append(self.allocate_parcels_to_receiver_panel)
 
     def _reset_allocate_parcels_to_receiver_panel_vars(self):
         if self.lst_allocate_parcels_to_receiver_panel:
@@ -108,6 +115,9 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
             self.lst_allocate_parcels_to_receiver_panel = list()
             self.allocate_parcels_to_receiver_panel = None
+
+    def _get_allocate_to_receiver_panel(self, selected_parcels):
+        raise NotImplementedError
 
     def show_split_data_for_receivers_panel(self):
         raise NotImplementedError
