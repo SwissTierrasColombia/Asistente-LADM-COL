@@ -34,6 +34,12 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
             self._db.names.FDC_USER_T: None
         }
 
+    def _get_parcel_field_referencing_receiver(self):
+        return self._db.names.FDC_PARCEL_T_SURVEYOR_F
+
+    def _get_receiver_referenced_field(self):
+        return self._db.names.T_ID_F
+
     def save_allocation_for_receiver(self, parcel_ids, receiver_t_id):
         return self._ladm_data.save_allocation_for_surveyor_field_data_capture(self._db.names, parcel_ids, receiver_t_id, self.parcel_layer())
 
@@ -68,9 +74,6 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
             self.add_layers(True)  # Update self._layers with the newly loaded layers
 
         return res, msg
-
-    def get_receivers_data(self, full_name=True):
-        return self._ladm_data.get_surveyors_data(self.db().names, self.user_layer(), full_name)
 
     def save_receiver(self, receiver_data):
         return self._ladm_data.save_surveyor(self.db(), receiver_data, self.user_layer())

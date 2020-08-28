@@ -840,11 +840,12 @@ class LADMData():
     """
     FIELD DATA CAPTURE Model
     """
-    def get_parcel_data_field_data_capture(self, names, fdc_parcel_layer):
+    def get_parcel_data_field_data_capture(self, names, fdc_parcel_layer, get_field_name):
         request = QgsFeatureRequest()
-        request.setSubsetOfAttributes([names.FDC_PARCEL_T_PARCEL_NUMBER_F, names.FDC_PARCEL_T_SURVEYOR_F], fdc_parcel_layer.fields())
+        field_names = [names.FDC_PARCEL_T_PARCEL_NUMBER_F, get_field_name]
+        request.setSubsetOfAttributes(field_names, fdc_parcel_layer.fields())
 
-        return {feature.id():(feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[names.FDC_PARCEL_T_SURVEYOR_F]) for feature in fdc_parcel_layer.getFeatures(request)}
+        return {feature.id(): (feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[get_field_name]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
     def get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, fids=list(), t_ids=list()):
@@ -908,7 +909,7 @@ class LADMData():
         return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_surveyor_name(names, feature, full_name=True):
+    def get_fdc_user_name(names, feature, full_name=True):
         if full_name:
             name = "{} {}".format(feature[names.FDC_USER_T_FIRST_NAME_F],
                                   feature[names.FDC_USER_T_FIRST_LAST_NAME_F])
@@ -937,7 +938,7 @@ class LADMData():
             surveyor_t_ids.remove(NULL)
 
         surveyors = LADMData.get_features_from_t_ids(fdc_surveyor_layer, names.T_ID_F, surveyor_t_ids)
-        surveyor_dict = {feature[names.T_ID_F]: (feature.id(), LADMData.get_surveyor_name(names, feature, False)) for feature in surveyors}
+        surveyor_dict = {feature[names.T_ID_F]: (feature.id(), LADMData.get_fdc_user_name(names, feature, False)) for feature in surveyors}
 
         for surveyor_t_id in surveyor_t_ids:
             # Get parcels per surveyor t_id --> {parcel_id: parcel_t_id}
@@ -974,13 +975,13 @@ class LADMData():
         return expression
 
     @staticmethod
-    def get_surveyors_data(names, fdc_surveyor_layer, full_name=True):
-        surveyors_data = dict()
-        for feature in fdc_surveyor_layer.getFeatures():
-            surveyors_data[feature[names.T_ID_F]] = (LADMData.get_surveyor_name(names, feature, full_name),
-                                                     feature[names.FDC_USER_T_DOCUMENT_ID_F])
+    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, full_name=True):
+        receivers_data = dict()
+        for feature in fdc_user_layer.getFeatures():
+            receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
+                                                      feature[names.FDC_USER_T_DOCUMENT_ID_F])
 
-        return surveyors_data
+        return receivers_data
 
     def save_surveyor(self, db, surveyor_data, fdc_surveyor_layer):
         attrs = dict()
@@ -1008,7 +1009,7 @@ class LADMData():
         if NULL in surveyor_t_ids:
             surveyor_t_ids.remove(NULL)
 
-        all_surveyors_data = LADMData.get_surveyors_data(names, fdc_surveyor_layer)  # May include surveyors with no allocation
+        all_surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_surveyor_layer, names.T_ID_F)  # May include surveyors with no allocation
         surveyor_parcel_count = dict()  # {surveyor_name: parcel_count}
         params = QgsAggregateCalculator.AggregateParameters()
         for surveyor_t_id in surveyor_t_ids:

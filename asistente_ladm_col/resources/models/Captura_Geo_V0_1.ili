@@ -572,6 +572,8 @@ VERSION "2020-07-21"  =
     );
 
   TOPIC Captura_Geo =
+    BASKET OID AS INTERLIS.UUIDOID;
+    OID AS INTERLIS.UUIDOID;
 
     !!@ ili2db.dispName = "Construcción"
     CLASS Construccion =

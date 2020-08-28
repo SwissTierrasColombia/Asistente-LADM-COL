@@ -31,7 +31,8 @@ from asistente_ladm_col.core.db_mapping_registry import (DBMappingRegistry,
                                                          T_ILI_TID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
-                                                         DESCRIPTION_KEY)
+                                                         DESCRIPTION_KEY,
+                                                         T_BASKET_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname
@@ -338,7 +339,8 @@ class DBConnector(QObject):
         """Returns field common names of databases. T_Id, T_Ili_Tid, dispName, iliCode and description.
 
         :return: Dictionary with the next keys:
-                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, and DESCRIPTION_KEY from db_mapping_registry
+                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY and T_BASKET from
+                 db_mapping_registry
         """
         raise NotImplementedError
 
@@ -373,7 +375,7 @@ class DBConnector(QObject):
         """
         # Fill table names
         for k,v in self.__db_mapping.items():
-            if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY]:  # Custom names will be handled by Names class
+            if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY, T_BASKET_KEY]:  # Custom names will be handled by Names class
                 self.__table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:

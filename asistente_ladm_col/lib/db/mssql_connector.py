@@ -34,7 +34,8 @@ from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
                                                          T_ILI_TID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
-                                                         DESCRIPTION_KEY)
+                                                         DESCRIPTION_KEY,
+                                                         T_BASKET_KEY)
 
 
 class MSSQLConnector(ClientServerDB):
@@ -527,6 +528,7 @@ class MSSQLConnector(ClientServerDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[T_BASKET_KEY] = "t_basket"
 
         return dict_names
 

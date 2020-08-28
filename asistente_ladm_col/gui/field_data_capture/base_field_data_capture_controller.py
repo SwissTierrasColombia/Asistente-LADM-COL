@@ -65,13 +65,39 @@ class BaseFieldDataCaptureController(QObject):
                     self._layers[layer_name].willBeDeleted.connect(self.field_data_capture_layer_removed)
 
     def get_parcel_receiver_data(self):
+        """
+        Obtain parcel-receiver pairs (if no receiver is associated with the parcel, just return None in that field)
+
+        :return: dict in the form {parcel_fid: (parcel_number, receiver_name)}
+        """
         receivers_dict = self.get_receivers_data(False)  # Just first letter of each name part
 
-        for fid, pair in self._ladm_data.get_parcel_data_field_data_capture(self._db.names, self.parcel_layer()).items():
-            # pair: parcel_number, receiver_t_id
-            self.__parcel_data[fid] = (pair[0], receivers_dict[pair[1]][0] if pair[1] else None)
+        for fid, pair in self._ladm_data.get_parcel_data_field_data_capture(self._db.names,
+                                                                            self.parcel_layer(),
+                                                                            self._get_parcel_field_referencing_receiver()).items():
+            # pair: parcel_number, parcel_field_pointing_to_receiver (either t_basket or receiver_t_id)
+            self.__parcel_data[fid] = (pair[0],
+                                       receivers_dict[pair[1]][0] if pair[1] and pair[1] in receivers_dict else None)
 
         return self.__parcel_data
+
+    def _get_parcel_field_referencing_receiver(self):
+        """
+        :return: Field name in layer parcels used as FK to receivers. In mode admin-coord it is "t_basket",
+                 in mode coord-surveyor, it is "reconocedor".
+                 Note that t_basket is not really an FK for 2 reasons:
+                  1) It could be pointing to a default basket created at the illi2db import execution.
+                  2) We force (in the application level) user.t_basket to correspond with parcel.t_basket, the DB knows
+                     nothing about it. It's because of the logic we need to link users-(baskets)-parcels that we use
+                     t_basket as FK.
+        """
+        raise NotImplementedError
+
+    def _get_receiver_referenced_field(self):
+        """
+        :return: Field name in receivers table referenced by parcel.
+        """
+        raise NotImplementedError
 
     def db(self):
         return self._db
@@ -112,7 +138,14 @@ class BaseFieldDataCaptureController(QObject):
         raise NotImplementedError
 
     def get_receivers_data(self, full_name=True):
-        raise NotImplementedError
+        """
+        :param full_name: Whether the full name should be retrieved or only an alias
+        :return: {receiver_t_id: (receiver_name, receiver_doc_id)}
+        """
+        return self._ladm_data.get_fdc_receivers_data(self.db().names,
+                                                      self.user_layer(),
+                                                      self._get_receiver_referenced_field(),
+                                                      full_name)
 
     def save_receiver(self, receiver_data):
         raise NotImplementedError

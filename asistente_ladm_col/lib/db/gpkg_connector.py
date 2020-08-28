@@ -27,7 +27,8 @@ from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
                                                          T_ILI_TID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
-                                                         DESCRIPTION_KEY)
+                                                         DESCRIPTION_KEY,
+                                                         T_BASKET_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
@@ -119,6 +120,7 @@ class GPKGConnector(FileDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[T_BASKET_KEY] = "T_Basket"  # TODO: double check
 
         return dict_names
 
