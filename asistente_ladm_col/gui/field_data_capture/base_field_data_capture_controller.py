@@ -125,11 +125,26 @@ class BaseFieldDataCaptureController(QObject):
                                                                                self.plot_layer(),
                                                                                self.parcel_layer())
 
-    def save_allocation_for_receiver(self, parcel_ids, receiver_t_id):
-        raise NotImplementedError
+    def save_allocation_for_receiver(self, parcel_ids, receiver_id):
+        """
+        :param parcel_ids: List of parcels to allocate
+        :param receiver_id: Either receiver_t_id or receiver_t_basket
+        :return: Whether parcels were successfully allocated or not
+        """
+        return self._ladm_data.save_allocation_for_receiver_field_data_capture(parcel_ids,
+                                                                               receiver_id,
+                                                                               self._get_parcel_field_referencing_receiver(),
+                                                                               self.parcel_layer())
 
-    def get_already_allocated_parcels_for_receiver(self, receiver_t_id):
-        raise NotImplementedError
+    def get_already_allocated_parcels_for_receiver(self, receiver_id):
+        """
+        :param receiver_id: Either t_id (surveyor), t_basket (coordinator)
+        :return: {parcel_fid: parcel_number}
+        """
+        return self._ladm_data.get_parcels_for_receiver_field_data_capture(self._db.names.FDC_PARCEL_T_PARCEL_NUMBER_F,
+                                                                           receiver_id,
+                                                                           self._get_parcel_field_referencing_receiver(),
+                                                                           self.parcel_layer())
 
     def discard_parcel_allocation(self, parcel_ids):
         raise NotImplementedError
@@ -154,7 +169,11 @@ class BaseFieldDataCaptureController(QObject):
         raise NotImplementedError
 
     def get_summary_data(self):
-        raise NotImplementedError
+        return self._ladm_data.get_summary_of_allocation_field_data_capture(self.db().names,
+                                                                            self._get_parcel_field_referencing_receiver(),
+                                                                            self._get_receiver_referenced_field(),
+                                                                            self.parcel_layer(),
+                                                                            self.user_layer())
 
     def get_count_of_not_allocated_parcels(self):
         raise NotImplementedError

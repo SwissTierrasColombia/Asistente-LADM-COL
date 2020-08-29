@@ -887,17 +887,16 @@ class LADMData():
         return [feature.id() for feature in fdc_parcel_layer.getFeatures(request)]
 
     @staticmethod
-    def save_allocation_for_surveyor_field_data_capture(names, parcel_ids, surveyor_t_id, fdc_parcel_layer):
-        field_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
-        attr_map = {parcel_id: {field_idx: surveyor_t_id} for parcel_id in parcel_ids}
+    def save_allocation_for_receiver_field_data_capture(parcel_ids, receiver_id, referencing_field, fdc_parcel_layer):
+        field_idx = fdc_parcel_layer.fields().indexOf(referencing_field)
+        attr_map = {parcel_id: {field_idx: receiver_id} for parcel_id in parcel_ids}
 
         return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_parcels_for_surveyor_field_data_capture(names, attr_name, surveyor_t_id, fdc_parcel_layer):
-        request = QgsFeatureRequest(QgsExpression("{} = {}".format(names.FDC_PARCEL_T_SURVEYOR_F, surveyor_t_id)))
-        if attr_name:
-            request.setSubsetOfAttributes([attr_name], fdc_parcel_layer.fields())
+    def get_parcels_for_receiver_field_data_capture(attr_name, receiver_id, referencing_field, fdc_parcel_layer):
+        request = QgsFeatureRequest(QgsExpression("{} = {}".format(referencing_field, receiver_id)))
+        request.setSubsetOfAttributes([attr_name], fdc_parcel_layer.fields())
 
         return {feature.id(): feature[attr_name] for feature in fdc_parcel_layer.getFeatures(request)}
 
@@ -942,7 +941,7 @@ class LADMData():
 
         for surveyor_t_id in surveyor_t_ids:
             # Get parcels per surveyor t_id --> {parcel_id: parcel_t_id}
-            parcel_data = LADMData.get_parcels_for_surveyor_field_data_capture(names, names.T_ID_F, surveyor_t_id, fdc_parcel_layer)
+            parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names, names.T_ID_F, surveyor_t_id, fdc_parcel_layer)
             parcel_ids = list(parcel_data.keys())
             parcel_t_ids = list(parcel_data.values())
 
@@ -1002,21 +1001,15 @@ class LADMData():
                                                                                              [surveyor_t_id]))
 
     @staticmethod
-    def get_summary_of_allocation_field_data_capture(names, fdc_parcel_layer, fdc_surveyor_layer):
-        # Get unique values from parcel layer (surveyor)
-        surveyor_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
-        surveyor_t_ids = fdc_parcel_layer.uniqueValues(surveyor_idx)  # Get all surveyors with allocated parcels
-        if NULL in surveyor_t_ids:
-            surveyor_t_ids.remove(NULL)
-
-        all_surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_surveyor_layer, names.T_ID_F)  # May include surveyors with no allocation
+    def get_summary_of_allocation_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_user_layer):
+        surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field)
         surveyor_parcel_count = dict()  # {surveyor_name: parcel_count}
         params = QgsAggregateCalculator.AggregateParameters()
-        for surveyor_t_id in surveyor_t_ids:
-            params.filter = "{} = {}".format(names.FDC_PARCEL_T_SURVEYOR_F, surveyor_t_id)
-            surveyor_name = all_surveyors_data[surveyor_t_id][0]  # (name, doc_id)
+        for surveyor_id, surveyor_data in surveyors_data.items():
+            params.filter = "{} = {}".format(referencing_field, surveyor_id)
+            surveyor_name = surveyors_data[surveyor_id][0]  # (name, doc_id)
             surveyor_parcel_count[surveyor_name] = int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
-                                                                                  names.FDC_PARCEL_T_SURVEYOR_F,
+                                                                                  referencing_field,
                                                                                   params)[0])  # val (float), res (bool)
 
         return sorted(surveyor_parcel_count.items(), key=lambda x:locale.strxfrm(x[0]))

@@ -101,8 +101,10 @@ class BaseAllocateParcelsToReceiverPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_receivers(self):
         self.cbo_receiver.clear()
-        for receiver_t_id, receiver_data in sorted(self._controller.get_receivers_data().items(), key=lambda x:locale.strxfrm(str(x[1][0]))):
-            self.cbo_receiver.addItem(receiver_data[0], receiver_t_id)  # receiver_data: (name, doc id)
+        for receiver_id, receiver_data in sorted(self._controller.get_receivers_data().items(), key=lambda x:locale.strxfrm(str(x[1][0]))):
+            # receiver_id: either t_id (surveyor) or t_basket (coordinator)
+            # receiver_data: (name, doc id)
+            self.cbo_receiver.addItem(receiver_data[0], receiver_id)
 
     def receiver_changed(self, index):
         self.fill_table()
