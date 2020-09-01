@@ -228,22 +228,6 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     return out_layer
 
 
-def get_required_fields(db_connection):
-    required_fields = list()
-    for key, value in db_connection.names.TABLE_DICT.items():
-        for key_field, value_field in value[db_connection.names.FIELDS_DICT].items():
-            if getattr(db_connection.names, value_field):
-                required_fields.append(value_field)
-    return required_fields
-
-
-def get_required_tables(db_connection):
-    required_tables = list()
-    for key, value in db_connection.names.TABLE_DICT.items():
-        if getattr(db_connection.names, value[db_connection.names.VARIABLE_NAME]):
-            required_tables.append(value[db_connection.names.VARIABLE_NAME])
-    return required_tables
-
 def testdata_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, 'resources', path)
