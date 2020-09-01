@@ -1,138 +1,106 @@
+import unittest
+from abc import ABC
+
 import nose2
 
-from qgis.testing import (start_app,
-                          unittest)
+from qgis.testing import start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (get_required_fields,
-                                            get_required_tables)
 from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
                                                       T_ID_KEY,
                                                       T_ILI_TID_KEY,
                                                       DESCRIPTION_KEY,
                                                       DISPLAY_NAME_KEY)
+from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)
 
 
-class TestSNRDataModel(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_snr_data')
-        cls.db_pg = get_pg_conn('test_ladm_snr_data')
-        cls.db_gpkg = get_gpkg_conn('test_ladm_snr_gpkg')
+class BaseTestSNRDataModel(BaseTestForModels, ABC):
+    def get_name_of_models(self):
+        return 'SNR data model'
 
-    def test_required_models_gpkg(self):
-        print("\nINFO: Validate if the schema for snr data model in GPKG...")
-        res, code, msg = self.db_gpkg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_models(self.db_gpkg)
+    def check_required_models(self):
+        self.assertFalse(self.db.supplies_model_exists())
+        self.assertTrue(self.db.snr_data_model_exists())
+        self.assertFalse(self.db.supplies_integration_model_exists())
+        self.assertFalse(self.db.survey_model_exists())
+        self.assertFalse(self.db.valuation_model_exists())
+        self.assertFalse(self.db.cadastral_cartography_model_exists())
 
-    def test_required_models_pg(self):
-        print("\nINFO: Validate if the schema for snr data model in PG...")
-        res, code, msg = self.db_pg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_models(self.db_pg)
+    def get_required_field_list(self):
+        return ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F']
 
-    def check_required_models(self, db_connection):
-        self.assertFalse(db_connection.supplies_model_exists())
-        self.assertTrue(db_connection.snr_data_model_exists())
-        self.assertFalse(db_connection.supplies_integration_model_exists())
-        self.assertFalse(db_connection.survey_model_exists())
-        self.assertFalse(db_connection.valuation_model_exists())
-        self.assertFalse(db_connection.cadastral_cartography_model_exists())
+    def get_required_table_names_list(self):
+        return ['SNR_RIGHT_T',
+                'SNR_SOURCE_RIGHT_T',
+                'SNR_PARCEL_REGISTRY_T',
+                'SNR_TITLE_HOLDER_T',
+                'SNR_RIGHT_TYPE_D',
+                'SNR_TITLE_HOLDER_DOCUMENT_T',
+                'SNR_SOURCE_TYPE_D',
+                'SNR_TITLE_HOLDER_TYPE_D',
+                'EXT_ARCHIVE_S']
 
-    def test_names_from_db_pg(self):
-        print("\nINFO: Validate names for SNR data model (small DB case) in PG...")
-        res, code, msg = self.db_pg.test_connection()
-        self.assertTrue(res, msg)
+    def get_expected_dict(self):
+        return {T_ID_KEY: 'T_Id',
+                T_ILI_TID_KEY: "T_Ili_Tid",
+                ILICODE_KEY: 'iliCode',
+                DESCRIPTION_KEY: 'description',
+                DISPLAY_NAME_KEY: 'dispName',
+                'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho':
+                    {'table_name': 'snr_titular_derecho',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
 
-        dict_names = self.db_pg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 18)
-
-        expected_dict = {T_ID_KEY: 't_id',
-                         T_ILI_TID_KEY: "t_ili_tid",
-                         ILICODE_KEY: 'ilicode',
-                         DESCRIPTION_KEY: 'description',
-                         DISPLAY_NAME_KEY: 'dispname',
-                         'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
-        for k,v in expected_dict.items():
-            self.assertIn(k, dict_names)
-            self.assertEqual(v, dict_names[k])
-
-    def test_names_from_db_gpkg(self):
-        print("\nINFO: Validate names for SNR data model (small DB case) for GPKG...")
-        res, code, msg = self.db_gpkg.test_connection()
-        self.assertTrue(res, msg)
-
-        dict_names = self.db_gpkg.get_table_and_field_names()
-        self.assertEqual(len(dict_names), 18)
-
-        expected_dict = {T_ID_KEY: 'T_Id',
-                         T_ILI_TID_KEY: "T_Ili_Tid",
-                         ILICODE_KEY: 'iliCode',
-                         DESCRIPTION_KEY: 'description',
-                         DISPLAY_NAME_KEY: 'dispName',
-                         'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho': {'table_name': 'snr_titular_derecho',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
-                                                                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
-        for k,v in expected_dict.items():
-            self.assertIn(k, dict_names)
-            self.assertEqual(v, dict_names[k])
+    def get_expected_table_and_fields_length(self):
+        return 18
 
 
-    def test_required_table_names_pg(self):
-        print("\nINFO: Validate minimum required tables from names in PG...")
-        res, code, msg = self.db_pg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_table_names(self.db_pg)
-
-    def test_required_table_names_gpkg(self):
-        print("\nINFO: Validate minimum required tables from names in GPKG...")
-        res, code, msg = self.db_gpkg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_table_names(self.db_gpkg)
-
-    def check_required_table_names(self, db_connection):
-        test_required_tables = ['SNR_RIGHT_T', 'SNR_SOURCE_RIGHT_T', 'SNR_PARCEL_REGISTRY_T', 'SNR_TITLE_HOLDER_T', 'SNR_RIGHT_TYPE_D', 'SNR_TITLE_HOLDER_DOCUMENT_T', 'SNR_SOURCE_TYPE_D', 'SNR_TITLE_HOLDER_TYPE_D', 'EXT_ARCHIVE_S']
-        required_tables = get_required_tables(db_connection)
-
-        for test_required_table in test_required_tables:
-            self.assertIn(test_required_table, required_tables)
-
-    def test_required_field_names_pg(self):
-        print("\nINFO: Validate minimum required fields from names in PG...")
-        res, code, msg = self.db_pg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_field_names(self.db_pg)
-
-    def test_required_field_names_gpkg(self):
-        print("\nINFO: Validate minimum required fields from names from GPKG...")
-        res, code, msg = self.db_gpkg.test_connection()
-        self.assertTrue(res, msg)
-        self.check_required_field_names(self.db_gpkg)
-
-    def check_required_field_names(self, db_connection):
-        test_required_fields = ['EXT_ARCHIVE_S_DATA_F', 'EXT_ARCHIVE_S_EXTRACTION_F']
-        required_fields = get_required_fields(db_connection)
-
-        for test_required_field in test_required_fields:
-            self.assertIn(test_required_field, required_fields)
+class TestSNRDataModelPG(BaseTestSNRDataModel, unittest.TestCase):
+    schema = 'test_ladm_snr_data'
 
     @classmethod
-    def tearDownClass(cls):
-        print("INFO: Closing open connections to databases")
-        cls.db_pg.conn.close()
-        cls.db_gpkg.conn.close()
+    def restore_db(cls):
+        restore_schema(cls.schema)
+
+    @classmethod
+    def get_connector(cls) -> DBConnector:
+        return get_pg_conn(cls.schema)
+
+    def get_db_name(self):
+        return 'PG'
+
+    def get_expected_dict(self):
+        return {T_ID_KEY: 't_id',
+                T_ILI_TID_KEY: "t_ili_tid",
+                ILICODE_KEY: 'ilicode',
+                DESCRIPTION_KEY: 'description',
+                DISPLAY_NAME_KEY: 'dispname',
+                'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho':
+                    {'table_name': 'snr_titular_derecho',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.Porcentaje_Participacion': 'porcentaje_participacion',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_derecho..Submodelo_Insumos_SNR.Datos_SNR.SNR_Derecho': 'snr_derecho',
+                     'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
+
+
+class TestSNRDataModelGPKG(BaseTestSNRDataModel, unittest.TestCase):
+
+    def get_db_name(self):
+        return 'GPKG'
+
+    @classmethod
+    def restore_db(cls):
+        pass
+
+    @classmethod
+    def get_connector(cls) -> DBConnector:
+        return get_gpkg_conn('test_ladm_snr_gpkg')
 
 
 if __name__ == '__main__':
     nose2.main()
-
