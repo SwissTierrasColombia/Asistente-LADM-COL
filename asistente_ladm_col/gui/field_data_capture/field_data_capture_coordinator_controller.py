@@ -73,5 +73,5 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         return self._ladm_data.delete_surveyor(self.db().names, receiver_t_id, self.user_layer())
 
     def get_count_of_not_allocated_parcels(self):
-        return self._ladm_data.get_count_of_not_allocated_parcels_field_data_capture(self.db().names,
-                                                                                     self.parcel_layer())
+        return self._ladm_data.get_count_of_not_allocated_parcels_to_surveyors_field_data_capture(self.db().names,
+                                                                                                  self.parcel_layer())

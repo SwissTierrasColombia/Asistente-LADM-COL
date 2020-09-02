@@ -1015,6 +1015,31 @@ class LADMData():
         return sorted(surveyor_parcel_count.items(), key=lambda x:locale.strxfrm(x[0]))
 
     @staticmethod
-    def get_count_of_not_allocated_parcels_field_data_capture(names, fdc_parcel_layer):
+    def get_count_of_not_allocated_parcels_to_surveyors_field_data_capture(names, fdc_parcel_layer):
+        """
+        :param names: Table and field names
+        :param fdc_parcel_layer: QgsVectorLayer
+        :return: Count of not allocated parcels
+        """
         return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.CountMissing,
                                               names.FDC_PARCEL_T_SURVEYOR_F)[0])  # val (float), res (bool)
+
+    @staticmethod
+    def get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(names, fdc_parcel_layer, fdc_user_layer):
+        """
+        :param names: Table and field names
+        :param fdc_parcel_layer: QgsVectorLayer
+        :param fdc_user_layer: QgsVectorLayer
+        :return: Count of not allocated parcels
+        """
+        receivers_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, names.T_BASKET_F)
+        receivers_ids = list(receivers_data.keys())  # t_baskets
+        params = QgsAggregateCalculator.AggregateParameters()
+
+        # We need to count parcels that have no basket associated with users (not that all parcels have baskets, even if
+        # it is the default basket created at import time)
+        params.filter = "{} not in ({})".format(names.T_BASKET_F, ",".join([str(receiver_id) for receiver_id in receivers_ids]))
+
+        return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
+                                              names.T_BASKET_F,
+                                              params)[0])  # val (float), res (bool)
