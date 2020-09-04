@@ -274,14 +274,6 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.export_models_list_view.setFocus()
             return
 
-        if not configuration.iliexportmodels:
-            self._running_tool = False
-            message_error = QCoreApplication.translate("DialogExportData", "Please set a model before exporting data.")
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
-            self.export_models_list_view.setFocus()
-            return
-
         # If xtf browser was opened and the file exists, the user already chose
         # to overwrite the file
         if os.path.isfile(self.xtf_file_line_edit.text().strip()) and not self.xtf_browser_was_opened:
@@ -398,7 +390,6 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         configuration.base_configuration = self.base_configuration
         if self.get_ili_models():
-            configuration.iliexportmodels = ';'.join(self.get_ili_models())
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
         configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
