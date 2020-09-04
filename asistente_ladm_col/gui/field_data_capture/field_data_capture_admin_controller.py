@@ -51,7 +51,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         receiver_ids = self.parcel_layer().uniqueValues(receiver_idx)
         # Only t_basket of receivers with allocated parcels
         basket_t_ids = [k for k in receivers_data.keys() if k in receiver_ids]
-        basket_table = self.app.core.get_layer(self._db, 't_ili2db_basket')  # TODO: add to db mapping
+        basket_table = self._ladm_data.get_basket_table(self._db)
         basket_dict = {f[names.T_ILI_TID_F]: receivers_data[f[names.T_ID_F]][0] for f in basket_table.getFeatures() if f[self._db.names.T_ID_F] in basket_t_ids}
 
         if not basket_dict:

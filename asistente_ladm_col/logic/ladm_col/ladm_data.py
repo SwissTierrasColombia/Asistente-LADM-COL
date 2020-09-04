@@ -18,6 +18,8 @@
 """
 import locale
 
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication)
 from qgis.core import (NULL,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -45,11 +47,12 @@ from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.lib.logger import Logger
 
 
-class LADMData():
+class LADMData(QObject):
     """
     High-level class to get related information from the LADM-COL database.
     """
     def __init__(self):
+        QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
 
@@ -1043,8 +1046,9 @@ class LADMData():
             attr_map = {plot.id(): {basket_idx: receiver_id} for plot in plots}
             res = fdc_plot_layer.dataProvider().changeAttributeValues(attr_map)
             if not res:
-                return False, "Could not write basket id {} to Plot layer for receiver {}.".format(receiver_id,
-                                                                                                   receiver_dict[receiver_id][0])
+                return False, QCoreApplication.translate("LADMData",
+                    "Could not write basket id {} to Plot layer for receiver {}.".format(receiver_id,
+                                                                                         receiver_dict[receiver_id][0]))
 
             # TODO: Do the same with other tables (rights, parties, etc.)
 
@@ -1124,3 +1128,11 @@ class LADMData():
         return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
                                               names.T_BASKET_F,
                                               params)[0])  # val (float), res (bool)
+
+    @staticmethod
+    def get_basket_table(db):
+        return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_BASKET_T), 'baskets', db.provider)
+
+    @staticmethod
+    def get_dataset_table(db):
+        return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_DATASET_T), 'datasets', db.provider)

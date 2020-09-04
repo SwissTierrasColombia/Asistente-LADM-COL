@@ -32,7 +32,9 @@ from asistente_ladm_col.core.db_mapping_registry import (DBMappingRegistry,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
                                                          DESCRIPTION_KEY,
-                                                         T_BASKET_KEY)
+                                                         T_BASKET_KEY,
+                                                         T_ILI2DB_BASKET_KEY,
+                                                         T_ILI2DB_DATASET_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname
@@ -375,7 +377,14 @@ class DBConnector(QObject):
         """
         # Fill table names
         for k,v in self.__db_mapping.items():
-            if k not in [T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY, T_BASKET_KEY]:  # Custom names will be handled by Names class
+            if k not in [T_ID_KEY,
+                         T_ILI_TID_KEY,
+                         DISPLAY_NAME_KEY,
+                         ILICODE_KEY,
+                         DESCRIPTION_KEY,
+                         T_BASKET_KEY,
+                         T_ILI2DB_BASKET_KEY,
+                         T_ILI2DB_DATASET_KEY]:  # Custom names will be handled by Names class
                 self.__table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:
@@ -524,4 +533,8 @@ class ClientServerDB(DBConnector):
         return False, EnumTestConnectionMsg.UNKNOWN_CONNECTION_ERROR, QCoreApplication.translate("ClientServerDB",
                                                                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!")
     def execute_sql_query(self, query):
+        raise NotImplementedError
+
+    def get_qgis_layer_uri(self, table_name):
+        # Beware, this should be used only for geometryless layers. It was created to access ili2db metadata tables.
         raise NotImplementedError

@@ -28,6 +28,8 @@ DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'
 T_BASKET_KEY = 't_basket'
+T_ILI2DB_DATASET_KEY = 't_ili2db_dataset'
+T_ILI2DB_BASKET_KEY = 't_ili2db_basket'
 
 
 class DBMappingRegistry():
@@ -90,8 +92,10 @@ class DBMappingRegistry():
                     or DISPLAY_NAME_KEY not in db_mapping \
                     or ILICODE_KEY not in db_mapping \
                     or DESCRIPTION_KEY not in db_mapping \
-                    or T_BASKET_KEY not in db_mapping:
-                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, T_ILI_TID, DISPLAY_NAME, ILICODE, DESCRIPTION, T_BASKET.")
+                    or T_BASKET_KEY not in db_mapping \
+                    or T_ILI2DB_BASKET_KEY not in db_mapping \
+                    or T_ILI2DB_DATASET_KEY not in db_mapping:
+                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, T_ILI_TID, DISPLAY_NAME, ILICODE, DESCRIPTION, (occasionally: T_BASKET, T_ILI2DB_BASKET_KEY, T_ILI2DB_DATASET_KEY).")
                 return False
 
             for table_key, attrs in self.TABLE_DICT.items():
@@ -111,6 +115,8 @@ class DBMappingRegistry():
             self.DESCRIPTION_F = db_mapping[DESCRIPTION_KEY] if DESCRIPTION_KEY in db_mapping else None
             self.DISPLAY_NAME_F = db_mapping[DISPLAY_NAME_KEY] if DISPLAY_NAME_KEY in db_mapping else None
             self.T_BASKET_F = db_mapping[T_BASKET_KEY] if T_BASKET_KEY in db_mapping else None
+            self.T_ILI2DB_BASKET_T = db_mapping[T_ILI2DB_BASKET_KEY] if T_ILI2DB_BASKET_KEY in db_mapping else None
+            self.T_ILI2DB_DATASET_T = db_mapping[T_ILI2DB_DATASET_KEY] if T_ILI2DB_DATASET_KEY in db_mapping else None
 
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))

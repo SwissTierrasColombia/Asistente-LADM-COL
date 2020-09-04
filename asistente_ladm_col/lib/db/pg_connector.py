@@ -41,7 +41,9 @@ from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
                                                          DESCRIPTION_KEY,
-                                                         T_BASKET_KEY)
+                                                         T_BASKET_KEY,
+                                                         T_ILI2DB_BASKET_KEY,
+                                                         T_ILI2DB_DATASET_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 
 
@@ -203,6 +205,8 @@ class PGConnector(ClientServerDB):
         dict_names[ILICODE_KEY] = "ilicode"
         dict_names[DESCRIPTION_KEY] = "description"
         dict_names[T_BASKET_KEY] = "t_basket"
+        dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
+        dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"
 
         return dict_names
 
@@ -637,3 +641,12 @@ class PGConnector(ClientServerDB):
         return True, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE, QCoreApplication.translate(
             "PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(
             self.schema)
+
+    def get_qgis_layer_uri(self, table_name):
+        data_source_uri = '{uri} key={primary_key} table="{schema}"."{table}"'.format(
+            uri=self.uri,
+            primary_key=self.names.T_ID_F,
+            schema=self.schema,
+            table=table_name
+        )
+        return data_source_uri

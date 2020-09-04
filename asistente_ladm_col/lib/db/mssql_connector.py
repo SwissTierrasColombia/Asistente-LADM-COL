@@ -35,7 +35,9 @@ from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
                                                          DESCRIPTION_KEY,
-                                                         T_BASKET_KEY)
+                                                         T_BASKET_KEY,
+                                                         T_ILI2DB_BASKET_KEY,
+                                                         T_ILI2DB_DATASET_KEY)
 
 
 class MSSQLConnector(ClientServerDB):
@@ -529,6 +531,8 @@ class MSSQLConnector(ClientServerDB):
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
         dict_names[T_BASKET_KEY] = "t_basket"
+        dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
+        dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"
 
         return dict_names
 
@@ -541,3 +545,33 @@ class MSSQLConnector(ClientServerDB):
             result = True
 
         return result
+
+    def get_qgis_layer_uri(self, table_name):
+        def get_layer_uri_common(uri):
+            # Borrowed from QgisModelBaker/libqgsprojectgen/db_factory/mssql_layer_uri.py
+            param_db = dict()
+            lst_item = uri.split(';')
+            for item in lst_item:
+                key_value = item.split('=')
+                if len(key_value) == 2:
+                    key = key_value[0].strip()
+                    value = key_value[1].strip()
+                    param_db[key] = value
+
+            uri = 'service=\'driver={drv}\' dbname=\'{database}\' host={server} user=\'{uid}\' password=\'{pwd}\' '.format(
+                drv=param_db['DRIVER'],
+                database=param_db['DATABASE'],
+                server=param_db['SERVER'],
+                uid=param_db['UID'],
+                pwd=param_db['PWD']
+            )
+
+            return uri
+
+        data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid=0 table="{schema}"."{table}" sql='.format(
+            uri=get_layer_uri_common(self.uri),
+            primary_key=self.names.T_ID_F,
+            schema=self.schema,
+            table=table_name
+        )
+        return data_source_uri

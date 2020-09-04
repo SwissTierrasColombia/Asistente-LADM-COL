@@ -28,7 +28,9 @@ from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
                                                          DISPLAY_NAME_KEY,
                                                          ILICODE_KEY,
                                                          DESCRIPTION_KEY,
-                                                         T_BASKET_KEY)
+                                                         T_BASKET_KEY,
+                                                         T_ILI2DB_BASKET_KEY,
+                                                         T_ILI2DB_DATASET_KEY)
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
@@ -120,7 +122,9 @@ class GPKGConnector(FileDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
-        dict_names[T_BASKET_KEY] = "T_Basket"  # TODO: double check
+        dict_names[T_BASKET_KEY] = "T_basket"
+        dict_names[T_ILI2DB_BASKET_KEY] = "T_ILI2DB_BASKET"
+        dict_names[T_ILI2DB_DATASET_KEY] = "T_ILI2DB_DATASET"
 
         return dict_names
 
@@ -314,3 +318,10 @@ class GPKGConnector(FileDB):
             return True, cursor.fetchall()
         except sqlite3.ProgrammingError as e:
             return False, e
+
+    def get_qgis_layer_uri(self, table_name):
+        data_source_uri = '{uri}|layername={table}'.format(
+            uri=self.uri,
+            table=table_name
+        )
+        return data_source_uri
