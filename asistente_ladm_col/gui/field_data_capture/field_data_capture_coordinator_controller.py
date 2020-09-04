@@ -44,10 +44,12 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         return self._ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())
 
     def export_field_data(self, export_dir):
-        surveyor_expressions_dict = self._ladm_data.get_layer_ids_related_to_parcels_field_data_capture(self._db.names,
-                                                                                                        self.parcel_layer(),
-                                                                                                        self.plot_layer(),
-                                                                                                        self.user_layer())
+        surveyor_expressions_dict = self._ladm_data.get_layer_expressions_per_receiver_field_data_capture(self._db.names,
+                                                                                                          self._get_parcel_field_referencing_receiver(),
+                                                                                                          self._get_receiver_referenced_field(),
+                                                                                                          self.parcel_layer(),
+                                                                                                          self.plot_layer(),
+                                                                                                          self.user_layer())
 
         # Disconnect so that we don't close the panel while converting to offline
         for layer_name in self._layers:

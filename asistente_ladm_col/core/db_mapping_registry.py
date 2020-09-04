@@ -18,7 +18,6 @@
 """
 import datetime
 from asistente_ladm_col.config.db_mapping_config import DB_MAPPING_CONFIG
-from asistente_ladm_col.config.gui.common_keys import ROLE_SUPPORTED_MODELS
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger

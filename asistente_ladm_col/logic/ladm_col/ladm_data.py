@@ -848,11 +848,12 @@ class LADMData():
         return {feature.id(): (feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[get_field_name]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, fids=list(), t_ids=list()):
+    def get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, get_feature=False, fids=list(), t_ids=list()):
         """
         :param names: Table and field names from the DB
         :param fdc_parcel_layer: parcel layer from the Field Data Capture model
         :param fdc_plot_layer: plot layer from the Field Data Capture model
+        :param get_feature: Whether to get whole features or just fids
         :param fids: list of parcel fids.
         :param t_ids: list of parcel t_ids. If present, they'll be used, no matter that fids is also passed.
         :return: list of plot fids related to the given parcel fids
@@ -864,7 +865,10 @@ class LADMData():
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setNoAttributes()
 
-        return [feature.id() for feature in fdc_plot_layer.getFeatures(request)]
+        if get_feature:
+            return [feature for feature in fdc_plot_layer.getFeatures(request)]
+
+        return [feature.id() for feature in fdc_plot_layer.getFeatures(request)]  # Just fids
 
     @staticmethod
     def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer):
@@ -928,39 +932,59 @@ class LADMData():
         return string[:1] if string else ''
 
     @staticmethod
-    def get_layer_ids_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, fdc_surveyor_layer):
-        surveyor_related_ids = dict()  # {surveyor_t_id: {parcel_ids: [], plot_ids: [], ...}
-        # Get unique values from parcel layer (surveyor)
-        surveyor_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
-        surveyor_t_ids = fdc_parcel_layer.uniqueValues(surveyor_idx)
-        if NULL in surveyor_t_ids:
-            surveyor_t_ids.remove(NULL)
+    def get_layer_expressions_per_receiver_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+        """
+        Based on parcels that are allocated to receivers, get expressions to get related objects in the DB.
+        For surveyors we need the expressions to select features and export to offline projects, whereas
+        for Coordinators we need the expressions to know what objects belong to a given basket.
 
-        surveyors = LADMData.get_features_from_t_ids(fdc_surveyor_layer, names.T_ID_F, surveyor_t_ids)
-        surveyor_dict = {feature[names.T_ID_F]: (feature.id(), LADMData.get_fdc_user_name(names, feature, False)) for feature in surveyors}
+        :param names: Table and Field names object from the DB connector
+        :param referencing_field: Parcel layer field referencing receivers
+        :param referenced_field: Receivers layer field referenced by parcels
+        :param fdc_parcel_layer: Parcel QgsVectorLayer
+        :param fdc_plot_layer: Plot QgsVectorLayer
+        :param fdc_user_layer: User QgsVectorLayer
+        :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
+        """
+        layer_expressions_per_receiver = dict()
+        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, False)
 
-        for surveyor_t_id in surveyor_t_ids:
-            # Get parcels per surveyor t_id --> {parcel_id: parcel_t_id}
-            parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names, names.T_ID_F, surveyor_t_id, fdc_parcel_layer)
-            parcel_ids = list(parcel_data.keys())
+        # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
+        # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
+        receiver_idx = fdc_parcel_layer.fields().indexOf(referencing_field)
+        receiver_ids = fdc_parcel_layer.uniqueValues(receiver_idx)
+
+        # Make sure the list contains only valid receivers
+        # First part of the conditional:
+        #   Specially useful when receiver id is a t_basket, because we might get baskets that don't belong to receivers
+        # Second part of the conditional:
+        #   When the receiver id is a t_id, chances are parcels are not allocated, and then NULL may come in that list
+        receiver_ids = [receiver_id for receiver_id in receiver_ids if receiver_id in receiver_dict and receiver_id is not NULL]
+
+        for receiver_id in receiver_ids:
+            # Get parcels per receiver id --> {parcel_id: parcel_t_id}
+            parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
+                                                                               receiver_id,
+                                                                               referencing_field,
+                                                                               fdc_parcel_layer)
             parcel_t_ids = list(parcel_data.values())
 
             # Get plots from parcels
-            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, t_ids=parcel_t_ids)
-
-            # TODO: Do the same with other tables (rights, parties, etc.)
-
-            #surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: parcel_ids,
-            #                                                         names.FDC_PLOT_T: plot_ids,
-            #                                                         names.FDC_USER_T: [surveyor_dict[surveyor_t_id][0]]}
+            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
+                                                                                fdc_parcel_layer,
+                                                                                fdc_plot_layer,
+                                                                                t_ids=parcel_t_ids)
 
             # Warning: Use QGIS ids if you're sure it'll get always the same records.
             # For some reason that does not happen with parcels, that's why we prefer t_ids.
-            surveyor_related_ids[surveyor_dict[surveyor_t_id][1]] = {names.FDC_PARCEL_T: LADMData.build_layer_expression(parcel_t_ids, names.T_ID_F),
-                                                                     names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
-                                                                     names.FDC_USER_T: LADMData.build_layer_expression([surveyor_dict[surveyor_t_id][0]])}
+            layer_expressions_per_receiver[receiver_dict[receiver_id][0]] = {
+                names.FDC_PARCEL_T: LADMData.build_layer_expression(parcel_t_ids, names.T_ID_F),
+                names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
+                names.FDC_USER_T: LADMData.build_layer_expression([receiver_id], referenced_field)  # t_id or t_basket
+            }
+            # TODO: Do the same with other tables (rights, parties, etc.)
 
-        return surveyor_related_ids
+        return layer_expressions_per_receiver
 
     @staticmethod
     def build_layer_expression(values, field='$id'):
@@ -974,11 +998,68 @@ class LADMData():
         return expression
 
     @staticmethod
+    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+        """
+        Based on parcels that are allocated to receivers, get related objects in the DB and set the receiver's basket id
+        to them. Note that both user and parcel layers already have the basket id correctly set.
+
+        :param names: Table and Field names object from the DB connector
+        :param referencing_field: Parcel layer field referencing receivers
+        :param referenced_field: Receivers layer field referenced by parcels
+        :param fdc_parcel_layer: Parcel QgsVectorLayer
+        :param fdc_plot_layer: Plot QgsVectorLayer
+        :param fdc_user_layer: User QgsVectorLayer
+        :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
+        """
+        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, False)
+
+        # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
+        # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
+        receiver_idx = fdc_parcel_layer.fields().indexOf(referencing_field)
+        receiver_ids = fdc_parcel_layer.uniqueValues(receiver_idx)
+
+        # Make sure the list contains only valid receivers
+        # First part of the conditional:
+        #   Specially useful when receiver id is a t_basket, because we might get baskets that don't belong to receivers
+        # Second part of the conditional:
+        #   When the receiver id is a t_id, chances are parcels are not allocated, and then NULL may come in that list
+        receiver_ids = [receiver_id for receiver_id in receiver_ids if receiver_id in receiver_dict and receiver_id is not NULL]
+
+        for receiver_id in receiver_ids:
+            # Get parcels per receiver id --> {parcel_id: parcel_t_id}
+            parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
+                                                                               receiver_id,
+                                                                               referencing_field,
+                                                                               fdc_parcel_layer)
+            parcel_t_ids = list(parcel_data.values())
+
+            # Get plots from parcels and write the basket
+            plots = LADMData.get_plots_related_to_parcels_field_data_capture(names,
+                                                                             fdc_parcel_layer,
+                                                                             fdc_plot_layer,
+                                                                             get_feature=True,  # get_fids
+                                                                             t_ids=parcel_t_ids)
+            basket_idx = fdc_plot_layer.fields().indexOf(referenced_field)
+            attr_map = {plot.id(): {basket_idx: receiver_id} for plot in plots}
+            res = fdc_plot_layer.dataProvider().changeAttributeValues(attr_map)
+            if not res:
+                return False, "Could not write basket id {} to Plot layer for receiver {}.".format(receiver_id,
+                                                                                                   receiver_dict[receiver_id][0])
+
+            # TODO: Do the same with other tables (rights, parties, etc.)
+
+        return True, "Success!"
+
+    @staticmethod
     def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, full_name=True):
         receivers_data = dict()
         for feature in fdc_user_layer.getFeatures():
-            receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
-                                                      feature[names.FDC_USER_T_DOCUMENT_ID_F])
+            if id_field_name == names.T_BASKET_F and int(feature[names.FDC_USER_T_DOCUMENT_ID_F]) > 100:  # TODO: filter by role
+                receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
+                                                          feature[names.FDC_USER_T_DOCUMENT_ID_F])
+            elif id_field_name == names.T_ID_F:
+                receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
+                                                          feature[names.FDC_USER_T_DOCUMENT_ID_F])
 
         return receivers_data
 
