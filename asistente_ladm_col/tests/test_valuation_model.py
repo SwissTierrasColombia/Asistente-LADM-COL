@@ -16,6 +16,9 @@ from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
+                                            get_mssql_conn,
+                                            restore_schema_mssql,
+                                            reset_db_mssql,
                                             restore_schema)
 
 
@@ -177,6 +180,25 @@ class TestValuationModelGPKG(BaseTestValuationModel, unittest.TestCase):
     @classmethod
     def get_connector(cls) -> DBConnector:
         return get_gpkg_conn('test_ladm_valuation_model_gpkg')
+
+
+class TestValuationModelMSSQL(BaseTestValuationModel, unittest.TestCase):
+    schema = 'test_ladm_valuation_model'
+
+    def get_db_name(self):
+        return 'SQL Server'
+
+    @classmethod
+    def restore_db(cls):
+        reset_db_mssql(cls.schema)
+        restore_schema_mssql(cls.schema)
+
+    @classmethod
+    def get_connector(cls) -> DBConnector:
+        return get_mssql_conn(cls.schema)
+
+    def get_expected_table_and_fields_length(self):
+        return 180  # TODO Why does mssql have 180?
 
 
 if __name__ == '__main__':

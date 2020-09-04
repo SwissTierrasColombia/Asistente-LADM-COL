@@ -16,8 +16,10 @@ from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
+                                            get_mssql_conn,
+                                            restore_schema_mssql,
+                                            reset_db_mssql,
                                             restore_schema)
-
 
 class BaseTestCadastralManagerDataModel(BaseTestForModels, ABC):
     def get_name_of_models(self):
@@ -119,6 +121,22 @@ class TestCadastralManagerDataModelGPKG(BaseTestCadastralManagerDataModel, unitt
     @classmethod
     def get_connector(cls) -> DBConnector:
         return get_gpkg_conn('test_ladm_cadastral_manager_data_gpkg')
+
+
+class TestCadastralManagerDataModelMSSQL(BaseTestCadastralManagerDataModel, unittest.TestCase):
+    schema = 'test_ladm_cadastral_manager_data'
+
+    def get_db_name(self):
+        return 'SQL Server'
+
+    @classmethod
+    def restore_db(cls):
+        reset_db_mssql(cls.schema)
+        restore_schema_mssql(cls.schema)
+
+    @classmethod
+    def get_connector(cls) -> DBConnector:
+        return get_mssql_conn(cls.schema)
 
 
 if __name__ == '__main__':
