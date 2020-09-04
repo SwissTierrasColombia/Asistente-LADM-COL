@@ -94,7 +94,7 @@ class BasketExporter(QObject):
 
         self.exporter = iliexporter.Exporter()
         self.exporter.tool = db_factory.get_model_baker_db_ili_mode()
-        #self.exporter.stdout.connect(self.print_info)
+        self.exporter.process_started.connect(self.on_process_started)
         self.exporter.stderr.connect(self.on_stderr)
         #self.exporter.process_finished.connect(self.on_process_finished)
 
@@ -142,6 +142,9 @@ class BasketExporter(QObject):
     #    self.run_export()
     #if self._basket_dict:
     #    basket, = self._basket_dict.popitem()
+
+    def on_process_started(self, command):
+        self.log += command + '\n'
 
     def on_stderr(self, text):
         self.log += text
