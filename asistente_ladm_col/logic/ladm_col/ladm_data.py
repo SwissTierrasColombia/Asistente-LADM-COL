@@ -912,11 +912,15 @@ class LADMData(QObject):
         return {feature.id(): feature[attr_name] for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def discard_parcel_allocation_field_data_capture(names, parcel_ids, fdc_parcel_layer):
-        field_idx = fdc_parcel_layer.fields().indexOf(names.FDC_PARCEL_T_SURVEYOR_F)
-        attr_map = {parcel_id: {field_idx: NULL} for parcel_id in parcel_ids}
+    def discard_parcel_allocation_for_surveyors_field_data_capture(db, parcel_ids, fdc_parcel_layer):
+        return LADMData.change_attribute_value(fdc_parcel_layer, db.names.FDC_PARCEL_T_SURVEYOR_F, NULL, parcel_ids)
 
-        return fdc_parcel_layer.dataProvider().changeAttributeValues(attr_map)
+    @staticmethod
+    def discard_parcel_allocation_for_coordinators_field_data_capture(db, parcel_ids, fdc_parcel_layer):
+        value, msg = LADMData.get_default_ili2db_basket(db)
+        if not value:
+            return False
+        return LADMData.change_attribute_value(fdc_parcel_layer, db.names.T_BASKET_F, value, parcel_ids)
 
     @staticmethod
     def get_fdc_user_name(names, feature, full_name=True):
@@ -1035,11 +1039,7 @@ class LADMData(QObject):
 
         # Before setting receiver basket ids to objects related to allocated parcels,
         # let's reset basket ids in tables, setting them to the default basket.
-        fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
-        default_basket_id, msg = LADMData.get_ili2db_basket(db,
-                                                            DEFAULT_DATASET_NAME,
-                                                            "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
-        Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
+        default_basket_id, msg = LADMData.get_default_ili2db_basket(db)
         if default_basket_id is None:
             return False, msg
 
@@ -1098,6 +1098,10 @@ class LADMData(QObject):
             features = layer.getFeatures(request)
             attr_map = {feature.id(): {idx: value} for feature in features}
 
+        Logger().debug(__name__, "Changing '{}'.'{}' to '{}' ({} features)".format(layer.name(),
+                                                                              field_name,
+                                                                              value,
+                                                                              len(attr_map)))
         return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
@@ -1222,7 +1226,9 @@ class LADMData(QObject):
         basket_feature = QgsVectorLayerUtils().createFeature(basket_table, attributes=attrs)
         res = basket_table.dataProvider().addFeatures([basket_feature])
         if not res:
-            return None, QCoreApplication.translate("LADMData", "A basket could not be found (or created)!!!")
+            msg = QCoreApplication.translate("LADMData", "A basket could not be found (or created)!!!")
+            Logger().warning(__name__, msg)
+            return None, msg
 
         return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
 
@@ -1251,6 +1257,17 @@ class LADMData(QObject):
             feature = QgsVectorLayerUtils().createFeature(dataset_table, attributes=attrs)
             res = dataset_table.dataProvider().addFeatures([feature])
             if not res:
-                return None, QCoreApplication.translate("LADMData", "A dataset could not be found (or created)!!!")
+                msg = QCoreApplication.translate("LADMData", "A dataset could not be found (or created)!!!")
+                Logger().warning(__name__, msg)
+                return None, msg
 
             return new_dataset_t_id, "Success!"
+
+    @staticmethod
+    def get_default_ili2db_basket(db):
+        fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
+        default_basket_id, msg = LADMData.get_ili2db_basket(db,
+                                          DEFAULT_DATASET_NAME,
+                                          "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
+        Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
+        return default_basket_id, msg

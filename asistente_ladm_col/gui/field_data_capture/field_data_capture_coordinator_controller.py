@@ -41,7 +41,7 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         return self._db.names.T_ID_F
 
     def discard_parcel_allocation(self, parcel_ids):
-        return self._ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())
+        return self._ladm_data.discard_parcel_allocation_for_surveyors_field_data_capture(self._db, parcel_ids, self.parcel_layer())
 
     def export_field_data(self, export_dir):
         surveyor_expressions_dict = self._ladm_data.get_layer_expressions_per_receiver_field_data_capture(self._db.names,

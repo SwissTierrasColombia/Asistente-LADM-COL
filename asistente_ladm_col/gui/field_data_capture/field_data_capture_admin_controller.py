@@ -40,7 +40,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         return self._db.names.T_BASKET_F
 
     def discard_parcel_allocation(self, parcel_ids):
-        return self._ladm_data.discard_parcel_allocation_field_data_capture(self._db.names, parcel_ids, self.parcel_layer())
+        return self._ladm_data.discard_parcel_allocation_for_coordinators_field_data_capture(self._db, parcel_ids, self.parcel_layer())
 
     def export_field_data(self, export_dir):
         names = self._db.names
