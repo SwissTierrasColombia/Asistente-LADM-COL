@@ -58,12 +58,13 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
             return False, QCoreApplication.translate("FieldDataCaptureAdminController", "First allocate parcels to at least one coordinator.")
 
         # Now set basket id for allocated parcels' related features
-        res = self._ladm_data.set_basket_for_features_related_to_allocated_parcels_field_data_capture(names,
-                  self._get_parcel_field_referencing_receiver(),
-                  self._get_receiver_referenced_field(),
-                  self.parcel_layer(),
-                  self.plot_layer(),
-                  self.user_layer())
+        res = self._ladm_data.set_basket_for_features_related_to_allocated_parcels_field_data_capture(
+            self._db,
+            self._get_parcel_field_referencing_receiver(),
+            self._get_receiver_referenced_field(),
+            self.parcel_layer(),
+            self.plot_layer(),
+            self.user_layer())
 
         # Finally, export each basket to XTF
         basket_exporter = BasketExporter(self._db, basket_dict, export_dir)

@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import locale
+import uuid
 
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
@@ -28,7 +29,8 @@ from qgis.core import (NULL,
                        QgsVectorLayerUtils,
                        QgsAggregateCalculator)
 from asistente_ladm_col.config.enums import EnumLogMode
-from asistente_ladm_col.config.general_config import DEFAULT_LOG_MODE
+from asistente_ladm_col.config.general_config import (DEFAULT_LOG_MODE,
+                                                      DEFAULT_DATASET_NAME)
 from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY,
                                                                DICT_KEY_PARTIES,
                                                                DICT_KEY_PARCEL_T_DEPARTMENT_F,
@@ -41,9 +43,11 @@ from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY
                                                                DICT_KEY_PARTY_T_NAME_F,
                                                                DICT_KEY_PARTY_T_RIGHT,
                                                                DICT_KEY_PLOT_T_AREA_F)
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 
 
@@ -1001,12 +1005,12 @@ class LADMData(QObject):
         return expression
 
     @staticmethod
-    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
         """
         Based on parcels that are allocated to receivers, get related objects in the DB and set the receiver's basket id
         to them. Note that both user and parcel layers already have the basket id correctly set.
 
-        :param names: Table and Field names object from the DB connector
+        :param db: DB connector object
         :param referencing_field: Parcel layer field referencing receivers
         :param referenced_field: Receivers layer field referenced by parcels
         :param fdc_parcel_layer: Parcel QgsVectorLayer
@@ -1014,6 +1018,7 @@ class LADMData(QObject):
         :param fdc_user_layer: User QgsVectorLayer
         :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
         """
+        names = db.names
         receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, False)
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
@@ -1028,6 +1033,22 @@ class LADMData(QObject):
         #   When the receiver id is a t_id, chances are parcels are not allocated, and then NULL may come in that list
         receiver_ids = [receiver_id for receiver_id in receiver_ids if receiver_id in receiver_dict and receiver_id is not NULL]
 
+        # Before setting receiver basket ids to objects related to allocated parcels,
+        # let's reset basket ids in tables, setting them to the default basket.
+        fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
+        default_basket_id, msg = LADMData.get_ili2db_basket(db,
+                                                            DEFAULT_DATASET_NAME,
+                                                            "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
+        Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
+        if default_basket_id is None:
+            return False, msg
+
+        res = LADMData.change_attribute_value(fdc_plot_layer, referenced_field, default_basket_id)
+        if not res:
+            return False, QCoreApplication.translate("LADMData",
+                                                     "Could not write default basket id ({}) to Plot layer.").format(default_basket_id)
+
+        Logger().info(__name__, "Exporting basket to XTF for {} receivers...".format(len(receiver_ids)))
         for receiver_id in receiver_ids:
             # Get parcels per receiver id --> {parcel_id: parcel_t_id}
             parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
@@ -1037,22 +1058,47 @@ class LADMData(QObject):
             parcel_t_ids = list(parcel_data.values())
 
             # Get plots from parcels and write the basket
-            plots = LADMData.get_plots_related_to_parcels_field_data_capture(names,
-                                                                             fdc_parcel_layer,
-                                                                             fdc_plot_layer,
-                                                                             get_feature=True,  # get_fids
-                                                                             t_ids=parcel_t_ids)
-            basket_idx = fdc_plot_layer.fields().indexOf(referenced_field)
-            attr_map = {plot.id(): {basket_idx: receiver_id} for plot in plots}
-            res = fdc_plot_layer.dataProvider().changeAttributeValues(attr_map)
+            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
+                                                                                fdc_parcel_layer,
+                                                                                fdc_plot_layer,
+                                                                                get_feature=False,  # get_fids
+                                                                                t_ids=parcel_t_ids)
+            res = LADMData.change_attribute_value(fdc_plot_layer,
+                                                  referenced_field,
+                                                  receiver_id,
+                                                  plot_ids)
             if not res:
                 return False, QCoreApplication.translate("LADMData",
-                    "Could not write basket id {} to Plot layer for receiver {}.".format(receiver_id,
-                                                                                         receiver_dict[receiver_id][0]))
+                                                         "Could not write basket id {} to Plot layer for receiver {}.".format(
+                                                             receiver_id,
+                                                             receiver_dict[receiver_id][0]))
 
-            # TODO: Do the same with other tables (rights, parties, etc.)
+            Logger().info(__name__, "--> Basket exported for receiver {}: {} parcels, {} plots".format(receiver_id,
+                                                                                                       len(parcel_t_ids),
+                                                                                                       len(plot_ids)))
+
+            # TODO: Do the same with other tables (rights, parties, buildings, etc.)
 
         return True, "Success!"
+
+    @staticmethod
+    def change_attribute_value(layer, field_name, value, fids=list(), filter=''):
+        idx = layer.fields().indexOf(field_name)
+        attr_map = dict()
+        if fids:
+            attr_map = {fid: {idx: value} for fid in fids}
+        else:
+            if filter:
+                request = QgsFeatureRequest(QgsExpression(filter))
+            else:
+                request = QgsFeatureRequest()
+
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+            request.setNoAttributes()
+            features = layer.getFeatures(request)
+            attr_map = {feature.id(): {idx: value} for feature in features}
+
+        return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
     def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, full_name=True):
@@ -1136,3 +1182,75 @@ class LADMData(QObject):
     @staticmethod
     def get_dataset_table(db):
         return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_DATASET_T), 'datasets', db.provider)
+
+    @staticmethod
+    def get_ili2db_basket(db, dataset_name, topic_name, get_feature=False):
+        """
+        Get or create an ili2db basket by dataset name.
+        If you need to find several baskets, or if you need a specific basket from a dataset, this is not the function
+        for you; get the baskets table and do it by yourself :)
+
+        :param db: DB connector object
+        :param dataset_name: name of the dataset to be searched or to be used as new dataset name
+        :param topic_name: name of the topic the basket applies to...
+        :param get_feature: Whether to get the whole feature or just its t_id
+        :return: Tuple: t_id (or None), message (useful in case of failure)
+        """
+        basket_table = LADMData.get_basket_table(db)
+
+        dataset_t_id, msg = LADMData.get_ili2db_dataset_t_id(db, dataset_name)
+        Logger().info(__name__, "Dataset id: {}".format(dataset_t_id))
+        if dataset_t_id is None:
+            return None, msg
+
+        # We have the dataset, so go for the first basket we find in such dataset, otherwise create one
+        baskets = [f for f in basket_table.getFeatures("{} = {}".format(db.names.BASKET_T_DATASET_F, dataset_t_id))]
+        if baskets:
+            return baskets[0] if get_feature else baskets[0][db.names.T_ID_F], "Success!"
+
+        # Create basket since we didn't find it
+        t_id_idx = basket_table.fields().indexOf(db.names.T_ID_F)
+        max_value = basket_table.maximumValue(t_id_idx) or 0
+        new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
+        attrs = {
+            t_id_idx: new_basket_t_id,
+            basket_table.fields().indexOf(db.names.BASKET_T_DATASET_F): dataset_t_id,
+            basket_table.fields().indexOf(db.names.T_ILI_TID_F): str(uuid.uuid4()),
+            basket_table.fields().indexOf(db.names.BASKET_T_TOPIC_F): topic_name,
+            basket_table.fields().indexOf(db.names.BASKET_T_ATTACHMENT_KEY_F): "..."
+        }
+        basket_feature = QgsVectorLayerUtils().createFeature(basket_table, attributes=attrs)
+        res = basket_table.dataProvider().addFeatures([basket_feature])
+        if not res:
+            return None, QCoreApplication.translate("LADMData", "A basket could not be found (or created)!!!")
+
+        return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
+
+    @staticmethod
+    def get_ili2db_dataset_t_id(db, dataset_name):
+        """
+        Get or create an ili2db dataset by name
+
+        :param db: DB connector
+        :param dataset_name: name of the dataset to be searched or to be used as new dataset name
+        :return: Dataset t_id or None (if it was not possible to create it)
+        """
+        dataset_table = LADMData.get_dataset_table(db)
+        datasets = [f for f in dataset_table.getFeatures("{} = '{}'".format(db.names.DATASET_T_DATASETNAME_F, DEFAULT_DATASET_NAME))]
+
+        if datasets:
+            return datasets[0][db.names.T_ID_F], "Success!"
+        else:
+            t_id_idx = dataset_table.fields().indexOf(db.names.T_ID_F)
+            max_value = dataset_table.maximumValue(t_id_idx) or 0
+            new_dataset_t_id = max_value + 1  # Dataset t_id is not a serial, we need to create it manually...
+            attrs = {
+                t_id_idx: new_dataset_t_id,
+                dataset_table.fields().indexOf(db.names.DATASET_T_DATASETNAME_F): dataset_name
+            }
+            feature = QgsVectorLayerUtils().createFeature(dataset_table, attributes=attrs)
+            res = dataset_table.dataProvider().addFeatures([feature])
+            if not res:
+                return None, QCoreApplication.translate("LADMData", "A dataset could not be found (or created)!!!")
+
+            return new_dataset_t_id, "Success!"
