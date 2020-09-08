@@ -9,11 +9,7 @@ from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker)
-from asistente_ladm_col.core.db_mapping_registry import (ILICODE_KEY,
-                                                         T_ID_KEY,
-                                                         T_ILI_TID_KEY,
-                                                         DESCRIPTION_KEY,
-                                                         DISPLAY_NAME_KEY)
+from asistente_ladm_col.config.ili2db_names import *
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)

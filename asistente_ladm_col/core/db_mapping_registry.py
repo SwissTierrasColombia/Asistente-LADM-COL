@@ -18,18 +18,10 @@
 """
 import datetime
 from asistente_ladm_col.config.db_mapping_config import DB_MAPPING_CONFIG
+from asistente_ladm_col.config.ili2db_names import *
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
-
-T_ID_KEY = 't_id'
-T_ILI_TID_KEY = 't_ili_tid'
-DESCRIPTION_KEY = 'description'
-ILICODE_KEY = 'ilicode'
-DISPLAY_NAME_KEY = 'display_name'
-T_BASKET_KEY = 't_basket'
-T_ILI2DB_DATASET_KEY = 't_ili2db_dataset'
-T_ILI2DB_BASKET_KEY = 't_ili2db_basket'
 
 
 class DBMappingRegistry():
@@ -52,12 +44,22 @@ class DBMappingRegistry():
             QueryNames.CODE_KEY: dict()
         }
 
-        self.T_ID_F = None
-        self.T_ILI_TID_F = None
-        self.ILICODE_F = None
-        self.DESCRIPTION_F = None
-        self.DISPLAY_NAME_F = None
-        self.T_BASKET_F = None
+        # To ease addition of new ili2db names (which must be done in several classes),
+        # we keep them together in a dict {variable_name: variable_key}
+        self.ili2db_names = {
+            "T_ID_F": T_ID_KEY,
+            "T_ILI_TID_F": T_ILI_TID_KEY,
+            "ILICODE_F": ILICODE_KEY,
+            "DESCRIPTION_F": DESCRIPTION_KEY,
+            "DISPLAY_NAME_F": DISPLAY_NAME_KEY,
+            "T_BASKET_F": T_BASKET_KEY,
+            "T_ILI2DB_BASKET_T": T_ILI2DB_BASKET_KEY,
+            "T_ILI2DB_DATASET_T": T_ILI2DB_DATASET_KEY,
+            "DATASET_T_DATASETNAME_F": DATASET_T_DATASETNAME_KEY,
+            "BASKET_T_DATASET_F": BASKET_T_DATASET_KEY,
+            "BASKET_T_TOPIC_F": BASKET_T_TOPIC_KEY,
+            "BASKET_T_ATTACHMENT_KEY_F": BASKET_T_ATTACHMENT_KEY
+        }
 
         # Main mapping dictionary: {table_key: {variable: 'table_variable_name', field_dict:{field_key: 'field_variable'}}}
         self.TABLE_DICT = dict()
@@ -87,16 +89,10 @@ class DBMappingRegistry():
         table_names_count = 0
         field_names_count = 0
         if db_mapping:
-            if T_ID_KEY not in db_mapping \
-                    or T_ILI_TID_KEY not in db_mapping \
-                    or DISPLAY_NAME_KEY not in db_mapping \
-                    or ILICODE_KEY not in db_mapping \
-                    or DESCRIPTION_KEY not in db_mapping \
-                    or T_BASKET_KEY not in db_mapping \
-                    or T_ILI2DB_BASKET_KEY not in db_mapping \
-                    or T_ILI2DB_DATASET_KEY not in db_mapping:
-                self.logger.error(__name__, "dict_names is not properly built, at least one of these required fields was not found T_ID, T_ILI_TID, DISPLAY_NAME, ILICODE, DESCRIPTION, (occasionally: T_BASKET, T_ILI2DB_BASKET_KEY, T_ILI2DB_DATASET_KEY).")
-                return False
+            for key in self.ili2db_names.values():
+                if key not in db_mapping:
+                    self.logger.error(__name__, "dict_names is not properly built, this required fields was not found: {}").format(key)
+                    return False
 
             for table_key, attrs in self.TABLE_DICT.items():
                 if table_key in db_mapping:
@@ -108,15 +104,9 @@ class DBMappingRegistry():
                             setattr(self, field_variable, db_mapping[table_key][field_key])
                             field_names_count += 1
 
-            # Required fields mapped in a custom way
-            self.T_ID_F = db_mapping[T_ID_KEY] if T_ID_KEY in db_mapping else None
-            self.T_ILI_TID_F = db_mapping[T_ILI_TID_KEY] if T_ILI_TID_KEY in db_mapping else None
-            self.ILICODE_F = db_mapping[ILICODE_KEY] if ILICODE_KEY in db_mapping else None
-            self.DESCRIPTION_F = db_mapping[DESCRIPTION_KEY] if DESCRIPTION_KEY in db_mapping else None
-            self.DISPLAY_NAME_F = db_mapping[DISPLAY_NAME_KEY] if DISPLAY_NAME_KEY in db_mapping else None
-            self.T_BASKET_F = db_mapping[T_BASKET_KEY] if T_BASKET_KEY in db_mapping else None
-            self.T_ILI2DB_BASKET_T = db_mapping[T_ILI2DB_BASKET_KEY] if T_ILI2DB_BASKET_KEY in db_mapping else None
-            self.T_ILI2DB_DATASET_T = db_mapping[T_ILI2DB_DATASET_KEY] if T_ILI2DB_DATASET_KEY in db_mapping else None
+            # Required fields coming from ili2db (T_ID_F, T_ILI_TID, etc.)
+            for k,v in self.ili2db_names.items():
+                setattr(self, k, db_mapping[v])
 
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
@@ -131,12 +121,8 @@ class DBMappingRegistry():
         """
         self.TABLE_DICT = dict()
 
-        self.T_ID_F = None
-        self.T_ILI_TID_F = None
-        self.ILICODE_F = None
-        self.DESCRIPTION_F = None
-        self.DISPLAY_NAME_F = None
-        self.T_BASKET_F = None
+        for k, v in self.ili2db_names.items():
+            setattr(self, k, None)
 
         # Clear cache
         self._cached_domain_values = dict()
@@ -165,10 +151,7 @@ class DBMappingRegistry():
         not_mapped = list(set([name for name in table_and_field_names if not name in mapped_names]))
         self.logger.debug(__name__, "DB names not mapped in code ({}): First 10 --> {}".format(len(not_mapped), not_mapped[:10]))
         self.logger.debug(__name__, "Number of required names: {}".format(len(required_names)))
-        required_names.extend(["T_ID_F",
-                               "ILICODE_F",
-                               "DESCRIPTION_F",
-                               "DISPLAY_NAME_F"])
+        required_names.extend(list(self.ili2db_names.keys()))
 
         names_not_found = list()
         for required_name in required_names:

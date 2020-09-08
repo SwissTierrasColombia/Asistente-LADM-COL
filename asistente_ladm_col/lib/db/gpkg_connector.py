@@ -23,14 +23,7 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumTestConnectionMsg
-from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
-                                                         T_ILI_TID_KEY,
-                                                         DISPLAY_NAME_KEY,
-                                                         ILICODE_KEY,
-                                                         DESCRIPTION_KEY,
-                                                         T_BASKET_KEY,
-                                                         T_ILI2DB_BASKET_KEY,
-                                                         T_ILI2DB_DATASET_KEY)
+from asistente_ladm_col.config.ili2db_names import *
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
@@ -114,7 +107,7 @@ class GPKGConnector(FileDB):
 
         return records
 
-    def _get_common_db_names(self):
+    def _get_ili2db_names(self):
         dict_names = dict()
         # Custom names
         dict_names[T_ID_KEY] = "T_Id"
@@ -125,6 +118,10 @@ class GPKGConnector(FileDB):
         dict_names[T_BASKET_KEY] = "T_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "T_ILI2DB_BASKET"
         dict_names[T_ILI2DB_DATASET_KEY] = "T_ILI2DB_DATASET"
+        dict_names[DATASET_T_DATASETNAME_KEY] = "datasetName"
+        dict_names[BASKET_T_DATASET_KEY] = "dataset"
+        dict_names[BASKET_T_TOPIC_KEY] = "topic"
+        dict_names[BASKET_T_ATTACHMENT_KEY] = "attachmentKey"
 
         return dict_names
 

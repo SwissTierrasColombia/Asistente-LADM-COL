@@ -26,15 +26,8 @@ from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
-from asistente_ladm_col.core.db_mapping_registry import (DBMappingRegistry,
-                                                         T_ID_KEY,
-                                                         T_ILI_TID_KEY,
-                                                         DISPLAY_NAME_KEY,
-                                                         ILICODE_KEY,
-                                                         DESCRIPTION_KEY,
-                                                         T_BASKET_KEY,
-                                                         T_ILI2DB_BASKET_KEY,
-                                                         T_ILI2DB_DATASET_KEY)
+from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
+from asistente_ladm_col.config.ili2db_names import *
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname
@@ -278,7 +271,7 @@ class DBConnector(QObject):
                 if colowner in dict_names:
                     dict_names[colowner][composed_key] = record['sqlname']
 
-        dict_names.update(self._get_common_db_names())
+        dict_names.update(self._get_ili2db_names())
 
         return dict_names
 
@@ -337,12 +330,11 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def _get_common_db_names(self):
-        """Returns field common names of databases. T_Id, T_Ili_Tid, dispName, iliCode and description.
+    def _get_ili2db_names(self):
+        """Returns field common names of databases, e.g., T_Id, T_Ili_Tid, dispName, t_basket, etc.
 
-        :return: Dictionary with the next keys:
-                 T_ID_KEY, T_ILI_TID_KEY, DISPLAY_NAME_KEY, ILICODE_KEY, DESCRIPTION_KEY and T_BASKET from
-                 db_mapping_registry
+        :return: Dictionary with ili2db keys:
+                 T_ID_KEY, T_ILI_TID_KEY, etc., from db_mapping_registry
         """
         raise NotImplementedError
 
@@ -376,15 +368,9 @@ class DBConnector(QObject):
         Should be called only once per db connector.
         """
         # Fill table names
+        ili2db_keys = self.names.ili2db_names.values()
         for k,v in self.__db_mapping.items():
-            if k not in [T_ID_KEY,
-                         T_ILI_TID_KEY,
-                         DISPLAY_NAME_KEY,
-                         ILICODE_KEY,
-                         DESCRIPTION_KEY,
-                         T_BASKET_KEY,
-                         T_ILI2DB_BASKET_KEY,
-                         T_ILI2DB_DATASET_KEY]:  # Custom names will be handled by Names class
+            if k not in ili2db_keys:  # ili2db names will be handled by Names class
                 self.__table_and_field_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:

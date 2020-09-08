@@ -30,14 +30,7 @@ from asistente_ladm_col.lib.db.db_connector import (DBConnector,
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.core.db_mapping_registry import (T_ID_KEY,
-                                                         T_ILI_TID_KEY,
-                                                         DISPLAY_NAME_KEY,
-                                                         ILICODE_KEY,
-                                                         DESCRIPTION_KEY,
-                                                         T_BASKET_KEY,
-                                                         T_ILI2DB_BASKET_KEY,
-                                                         T_ILI2DB_DATASET_KEY)
+from asistente_ladm_col.config.ili2db_names import *
 
 
 class MSSQLConnector(ClientServerDB):
@@ -522,7 +515,7 @@ class MSSQLConnector(ClientServerDB):
 
         return res if is_success else None
 
-    def _get_common_db_names(self):
+    def _get_ili2db_names(self):
         dict_names = dict()
         # Add required key-value pairs that do not come from the DB query
         dict_names[T_ID_KEY] = "T_Id"
@@ -533,6 +526,10 @@ class MSSQLConnector(ClientServerDB):
         dict_names[T_BASKET_KEY] = "t_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
         dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"
+        dict_names[DATASET_T_DATASETNAME_KEY] = "datasetname"
+        dict_names[BASKET_T_DATASET_KEY] = "dataset"
+        dict_names[BASKET_T_TOPIC_KEY] = "topic"
+        dict_names[BASKET_T_ATTACHMENT_KEY] = "attachmentkey"
 
         return dict_names
 

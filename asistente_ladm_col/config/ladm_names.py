@@ -77,6 +77,8 @@ class LADMNames(metaclass=Singleton):
     # For testing if an schema comes from ili2db
     INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
+    FDC_TOPIC_NAME = "Captura_Geo"
+
     # TODO: Remove when LADM model version 3 is fully defined
     """
     VALUATION MAPPING
