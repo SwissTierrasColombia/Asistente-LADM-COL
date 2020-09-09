@@ -18,18 +18,25 @@
 """
 from asistente_ladm_col.config.gui.common_keys import (ROLE_SUPPORTED_MODELS,
                                                        ROLE_HIDDEN_MODELS,
-                                                       ROLE_CHECKED_MODELS)
+                                                       ROLE_CHECKED_MODELS,
+                                                       ROLE_MODEL_ILI2DB_PARAMETERS)
 from asistente_ladm_col.config.ladm_names import (MODEL_ALIAS,
                                                   MODEL_IS_SUPPORTED,
                                                   MODEL_SUPPORTED_VERSION,
                                                   MODEL_HIDDEN_BY_DEFAULT,
-                                                  MODEL_CHECKED_BY_DEFAULT)
+                                                  MODEL_CHECKED_BY_DEFAULT,
+                                                  MODEL_ILI2DB_PARAMETERS,
+                                                  MODEL_CONFIG)
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.singleton import Singleton
 
 
 class LADMColModelRegistry(metaclass=Singleton):
+    """
+    Registry of supported models.
+    The model in the registry is updated each time the current role changes.
+    """
     def __init__(self):
         self.logger = Logger()
         self.__models = dict()
@@ -47,8 +54,15 @@ class LADMColModelRegistry(metaclass=Singleton):
     def hidden_models(self):
         return [model.full_name() for model in self.__models.values() if model.hidden()]
 
-    def model(self, model_id):
-        return self.__models.get(model_id, LADMColModel("foo", dict()))  # To avoid exceptions
+    def model(self, model_key):
+        return self.__models.get(model_key, LADMColModel("foo", dict()))  # To avoid exceptions
+
+    def model_by_full_name(self, full_name):
+        for model in self.__models.values():
+            if model.full_name() == full_name:
+                return model
+
+        return LADMColModel("foo", dict())  # To avoid exceptions
 
     def model_ids(self):
         return list(self.__models.keys())
@@ -56,12 +70,30 @@ class LADMColModelRegistry(metaclass=Singleton):
     def refresh_models_for_role(self):
         role_key = RoleRegistry().get_active_role()
         role_models = RoleRegistry().get_role_models(role_key)
+
+        # ili2db params may come from the model config itself or overwritten by the current user.
+        # It the user does not have such config, we grab it from MODEL_CONFIG.
+        ili2db_params = role_models[ROLE_MODEL_ILI2DB_PARAMETERS] if ROLE_MODEL_ILI2DB_PARAMETERS in role_models else dict()
+
         for model_key, model in self.__models.items():
             model.set_is_supported(model_key in role_models[ROLE_SUPPORTED_MODELS])
             model.set_is_hidden(model_key in role_models[ROLE_HIDDEN_MODELS])
             model.set_is_checked(model_key in role_models[ROLE_CHECKED_MODELS])
 
+            if model_key in ili2db_params and ili2db_params[model_key]:
+                model_ili2db_params = ili2db_params[model_key]
+            else:
+                model_ili2db_params = self.__get_model_iili2db_params_from_config(model_key)
+            if model_ili2db_params:
+                self.logger.debug(__name__, "Model ili2db params are: {}".format(model_ili2db_params))
+            model.set_ili2db_params(model_ili2db_params)
+
         self.logger.debug(__name__, "Supported models for role '{}': {}".format(role_key, role_models[ROLE_SUPPORTED_MODELS]))
+
+    @staticmethod
+    def __get_model_iili2db_params_from_config(model_key):
+        model_config = MODEL_CONFIG[model_key]
+        return model_config[MODEL_ILI2DB_PARAMETERS] if MODEL_ILI2DB_PARAMETERS in model_config else dict()
 
 
 class LADMColModel:
@@ -72,6 +104,7 @@ class LADMColModel:
         self.__supported_version = model_data.get(MODEL_SUPPORTED_VERSION, "")
         self.__hidden_by_default = model_data.get(MODEL_HIDDEN_BY_DEFAULT, False)
         self.__checked_by_default = model_data.get(MODEL_CHECKED_BY_DEFAULT, False)
+        self.__ili2db_parameters = model_data.get(MODEL_ILI2DB_PARAMETERS, dict())
 
     def id(self):
         return self.__id
@@ -106,3 +139,9 @@ class LADMColModel:
 
     def set_is_checked(self, checked):
         self.__checked_by_default = checked
+
+    def get_ili2db_params(self):
+        return self.__ili2db_parameters.copy()
+
+    def set_ili2db_params(self, parameters):
+        self.__ili2db_parameters = parameters

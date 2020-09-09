@@ -23,14 +23,14 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import Qgis
 
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME)
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     ClientServerDB)
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.ili2db_names import *
+from asistente_ladm_col.config.keys.ili2db_keys import *
 
 
 class MSSQLConnector(ClientServerDB):
@@ -132,7 +132,7 @@ class MSSQLConnector(ClientServerDB):
                 WHERE TABLE_TYPE = 'BASE TABLE'
                 AND TABLE_SCHEMA = '{}'
                     AND TABLE_NAME = '{}'
-            """.format(self.schema, LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
             return bool(cur.fetchone()[0])
 

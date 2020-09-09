@@ -1,14 +1,21 @@
-T_ID_KEY = 't_id'
-T_ILI_TID_KEY = 't_ili_tid'
-DESCRIPTION_KEY = 'description'
-ILICODE_KEY = 'ilicode'
-DISPLAY_NAME_KEY = 'display_name'
+from asistente_ladm_col.utils.singleton import Singleton
 
-T_BASKET_KEY = 't_basket'
-T_ILI2DB_DATASET_KEY = 't_ili2db_dataset'
-T_ILI2DB_BASKET_KEY = 't_ili2db_basket'
-DATASET_T_DATASETNAME_KEY = 'dataset_t_datasetname'
-BASKET_T_DATASET_KEY = 'basket_t_dataset'
-BASKET_T_TOPIC_KEY = 'basket_t_topic'
-BASKET_T_ATTACHMENT_KEY = 'basket_t_attachment'
 
+class ILI2DBNames(metaclass=Singleton):
+    """
+    Singleton to access common ili2db names (tables, parameters, etc.)
+
+    Note: This is differente from ili2db_keys.py, which stores vars whose content does not really matter to us.
+    """
+    TABLE_PROP_ASSOCIATION = "ASSOCIATION"
+    TABLE_PROP_DOMAIN = "ENUM"
+    TABLE_PROP_STRUCTURE = "STRUCTURE"
+
+    # Default settings to create schema according to LADM-COL
+    DEFAULT_INHERITANCE = 'smart2'
+    CREATE_BASKET_COL = False
+    CREATE_IMPORT_TID = False
+    STROKE_ARCS = True
+
+    # For testing if an schema comes from ili2db
+    INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'

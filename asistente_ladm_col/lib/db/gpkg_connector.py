@@ -23,9 +23,9 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumTestConnectionMsg
-from asistente_ladm_col.config.ili2db_names import *
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
                                                     DBConnector)
 from asistente_ladm_col.core.model_parser import ModelParser
@@ -133,7 +133,7 @@ class GPKGConnector(FileDB):
                 return False
 
         cursor = self.conn.cursor()
-        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
+        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
         return bool(cursor.fetchall())
 

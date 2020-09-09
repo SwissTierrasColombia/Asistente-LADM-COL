@@ -26,6 +26,7 @@ from QgisModelBaker.libili2db.ili2dbconfig import (ImportDataConfiguration,
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
@@ -50,7 +51,6 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_MODELS_DIR,
                                                       DEFAULT_SRS_CODE,
                                                       DEFAULT_SRS_AUTH)
-from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
@@ -453,10 +453,10 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration.srs_auth = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_auth', DEFAULT_SRS_AUTH, str)
         configuration.srs_code = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_code', int(DEFAULT_SRS_CODE), int)
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.with_importtid = True
 
         full_java_exe_path = JavaDependency.get_full_java_exe_path()

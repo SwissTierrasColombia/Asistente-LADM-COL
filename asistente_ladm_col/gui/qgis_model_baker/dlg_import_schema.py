@@ -49,8 +49,9 @@ from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
                                                       DEFAULT_MODELS_DIR,
                                                       CTM12_PG_SCRIPT_PATH,
                                                       CTM12_GPKG_SCRIPT_PATH, DEFAULT_SRS_AUTHID)
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
@@ -268,6 +269,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             return
 
         configuration = self.update_configuration()
+        configuration = self.apply_role_model_configuration(configuration)
 
         if not self.get_checked_models():
             self._running_tool = False
@@ -378,10 +380,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
 
         # CTM12 support
         configuration.srs_auth = self.srs_auth
@@ -414,6 +416,29 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration.base_configuration = self.base_configuration
         if self.get_checked_models():
             configuration.ilimodels = ';'.join(self.get_checked_models())
+
+        return configuration
+
+    def apply_role_model_configuration(self, configuration):
+        """
+        Applies the configuration that the active role has set over checked models.
+
+        Important:
+        Note that this works better if the checked models are limited to one (e.g. Field Data Capture) or limited to
+        a group of related models (e.g., the 3 supplies models). When the checked models are heterogeneous, results
+        start to be unpredictable, as the configuration for a single model may affect the others.
+
+        :param configuration: SchemaImportConfiguration object
+        :return: configuration object updated
+        """
+        for checked_model in self.get_checked_models():
+            model = self.__ladmcol_models.model_by_full_name(checked_model)
+            params = model.get_ili2db_params()
+            if ILI2DB_SCHEMAIMPORT in params:
+                for param in params[ILI2DB_SCHEMAIMPORT]:  # List of tuples
+                    if param[0] == ILI2DB_CREATE_BASKET_COL_KEY:  # param: (option, value)
+                        configuration.create_basket_col = True
+                        self.logger.debug(__name__, "Schema Import createBasketCol enabled! (taken from role config)")
 
         return configuration
 

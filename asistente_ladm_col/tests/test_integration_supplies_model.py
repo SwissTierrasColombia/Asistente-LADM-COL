@@ -7,7 +7,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_required_fields,
                                             get_required_tables)
-from asistente_ladm_col.config.ili2db_names import *
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_gpkg_conn,
                                             restore_schema)

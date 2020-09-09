@@ -2,6 +2,7 @@ import nose2
 import os
 import tempfile
 
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from xml.dom.minidom import parse
 
@@ -143,10 +144,10 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.database = 'ladm_col'
         configuration.srs_auth = DEFAULT_SRS_AUTH
         configuration.srs_code = DEFAULT_SRS_CODE
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.dbschema = 'test_import_data'
         configuration.delete_data = True
         configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
@@ -194,10 +195,10 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.dbfile = gpkg_path
         configuration.srs_auth = DEFAULT_SRS_AUTH
         configuration.srs_code = DEFAULT_SRS_CODE
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.delete_data = True
         configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
@@ -239,10 +240,10 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.dbschema = 'test_import_schema'
         configuration.tomlfile = TOML_FILE_DIR
         configuration.srs_code = 3116
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
@@ -278,10 +279,10 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.dbfile = os.path.join(self.base_test_path, 'tmp_import_schema.gpkg')
         configuration.tomlfile = TOML_FILE_DIR
         configuration.srs_code = 3116
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
@@ -324,10 +325,10 @@ class TestQgisModelBaker(unittest.TestCase):
 
         configuration.tomlfile = TOML_FILE_DIR
         configuration.epsg = 9377
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
         configuration.ilimodels = ';'.join([self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
@@ -380,11 +381,11 @@ class TestQgisModelBaker(unittest.TestCase):
         configuration.delete_data = True
         configuration.ilimodels = ';'.join(model_list)
 
-        configuration.inheritance = LADMNames.DEFAULT_INHERITANCE
+        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
 
-        configuration.create_basket_col = LADMNames.CREATE_BASKET_COL
-        configuration.create_import_tid = LADMNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = LADMNames.STROKE_ARCS
+        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
+        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
+        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
 
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = DbIliMode.ili2mssql

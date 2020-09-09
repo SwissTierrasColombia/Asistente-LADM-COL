@@ -27,7 +27,6 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
-from asistente_ladm_col.config.ili2db_names import *
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname

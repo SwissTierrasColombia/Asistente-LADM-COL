@@ -20,6 +20,7 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import psycopg2.extras
 from psycopg2 import ProgrammingError
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsDataSourceUri
 
@@ -33,10 +34,9 @@ from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                  annex17_point_data_query,
                                                                                  annex17_plot_data_query)
-from asistente_ladm_col.config.ladm_names import LADMNames
-
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.core.model_parser import ModelParser
-from asistente_ladm_col.config.ili2db_names import *
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.config.query_names import QueryNames
 
 
@@ -116,7 +116,7 @@ class PGConnector(ClientServerDB):
                           count(tablename)
                         FROM pg_catalog.pg_tables
                         WHERE schemaname = '{}' and tablename = '{}'
-            """.format(self.schema, LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
             return bool(cur.fetchone()[0])
 

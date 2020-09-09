@@ -40,8 +40,7 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
-from asistente_ladm_col.config.role_config import ROLE_CONFIG
-from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
+from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
@@ -171,7 +170,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Register roles
         self.role_registry = RoleRegistry()
-        for role_key, role_config in ROLE_CONFIG.items():
+        for role_key, role_config in get_role_config().items():
             self.role_registry.register_role(role_key, role_config)
 
         # Create member objects
