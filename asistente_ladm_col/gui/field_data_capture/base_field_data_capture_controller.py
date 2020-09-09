@@ -34,6 +34,8 @@ class BaseFieldDataCaptureController(QObject):
 
         self.app = AppInterface()
 
+        self.receiver_type = None  # To be overwritten by children classes
+
         self._layers = dict()
         self.initialize_layers()
 
@@ -154,12 +156,14 @@ class BaseFieldDataCaptureController(QObject):
 
     def get_receivers_data(self, full_name=True):
         """
+        :param receiver_type: Type of receiver that will be retrieved
         :param full_name: Whether the full name should be retrieved or only an alias
         :return: {receiver_t_id: (receiver_name, receiver_doc_id)}
         """
         return self._ladm_data.get_fdc_receivers_data(self.db().names,
                                                       self.user_layer(),
                                                       self._get_receiver_referenced_field(),
+                                                      self.receiver_type,
                                                       full_name)
 
     def save_receiver(self, receiver_data):
@@ -170,6 +174,7 @@ class BaseFieldDataCaptureController(QObject):
 
     def get_summary_data(self):
         return self._ladm_data.get_summary_of_allocation_field_data_capture(self.db().names,
+                                                                            self.receiver_type,
                                                                             self._get_parcel_field_referencing_receiver(),
                                                                             self._get_receiver_referenced_field(),
                                                                             self.parcel_layer(),

@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import QCoreApplication
+
 from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
 
 

@@ -26,3 +26,5 @@ class ConfigureCoordinatorsPanelWidget(BaseConfigureReceiversPanelWidget):
         BaseConfigureReceiversPanelWidget.__init__(self, parent, controller)
 
         self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure coordinators"))
+
+

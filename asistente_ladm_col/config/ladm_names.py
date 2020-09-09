@@ -25,6 +25,7 @@ class LADMNames(metaclass=Singleton):
     LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
+    FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
 
     """
     PARCEL TYPE

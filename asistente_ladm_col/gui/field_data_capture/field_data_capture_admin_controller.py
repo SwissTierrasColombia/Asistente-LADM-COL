@@ -18,6 +18,7 @@
 """
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExporter
 
@@ -25,6 +26,10 @@ from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExpo
 class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
     def __init__(self, iface, db, ladm_data):
         BaseFieldDataCaptureController.__init__(self, iface, db, ladm_data)
+
+        self.receiver_type = self._ladm_data.get_domain_code_from_value(self._db,
+                                                                        self._db.names.FDC_PARTY_DOCUMENT_TYPE_D,
+                                                                        LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V)
 
     def initialize_layers(self):
         self._layers = {
@@ -46,7 +51,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         names = self._db.names
 
         # Get list of basket t_ili_tids to export
-        receivers_data = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(), self._get_receiver_referenced_field())
+        receivers_data = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(), self._get_receiver_referenced_field(), self.receiver_type)
         receiver_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
         receiver_ids = self.parcel_layer().uniqueValues(receiver_idx)
         # Only t_basket of receivers with allocated parcels
@@ -60,6 +65,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         # Now set basket id for allocated parcels' related features
         res = self._ladm_data.set_basket_for_features_related_to_allocated_parcels_field_data_capture(
             self._db,
+            self.receiver_type,
             self._get_parcel_field_referencing_receiver(),
             self._get_receiver_referenced_field(),
             self.parcel_layer(),
@@ -85,5 +91,6 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
 
     def get_count_of_not_allocated_parcels(self):
         return self._ladm_data.get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(self.db().names,
+                                                                                                     self.receiver_type,
                                                                                                      self.parcel_layer(),
                                                                                                      self.user_layer())

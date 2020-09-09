@@ -88,7 +88,7 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                 return
 
             names = self._controller.db().names
-            receiver_data = {names.FDC_USER_T_DOCUMENT_TYPE_F: "Cedula_ciudadania",
+            receiver_data = {names.FDC_USER_T_DOCUMENT_TYPE_F: self._controller.receiver_type,
                              names.FDC_USER_T_DOCUMENT_ID_F: self.txt_document_id.text().strip(),
                              names.FDC_USER_T_FIRST_NAME_F: self.txt_first_name.text().strip(),
                              names.FDC_USER_T_SECOND_NAME_F: self.txt_second_name.text().strip(),

@@ -943,13 +943,16 @@ class LADMData(QObject):
         return string[:1] if string else ''
 
     @staticmethod
-    def get_layer_expressions_per_receiver_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+    def get_layer_expressions_per_receiver_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
         """
         Based on parcels that are allocated to receivers, get expressions to get related objects in the DB.
         For surveyors we need the expressions to select features and export to offline projects, whereas
         for Coordinators we need the expressions to know what objects belong to a given basket.
 
+        Note: Currently, this method is aimed at surveyors.
+
         :param names: Table and Field names object from the DB connector
+        :param receiver_type: Type of receiver
         :param referencing_field: Parcel layer field referencing receivers
         :param referenced_field: Receivers layer field referenced by parcels
         :param fdc_parcel_layer: Parcel QgsVectorLayer
@@ -958,7 +961,7 @@ class LADMData(QObject):
         :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
         """
         layer_expressions_per_receiver = dict()
-        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, False)
+        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type, False)
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
@@ -1009,12 +1012,13 @@ class LADMData(QObject):
         return expression
 
     @staticmethod
-    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
         """
         Based on parcels that are allocated to receivers, get related objects in the DB and set the receiver's basket id
         to them. Note that both user and parcel layers already have the basket id correctly set.
 
         :param db: DB connector object
+        :param receiver_type: Type of receiver
         :param referencing_field: Parcel layer field referencing receivers
         :param referenced_field: Receivers layer field referenced by parcels
         :param fdc_parcel_layer: Parcel QgsVectorLayer
@@ -1023,7 +1027,7 @@ class LADMData(QObject):
         :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
         """
         names = db.names
-        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, False)
+        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type, False)
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
@@ -1105,15 +1109,12 @@ class LADMData(QObject):
         return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, full_name=True):
+    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type, full_name=True):
         receivers_data = dict()
-        for feature in fdc_user_layer.getFeatures():
-            if id_field_name == names.T_BASKET_F and int(feature[names.FDC_USER_T_DOCUMENT_ID_F]) > 100:  # TODO: filter by role
-                receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
-                                                          feature[names.FDC_USER_T_DOCUMENT_ID_F])
-            elif id_field_name == names.T_ID_F:
-                receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
-                                                          feature[names.FDC_USER_T_DOCUMENT_ID_F])
+        # Filter by role
+        for feature in fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_DOCUMENT_TYPE_F, receiver_type)):
+            receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
+                                                      feature[names.FDC_USER_T_DOCUMENT_ID_F])
 
         return receivers_data
 
@@ -1136,8 +1137,8 @@ class LADMData(QObject):
                                                                                              [surveyor_t_id]))
 
     @staticmethod
-    def get_summary_of_allocation_field_data_capture(names, referencing_field, referenced_field, fdc_parcel_layer, fdc_user_layer):
-        surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field)
+    def get_summary_of_allocation_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_user_layer):
+        surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type)
         surveyor_parcel_count = dict()  # {surveyor_name: parcel_count}
         params = QgsAggregateCalculator.AggregateParameters()
         for surveyor_id, surveyor_data in surveyors_data.items():
@@ -1160,14 +1161,15 @@ class LADMData(QObject):
                                               names.FDC_PARCEL_T_SURVEYOR_F)[0])  # val (float), res (bool)
 
     @staticmethod
-    def get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(names, fdc_parcel_layer, fdc_user_layer):
+    def get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(names, receiver_type, fdc_parcel_layer, fdc_user_layer):
         """
         :param names: Table and field names
+        :param receiver_type: Type of receiver
         :param fdc_parcel_layer: QgsVectorLayer
         :param fdc_user_layer: QgsVectorLayer
         :return: Count of not allocated parcels
         """
-        receivers_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, names.T_BASKET_F)
+        receivers_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, names.T_BASKET_F, receiver_type)
         receivers_ids = list(receivers_data.keys())  # t_baskets
         params = QgsAggregateCalculator.AggregateParameters()
 

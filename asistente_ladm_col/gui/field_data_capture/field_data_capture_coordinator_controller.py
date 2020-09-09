@@ -16,9 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtCore import QObject, pyqtSignal
-
-from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 
@@ -26,6 +24,10 @@ from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
     def __init__(self, iface, db, ladm_data):
         BaseFieldDataCaptureController.__init__(self, iface, db, ladm_data)
+
+        self.receiver_type = self._ladm_data.get_domain_code_from_value(self._db,
+                                                                        self._db.names.FDC_PARTY_DOCUMENT_TYPE_D,
+                                                                        LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V)
 
     def initialize_layers(self):
         self._layers = {
@@ -45,6 +47,7 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
 
     def export_field_data(self, export_dir):
         surveyor_expressions_dict = self._ladm_data.get_layer_expressions_per_receiver_field_data_capture(self._db.names,
+                                                                                                          self.receiver_type,
                                                                                                           self._get_parcel_field_referencing_receiver(),
                                                                                                           self._get_receiver_referenced_field(),
                                                                                                           self.parcel_layer(),
