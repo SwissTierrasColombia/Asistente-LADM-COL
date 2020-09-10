@@ -917,7 +917,7 @@ class LADMData(QObject):
 
     @staticmethod
     def discard_parcel_allocation_for_coordinators_field_data_capture(db, parcel_ids, fdc_parcel_layer):
-        value, msg = LADMData.get_default_ili2db_basket(db)
+        value, msg = LADMData.get_or_create_default_ili2db_basket(db)
         if not value:
             return False
         return LADMData.change_attribute_value(fdc_parcel_layer, db.names.T_BASKET_F, value, parcel_ids)
@@ -1043,7 +1043,7 @@ class LADMData(QObject):
 
         # Before setting receiver basket ids to objects related to allocated parcels,
         # let's reset basket ids in tables, setting them to the default basket.
-        default_basket_id, msg = LADMData.get_default_ili2db_basket(db)
+        default_basket_id, msg = LADMData.get_or_create_default_ili2db_basket(db)
         if default_basket_id is None:
             return False, msg
 
@@ -1118,17 +1118,14 @@ class LADMData(QObject):
 
         return receivers_data
 
-    def save_surveyor(self, db, surveyor_data, fdc_surveyor_layer):
+    @staticmethod
+    def save_receiver(receiver_data, fdc_user_layer):
         attrs = dict()
-        for field_name, value in surveyor_data.items():
-            val = value
-            if field_name == db.names.FDC_USER_T_DOCUMENT_TYPE_F:
-                val = self.get_domain_code_from_value(db, db.names.FDC_PARTY_DOCUMENT_TYPE_D, value)
+        for field_name, value in receiver_data.items():
+            attrs[fdc_user_layer.fields().indexOf(field_name)] = value
 
-            attrs[fdc_surveyor_layer.fields().indexOf(field_name)] = val
-
-        feature = QgsVectorLayerUtils().createFeature(fdc_surveyor_layer, attributes=attrs)
-        return fdc_surveyor_layer.dataProvider().addFeatures([feature])
+        feature = QgsVectorLayerUtils().createFeature(fdc_user_layer, attributes=attrs)
+        return fdc_user_layer.dataProvider().addFeatures([feature])
 
     @staticmethod
     def delete_surveyor(names, surveyor_t_id, fdc_surveyor_layer):
@@ -1190,11 +1187,11 @@ class LADMData(QObject):
         return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_DATASET_T), 'datasets', db.provider)
 
     @staticmethod
-    def get_ili2db_basket(db, dataset_name, topic_name, get_feature=False):
+    def get_or_create_ili2db_basket(db, dataset_name, topic_name, get_feature=False):
         """
         Get or create an ili2db basket by dataset name.
         If you need to find several baskets, or if you need a specific basket from a dataset, this is not the function
-        for you; get the baskets table and do it by yourself :)
+        for you; either use create_ili2db_basket() or get the baskets table and do it by yourself :)
 
         :param db: DB connector object
         :param dataset_name: name of the dataset to be searched or to be used as new dataset name
@@ -1204,7 +1201,7 @@ class LADMData(QObject):
         """
         basket_table = LADMData.get_basket_table(db)
 
-        dataset_t_id, msg = LADMData.get_ili2db_dataset_t_id(db, dataset_name)
+        dataset_t_id, msg = LADMData.get_or_create_ili2db_dataset_t_id(db, dataset_name)
         Logger().info(__name__, "Dataset id: {}".format(dataset_t_id))
         if dataset_t_id is None:
             return None, msg
@@ -1215,6 +1212,15 @@ class LADMData(QObject):
             return baskets[0] if get_feature else baskets[0][db.names.T_ID_F], "Success!"
 
         # Create basket since we didn't find it
+        basket_feature, msg = LADMData.create_ili2db_basket(db, dataset_t_id, topic_name, basket_table)
+
+        return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
+
+    @staticmethod
+    def create_ili2db_basket(db, dataset_t_id, topic_name, basket_table=None):
+        if not basket_table:
+            basket_table = LADMData.get_basket_table(db)
+
         t_id_idx = basket_table.fields().indexOf(db.names.T_ID_F)
         max_value = basket_table.maximumValue(t_id_idx) or 0
         new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
@@ -1232,19 +1238,20 @@ class LADMData(QObject):
             Logger().warning(__name__, msg)
             return None, msg
 
-        return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
+        return basket_feature, "Success!"
+
 
     @staticmethod
-    def get_ili2db_dataset_t_id(db, dataset_name):
+    def get_or_create_ili2db_dataset_t_id(db, dataset_name):
         """
         Get or create an ili2db dataset by name
 
         :param db: DB connector
         :param dataset_name: name of the dataset to be searched or to be used as new dataset name
-        :return: Dataset t_id or None (if it was not possible to create it)
+        :return: Dataset t_id or None (if it was not possible to create it), message (useful for failures)
         """
         dataset_table = LADMData.get_dataset_table(db)
-        datasets = [f for f in dataset_table.getFeatures("{} = '{}'".format(db.names.DATASET_T_DATASETNAME_F, DEFAULT_DATASET_NAME))]
+        datasets = [f for f in dataset_table.getFeatures("{} = '{}'".format(db.names.DATASET_T_DATASETNAME_F, dataset_name))]
 
         if datasets:
             return datasets[0][db.names.T_ID_F], "Success!"
@@ -1266,10 +1273,10 @@ class LADMData(QObject):
             return new_dataset_t_id, "Success!"
 
     @staticmethod
-    def get_default_ili2db_basket(db):
+    def get_or_create_default_ili2db_basket(db):
         fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
-        default_basket_id, msg = LADMData.get_ili2db_basket(db,
-                                          DEFAULT_DATASET_NAME,
-                                          "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
+        default_basket_id, msg = LADMData.get_or_create_ili2db_basket(db,
+                                                                      DEFAULT_DATASET_NAME,
+                                                                      "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
         Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
         return default_basket_id, msg

@@ -19,6 +19,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.general_config import FDC_DATASET_NAME
 from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
 
 
@@ -167,9 +168,24 @@ class BaseFieldDataCaptureController(QObject):
                                                       full_name)
 
     def save_receiver(self, receiver_data):
-        raise NotImplementedError
+        return self._ladm_data.save_receiver(receiver_data, self.user_layer())
 
     def delete_receiver(self, receiver_t_id):
+        raise NotImplementedError
+
+    def _get_fdc_dataset(self):
+        return self._ladm_data.get_or_create_ili2db_dataset_t_id(self._db, FDC_DATASET_NAME)  # t_id, msg
+
+    def get_basket_id_for_new_receiver(self):
+        """
+        Get the basket id for the new receiver.
+
+        For the admin-coord allocation, the basket id will always be a new one.
+        For the coord-surveyor allocation, the basket id will be the unique value of the user.t_basket field.
+
+        :return: Tuple --> basket_id, msg (useful in case of failure, e.g., because there are several t_basket values
+                                           in a coord-surveyor scenario)
+        """
         raise NotImplementedError
 
     def get_summary_data(self):

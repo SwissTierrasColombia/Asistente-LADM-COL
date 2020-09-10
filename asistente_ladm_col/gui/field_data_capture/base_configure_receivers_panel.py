@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import uuid
+
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
@@ -87,16 +89,23 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                              "Invalid value for document id. Only digits are accepted."))
                 return
 
+            basket_t_id, msg = self._controller.get_basket_id_for_new_receiver()
+            if basket_t_id is None:
+                self.logger.warning_msg(__name__, msg)
+                return
+
             names = self._controller.db().names
             receiver_data = {names.FDC_USER_T_DOCUMENT_TYPE_F: self._controller.receiver_type,
                              names.FDC_USER_T_DOCUMENT_ID_F: self.txt_document_id.text().strip(),
                              names.FDC_USER_T_FIRST_NAME_F: self.txt_first_name.text().strip(),
                              names.FDC_USER_T_SECOND_NAME_F: self.txt_second_name.text().strip(),
                              names.FDC_USER_T_FIRST_LAST_NAME_F: self.txt_first_last_name.text().strip(),
-                             names.FDC_USER_T_SECOND_LAST_NAME_F: self.txt_second_last_name.text().strip()}
+                             names.FDC_USER_T_SECOND_LAST_NAME_F: self.txt_second_last_name.text().strip(),
+                             names.T_ILI_TID_F: str(uuid.uuid4()),
+                             names.T_BASKET_F: basket_t_id}
             res = self._controller.save_receiver(receiver_data)
             if res:
-                self.logger.info_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "Receiver saved!"))
+                self.logger.success_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "Receiver saved!"))
                 self.fill_data()
                 self.initialize_input_controls()
             else:

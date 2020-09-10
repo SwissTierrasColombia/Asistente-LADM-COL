@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import QCoreApplication
+
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.lib.field_data_capture import FieldDataCapture
@@ -71,8 +73,18 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
 
         return res, msg
 
-    def save_receiver(self, receiver_data):
-        return self._ladm_data.save_surveyor(self.db(), receiver_data, self.user_layer())
+    def get_basket_id_for_new_receiver(self):
+        basket_ids = self.user_layer().uniqueValues(self.user_layer().fields().indexOf(self._db.names.T_BASKET_F))
+        basket_id = None
+        msg = "Success!"
+        if len(basket_ids) < 1:
+            msg = QCoreApplication.translate("FieldDataCaptureCoordinatorController", "The field coordinator was not found in the user table, but it is required! No surveyor can be created.")
+        elif len(basket_ids) > 1:
+            msg = QCoreApplication.translate("FieldDataCaptureCoordinatorController", "The user table has more than one basket value, but only one is required! No surveyor can be created.")
+        else:  # == 1
+            basket_id = basket_ids.pop()
+
+        return basket_id, msg
 
     def delete_receiver(self, receiver_t_id):
         return self._ladm_data.delete_surveyor(self.db().names, receiver_t_id, self.user_layer())

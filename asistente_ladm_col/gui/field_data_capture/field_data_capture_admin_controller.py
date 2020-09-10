@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExporter
+from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 
 class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
@@ -51,7 +52,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         names = self._db.names
 
         # Get list of basket t_ili_tids to export
-        receivers_data = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(), self._get_receiver_referenced_field(), self.receiver_type)
+        receivers_data = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(), self._get_receiver_referenced_field(), self.receiver_type, full_name=False)
         receiver_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
         receiver_ids = self.parcel_layer().uniqueValues(receiver_idx)
         # Only t_basket of receivers with allocated parcels
@@ -83,8 +84,23 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
 
         return True, QCoreApplication.translate("FieldDataCaptureAdminController", "{} XTFs were succcessfully generated!").format(len(basket_dict))
 
-    def save_receiver(self, receiver_data):
-        return self._ladm_data.save_surveyor(self.db(), receiver_data, self.user_layer())
+    def get_basket_id_for_new_receiver(self):
+        # 1. Make sure we've got the FDC dataset
+        dataset_t_id, msg = self._get_fdc_dataset()
+        if dataset_t_id is None:
+            return None, QCoreApplication.translate("FieldDataCaptureAdminController", "The Field Data Capture dataset does not exist and couldn't be created! No coordinator can be created.")
+
+        # 2. Get a new basket for such dataset
+        fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
+        topic_name = "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME)
+        basket_feature, msg = self._ladm_data.create_ili2db_basket(self._db, dataset_t_id, topic_name)
+
+        if basket_feature is None:
+            return None, QCoreApplication.translate("FieldDataCaptureAdminController", "The new coordinator could not be created. Details: Basket could not be created!")
+
+        basket_t_id = basket_feature[self._db.names.T_ID_F]
+
+        return basket_t_id, "Success!"
 
     def delete_receiver(self, receiver_t_id):
         return self._ladm_data.delete_surveyor(self.db().names, receiver_t_id, self.user_layer())
