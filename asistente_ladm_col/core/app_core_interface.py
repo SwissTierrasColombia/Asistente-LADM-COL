@@ -668,22 +668,33 @@ class AppCoreInterface(QObject):
                     if layer.fields().field(field).typeName() == 'uuid':
                         continue
 
-                default_value = QgsDefaultValue(expression, self.should_be_applied_on_update(layer, index))
+                default_value = QgsDefaultValue(expression, self.should_be_applied_on_update(layer, index, field, names))
                 layer.setDefaultValueDefinition(index, default_value)
                 self.logger.info(__name__, "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
                     layer.name(), field, expression))
 
     @staticmethod
-    def should_be_applied_on_update(layer, field_index):
+    def should_be_applied_on_update(layer, field_index, field_name, names):
         """
         Determines whether a given field should have a default value that is applied on feature updates
 
         :param layer: QgsVectorLayer
         :param field_index: field index
+        :param field_name: field name
+        :param names: Table and field mapping object
         :return: True if default value should be applied on any update of the current feature
         """
         # Relation reference are widgets for FKs, they shouldn't be applied on update
-        return layer.editorWidgetSetup(field_index).type() != 'RelationReference'
+        res = layer.editorWidgetSetup(field_index).type() != 'RelationReference'
+        if res and names:
+            # Additionally, begin_lifespan, t_ili_tid, local_id and namespace should not be applied on update
+            # (Using getattr because some models do not have all these names)
+            res = field_name not in [getattr(names, "T_ILI_TID_F", None),
+                                     getattr(names, "OID_T_LOCAL_ID_F", None),
+                                     getattr(names, "OID_T_NAMESPACE_F", None),
+                                     getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)]
+
+        return res
 
     def reset_automatic_fields(self, layer, list_fields):
         self.configure_automatic_fields(layer, {field: "" for field in list_fields})

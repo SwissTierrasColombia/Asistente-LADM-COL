@@ -68,8 +68,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
 
         test_result = [{'selected_ids': [1], 'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'selected_ids': [1], 'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -86,7 +86,7 @@ class TesQualityValidations(unittest.TestCase):
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             test_selected_ids = test_result[i]['selected_ids']
             #boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.geometry.fix_selected_boundaries(self.names, boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.geometry.fix_selected_boundaries(names, boundary_layer, names.T_ID_F, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:
@@ -103,8 +103,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         test_result = [{'boundaries_to_del': [1, 2, 3, 4], 'geoms': ['LineString (882256.9922020563390106 1545352.94816972548142076, 883830.40917081397492439 1545368.68233941309154034, 885435.29447894683107734 1545352.94816972548142076, 887291.92650208086706698 1545337.21400003810413182, 888881.07764052611310035 1545463.08735753851942718)']},
                        {'boundaries_to_del': [1, 2], 'geoms': ['LineString (882325.469107756158337 1544955.88267589989118278, 883209.64509183121845126 1544960.13352197711355984, 884510.40399148012511432 1544985.6385984409134835, 885547.61043433740269393 1544964.3843680543359369, 886822.86425752262584865 1544977.13690628623589873, 887889.82662292092572898 1544989.88944451813586056, 888612.47045605920720845 1545002.64198275003582239)']},
@@ -120,7 +120,7 @@ class TesQualityValidations(unittest.TestCase):
             uri = gpkg_path + '|layername=boundary_case_{case}'.format(case=i+1)
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             self.assertEqual(boundary_layer.featureCount(), len(test_result[i]['boundaries_to_del']), 'Invalid number of features: case {case}'.format(case=i+1))
-            merge_geoms, boundaries_to_del = self.geometry.fix_boundaries(boundary_layer, self.names.T_ID_F)
+            merge_geoms, boundaries_to_del = self.geometry.fix_boundaries(boundary_layer, names.T_ID_F)
             self.assertEqual(boundaries_to_del, test_result[i]['boundaries_to_del'], 'The boundaries to delete are invalid: case {case}'.format(case=i + 1))
 
             for merge_geom in merge_geoms:
@@ -138,8 +138,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -151,7 +151,7 @@ class TesQualityValidations(unittest.TestCase):
 
         features = PointQualityRules.get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer,
                                                                                             plot_layer,
-                                                                                            self.names.T_ID_F)
+                                                                                            names.T_ID_F)
         self.assertEqual(len(features), 14)
         result = [{'geom': f[1].asWkt(), 'id': f[0]} for f in features]
 
@@ -178,8 +178,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -191,7 +191,7 @@ class TesQualityValidations(unittest.TestCase):
 
         features = PolygonQualityRules.get_plot_nodes_features_not_covered_by_boundary_points(boundary_point_layer,
                                                                                               plot_layer,
-                                                                                              self.names.T_ID_F)
+                                                                                              names.T_ID_F)
         self.assertEqual(len(features), 10)
         result = [{'geom': f[1].asWkt(), 'id': f[0]} for f in features]
 
@@ -309,28 +309,28 @@ class TesQualityValidations(unittest.TestCase):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
-        self.names = self.db_pg.names
+        names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
-        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -339,7 +339,7 @@ class TesQualityValidations(unittest.TestCase):
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.quality_rules.point_quality_rules.get_boundary_points_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.point_quality_rules.get_boundary_points_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -431,28 +431,28 @@ class TesQualityValidations(unittest.TestCase):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
-        self.names = self.db_pg.names
+        names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
-        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -461,7 +461,7 @@ class TesQualityValidations(unittest.TestCase):
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -522,28 +522,28 @@ class TesQualityValidations(unittest.TestCase):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
-        self.names = self.db_pg.names
+        names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
-        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
+        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
+        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
+        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.MORE_BFS_T, load=True)
+        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, self.names.LESS_BFS_T, load=True)
+        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -551,7 +551,7 @@ class TesQualityValidations(unittest.TestCase):
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 11)
@@ -646,8 +646,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
@@ -678,10 +678,10 @@ class TesQualityValidations(unittest.TestCase):
                 overlapping[pair].append(geometry)
 
         for point in point_features:
-            insert_into_res([point[self.names.T_ID_F], point[self.names.T_ID_F+'_2']], point.geometry().asWkt())
+            insert_into_res([point[names.T_ID_F], point[names.T_ID_F+'_2']], point.geometry().asWkt())
 
         for line in line_features:
-            insert_into_res([line[self.names.T_ID_F], line[self.names.T_ID_F+'_2']], line.geometry().asWkt())
+            insert_into_res([line[names.T_ID_F], line[names.T_ID_F+'_2']], line.geometry().asWkt())
 
         expected_overlaps = {
             '7-15': [
@@ -747,7 +747,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
-        self.names = self.db_gpkg.names
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         # Map between case number and number of vertices that should be added
         # For instance, the 4th case (reflected in the layer's name) should
@@ -770,7 +771,7 @@ class TesQualityValidations(unittest.TestCase):
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.geometry.add_topological_vertices(clone_polygons, lines_layer, self.names.T_ID_F)
+            self.geometry.add_topological_vertices(clone_polygons, lines_layer, names.T_ID_F)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -783,7 +784,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
-        self.names = self.db_gpkg.names
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         diff_geom = [['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
                      ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
@@ -802,7 +804,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_plot_boundary = self.geometry.difference_plot_boundary(self.names, polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = self.geometry.difference_plot_boundary(names, polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -816,7 +818,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
-        self.names = self.db_gpkg.names
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         diff_geom = ['',
                      '',
@@ -833,7 +836,7 @@ class TesQualityValidations(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_boundary_plot = self.geometry.difference_boundary_plot(self.names, lines_layer, polygon_as_lines_layer, 'fid')
+            diff_boundary_plot = self.geometry.difference_boundary_plot(names, lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:
@@ -963,8 +966,8 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
         uri_boundary = gpkg_path + '|layername=good_boundary'
@@ -985,11 +988,11 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
+        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, names.T_ID_F)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[self.names.T_ID_F]
-            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
+            boundary_point_id = point_selected[names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1015,11 +1018,11 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
+        points_selected = self.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, names.T_ID_F)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[self.names.T_ID_F]
-            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
+            boundary_point_id = point_selected[names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1061,8 +1064,8 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
@@ -1073,7 +1076,7 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.geometry.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
-        boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
+        boundary_ids = [feature[names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
         boundary_ids.sort()
         expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 10, 10, 13, 14, 325, 325, 334, 334, 335, 336, 336, 337]
 
@@ -1095,8 +1098,9 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating boundaries are not split...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
-        self.names = self.db_gpkg.names
-        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names = self.db_gpkg.names
+        names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        names.T_ILI_TID_F = 't_ili_tid'  # Static label is set because the database does not have the ladm structure
 
         uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
         uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')
@@ -1105,17 +1109,17 @@ class TesQualityValidations(unittest.TestCase):
         bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
         good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
 
-        bad_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, bad_boundary_layer)
+        bad_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(names, bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
         self.assertEqual(len(bad_boundary_errors_list), 4)
         self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
-        bbox_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, bbox_boundary_layer)
+        bbox_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(names, bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
         self.assertEqual(len(bbox_boundary_errors_list), 9)
         self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
-        good_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(self.names, good_boundary_layer)
+        good_boundary_errors = self.geometry.get_boundaries_connected_to_single_boundary(names, good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
         self.assertEqual(len(good_boundary_errors_list), 0)
 

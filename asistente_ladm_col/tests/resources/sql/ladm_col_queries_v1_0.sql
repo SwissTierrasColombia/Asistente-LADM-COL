@@ -5,7 +5,7 @@
 -- Dumped from database version 11.8 (Ubuntu 11.8-1.pgdg20.04+1)
 -- Dumped by pg_dump version 12.3 (Ubuntu 12.3-1.pgdg20.04+1)
 
--- Started on 2020-07-22 11:55:42 -05
+-- Started on 2020-07-28 10:09:50 -05
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 12 (class 2615 OID 380141)
+-- TOC entry 10 (class 2615 OID 419412)
 -- Name: test_ladm_col_queries; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -31,7 +31,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 ALTER SCHEMA test_ladm_col_queries OWNER TO postgres;
 
 --
--- TOC entry 1077 (class 1259 OID 380142)
+-- TOC entry 204 (class 1259 OID 419413)
 -- Name: t_ili2db_seq; Type: SEQUENCE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -48,7 +48,7 @@ ALTER TABLE test_ladm_col_queries.t_ili2db_seq OWNER TO postgres;
 SET default_tablespace = '';
 
 --
--- TOC entry 1082 (class 1259 OID 380178)
+-- TOC entry 205 (class 1259 OID 419415)
 -- Name: cc_metodooperacion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -67,8 +67,8 @@ CREATE TABLE test_ladm_col_queries.cc_metodooperacion (
 ALTER TABLE test_ladm_col_queries.cc_metodooperacion OWNER TO postgres;
 
 --
--- TOC entry 9116 (class 0 OID 0)
--- Dependencies: 1082
+-- TOC entry 5878 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: TABLE cc_metodooperacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -76,8 +76,8 @@ COMMENT ON TABLE test_ladm_col_queries.cc_metodooperacion IS 'Estructura que pro
 
 
 --
--- TOC entry 9117 (class 0 OID 0)
--- Dependencies: 1082
+-- TOC entry 5879 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: COLUMN cc_metodooperacion.formula; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -85,8 +85,8 @@ COMMENT ON COLUMN test_ladm_col_queries.cc_metodooperacion.formula IS 'Fórmulas
 
 
 --
--- TOC entry 9118 (class 0 OID 0)
--- Dependencies: 1082
+-- TOC entry 5880 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: COLUMN cc_metodooperacion.dimensiones_origen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -94,8 +94,8 @@ COMMENT ON COLUMN test_ladm_col_queries.cc_metodooperacion.dimensiones_origen IS
 
 
 --
--- TOC entry 9119 (class 0 OID 0)
--- Dependencies: 1082
+-- TOC entry 5881 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: COLUMN cc_metodooperacion.ddimensiones_objetivo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -103,8 +103,8 @@ COMMENT ON COLUMN test_ladm_col_queries.cc_metodooperacion.ddimensiones_objetivo
 
 
 --
--- TOC entry 9120 (class 0 OID 0)
--- Dependencies: 1082
+-- TOC entry 5882 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: COLUMN cc_metodooperacion.col_transformacion_transformacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -112,7 +112,7 @@ COMMENT ON COLUMN test_ladm_col_queries.cc_metodooperacion.col_transformacion_tr
 
 
 --
--- TOC entry 1192 (class 1259 OID 381299)
+-- TOC entry 206 (class 1259 OID 419421)
 -- Name: ci_forma_presentacion_codigo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -132,7 +132,7 @@ CREATE TABLE test_ladm_col_queries.ci_forma_presentacion_codigo (
 ALTER TABLE test_ladm_col_queries.ci_forma_presentacion_codigo OWNER TO postgres;
 
 --
--- TOC entry 1210 (class 1259 OID 381461)
+-- TOC entry 207 (class 1259 OID 419428)
 -- Name: col_areatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -152,7 +152,7 @@ CREATE TABLE test_ladm_col_queries.col_areatipo (
 ALTER TABLE test_ladm_col_queries.col_areatipo OWNER TO postgres;
 
 --
--- TOC entry 1083 (class 1259 OID 380185)
+-- TOC entry 208 (class 1259 OID 419435)
 -- Name: col_areavalor; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -173,8 +173,8 @@ CREATE TABLE test_ladm_col_queries.col_areavalor (
 ALTER TABLE test_ladm_col_queries.col_areavalor OWNER TO postgres;
 
 --
--- TOC entry 9121 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5883 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -182,8 +182,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.tipo IS 'Indica si el valo
 
 
 --
--- TOC entry 9122 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5884 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.area; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -191,8 +191,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.area IS 'Corresponde al va
 
 
 --
--- TOC entry 9123 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5885 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.datos_proyeccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -200,8 +200,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.datos_proyeccion IS 'Param
 
 
 --
--- TOC entry 9124 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5886 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.lc_construccion_area; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -209,8 +209,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.lc_construccion_area IS 'R
 
 
 --
--- TOC entry 9125 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5887 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.lc_terreno_area; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -218,8 +218,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.lc_terreno_area IS 'Regist
 
 
 --
--- TOC entry 9126 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5888 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.lc_servidumbretransito_area; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -227,8 +227,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.lc_servidumbretransito_are
 
 
 --
--- TOC entry 9127 (class 0 OID 0)
--- Dependencies: 1083
+-- TOC entry 5889 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: COLUMN col_areavalor.lc_unidadconstruccion_area; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -236,7 +236,7 @@ COMMENT ON COLUMN test_ladm_col_queries.col_areavalor.lc_unidadconstruccion_area
 
 
 --
--- TOC entry 1110 (class 1259 OID 380454)
+-- TOC entry 209 (class 1259 OID 419443)
 -- Name: col_baunitcomointeresado; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -252,7 +252,7 @@ CREATE TABLE test_ladm_col_queries.col_baunitcomointeresado (
 ALTER TABLE test_ladm_col_queries.col_baunitcomointeresado OWNER TO postgres;
 
 --
--- TOC entry 1100 (class 1259 OID 380363)
+-- TOC entry 210 (class 1259 OID 419447)
 -- Name: col_baunitfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -267,7 +267,7 @@ CREATE TABLE test_ladm_col_queries.col_baunitfuente (
 ALTER TABLE test_ladm_col_queries.col_baunitfuente OWNER TO postgres;
 
 --
--- TOC entry 1102 (class 1259 OID 380378)
+-- TOC entry 211 (class 1259 OID 419451)
 -- Name: col_cclfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -282,7 +282,7 @@ CREATE TABLE test_ladm_col_queries.col_cclfuente (
 ALTER TABLE test_ladm_col_queries.col_cclfuente OWNER TO postgres;
 
 --
--- TOC entry 1106 (class 1259 OID 380418)
+-- TOC entry 212 (class 1259 OID 419455)
 -- Name: col_clfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -296,7 +296,7 @@ CREATE TABLE test_ladm_col_queries.col_clfuente (
 ALTER TABLE test_ladm_col_queries.col_clfuente OWNER TO postgres;
 
 --
--- TOC entry 1237 (class 1259 OID 381704)
+-- TOC entry 213 (class 1259 OID 419459)
 -- Name: col_contenidoniveltipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -316,7 +316,7 @@ CREATE TABLE test_ladm_col_queries.col_contenidoniveltipo (
 ALTER TABLE test_ladm_col_queries.col_contenidoniveltipo OWNER TO postgres;
 
 --
--- TOC entry 1219 (class 1259 OID 381542)
+-- TOC entry 214 (class 1259 OID 419466)
 -- Name: col_dimensiontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -336,7 +336,7 @@ CREATE TABLE test_ladm_col_queries.col_dimensiontipo (
 ALTER TABLE test_ladm_col_queries.col_dimensiontipo OWNER TO postgres;
 
 --
--- TOC entry 1188 (class 1259 OID 381263)
+-- TOC entry 215 (class 1259 OID 419473)
 -- Name: col_estadodisponibilidadtipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -356,7 +356,7 @@ CREATE TABLE test_ladm_col_queries.col_estadodisponibilidadtipo (
 ALTER TABLE test_ladm_col_queries.col_estadodisponibilidadtipo OWNER TO postgres;
 
 --
--- TOC entry 1181 (class 1259 OID 381200)
+-- TOC entry 216 (class 1259 OID 419480)
 -- Name: col_estadoredserviciostipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -376,7 +376,7 @@ CREATE TABLE test_ladm_col_queries.col_estadoredserviciostipo (
 ALTER TABLE test_ladm_col_queries.col_estadoredserviciostipo OWNER TO postgres;
 
 --
--- TOC entry 1227 (class 1259 OID 381614)
+-- TOC entry 217 (class 1259 OID 419487)
 -- Name: col_estructuratipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -396,7 +396,7 @@ CREATE TABLE test_ladm_col_queries.col_estructuratipo (
 ALTER TABLE test_ladm_col_queries.col_estructuratipo OWNER TO postgres;
 
 --
--- TOC entry 1221 (class 1259 OID 381560)
+-- TOC entry 218 (class 1259 OID 419494)
 -- Name: col_fuenteadministrativatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -416,7 +416,7 @@ CREATE TABLE test_ladm_col_queries.col_fuenteadministrativatipo (
 ALTER TABLE test_ladm_col_queries.col_fuenteadministrativatipo OWNER TO postgres;
 
 --
--- TOC entry 1203 (class 1259 OID 381398)
+-- TOC entry 219 (class 1259 OID 419501)
 -- Name: col_fuenteespacialtipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -436,7 +436,7 @@ CREATE TABLE test_ladm_col_queries.col_fuenteespacialtipo (
 ALTER TABLE test_ladm_col_queries.col_fuenteespacialtipo OWNER TO postgres;
 
 --
--- TOC entry 1182 (class 1259 OID 381209)
+-- TOC entry 220 (class 1259 OID 419508)
 -- Name: col_grupointeresadotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -456,7 +456,7 @@ CREATE TABLE test_ladm_col_queries.col_grupointeresadotipo (
 ALTER TABLE test_ladm_col_queries.col_grupointeresadotipo OWNER TO postgres;
 
 --
--- TOC entry 1218 (class 1259 OID 381533)
+-- TOC entry 221 (class 1259 OID 419515)
 -- Name: col_interpolaciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -476,7 +476,7 @@ CREATE TABLE test_ladm_col_queries.col_interpolaciontipo (
 ALTER TABLE test_ladm_col_queries.col_interpolaciontipo OWNER TO postgres;
 
 --
--- TOC entry 1231 (class 1259 OID 381650)
+-- TOC entry 222 (class 1259 OID 419522)
 -- Name: col_iso19125_tipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -496,7 +496,7 @@ CREATE TABLE test_ladm_col_queries.col_iso19125_tipo (
 ALTER TABLE test_ladm_col_queries.col_iso19125_tipo OWNER TO postgres;
 
 --
--- TOC entry 1104 (class 1259 OID 380397)
+-- TOC entry 223 (class 1259 OID 419529)
 -- Name: col_masccl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -514,7 +514,7 @@ CREATE TABLE test_ladm_col_queries.col_masccl (
 ALTER TABLE test_ladm_col_queries.col_masccl OWNER TO postgres;
 
 --
--- TOC entry 1108 (class 1259 OID 380435)
+-- TOC entry 224 (class 1259 OID 419533)
 -- Name: col_mascl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -531,7 +531,7 @@ CREATE TABLE test_ladm_col_queries.col_mascl (
 ALTER TABLE test_ladm_col_queries.col_mascl OWNER TO postgres;
 
 --
--- TOC entry 1103 (class 1259 OID 380386)
+-- TOC entry 225 (class 1259 OID 419537)
 -- Name: col_menosccl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -549,7 +549,7 @@ CREATE TABLE test_ladm_col_queries.col_menosccl (
 ALTER TABLE test_ladm_col_queries.col_menosccl OWNER TO postgres;
 
 --
--- TOC entry 1107 (class 1259 OID 380425)
+-- TOC entry 226 (class 1259 OID 419541)
 -- Name: col_menoscl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -566,7 +566,7 @@ CREATE TABLE test_ladm_col_queries.col_menoscl (
 ALTER TABLE test_ladm_col_queries.col_menoscl OWNER TO postgres;
 
 --
--- TOC entry 1212 (class 1259 OID 381479)
+-- TOC entry 227 (class 1259 OID 419545)
 -- Name: col_metodoproducciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -586,7 +586,7 @@ CREATE TABLE test_ladm_col_queries.col_metodoproducciontipo (
 ALTER TABLE test_ladm_col_queries.col_metodoproducciontipo OWNER TO postgres;
 
 --
--- TOC entry 1113 (class 1259 OID 380481)
+-- TOC entry 228 (class 1259 OID 419552)
 -- Name: col_miembros; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -602,7 +602,7 @@ CREATE TABLE test_ladm_col_queries.col_miembros (
 ALTER TABLE test_ladm_col_queries.col_miembros OWNER TO postgres;
 
 --
--- TOC entry 1105 (class 1259 OID 380408)
+-- TOC entry 229 (class 1259 OID 419556)
 -- Name: col_puntoccl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -619,7 +619,7 @@ CREATE TABLE test_ladm_col_queries.col_puntoccl (
 ALTER TABLE test_ladm_col_queries.col_puntoccl OWNER TO postgres;
 
 --
--- TOC entry 1109 (class 1259 OID 380445)
+-- TOC entry 230 (class 1259 OID 419560)
 -- Name: col_puntocl; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -635,7 +635,7 @@ CREATE TABLE test_ladm_col_queries.col_puntocl (
 ALTER TABLE test_ladm_col_queries.col_puntocl OWNER TO postgres;
 
 --
--- TOC entry 1098 (class 1259 OID 380342)
+-- TOC entry 231 (class 1259 OID 419564)
 -- Name: col_puntofuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -652,7 +652,7 @@ CREATE TABLE test_ladm_col_queries.col_puntofuente (
 ALTER TABLE test_ladm_col_queries.col_puntofuente OWNER TO postgres;
 
 --
--- TOC entry 1226 (class 1259 OID 381605)
+-- TOC entry 232 (class 1259 OID 419568)
 -- Name: col_puntotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -672,7 +672,7 @@ CREATE TABLE test_ladm_col_queries.col_puntotipo (
 ALTER TABLE test_ladm_col_queries.col_puntotipo OWNER TO postgres;
 
 --
--- TOC entry 1177 (class 1259 OID 381164)
+-- TOC entry 233 (class 1259 OID 419575)
 -- Name: col_redserviciostipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -692,7 +692,7 @@ CREATE TABLE test_ladm_col_queries.col_redserviciostipo (
 ALTER TABLE test_ladm_col_queries.col_redserviciostipo OWNER TO postgres;
 
 --
--- TOC entry 1207 (class 1259 OID 381434)
+-- TOC entry 234 (class 1259 OID 419582)
 -- Name: col_registrotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -712,7 +712,7 @@ CREATE TABLE test_ladm_col_queries.col_registrotipo (
 ALTER TABLE test_ladm_col_queries.col_registrotipo OWNER TO postgres;
 
 --
--- TOC entry 1096 (class 1259 OID 380327)
+-- TOC entry 235 (class 1259 OID 419589)
 -- Name: col_relacionfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -726,7 +726,7 @@ CREATE TABLE test_ladm_col_queries.col_relacionfuente (
 ALTER TABLE test_ladm_col_queries.col_relacionfuente OWNER TO postgres;
 
 --
--- TOC entry 1101 (class 1259 OID 380371)
+-- TOC entry 236 (class 1259 OID 419593)
 -- Name: col_relacionfuenteuespacial; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -740,7 +740,7 @@ CREATE TABLE test_ladm_col_queries.col_relacionfuenteuespacial (
 ALTER TABLE test_ladm_col_queries.col_relacionfuenteuespacial OWNER TO postgres;
 
 --
--- TOC entry 1185 (class 1259 OID 381236)
+-- TOC entry 237 (class 1259 OID 419597)
 -- Name: col_relacionsuperficietipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -760,7 +760,7 @@ CREATE TABLE test_ladm_col_queries.col_relacionsuperficietipo (
 ALTER TABLE test_ladm_col_queries.col_relacionsuperficietipo OWNER TO postgres;
 
 --
--- TOC entry 1111 (class 1259 OID 380463)
+-- TOC entry 238 (class 1259 OID 419604)
 -- Name: col_responsablefuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -776,7 +776,7 @@ CREATE TABLE test_ladm_col_queries.col_responsablefuente (
 ALTER TABLE test_ladm_col_queries.col_responsablefuente OWNER TO postgres;
 
 --
--- TOC entry 1094 (class 1259 OID 380307)
+-- TOC entry 239 (class 1259 OID 419608)
 -- Name: col_rrrfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -792,7 +792,7 @@ CREATE TABLE test_ladm_col_queries.col_rrrfuente (
 ALTER TABLE test_ladm_col_queries.col_rrrfuente OWNER TO postgres;
 
 --
--- TOC entry 1112 (class 1259 OID 380472)
+-- TOC entry 240 (class 1259 OID 419612)
 -- Name: col_topografofuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -808,7 +808,7 @@ CREATE TABLE test_ladm_col_queries.col_topografofuente (
 ALTER TABLE test_ladm_col_queries.col_topografofuente OWNER TO postgres;
 
 --
--- TOC entry 1086 (class 1259 OID 380228)
+-- TOC entry 241 (class 1259 OID 419616)
 -- Name: col_transformacion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -825,8 +825,8 @@ CREATE TABLE test_ladm_col_queries.col_transformacion (
 ALTER TABLE test_ladm_col_queries.col_transformacion OWNER TO postgres;
 
 --
--- TOC entry 9128 (class 0 OID 0)
--- Dependencies: 1086
+-- TOC entry 5890 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: TABLE col_transformacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -834,8 +834,8 @@ COMMENT ON TABLE test_ladm_col_queries.col_transformacion IS 'Registro de la fó
 
 
 --
--- TOC entry 9129 (class 0 OID 0)
--- Dependencies: 1086
+-- TOC entry 5891 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: COLUMN col_transformacion.localizacion_transformada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -843,8 +843,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_transformacion.localizacion_transfor
 
 
 --
--- TOC entry 9130 (class 0 OID 0)
--- Dependencies: 1086
+-- TOC entry 5892 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: COLUMN col_transformacion.lc_puntocontrol_transformacion_y_resultado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -852,8 +852,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_transformacion.lc_puntocontrol_trans
 
 
 --
--- TOC entry 9131 (class 0 OID 0)
--- Dependencies: 1086
+-- TOC entry 5893 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: COLUMN col_transformacion.lc_puntolindero_transformacion_y_resultado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -861,8 +861,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_transformacion.lc_puntolindero_trans
 
 
 --
--- TOC entry 9132 (class 0 OID 0)
--- Dependencies: 1086
+-- TOC entry 5894 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: COLUMN col_transformacion.lc_puntolevantamiento_transformacion_y_resultado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -870,7 +870,7 @@ COMMENT ON COLUMN test_ladm_col_queries.col_transformacion.lc_puntolevantamiento
 
 
 --
--- TOC entry 1095 (class 1259 OID 380316)
+-- TOC entry 242 (class 1259 OID 419623)
 -- Name: col_uebaunit; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -888,7 +888,7 @@ CREATE TABLE test_ladm_col_queries.col_uebaunit (
 ALTER TABLE test_ladm_col_queries.col_uebaunit OWNER TO postgres;
 
 --
--- TOC entry 1099 (class 1259 OID 380352)
+-- TOC entry 243 (class 1259 OID 419627)
 -- Name: col_uefuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -906,7 +906,7 @@ CREATE TABLE test_ladm_col_queries.col_uefuente (
 ALTER TABLE test_ladm_col_queries.col_uefuente OWNER TO postgres;
 
 --
--- TOC entry 1093 (class 1259 OID 380297)
+-- TOC entry 244 (class 1259 OID 419631)
 -- Name: col_ueuegrupo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -923,7 +923,7 @@ CREATE TABLE test_ladm_col_queries.col_ueuegrupo (
 ALTER TABLE test_ladm_col_queries.col_ueuegrupo OWNER TO postgres;
 
 --
--- TOC entry 1235 (class 1259 OID 381686)
+-- TOC entry 245 (class 1259 OID 419635)
 -- Name: col_unidadadministrativabasicatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -943,7 +943,7 @@ CREATE TABLE test_ladm_col_queries.col_unidadadministrativabasicatipo (
 ALTER TABLE test_ladm_col_queries.col_unidadadministrativabasicatipo OWNER TO postgres;
 
 --
--- TOC entry 1211 (class 1259 OID 381470)
+-- TOC entry 246 (class 1259 OID 419642)
 -- Name: col_unidadedificaciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -963,7 +963,7 @@ CREATE TABLE test_ladm_col_queries.col_unidadedificaciontipo (
 ALTER TABLE test_ladm_col_queries.col_unidadedificaciontipo OWNER TO postgres;
 
 --
--- TOC entry 1097 (class 1259 OID 380334)
+-- TOC entry 247 (class 1259 OID 419649)
 -- Name: col_unidadfuente; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -978,7 +978,7 @@ CREATE TABLE test_ladm_col_queries.col_unidadfuente (
 ALTER TABLE test_ladm_col_queries.col_unidadfuente OWNER TO postgres;
 
 --
--- TOC entry 1206 (class 1259 OID 381425)
+-- TOC entry 248 (class 1259 OID 419653)
 -- Name: col_volumentipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -998,7 +998,7 @@ CREATE TABLE test_ladm_col_queries.col_volumentipo (
 ALTER TABLE test_ladm_col_queries.col_volumentipo OWNER TO postgres;
 
 --
--- TOC entry 1092 (class 1259 OID 380286)
+-- TOC entry 249 (class 1259 OID 419660)
 -- Name: col_volumenvalor; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1018,8 +1018,8 @@ CREATE TABLE test_ladm_col_queries.col_volumenvalor (
 ALTER TABLE test_ladm_col_queries.col_volumenvalor OWNER TO postgres;
 
 --
--- TOC entry 9133 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5895 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: TABLE col_volumenvalor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1027,8 +1027,8 @@ COMMENT ON TABLE test_ladm_col_queries.col_volumenvalor IS 'Estructura para la d
 
 
 --
--- TOC entry 9134 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5896 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.volumen_medicion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1036,8 +1036,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.volumen_medicion IS 'Me
 
 
 --
--- TOC entry 9135 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5897 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1045,8 +1045,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.tipo IS 'Indicación de
 
 
 --
--- TOC entry 9136 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5898 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.lc_construccion_volumen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1054,8 +1054,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.lc_construccion_volumen
 
 
 --
--- TOC entry 9137 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5899 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.lc_terreno_volumen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1063,8 +1063,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.lc_terreno_volumen IS '
 
 
 --
--- TOC entry 9138 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5900 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.lc_servidumbretransito_volumen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1072,8 +1072,8 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.lc_servidumbretransito_
 
 
 --
--- TOC entry 9139 (class 0 OID 0)
--- Dependencies: 1092
+-- TOC entry 5901 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: COLUMN col_volumenvalor.lc_unidadconstruccion_volumen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1081,7 +1081,7 @@ COMMENT ON COLUMN test_ladm_col_queries.col_volumenvalor.lc_unidadconstruccion_v
 
 
 --
--- TOC entry 1091 (class 1259 OID 380274)
+-- TOC entry 250 (class 1259 OID 419665)
 -- Name: extarchivo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1104,8 +1104,8 @@ CREATE TABLE test_ladm_col_queries.extarchivo (
 ALTER TABLE test_ladm_col_queries.extarchivo OWNER TO postgres;
 
 --
--- TOC entry 9140 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5902 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: TABLE extarchivo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1113,8 +1113,8 @@ COMMENT ON TABLE test_ladm_col_queries.extarchivo IS 'Referencia a clase externa
 
 
 --
--- TOC entry 9141 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5903 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.fecha_aceptacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1122,8 +1122,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.fecha_aceptacion IS 'Fecha en
 
 
 --
--- TOC entry 9142 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5904 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.datos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1131,8 +1131,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.datos IS 'Datos que contiene 
 
 
 --
--- TOC entry 9143 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5905 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.extraccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1140,8 +1140,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.extraccion IS 'Última fecha 
 
 
 --
--- TOC entry 9144 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5906 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.fecha_grabacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1149,8 +1149,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.fecha_grabacion IS 'Fecha en 
 
 
 --
--- TOC entry 9145 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5907 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.fecha_entrega; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1158,8 +1158,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.fecha_entrega IS 'Fecha en la
 
 
 --
--- TOC entry 9146 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5908 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.snr_fuentecabidalndros_archivo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1167,8 +1167,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.snr_fuentecabidalndros_archiv
 
 
 --
--- TOC entry 9147 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5909 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.lc_fuenteadministrtiva_ext_archivo_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1176,8 +1176,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.lc_fuenteadministrtiva_ext_ar
 
 
 --
--- TOC entry 9148 (class 0 OID 0)
--- Dependencies: 1091
+-- TOC entry 5910 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: COLUMN extarchivo.lc_fuenteespacial_ext_archivo_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1185,7 +1185,7 @@ COMMENT ON COLUMN test_ladm_col_queries.extarchivo.lc_fuenteespacial_ext_archivo
 
 
 --
--- TOC entry 1084 (class 1259 OID 380199)
+-- TOC entry 251 (class 1259 OID 419672)
 -- Name: extdireccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1219,8 +1219,8 @@ CREATE TABLE test_ladm_col_queries.extdireccion (
 ALTER TABLE test_ladm_col_queries.extdireccion OWNER TO postgres;
 
 --
--- TOC entry 9149 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5911 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: TABLE extdireccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1228,8 +1228,8 @@ COMMENT ON TABLE test_ladm_col_queries.extdireccion IS 'Referencia a una clase e
 
 
 --
--- TOC entry 9150 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5912 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.localizacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1237,8 +1237,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.localizacion IS 'Par de val
 
 
 --
--- TOC entry 9151 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5913 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.extinteresado_ext_direccion_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1246,8 +1246,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.extinteresado_ext_direccion
 
 
 --
--- TOC entry 9152 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5914 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.lc_construccion_ext_direccion_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1255,8 +1255,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.lc_construccion_ext_direcci
 
 
 --
--- TOC entry 9153 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5915 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.lc_predio_direccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1264,8 +1264,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.lc_predio_direccion IS 'Dir
 
 
 --
--- TOC entry 9154 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5916 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.lc_terreno_ext_direccion_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1273,8 +1273,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.lc_terreno_ext_direccion_id
 
 
 --
--- TOC entry 9155 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5917 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.lc_servidumbretransito_ext_direccion_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1282,8 +1282,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.lc_servidumbretransito_ext_
 
 
 --
--- TOC entry 9156 (class 0 OID 0)
--- Dependencies: 1084
+-- TOC entry 5918 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: COLUMN extdireccion.lc_unidadconstruccion_ext_direccion_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1291,7 +1291,7 @@ COMMENT ON COLUMN test_ladm_col_queries.extdireccion.lc_unidadconstruccion_ext_d
 
 
 --
--- TOC entry 1198 (class 1259 OID 381353)
+-- TOC entry 252 (class 1259 OID 419679)
 -- Name: extdireccion_clase_via_principal; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1311,7 +1311,7 @@ CREATE TABLE test_ladm_col_queries.extdireccion_clase_via_principal (
 ALTER TABLE test_ladm_col_queries.extdireccion_clase_via_principal OWNER TO postgres;
 
 --
--- TOC entry 1214 (class 1259 OID 381497)
+-- TOC entry 253 (class 1259 OID 419686)
 -- Name: extdireccion_sector_ciudad; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1331,7 +1331,7 @@ CREATE TABLE test_ladm_col_queries.extdireccion_sector_ciudad (
 ALTER TABLE test_ladm_col_queries.extdireccion_sector_ciudad OWNER TO postgres;
 
 --
--- TOC entry 1239 (class 1259 OID 381722)
+-- TOC entry 254 (class 1259 OID 419693)
 -- Name: extdireccion_sector_predio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1351,7 +1351,7 @@ CREATE TABLE test_ladm_col_queries.extdireccion_sector_predio (
 ALTER TABLE test_ladm_col_queries.extdireccion_sector_predio OWNER TO postgres;
 
 --
--- TOC entry 1240 (class 1259 OID 381731)
+-- TOC entry 255 (class 1259 OID 419700)
 -- Name: extdireccion_tipo_direccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1371,7 +1371,7 @@ CREATE TABLE test_ladm_col_queries.extdireccion_tipo_direccion (
 ALTER TABLE test_ladm_col_queries.extdireccion_tipo_direccion OWNER TO postgres;
 
 --
--- TOC entry 1089 (class 1259 OID 380256)
+-- TOC entry 256 (class 1259 OID 419707)
 -- Name: extinteresado; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1389,8 +1389,8 @@ CREATE TABLE test_ladm_col_queries.extinteresado (
 ALTER TABLE test_ladm_col_queries.extinteresado OWNER TO postgres;
 
 --
--- TOC entry 9157 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5919 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: TABLE extinteresado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1398,8 +1398,8 @@ COMMENT ON TABLE test_ladm_col_queries.extinteresado IS 'Referencia a una clase 
 
 
 --
--- TOC entry 9158 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5920 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: COLUMN extinteresado.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1407,8 +1407,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extinteresado.nombre IS 'Campo de nombre
 
 
 --
--- TOC entry 9159 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5921 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: COLUMN extinteresado.documento_escaneado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1416,8 +1416,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extinteresado.documento_escaneado IS 'Ru
 
 
 --
--- TOC entry 9160 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5922 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: COLUMN extinteresado.extredserviciosfisica_ext_interesado_administrador_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1425,8 +1425,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extinteresado.extredserviciosfisica_ext_
 
 
 --
--- TOC entry 9161 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5923 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: COLUMN extinteresado.lc_agrupacionintersdos_ext_pid; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1434,8 +1434,8 @@ COMMENT ON COLUMN test_ladm_col_queries.extinteresado.lc_agrupacionintersdos_ext
 
 
 --
--- TOC entry 9162 (class 0 OID 0)
--- Dependencies: 1089
+-- TOC entry 5924 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: COLUMN extinteresado.lc_interesado_ext_pid; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1443,7 +1443,7 @@ COMMENT ON COLUMN test_ladm_col_queries.extinteresado.lc_interesado_ext_pid IS '
 
 
 --
--- TOC entry 1090 (class 1259 OID 380268)
+-- TOC entry 257 (class 1259 OID 419714)
 -- Name: extredserviciosfisica; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1457,8 +1457,8 @@ CREATE TABLE test_ladm_col_queries.extredserviciosfisica (
 ALTER TABLE test_ladm_col_queries.extredserviciosfisica OWNER TO postgres;
 
 --
--- TOC entry 9163 (class 0 OID 0)
--- Dependencies: 1090
+-- TOC entry 5925 (class 0 OID 0)
+-- Dependencies: 257
 -- Name: TABLE extredserviciosfisica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1466,8 +1466,8 @@ COMMENT ON TABLE test_ladm_col_queries.extredserviciosfisica IS 'Referencia a un
 
 
 --
--- TOC entry 9164 (class 0 OID 0)
--- Dependencies: 1090
+-- TOC entry 5926 (class 0 OID 0)
+-- Dependencies: 257
 -- Name: COLUMN extredserviciosfisica.orientada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1475,7 +1475,7 @@ COMMENT ON COLUMN test_ladm_col_queries.extredserviciosfisica.orientada IS 'Indi
 
 
 --
--- TOC entry 1087 (class 1259 OID 380241)
+-- TOC entry 258 (class 1259 OID 419718)
 -- Name: extunidadedificacionfisica; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1488,8 +1488,8 @@ CREATE TABLE test_ladm_col_queries.extunidadedificacionfisica (
 ALTER TABLE test_ladm_col_queries.extunidadedificacionfisica OWNER TO postgres;
 
 --
--- TOC entry 9165 (class 0 OID 0)
--- Dependencies: 1087
+-- TOC entry 5927 (class 0 OID 0)
+-- Dependencies: 258
 -- Name: TABLE extunidadedificacionfisica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1497,7 +1497,7 @@ COMMENT ON TABLE test_ladm_col_queries.extunidadedificacionfisica IS 'Control ex
 
 
 --
--- TOC entry 1085 (class 1259 OID 380220)
+-- TOC entry 259 (class 1259 OID 419722)
 -- Name: fraccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1516,8 +1516,8 @@ CREATE TABLE test_ladm_col_queries.fraccion (
 ALTER TABLE test_ladm_col_queries.fraccion OWNER TO postgres;
 
 --
--- TOC entry 9166 (class 0 OID 0)
--- Dependencies: 1085
+-- TOC entry 5928 (class 0 OID 0)
+-- Dependencies: 259
 -- Name: TABLE fraccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1525,8 +1525,8 @@ COMMENT ON TABLE test_ladm_col_queries.fraccion IS 'Estructura para la definici�
 
 
 --
--- TOC entry 9167 (class 0 OID 0)
--- Dependencies: 1085
+-- TOC entry 5929 (class 0 OID 0)
+-- Dependencies: 259
 -- Name: COLUMN fraccion.denominador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1534,8 +1534,8 @@ COMMENT ON COLUMN test_ladm_col_queries.fraccion.denominador IS 'Parte inferior 
 
 
 --
--- TOC entry 9168 (class 0 OID 0)
--- Dependencies: 1085
+-- TOC entry 5930 (class 0 OID 0)
+-- Dependencies: 259
 -- Name: COLUMN fraccion.numerador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1543,7 +1543,7 @@ COMMENT ON COLUMN test_ladm_col_queries.fraccion.numerador IS 'Parte superior de
 
 
 --
--- TOC entry 1114 (class 1259 OID 380490)
+-- TOC entry 260 (class 1259 OID 419728)
 -- Name: gc_barrio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1560,8 +1560,8 @@ CREATE TABLE test_ladm_col_queries.gc_barrio (
 ALTER TABLE test_ladm_col_queries.gc_barrio OWNER TO postgres;
 
 --
--- TOC entry 9169 (class 0 OID 0)
--- Dependencies: 1114
+-- TOC entry 5931 (class 0 OID 0)
+-- Dependencies: 260
 -- Name: TABLE gc_barrio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1569,8 +1569,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_barrio IS 'Dato geografico aportado po
 
 
 --
--- TOC entry 9170 (class 0 OID 0)
--- Dependencies: 1114
+-- TOC entry 5932 (class 0 OID 0)
+-- Dependencies: 260
 -- Name: COLUMN gc_barrio.codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1578,8 +1578,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_barrio.codigo IS 'Código de identifi
 
 
 --
--- TOC entry 9171 (class 0 OID 0)
--- Dependencies: 1114
+-- TOC entry 5933 (class 0 OID 0)
+-- Dependencies: 260
 -- Name: COLUMN gc_barrio.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1587,8 +1587,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_barrio.nombre IS 'Nombre del barrio.'
 
 
 --
--- TOC entry 9172 (class 0 OID 0)
--- Dependencies: 1114
+-- TOC entry 5934 (class 0 OID 0)
+-- Dependencies: 260
 -- Name: COLUMN gc_barrio.codigo_sector; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1596,8 +1596,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_barrio.codigo_sector IS 'Código del 
 
 
 --
--- TOC entry 9173 (class 0 OID 0)
--- Dependencies: 1114
+-- TOC entry 5935 (class 0 OID 0)
+-- Dependencies: 260
 -- Name: COLUMN gc_barrio.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1605,7 +1605,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_barrio.geometria IS 'Tipo de geometr�
 
 
 --
--- TOC entry 1115 (class 1259 OID 380500)
+-- TOC entry 261 (class 1259 OID 419735)
 -- Name: gc_calificacionunidadconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1624,8 +1624,8 @@ CREATE TABLE test_ladm_col_queries.gc_calificacionunidadconstruccion (
 ALTER TABLE test_ladm_col_queries.gc_calificacionunidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9174 (class 0 OID 0)
--- Dependencies: 1115
+-- TOC entry 5936 (class 0 OID 0)
+-- Dependencies: 261
 -- Name: TABLE gc_calificacionunidadconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1633,8 +1633,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_calificacionunidadconstruccion IS 'Rel
 
 
 --
--- TOC entry 9175 (class 0 OID 0)
--- Dependencies: 1115
+-- TOC entry 5937 (class 0 OID 0)
+-- Dependencies: 261
 -- Name: COLUMN gc_calificacionunidadconstruccion.componente; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1642,8 +1642,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_calificacionunidadconstruccion.compon
 
 
 --
--- TOC entry 9176 (class 0 OID 0)
--- Dependencies: 1115
+-- TOC entry 5938 (class 0 OID 0)
+-- Dependencies: 261
 -- Name: COLUMN gc_calificacionunidadconstruccion.elemento_calificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1651,8 +1651,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_calificacionunidadconstruccion.elemen
 
 
 --
--- TOC entry 9177 (class 0 OID 0)
--- Dependencies: 1115
+-- TOC entry 5939 (class 0 OID 0)
+-- Dependencies: 261
 -- Name: COLUMN gc_calificacionunidadconstruccion.detalle_calificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1660,8 +1660,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_calificacionunidadconstruccion.detall
 
 
 --
--- TOC entry 9178 (class 0 OID 0)
--- Dependencies: 1115
+-- TOC entry 5940 (class 0 OID 0)
+-- Dependencies: 261
 -- Name: COLUMN gc_calificacionunidadconstruccion.puntos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1669,7 +1669,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_calificacionunidadconstruccion.puntos
 
 
 --
--- TOC entry 1116 (class 1259 OID 380510)
+-- TOC entry 262 (class 1259 OID 419743)
 -- Name: gc_comisionesconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1684,8 +1684,8 @@ CREATE TABLE test_ladm_col_queries.gc_comisionesconstruccion (
 ALTER TABLE test_ladm_col_queries.gc_comisionesconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9179 (class 0 OID 0)
--- Dependencies: 1116
+-- TOC entry 5941 (class 0 OID 0)
+-- Dependencies: 262
 -- Name: TABLE gc_comisionesconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1693,8 +1693,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_comisionesconstruccion IS 'Construccio
 
 
 --
--- TOC entry 9180 (class 0 OID 0)
--- Dependencies: 1116
+-- TOC entry 5942 (class 0 OID 0)
+-- Dependencies: 262
 -- Name: COLUMN gc_comisionesconstruccion.numero_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1702,8 +1702,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_comisionesconstruccion.numero_predial
 
 
 --
--- TOC entry 9181 (class 0 OID 0)
--- Dependencies: 1116
+-- TOC entry 5943 (class 0 OID 0)
+-- Dependencies: 262
 -- Name: COLUMN gc_comisionesconstruccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1711,7 +1711,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_comisionesconstruccion.geometria IS '
 
 
 --
--- TOC entry 1117 (class 1259 OID 380520)
+-- TOC entry 263 (class 1259 OID 419750)
 -- Name: gc_comisionesterreno; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1726,8 +1726,8 @@ CREATE TABLE test_ladm_col_queries.gc_comisionesterreno (
 ALTER TABLE test_ladm_col_queries.gc_comisionesterreno OWNER TO postgres;
 
 --
--- TOC entry 9182 (class 0 OID 0)
--- Dependencies: 1117
+-- TOC entry 5944 (class 0 OID 0)
+-- Dependencies: 263
 -- Name: TABLE gc_comisionesterreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1735,8 +1735,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_comisionesterreno IS 'Terrenos que no 
 
 
 --
--- TOC entry 9183 (class 0 OID 0)
--- Dependencies: 1117
+-- TOC entry 5945 (class 0 OID 0)
+-- Dependencies: 263
 -- Name: COLUMN gc_comisionesterreno.numero_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1745,8 +1745,8 @@ alfanumérica en la base de datos catastral.';
 
 
 --
--- TOC entry 9184 (class 0 OID 0)
--- Dependencies: 1117
+-- TOC entry 5946 (class 0 OID 0)
+-- Dependencies: 263
 -- Name: COLUMN gc_comisionesterreno.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1754,7 +1754,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_comisionesterreno.geometria IS 'Terre
 
 
 --
--- TOC entry 1118 (class 1259 OID 380530)
+-- TOC entry 264 (class 1259 OID 419757)
 -- Name: gc_comisionesunidadconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1769,8 +1769,8 @@ CREATE TABLE test_ladm_col_queries.gc_comisionesunidadconstruccion (
 ALTER TABLE test_ladm_col_queries.gc_comisionesunidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9185 (class 0 OID 0)
--- Dependencies: 1118
+-- TOC entry 5947 (class 0 OID 0)
+-- Dependencies: 264
 -- Name: TABLE gc_comisionesunidadconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1778,8 +1778,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_comisionesunidadconstruccion IS 'Unida
 
 
 --
--- TOC entry 9186 (class 0 OID 0)
--- Dependencies: 1118
+-- TOC entry 5948 (class 0 OID 0)
+-- Dependencies: 264
 -- Name: COLUMN gc_comisionesunidadconstruccion.numero_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1787,8 +1787,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_comisionesunidadconstruccion.numero_p
 
 
 --
--- TOC entry 9187 (class 0 OID 0)
--- Dependencies: 1118
+-- TOC entry 5949 (class 0 OID 0)
+-- Dependencies: 264
 -- Name: COLUMN gc_comisionesunidadconstruccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1796,7 +1796,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_comisionesunidadconstruccion.geometri
 
 
 --
--- TOC entry 1183 (class 1259 OID 381218)
+-- TOC entry 265 (class 1259 OID 419764)
 -- Name: gc_condicionprediotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1816,7 +1816,7 @@ CREATE TABLE test_ladm_col_queries.gc_condicionprediotipo (
 ALTER TABLE test_ladm_col_queries.gc_condicionprediotipo OWNER TO postgres;
 
 --
--- TOC entry 1119 (class 1259 OID 380540)
+-- TOC entry 266 (class 1259 OID 419771)
 -- Name: gc_construccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1848,8 +1848,8 @@ CREATE TABLE test_ladm_col_queries.gc_construccion (
 ALTER TABLE test_ladm_col_queries.gc_construccion OWNER TO postgres;
 
 --
--- TOC entry 9188 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5950 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: TABLE gc_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1857,8 +1857,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_construccion IS 'Datos de las construc
 
 
 --
--- TOC entry 9189 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5951 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.identificador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1866,8 +1866,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.identificador IS 'Identi
 
 
 --
--- TOC entry 9190 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5952 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1875,8 +1875,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.etiqueta IS 'Etiqueta de
 
 
 --
--- TOC entry 9191 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5953 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1884,8 +1884,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.tipo_construccion IS 'In
 
 
 --
--- TOC entry 9192 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5954 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1893,8 +1893,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.tipo_dominio IS 'Indica 
 
 
 --
--- TOC entry 9193 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5955 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.numero_pisos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1902,8 +1902,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.numero_pisos IS 'Número
 
 
 --
--- TOC entry 9194 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5956 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.numero_sotanos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1911,8 +1911,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.numero_sotanos IS 'Núme
 
 
 --
--- TOC entry 9195 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5957 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.numero_mezanines; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1920,8 +1920,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.numero_mezanines IS 'Nú
 
 
 --
--- TOC entry 9196 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5958 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.numero_semisotanos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1929,8 +1929,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.numero_semisotanos IS 'N
 
 
 --
--- TOC entry 9197 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5959 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.codigo_edificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1938,8 +1938,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.codigo_edificacion IS 'C
 
 
 --
--- TOC entry 9198 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5960 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.codigo_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1947,8 +1947,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.codigo_terreno IS 'Códi
 
 
 --
--- TOC entry 9199 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5961 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.area_construida; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1956,8 +1956,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.area_construida IS 'Áre
 
 
 --
--- TOC entry 9200 (class 0 OID 0)
--- Dependencies: 1119
+-- TOC entry 5962 (class 0 OID 0)
+-- Dependencies: 266
 -- Name: COLUMN gc_construccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1965,7 +1965,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_construccion.geometria IS 'Polígono 
 
 
 --
--- TOC entry 1133 (class 1259 OID 380678)
+-- TOC entry 267 (class 1259 OID 419784)
 -- Name: gc_copropiedad; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1981,8 +1981,8 @@ CREATE TABLE test_ladm_col_queries.gc_copropiedad (
 ALTER TABLE test_ladm_col_queries.gc_copropiedad OWNER TO postgres;
 
 --
--- TOC entry 9201 (class 0 OID 0)
--- Dependencies: 1133
+-- TOC entry 5963 (class 0 OID 0)
+-- Dependencies: 267
 -- Name: TABLE gc_copropiedad; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -1990,7 +1990,7 @@ COMMENT ON TABLE test_ladm_col_queries.gc_copropiedad IS 'Clase que relaciona la
 
 
 --
--- TOC entry 1120 (class 1259 OID 380552)
+-- TOC entry 268 (class 1259 OID 419789)
 -- Name: gc_datosphcondominio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2018,8 +2018,8 @@ CREATE TABLE test_ladm_col_queries.gc_datosphcondominio (
 ALTER TABLE test_ladm_col_queries.gc_datosphcondominio OWNER TO postgres;
 
 --
--- TOC entry 9202 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5964 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: TABLE gc_datosphcondominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2027,8 +2027,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_datosphcondominio IS 'Clase que contie
 
 
 --
--- TOC entry 9203 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5965 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.area_total_terreno_privada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2036,8 +2036,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 9204 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5966 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.area_total_terreno_comun; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2045,8 +2045,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 9205 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5967 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.area_total_construida_privada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2054,8 +2054,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 9206 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5968 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.area_total_construida_comun; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2063,8 +2063,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 9207 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5969 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.total_unidades_privadas; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2072,8 +2072,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.total_unidades_priv
 
 
 --
--- TOC entry 9208 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5970 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.total_unidades_sotano; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2081,8 +2081,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.total_unidades_sota
 
 
 --
--- TOC entry 9209 (class 0 OID 0)
--- Dependencies: 1120
+-- TOC entry 5971 (class 0 OID 0)
+-- Dependencies: 268
 -- Name: COLUMN gc_datosphcondominio.valor_total_avaluo_catastral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2090,7 +2090,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datosphcondominio.valor_total_avaluo_
 
 
 --
--- TOC entry 1121 (class 1259 OID 380559)
+-- TOC entry 269 (class 1259 OID 419800)
 -- Name: gc_datostorreph; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2114,8 +2114,8 @@ CREATE TABLE test_ladm_col_queries.gc_datostorreph (
 ALTER TABLE test_ladm_col_queries.gc_datostorreph OWNER TO postgres;
 
 --
--- TOC entry 9210 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5972 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: TABLE gc_datostorreph; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2123,8 +2123,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_datostorreph IS 'Relaciona la informac
 
 
 --
--- TOC entry 9211 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5973 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: COLUMN gc_datostorreph.torre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2132,8 +2132,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datostorreph.torre IS 'Número de tor
 
 
 --
--- TOC entry 9212 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5974 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: COLUMN gc_datostorreph.total_pisos_torre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2141,8 +2141,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datostorreph.total_pisos_torre IS 'To
 
 
 --
--- TOC entry 9213 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5975 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: COLUMN gc_datostorreph.total_unidades_privadas; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2150,8 +2150,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datostorreph.total_unidades_privadas 
 
 
 --
--- TOC entry 9214 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5976 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: COLUMN gc_datostorreph.total_sotanos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2159,8 +2159,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datostorreph.total_sotanos IS 'Total 
 
 
 --
--- TOC entry 9215 (class 0 OID 0)
--- Dependencies: 1121
+-- TOC entry 5977 (class 0 OID 0)
+-- Dependencies: 269
 -- Name: COLUMN gc_datostorreph.total_unidades_sotano; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2168,7 +2168,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_datostorreph.total_unidades_sotano IS
 
 
 --
--- TOC entry 1122 (class 1259 OID 380566)
+-- TOC entry 270 (class 1259 OID 419809)
 -- Name: gc_direccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2185,8 +2185,8 @@ CREATE TABLE test_ladm_col_queries.gc_direccion (
 ALTER TABLE test_ladm_col_queries.gc_direccion OWNER TO postgres;
 
 --
--- TOC entry 9216 (class 0 OID 0)
--- Dependencies: 1122
+-- TOC entry 5978 (class 0 OID 0)
+-- Dependencies: 270
 -- Name: COLUMN gc_direccion.valor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2194,8 +2194,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_direccion.valor IS 'Registros de la d
 
 
 --
--- TOC entry 9217 (class 0 OID 0)
--- Dependencies: 1122
+-- TOC entry 5979 (class 0 OID 0)
+-- Dependencies: 270
 -- Name: COLUMN gc_direccion.principal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2203,8 +2203,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_direccion.principal IS 'Indica si el 
 
 
 --
--- TOC entry 9218 (class 0 OID 0)
--- Dependencies: 1122
+-- TOC entry 5980 (class 0 OID 0)
+-- Dependencies: 270
 -- Name: COLUMN gc_direccion.geometria_referencia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2212,8 +2212,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_direccion.geometria_referencia IS 'L�
 
 
 --
--- TOC entry 9219 (class 0 OID 0)
--- Dependencies: 1122
+-- TOC entry 5981 (class 0 OID 0)
+-- Dependencies: 270
 -- Name: COLUMN gc_direccion.gc_prediocatastro_direcciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2221,7 +2221,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_direccion.gc_prediocatastro_direccion
 
 
 --
--- TOC entry 1123 (class 1259 OID 380577)
+-- TOC entry 271 (class 1259 OID 419816)
 -- Name: gc_estadopredio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2238,8 +2238,8 @@ CREATE TABLE test_ladm_col_queries.gc_estadopredio (
 ALTER TABLE test_ladm_col_queries.gc_estadopredio OWNER TO postgres;
 
 --
--- TOC entry 9220 (class 0 OID 0)
--- Dependencies: 1123
+-- TOC entry 5982 (class 0 OID 0)
+-- Dependencies: 271
 -- Name: TABLE gc_estadopredio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2247,8 +2247,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_estadopredio IS 'Estructura que contie
 
 
 --
--- TOC entry 9221 (class 0 OID 0)
--- Dependencies: 1123
+-- TOC entry 5983 (class 0 OID 0)
+-- Dependencies: 271
 -- Name: COLUMN gc_estadopredio.estado_alerta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2256,8 +2256,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_estadopredio.estado_alerta IS 'Indica
 
 
 --
--- TOC entry 9222 (class 0 OID 0)
--- Dependencies: 1123
+-- TOC entry 5984 (class 0 OID 0)
+-- Dependencies: 271
 -- Name: COLUMN gc_estadopredio.entidad_emisora_alerta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2265,8 +2265,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_estadopredio.entidad_emisora_alerta I
 
 
 --
--- TOC entry 9223 (class 0 OID 0)
--- Dependencies: 1123
+-- TOC entry 5985 (class 0 OID 0)
+-- Dependencies: 271
 -- Name: COLUMN gc_estadopredio.fecha_alerta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2274,8 +2274,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_estadopredio.fecha_alerta IS 'Fecha d
 
 
 --
--- TOC entry 9224 (class 0 OID 0)
--- Dependencies: 1123
+-- TOC entry 5986 (class 0 OID 0)
+-- Dependencies: 271
 -- Name: COLUMN gc_estadopredio.gc_prediocatastro_estado_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2283,7 +2283,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_estadopredio.gc_prediocatastro_estado
 
 
 --
--- TOC entry 1124 (class 1259 OID 380584)
+-- TOC entry 272 (class 1259 OID 419820)
 -- Name: gc_manzana; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2300,8 +2300,8 @@ CREATE TABLE test_ladm_col_queries.gc_manzana (
 ALTER TABLE test_ladm_col_queries.gc_manzana OWNER TO postgres;
 
 --
--- TOC entry 9225 (class 0 OID 0)
--- Dependencies: 1124
+-- TOC entry 5987 (class 0 OID 0)
+-- Dependencies: 272
 -- Name: TABLE gc_manzana; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2309,8 +2309,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_manzana IS 'Dato geografico aportado p
 
 
 --
--- TOC entry 9226 (class 0 OID 0)
--- Dependencies: 1124
+-- TOC entry 5988 (class 0 OID 0)
+-- Dependencies: 272
 -- Name: COLUMN gc_manzana.codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2318,8 +2318,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_manzana.codigo IS 'Código catastral 
 
 
 --
--- TOC entry 9227 (class 0 OID 0)
--- Dependencies: 1124
+-- TOC entry 5989 (class 0 OID 0)
+-- Dependencies: 272
 -- Name: COLUMN gc_manzana.codigo_anterior; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2327,8 +2327,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_manzana.codigo_anterior IS 'Código c
 
 
 --
--- TOC entry 9228 (class 0 OID 0)
--- Dependencies: 1124
+-- TOC entry 5990 (class 0 OID 0)
+-- Dependencies: 272
 -- Name: COLUMN gc_manzana.codigo_barrio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2336,8 +2336,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_manzana.codigo_barrio IS 'Código cat
 
 
 --
--- TOC entry 9229 (class 0 OID 0)
--- Dependencies: 1124
+-- TOC entry 5991 (class 0 OID 0)
+-- Dependencies: 272
 -- Name: COLUMN gc_manzana.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2345,7 +2345,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_manzana.geometria IS 'Polígonos de l
 
 
 --
--- TOC entry 1125 (class 1259 OID 380594)
+-- TOC entry 273 (class 1259 OID 419827)
 -- Name: gc_perimetro; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2364,8 +2364,8 @@ CREATE TABLE test_ladm_col_queries.gc_perimetro (
 ALTER TABLE test_ladm_col_queries.gc_perimetro OWNER TO postgres;
 
 --
--- TOC entry 9230 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5992 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: TABLE gc_perimetro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2373,8 +2373,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_perimetro IS 'Dato geografico aportado
 
 
 --
--- TOC entry 9231 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5993 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.codigo_departamento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2382,8 +2382,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.codigo_departamento IS 'Có
 
 
 --
--- TOC entry 9232 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5994 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.codigo_municipio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2391,8 +2391,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.codigo_municipio IS 'Códig
 
 
 --
--- TOC entry 9233 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5995 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.tipo_avaluo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2400,8 +2400,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.tipo_avaluo IS 'Tipo de ava
 
 
 --
--- TOC entry 9234 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5996 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.nombre_geografico; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2409,8 +2409,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.nombre_geografico IS 'Nombr
 
 
 --
--- TOC entry 9235 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5997 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.codigo_nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2418,8 +2418,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.codigo_nombre IS 'Código d
 
 
 --
--- TOC entry 9236 (class 0 OID 0)
--- Dependencies: 1125
+-- TOC entry 5998 (class 0 OID 0)
+-- Dependencies: 273
 -- Name: COLUMN gc_perimetro.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2427,7 +2427,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_perimetro.geometria IS 'Polígono del
 
 
 --
--- TOC entry 1132 (class 1259 OID 380667)
+-- TOC entry 274 (class 1259 OID 419834)
 -- Name: gc_prediocatastro; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2451,8 +2451,8 @@ CREATE TABLE test_ladm_col_queries.gc_prediocatastro (
 ALTER TABLE test_ladm_col_queries.gc_prediocatastro OWNER TO postgres;
 
 --
--- TOC entry 9237 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 5999 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: TABLE gc_prediocatastro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2460,8 +2460,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_prediocatastro IS 'Información existe
 
 
 --
--- TOC entry 9238 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6000 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.tipo_catastro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2469,8 +2469,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.tipo_catastro IS 'Indi
 
 
 --
--- TOC entry 9239 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6001 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.numero_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2478,8 +2478,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.numero_predial IS 'Có
 
 
 --
--- TOC entry 9240 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6002 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.numero_predial_anterior; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2487,8 +2487,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.numero_predial_anterio
 
 
 --
--- TOC entry 9241 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6003 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.nupre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2496,8 +2496,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.nupre IS 'Es un códig
 
 
 --
--- TOC entry 9242 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6004 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.circulo_registral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2505,8 +2505,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.circulo_registral IS '
 
 
 --
--- TOC entry 9243 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6005 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.matricula_inmobiliaria_catastro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2514,8 +2514,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.matricula_inmobiliaria
 
 
 --
--- TOC entry 9244 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6006 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.tipo_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2523,8 +2523,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.tipo_predio IS 'Tipo d
 
 
 --
--- TOC entry 9245 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6007 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.condicion_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2532,8 +2532,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.condicion_predio IS 'C
 
 
 --
--- TOC entry 9246 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6008 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.destinacion_economica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2541,8 +2541,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.destinacion_economica 
 
 
 --
--- TOC entry 9247 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6009 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.sistema_procedencia_datos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2550,8 +2550,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.sistema_procedencia_da
 
 
 --
--- TOC entry 9248 (class 0 OID 0)
--- Dependencies: 1132
+-- TOC entry 6010 (class 0 OID 0)
+-- Dependencies: 274
 -- Name: COLUMN gc_prediocatastro.fecha_datos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2559,7 +2559,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_prediocatastro.fecha_datos IS 'Fecha 
 
 
 --
--- TOC entry 1126 (class 1259 OID 380604)
+-- TOC entry 275 (class 1259 OID 419841)
 -- Name: gc_propietario; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2581,8 +2581,8 @@ CREATE TABLE test_ladm_col_queries.gc_propietario (
 ALTER TABLE test_ladm_col_queries.gc_propietario OWNER TO postgres;
 
 --
--- TOC entry 9249 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6011 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: TABLE gc_propietario; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2590,8 +2590,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_propietario IS 'Datos de los propietar
 
 
 --
--- TOC entry 9250 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6012 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.tipo_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2599,8 +2599,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.tipo_documento IS 'Tipo d
 
 
 --
--- TOC entry 9251 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6013 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.numero_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2608,8 +2608,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.numero_documento IS 'Núm
 
 
 --
--- TOC entry 9252 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6014 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.digito_verificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2617,8 +2617,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.digito_verificacion IS 'D
 
 
 --
--- TOC entry 9253 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6015 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.primer_nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2626,8 +2626,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.primer_nombre IS 'Primer 
 
 
 --
--- TOC entry 9254 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6016 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.segundo_nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2635,8 +2635,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.segundo_nombre IS 'Segund
 
 
 --
--- TOC entry 9255 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6017 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.primer_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2644,8 +2644,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.primer_apellido IS 'Prime
 
 
 --
--- TOC entry 9256 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6018 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.segundo_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2653,8 +2653,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.segundo_apellido IS 'Segu
 
 
 --
--- TOC entry 9257 (class 0 OID 0)
--- Dependencies: 1126
+-- TOC entry 6019 (class 0 OID 0)
+-- Dependencies: 275
 -- Name: COLUMN gc_propietario.razon_social; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2662,7 +2662,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_propietario.razon_social IS 'Razon so
 
 
 --
--- TOC entry 1127 (class 1259 OID 380614)
+-- TOC entry 276 (class 1259 OID 419848)
 -- Name: gc_sectorrural; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2677,8 +2677,8 @@ CREATE TABLE test_ladm_col_queries.gc_sectorrural (
 ALTER TABLE test_ladm_col_queries.gc_sectorrural OWNER TO postgres;
 
 --
--- TOC entry 9258 (class 0 OID 0)
--- Dependencies: 1127
+-- TOC entry 6020 (class 0 OID 0)
+-- Dependencies: 276
 -- Name: TABLE gc_sectorrural; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2686,8 +2686,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_sectorrural IS 'Dato geografico aporta
 
 
 --
--- TOC entry 9259 (class 0 OID 0)
--- Dependencies: 1127
+-- TOC entry 6021 (class 0 OID 0)
+-- Dependencies: 276
 -- Name: COLUMN gc_sectorrural.codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2695,8 +2695,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_sectorrural.codigo IS 'Código catast
 
 
 --
--- TOC entry 9260 (class 0 OID 0)
--- Dependencies: 1127
+-- TOC entry 6022 (class 0 OID 0)
+-- Dependencies: 276
 -- Name: COLUMN gc_sectorrural.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2704,7 +2704,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_sectorrural.geometria IS 'Polígono d
 
 
 --
--- TOC entry 1128 (class 1259 OID 380624)
+-- TOC entry 277 (class 1259 OID 419855)
 -- Name: gc_sectorurbano; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2719,8 +2719,8 @@ CREATE TABLE test_ladm_col_queries.gc_sectorurbano (
 ALTER TABLE test_ladm_col_queries.gc_sectorurbano OWNER TO postgres;
 
 --
--- TOC entry 9261 (class 0 OID 0)
--- Dependencies: 1128
+-- TOC entry 6023 (class 0 OID 0)
+-- Dependencies: 277
 -- Name: TABLE gc_sectorurbano; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2728,8 +2728,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_sectorurbano IS 'Dato geografico aport
 
 
 --
--- TOC entry 9262 (class 0 OID 0)
--- Dependencies: 1128
+-- TOC entry 6024 (class 0 OID 0)
+-- Dependencies: 277
 -- Name: COLUMN gc_sectorurbano.codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2737,8 +2737,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_sectorurbano.codigo IS 'Código catas
 
 
 --
--- TOC entry 9263 (class 0 OID 0)
--- Dependencies: 1128
+-- TOC entry 6025 (class 0 OID 0)
+-- Dependencies: 277
 -- Name: COLUMN gc_sectorurbano.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2746,7 +2746,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_sectorurbano.geometria IS 'Polígono 
 
 
 --
--- TOC entry 1220 (class 1259 OID 381551)
+-- TOC entry 278 (class 1259 OID 419862)
 -- Name: gc_sistemaprocedenciadatostipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2766,7 +2766,7 @@ CREATE TABLE test_ladm_col_queries.gc_sistemaprocedenciadatostipo (
 ALTER TABLE test_ladm_col_queries.gc_sistemaprocedenciadatostipo OWNER TO postgres;
 
 --
--- TOC entry 1129 (class 1259 OID 380634)
+-- TOC entry 279 (class 1259 OID 419869)
 -- Name: gc_terreno; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2788,8 +2788,8 @@ CREATE TABLE test_ladm_col_queries.gc_terreno (
 ALTER TABLE test_ladm_col_queries.gc_terreno OWNER TO postgres;
 
 --
--- TOC entry 9264 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6026 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: TABLE gc_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2797,8 +2797,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_terreno IS 'Datos de los terrenos insc
 
 
 --
--- TOC entry 9265 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6027 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: COLUMN gc_terreno.area_terreno_alfanumerica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2806,8 +2806,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_terreno.area_terreno_alfanumerica IS 
 
 
 --
--- TOC entry 9266 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6028 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: COLUMN gc_terreno.area_terreno_digital; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2815,8 +2815,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_terreno.area_terreno_digital IS 'Áre
 
 
 --
--- TOC entry 9267 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6029 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: COLUMN gc_terreno.manzana_vereda_codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2824,8 +2824,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_terreno.manzana_vereda_codigo IS 'Có
 
 
 --
--- TOC entry 9268 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6030 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: COLUMN gc_terreno.numero_subterraneos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2833,8 +2833,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_terreno.numero_subterraneos IS 'Núme
 
 
 --
--- TOC entry 9269 (class 0 OID 0)
--- Dependencies: 1129
+-- TOC entry 6031 (class 0 OID 0)
+-- Dependencies: 279
 -- Name: COLUMN gc_terreno.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2842,7 +2842,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_terreno.geometria IS 'Polígono de la
 
 
 --
--- TOC entry 1130 (class 1259 OID 380645)
+-- TOC entry 280 (class 1259 OID 419879)
 -- Name: gc_unidadconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2880,8 +2880,8 @@ CREATE TABLE test_ladm_col_queries.gc_unidadconstruccion (
 ALTER TABLE test_ladm_col_queries.gc_unidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9270 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6032 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: TABLE gc_unidadconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2889,8 +2889,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_unidadconstruccion IS 'Datos de las un
 
 
 --
--- TOC entry 9271 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6033 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.identificador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2898,8 +2898,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.identificador IS '
 
 
 --
--- TOC entry 9272 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6034 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2907,8 +2907,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.etiqueta IS 'Etiqu
 
 
 --
--- TOC entry 9273 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6035 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2916,8 +2916,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.tipo_dominio IS 'I
 
 
 --
--- TOC entry 9274 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6036 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2925,8 +2925,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.tipo_construccion 
 
 
 --
--- TOC entry 9275 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6037 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.planta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2934,8 +2934,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.planta IS 'Indica 
 
 
 --
--- TOC entry 9276 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6038 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.total_habitaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2943,8 +2943,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.total_habitaciones
 
 
 --
--- TOC entry 9277 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6039 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.total_banios; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2952,8 +2952,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.total_banios IS 'N
 
 
 --
--- TOC entry 9278 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6040 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.total_locales; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2961,8 +2961,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.total_locales IS '
 
 
 --
--- TOC entry 9279 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6041 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.total_pisos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2970,8 +2970,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.total_pisos IS 'N�
 
 
 --
--- TOC entry 9280 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6042 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.uso; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2979,8 +2979,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.uso IS 'Actividad 
 
 
 --
--- TOC entry 9281 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6043 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.anio_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2988,8 +2988,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.anio_construccion 
 
 
 --
--- TOC entry 9282 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6044 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.puntaje; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -2997,8 +2997,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.puntaje IS 'Puntaj
 
 
 --
--- TOC entry 9283 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6045 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.area_construida; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3006,8 +3006,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.area_construida IS
 
 
 --
--- TOC entry 9284 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6046 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.area_privada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3015,8 +3015,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.area_privada IS '�
 
 
 --
--- TOC entry 9285 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6047 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.codigo_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3024,8 +3024,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.codigo_terreno IS 
 
 
 --
--- TOC entry 9286 (class 0 OID 0)
--- Dependencies: 1130
+-- TOC entry 6048 (class 0 OID 0)
+-- Dependencies: 280
 -- Name: COLUMN gc_unidadconstruccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3033,7 +3033,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_unidadconstruccion.geometria IS 'Pol�
 
 
 --
--- TOC entry 1197 (class 1259 OID 381344)
+-- TOC entry 281 (class 1259 OID 419894)
 -- Name: gc_unidadconstrucciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3053,7 +3053,7 @@ CREATE TABLE test_ladm_col_queries.gc_unidadconstrucciontipo (
 ALTER TABLE test_ladm_col_queries.gc_unidadconstrucciontipo OWNER TO postgres;
 
 --
--- TOC entry 1131 (class 1259 OID 380657)
+-- TOC entry 282 (class 1259 OID 419901)
 -- Name: gc_vereda; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3071,8 +3071,8 @@ CREATE TABLE test_ladm_col_queries.gc_vereda (
 ALTER TABLE test_ladm_col_queries.gc_vereda OWNER TO postgres;
 
 --
--- TOC entry 9287 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6049 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: TABLE gc_vereda; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3080,8 +3080,8 @@ COMMENT ON TABLE test_ladm_col_queries.gc_vereda IS 'Dato geografico aportado po
 
 
 --
--- TOC entry 9288 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6050 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: COLUMN gc_vereda.codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3089,8 +3089,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_vereda.codigo IS 'Código catastral d
 
 
 --
--- TOC entry 9289 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6051 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: COLUMN gc_vereda.codigo_anterior; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3098,8 +3098,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_vereda.codigo_anterior IS 'Código ca
 
 
 --
--- TOC entry 9290 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6052 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: COLUMN gc_vereda.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3107,8 +3107,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_vereda.nombre IS 'Nombre de la vereda
 
 
 --
--- TOC entry 9291 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6053 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: COLUMN gc_vereda.codigo_sector; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3116,8 +3116,8 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_vereda.codigo_sector IS 'Código cata
 
 
 --
--- TOC entry 9292 (class 0 OID 0)
--- Dependencies: 1131
+-- TOC entry 6054 (class 0 OID 0)
+-- Dependencies: 282
 -- Name: COLUMN gc_vereda.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3125,7 +3125,7 @@ COMMENT ON COLUMN test_ladm_col_queries.gc_vereda.geometria IS 'Geometría en 2D
 
 
 --
--- TOC entry 1079 (class 1259 OID 380155)
+-- TOC entry 283 (class 1259 OID 419908)
 -- Name: gm_multisurface2d; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3138,7 +3138,7 @@ CREATE TABLE test_ladm_col_queries.gm_multisurface2d (
 ALTER TABLE test_ladm_col_queries.gm_multisurface2d OWNER TO postgres;
 
 --
--- TOC entry 1081 (class 1259 OID 380172)
+-- TOC entry 284 (class 1259 OID 419912)
 -- Name: gm_multisurface3d; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3151,7 +3151,7 @@ CREATE TABLE test_ladm_col_queries.gm_multisurface3d (
 ALTER TABLE test_ladm_col_queries.gm_multisurface3d OWNER TO postgres;
 
 --
--- TOC entry 1078 (class 1259 OID 380144)
+-- TOC entry 285 (class 1259 OID 419916)
 -- Name: gm_surface2dlistvalue; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3166,7 +3166,7 @@ CREATE TABLE test_ladm_col_queries.gm_surface2dlistvalue (
 ALTER TABLE test_ladm_col_queries.gm_surface2dlistvalue OWNER TO postgres;
 
 --
--- TOC entry 1080 (class 1259 OID 380161)
+-- TOC entry 286 (class 1259 OID 419923)
 -- Name: gm_surface3dlistvalue; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3181,7 +3181,7 @@ CREATE TABLE test_ladm_col_queries.gm_surface3dlistvalue (
 ALTER TABLE test_ladm_col_queries.gm_surface3dlistvalue OWNER TO postgres;
 
 --
--- TOC entry 1088 (class 1259 OID 380247)
+-- TOC entry 287 (class 1259 OID 419930)
 -- Name: imagen; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3198,8 +3198,8 @@ CREATE TABLE test_ladm_col_queries.imagen (
 ALTER TABLE test_ladm_col_queries.imagen OWNER TO postgres;
 
 --
--- TOC entry 9293 (class 0 OID 0)
--- Dependencies: 1088
+-- TOC entry 6055 (class 0 OID 0)
+-- Dependencies: 287
 -- Name: TABLE imagen; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3207,8 +3207,8 @@ COMMENT ON TABLE test_ladm_col_queries.imagen IS 'Referencia a una imagen median
 
 
 --
--- TOC entry 9294 (class 0 OID 0)
--- Dependencies: 1088
+-- TOC entry 6056 (class 0 OID 0)
+-- Dependencies: 287
 -- Name: COLUMN imagen.uri; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3216,8 +3216,8 @@ COMMENT ON COLUMN test_ladm_col_queries.imagen.uri IS 'url de la imagen.';
 
 
 --
--- TOC entry 9295 (class 0 OID 0)
--- Dependencies: 1088
+-- TOC entry 6057 (class 0 OID 0)
+-- Dependencies: 287
 -- Name: COLUMN imagen.extinteresado_huella_dactilar; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3225,8 +3225,8 @@ COMMENT ON COLUMN test_ladm_col_queries.imagen.extinteresado_huella_dactilar IS 
 
 
 --
--- TOC entry 9296 (class 0 OID 0)
--- Dependencies: 1088
+-- TOC entry 6058 (class 0 OID 0)
+-- Dependencies: 287
 -- Name: COLUMN imagen.extinteresado_fotografia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3234,8 +3234,8 @@ COMMENT ON COLUMN test_ladm_col_queries.imagen.extinteresado_fotografia IS 'Foto
 
 
 --
--- TOC entry 9297 (class 0 OID 0)
--- Dependencies: 1088
+-- TOC entry 6059 (class 0 OID 0)
+-- Dependencies: 287
 -- Name: COLUMN imagen.extinteresado_firma; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3243,7 +3243,7 @@ COMMENT ON COLUMN test_ladm_col_queries.imagen.extinteresado_firma IS 'Firma del
 
 
 --
--- TOC entry 1179 (class 1259 OID 381182)
+-- TOC entry 288 (class 1259 OID 419934)
 -- Name: ini_emparejamientotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3263,7 +3263,7 @@ CREATE TABLE test_ladm_col_queries.ini_emparejamientotipo (
 ALTER TABLE test_ladm_col_queries.ini_emparejamientotipo OWNER TO postgres;
 
 --
--- TOC entry 1141 (class 1259 OID 380752)
+-- TOC entry 289 (class 1259 OID 419941)
 -- Name: ini_predioinsumos; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3280,8 +3280,8 @@ CREATE TABLE test_ladm_col_queries.ini_predioinsumos (
 ALTER TABLE test_ladm_col_queries.ini_predioinsumos OWNER TO postgres;
 
 --
--- TOC entry 9298 (class 0 OID 0)
--- Dependencies: 1141
+-- TOC entry 6060 (class 0 OID 0)
+-- Dependencies: 289
 -- Name: TABLE ini_predioinsumos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3289,8 +3289,8 @@ COMMENT ON TABLE test_ladm_col_queries.ini_predioinsumos IS 'Clase que relaciona
 
 
 --
--- TOC entry 9299 (class 0 OID 0)
--- Dependencies: 1141
+-- TOC entry 6061 (class 0 OID 0)
+-- Dependencies: 289
 -- Name: COLUMN ini_predioinsumos.tipo_emparejamiento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3298,8 +3298,8 @@ COMMENT ON COLUMN test_ladm_col_queries.ini_predioinsumos.tipo_emparejamiento IS
 
 
 --
--- TOC entry 9300 (class 0 OID 0)
--- Dependencies: 1141
+-- TOC entry 6062 (class 0 OID 0)
+-- Dependencies: 289
 -- Name: COLUMN ini_predioinsumos.observaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3307,7 +3307,7 @@ COMMENT ON COLUMN test_ladm_col_queries.ini_predioinsumos.observaciones IS 'Obse
 
 
 --
--- TOC entry 1187 (class 1259 OID 381254)
+-- TOC entry 290 (class 1259 OID 419948)
 -- Name: lc_acuerdotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3327,7 +3327,7 @@ CREATE TABLE test_ladm_col_queries.lc_acuerdotipo (
 ALTER TABLE test_ladm_col_queries.lc_acuerdotipo OWNER TO postgres;
 
 --
--- TOC entry 1142 (class 1259 OID 380764)
+-- TOC entry 291 (class 1259 OID 419955)
 -- Name: lc_agrupacioninteresados; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3346,8 +3346,8 @@ CREATE TABLE test_ladm_col_queries.lc_agrupacioninteresados (
 ALTER TABLE test_ladm_col_queries.lc_agrupacioninteresados OWNER TO postgres;
 
 --
--- TOC entry 9301 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6063 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: TABLE lc_agrupacioninteresados; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3355,8 +3355,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_agrupacioninteresados IS 'Clase que he
 
 
 --
--- TOC entry 9302 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6064 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3364,8 +3364,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.tipo IS 'Indica
 
 
 --
--- TOC entry 9303 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6065 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3373,8 +3373,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.nombre IS 'Nomb
 
 
 --
--- TOC entry 9304 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6066 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3382,8 +3382,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.comienzo_vida_u
 
 
 --
--- TOC entry 9305 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6067 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3391,8 +3391,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.fin_vida_util_v
 
 
 --
--- TOC entry 9306 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6068 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3400,8 +3400,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.espacio_de_nomb
 
 
 --
--- TOC entry 9307 (class 0 OID 0)
--- Dependencies: 1142
+-- TOC entry 6069 (class 0 OID 0)
+-- Dependencies: 291
 -- Name: COLUMN lc_agrupacioninteresados.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3409,7 +3409,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_agrupacioninteresados.local_id IS 'Id
 
 
 --
--- TOC entry 1191 (class 1259 OID 381290)
+-- TOC entry 292 (class 1259 OID 419963)
 -- Name: lc_anexotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3429,7 +3429,7 @@ CREATE TABLE test_ladm_col_queries.lc_anexotipo (
 ALTER TABLE test_ladm_col_queries.lc_anexotipo OWNER TO postgres;
 
 --
--- TOC entry 1162 (class 1259 OID 381008)
+-- TOC entry 293 (class 1259 OID 419970)
 -- Name: lc_calificacionconvencional; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3446,8 +3446,8 @@ CREATE TABLE test_ladm_col_queries.lc_calificacionconvencional (
 ALTER TABLE test_ladm_col_queries.lc_calificacionconvencional OWNER TO postgres;
 
 --
--- TOC entry 9308 (class 0 OID 0)
--- Dependencies: 1162
+-- TOC entry 6070 (class 0 OID 0)
+-- Dependencies: 293
 -- Name: TABLE lc_calificacionconvencional; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3455,8 +3455,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_calificacionconvencional IS 'Proceso m
 
 
 --
--- TOC entry 9309 (class 0 OID 0)
--- Dependencies: 1162
+-- TOC entry 6071 (class 0 OID 0)
+-- Dependencies: 293
 -- Name: COLUMN lc_calificacionconvencional.tipo_calificar; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3464,8 +3464,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_calificacionconvencional.tipo_calific
 
 
 --
--- TOC entry 9310 (class 0 OID 0)
--- Dependencies: 1162
+-- TOC entry 6072 (class 0 OID 0)
+-- Dependencies: 293
 -- Name: COLUMN lc_calificacionconvencional.total_calificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3473,7 +3473,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_calificacionconvencional.total_califi
 
 
 --
--- TOC entry 1163 (class 1259 OID 381017)
+-- TOC entry 294 (class 1259 OID 419976)
 -- Name: lc_calificacionnoconvencional; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3488,8 +3488,8 @@ CREATE TABLE test_ladm_col_queries.lc_calificacionnoconvencional (
 ALTER TABLE test_ladm_col_queries.lc_calificacionnoconvencional OWNER TO postgres;
 
 --
--- TOC entry 9311 (class 0 OID 0)
--- Dependencies: 1163
+-- TOC entry 6073 (class 0 OID 0)
+-- Dependencies: 294
 -- Name: TABLE lc_calificacionnoconvencional; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3497,8 +3497,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_calificacionnoconvencional IS 'Relacio
 
 
 --
--- TOC entry 9312 (class 0 OID 0)
--- Dependencies: 1163
+-- TOC entry 6074 (class 0 OID 0)
+-- Dependencies: 294
 -- Name: COLUMN lc_calificacionnoconvencional.tipo_anexo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3506,7 +3506,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_calificacionnoconvencional.tipo_anexo
 
 
 --
--- TOC entry 1195 (class 1259 OID 381326)
+-- TOC entry 295 (class 1259 OID 419981)
 -- Name: lc_calificartipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3526,7 +3526,7 @@ CREATE TABLE test_ladm_col_queries.lc_calificartipo (
 ALTER TABLE test_ladm_col_queries.lc_calificartipo OWNER TO postgres;
 
 --
--- TOC entry 1204 (class 1259 OID 381407)
+-- TOC entry 296 (class 1259 OID 419988)
 -- Name: lc_categoriasuelotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3546,7 +3546,7 @@ CREATE TABLE test_ladm_col_queries.lc_categoriasuelotipo (
 ALTER TABLE test_ladm_col_queries.lc_categoriasuelotipo OWNER TO postgres;
 
 --
--- TOC entry 1215 (class 1259 OID 381506)
+-- TOC entry 297 (class 1259 OID 419995)
 -- Name: lc_clasecalificaciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3566,7 +3566,7 @@ CREATE TABLE test_ladm_col_queries.lc_clasecalificaciontipo (
 ALTER TABLE test_ladm_col_queries.lc_clasecalificaciontipo OWNER TO postgres;
 
 --
--- TOC entry 1205 (class 1259 OID 381416)
+-- TOC entry 298 (class 1259 OID 420002)
 -- Name: lc_clasesuelotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3586,7 +3586,7 @@ CREATE TABLE test_ladm_col_queries.lc_clasesuelotipo (
 ALTER TABLE test_ladm_col_queries.lc_clasesuelotipo OWNER TO postgres;
 
 --
--- TOC entry 1232 (class 1259 OID 381659)
+-- TOC entry 299 (class 1259 OID 420009)
 -- Name: lc_condicionprediotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3606,7 +3606,7 @@ CREATE TABLE test_ladm_col_queries.lc_condicionprediotipo (
 ALTER TABLE test_ladm_col_queries.lc_condicionprediotipo OWNER TO postgres;
 
 --
--- TOC entry 1143 (class 1259 OID 380775)
+-- TOC entry 300 (class 1259 OID 420016)
 -- Name: lc_construccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3647,8 +3647,8 @@ CREATE TABLE test_ladm_col_queries.lc_construccion (
 ALTER TABLE test_ladm_col_queries.lc_construccion OWNER TO postgres;
 
 --
--- TOC entry 9313 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6075 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: TABLE lc_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3656,8 +3656,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_construccion IS 'Es la unión de mater
 
 
 --
--- TOC entry 9314 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6076 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.identificador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3665,8 +3665,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.identificador IS 'Identi
 
 
 --
--- TOC entry 9315 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6077 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3674,8 +3674,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.tipo_construccion IS 'In
 
 
 --
--- TOC entry 9316 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6078 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3683,8 +3683,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.tipo_dominio IS 'Indica 
 
 
 --
--- TOC entry 9317 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6079 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.numero_pisos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3692,8 +3692,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.numero_pisos IS 'Número
 
 
 --
--- TOC entry 9318 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6080 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.numero_sotanos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3701,8 +3701,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.numero_sotanos IS 'Núme
 
 
 --
--- TOC entry 9319 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6081 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.numero_mezanines; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3710,8 +3710,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.numero_mezanines IS 'Nú
 
 
 --
--- TOC entry 9320 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6082 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.numero_semisotanos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3719,8 +3719,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.numero_semisotanos IS 'N
 
 
 --
--- TOC entry 9321 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6083 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.anio_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3728,8 +3728,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.anio_construccion IS 'A�
 
 
 --
--- TOC entry 9322 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6084 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.avaluo_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3737,8 +3737,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.avaluo_construccion IS '
 
 
 --
--- TOC entry 9323 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6085 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.area_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3746,8 +3746,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.area_construccion IS 'Á
 
 
 --
--- TOC entry 9324 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6086 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.altura; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3755,8 +3755,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.altura IS 'Altura total 
 
 
 --
--- TOC entry 9325 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6087 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.observaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3764,8 +3764,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.observaciones IS 'Observ
 
 
 --
--- TOC entry 9326 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6088 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.dimension; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3773,8 +3773,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.dimension IS 'Dimensión
 
 
 --
--- TOC entry 9327 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6089 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3782,8 +3782,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.etiqueta IS 'Corresponde
 
 
 --
--- TOC entry 9328 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6090 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.relacion_superficie; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3791,8 +3791,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.relacion_superficie IS '
 
 
 --
--- TOC entry 9329 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6091 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3800,8 +3800,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.geometria IS 'Materializ
 
 
 --
--- TOC entry 9330 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6092 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3809,8 +3809,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.comienzo_vida_util_versi
 
 
 --
--- TOC entry 9331 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6093 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3818,8 +3818,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.fin_vida_util_version IS
 
 
 --
--- TOC entry 9332 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6094 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3827,8 +3827,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.espacio_de_nombres IS 'I
 
 
 --
--- TOC entry 9333 (class 0 OID 0)
--- Dependencies: 1143
+-- TOC entry 6095 (class 0 OID 0)
+-- Dependencies: 300
 -- Name: COLUMN lc_construccion.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3836,7 +3836,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_construccion.local_id IS 'Identificad
 
 
 --
--- TOC entry 1199 (class 1259 OID 381362)
+-- TOC entry 301 (class 1259 OID 420032)
 -- Name: lc_construccionplantatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3856,7 +3856,7 @@ CREATE TABLE test_ladm_col_queries.lc_construccionplantatipo (
 ALTER TABLE test_ladm_col_queries.lc_construccionplantatipo OWNER TO postgres;
 
 --
--- TOC entry 1223 (class 1259 OID 381578)
+-- TOC entry 302 (class 1259 OID 420039)
 -- Name: lc_construcciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3876,7 +3876,7 @@ CREATE TABLE test_ladm_col_queries.lc_construcciontipo (
 ALTER TABLE test_ladm_col_queries.lc_construcciontipo OWNER TO postgres;
 
 --
--- TOC entry 1144 (class 1259 OID 380790)
+-- TOC entry 303 (class 1259 OID 420046)
 -- Name: lc_contactovisita; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3901,8 +3901,8 @@ CREATE TABLE test_ladm_col_queries.lc_contactovisita (
 ALTER TABLE test_ladm_col_queries.lc_contactovisita OWNER TO postgres;
 
 --
--- TOC entry 9334 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6096 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.tipo_documento_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3910,8 +3910,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.tipo_documento_quien_a
 
 
 --
--- TOC entry 9335 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6097 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.numero_documento_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3919,8 +3919,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.numero_documento_quien
 
 
 --
--- TOC entry 9336 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6098 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.primer_nombre_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3928,8 +3928,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.primer_nombre_quien_at
 
 
 --
--- TOC entry 9337 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6099 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.segundo_nombre_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3937,8 +3937,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.segundo_nombre_quien_a
 
 
 --
--- TOC entry 9338 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6100 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.primer_apellido_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3946,8 +3946,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.primer_apellido_quien_
 
 
 --
--- TOC entry 9339 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6101 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.segundo_apellido_quien_atendio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3955,8 +3955,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.segundo_apellido_quien
 
 
 --
--- TOC entry 9340 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6102 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.relacion_con_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3964,8 +3964,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.relacion_con_predio IS
 
 
 --
--- TOC entry 9341 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6103 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.domicilio_notificaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3973,8 +3973,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.domicilio_notificacion
 
 
 --
--- TOC entry 9342 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6104 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.celular; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3982,8 +3982,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.celular IS 'Número de
 
 
 --
--- TOC entry 9343 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6105 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.correo_electronico; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -3991,8 +3991,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.correo_electronico IS 
 
 
 --
--- TOC entry 9344 (class 0 OID 0)
--- Dependencies: 1144
+-- TOC entry 6106 (class 0 OID 0)
+-- Dependencies: 303
 -- Name: COLUMN lc_contactovisita.autoriza_notificaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4000,7 +4000,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_contactovisita.autoriza_notificacione
 
 
 --
--- TOC entry 1164 (class 1259 OID 381026)
+-- TOC entry 304 (class 1259 OID 420054)
 -- Name: lc_datosadicionaleslevantamientocatastral; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4031,8 +4031,8 @@ CREATE TABLE test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral (
 ALTER TABLE test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral OWNER TO postgres;
 
 --
--- TOC entry 9345 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6107 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: TABLE lc_datosadicionaleslevantamientocatastral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4040,8 +4040,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 9346 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6108 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.tiene_area_registral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4049,8 +4049,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9347 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6109 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.area_registral_m2; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4058,8 +4058,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9348 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6110 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.procedimiento_catastral_registral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4067,8 +4067,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9349 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6111 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.destinacion_economica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4076,8 +4076,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9350 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6112 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.clase_suelo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4085,8 +4085,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9351 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6113 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.categoria_suelo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4094,8 +4094,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9352 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6114 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.observaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4103,8 +4103,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9353 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6115 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.fecha_visita_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4112,8 +4112,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9354 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6116 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.tipo_documento_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4121,8 +4121,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9355 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6117 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.numero_documento_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4130,8 +4130,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9356 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6118 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.primer_nombre_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4139,8 +4139,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9357 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6119 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.segundo_nombre_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4148,8 +4148,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9358 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6120 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.primer_apellido_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4157,8 +4157,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9359 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6121 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.segundo_apellido_reconocedor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4166,8 +4166,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9360 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6122 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.resultado_visita; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4175,8 +4175,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 9361 (class 0 OID 0)
--- Dependencies: 1164
+-- TOC entry 6123 (class 0 OID 0)
+-- Dependencies: 304
 -- Name: COLUMN lc_datosadicionaleslevantamientocatastral.suscribe_acta_colindancia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4184,7 +4184,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosadicionaleslevantamientocatastra
 
 
 --
--- TOC entry 1145 (class 1259 OID 380803)
+-- TOC entry 305 (class 1259 OID 420063)
 -- Name: lc_datosphcondominio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4214,8 +4214,8 @@ CREATE TABLE test_ladm_col_queries.lc_datosphcondominio (
 ALTER TABLE test_ladm_col_queries.lc_datosphcondominio OWNER TO postgres;
 
 --
--- TOC entry 9362 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6124 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: TABLE lc_datosphcondominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4223,8 +4223,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_datosphcondominio IS 'Clase que contie
 
 
 --
--- TOC entry 9363 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6125 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4232,8 +4232,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_terreno 
 
 
 --
--- TOC entry 9364 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6126 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_terreno_privada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4241,8 +4241,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 9365 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6127 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_terreno_comun; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4250,8 +4250,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_terreno_
 
 
 --
--- TOC entry 9366 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6128 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_construida; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4259,8 +4259,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 9367 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6129 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_construida_privada; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4268,8 +4268,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 9368 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6130 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.area_total_construida_comun; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4277,8 +4277,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.area_total_construi
 
 
 --
--- TOC entry 9369 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6131 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.numero_torres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4286,8 +4286,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.numero_torres IS 'N
 
 
 --
--- TOC entry 9370 (class 0 OID 0)
--- Dependencies: 1145
+-- TOC entry 6132 (class 0 OID 0)
+-- Dependencies: 305
 -- Name: COLUMN lc_datosphcondominio.total_unidades_privadas; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4295,7 +4295,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_datosphcondominio.total_unidades_priv
 
 
 --
--- TOC entry 1146 (class 1259 OID 380811)
+-- TOC entry 306 (class 1259 OID 420076)
 -- Name: lc_derecho; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4320,8 +4320,8 @@ CREATE TABLE test_ladm_col_queries.lc_derecho (
 ALTER TABLE test_ladm_col_queries.lc_derecho OWNER TO postgres;
 
 --
--- TOC entry 9371 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6133 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: TABLE lc_derecho; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4329,8 +4329,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_derecho IS 'Clase que registra las ins
 
 
 --
--- TOC entry 9372 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6134 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4338,8 +4338,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.tipo IS 'Derecho que se ejerc
 
 
 --
--- TOC entry 9373 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6135 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.fraccion_derecho; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4347,8 +4347,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.fraccion_derecho IS 'Indica l
 
 
 --
--- TOC entry 9374 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6136 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.fecha_inicio_tenencia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4356,8 +4356,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.fecha_inicio_tenencia IS 'Fec
 
 
 --
--- TOC entry 9375 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6137 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.descripcion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4365,8 +4365,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.descripcion IS 'Descripción 
 
 
 --
--- TOC entry 9376 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6138 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4374,8 +4374,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.comienzo_vida_util_version IS
 
 
 --
--- TOC entry 9377 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6139 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4383,8 +4383,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.fin_vida_util_version IS 'Fin
 
 
 --
--- TOC entry 9378 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6140 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4392,8 +4392,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.espacio_de_nombres IS 'Identi
 
 
 --
--- TOC entry 9379 (class 0 OID 0)
--- Dependencies: 1146
+-- TOC entry 6141 (class 0 OID 0)
+-- Dependencies: 306
 -- Name: COLUMN lc_derecho.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4401,7 +4401,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_derecho.local_id IS 'Identificador ú
 
 
 --
--- TOC entry 1225 (class 1259 OID 381596)
+-- TOC entry 307 (class 1259 OID 420085)
 -- Name: lc_derechotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4421,7 +4421,7 @@ CREATE TABLE test_ladm_col_queries.lc_derechotipo (
 ALTER TABLE test_ladm_col_queries.lc_derechotipo OWNER TO postgres;
 
 --
--- TOC entry 1234 (class 1259 OID 381677)
+-- TOC entry 308 (class 1259 OID 420092)
 -- Name: lc_destinacioneconomicatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4441,7 +4441,7 @@ CREATE TABLE test_ladm_col_queries.lc_destinacioneconomicatipo (
 ALTER TABLE test_ladm_col_queries.lc_destinacioneconomicatipo OWNER TO postgres;
 
 --
--- TOC entry 1241 (class 1259 OID 381740)
+-- TOC entry 309 (class 1259 OID 420099)
 -- Name: lc_dominioconstrucciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4461,7 +4461,7 @@ CREATE TABLE test_ladm_col_queries.lc_dominioconstrucciontipo (
 ALTER TABLE test_ladm_col_queries.lc_dominioconstrucciontipo OWNER TO postgres;
 
 --
--- TOC entry 1202 (class 1259 OID 381389)
+-- TOC entry 310 (class 1259 OID 420106)
 -- Name: lc_estadoconservaciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4481,7 +4481,7 @@ CREATE TABLE test_ladm_col_queries.lc_estadoconservaciontipo (
 ALTER TABLE test_ladm_col_queries.lc_estadoconservaciontipo OWNER TO postgres;
 
 --
--- TOC entry 1147 (class 1259 OID 380825)
+-- TOC entry 311 (class 1259 OID 420113)
 -- Name: lc_estructuranovedadfmi; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4497,8 +4497,8 @@ CREATE TABLE test_ladm_col_queries.lc_estructuranovedadfmi (
 ALTER TABLE test_ladm_col_queries.lc_estructuranovedadfmi OWNER TO postgres;
 
 --
--- TOC entry 9380 (class 0 OID 0)
--- Dependencies: 1147
+-- TOC entry 6142 (class 0 OID 0)
+-- Dependencies: 311
 -- Name: COLUMN lc_estructuranovedadfmi.lc_dtsdcnlstmntctstral_novedad_fmi; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4506,7 +4506,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_estructuranovedadfmi.lc_dtsdcnlstmntc
 
 
 --
--- TOC entry 1148 (class 1259 OID 380832)
+-- TOC entry 312 (class 1259 OID 420117)
 -- Name: lc_estructuranovedadnumeropredial; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4522,8 +4522,8 @@ CREATE TABLE test_ladm_col_queries.lc_estructuranovedadnumeropredial (
 ALTER TABLE test_ladm_col_queries.lc_estructuranovedadnumeropredial OWNER TO postgres;
 
 --
--- TOC entry 9381 (class 0 OID 0)
--- Dependencies: 1148
+-- TOC entry 6143 (class 0 OID 0)
+-- Dependencies: 312
 -- Name: COLUMN lc_estructuranovedadnumeropredial.lc_dtsdcnlstmntctstral_novedad_numeros_prediales; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4531,7 +4531,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_estructuranovedadnumeropredial.lc_dts
 
 
 --
--- TOC entry 1238 (class 1259 OID 381713)
+-- TOC entry 313 (class 1259 OID 420121)
 -- Name: lc_estructuranovedadnumeropredial_tipo_novedad; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4551,7 +4551,7 @@ CREATE TABLE test_ladm_col_queries.lc_estructuranovedadnumeropredial_tipo_noveda
 ALTER TABLE test_ladm_col_queries.lc_estructuranovedadnumeropredial_tipo_novedad OWNER TO postgres;
 
 --
--- TOC entry 1228 (class 1259 OID 381623)
+-- TOC entry 314 (class 1259 OID 420128)
 -- Name: lc_fotoidentificaciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4571,7 +4571,7 @@ CREATE TABLE test_ladm_col_queries.lc_fotoidentificaciontipo (
 ALTER TABLE test_ladm_col_queries.lc_fotoidentificaciontipo OWNER TO postgres;
 
 --
--- TOC entry 1149 (class 1259 OID 380840)
+-- TOC entry 315 (class 1259 OID 420135)
 -- Name: lc_fuenteadministrativa; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4593,8 +4593,8 @@ CREATE TABLE test_ladm_col_queries.lc_fuenteadministrativa (
 ALTER TABLE test_ladm_col_queries.lc_fuenteadministrativa OWNER TO postgres;
 
 --
--- TOC entry 9382 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6144 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: TABLE lc_fuenteadministrativa; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4602,8 +4602,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_fuenteadministrativa IS 'Clase que alm
 
 
 --
--- TOC entry 9383 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6145 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4611,8 +4611,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.tipo IS 'Tipo de
 
 
 --
--- TOC entry 9384 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6146 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.ente_emisor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4620,8 +4620,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.ente_emisor IS '
 
 
 --
--- TOC entry 9385 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6147 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.observacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4629,8 +4629,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.observacion IS '
 
 
 --
--- TOC entry 9386 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6148 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.numero_fuente; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4638,8 +4638,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.numero_fuente IS
 
 
 --
--- TOC entry 9387 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6149 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.estado_disponibilidad; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4647,8 +4647,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.estado_disponibi
 
 
 --
--- TOC entry 9388 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6150 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.tipo_principal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4656,8 +4656,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.tipo_principal I
 
 
 --
--- TOC entry 9389 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6151 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.fecha_documento_fuente; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4665,8 +4665,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.fecha_documento_
 
 
 --
--- TOC entry 9390 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6152 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4674,8 +4674,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.espacio_de_nombr
 
 
 --
--- TOC entry 9391 (class 0 OID 0)
--- Dependencies: 1149
+-- TOC entry 6153 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN lc_fuenteadministrativa.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4683,7 +4683,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteadministrativa.local_id IS 'Ide
 
 
 --
--- TOC entry 1216 (class 1259 OID 381515)
+-- TOC entry 316 (class 1259 OID 420143)
 -- Name: lc_fuenteadministrativatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4703,7 +4703,7 @@ CREATE TABLE test_ladm_col_queries.lc_fuenteadministrativatipo (
 ALTER TABLE test_ladm_col_queries.lc_fuenteadministrativatipo OWNER TO postgres;
 
 --
--- TOC entry 1150 (class 1259 OID 380853)
+-- TOC entry 317 (class 1259 OID 420150)
 -- Name: lc_fuenteespacial; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4725,8 +4725,8 @@ CREATE TABLE test_ladm_col_queries.lc_fuenteespacial (
 ALTER TABLE test_ladm_col_queries.lc_fuenteespacial OWNER TO postgres;
 
 --
--- TOC entry 9392 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6154 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: TABLE lc_fuenteespacial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4734,8 +4734,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_fuenteespacial IS 'Clase que hereda lo
 
 
 --
--- TOC entry 9393 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6155 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4743,8 +4743,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.nombre IS 'Nombre de l
 
 
 --
--- TOC entry 9394 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6156 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4752,8 +4752,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.tipo IS 'Tipo de fuent
 
 
 --
--- TOC entry 9395 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6157 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.descripcion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4761,8 +4761,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.descripcion IS 'Descri
 
 
 --
--- TOC entry 9396 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6158 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.metadato; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4770,8 +4770,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.metadato IS 'Metadato 
 
 
 --
--- TOC entry 9397 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6159 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.estado_disponibilidad; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4779,8 +4779,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.estado_disponibilidad 
 
 
 --
--- TOC entry 9398 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6160 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.tipo_principal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4788,8 +4788,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.tipo_principal IS 'Tip
 
 
 --
--- TOC entry 9399 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6161 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.fecha_documento_fuente; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4797,8 +4797,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.fecha_documento_fuente
 
 
 --
--- TOC entry 9400 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6162 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4806,8 +4806,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.espacio_de_nombres IS 
 
 
 --
--- TOC entry 9401 (class 0 OID 0)
--- Dependencies: 1150
+-- TOC entry 6163 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN lc_fuenteespacial.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4815,7 +4815,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_fuenteespacial.local_id IS 'Identific
 
 
 --
--- TOC entry 1151 (class 1259 OID 380866)
+-- TOC entry 318 (class 1259 OID 420158)
 -- Name: lc_grupocalificacion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4833,8 +4833,8 @@ CREATE TABLE test_ladm_col_queries.lc_grupocalificacion (
 ALTER TABLE test_ladm_col_queries.lc_grupocalificacion OWNER TO postgres;
 
 --
--- TOC entry 9402 (class 0 OID 0)
--- Dependencies: 1151
+-- TOC entry 6164 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: TABLE lc_grupocalificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4842,8 +4842,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_grupocalificacion IS 'Calificación de
 
 
 --
--- TOC entry 9403 (class 0 OID 0)
--- Dependencies: 1151
+-- TOC entry 6165 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: COLUMN lc_grupocalificacion.clase_calificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4851,8 +4851,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_grupocalificacion.clase_calificacion 
 
 
 --
--- TOC entry 9404 (class 0 OID 0)
--- Dependencies: 1151
+-- TOC entry 6166 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: COLUMN lc_grupocalificacion.conservacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4860,8 +4860,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_grupocalificacion.conservacion IS 'Es
 
 
 --
--- TOC entry 9405 (class 0 OID 0)
--- Dependencies: 1151
+-- TOC entry 6167 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: COLUMN lc_grupocalificacion.subtotal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4869,7 +4869,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_grupocalificacion.subtotal IS 'Subtot
 
 
 --
--- TOC entry 1217 (class 1259 OID 381524)
+-- TOC entry 319 (class 1259 OID 420164)
 -- Name: lc_grupoetnicotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4889,7 +4889,7 @@ CREATE TABLE test_ladm_col_queries.lc_grupoetnicotipo (
 ALTER TABLE test_ladm_col_queries.lc_grupoetnicotipo OWNER TO postgres;
 
 --
--- TOC entry 1152 (class 1259 OID 380876)
+-- TOC entry 320 (class 1259 OID 420171)
 -- Name: lc_interesado; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4917,8 +4917,8 @@ CREATE TABLE test_ladm_col_queries.lc_interesado (
 ALTER TABLE test_ladm_col_queries.lc_interesado OWNER TO postgres;
 
 --
--- TOC entry 9406 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6168 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: TABLE lc_interesado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4926,8 +4926,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_interesado IS 'Es la parte que tiene u
 
 
 --
--- TOC entry 9407 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6169 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4935,8 +4935,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.tipo IS 'Tipo de persona d
 
 
 --
--- TOC entry 9408 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6170 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.tipo_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4944,8 +4944,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.tipo_documento IS 'Tipo de
 
 
 --
--- TOC entry 9409 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6171 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.documento_identidad; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4953,8 +4953,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.documento_identidad IS 'Do
 
 
 --
--- TOC entry 9410 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6172 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.primer_nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4962,8 +4962,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.primer_nombre IS 'Primer n
 
 
 --
--- TOC entry 9411 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6173 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.segundo_nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4971,8 +4971,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.segundo_nombre IS 'Segundo
 
 
 --
--- TOC entry 9412 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6174 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.primer_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4980,8 +4980,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.primer_apellido IS 'Primer
 
 
 --
--- TOC entry 9413 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6175 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.segundo_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4989,8 +4989,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.segundo_apellido IS 'Segun
 
 
 --
--- TOC entry 9414 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6176 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.sexo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -4998,8 +4998,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.sexo IS 'Condición orgán
 
 
 --
--- TOC entry 9415 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6177 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.razon_social; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5007,8 +5007,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.razon_social IS 'Nombre co
 
 
 --
--- TOC entry 9416 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6178 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5016,8 +5016,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.nombre IS 'Nombre del inte
 
 
 --
--- TOC entry 9417 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6179 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5025,8 +5025,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.comienzo_vida_util_version
 
 
 --
--- TOC entry 9418 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6180 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5034,8 +5034,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.fin_vida_util_version IS '
 
 
 --
--- TOC entry 9419 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6181 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5043,8 +5043,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.espacio_de_nombres IS 'Ide
 
 
 --
--- TOC entry 9420 (class 0 OID 0)
--- Dependencies: 1152
+-- TOC entry 6182 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN lc_interesado.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5052,7 +5052,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesado.local_id IS 'Identificador
 
 
 --
--- TOC entry 1153 (class 1259 OID 380890)
+-- TOC entry 321 (class 1259 OID 420179)
 -- Name: lc_interesadocontacto; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5076,8 +5076,8 @@ CREATE TABLE test_ladm_col_queries.lc_interesadocontacto (
 ALTER TABLE test_ladm_col_queries.lc_interesadocontacto OWNER TO postgres;
 
 --
--- TOC entry 9421 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6183 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: TABLE lc_interesadocontacto; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5085,8 +5085,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_interesadocontacto IS 'Datos de contac
 
 
 --
--- TOC entry 9422 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6184 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.telefono1; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5094,8 +5094,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.telefono1 IS 'Nume
 
 
 --
--- TOC entry 9423 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6185 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.telefono2; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5103,8 +5103,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.telefono2 IS 'Nume
 
 
 --
--- TOC entry 9424 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6186 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.domicilio_notificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5112,8 +5112,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.domicilio_notifica
 
 
 --
--- TOC entry 9425 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6187 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.direccion_residencia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5121,8 +5121,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.direccion_residenc
 
 
 --
--- TOC entry 9426 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6188 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.correo_electronico; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5130,8 +5130,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.correo_electronico
 
 
 --
--- TOC entry 9427 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6189 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.autoriza_notificacion_correo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5139,8 +5139,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.autoriza_notificac
 
 
 --
--- TOC entry 9428 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6190 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.departamento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5148,8 +5148,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.departamento IS 'D
 
 
 --
--- TOC entry 9429 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6191 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.municipio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5157,8 +5157,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.municipio IS 'Muni
 
 
 --
--- TOC entry 9430 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6192 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.vereda; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5166,8 +5166,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.vereda IS 'Vereda 
 
 
 --
--- TOC entry 9431 (class 0 OID 0)
--- Dependencies: 1153
+-- TOC entry 6193 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN lc_interesadocontacto.corregimiento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5175,7 +5175,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_interesadocontacto.corregimiento IS '
 
 
 --
--- TOC entry 1229 (class 1259 OID 381632)
+-- TOC entry 322 (class 1259 OID 420187)
 -- Name: lc_interesadodocumentotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5195,7 +5195,7 @@ CREATE TABLE test_ladm_col_queries.lc_interesadodocumentotipo (
 ALTER TABLE test_ladm_col_queries.lc_interesadodocumentotipo OWNER TO postgres;
 
 --
--- TOC entry 1186 (class 1259 OID 381245)
+-- TOC entry 323 (class 1259 OID 420194)
 -- Name: lc_interesadotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5215,7 +5215,7 @@ CREATE TABLE test_ladm_col_queries.lc_interesadotipo (
 ALTER TABLE test_ladm_col_queries.lc_interesadotipo OWNER TO postgres;
 
 --
--- TOC entry 1154 (class 1259 OID 380901)
+-- TOC entry 324 (class 1259 OID 420201)
 -- Name: lc_lindero; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5236,8 +5236,8 @@ CREATE TABLE test_ladm_col_queries.lc_lindero (
 ALTER TABLE test_ladm_col_queries.lc_lindero OWNER TO postgres;
 
 --
--- TOC entry 9432 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6194 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: TABLE lc_lindero; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5245,8 +5245,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_lindero IS 'Linea de división que sep
 
 
 --
--- TOC entry 9433 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6195 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.longitud; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5254,8 +5254,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.longitud IS 'Longitud en metr
 
 
 --
--- TOC entry 9434 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6196 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5263,8 +5263,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.geometria IS 'Geometría line
 
 
 --
--- TOC entry 9435 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6197 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.localizacion_textual; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5272,8 +5272,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.localizacion_textual IS 'Desc
 
 
 --
--- TOC entry 9436 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6198 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5281,8 +5281,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.comienzo_vida_util_version IS
 
 
 --
--- TOC entry 9437 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6199 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5290,8 +5290,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.fin_vida_util_version IS 'Fin
 
 
 --
--- TOC entry 9438 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6200 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5299,8 +5299,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.espacio_de_nombres IS 'Identi
 
 
 --
--- TOC entry 9439 (class 0 OID 0)
--- Dependencies: 1154
+-- TOC entry 6201 (class 0 OID 0)
+-- Dependencies: 324
 -- Name: COLUMN lc_lindero.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5308,7 +5308,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_lindero.local_id IS 'Identificador ú
 
 
 --
--- TOC entry 1155 (class 1259 OID 380912)
+-- TOC entry 325 (class 1259 OID 420210)
 -- Name: lc_objetoconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5325,8 +5325,8 @@ CREATE TABLE test_ladm_col_queries.lc_objetoconstruccion (
 ALTER TABLE test_ladm_col_queries.lc_objetoconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9440 (class 0 OID 0)
--- Dependencies: 1155
+-- TOC entry 6202 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: TABLE lc_objetoconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5334,8 +5334,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_objetoconstruccion IS 'Puntaje de cada
 
 
 --
--- TOC entry 9441 (class 0 OID 0)
--- Dependencies: 1155
+-- TOC entry 6203 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN lc_objetoconstruccion.tipo_objeto_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5343,8 +5343,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_objetoconstruccion.tipo_objeto_constr
 
 
 --
--- TOC entry 9442 (class 0 OID 0)
--- Dependencies: 1155
+-- TOC entry 6204 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN lc_objetoconstruccion.puntos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5352,7 +5352,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_objetoconstruccion.puntos IS 'Puntaje
 
 
 --
--- TOC entry 1233 (class 1259 OID 381668)
+-- TOC entry 326 (class 1259 OID 420216)
 -- Name: lc_objetoconstrucciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5372,7 +5372,7 @@ CREATE TABLE test_ladm_col_queries.lc_objetoconstrucciontipo (
 ALTER TABLE test_ladm_col_queries.lc_objetoconstrucciontipo OWNER TO postgres;
 
 --
--- TOC entry 1156 (class 1259 OID 380921)
+-- TOC entry 327 (class 1259 OID 420223)
 -- Name: lc_ofertasmercadoinmobiliario; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5396,8 +5396,8 @@ CREATE TABLE test_ladm_col_queries.lc_ofertasmercadoinmobiliario (
 ALTER TABLE test_ladm_col_queries.lc_ofertasmercadoinmobiliario OWNER TO postgres;
 
 --
--- TOC entry 9443 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6205 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.tipo_oferta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5405,8 +5405,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.tipo_ofert
 
 
 --
--- TOC entry 9444 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6206 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.valor_pedido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5414,8 +5414,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.valor_pedi
 
 
 --
--- TOC entry 9445 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6207 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.valor_negociado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5423,8 +5423,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.valor_nego
 
 
 --
--- TOC entry 9446 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6208 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.fecha_captura_oferta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5432,8 +5432,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.fecha_capt
 
 
 --
--- TOC entry 9447 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6209 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.tiempo_oferta_mercado; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5441,8 +5441,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.tiempo_ofe
 
 
 --
--- TOC entry 9448 (class 0 OID 0)
--- Dependencies: 1156
+-- TOC entry 6210 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN lc_ofertasmercadoinmobiliario.numero_contacto_oferente; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5450,7 +5450,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_ofertasmercadoinmobiliario.numero_con
 
 
 --
--- TOC entry 1196 (class 1259 OID 381335)
+-- TOC entry 328 (class 1259 OID 420231)
 -- Name: lc_ofertatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5470,7 +5470,7 @@ CREATE TABLE test_ladm_col_queries.lc_ofertatipo (
 ALTER TABLE test_ladm_col_queries.lc_ofertatipo OWNER TO postgres;
 
 --
--- TOC entry 1157 (class 1259 OID 380930)
+-- TOC entry 329 (class 1259 OID 420238)
 -- Name: lc_predio; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5501,8 +5501,8 @@ CREATE TABLE test_ladm_col_queries.lc_predio (
 ALTER TABLE test_ladm_col_queries.lc_predio OWNER TO postgres;
 
 --
--- TOC entry 9449 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6211 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: TABLE lc_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5511,8 +5511,8 @@ El predio es la unidad territorial legal propia de Catastro. Está formada por e
 
 
 --
--- TOC entry 9450 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6212 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.departamento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5520,8 +5520,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.departamento IS 'Corresponde a
 
 
 --
--- TOC entry 9451 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6213 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.municipio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5529,8 +5529,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.municipio IS 'Corresponde al c
 
 
 --
--- TOC entry 9452 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6214 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.id_operacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5538,8 +5538,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.id_operacion IS 'Identificador
 
 
 --
--- TOC entry 9453 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6215 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.tiene_fmi; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5547,8 +5547,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.tiene_fmi IS 'Indica si el pre
 
 
 --
--- TOC entry 9454 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6216 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.codigo_orip; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5556,8 +5556,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.codigo_orip IS 'Circulo regist
 
 
 --
--- TOC entry 9455 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6217 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.matricula_inmobiliaria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5565,8 +5565,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.matricula_inmobiliaria IS 'Mat
 
 
 --
--- TOC entry 9456 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6218 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.numero_predial; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5574,8 +5574,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.numero_predial IS 'Nuevo Códi
 
 
 --
--- TOC entry 9457 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6219 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.numero_predial_anterior; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5583,8 +5583,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.numero_predial_anterior IS 'An
 
 
 --
--- TOC entry 9458 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6220 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.nupre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5592,8 +5592,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.nupre IS 'Es un código único
 
 
 --
--- TOC entry 9459 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6221 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.avaluo_catastral; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5601,8 +5601,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.avaluo_catastral IS 'Valor cat
 
 
 --
--- TOC entry 9460 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6222 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.condicion_predio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5610,8 +5610,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.condicion_predio IS 'Caracteri
 
 
 --
--- TOC entry 9461 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6223 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.nombre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5619,8 +5619,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.nombre IS 'Nombre que recibe l
 
 
 --
--- TOC entry 9462 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6224 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5628,8 +5628,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.comienzo_vida_util_version IS 
 
 
 --
--- TOC entry 9463 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6225 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5637,8 +5637,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.fin_vida_util_version IS 'Fina
 
 
 --
--- TOC entry 9464 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6226 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5646,8 +5646,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.espacio_de_nombres IS 'Identif
 
 
 --
--- TOC entry 9465 (class 0 OID 0)
--- Dependencies: 1157
+-- TOC entry 6227 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN lc_predio.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5655,7 +5655,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_predio.local_id IS 'Identificador ún
 
 
 --
--- TOC entry 1167 (class 1259 OID 381072)
+-- TOC entry 330 (class 1259 OID 420247)
 -- Name: lc_predio_copropiedad; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5669,7 +5669,7 @@ CREATE TABLE test_ladm_col_queries.lc_predio_copropiedad (
 ALTER TABLE test_ladm_col_queries.lc_predio_copropiedad OWNER TO postgres;
 
 --
--- TOC entry 1168 (class 1259 OID 381080)
+-- TOC entry 331 (class 1259 OID 420251)
 -- Name: lc_predio_ini_predioinsumos; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5684,7 +5684,7 @@ CREATE TABLE test_ladm_col_queries.lc_predio_ini_predioinsumos (
 ALTER TABLE test_ladm_col_queries.lc_predio_ini_predioinsumos OWNER TO postgres;
 
 --
--- TOC entry 1236 (class 1259 OID 381695)
+-- TOC entry 332 (class 1259 OID 420255)
 -- Name: lc_prediotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5704,7 +5704,7 @@ CREATE TABLE test_ladm_col_queries.lc_prediotipo (
 ALTER TABLE test_ladm_col_queries.lc_prediotipo OWNER TO postgres;
 
 --
--- TOC entry 1209 (class 1259 OID 381452)
+-- TOC entry 333 (class 1259 OID 420262)
 -- Name: lc_procedimientocatastralregistraltipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5724,7 +5724,7 @@ CREATE TABLE test_ladm_col_queries.lc_procedimientocatastralregistraltipo (
 ALTER TABLE test_ladm_col_queries.lc_procedimientocatastralregistraltipo OWNER TO postgres;
 
 --
--- TOC entry 1158 (class 1259 OID 380942)
+-- TOC entry 334 (class 1259 OID 420269)
 -- Name: lc_puntocontrol; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5755,8 +5755,8 @@ CREATE TABLE test_ladm_col_queries.lc_puntocontrol (
 ALTER TABLE test_ladm_col_queries.lc_puntocontrol OWNER TO postgres;
 
 --
--- TOC entry 9466 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6228 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: TABLE lc_puntocontrol; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5764,8 +5764,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_puntocontrol IS 'Puntos topograficos o
 
 
 --
--- TOC entry 9467 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6229 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.id_punto_control; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5773,8 +5773,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.id_punto_control IS 'Nom
 
 
 --
--- TOC entry 9468 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6230 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.puntotipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5782,8 +5782,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.puntotipo IS 'Indica la 
 
 
 --
--- TOC entry 9469 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6231 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.tipo_punto_control; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5791,8 +5791,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.tipo_punto_control IS 'S
 
 
 --
--- TOC entry 9470 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6232 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.exactitud_horizontal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5800,8 +5800,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.exactitud_horizontal IS 
 
 
 --
--- TOC entry 9471 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6233 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.exactitud_vertical; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5809,8 +5809,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.exactitud_vertical IS 'E
 
 
 --
--- TOC entry 9472 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6234 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.posicion_interpolacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5818,8 +5818,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.posicion_interpolacion I
 
 
 --
--- TOC entry 9473 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6235 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.metodoproduccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5827,8 +5827,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.metodoproduccion IS 'Ind
 
 
 --
--- TOC entry 9474 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6236 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5836,8 +5836,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.geometria IS 'Geometria 
 
 
 --
--- TOC entry 9475 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6237 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5845,8 +5845,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.comienzo_vida_util_versi
 
 
 --
--- TOC entry 9476 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6238 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5854,8 +5854,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.fin_vida_util_version IS
 
 
 --
--- TOC entry 9477 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6239 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5863,8 +5863,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.espacio_de_nombres IS 'I
 
 
 --
--- TOC entry 9478 (class 0 OID 0)
--- Dependencies: 1158
+-- TOC entry 6240 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN lc_puntocontrol.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5872,7 +5872,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntocontrol.local_id IS 'Identificad
 
 
 --
--- TOC entry 1230 (class 1259 OID 381641)
+-- TOC entry 335 (class 1259 OID 420279)
 -- Name: lc_puntocontroltipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5892,7 +5892,7 @@ CREATE TABLE test_ladm_col_queries.lc_puntocontroltipo (
 ALTER TABLE test_ladm_col_queries.lc_puntocontroltipo OWNER TO postgres;
 
 --
--- TOC entry 1165 (class 1259 OID 381043)
+-- TOC entry 336 (class 1259 OID 420286)
 -- Name: lc_puntolevantamiento; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5924,8 +5924,8 @@ CREATE TABLE test_ladm_col_queries.lc_puntolevantamiento (
 ALTER TABLE test_ladm_col_queries.lc_puntolevantamiento OWNER TO postgres;
 
 --
--- TOC entry 9479 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6241 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: TABLE lc_puntolevantamiento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5933,8 +5933,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_puntolevantamiento IS 'Puntos que defi
 
 
 --
--- TOC entry 9480 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6242 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.id_punto_levantamiento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5942,8 +5942,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.id_punto_levantami
 
 
 --
--- TOC entry 9481 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6243 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.puntotipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5951,8 +5951,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.puntotipo IS 'Indi
 
 
 --
--- TOC entry 9482 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6244 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.tipo_punto_levantamiento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5960,8 +5960,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.tipo_punto_levanta
 
 
 --
--- TOC entry 9483 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6245 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.fotoidentificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5969,8 +5969,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.fotoidentificacion
 
 
 --
--- TOC entry 9484 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6246 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.exactitud_horizontal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5978,8 +5978,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.exactitud_horizont
 
 
 --
--- TOC entry 9485 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6247 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.exactitud_vertical; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5987,8 +5987,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.exactitud_vertical
 
 
 --
--- TOC entry 9486 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6248 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.posicion_interpolacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -5996,8 +5996,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.posicion_interpola
 
 
 --
--- TOC entry 9487 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6249 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.metodoproduccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6005,8 +6005,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.metodoproduccion I
 
 
 --
--- TOC entry 9488 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6250 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6014,8 +6014,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.geometria IS 'Geom
 
 
 --
--- TOC entry 9489 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6251 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6023,8 +6023,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.comienzo_vida_util
 
 
 --
--- TOC entry 9490 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6252 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6032,8 +6032,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.fin_vida_util_vers
 
 
 --
--- TOC entry 9491 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6253 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6041,8 +6041,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.espacio_de_nombres
 
 
 --
--- TOC entry 9492 (class 0 OID 0)
--- Dependencies: 1165
+-- TOC entry 6254 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN lc_puntolevantamiento.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6050,7 +6050,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolevantamiento.local_id IS 'Ident
 
 
 --
--- TOC entry 1194 (class 1259 OID 381317)
+-- TOC entry 337 (class 1259 OID 420296)
 -- Name: lc_puntolevtipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6070,7 +6070,7 @@ CREATE TABLE test_ladm_col_queries.lc_puntolevtipo (
 ALTER TABLE test_ladm_col_queries.lc_puntolevtipo OWNER TO postgres;
 
 --
--- TOC entry 1159 (class 1259 OID 380961)
+-- TOC entry 338 (class 1259 OID 420303)
 -- Name: lc_puntolindero; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6102,8 +6102,8 @@ CREATE TABLE test_ladm_col_queries.lc_puntolindero (
 ALTER TABLE test_ladm_col_queries.lc_puntolindero OWNER TO postgres;
 
 --
--- TOC entry 9493 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6255 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: TABLE lc_puntolindero; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6111,8 +6111,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_puntolindero IS 'Puntos que definen lo
 
 
 --
--- TOC entry 9494 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6256 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.id_punto_lindero; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6120,8 +6120,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.id_punto_lindero IS 'Nom
 
 
 --
--- TOC entry 9495 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6257 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.puntotipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6129,8 +6129,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.puntotipo IS 'Indica la 
 
 
 --
--- TOC entry 9496 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6258 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.acuerdo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6138,8 +6138,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.acuerdo IS 'Indica si ex
 
 
 --
--- TOC entry 9497 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6259 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.fotoidentificacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6147,8 +6147,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.fotoidentificacion IS 'I
 
 
 --
--- TOC entry 9498 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6260 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.exactitud_horizontal; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6156,8 +6156,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.exactitud_horizontal IS 
 
 
 --
--- TOC entry 9499 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6261 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.exactitud_vertical; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6165,8 +6165,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.exactitud_vertical IS 'C
 
 
 --
--- TOC entry 9500 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6262 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.posicion_interpolacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6174,8 +6174,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.posicion_interpolacion I
 
 
 --
--- TOC entry 9501 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6263 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.metodoproduccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6183,8 +6183,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.metodoproduccion IS 'Ind
 
 
 --
--- TOC entry 9502 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6264 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6192,8 +6192,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.geometria IS 'Geometria 
 
 
 --
--- TOC entry 9503 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6265 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6201,8 +6201,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.comienzo_vida_util_versi
 
 
 --
--- TOC entry 9504 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6266 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6210,8 +6210,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.fin_vida_util_version IS
 
 
 --
--- TOC entry 9505 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6267 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6219,8 +6219,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.espacio_de_nombres IS 'I
 
 
 --
--- TOC entry 9506 (class 0 OID 0)
--- Dependencies: 1159
+-- TOC entry 6268 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN lc_puntolindero.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6228,7 +6228,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_puntolindero.local_id IS 'Identificad
 
 
 --
--- TOC entry 1184 (class 1259 OID 381227)
+-- TOC entry 339 (class 1259 OID 420313)
 -- Name: lc_puntotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6248,7 +6248,7 @@ CREATE TABLE test_ladm_col_queries.lc_puntotipo (
 ALTER TABLE test_ladm_col_queries.lc_puntotipo OWNER TO postgres;
 
 --
--- TOC entry 1224 (class 1259 OID 381587)
+-- TOC entry 340 (class 1259 OID 420320)
 -- Name: lc_relacionprediotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6268,7 +6268,7 @@ CREATE TABLE test_ladm_col_queries.lc_relacionprediotipo (
 ALTER TABLE test_ladm_col_queries.lc_relacionprediotipo OWNER TO postgres;
 
 --
--- TOC entry 1160 (class 1259 OID 380981)
+-- TOC entry 341 (class 1259 OID 420327)
 -- Name: lc_restriccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6290,8 +6290,8 @@ CREATE TABLE test_ladm_col_queries.lc_restriccion (
 ALTER TABLE test_ladm_col_queries.lc_restriccion OWNER TO postgres;
 
 --
--- TOC entry 9507 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6269 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: TABLE lc_restriccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6299,8 +6299,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_restriccion IS 'Restricción legalment
 
 
 --
--- TOC entry 9508 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6270 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.tipo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6308,8 +6308,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.tipo IS 'Tipo de Restricc
 
 
 --
--- TOC entry 9509 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6271 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.descripcion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6317,8 +6317,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.descripcion IS 'Descripci
 
 
 --
--- TOC entry 9510 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6272 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6326,8 +6326,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.comienzo_vida_util_versio
 
 
 --
--- TOC entry 9511 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6273 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6335,8 +6335,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.fin_vida_util_version IS 
 
 
 --
--- TOC entry 9512 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6274 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6344,8 +6344,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.espacio_de_nombres IS 'Id
 
 
 --
--- TOC entry 9513 (class 0 OID 0)
--- Dependencies: 1160
+-- TOC entry 6275 (class 0 OID 0)
+-- Dependencies: 341
 -- Name: COLUMN lc_restriccion.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6353,7 +6353,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_restriccion.local_id IS 'Identificado
 
 
 --
--- TOC entry 1243 (class 1259 OID 381758)
+-- TOC entry 342 (class 1259 OID 420335)
 -- Name: lc_restricciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6373,7 +6373,7 @@ CREATE TABLE test_ladm_col_queries.lc_restricciontipo (
 ALTER TABLE test_ladm_col_queries.lc_restricciontipo OWNER TO postgres;
 
 --
--- TOC entry 1190 (class 1259 OID 381281)
+-- TOC entry 343 (class 1259 OID 420342)
 -- Name: lc_resultadovisitatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6393,7 +6393,7 @@ CREATE TABLE test_ladm_col_queries.lc_resultadovisitatipo (
 ALTER TABLE test_ladm_col_queries.lc_resultadovisitatipo OWNER TO postgres;
 
 --
--- TOC entry 1169 (class 1259 OID 381088)
+-- TOC entry 344 (class 1259 OID 420349)
 -- Name: lc_servidumbretransito; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6416,8 +6416,8 @@ CREATE TABLE test_ladm_col_queries.lc_servidumbretransito (
 ALTER TABLE test_ladm_col_queries.lc_servidumbretransito OWNER TO postgres;
 
 --
--- TOC entry 9514 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6276 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: TABLE lc_servidumbretransito; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6425,8 +6425,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_servidumbretransito IS 'Tipo de unidad
 
 
 --
--- TOC entry 9515 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6277 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.area_servidumbre; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6434,8 +6434,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.area_servidumbre 
 
 
 --
--- TOC entry 9516 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6278 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.dimension; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6443,8 +6443,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.dimension IS 'Dim
 
 
 --
--- TOC entry 9517 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6279 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6452,8 +6452,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.etiqueta IS 'Corr
 
 
 --
--- TOC entry 9518 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6280 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.relacion_superficie; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6461,8 +6461,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.relacion_superfic
 
 
 --
--- TOC entry 9519 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6281 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6470,8 +6470,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.geometria IS 'Mat
 
 
 --
--- TOC entry 9520 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6282 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6479,8 +6479,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.comienzo_vida_uti
 
 
 --
--- TOC entry 9521 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6283 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6488,8 +6488,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.fin_vida_util_ver
 
 
 --
--- TOC entry 9522 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6284 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6497,8 +6497,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.espacio_de_nombre
 
 
 --
--- TOC entry 9523 (class 0 OID 0)
--- Dependencies: 1169
+-- TOC entry 6285 (class 0 OID 0)
+-- Dependencies: 344
 -- Name: COLUMN lc_servidumbretransito.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6506,7 +6506,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_servidumbretransito.local_id IS 'Iden
 
 
 --
--- TOC entry 1222 (class 1259 OID 381569)
+-- TOC entry 345 (class 1259 OID 420358)
 -- Name: lc_sexotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6526,7 +6526,7 @@ CREATE TABLE test_ladm_col_queries.lc_sexotipo (
 ALTER TABLE test_ladm_col_queries.lc_sexotipo OWNER TO postgres;
 
 --
--- TOC entry 1161 (class 1259 OID 380995)
+-- TOC entry 346 (class 1259 OID 420365)
 -- Name: lc_terreno; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6552,8 +6552,8 @@ CREATE TABLE test_ladm_col_queries.lc_terreno (
 ALTER TABLE test_ladm_col_queries.lc_terreno OWNER TO postgres;
 
 --
--- TOC entry 9524 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6286 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: TABLE lc_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6561,8 +6561,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_terreno IS 'Porción de tierra con una
 
 
 --
--- TOC entry 9525 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6287 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.area_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6570,8 +6570,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.area_terreno IS 'Área total 
 
 
 --
--- TOC entry 9526 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6288 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.avaluo_terreno; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6579,8 +6579,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.avaluo_terreno IS 'Valor cata
 
 
 --
--- TOC entry 9527 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6289 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.manzana_vereda_codigo; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6588,8 +6588,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.manzana_vereda_codigo IS 'Cor
 
 
 --
--- TOC entry 9528 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6290 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6597,8 +6597,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.geometria IS 'Corresponde a l
 
 
 --
--- TOC entry 9529 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6291 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.dimension; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6606,8 +6606,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.dimension IS 'Dimensión del 
 
 
 --
--- TOC entry 9530 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6292 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6615,8 +6615,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.etiqueta IS 'Corresponde al a
 
 
 --
--- TOC entry 9531 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6293 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.relacion_superficie; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6624,8 +6624,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.relacion_superficie IS 'Corre
 
 
 --
--- TOC entry 9532 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6294 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6633,8 +6633,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.comienzo_vida_util_version IS
 
 
 --
--- TOC entry 9533 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6295 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6642,8 +6642,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.fin_vida_util_version IS 'Fin
 
 
 --
--- TOC entry 9534 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6296 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6651,8 +6651,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.espacio_de_nombres IS 'Identi
 
 
 --
--- TOC entry 9535 (class 0 OID 0)
--- Dependencies: 1161
+-- TOC entry 6297 (class 0 OID 0)
+-- Dependencies: 346
 -- Name: COLUMN lc_terreno.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6660,7 +6660,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_terreno.local_id IS 'Identificador ú
 
 
 --
--- TOC entry 1166 (class 1259 OID 381063)
+-- TOC entry 347 (class 1259 OID 420375)
 -- Name: lc_tipologiaconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6675,8 +6675,8 @@ CREATE TABLE test_ladm_col_queries.lc_tipologiaconstruccion (
 ALTER TABLE test_ladm_col_queries.lc_tipologiaconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9536 (class 0 OID 0)
--- Dependencies: 1166
+-- TOC entry 6298 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: TABLE lc_tipologiaconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6684,8 +6684,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_tipologiaconstruccion IS 'Son las cara
 
 
 --
--- TOC entry 9537 (class 0 OID 0)
--- Dependencies: 1166
+-- TOC entry 6299 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN lc_tipologiaconstruccion.tipo_tipologia; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6693,7 +6693,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_tipologiaconstruccion.tipo_tipologia 
 
 
 --
--- TOC entry 1193 (class 1259 OID 381308)
+-- TOC entry 348 (class 1259 OID 420380)
 -- Name: lc_tipologiatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6713,7 +6713,7 @@ CREATE TABLE test_ladm_col_queries.lc_tipologiatipo (
 ALTER TABLE test_ladm_col_queries.lc_tipologiatipo OWNER TO postgres;
 
 --
--- TOC entry 1170 (class 1259 OID 381101)
+-- TOC entry 349 (class 1259 OID 420387)
 -- Name: lc_unidadconstruccion; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6762,8 +6762,8 @@ CREATE TABLE test_ladm_col_queries.lc_unidadconstruccion (
 ALTER TABLE test_ladm_col_queries.lc_unidadconstruccion OWNER TO postgres;
 
 --
--- TOC entry 9538 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6300 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: TABLE lc_unidadconstruccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6771,8 +6771,8 @@ COMMENT ON TABLE test_ladm_col_queries.lc_unidadconstruccion IS 'Es cada conjunt
 
 
 --
--- TOC entry 9539 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6301 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.identificador; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6780,8 +6780,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.identificador IS '
 
 
 --
--- TOC entry 9540 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6302 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.tipo_dominio; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6789,8 +6789,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.tipo_dominio IS 'I
 
 
 --
--- TOC entry 9541 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6303 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.tipo_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6798,8 +6798,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.tipo_construccion 
 
 
 --
--- TOC entry 9542 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6304 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.tipo_unidad_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6807,8 +6807,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.tipo_unidad_constr
 
 
 --
--- TOC entry 9543 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6305 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.tipo_planta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6816,8 +6816,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.tipo_planta IS 'In
 
 
 --
--- TOC entry 9544 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6306 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.planta_ubicacion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6825,8 +6825,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.planta_ubicacion I
 
 
 --
--- TOC entry 9545 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6307 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.total_habitaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6834,8 +6834,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.total_habitaciones
 
 
 --
--- TOC entry 9546 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6308 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.total_banios; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6843,8 +6843,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.total_banios IS 'N
 
 
 --
--- TOC entry 9547 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6309 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.total_locales; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6852,8 +6852,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.total_locales IS '
 
 
 --
--- TOC entry 9548 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6310 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.total_pisos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6861,8 +6861,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.total_pisos IS 'N�
 
 
 --
--- TOC entry 9549 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6311 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.uso; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6870,8 +6870,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.uso IS 'Actividad 
 
 
 --
--- TOC entry 9550 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6312 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.anio_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6879,8 +6879,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.anio_construccion 
 
 
 --
--- TOC entry 9551 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6313 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.avaluo_unidad_construccion; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6888,8 +6888,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.avaluo_unidad_cons
 
 
 --
--- TOC entry 9552 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6314 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.area_construida; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6897,8 +6897,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.area_construida IS
 
 
 --
--- TOC entry 9553 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6315 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.area_privada_construida; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6906,8 +6906,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.area_privada_const
 
 
 --
--- TOC entry 9554 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6316 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.altura; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6915,8 +6915,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.altura IS 'Altura 
 
 
 --
--- TOC entry 9555 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6317 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.observaciones; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6924,8 +6924,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.observaciones IS '
 
 
 --
--- TOC entry 9556 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6318 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.dimension; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6933,8 +6933,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.dimension IS 'Dime
 
 
 --
--- TOC entry 9557 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6319 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.etiqueta; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6942,8 +6942,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.etiqueta IS 'Corre
 
 
 --
--- TOC entry 9558 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6320 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.relacion_superficie; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6951,8 +6951,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.relacion_superfici
 
 
 --
--- TOC entry 9559 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6321 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.geometria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6960,8 +6960,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.geometria IS 'Mate
 
 
 --
--- TOC entry 9560 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6322 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.comienzo_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6969,8 +6969,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.comienzo_vida_util
 
 
 --
--- TOC entry 9561 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6323 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.fin_vida_util_version; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6978,8 +6978,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.fin_vida_util_vers
 
 
 --
--- TOC entry 9562 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6324 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.espacio_de_nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6987,8 +6987,8 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.espacio_de_nombres
 
 
 --
--- TOC entry 9563 (class 0 OID 0)
--- Dependencies: 1170
+-- TOC entry 6325 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN lc_unidadconstruccion.local_id; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -6996,7 +6996,7 @@ COMMENT ON COLUMN test_ladm_col_queries.lc_unidadconstruccion.local_id IS 'Ident
 
 
 --
--- TOC entry 1213 (class 1259 OID 381488)
+-- TOC entry 350 (class 1259 OID 420405)
 -- Name: lc_unidadconstrucciontipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7016,7 +7016,7 @@ CREATE TABLE test_ladm_col_queries.lc_unidadconstrucciontipo (
 ALTER TABLE test_ladm_col_queries.lc_unidadconstrucciontipo OWNER TO postgres;
 
 --
--- TOC entry 1201 (class 1259 OID 381380)
+-- TOC entry 351 (class 1259 OID 420412)
 -- Name: lc_usouconstipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7036,7 +7036,7 @@ CREATE TABLE test_ladm_col_queries.lc_usouconstipo (
 ALTER TABLE test_ladm_col_queries.lc_usouconstipo OWNER TO postgres;
 
 --
--- TOC entry 1242 (class 1259 OID 381749)
+-- TOC entry 352 (class 1259 OID 420419)
 -- Name: lc_viatipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7056,7 +7056,7 @@ CREATE TABLE test_ladm_col_queries.lc_viatipo (
 ALTER TABLE test_ladm_col_queries.lc_viatipo OWNER TO postgres;
 
 --
--- TOC entry 1200 (class 1259 OID 381371)
+-- TOC entry 353 (class 1259 OID 420426)
 -- Name: snr_calidadderechotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7076,7 +7076,7 @@ CREATE TABLE test_ladm_col_queries.snr_calidadderechotipo (
 ALTER TABLE test_ladm_col_queries.snr_calidadderechotipo OWNER TO postgres;
 
 --
--- TOC entry 1189 (class 1259 OID 381272)
+-- TOC entry 354 (class 1259 OID 420433)
 -- Name: snr_clasepredioregistrotipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7096,7 +7096,7 @@ CREATE TABLE test_ladm_col_queries.snr_clasepredioregistrotipo (
 ALTER TABLE test_ladm_col_queries.snr_clasepredioregistrotipo OWNER TO postgres;
 
 --
--- TOC entry 1134 (class 1259 OID 380686)
+-- TOC entry 355 (class 1259 OID 420440)
 -- Name: snr_derecho; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7113,8 +7113,8 @@ CREATE TABLE test_ladm_col_queries.snr_derecho (
 ALTER TABLE test_ladm_col_queries.snr_derecho OWNER TO postgres;
 
 --
--- TOC entry 9564 (class 0 OID 0)
--- Dependencies: 1134
+-- TOC entry 6326 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: TABLE snr_derecho; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7122,8 +7122,8 @@ COMMENT ON TABLE test_ladm_col_queries.snr_derecho IS 'Datos del derecho inscrit
 
 
 --
--- TOC entry 9565 (class 0 OID 0)
--- Dependencies: 1134
+-- TOC entry 6327 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN snr_derecho.calidad_derecho_registro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7131,8 +7131,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_derecho.calidad_derecho_registro IS 
 
 
 --
--- TOC entry 9566 (class 0 OID 0)
--- Dependencies: 1134
+-- TOC entry 6328 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN snr_derecho.codigo_naturaleza_juridica; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7140,7 +7140,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_derecho.codigo_naturaleza_juridica I
 
 
 --
--- TOC entry 1208 (class 1259 OID 381443)
+-- TOC entry 356 (class 1259 OID 420444)
 -- Name: snr_documentotitulartipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7160,7 +7160,7 @@ CREATE TABLE test_ladm_col_queries.snr_documentotitulartipo (
 ALTER TABLE test_ladm_col_queries.snr_documentotitulartipo OWNER TO postgres;
 
 --
--- TOC entry 1135 (class 1259 OID 380695)
+-- TOC entry 357 (class 1259 OID 420451)
 -- Name: snr_estructuramatriculamatriz; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7176,8 +7176,8 @@ CREATE TABLE test_ladm_col_queries.snr_estructuramatriculamatriz (
 ALTER TABLE test_ladm_col_queries.snr_estructuramatriculamatriz OWNER TO postgres;
 
 --
--- TOC entry 9567 (class 0 OID 0)
--- Dependencies: 1135
+-- TOC entry 6329 (class 0 OID 0)
+-- Dependencies: 357
 -- Name: COLUMN snr_estructuramatriculamatriz.codigo_orip; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7185,8 +7185,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_estructuramatriculamatriz.codigo_ori
 
 
 --
--- TOC entry 9568 (class 0 OID 0)
--- Dependencies: 1135
+-- TOC entry 6330 (class 0 OID 0)
+-- Dependencies: 357
 -- Name: COLUMN snr_estructuramatriculamatriz.matricula_inmobiliaria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7194,8 +7194,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_estructuramatriculamatriz.matricula_
 
 
 --
--- TOC entry 9569 (class 0 OID 0)
--- Dependencies: 1135
+-- TOC entry 6331 (class 0 OID 0)
+-- Dependencies: 357
 -- Name: COLUMN snr_estructuramatriculamatriz.snr_predioregistro_matricula_inmobiliaria_matriz; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7203,7 +7203,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_estructuramatriculamatriz.snr_predio
 
 
 --
--- TOC entry 1136 (class 1259 OID 380702)
+-- TOC entry 358 (class 1259 OID 420455)
 -- Name: snr_fuentecabidalinderos; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7221,8 +7221,8 @@ CREATE TABLE test_ladm_col_queries.snr_fuentecabidalinderos (
 ALTER TABLE test_ladm_col_queries.snr_fuentecabidalinderos OWNER TO postgres;
 
 --
--- TOC entry 9570 (class 0 OID 0)
--- Dependencies: 1136
+-- TOC entry 6332 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: TABLE snr_fuentecabidalinderos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7230,8 +7230,8 @@ COMMENT ON TABLE test_ladm_col_queries.snr_fuentecabidalinderos IS 'Datos del do
 
 
 --
--- TOC entry 9571 (class 0 OID 0)
--- Dependencies: 1136
+-- TOC entry 6333 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN snr_fuentecabidalinderos.tipo_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7239,8 +7239,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentecabidalinderos.tipo_documento 
 
 
 --
--- TOC entry 9572 (class 0 OID 0)
--- Dependencies: 1136
+-- TOC entry 6334 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN snr_fuentecabidalinderos.numero_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7248,8 +7248,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentecabidalinderos.numero_document
 
 
 --
--- TOC entry 9573 (class 0 OID 0)
--- Dependencies: 1136
+-- TOC entry 6335 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN snr_fuentecabidalinderos.ente_emisor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7257,8 +7257,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentecabidalinderos.ente_emisor IS 
 
 
 --
--- TOC entry 9574 (class 0 OID 0)
--- Dependencies: 1136
+-- TOC entry 6336 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN snr_fuentecabidalinderos.ciudad_emisora; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7266,7 +7266,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentecabidalinderos.ciudad_emisora 
 
 
 --
--- TOC entry 1137 (class 1259 OID 380712)
+-- TOC entry 359 (class 1259 OID 420462)
 -- Name: snr_fuentederecho; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7284,8 +7284,8 @@ CREATE TABLE test_ladm_col_queries.snr_fuentederecho (
 ALTER TABLE test_ladm_col_queries.snr_fuentederecho OWNER TO postgres;
 
 --
--- TOC entry 9575 (class 0 OID 0)
--- Dependencies: 1137
+-- TOC entry 6337 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: TABLE snr_fuentederecho; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7293,8 +7293,8 @@ COMMENT ON TABLE test_ladm_col_queries.snr_fuentederecho IS 'Datos del documento
 
 
 --
--- TOC entry 9576 (class 0 OID 0)
--- Dependencies: 1137
+-- TOC entry 6338 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN snr_fuentederecho.tipo_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7302,8 +7302,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentederecho.tipo_documento IS 'Tip
 
 
 --
--- TOC entry 9577 (class 0 OID 0)
--- Dependencies: 1137
+-- TOC entry 6339 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN snr_fuentederecho.numero_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7311,8 +7311,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentederecho.numero_documento IS 'I
 
 
 --
--- TOC entry 9578 (class 0 OID 0)
--- Dependencies: 1137
+-- TOC entry 6340 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN snr_fuentederecho.ente_emisor; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7320,8 +7320,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentederecho.ente_emisor IS 'Es tip
 
 
 --
--- TOC entry 9579 (class 0 OID 0)
--- Dependencies: 1137
+-- TOC entry 6341 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN snr_fuentederecho.ciudad_emisora; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7329,7 +7329,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_fuentederecho.ciudad_emisora IS 'Es 
 
 
 --
--- TOC entry 1178 (class 1259 OID 381173)
+-- TOC entry 360 (class 1259 OID 420469)
 -- Name: snr_fuentetipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7349,7 +7349,7 @@ CREATE TABLE test_ladm_col_queries.snr_fuentetipo (
 ALTER TABLE test_ladm_col_queries.snr_fuentetipo OWNER TO postgres;
 
 --
--- TOC entry 1180 (class 1259 OID 381191)
+-- TOC entry 361 (class 1259 OID 420476)
 -- Name: snr_personatitulartipo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7369,7 +7369,7 @@ CREATE TABLE test_ladm_col_queries.snr_personatitulartipo (
 ALTER TABLE test_ladm_col_queries.snr_personatitulartipo OWNER TO postgres;
 
 --
--- TOC entry 1139 (class 1259 OID 380733)
+-- TOC entry 362 (class 1259 OID 420483)
 -- Name: snr_predioregistro; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7391,8 +7391,8 @@ CREATE TABLE test_ladm_col_queries.snr_predioregistro (
 ALTER TABLE test_ladm_col_queries.snr_predioregistro OWNER TO postgres;
 
 --
--- TOC entry 9580 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6342 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: TABLE snr_predioregistro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7400,8 +7400,8 @@ COMMENT ON TABLE test_ladm_col_queries.snr_predioregistro IS 'Datos del predio e
 
 
 --
--- TOC entry 9581 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6343 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.codigo_orip; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7409,8 +7409,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.codigo_orip IS 'Es el
 
 
 --
--- TOC entry 9582 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6344 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.matricula_inmobiliaria; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7418,8 +7418,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.matricula_inmobiliari
 
 
 --
--- TOC entry 9583 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6345 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.numero_predial_nuevo_en_fmi; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7427,8 +7427,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.numero_predial_nuevo_
 
 
 --
--- TOC entry 9584 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6346 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.numero_predial_anterior_en_fmi; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7436,8 +7436,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.numero_predial_anteri
 
 
 --
--- TOC entry 9585 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6347 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.nomenclatura_registro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7445,8 +7445,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.nomenclatura_registro
 
 
 --
--- TOC entry 9586 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6348 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.cabida_linderos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7454,8 +7454,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.cabida_linderos IS 'E
 
 
 --
--- TOC entry 9587 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6349 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.clase_suelo_registro; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7463,8 +7463,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.clase_suelo_registro 
 
 
 --
--- TOC entry 9588 (class 0 OID 0)
--- Dependencies: 1139
+-- TOC entry 6350 (class 0 OID 0)
+-- Dependencies: 362
 -- Name: COLUMN snr_predioregistro.fecha_datos; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7472,7 +7472,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_predioregistro.fecha_datos IS 'Fecha
 
 
 --
--- TOC entry 1138 (class 1259 OID 380722)
+-- TOC entry 363 (class 1259 OID 420490)
 -- Name: snr_titular; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7492,8 +7492,8 @@ CREATE TABLE test_ladm_col_queries.snr_titular (
 ALTER TABLE test_ladm_col_queries.snr_titular OWNER TO postgres;
 
 --
--- TOC entry 9589 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6351 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: TABLE snr_titular; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7501,8 +7501,8 @@ COMMENT ON TABLE test_ladm_col_queries.snr_titular IS 'Datos de titulares de der
 
 
 --
--- TOC entry 9590 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6352 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.tipo_persona; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7510,8 +7510,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.tipo_persona IS 'Tipo de per
 
 
 --
--- TOC entry 9591 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6353 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.tipo_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7519,8 +7519,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.tipo_documento IS 'Tipo de d
 
 
 --
--- TOC entry 9592 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6354 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.numero_documento; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7528,8 +7528,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.numero_documento IS 'Documen
 
 
 --
--- TOC entry 9593 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6355 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.nombres; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7537,8 +7537,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.nombres IS 'Nombres de la pe
 
 
 --
--- TOC entry 9594 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6356 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.primer_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7546,8 +7546,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.primer_apellido IS 'Primer a
 
 
 --
--- TOC entry 9595 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6357 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.segundo_apellido; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7555,8 +7555,8 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.segundo_apellido IS 'Segundo
 
 
 --
--- TOC entry 9596 (class 0 OID 0)
--- Dependencies: 1138
+-- TOC entry 6358 (class 0 OID 0)
+-- Dependencies: 363
 -- Name: COLUMN snr_titular.razon_social; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7564,7 +7564,7 @@ COMMENT ON COLUMN test_ladm_col_queries.snr_titular.razon_social IS 'Nombre con 
 
 
 --
--- TOC entry 1140 (class 1259 OID 380744)
+-- TOC entry 364 (class 1259 OID 420497)
 -- Name: snr_titular_derecho; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7580,8 +7580,8 @@ CREATE TABLE test_ladm_col_queries.snr_titular_derecho (
 ALTER TABLE test_ladm_col_queries.snr_titular_derecho OWNER TO postgres;
 
 --
--- TOC entry 9597 (class 0 OID 0)
--- Dependencies: 1140
+-- TOC entry 6359 (class 0 OID 0)
+-- Dependencies: 364
 -- Name: TABLE snr_titular_derecho; Type: COMMENT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7589,7 +7589,7 @@ COMMENT ON TABLE test_ladm_col_queries.snr_titular_derecho IS 'Datos del titular
 
 
 --
--- TOC entry 1245 (class 1259 OID 381775)
+-- TOC entry 365 (class 1259 OID 420501)
 -- Name: t_ili2db_attrname; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7604,7 +7604,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_attrname (
 ALTER TABLE test_ladm_col_queries.t_ili2db_attrname OWNER TO postgres;
 
 --
--- TOC entry 1171 (class 1259 OID 381120)
+-- TOC entry 366 (class 1259 OID 420507)
 -- Name: t_ili2db_basket; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7621,7 +7621,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_basket (
 ALTER TABLE test_ladm_col_queries.t_ili2db_basket OWNER TO postgres;
 
 --
--- TOC entry 1244 (class 1259 OID 381767)
+-- TOC entry 367 (class 1259 OID 420513)
 -- Name: t_ili2db_classname; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7634,7 +7634,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_classname (
 ALTER TABLE test_ladm_col_queries.t_ili2db_classname OWNER TO postgres;
 
 --
--- TOC entry 1246 (class 1259 OID 381783)
+-- TOC entry 368 (class 1259 OID 420519)
 -- Name: t_ili2db_column_prop; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7650,7 +7650,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_column_prop (
 ALTER TABLE test_ladm_col_queries.t_ili2db_column_prop OWNER TO postgres;
 
 --
--- TOC entry 1172 (class 1259 OID 381129)
+-- TOC entry 369 (class 1259 OID 420525)
 -- Name: t_ili2db_dataset; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7663,7 +7663,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_dataset (
 ALTER TABLE test_ladm_col_queries.t_ili2db_dataset OWNER TO postgres;
 
 --
--- TOC entry 1173 (class 1259 OID 381134)
+-- TOC entry 370 (class 1259 OID 420528)
 -- Name: t_ili2db_inheritance; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7676,7 +7676,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_inheritance (
 ALTER TABLE test_ladm_col_queries.t_ili2db_inheritance OWNER TO postgres;
 
 --
--- TOC entry 1248 (class 1259 OID 381795)
+-- TOC entry 371 (class 1259 OID 420534)
 -- Name: t_ili2db_meta_attrs; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7690,7 +7690,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_meta_attrs (
 ALTER TABLE test_ladm_col_queries.t_ili2db_meta_attrs OWNER TO postgres;
 
 --
--- TOC entry 1176 (class 1259 OID 381156)
+-- TOC entry 372 (class 1259 OID 420540)
 -- Name: t_ili2db_model; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7706,7 +7706,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_model (
 ALTER TABLE test_ladm_col_queries.t_ili2db_model OWNER TO postgres;
 
 --
--- TOC entry 1174 (class 1259 OID 381142)
+-- TOC entry 373 (class 1259 OID 420546)
 -- Name: t_ili2db_settings; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7719,7 +7719,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_settings (
 ALTER TABLE test_ladm_col_queries.t_ili2db_settings OWNER TO postgres;
 
 --
--- TOC entry 1247 (class 1259 OID 381789)
+-- TOC entry 374 (class 1259 OID 420552)
 -- Name: t_ili2db_table_prop; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7733,7 +7733,7 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_table_prop (
 ALTER TABLE test_ladm_col_queries.t_ili2db_table_prop OWNER TO postgres;
 
 --
--- TOC entry 1175 (class 1259 OID 381150)
+-- TOC entry 375 (class 1259 OID 420558)
 -- Name: t_ili2db_trafo; Type: TABLE; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7747,8 +7747,8 @@ CREATE TABLE test_ladm_col_queries.t_ili2db_trafo (
 ALTER TABLE test_ladm_col_queries.t_ili2db_trafo OWNER TO postgres;
 
 --
--- TOC entry 8944 (class 0 OID 380178)
--- Dependencies: 1082
+-- TOC entry 5702 (class 0 OID 419415)
+-- Dependencies: 205
 -- Data for Name: cc_metodooperacion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7757,8 +7757,8 @@ COPY test_ladm_col_queries.cc_metodooperacion (t_id, t_seq, formula, dimensiones
 
 
 --
--- TOC entry 9054 (class 0 OID 381299)
--- Dependencies: 1192
+-- TOC entry 5703 (class 0 OID 419421)
+-- Dependencies: 206
 -- Data for Name: ci_forma_presentacion_codigo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7772,8 +7772,8 @@ COPY test_ladm_col_queries.ci_forma_presentacion_codigo (t_id, thisclass, basecl
 
 
 --
--- TOC entry 9072 (class 0 OID 381461)
--- Dependencies: 1210
+-- TOC entry 5704 (class 0 OID 419428)
+-- Dependencies: 207
 -- Data for Name: col_areatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7784,8 +7784,8 @@ COPY test_ladm_col_queries.col_areatipo (t_id, thisclass, baseclass, itfcode, il
 
 
 --
--- TOC entry 8945 (class 0 OID 380185)
--- Dependencies: 1083
+-- TOC entry 5705 (class 0 OID 419435)
+-- Dependencies: 208
 -- Data for Name: col_areavalor; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7794,8 +7794,8 @@ COPY test_ladm_col_queries.col_areavalor (t_id, t_seq, tipo, area, datos_proyecc
 
 
 --
--- TOC entry 8972 (class 0 OID 380454)
--- Dependencies: 1110
+-- TOC entry 5706 (class 0 OID 419443)
+-- Dependencies: 209
 -- Data for Name: col_baunitcomointeresado; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7804,8 +7804,8 @@ COPY test_ladm_col_queries.col_baunitcomointeresado (t_id, t_ili_tid, interesado
 
 
 --
--- TOC entry 8962 (class 0 OID 380363)
--- Dependencies: 1100
+-- TOC entry 5707 (class 0 OID 419447)
+-- Dependencies: 210
 -- Data for Name: col_baunitfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7814,8 +7814,8 @@ COPY test_ladm_col_queries.col_baunitfuente (t_id, t_ili_tid, fuente_espacial, u
 
 
 --
--- TOC entry 8964 (class 0 OID 380378)
--- Dependencies: 1102
+-- TOC entry 5708 (class 0 OID 419451)
+-- Dependencies: 211
 -- Data for Name: col_cclfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7824,8 +7824,8 @@ COPY test_ladm_col_queries.col_cclfuente (t_id, t_ili_tid, ccl, fuente_espacial)
 
 
 --
--- TOC entry 8968 (class 0 OID 380418)
--- Dependencies: 1106
+-- TOC entry 5709 (class 0 OID 419455)
+-- Dependencies: 212
 -- Data for Name: col_clfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7834,8 +7834,8 @@ COPY test_ladm_col_queries.col_clfuente (t_id, t_ili_tid, fuente_espacial) FROM 
 
 
 --
--- TOC entry 9099 (class 0 OID 381704)
--- Dependencies: 1237
+-- TOC entry 5710 (class 0 OID 419459)
+-- Dependencies: 213
 -- Data for Name: col_contenidoniveltipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7852,8 +7852,8 @@ COPY test_ladm_col_queries.col_contenidoniveltipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9081 (class 0 OID 381542)
--- Dependencies: 1219
+-- TOC entry 5711 (class 0 OID 419466)
+-- Dependencies: 214
 -- Data for Name: col_dimensiontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7865,8 +7865,8 @@ COPY test_ladm_col_queries.col_dimensiontipo (t_id, thisclass, baseclass, itfcod
 
 
 --
--- TOC entry 9050 (class 0 OID 381263)
--- Dependencies: 1188
+-- TOC entry 5712 (class 0 OID 419473)
+-- Dependencies: 215
 -- Data for Name: col_estadodisponibilidadtipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7878,8 +7878,8 @@ COPY test_ladm_col_queries.col_estadodisponibilidadtipo (t_id, thisclass, basecl
 
 
 --
--- TOC entry 9043 (class 0 OID 381200)
--- Dependencies: 1181
+-- TOC entry 5713 (class 0 OID 419480)
+-- Dependencies: 216
 -- Data for Name: col_estadoredserviciostipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7892,8 +7892,8 @@ COPY test_ladm_col_queries.col_estadoredserviciostipo (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 9089 (class 0 OID 381614)
--- Dependencies: 1227
+-- TOC entry 5714 (class 0 OID 419487)
+-- Dependencies: 217
 -- Data for Name: col_estructuratipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7906,8 +7906,8 @@ COPY test_ladm_col_queries.col_estructuratipo (t_id, thisclass, baseclass, itfco
 
 
 --
--- TOC entry 9083 (class 0 OID 381560)
--- Dependencies: 1221
+-- TOC entry 5715 (class 0 OID 419494)
+-- Dependencies: 218
 -- Data for Name: col_fuenteadministrativatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7918,8 +7918,8 @@ COPY test_ladm_col_queries.col_fuenteadministrativatipo (t_id, thisclass, basecl
 
 
 --
--- TOC entry 9065 (class 0 OID 381398)
--- Dependencies: 1203
+-- TOC entry 5716 (class 0 OID 419501)
+-- Dependencies: 219
 -- Data for Name: col_fuenteespacialtipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7933,8 +7933,8 @@ COPY test_ladm_col_queries.col_fuenteespacialtipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9044 (class 0 OID 381209)
--- Dependencies: 1182
+-- TOC entry 5717 (class 0 OID 419508)
+-- Dependencies: 220
 -- Data for Name: col_grupointeresadotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7947,8 +7947,8 @@ COPY test_ladm_col_queries.col_grupointeresadotipo (t_id, thisclass, baseclass, 
 
 
 --
--- TOC entry 9080 (class 0 OID 381533)
--- Dependencies: 1218
+-- TOC entry 5718 (class 0 OID 419515)
+-- Dependencies: 221
 -- Data for Name: col_interpolaciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7960,8 +7960,8 @@ COPY test_ladm_col_queries.col_interpolaciontipo (t_id, thisclass, baseclass, it
 
 
 --
--- TOC entry 9093 (class 0 OID 381650)
--- Dependencies: 1231
+-- TOC entry 5719 (class 0 OID 419522)
+-- Dependencies: 222
 -- Data for Name: col_iso19125_tipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7974,18 +7974,301 @@ COPY test_ladm_col_queries.col_iso19125_tipo (t_id, thisclass, baseclass, itfcod
 
 
 --
--- TOC entry 8966 (class 0 OID 380397)
--- Dependencies: 1104
+-- TOC entry 5720 (class 0 OID 419529)
+-- Dependencies: 223
 -- Data for Name: col_masccl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
 COPY test_ladm_col_queries.col_masccl (t_id, t_ili_tid, ccl_mas, ue_mas_lc_terreno, ue_mas_lc_construccion, ue_mas_lc_unidadconstruccion, ue_mas_lc_servidumbretransito) FROM stdin;
+3668	05ab8876-c3dc-45a0-99e4-b3a48a07e714	784	1406	\N	\N	\N
+3669	4853413f-550e-4834-8a2e-30d9215dc46e	790	1406	\N	\N	\N
+3670	dd9aa1cd-9ab1-4970-8517-1281a8285f17	779	1406	\N	\N	\N
+3671	955f83c6-93fa-4bcd-b42b-0ace3c19a3e0	777	1406	\N	\N	\N
+3672	2cf5bc24-21f7-4cf7-b74e-06fd12078d9a	837	1407	\N	\N	\N
+3673	09236da5-a861-4bc3-8169-743c320156a3	777	1407	\N	\N	\N
+3674	8e7e6566-9de2-4670-95b1-496c1a6592c4	758	1408	\N	\N	\N
+3675	0ede2218-cc90-4c38-abc7-421745af2cfb	880	1408	\N	\N	\N
+3676	41fbb6ae-c7b5-4453-939a-702e345d21fc	875	1408	\N	\N	\N
+3677	8afab913-f7b6-44c9-ac1b-17ad5221ad45	757	1408	\N	\N	\N
+3678	1064ef70-b76b-4332-a93f-3b5b52dcf00b	867	1409	\N	\N	\N
+3679	345786bf-2612-418f-8042-a38be7aafaab	802	1409	\N	\N	\N
+3680	45866157-4720-458b-a15c-2d2d5016be97	897	1409	\N	\N	\N
+3681	4f28352d-7382-44b7-858c-d4807592c0e5	868	1409	\N	\N	\N
+3682	aee88042-d7f3-47de-94a5-b6382038cf9b	890	1413	\N	\N	\N
+3683	488e5dd5-d158-4cc1-b1ef-34505b509c18	884	1413	\N	\N	\N
+3684	4a793d2c-27e5-4385-bdb3-f4f66b9173a0	896	1413	\N	\N	\N
+3685	76f55f37-ee03-4c9a-9ab1-5605a8e04d5e	893	1413	\N	\N	\N
+3686	893276af-085e-4450-aac2-d11a82b20022	906	1414	\N	\N	\N
+3687	e5946c18-d118-4d97-aa54-53db0ad4af78	763	1414	\N	\N	\N
+3688	9ca32135-04b3-4ef2-acd0-f1e469a01599	756	1414	\N	\N	\N
+3689	da804450-bff7-49ab-aa6d-9b7f9db7a53f	760	1415	\N	\N	\N
+3690	4823b43c-9514-4f9f-be1a-52eccca57115	764	1415	\N	\N	\N
+3691	a8eea33e-1ce1-447d-b276-84d9115d7ac2	776	1415	\N	\N	\N
+3692	0195d850-55fa-4426-a0d0-d8b2538af602	769	1416	\N	\N	\N
+3693	37888385-3669-4a34-a8be-a30ed99c6f69	771	1416	\N	\N	\N
+3694	fc8a5098-8547-41fb-b27e-518d067fc88a	776	1416	\N	\N	\N
+3695	e1bc0e3a-5e17-42db-ae93-09449ff6e4ec	901	1416	\N	\N	\N
+3696	6e61598f-630f-4351-a8ca-07f64b4958c2	820	1417	\N	\N	\N
+3697	57dbc2e3-982d-4408-b9f6-6c44b7e3a034	819	1417	\N	\N	\N
+3698	19fdbadb-c26c-49fc-ae61-5f2ab10574dc	834	1417	\N	\N	\N
+3699	0cf61063-ca34-41c6-84c6-ca8995809c71	878	1417	\N	\N	\N
+3700	c05665c8-ad4e-4189-803b-4f269a50ccf8	791	1417	\N	\N	\N
+3701	d4e596f1-20b9-4fb6-8133-34c9b132f559	852	1418	\N	\N	\N
+3702	00d79aea-8b2c-43e3-9a76-8b3a1581d7df	847	1418	\N	\N	\N
+3703	fa008129-c022-4446-9abd-6fc05dfdd6a7	844	1418	\N	\N	\N
+3704	b8f4d651-a345-4f76-8811-50a9cb051be1	859	1418	\N	\N	\N
+3705	f5fb559a-4418-49ed-83fa-8da988a16f73	780	1419	\N	\N	\N
+3706	47d0e1ad-6da0-44ec-80fd-703396cb1659	852	1419	\N	\N	\N
+3707	c9fcd05f-b238-471f-8356-9286e014d907	779	1419	\N	\N	\N
+3708	5b84e424-809b-4497-bd07-eed034a7ab8a	850	1419	\N	\N	\N
+3709	4013ba26-1bf4-45d9-9d61-ebc8d93805cc	824	1420	\N	\N	\N
+3710	c19fc0bd-86c7-4690-a59e-47387a22de8a	783	1420	\N	\N	\N
+3711	c12abff5-93cc-4786-993b-ea4d5b6f6205	864	1420	\N	\N	\N
+3712	10577eaf-abd1-437f-bb3d-bd60f47b1bcc	833	1420	\N	\N	\N
+3713	de174b12-7e54-482e-8ae1-2a18ba021c9d	761	1421	\N	\N	\N
+3714	28929ed0-adb8-40c8-a01a-70273b0a49f1	858	1421	\N	\N	\N
+3715	dec7592d-49c8-47cf-be90-9cff0e2a7cb8	865	1422	\N	\N	\N
+3716	4aab7b95-0ff1-4d73-93f3-8201cead8814	855	1423	\N	\N	\N
+3717	1284af15-f62a-4f2a-aa48-c10582aeed4f	849	1423	\N	\N	\N
+3718	f02adb1d-3800-4970-b053-96857e66e705	865	1423	\N	\N	\N
+3719	2a4663f8-c837-4597-90b1-c3305e0c9e48	859	1423	\N	\N	\N
+3720	2c0974ea-5f94-40b0-a824-8afe3ce02edc	863	1423	\N	\N	\N
+3721	aa3bc485-4b42-4826-bf0d-7ea36150fa71	769	1424	\N	\N	\N
+3722	60ef13c6-d6b6-46a5-a763-3ba2138a3337	770	1424	\N	\N	\N
+3723	512708c1-da42-4577-9aff-caee067df98b	900	1424	\N	\N	\N
+3724	4029cce1-c946-486d-ab1f-5f3b4a8b9658	902	1424	\N	\N	\N
+3725	2f6cb555-7ba9-4a19-9909-d30f07cfdc36	773	1425	\N	\N	\N
+3726	26d687c7-3f26-4639-89b6-be2893358e1e	758	1425	\N	\N	\N
+3727	830cf563-030a-4020-a444-236e1915e2e1	903	1425	\N	\N	\N
+3728	f2ab4890-5016-4d9b-b015-19a65219d10d	902	1425	\N	\N	\N
+3729	80b58880-b273-44a3-8191-fd1f33199c65	895	1426	\N	\N	\N
+3730	ebc4dfcc-92e8-4b6a-b760-88c1b0d27ed2	884	1426	\N	\N	\N
+3731	07899bdc-6d8d-4f4d-ae71-cc99bdee440c	894	1426	\N	\N	\N
+3732	37d0dbb5-3805-46a0-a567-f7c1af18e722	886	1426	\N	\N	\N
+3733	b1168fe5-3b15-4f70-b608-ebc3c161549b	801	1427	\N	\N	\N
+3734	44981f61-46b1-498f-8076-1309ae803c44	894	1427	\N	\N	\N
+3735	93f51074-022b-4b82-90d1-2422ffd5b3d6	893	1427	\N	\N	\N
+3736	c52f7311-0dcd-47a5-b678-eadbe6a391ca	887	1427	\N	\N	\N
+3737	810f1547-cc83-4152-9c91-014eea12e5de	888	1427	\N	\N	\N
+3738	332c99ce-26db-45a4-a686-5afd0e78cfd5	881	1427	\N	\N	\N
+3739	82325752-ead6-4f25-9bc9-1622fe22bf60	890	1428	\N	\N	\N
+3740	c7355171-4c67-4247-aa44-a440a4956dcc	891	1428	\N	\N	\N
+3741	d02666fa-798e-4095-8c87-6b7f69179c83	828	1428	\N	\N	\N
+3742	3b860508-7296-4fca-8ad3-2cc6221b63f7	883	1428	\N	\N	\N
+3743	2b047710-51f3-4920-9420-3b8fa623365f	840	1428	\N	\N	\N
+3744	508b8ac0-f026-433a-bf1a-dd801d8141be	888	1428	\N	\N	\N
+3745	a20b7e7b-75b4-4795-ade0-0fe99b9797ed	862	1430	\N	\N	\N
+3747	84caef42-ec55-4c8b-aa17-5c24aa4d1f87	810	1433	\N	\N	\N
+3748	d13e2151-4bc0-456d-b970-f5b22e24523f	892	1433	\N	\N	\N
+3749	29fc118f-0f85-4b59-8059-5a50eb9a184a	899	1433	\N	\N	\N
+3750	9f8db817-56f4-49e0-8234-875e4688ab89	767	1433	\N	\N	\N
+3751	bfccc028-e9b4-48d0-a35d-0c3c99cc3866	898	1434	\N	\N	\N
+3752	e445fcfc-f8dc-4d1c-a42b-b13c4694717c	907	1434	\N	\N	\N
+3753	f8afa222-da65-40a9-94d6-a6046cb26976	899	1434	\N	\N	\N
+3754	75be04b5-624c-44eb-a3a7-2480a658dd2c	814	1434	\N	\N	\N
+3755	bc03b8e5-4ce6-4f6c-a709-232fe479bce6	908	1435	\N	\N	\N
+3756	6371131e-0135-464d-8bcf-4f8a6641265a	880	1435	\N	\N	\N
+3757	0389d2af-69bf-4b86-aa98-2cee275f9031	822	1435	\N	\N	\N
+3758	bc7ae082-992d-4df7-b844-76d42f9e18b8	873	1435	\N	\N	\N
+3759	f20a8fa0-9143-481e-a3e6-d6de44bc7da8	800	1436	\N	\N	\N
+3760	2d929cc8-fdf9-4134-b771-205c96050a25	794	1436	\N	\N	\N
+3761	36726e1d-fe8d-4dcb-b70e-c9dee0d906aa	793	1436	\N	\N	\N
+3762	19e926b4-7036-4b8e-b285-c07beb4854a8	798	1436	\N	\N	\N
+3763	7853bd13-a419-4951-8105-ef001d419b2a	787	1437	\N	\N	\N
+3764	53251d71-0f9e-429e-9f70-e49f2c8273af	786	1437	\N	\N	\N
+3765	4ac181e8-c1de-420e-9da1-55ba0025fd43	793	1437	\N	\N	\N
+3766	c4e6bfae-8e1e-46be-bbe3-8657f8cff62d	799	1437	\N	\N	\N
+3767	ab2243ff-b391-4508-8224-d44fbda24d8b	783	1439	\N	\N	\N
+3768	b4ece7dd-3a07-4f7b-94c9-a2dece5da111	772	1439	\N	\N	\N
+3769	0f13c81b-f650-4c14-8068-9c1b2d1b7382	869	1439	\N	\N	\N
+3770	8be2c402-1b61-4c23-abe0-8996c26af1ce	781	1439	\N	\N	\N
+3771	608f6370-12c3-4988-9825-b9816ab2e36e	778	1439	\N	\N	\N
+3772	73083ee3-80b2-4a65-bd80-0a4cf06edf89	860	1439	\N	\N	\N
+3773	41272859-09e1-43ac-b5af-6425da65ee50	870	1439	\N	\N	\N
+3774	b420134b-a1f5-4206-baf8-9af3d580a5de	871	1439	\N	\N	\N
+3775	6e2685ba-122f-40d6-926b-eac92d4a1dff	908	1439	\N	\N	\N
+3776	5869702c-3a32-4608-ada1-14bf9d64ed4b	759	1439	\N	\N	\N
+3777	2fc1f713-77c6-46bf-a1c1-08be00a5b11f	901	1439	\N	\N	\N
+3778	ef63bd79-4cb5-41f3-af05-8026c3d1b196	900	1439	\N	\N	\N
+3779	3e4552a1-dcec-41a6-915d-b7e1398f971f	903	1439	\N	\N	\N
+3780	bb91c525-552c-4ad3-8c45-8058718f79a7	756	1439	\N	\N	\N
+3781	77d6077c-6ace-4ec6-aa14-7cfeb2d0277f	757	1439	\N	\N	\N
+3782	5ef5353f-73cd-4c8a-96c1-d58b46351c45	904	1440	\N	\N	\N
+3783	46bbc426-b497-4dcb-8a59-c48111c6effa	879	1440	\N	\N	\N
+3784	f0fd5d15-fd74-4c95-a3ae-bc2c23c582e3	817	1440	\N	\N	\N
+3785	62beb7d7-ba87-453e-b0bb-1fab2ca19caf	791	1440	\N	\N	\N
+3786	341aff13-3d62-4eb7-9f30-6b30e4e2112e	801	1441	\N	\N	\N
+3787	4b782e99-208d-4369-b32b-7a095d8d1ab0	842	1441	\N	\N	\N
+3788	b1f14851-e976-48d4-b471-f549979abf1e	832	1441	\N	\N	\N
+3789	aed8e4aa-0d12-4725-a79f-82e1c4f24da6	883	1441	\N	\N	\N
+3790	d2e27610-9918-41fd-8efc-5198814d9a45	827	1441	\N	\N	\N
+3791	0e85a045-7d71-4de1-b2b8-759b2d5d4759	876	1443	\N	\N	\N
+3792	c27b1ed4-f00a-460e-ba2b-5ee5554c031b	842	1443	\N	\N	\N
+3793	9510139c-5e3c-41e6-a953-81345d118bcc	841	1443	\N	\N	\N
+3794	8acaa17e-0371-434f-b71b-efa5466ae37a	825	1443	\N	\N	\N
+3795	89829a4d-e562-424c-b81f-5208b2882ec7	881	1443	\N	\N	\N
+3796	beebbb60-6584-44b6-a601-842777e8b1ed	841	1444	\N	\N	\N
+3797	be686203-674a-4706-922f-d940ccbbb509	832	1444	\N	\N	\N
+3798	f43c60a4-038f-4d5f-a265-22613295b9da	826	1444	\N	\N	\N
+3799	8ad6a78b-8821-41de-88da-1dcfe04a3291	829	1444	\N	\N	\N
+3800	62abd485-f3d8-4a8e-a3a0-ce2fd7e8bd47	818	1445	\N	\N	\N
+3801	6018bcb8-b54d-430a-96ec-a8252120f5d5	792	1445	\N	\N	\N
+3802	59b86c50-3537-4356-9f5d-1f637fd57d03	904	1445	\N	\N	\N
+3803	8db4b61e-c5c8-4766-8942-fac9d6faa3c8	834	1445	\N	\N	\N
+3804	13bf1aef-f546-4ddd-a8e7-4e8ce9873c84	785	1445	\N	\N	\N
+3805	c8cca981-c6c6-40a8-a956-37d202a26601	820	1446	\N	\N	\N
+3806	ab3c4207-a8d5-4458-970c-21c25e65fc89	866	1446	\N	\N	\N
+3807	585c6ec8-c835-490e-bdd3-00e35d843c30	788	1446	\N	\N	\N
+3808	f1b33123-a889-433f-a9a3-1ea8c6be71c0	889	1447	\N	\N	\N
+3809	47e13b0e-94ea-4c9a-ac6a-02be345a629c	891	1447	\N	\N	\N
+3810	2db84880-ae2a-42df-bbab-af4c918d96ef	810	1447	\N	\N	\N
+3811	1011d37e-bbad-42ba-95a4-deb221c72813	895	1447	\N	\N	\N
+3812	0b847fbe-e4a3-481c-bb8d-8228066636eb	896	1447	\N	\N	\N
+3813	01429499-5d97-41a7-b6ce-08cb143cf719	858	1447	\N	\N	\N
+3814	a7e4b2a4-cde1-4ab8-982c-fcb1d7a62a9a	821	1447	\N	\N	\N
+3815	3952ad2c-b78b-4f78-8c68-c478f569bf8d	774	1447	\N	\N	\N
+3816	15fad0a8-b3da-4c4c-9090-c037d5ffd284	762	1447	\N	\N	\N
+3817	df686b70-d681-4ec4-b5f5-81e1475c372f	889	1449	\N	\N	\N
+3818	f1930ad4-2cd2-453b-ab76-1643cf2de81e	828	1449	\N	\N	\N
+3819	b9151ae1-a34b-4a4d-9242-bcde221de281	843	1449	\N	\N	\N
+3820	c85da7ac-50d6-442f-8a60-bdf5118a46b2	898	1449	\N	\N	\N
+3821	72234324-1e48-4ce9-bd02-550a139bca4e	867	1449	\N	\N	\N
+3822	c4ec1cbd-d1ce-420b-81f5-5aa0f4cde0c0	892	1449	\N	\N	\N
+3823	09a0993c-8070-41e9-b288-9558a4dd7ac1	809	1449	\N	\N	\N
+3824	07f54e3d-4363-40d0-a6da-95e9bcdc4f38	803	1449	\N	\N	\N
+3825	11b420d7-88f3-42f9-b29a-3b38b009cd40	815	1449	\N	\N	\N
+3826	de08b614-53f7-4f25-9bd4-d73d7f9a6068	848	1449	\N	\N	\N
+3827	cecfeec7-6dc4-4df2-9655-1789e843d97a	796	1449	\N	\N	\N
+3828	d2d15ff4-1c91-4176-95b2-35fef90eee4c	872	1449	\N	\N	\N
+3829	9ff43d51-f350-4e00-88cd-42957e13d81f	854	1449	\N	\N	\N
+3830	362072a7-e96f-4a34-9d15-b5bbd34109cc	786	1449	\N	\N	\N
+3831	8675baf6-013f-4723-80b3-7c480936fd53	877	1449	\N	\N	\N
+3832	df1ab431-9197-4141-a05c-f8485e51941c	839	1449	\N	\N	\N
+3833	58693f75-20ba-41d2-9420-f7b873ae9e08	836	1449	\N	\N	\N
+3834	f3bacdda-4432-4d33-9102-f954b274ba8b	876	1450	\N	\N	\N
+3835	0221e115-eb5f-41da-842a-008ab6804784	771	1450	\N	\N	\N
+3836	d1e8d44c-bfff-4eaf-b3f7-3d3ababffd6b	761	1450	\N	\N	\N
+3837	53321cb5-8218-4d06-b07e-ad385262ae78	770	1450	\N	\N	\N
+3838	3a67489f-1785-49ab-9a45-ea6927695dc0	773	1450	\N	\N	\N
+3839	2e5187db-e5a7-4de2-a0cd-47c9134e0a25	821	1450	\N	\N	\N
+3840	33fce565-2ae0-4b0a-ade2-848a8c51a701	775	1450	\N	\N	\N
+3841	47bc05ad-7c20-4d58-b116-35041b6704ed	762	1450	\N	\N	\N
+3842	fc83e228-af9e-4175-b0e4-69ac6782e2e3	764	1450	\N	\N	\N
+3843	0ee3d710-64be-45f2-bd01-afbf7794bb03	794	1450	\N	\N	\N
+3844	5ac5ccc1-36aa-4b5f-87d2-60d49fe4432f	808	1450	\N	\N	\N
+3845	2e74dd0e-2126-4ff9-a21a-8e1e5fc7ed35	795	1450	\N	\N	\N
+3846	0120b2dd-6cfa-4b07-8804-8a1add8c3b50	797	1450	\N	\N	\N
+3847	274cf43d-e41e-4fb0-881a-f769f06df7c2	885	1450	\N	\N	\N
+3848	fb2abbbe-b167-4a8c-8ee9-fec2e62fcf67	835	1450	\N	\N	\N
+3849	ecee1a5b-12a3-47c1-87f8-3137b8402a58	879	1450	\N	\N	\N
+3850	c1e62690-7626-43ae-8b28-c55cbf34284f	878	1450	\N	\N	\N
+3851	8ec5b224-5b23-4e93-bfc9-d03296980732	788	1450	\N	\N	\N
+3852	4787a997-ee45-4899-bc1f-0d9bbdc080eb	864	1450	\N	\N	\N
+3853	ef80aaa4-0839-49e0-a1a4-6d10ae5051dd	806	1450	\N	\N	\N
+3854	c10495fc-33fe-4b49-ad57-b83ac8fa96fb	861	1450	\N	\N	\N
+3855	9426d5a9-4545-41db-8bec-2334f08899c4	887	1450	\N	\N	\N
+3856	abf37901-b77e-4dd8-8229-865e79661331	811	1450	\N	\N	\N
+3857	4b9c133a-d26c-4abf-9997-b851a8a678b2	823	1450	\N	\N	\N
+3858	941c8c50-9159-4666-8ea2-83e61870aff2	875	1450	\N	\N	\N
+3859	7df98510-dbff-492e-afad-9bc313fff072	873	1450	\N	\N	\N
+3860	e70f510a-c0f2-49a7-82e6-86022fc18fc4	886	1450	\N	\N	\N
+3861	0ad37196-fab5-436a-8273-818b770a10ab	755	1451	\N	\N	\N
+3862	2ea80023-8daf-497c-81ef-e6ed0b664283	766	1451	\N	\N	\N
+3863	6024fdb7-f2e0-4dcd-8d68-8eb9297233ad	877	1451	\N	\N	\N
+3864	b65639d4-5032-488c-99b9-12b8e7312db6	874	1451	\N	\N	\N
+3865	4e1e9446-72e0-4a46-98c0-35597c476bd9	765	1451	\N	\N	\N
+3866	7b071062-46a8-4462-b155-912a27fe8606	857	1453	\N	\N	\N
+3867	599fdcbb-c495-4237-9c8f-953f0bb5d8cf	847	1453	\N	\N	\N
+3868	bb444b14-b517-4897-add9-2cd9a23dd07d	882	1453	\N	\N	\N
+3869	95072216-52bb-4eb8-8368-17598213ada5	871	1453	\N	\N	\N
+3870	689712ee-eefa-47ae-9e4f-f39ed8d845a4	856	1453	\N	\N	\N
+3871	0307a0b6-59ee-4e2c-b035-cfbeb0798d8a	813	1454	\N	\N	\N
+3872	14bb77ff-254d-4967-a9b5-d3094f59ab9e	868	1454	\N	\N	\N
+3873	8014916c-c16b-43c8-84a5-f86cf9183554	846	1454	\N	\N	\N
+3874	c04d6b5e-bd5b-4c30-82c3-dc28bb045c81	804	1454	\N	\N	\N
+3875	54555d69-db1e-41e7-b790-c96fe4f6e5d5	845	1454	\N	\N	\N
+3876	72950d91-64da-4435-8d21-6b437ec12186	765	1454	\N	\N	\N
+3877	2307e7c7-91fd-45b5-8b94-7bea5b938ad5	800	1455	\N	\N	\N
+3878	65647455-6729-4c1e-94d4-2bd19bd2060d	789	1455	\N	\N	\N
+3879	d9943cca-67f5-4c46-bf8a-783665c2b874	787	1455	\N	\N	\N
+3880	8a540f7a-5ece-4f04-8dd3-ded5655b9e73	866	1455	\N	\N	\N
+3881	5da3fec6-39d3-488c-adb2-fd0786f0bd55	819	1455	\N	\N	\N
+3882	b12c1998-4f4c-4627-bffa-3becf48a666a	797	1455	\N	\N	\N
+3883	6cc6226a-e813-4362-ab8c-9b27ce18b632	785	1455	\N	\N	\N
+3884	42af97b8-759b-41aa-af97-6681af2299e7	807	1456	\N	\N	\N
+3885	6e08e7f8-bd52-4d66-a1cd-625a9c873b1e	835	1456	\N	\N	\N
+3886	5e328ad8-3f1e-4e1a-962f-3405f94a5f5b	782	1456	\N	\N	\N
+3887	a9bf06d6-bcf8-4410-83bd-5bd1154b6ad5	837	1456	\N	\N	\N
+3888	2be32d52-3420-4462-9925-95f3dc0c8659	784	1456	\N	\N	\N
+3889	570f7e7f-3c1a-4903-8208-b2aa85e2c54b	857	1456	\N	\N	\N
+3890	1a2bbbf2-dfc3-427e-8608-98c03a3f5840	838	1456	\N	\N	\N
+3891	c074725d-a8cd-469d-8e66-7fbec2311a9e	869	1456	\N	\N	\N
+3892	195117f1-e776-4fd2-999d-52836781f96a	781	1456	\N	\N	\N
+3893	28978dbd-08a5-4243-8cd0-bfea4bba841f	780	1456	\N	\N	\N
+3894	7f32df25-0082-4f07-85d3-90c1cdd3afbb	790	1456	\N	\N	\N
+3895	3e4797be-9240-4730-a057-c713b6f03923	850	1456	\N	\N	\N
+3896	23121281-71a3-4284-b67f-e70dfaa7559a	796	1457	\N	\N	\N
+3897	0be302c2-9c09-4633-9e24-9dfcafff5909	872	1457	\N	\N	\N
+3898	dfaec571-3362-45a1-b4cb-f70a5cf55d0f	805	1457	\N	\N	\N
+3899	5f875fa8-5946-49ff-ad16-730c8a356832	755	1457	\N	\N	\N
+3900	acaa16dc-5e46-406f-b341-0b4a2b4f6cfa	853	1457	\N	\N	\N
+3901	89d9b5e5-35f1-4db5-a500-a963197db160	798	1457	\N	\N	\N
+3902	8a16f5e2-f4e9-4d9d-a371-6309dc7d5c01	795	1457	\N	\N	\N
+3903	ed6b1cb7-adcb-4140-9be6-11a5e3e0cc46	799	1457	\N	\N	\N
+3904	311909f4-e05e-430b-aee9-d14c519a1822	851	1459	\N	\N	\N
+3905	6fc0f9f5-b700-48c5-afc4-ea1d298aa468	845	1459	\N	\N	\N
+3906	4cbeff06-174b-4bbb-a7b5-893792eff659	789	1459	\N	\N	\N
+3907	e33b784a-dee4-4f13-ba69-8cbae448cbb3	874	1459	\N	\N	\N
+3908	c43e782d-e53e-43ff-8fa5-7ae99b085ed7	905	1459	\N	\N	\N
+3909	63ba5156-1a7c-4c3b-9a13-06537d2352e4	831	1459	\N	\N	\N
+3910	f28d2908-a4e6-41b1-8879-9bb878ced9b0	792	1459	\N	\N	\N
+3911	718cbced-53b5-4568-8a79-367b36979f3d	839	1459	\N	\N	\N
+3912	90339cd6-1a69-4157-9117-c99436a0d4b4	836	1459	\N	\N	\N
+3913	a14e9258-f746-4dee-aa28-e44a0dc77d8f	843	1461	\N	\N	\N
+3914	650b8b5f-0e0f-4705-be1c-e4faa211d6d6	840	1461	\N	\N	\N
+3915	55b416a1-c2bb-4f51-873d-b4e7f7b6cd48	897	1461	\N	\N	\N
+3916	fd2c3b49-0f27-4ea3-8a6d-f0fec8e596a0	827	1461	\N	\N	\N
+3917	dc549cd1-3de9-4a60-96ff-9b1ebb87f0aa	848	1461	\N	\N	\N
+3918	1e8fe61f-138e-4de0-9f27-1b7d35637011	829	1461	\N	\N	\N
+3919	1523eb68-48ae-4bc9-ad82-24830ab90614	846	1461	\N	\N	\N
+3920	2ef8a434-5758-4571-87d3-6442ee2586fa	851	1461	\N	\N	\N
+3921	744ca76a-ed1a-4468-af03-d6f012b37a4d	830	1461	\N	\N	\N
+3922	303744cc-2e35-4831-b093-c8363141f450	831	1461	\N	\N	\N
+3923	4e49435a-600e-484a-bed9-1f6232891aa2	824	1463	\N	\N	\N
+3924	a16110a2-5311-44a7-95a2-53cf52629426	861	1463	\N	\N	\N
+3925	5f5852cb-f6da-4694-9b03-21692efdac4d	862	1463	\N	\N	\N
+3926	f2f5b892-b470-4372-823d-af43639fbfdf	823	1463	\N	\N	\N
+3927	091a85d4-696d-4ec8-bc67-083bc72f1590	763	1463	\N	\N	\N
+3928	6a307ade-1844-4f47-87f8-dd30f226924f	855	1463	\N	\N	\N
+3929	0e50b604-76b9-4819-a19d-6d322b3a7e51	860	1463	\N	\N	\N
+3930	3749b64d-b84a-4baa-a5f0-3a890e420b5c	882	1463	\N	\N	\N
+3931	3fe8516a-5a40-4982-9fad-edf21c88a5b7	870	1463	\N	\N	\N
+3932	866c3d48-6fda-4e49-9904-0c29a775c893	822	1463	\N	\N	\N
+3933	d809cd30-d18d-4375-b704-96d195fbea83	768	1463	\N	\N	\N
+3934	d4cde068-3962-443b-8a92-bb9b8237f8af	772	1464	\N	\N	\N
+3935	ead1e769-f6b1-4765-b182-cb904f0dfdf6	833	1464	\N	\N	\N
+3936	e799e4bd-c505-4dea-9c7f-05ea56c71854	782	1464	\N	\N	\N
+3937	4837a679-4b14-4b66-9728-8217a914c400	806	1464	\N	\N	\N
+3938	4d837840-6e40-4289-9e1c-683fd7b3642b	802	1465	\N	\N	\N
+3939	0dd3eddc-a7e2-4c8d-b138-a272e43080a6	816	1465	\N	\N	\N
+3940	6824a862-565d-4e29-b080-6b57076c8cdf	813	1465	\N	\N	\N
+3941	00287424-a038-4734-963c-65ac82b64c8d	803	1465	\N	\N	\N
+3942	326593ba-e1af-499d-bf6d-cf00c3e15067	812	1467	\N	\N	\N
+3943	b38f9d68-7813-4d94-b59d-211dbee08647	814	1467	\N	\N	\N
+3944	cbb8708b-1c50-4724-bf4e-f9428a16e768	815	1467	\N	\N	\N
+3945	74becb3b-773a-4d16-8708-83a21a95aa28	825	1469	\N	\N	\N
+3946	0136cc4d-7e69-4abd-8872-8ffa8ad1067d	826	1469	\N	\N	\N
+3947	5e8c727b-86ee-450b-acb6-728aece3d162	830	1469	\N	\N	\N
+3948	ee83af33-d0d4-40ba-9a1e-ad5f54de9f1d	818	1469	\N	\N	\N
+3949	9fecc20d-523c-48df-b2d3-b55c6a531287	905	1469	\N	\N	\N
+3950	0c43f052-3cd3-4b91-8211-9a4f51f8da51	885	1469	\N	\N	\N
+3951	543424a3-e4b7-4099-b01f-c3d8a935f385	817	1469	\N	\N	\N
 \.
 
 
 --
--- TOC entry 8970 (class 0 OID 380435)
--- Dependencies: 1108
+-- TOC entry 5721 (class 0 OID 419533)
+-- Dependencies: 224
 -- Data for Name: col_mascl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -7994,8 +8277,8 @@ COPY test_ladm_col_queries.col_mascl (t_id, t_ili_tid, ue_mas_lc_terreno, ue_mas
 
 
 --
--- TOC entry 8965 (class 0 OID 380386)
--- Dependencies: 1103
+-- TOC entry 5722 (class 0 OID 419537)
+-- Dependencies: 225
 -- Data for Name: col_menosccl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8004,8 +8287,8 @@ COPY test_ladm_col_queries.col_menosccl (t_id, t_ili_tid, ccl_menos, ue_menos_lc
 
 
 --
--- TOC entry 8969 (class 0 OID 380425)
--- Dependencies: 1107
+-- TOC entry 5723 (class 0 OID 419541)
+-- Dependencies: 226
 -- Data for Name: col_menoscl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8014,8 +8297,8 @@ COPY test_ladm_col_queries.col_menoscl (t_id, t_ili_tid, ue_menos_lc_terreno, ue
 
 
 --
--- TOC entry 9074 (class 0 OID 381479)
--- Dependencies: 1212
+-- TOC entry 5724 (class 0 OID 419545)
+-- Dependencies: 227
 -- Data for Name: col_metodoproducciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8027,8 +8310,8 @@ COPY test_ladm_col_queries.col_metodoproducciontipo (t_id, thisclass, baseclass,
 
 
 --
--- TOC entry 8975 (class 0 OID 380481)
--- Dependencies: 1113
+-- TOC entry 5725 (class 0 OID 419552)
+-- Dependencies: 228
 -- Data for Name: col_miembros; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8042,614 +8325,612 @@ COPY test_ladm_col_queries.col_miembros (t_id, t_ili_tid, interesado_lc_interesa
 
 
 --
--- TOC entry 8967 (class 0 OID 380408)
--- Dependencies: 1105
+-- TOC entry 5726 (class 0 OID 419556)
+-- Dependencies: 229
 -- Data for Name: col_puntoccl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
 COPY test_ladm_col_queries.col_puntoccl (t_id, t_ili_tid, punto_lc_puntolindero, punto_lc_puntolevantamiento, punto_lc_puntocontrol, ccl) FROM stdin;
-1761	\N	1165	\N	\N	843
-1763	\N	1166	\N	\N	843
-1765	\N	1363	\N	\N	843
-1767	\N	1372	\N	\N	843
-1769	\N	1015	\N	\N	843
-1771	\N	1016	\N	\N	843
-1773	\N	1351	\N	\N	843
-1775	\N	1337	\N	\N	843
-1777	\N	1099	\N	\N	843
-1779	\N	1173	\N	\N	843
-1781	\N	1223	\N	\N	844
-1783	\N	1096	\N	\N	857
-1785	\N	1026	\N	\N	857
-1787	\N	1274	\N	\N	761
-1789	\N	1284	\N	\N	761
-1791	\N	1216	\N	\N	761
-1793	\N	1226	\N	\N	858
-1795	\N	1275	\N	\N	858
-1797	\N	1227	\N	\N	858
-1799	\N	1274	\N	\N	858
-1801	\N	1284	\N	\N	858
-1803	\N	1237	\N	\N	858
-1805	\N	1228	\N	\N	762
-1807	\N	1274	\N	\N	762
-1809	\N	1229	\N	\N	762
-1811	\N	1228	\N	\N	774
-1813	\N	1391	\N	\N	845
-1815	\N	1378	\N	\N	845
-1817	\N	1314	\N	\N	845
-1819	\N	1306	\N	\N	845
-1821	\N	1335	\N	\N	845
-1823	\N	1376	\N	\N	846
-1825	\N	1276	\N	\N	846
-1827	\N	1282	\N	\N	846
-1829	\N	1294	\N	\N	846
-1831	\N	1301	\N	\N	846
-1833	\N	1390	\N	\N	846
-1835	\N	1378	\N	\N	846
-1837	\N	1377	\N	\N	846
-1839	\N	1378	\N	\N	851
-1841	\N	1099	\N	\N	851
-1843	\N	1094	\N	\N	844
-1845	\N	1181	\N	\N	848
-1847	\N	1256	\N	\N	848
-1849	\N	1168	\N	\N	848
-1851	\N	1190	\N	\N	848
-1853	\N	1192	\N	\N	848
-1855	\N	1177	\N	\N	848
-1857	\N	1178	\N	\N	848
-1859	\N	1253	\N	\N	848
-1861	\N	1254	\N	\N	848
-1863	\N	1255	\N	\N	848
-1865	\N	1155	\N	\N	848
-1867	\N	1156	\N	\N	848
-1869	\N	1344	\N	\N	848
-1871	\N	1039	\N	\N	848
-1873	\N	1153	\N	\N	848
-1875	\N	1154	\N	\N	848
-1877	\N	1012	\N	\N	839
-1879	\N	1022	\N	\N	839
-1881	\N	1023	\N	\N	839
-1883	\N	1024	\N	\N	839
-1885	\N	1251	\N	\N	839
-1887	\N	1252	\N	\N	839
-1889	\N	1221	\N	\N	839
-1891	\N	1222	\N	\N	839
-1893	\N	1017	\N	\N	839
-1895	\N	1264	\N	\N	839
-1897	\N	1249	\N	\N	839
-1899	\N	1250	\N	\N	839
-1901	\N	1021	\N	\N	839
-1903	\N	1191	\N	\N	848
-1905	\N	1179	\N	\N	848
-1907	\N	1180	\N	\N	848
-1909	\N	1130	\N	\N	852
-1911	\N	1129	\N	\N	852
-1913	\N	1081	\N	\N	852
-1915	\N	1223	\N	\N	852
-1917	\N	1096	\N	\N	852
-1919	\N	1077	\N	\N	835
-1921	\N	1027	\N	\N	835
-1923	\N	1078	\N	\N	835
-1925	\N	1030	\N	\N	864
-1927	\N	1106	\N	\N	864
-1929	\N	1119	\N	\N	864
-1931	\N	1037	\N	\N	864
-1933	\N	1048	\N	\N	855
-1935	\N	1047	\N	\N	855
-1937	\N	1049	\N	\N	855
-1939	\N	1091	\N	\N	855
-1941	\N	1102	\N	\N	859
-1943	\N	1103	\N	\N	859
-1945	\N	1094	\N	\N	859
-1947	\N	1101	\N	\N	859
-1949	\N	1131	\N	\N	852
-1951	\N	1361	\N	\N	843
-1953	\N	1362	\N	\N	843
-1955	\N	1268	\N	\N	843
-1957	\N	1266	\N	\N	843
-1959	\N	1245	\N	\N	843
-1961	\N	1246	\N	\N	843
-1963	\N	1247	\N	\N	843
-1965	\N	1235	\N	\N	843
-1967	\N	1236	\N	\N	843
-1969	\N	1013	\N	\N	843
-1971	\N	1014	\N	\N	843
-1973	\N	1242	\N	\N	843
-1975	\N	1243	\N	\N	843
-1977	\N	1244	\N	\N	843
-1979	\N	1248	\N	\N	843
-1981	\N	1233	\N	\N	843
-1983	\N	1055	\N	\N	763
-1985	\N	1026	\N	\N	869
-1987	\N	1075	\N	\N	869
-1989	\N	1076	\N	\N	869
-1991	\N	1127	\N	\N	837
-1993	\N	1113	\N	\N	837
-1995	\N	1126	\N	\N	837
-1997	\N	1120	\N	\N	837
-1999	\N	1269	\N	\N	838
-2001	\N	1223	\N	\N	838
-2003	\N	1115	\N	\N	838
-2005	\N	1114	\N	\N	838
-2007	\N	1075	\N	\N	838
-2009	\N	1265	\N	\N	838
-2011	\N	1271	\N	\N	838
-2013	\N	1270	\N	\N	838
-2015	\N	1029	\N	\N	860
-2017	\N	1104	\N	\N	860
-2019	\N	1136	\N	\N	860
-2021	\N	1090	\N	\N	870
-2023	\N	1042	\N	\N	870
-2025	\N	1089	\N	\N	870
-2027	\N	1092	\N	\N	870
-2029	\N	1026	\N	\N	871
-2031	\N	1397	\N	\N	871
-2033	\N	1136	\N	\N	871
-2035	\N	1091	\N	\N	863
-2037	\N	1394	\N	\N	863
-2039	\N	1101	\N	\N	863
-2041	\N	1029	\N	\N	763
-2043	\N	1056	\N	\N	763
-2045	\N	1054	\N	\N	763
-2047	\N	1041	\N	\N	855
-2049	\N	1040	\N	\N	833
-2051	\N	1033	\N	\N	833
-2053	\N	1037	\N	\N	833
-2055	\N	1083	\N	\N	861
-2057	\N	1082	\N	\N	861
-2059	\N	1117	\N	\N	861
-2061	\N	1108	\N	\N	861
-2063	\N	1117	\N	\N	862
-2065	\N	1118	\N	\N	862
-2067	\N	1093	\N	\N	862
-2069	\N	1084	\N	\N	862
-2071	\N	1393	\N	\N	865
-2073	\N	1395	\N	\N	865
-2075	\N	1132	\N	\N	865
-2077	\N	1396	\N	\N	865
-2079	\N	1291	\N	\N	804
-2081	\N	1300	\N	\N	804
-2083	\N	1290	\N	\N	804
-2085	\N	1283	\N	\N	804
-2087	\N	1293	\N	\N	804
-2089	\N	1279	\N	\N	804
-2091	\N	1289	\N	\N	804
-2093	\N	1295	\N	\N	804
-2095	\N	1296	\N	\N	804
-2097	\N	1272	\N	\N	804
-2099	\N	1281	\N	\N	804
-2101	\N	1288	\N	\N	804
-2103	\N	1292	\N	\N	804
-2105	\N	1389	\N	\N	804
-2107	\N	1341	\N	\N	804
-2109	\N	1348	\N	\N	804
-2111	\N	1305	\N	\N	766
-2113	\N	1328	\N	\N	766
-2115	\N	1327	\N	\N	766
-2117	\N	1319	\N	\N	766
-2119	\N	1327	\N	\N	853
-2121	\N	1098	\N	\N	853
-2123	\N	1098	\N	\N	854
-2125	\N	1321	\N	\N	854
-2127	\N	1333	\N	\N	804
-2129	\N	1319	\N	\N	804
-2131	\N	1311	\N	\N	804
-2133	\N	1299	\N	\N	804
-2135	\N	1298	\N	\N	804
-2137	\N	1297	\N	\N	804
-2139	\N	1304	\N	\N	804
-2141	\N	1383	\N	\N	804
-2143	\N	1379	\N	\N	827
-2145	\N	1088	\N	\N	832
-2147	\N	1065	\N	\N	832
-2149	\N	1379	\N	\N	832
-2151	\N	1064	\N	\N	825
-2153	\N	1063	\N	\N	825
-2155	\N	1065	\N	\N	841
-2157	\N	1063	\N	\N	841
-2159	\N	1065	\N	\N	842
-2161	\N	1058	\N	\N	842
-2163	\N	1125	\N	\N	842
-2165	\N	1141	\N	\N	828
-2167	\N	1344	\N	\N	828
-2169	\N	1350	\N	\N	840
-2171	\N	1344	\N	\N	840
-2173	\N	1312	\N	\N	766
-2175	\N	1085	\N	\N	818
-2177	\N	1051	\N	\N	818
-2179	\N	1086	\N	\N	818
-2181	\N	1086	\N	\N	905
-2183	\N	1060	\N	\N	905
-2185	\N	1039	\N	\N	831
-2187	\N	1060	\N	\N	831
-2189	\N	1069	\N	\N	829
-2191	\N	1379	\N	\N	829
-2193	\N	1069	\N	\N	830
-2195	\N	1060	\N	\N	830
-2197	\N	1062	\N	\N	826
-2199	\N	1069	\N	\N	826
-2201	\N	1063	\N	\N	826
-2203	\N	1350	\N	\N	827
-2205	\N	1349	\N	\N	827
-2207	\N	1277	\N	\N	821
-2209	\N	1273	\N	\N	810
-2211	\N	1230	\N	\N	810
-2213	\N	1387	\N	\N	810
-2215	\N	1231	\N	\N	810
-2217	\N	1117	\N	\N	811
-2219	\N	1118	\N	\N	811
-2221	\N	1118	\N	\N	823
-2223	\N	1119	\N	\N	823
-2225	\N	1049	\N	\N	768
-2227	\N	1056	\N	\N	768
-2229	\N	1089	\N	\N	824
-2231	\N	1119	\N	\N	824
-2233	\N	1082	\N	\N	822
-2235	\N	1042	\N	\N	822
-2237	\N	1232	\N	\N	812
-2239	\N	1212	\N	\N	907
-2241	\N	1213	\N	\N	907
-2243	\N	1157	\N	\N	767
-2245	\N	1160	\N	\N	767
-2247	\N	1158	\N	\N	767
-2249	\N	1159	\N	\N	767
-2251	\N	1186	\N	\N	767
-2253	\N	1187	\N	\N	767
-2255	\N	1230	\N	\N	767
-2257	\N	1188	\N	\N	767
-2259	\N	1145	\N	\N	767
-2261	\N	1213	\N	\N	767
-2263	\N	1225	\N	\N	821
-2265	\N	1284	\N	\N	821
-2267	\N	1121	\N	\N	821
-2269	\N	1317	\N	\N	816
-2271	\N	1375	\N	\N	816
-2273	\N	1219	\N	\N	809
-2275	\N	1232	\N	\N	809
-2277	\N	1212	\N	\N	814
-2279	\N	1382	\N	\N	814
-2281	\N	1211	\N	\N	815
-2283	\N	1232	\N	\N	815
-2285	\N	1267	\N	\N	815
-2287	\N	1382	\N	\N	815
-2289	\N	1217	\N	\N	812
-2291	\N	1212	\N	\N	812
-2293	\N	1210	\N	\N	812
-2295	\N	1209	\N	\N	812
-2297	\N	1214	\N	\N	812
-2299	\N	1215	\N	\N	812
-2301	\N	1338	\N	\N	804
-2303	\N	1339	\N	\N	804
-2305	\N	1313	\N	\N	804
-2307	\N	1334	\N	\N	804
-2309	\N	1308	\N	\N	804
-2311	\N	1383	\N	\N	813
-2313	\N	1302	\N	\N	813
-2315	\N	1374	\N	\N	802
-2317	\N	1369	\N	\N	802
-2319	\N	1302	\N	\N	802
-2321	\N	1219	\N	\N	803
-2323	\N	1374	\N	\N	803
-2325	\N	1218	\N	\N	803
-2327	\N	1219	\N	\N	816
-2329	\N	1220	\N	\N	816
-2331	\N	1383	\N	\N	816
-2333	\N	1347	\N	\N	799
-2335	\N	1356	\N	\N	799
-2337	\N	1332	\N	\N	799
-2339	\N	1345	\N	\N	799
-2341	\N	1321	\N	\N	796
-2343	\N	1332	\N	\N	796
-2345	\N	1321	\N	\N	805
-2347	\N	1322	\N	\N	805
-2349	\N	1359	\N	\N	794
-2351	\N	1364	\N	\N	794
-2353	\N	1357	\N	\N	794
-2355	\N	1358	\N	\N	794
-2357	\N	1323	\N	\N	795
-2359	\N	1354	\N	\N	795
-2361	\N	1322	\N	\N	795
-2363	\N	1353	\N	\N	795
-2365	\N	1079	\N	\N	797
-2367	\N	1326	\N	\N	786
-2369	\N	1360	\N	\N	786
-2371	\N	1332	\N	\N	786
-2373	\N	1072	\N	\N	787
-2375	\N	1071	\N	\N	787
-2377	\N	1360	\N	\N	787
-2379	\N	1071	\N	\N	800
-2381	\N	1359	\N	\N	800
-2383	\N	1070	\N	\N	793
-2385	\N	1071	\N	\N	793
-2387	\N	1345	\N	\N	793
-2389	\N	1345	\N	\N	798
-2391	\N	1364	\N	\N	798
-2393	\N	1352	\N	\N	799
-2395	\N	1346	\N	\N	799
-2397	\N	1112	\N	\N	876
-2399	\N	1064	\N	\N	876
-2401	\N	1087	\N	\N	876
-2403	\N	1028	\N	\N	876
-2405	\N	1057	\N	\N	885
-2407	\N	1064	\N	\N	885
-2409	\N	1052	\N	\N	885
-2411	\N	1061	\N	\N	885
-2413	\N	1059	\N	\N	788
-2415	\N	1340	\N	\N	788
-2417	\N	1359	\N	\N	797
-2419	\N	1067	\N	\N	797
-2421	\N	1059	\N	\N	797
-2423	\N	1038	\N	\N	797
-2425	\N	1066	\N	\N	797
-2427	\N	1080	\N	\N	797
-2429	\N	1203	\N	\N	757
-2431	\N	1203	\N	\N	758
-2433	\N	1031	\N	\N	758
-2435	\N	1204	\N	\N	908
-2437	\N	1042	\N	\N	908
-2439	\N	1082	\N	\N	873
-2441	\N	1035	\N	\N	873
-2443	\N	1121	\N	\N	886
-2445	\N	1107	\N	\N	886
-2447	\N	1111	\N	\N	887
-2449	\N	1110	\N	\N	887
-2451	\N	1109	\N	\N	887
-2453	\N	1100	\N	\N	887
-2455	\N	1107	\N	\N	887
-2457	\N	1112	\N	\N	887
-2459	\N	1105	\N	\N	876
-2461	\N	1086	\N	\N	792
-2463	\N	1329	\N	\N	792
-2465	\N	1336	\N	\N	792
-2467	\N	1050	\N	\N	785
-2469	\N	1330	\N	\N	785
-2471	\N	1336	\N	\N	785
-2473	\N	1367	\N	\N	904
-2475	\N	1085	\N	\N	904
-2477	\N	1050	\N	\N	834
-2479	\N	1367	\N	\N	834
-2481	\N	1050	\N	\N	819
-2483	\N	1331	\N	\N	819
-2485	\N	1340	\N	\N	820
-2487	\N	1331	\N	\N	820
-2489	\N	1052	\N	\N	817
-2491	\N	1085	\N	\N	817
-2493	\N	1075	\N	\N	778
-2495	\N	1073	\N	\N	778
-2497	\N	1398	\N	\N	779
-2499	\N	1392	\N	\N	779
-2501	\N	1120	\N	\N	784
-2503	\N	1392	\N	\N	784
-2505	\N	1113	\N	\N	777
-2507	\N	1120	\N	\N	777
-2509	\N	1398	\N	\N	790
-2511	\N	1113	\N	\N	790
-2513	\N	1367	\N	\N	791
-2515	\N	1365	\N	\N	791
-2517	\N	1398	\N	\N	780
-2519	\N	1223	\N	\N	780
-2521	\N	1360	\N	\N	789
-2523	\N	1336	\N	\N	789
-2525	\N	1078	\N	\N	808
-2527	\N	1355	\N	\N	808
-2529	\N	1125	\N	\N	801
-2531	\N	1123	\N	\N	801
-2533	\N	1027	\N	\N	806
-2535	\N	1037	\N	\N	806
-2537	\N	1078	\N	\N	807
-2539	\N	1073	\N	\N	807
-2541	\N	1027	\N	\N	782
-2543	\N	1074	\N	\N	782
-2545	\N	1040	\N	\N	783
-2547	\N	1089	\N	\N	783
-2549	\N	1040	\N	\N	772
-2551	\N	1074	\N	\N	772
-2553	\N	1074	\N	\N	781
-2555	\N	1073	\N	\N	781
-2557	\N	1364	\N	\N	795
-2559	\N	1124	\N	\N	756
-2561	\N	1133	\N	\N	756
-2563	\N	1134	\N	\N	756
-2565	\N	1029	\N	\N	756
-2567	\N	1135	\N	\N	756
-2569	\N	1045	\N	\N	756
-2571	\N	1134	\N	\N	906
-2573	\N	1019	\N	\N	906
-2575	\N	1020	\N	\N	906
-2577	\N	1056	\N	\N	906
-2579	\N	1202	\N	\N	906
-2581	\N	1018	\N	\N	906
-2583	\N	1097	\N	\N	808
-2585	\N	1322	\N	\N	808
-2587	\N	1068	\N	\N	808
-2589	\N	1142	\N	\N	896
-2591	\N	1143	\N	\N	896
-2593	\N	1386	\N	\N	889
-2595	\N	1387	\N	\N	889
-2597	\N	1141	\N	\N	889
-2599	\N	1388	\N	\N	889
-2601	\N	1385	\N	\N	889
-2603	\N	1381	\N	\N	898
-2605	\N	1303	\N	\N	898
-2607	\N	1382	\N	\N	898
-2609	\N	1213	\N	\N	899
-2611	\N	1303	\N	\N	899
-2613	\N	1303	\N	\N	892
-2615	\N	1387	\N	\N	892
-2617	\N	1368	\N	\N	892
-2619	\N	1268	\N	\N	897
-2621	\N	1123	\N	\N	888
-2623	\N	1125	\N	\N	881
-2625	\N	1112	\N	\N	881
-2627	\N	1144	\N	\N	894
-2629	\N	1107	\N	\N	894
-2631	\N	1142	\N	\N	895
-2633	\N	1121	\N	\N	895
-2635	\N	1144	\N	\N	884
-2637	\N	1142	\N	\N	884
-2639	\N	1116	\N	\N	893
-2641	\N	1144	\N	\N	893
-2643	\N	1116	\N	\N	890
-2645	\N	1143	\N	\N	890
-2647	\N	1143	\N	\N	891
-2649	\N	1141	\N	\N	891
-2651	\N	1384	\N	\N	896
-2653	\N	1025	\N	\N	776
-2655	\N	1240	\N	\N	776
-2657	\N	1201	\N	\N	769
-2659	\N	1238	\N	\N	769
-2661	\N	1224	\N	\N	902
-2663	\N	1032	\N	\N	902
-2665	\N	1096	\N	\N	847
-2667	\N	1101	\N	\N	847
-2669	\N	1091	\N	\N	856
-2671	\N	1101	\N	\N	856
-2673	\N	1091	\N	\N	882
-2675	\N	1136	\N	\N	882
-2677	\N	1350	\N	\N	883
-2679	\N	1122	\N	\N	883
-2681	\N	1123	\N	\N	883
-2683	\N	1116	\N	\N	888
-2685	\N	1147	\N	\N	774
-2687	\N	1230	\N	\N	774
-2689	\N	1280	\N	\N	775
-2691	\N	1228	\N	\N	775
-2693	\N	1286	\N	\N	775
-2695	\N	1240	\N	\N	764
-2697	\N	1286	\N	\N	764
-2699	\N	1034	\N	\N	773
-2701	\N	1032	\N	\N	773
-2703	\N	1031	\N	\N	773
-2705	\N	1032	\N	\N	770
-2707	\N	1239	\N	\N	770
-2709	\N	1238	\N	\N	770
-2711	\N	1287	\N	\N	771
-2713	\N	1240	\N	\N	771
-2715	\N	1238	\N	\N	771
-2717	\N	1201	\N	\N	900
-2719	\N	1201	\N	\N	901
-2721	\N	1025	\N	\N	901
-2723	\N	1025	\N	\N	759
-2725	\N	1134	\N	\N	759
-2727	\N	1025	\N	\N	760
-2729	\N	1285	\N	\N	760
-2731	\N	1286	\N	\N	760
-2733	\N	1324	\N	\N	760
-2735	\N	1315	\N	\N	760
-2737	\N	1035	\N	\N	875
-2739	\N	1036	\N	\N	875
-2741	\N	1031	\N	\N	875
-2743	\N	1204	\N	\N	880
-2745	\N	1035	\N	\N	880
-2747	\N	1204	\N	\N	757
-2749	\N	1320	\N	\N	877
-2751	\N	1325	\N	\N	877
-2753	\N	1325	\N	\N	874
-2755	\N	1306	\N	\N	874
-2757	\N	1307	\N	\N	765
-2759	\N	1319	\N	\N	765
-2761	\N	1318	\N	\N	765
-2763	\N	1310	\N	\N	765
-2765	\N	1309	\N	\N	765
-2767	\N	1316	\N	\N	765
-2769	\N	1306	\N	\N	765
-2771	\N	1224	\N	\N	903
-2773	\N	1203	\N	\N	903
-2775	\N	1146	\N	\N	903
-2777	\N	1128	\N	\N	903
-2779	\N	1224	\N	\N	900
-2781	\N	1139	\N	\N	868
-2783	\N	1276	\N	\N	868
-2785	\N	1137	\N	\N	868
-2787	\N	1098	\N	\N	872
-2789	\N	1320	\N	\N	872
-2791	\N	1059	\N	\N	866
-2793	\N	1342	\N	\N	866
-2795	\N	1331	\N	\N	866
-2797	\N	1340	\N	\N	878
-2799	\N	1366	\N	\N	878
-2801	\N	1365	\N	\N	878
-2803	\N	1343	\N	\N	879
-2805	\N	1052	\N	\N	879
-2807	\N	1365	\N	\N	879
-2809	\N	1327	\N	\N	755
-2811	\N	1320	\N	\N	755
-2813	\N	1278	\N	\N	897
-2815	\N	1276	\N	\N	897
-2817	\N	1374	\N	\N	867
-2819	\N	1373	\N	\N	867
-2821	\N	1371	\N	\N	867
-2823	\N	1268	\N	\N	867
-2825	\N	1370	\N	\N	867
-2827	\N	1380	\N	\N	867
-2829	\N	1148	\N	\N	868
-2831	\N	1302	\N	\N	868
-2833	\N	1150	\N	\N	868
-2835	\N	1149	\N	\N	868
-2837	\N	1138	\N	\N	868
-2839	\N	1151	\N	\N	868
-2841	\N	1152	\N	\N	868
-2843	\N	1140	\N	\N	868
-2845	\N	1043	\N	\N	849
-2847	\N	1096	\N	\N	850
-2849	\N	1392	\N	\N	850
-2851	\N	1258	\N	\N	839
-2853	\N	1259	\N	\N	839
-2855	\N	1360	\N	\N	839
-2857	\N	1257	\N	\N	839
-2859	\N	1260	\N	\N	839
-2861	\N	1261	\N	\N	839
-2863	\N	1262	\N	\N	839
-2865	\N	1263	\N	\N	839
-2867	\N	1189	\N	\N	839
-2869	\N	1039	\N	\N	839
-2871	\N	1399	\N	\N	839
-2873	\N	1400	\N	\N	839
-2875	\N	1011	\N	\N	839
-2877	\N	1195	\N	\N	836
-2879	\N	1196	\N	\N	836
-2881	\N	1197	\N	\N	836
-2883	\N	1198	\N	\N	836
-2885	\N	1208	\N	\N	836
-2887	\N	1205	\N	\N	836
-2889	\N	1206	\N	\N	836
-2891	\N	1207	\N	\N	836
-2893	\N	1193	\N	\N	836
-2895	\N	1194	\N	\N	836
-2897	\N	1044	\N	\N	849
-2899	\N	1053	\N	\N	849
-2901	\N	1049	\N	\N	849
-2903	\N	1046	\N	\N	849
-2905	\N	1094	\N	\N	849
-2907	\N	1095	\N	\N	849
-2909	\N	1174	\N	\N	843
-2911	\N	1175	\N	\N	843
-2913	\N	1176	\N	\N	843
-2915	\N	1161	\N	\N	843
-2917	\N	1170	\N	\N	836
-2919	\N	1182	\N	\N	836
-2921	\N	1183	\N	\N	836
-2923	\N	1184	\N	\N	836
-2925	\N	1169	\N	\N	836
-2927	\N	1171	\N	\N	836
-2929	\N	1172	\N	\N	836
-2931	\N	1325	\N	\N	836
-2933	\N	1099	\N	\N	836
-2935	\N	1199	\N	\N	836
-2937	\N	1200	\N	\N	836
-2939	\N	1185	\N	\N	836
-2941	\N	1234	\N	\N	843
-2943	\N	1167	\N	\N	843
-2945	\N	1241	\N	\N	843
-2947	\N	1162	\N	\N	843
-2949	\N	1163	\N	\N	843
-2951	\N	1164	\N	\N	843
+3072	970f2a6e-4e31-494e-a68b-f0d377cba21e	1320	\N	\N	755
+3073	a2aab5cd-e27e-4c9f-8e1c-3c0219f0ad11	1327	\N	\N	755
+3074	50ba2346-be76-456c-82c6-9b74bfaf5bf3	1045	\N	\N	756
+3075	e4d0381d-c2a1-44e5-8c7d-9b81b70860f0	1135	\N	\N	756
+3076	eddddbe0-5b9e-4491-be50-65024542edd8	1029	\N	\N	756
+3077	549d789d-d6cf-4221-9d34-f254495ae423	1134	\N	\N	756
+3078	a0c390f6-3c00-4833-8a0f-bcbfb2c362f7	1133	\N	\N	756
+3079	1c730c16-1b4c-4e83-98bd-88c64a07e7ba	1124	\N	\N	756
+3080	702947ce-a03a-4644-a868-1b16d5da7df3	1203	\N	\N	757
+3081	19cf0ded-52aa-499c-a06d-1b89b8fdb1de	1204	\N	\N	757
+3082	06843fbc-ca3f-4d11-bf07-057321170601	1031	\N	\N	758
+3083	2b10bac4-3292-4064-960a-eec5bfa95211	1203	\N	\N	758
+3084	f7ec9d39-cf99-415b-a696-dbc46e0839e0	1134	\N	\N	759
+3085	693c1c52-5bcd-42a1-b926-b6f218d359ea	1025	\N	\N	759
+3086	69bac2df-a753-46fa-b8f2-fe9f0996750a	1315	\N	\N	760
+3087	33dfe12c-8da1-41e3-a2da-17bb26d484ef	1324	\N	\N	760
+3088	3cb98d2a-71b4-4004-a98e-ba222a99e444	1286	\N	\N	760
+3089	e4b3ca5b-5a1f-4419-8f92-3838e4b2d282	1285	\N	\N	760
+3090	10ad181e-0bed-4224-b667-7b8c3b73791c	1025	\N	\N	760
+3091	22240fc3-2b33-4682-a9a8-6ea773186bf4	1216	\N	\N	761
+3092	090ec195-264d-4415-9eec-f8b5810d4dc6	1284	\N	\N	761
+3093	5f065710-3444-4d8e-910f-706dac98d818	1274	\N	\N	761
+3094	85ff74fa-f448-4776-b8a5-12e5cd8c6a0e	1229	\N	\N	762
+3095	cc2dc1d6-711b-43f7-8751-2cf837f2e161	1274	\N	\N	762
+3096	44faa31a-9a51-41bd-8c53-8b9632ae2506	1228	\N	\N	762
+3097	5f40c88d-1fc7-49f3-b739-e849d1cadca1	1055	\N	\N	763
+3098	b1417957-e118-4e63-b2df-b0f17c019452	1054	\N	\N	763
+3099	d024dd93-c297-401d-83f2-60c3ff30a2b6	1056	\N	\N	763
+3100	0ee72e6b-edaf-4eda-ab30-c90e7724e70e	1029	\N	\N	763
+3101	45ca4580-97b1-4852-a31d-3d979ff3e5b3	1286	\N	\N	764
+3102	009bb75d-89f5-4df5-8d9e-b4cf0d0a6e9d	1240	\N	\N	764
+3103	6df70670-30d5-4455-a663-5273e281a90d	1306	\N	\N	765
+3104	e98c6cf6-a68f-4ca5-8609-9ceaf7fbfaed	1316	\N	\N	765
+3105	8efb8694-57e1-4051-b71c-a63a00951a0c	1309	\N	\N	765
+3106	d1ffeed2-f714-4ef0-ad8e-3719a0a85b6a	1310	\N	\N	765
+3107	274552b7-7143-437b-8f42-fbf0ac22e255	1318	\N	\N	765
+3108	e89c14aa-3589-4271-b24d-1882c80ba636	1319	\N	\N	765
+3109	59af1fec-4139-4b93-b8e5-7b7b72d658ff	1307	\N	\N	765
+3110	457b5fa4-523d-4125-b881-75d0fd46693c	1319	\N	\N	766
+3111	597077eb-9462-4002-b9e5-a2776969deb6	1327	\N	\N	766
+3112	0c3209f2-fc05-4150-bf65-c348b5e9af46	1328	\N	\N	766
+3113	0fcc7798-b5d8-460c-98fb-121491a5b9d8	1305	\N	\N	766
+3114	fcf3604c-0502-4db7-85b5-c31b48e3ee45	1312	\N	\N	766
+3115	9b08d477-3877-4b6a-82ec-65fb9d03c821	1213	\N	\N	767
+3116	11983f96-aaca-4343-88fa-7be55a0dc285	1188	\N	\N	767
+3117	4fae8ca7-81ab-41cb-b16a-3c8216fcf402	1145	\N	\N	767
+3118	49c43ede-daa8-4ea7-b953-b87da075e81e	1230	\N	\N	767
+3119	f7505678-1a57-493c-bf11-af9f3bff4c0e	1187	\N	\N	767
+3120	6b1b809c-7aa5-4b3d-bec0-e62ed001c5cc	1186	\N	\N	767
+3121	8579e50e-deff-462a-b1b8-7741ad13c142	1159	\N	\N	767
+3122	0eab7d18-bdba-4812-8d9d-54edc407c408	1158	\N	\N	767
+3123	10a36c15-ee50-4c2b-8c54-2d3e80ed1285	1160	\N	\N	767
+3124	efc6d35b-d377-42d6-b5eb-63515ef74f25	1157	\N	\N	767
+3125	28b210ed-7d0f-4c2d-ba97-c196ee4a2ce4	1056	\N	\N	768
+3126	ed4a044b-a9df-4421-9528-57281a805cbb	1049	\N	\N	768
+3127	60072440-6c6b-4a77-a998-2c06351883c6	1238	\N	\N	769
+3128	04e73ace-73ca-47c5-bf02-635bd00759ef	1201	\N	\N	769
+3129	9cb8f75d-5f26-4039-9940-607a93c9ffea	1238	\N	\N	770
+3130	49117e9d-d10c-4693-9392-5b6ab23422bc	1239	\N	\N	770
+3131	5d880886-72a1-48b1-b59e-d384f8be360c	1032	\N	\N	770
+3132	8c08d7a3-e2ba-4f1d-b9a7-6f69470e92b0	1238	\N	\N	771
+3133	eab14c77-c104-430a-a03b-4102c5214054	1240	\N	\N	771
+3134	4bf0dbf7-984c-4b08-a8ef-4b6a53ff268b	1287	\N	\N	771
+3135	369921a2-7735-4bad-8878-471e2100118f	1074	\N	\N	772
+3136	429a3a2f-71f9-4f24-968a-8e6bf107466a	1040	\N	\N	772
+3137	8d5e543e-f240-4d26-875e-cfddb4206a8d	1031	\N	\N	773
+3138	da521fd5-2551-4067-b4d6-3962f7c2d090	1032	\N	\N	773
+3139	2e1c1c3a-9169-4149-bf3d-8c427e5e1fc7	1034	\N	\N	773
+3140	31853608-9a75-4913-8757-c7e7649f23a7	1230	\N	\N	774
+3141	04ab35f0-c37a-4aa4-a1be-280f8b941f18	1147	\N	\N	774
+3142	dc6199d5-f75f-48b2-afcd-7f0e806d49b7	1228	\N	\N	774
+3143	47dcd44e-e5ce-44b6-b547-c3d8e6e8e2de	1286	\N	\N	775
+3144	0acf0a29-d8a6-4022-8eb2-02561fc5d03e	1228	\N	\N	775
+3145	5b40546c-cda9-474b-9a9d-2fb56ca635be	1280	\N	\N	775
+3146	9af16d67-e718-43e4-8289-3322796955bb	1240	\N	\N	776
+3147	92c4117d-32e7-4764-8263-919fb06998e9	1025	\N	\N	776
+3148	e5f725cb-85d2-4581-9f6a-2a210e921d22	1120	\N	\N	777
+3149	5556f580-f026-4490-846a-a42975e33ff2	1113	\N	\N	777
+3150	8fdcd59c-7815-419f-ad82-59da6142fc59	1073	\N	\N	778
+3151	49729fa6-764e-4536-bd9c-fb395fe79107	1075	\N	\N	778
+3152	a2105dba-e350-4905-b138-c700bf20ee75	1392	\N	\N	779
+3153	55fc0df4-133d-4620-918f-477fa8888936	1398	\N	\N	779
+3154	9a6e1cdf-3b8c-4c77-af19-7bf46feb171f	1223	\N	\N	780
+3155	8ab7f1f0-e6cc-4fc5-8df0-02f229e0faa6	1398	\N	\N	780
+3156	dccc7fe9-8961-4c8f-8199-d21861ec7dcc	1073	\N	\N	781
+3157	8ac71369-1cb7-4209-b5b1-95bbee95288a	1074	\N	\N	781
+3158	dc6c0931-1931-450a-b9c4-72ff45bb791c	1074	\N	\N	782
+3159	3b4a470f-ebfd-4cfe-b8fc-4af527ad1b59	1027	\N	\N	782
+3160	b77f2f0f-f18a-4328-99b4-19ee8f90a03d	1089	\N	\N	783
+3161	e96b3d9d-f232-43ad-8bda-e22a78278fee	1040	\N	\N	783
+3162	c7cd84cb-9519-4494-abd3-f4b7d17e630b	1392	\N	\N	784
+3163	b5b2d096-1a3c-4964-99eb-2c541e132ef3	1120	\N	\N	784
+3164	2829ab98-d29e-43b6-a8c9-dfc32ae94de8	1336	\N	\N	785
+3165	e8cca6bf-b22e-4fd9-a43b-c3145a6628b4	1330	\N	\N	785
+3166	7147e43e-d2e8-4602-9b1a-431b751962e1	1050	\N	\N	785
+3167	2358b46a-e89c-42be-946a-6fba547683ce	1332	\N	\N	786
+3168	755469dc-5395-4027-a474-0716090394d4	1360	\N	\N	786
+3169	1525fe3b-1aca-4c83-a173-ad4b04ca7800	1326	\N	\N	786
+3170	e1c183f6-7e5e-40fa-9488-96cf9b283e6f	1360	\N	\N	787
+3171	ef32f4df-ab77-418d-bebc-2410a1611f52	1071	\N	\N	787
+3172	cca8b096-bccb-46dc-9310-0daca45c2e2e	1072	\N	\N	787
+3173	93c73b9b-b005-44d4-87db-f42e8f72ef10	1340	\N	\N	788
+3174	133518dd-7a80-47cb-861c-7aaf551aa8e0	1059	\N	\N	788
+3175	196a5884-73c4-4b30-9c2c-bc272aca8513	1336	\N	\N	789
+3176	eace5a95-2577-4a8c-9a35-3c87c146d3d0	1360	\N	\N	789
+3177	753ce80f-60cd-48a5-bacd-6f6826afb11a	1113	\N	\N	790
+3178	210bd7db-59e9-463d-8d3c-40900435294f	1398	\N	\N	790
+3179	8f8d8f55-f871-4ef0-a98c-79e8ace9d0c1	1365	\N	\N	791
+3180	bc8f8c9b-68cc-41d7-b26c-910c64597de1	1367	\N	\N	791
+3181	0061a039-8a11-4034-9330-c1cedb21c65c	1336	\N	\N	792
+3182	d365f202-3b88-4206-b8ae-70cf7d4b86a1	1329	\N	\N	792
+3183	94527c1a-b59c-4631-8b28-dd118e94d7d3	1086	\N	\N	792
+3184	7803c5f6-4082-469f-a463-6889e51fc086	1345	\N	\N	793
+3185	ba25c787-879d-4fd8-83ca-ca3d2d6e8cc8	1071	\N	\N	793
+3186	4db13bc7-c591-4334-9330-7cf154182996	1070	\N	\N	793
+3187	27c58db7-bd50-4a30-83e4-bb59b40e6453	1358	\N	\N	794
+3188	49f0c06b-5b56-4dc1-bda6-056aebca340b	1357	\N	\N	794
+3189	6b62dd30-2afb-4399-aab8-116940ce5bc2	1364	\N	\N	794
+3190	d25b1cae-e83a-42d0-a48e-22a988f89635	1359	\N	\N	794
+3191	1ffd76f8-b821-43ae-b257-7c6ff48d7cb9	1364	\N	\N	795
+3192	8590186d-394a-4ecb-b222-572b9a25507d	1353	\N	\N	795
+3193	a3deac3a-263a-429c-a146-e7914894a90d	1322	\N	\N	795
+3194	aa1a5652-6a49-4708-9462-0cefb8d5bb4b	1354	\N	\N	795
+3195	fd68fb25-5f82-4ae0-92f6-b535c6dda86b	1323	\N	\N	795
+3196	6cd61a84-101f-40c8-ba78-3a5dc6d3555e	1332	\N	\N	796
+3197	b9ad115a-e317-4a9e-9f2b-b0ed27864789	1321	\N	\N	796
+3198	09191e9f-b6d2-403c-ad69-a0dfb96aff6b	1079	\N	\N	797
+3199	b702ca20-c053-47bc-bb9d-1bc082dd4030	1080	\N	\N	797
+3200	e6752f4f-93c9-4d1d-9f12-6a0a70211b9e	1066	\N	\N	797
+3201	f3109919-b46a-40e7-a3f7-87a6738584f5	1038	\N	\N	797
+3202	f0f3f30e-e5d9-47e6-a59e-43ee190fa523	1059	\N	\N	797
+3203	b8a3f03b-a2cb-4489-bc7d-0573b410c4be	1067	\N	\N	797
+3204	1dca63ed-645a-4b41-8a01-eba1912fd6a6	1359	\N	\N	797
+3205	2f719841-6932-4717-ba77-274cc398c956	1364	\N	\N	798
+3206	d6842835-8c8c-4e59-853d-5e47014213fb	1345	\N	\N	798
+3207	815e3d98-a444-4ed1-8fa2-9be89f94bf6b	1345	\N	\N	799
+3208	235bb7ab-40ef-4eb1-8c02-ae71b4e4f7f4	1332	\N	\N	799
+3209	fee6f142-49d3-406f-bd94-5613159b9a5e	1356	\N	\N	799
+3210	e45025e7-d3e5-4ccb-8102-948c7c1d45e6	1347	\N	\N	799
+3211	45756d17-5d9e-4371-8639-626917c2ec27	1346	\N	\N	799
+3212	6f5272e8-af4d-4ec9-a5bc-8160efa80bfa	1352	\N	\N	799
+3213	5d876ea2-4f26-4cd3-84cf-0a80aa5ceedb	1359	\N	\N	800
+3214	d3e86ac9-67ad-4bbf-bfb6-a2a0bb55db73	1071	\N	\N	800
+3215	b7045874-ced2-48ac-84be-61f8bdd2d47a	1123	\N	\N	801
+3216	9691fb15-1d19-4c47-9ee2-33cf582dd104	1125	\N	\N	801
+3217	6aaa6c96-df5c-46e6-a1c6-938746d5b41b	1302	\N	\N	802
+3218	6e994110-4ebe-4804-94d2-4679ac1dff96	1369	\N	\N	802
+3219	92dad513-6031-4789-a2bd-ef61cca22105	1374	\N	\N	802
+3220	3ea1576c-36d1-448b-b363-a75518904b32	1218	\N	\N	803
+3221	58876f4a-de8c-4bc2-ab9e-b74484e9990b	1374	\N	\N	803
+3222	59ba9d3e-89c0-40d6-8be5-59e3ba7261cf	1219	\N	\N	803
+3223	41f29a9e-ee7e-428c-b753-fe8a3fc19922	1308	\N	\N	804
+3224	9a9856d4-9b1f-4cf0-bb11-2175370251a9	1334	\N	\N	804
+3225	84b5234e-15b4-4358-86d1-ad8c6c0ee800	1313	\N	\N	804
+3226	3586675f-d98c-4c07-bad7-65b2e5bd0653	1339	\N	\N	804
+3227	07d29917-801b-4517-93ec-bca21c0337ae	1338	\N	\N	804
+3228	479fa26f-5f58-4594-b407-839503d21f4b	1348	\N	\N	804
+3229	f77b8a0c-c4ae-4195-96a1-fd11f025650c	1341	\N	\N	804
+3230	1893d370-c846-4474-8ee6-055ed29a6c0c	1389	\N	\N	804
+3231	eaf9f79e-ce14-489a-8734-0ebaa90388cc	1292	\N	\N	804
+3232	78110345-0108-45eb-84aa-4490f2ef5dbc	1288	\N	\N	804
+3233	0a1b7824-3a18-4cdd-9061-9438234d58e4	1281	\N	\N	804
+3234	0b5a2b8b-6c80-428a-8ac2-783f96f72b89	1272	\N	\N	804
+3235	586f46c8-a884-4583-8386-6eb4aef4e830	1296	\N	\N	804
+3236	b39dacd6-476c-4c47-89f0-ff2c6a7b67cb	1295	\N	\N	804
+3237	34605325-22ce-4f9c-bc22-cbf814054a74	1289	\N	\N	804
+3238	f0d08d8a-5f82-4c38-a3dd-e7356eab4bcf	1279	\N	\N	804
+3239	6e5d8db1-3890-4624-874a-4350cb840fbe	1293	\N	\N	804
+3240	e631b2a1-299a-45e2-860c-24723c8d8716	1283	\N	\N	804
+3241	0899cfe1-e47a-478c-a81c-07e094f98f03	1290	\N	\N	804
+3242	52b612ef-5f75-4760-9ab0-9fc6bf9b5d81	1300	\N	\N	804
+3243	1be25527-d832-4d06-a220-2c8774f89303	1291	\N	\N	804
+3244	50d6c289-fae2-48cc-914d-93d8c9e4f9e5	1383	\N	\N	804
+3245	81cdbafb-5e2b-40b2-9ef6-aff4f8a61d0d	1304	\N	\N	804
+3246	6d1bb326-4941-4a8c-8bca-97270ab71333	1297	\N	\N	804
+3247	4b9247ac-ddeb-4e18-9a4d-1452922ca24b	1298	\N	\N	804
+3248	6329095e-78b6-471a-bea9-c602a0a303ed	1299	\N	\N	804
+3249	f3576710-1d3f-4756-aab0-f74e86d75bc7	1311	\N	\N	804
+3250	2fd3e3bc-30df-4e67-93b1-4f22d9933d6f	1319	\N	\N	804
+3251	e33b4232-74aa-4481-8f43-62d8e225fd17	1333	\N	\N	804
+3252	f0390838-c366-4c2f-9767-714ff492f205	1322	\N	\N	805
+3253	63783549-6735-49bb-bc92-06b2ecaf4fbd	1321	\N	\N	805
+3254	a38f23d3-9519-4d6d-b0f8-e301bb911ede	1037	\N	\N	806
+3255	66ae82b6-63a4-46ee-8753-866f3c65db2b	1027	\N	\N	806
+3256	5205a851-a141-4027-bfe6-23894d6ada29	1073	\N	\N	807
+3257	3353a2a9-ba49-47ea-8029-d9469e48dd03	1078	\N	\N	807
+3258	ade44758-0929-4daa-b2a3-285079e6d407	1355	\N	\N	808
+3259	a77bd7f3-02d2-4c47-ac99-f960b15c8bef	1078	\N	\N	808
+3260	1003a38f-640e-4335-af3e-1343c8f21764	1068	\N	\N	808
+3261	7478469b-995b-471e-ba06-3b1abb33cd55	1322	\N	\N	808
+3262	c7944e6b-baf9-4c3e-a405-eb0b795d26ab	1097	\N	\N	808
+3263	3fb94b1c-575e-4002-9d2a-62cfc55c684e	1232	\N	\N	809
+3264	d69d05bd-a482-46d5-a1ea-474c46d8b0fd	1219	\N	\N	809
+3265	b51c3d30-0b3c-46c6-b2bd-8e4278c6d66a	1231	\N	\N	810
+3266	dcdbabb7-8aa7-410a-87e6-70581897a6f5	1387	\N	\N	810
+3267	3d76b9c0-3de1-4180-97bf-09747c7eec73	1230	\N	\N	810
+3268	889af2b4-84cf-4e28-97c0-d70454ab9310	1273	\N	\N	810
+3271	1ea8dd6b-d02c-4448-bc75-15bd3112d902	1232	\N	\N	812
+3272	7c463166-7098-48f5-b7ce-e668a9ed9f0b	1215	\N	\N	812
+3273	f4505a64-b0f2-4f83-a408-0ada9d06dbd0	1214	\N	\N	812
+3274	ed369f81-3c8b-4fc1-8e2d-9c07e231adfb	1209	\N	\N	812
+3275	949207ac-c9ed-4cc4-bdb2-a2d0c5c38587	1210	\N	\N	812
+3276	a96f18a2-8854-4b1a-b091-4047ca2ce230	1212	\N	\N	812
+3277	ff1cd021-f0aa-4a2f-b7d8-0b0562f66f60	1217	\N	\N	812
+3278	c67311d2-8bbf-4019-9e13-b24e96710b55	1302	\N	\N	813
+3279	985c25a0-5044-4431-ba50-b459040cb64f	1383	\N	\N	813
+3280	6cbbe85d-ef09-4b40-94ed-c606028f12d8	1382	\N	\N	814
+3281	e0ea6351-ffe4-49bd-b095-fc557714930b	1212	\N	\N	814
+3282	50e0a872-b04e-4b6b-a4ed-0a1c7696aeb1	1382	\N	\N	815
+3283	015cafa6-3494-4421-a143-8032e55c3259	1267	\N	\N	815
+3284	3dbb9cf6-2149-4637-8c86-b82e4f808dc7	1232	\N	\N	815
+3285	9579e73c-03bb-48a1-8ba6-92749bf120e5	1211	\N	\N	815
+3286	7f039699-298d-4d30-be21-e9633d6c6084	1375	\N	\N	816
+3287	2e256700-8db0-492b-af9d-89c6ff1b9ae8	1317	\N	\N	816
+3288	811eeefb-bbe5-4727-ab83-583d9a019b29	1383	\N	\N	816
+3289	11978e99-81f7-4c56-90e9-30dce4d28e11	1220	\N	\N	816
+3290	3bc7c689-cdf1-4148-ad0e-4b2f96110cfe	1219	\N	\N	816
+3291	d7d4a6c5-0472-4b3c-a21c-5ee79c1302ad	1085	\N	\N	817
+3292	2c666baa-8fe8-4d25-ac89-931e6bbb95b6	1052	\N	\N	817
+3293	29891e52-386f-4131-b47a-e73293d18d13	1086	\N	\N	818
+3294	1e472181-6b88-4015-abfa-102fb63e1216	1051	\N	\N	818
+3295	1b5450e1-2595-4ae0-a9e9-75e386c03519	1085	\N	\N	818
+3296	687c15c2-5fed-495f-99a8-7610c988587a	1331	\N	\N	819
+3297	f244eb47-8f9e-481d-a5cc-ae4d259affea	1050	\N	\N	819
+3298	5acfc553-83de-41af-aeb9-d9fe5407378b	1331	\N	\N	820
+3299	5bad55b6-9847-4d8e-a26f-137925045352	1340	\N	\N	820
+3300	ff8edc63-d365-418a-82a4-573a9158355d	1277	\N	\N	821
+3301	7ec6e02d-f564-4ddd-bd88-4a018886961e	1121	\N	\N	821
+3302	80553a47-384b-48a3-9bd7-d58402be1351	1284	\N	\N	821
+3303	73f40a5d-2601-42c5-998f-5a15a24d8f87	1225	\N	\N	821
+3304	bcb4b93c-6b2d-403e-8875-fe857547a22f	1042	\N	\N	822
+3305	ec058c5c-b3f9-4dc4-afb2-e6795d913159	1082	\N	\N	822
+3306	8c9dcd68-48f2-431e-9060-3b93260a8514	1119	\N	\N	823
+3307	25d96f2d-aeca-401c-abae-6a3b1b3ad767	1118	\N	\N	823
+3308	2129e712-815b-42d4-8ccf-ea69224ac029	1119	\N	\N	824
+3309	e8438167-5445-46ad-b4d8-e6d66d1a1b3d	1089	\N	\N	824
+3310	439358d0-9120-4d15-987d-a675ed642fd2	1063	\N	\N	825
+3311	3115b9a4-cf62-4a9e-abcb-fc21ba3bb69b	1064	\N	\N	825
+3312	0b3584c8-8940-4361-87ee-d86cc59cbc07	1063	\N	\N	826
+3313	376277c8-4847-49f4-9ccf-98af51116d61	1069	\N	\N	826
+3314	99829788-c429-4ad9-91f3-d8fc1ad22dd1	1062	\N	\N	826
+3315	bbe3ea89-7176-4f6a-a289-17297d91471b	1379	\N	\N	827
+3316	ff52a097-7fc0-475c-a24b-6e02e47394bc	1349	\N	\N	827
+3317	c532791c-cd0d-4550-9d64-0fe1f300d03c	1350	\N	\N	827
+3318	58b096e7-6134-4c91-bdec-26480cd890ed	1344	\N	\N	828
+3319	c15b2266-3ad1-4e94-9efe-ef5dbf1d18d9	1141	\N	\N	828
+3320	437de8d2-6c0c-4e39-96c0-7f75ec3bc1b3	1379	\N	\N	829
+3321	c142eec2-5e73-4cb2-819a-1703688ead80	1069	\N	\N	829
+3322	3ec3b305-5abb-430f-8bde-520d09cc30b2	1060	\N	\N	830
+3323	e98a3cae-2764-413f-849e-a904471cbcd1	1069	\N	\N	830
+3324	aec8c93e-6349-48d5-8c5f-6ef26630b61b	1060	\N	\N	831
+3325	330f8531-6ff4-4a19-91b1-26a26aab157f	1039	\N	\N	831
+3326	0340b73e-6413-4a2a-824a-dce15572e04a	1379	\N	\N	832
+3327	54041066-5e5a-4580-8cd1-ebe09a72dd9a	1065	\N	\N	832
+3328	440a3cfe-e3b4-4ce0-9328-040d84e1ca28	1088	\N	\N	832
+3329	f154776e-023f-44ef-91f2-5fb68a3cbc17	1037	\N	\N	833
+3330	a22ddd1f-3cf9-438f-8db3-627c0dd577d8	1033	\N	\N	833
+3331	8467242b-f96d-49a3-956f-44ef7c3d65d6	1040	\N	\N	833
+3332	af3faabf-ee77-4713-82c0-be2795b184ac	1367	\N	\N	834
+3333	5ce76ef2-2e0c-473d-8e17-233d2380ec9f	1050	\N	\N	834
+3334	5c7822b6-62e2-4dcb-b3f9-0917e7c03b5e	1078	\N	\N	835
+3335	7a4526bf-c497-4513-9dc5-adaee979db94	1027	\N	\N	835
+3336	218a3a29-9091-4b5d-bfa3-e3982f36edc1	1077	\N	\N	835
+3337	4b8fc341-7963-40f0-befc-0ab4caaa2a84	1194	\N	\N	836
+3338	c63a611d-d271-4e1b-88ff-230122a012ca	1193	\N	\N	836
+3339	af3215d2-c798-41c0-b2b5-385706761c75	1207	\N	\N	836
+3340	c96d8553-dfe9-4c9e-bc91-49b3e61678ec	1206	\N	\N	836
+3341	0efb2998-1ca6-4dfa-aa94-ef4477931b2c	1205	\N	\N	836
+3342	8f808417-9090-40f4-8043-4617e83dd957	1208	\N	\N	836
+3343	da90a153-0028-4594-af5a-0965b7a54113	1198	\N	\N	836
+3344	8a55633c-8e95-4f3b-aa12-7fdad03a5820	1197	\N	\N	836
+3345	b801a64b-1093-42a1-bd33-b06f1f26402f	1196	\N	\N	836
+3346	f5c67522-a8b4-411e-a549-d3ef9a8bffd0	1195	\N	\N	836
+3347	d3cdf2d6-5997-46d2-afde-0a5a1549d00f	1185	\N	\N	836
+3348	8cae0ba6-26c5-403c-9d76-890d9c8d6ec1	1200	\N	\N	836
+3349	fb4f17d1-9e09-4048-973d-cec61a09fa48	1199	\N	\N	836
+3350	3416145e-29c2-4c5f-ac7e-57298a8386b3	1099	\N	\N	836
+3351	b21ca1d2-46da-44c2-b051-a5fdb7ae1d18	1325	\N	\N	836
+3352	90506f69-7455-4dd0-a3f2-211eb45412a9	1172	\N	\N	836
+3353	31ba93b8-55e3-43b9-9da4-54b35e9e737c	1171	\N	\N	836
+3354	e1024012-24c9-4a12-9047-be223d6d075e	1169	\N	\N	836
+3355	c0064b6f-9aa4-4071-b9d7-24ab72e78a32	1184	\N	\N	836
+3356	9d5aec23-8db6-4e1b-abca-d61afae4b099	1183	\N	\N	836
+3357	a289f8ff-3164-430a-9065-ba035c5157fb	1182	\N	\N	836
+3358	ce7ecf2e-a9df-47ce-8bfc-ccf432ed8301	1170	\N	\N	836
+3359	be9a467e-ca7a-4ed5-a038-79712917ad5a	1120	\N	\N	837
+3360	4facba69-3c3d-46d5-aa11-31c7df36307e	1126	\N	\N	837
+3361	335a1f1a-58b1-4a18-9663-0a976bf19595	1113	\N	\N	837
+3362	9afc96ec-2819-4406-976d-816bfb17823f	1127	\N	\N	837
+3363	d034d6a2-acd2-4298-9332-94a2ed672441	1270	\N	\N	838
+3364	13a34a3b-d880-4ba4-b62d-0aec83b2dd98	1271	\N	\N	838
+3365	d816991c-e6df-4089-a641-277e6c12e8a7	1265	\N	\N	838
+3366	f0483a5f-3491-450f-8af8-e6475fd8f816	1075	\N	\N	838
+3367	0ad68ddc-0d93-434a-ae37-5bf8cc4dbfdf	1114	\N	\N	838
+3368	f482b5ed-656c-4497-ba5f-6efab98d6c79	1115	\N	\N	838
+3369	2c2f0274-83c2-4981-a60c-58aaa1670382	1223	\N	\N	838
+3370	74d1ee14-7cd3-49ef-a3af-eef00683c0df	1269	\N	\N	838
+3371	3146927a-ff51-4898-bf81-60364406e671	1021	\N	\N	839
+3372	fdfc8273-695a-4dbe-bf37-0da295ea0b92	1250	\N	\N	839
+3373	9dcb35a1-d2ba-40da-96ff-c885e6417d4a	1249	\N	\N	839
+3374	0b4afd17-bba0-4389-84b4-fc51653f2676	1264	\N	\N	839
+3375	9156d5bf-14ec-4715-9913-bb9628dc7cf5	1017	\N	\N	839
+3376	c3321b5e-e5f1-431c-a101-fb42d0a98781	1222	\N	\N	839
+3377	721cb1a2-1b3a-4baa-ba67-d9ea4b5fbce0	1221	\N	\N	839
+3378	b732bb6b-7aa8-4fd5-8bef-e19bb3396c98	1252	\N	\N	839
+3379	7fae1d59-0b61-4a3e-a423-2dad1804bd87	1251	\N	\N	839
+3380	bf139beb-d764-4840-a6b8-3a28d58bb189	1024	\N	\N	839
+3381	01caf5ed-e8be-4f72-9b99-d468d011c505	1023	\N	\N	839
+3382	588730e0-74e7-4904-9141-cefcbecf0da4	1022	\N	\N	839
+3383	9a179f88-749a-4f5a-b159-da51fcc64d38	1012	\N	\N	839
+3384	f1c93a2a-bf2e-4e88-948d-876ec480ea00	1011	\N	\N	839
+3385	fa774801-ec22-4530-b1fb-0172391f69f1	1400	\N	\N	839
+3386	e52c664a-4a07-487a-8ad3-1901253eac9f	1399	\N	\N	839
+3387	a11fb6b5-ab79-45a2-bc99-3da7baec3c1d	1039	\N	\N	839
+3388	3e6479d2-81b8-45ae-ac10-0903ff4f966f	1189	\N	\N	839
+3389	9a266b4c-08ec-48ce-9ad4-1b64386e5274	1263	\N	\N	839
+3390	f359bea1-5b56-4b38-8601-7114a5b259f9	1262	\N	\N	839
+3391	de19f3c6-6124-4bde-a92a-a0339b712967	1261	\N	\N	839
+3392	cdcea0e3-24ba-413a-bb82-16f7cd0f6f0d	1260	\N	\N	839
+3393	fe1ab520-4667-4062-8a74-c73de16b0d0f	1257	\N	\N	839
+3394	980f0d27-7e81-4576-b651-40415ab7a9f0	1360	\N	\N	839
+3395	90f2b648-5ae7-401d-b795-aa51f774c8c9	1259	\N	\N	839
+3396	23460bca-86c2-442d-abe7-0ccb1bd98778	1258	\N	\N	839
+3397	eb209ddd-c04d-4aff-992e-15713552b2ce	1344	\N	\N	840
+3398	8ac949b3-a13b-446a-b789-f3f5bb2d92ba	1350	\N	\N	840
+3399	fc16e713-2d41-4bd4-9dde-8b903bcdcb23	1063	\N	\N	841
+3400	116f8181-6eab-4e7f-b3e8-7fedaa06968a	1065	\N	\N	841
+3401	582914a9-3482-4fa5-b74f-666a0c0d817c	1125	\N	\N	842
+3402	4d9051cb-8eb5-4466-a56d-edf4e0df89e6	1058	\N	\N	842
+3403	51b826d9-86d3-4279-9d42-460db9a2225e	1065	\N	\N	842
+3404	dae59901-3e6d-4a54-a00d-6b91a167ad1c	1161	\N	\N	843
+3405	467788a3-352c-4b81-84c1-d4e8ebc5671c	1176	\N	\N	843
+3406	534327a6-1f27-4091-b50d-cd12956c1d58	1175	\N	\N	843
+3407	6fb6e9de-a302-4d03-9500-7ae83bd0c994	1174	\N	\N	843
+3408	f5406f36-7a58-476e-8c96-2571e1e4308b	1173	\N	\N	843
+3409	2c136d74-53bc-41ba-b91f-6cfeec07ab5f	1099	\N	\N	843
+3410	399f883d-9cb6-4528-9f54-e3349cb79ff1	1351	\N	\N	843
+3411	290135c4-a00a-4d7c-b102-115771e035b4	1337	\N	\N	843
+3412	60f5d492-e2c6-4696-bcf9-461449e868ea	1016	\N	\N	843
+3413	1e8a5205-15dc-4bc5-8373-58f6d7ee0f16	1015	\N	\N	843
+3414	2013dcb4-778d-45f2-b614-fde06758cb75	1372	\N	\N	843
+3415	532a538b-7ca0-4826-b7ed-ebfb4ffa3adf	1363	\N	\N	843
+3416	a20c25df-63a2-461d-a2f1-37bd5ebb60e3	1166	\N	\N	843
+3417	e08887aa-95c2-4553-adc0-62a3a75d15a6	1165	\N	\N	843
+3418	5e3519f0-ca03-4a5f-aefe-b651e0e4e004	1164	\N	\N	843
+3419	8bdfe5fa-1cf0-4a3d-95d1-c086496e34ec	1163	\N	\N	843
+3420	743f82c2-9387-47e3-96e7-37807ba758e2	1162	\N	\N	843
+3421	e8ff804a-824e-4f43-ae25-8cafe7551987	1241	\N	\N	843
+3422	a651320d-38fa-408d-8c56-76cf4ef1e669	1167	\N	\N	843
+3423	7580ecb2-8743-42cf-85ab-445170b1ef92	1234	\N	\N	843
+3424	561a6b04-2597-4c41-8184-6a3be3cd29a8	1233	\N	\N	843
+3425	dbfd0503-c1c7-4aea-bea9-d7f3a4f9ce16	1248	\N	\N	843
+3426	fb84fb91-6105-496b-8eea-752df0885aee	1244	\N	\N	843
+3427	784d4e87-edd3-40be-ba1f-3e1860a08995	1243	\N	\N	843
+3428	517092dd-f32b-447c-b0df-d7c3da429780	1242	\N	\N	843
+3429	bed60011-9abb-41c9-9498-68b33881ba38	1014	\N	\N	843
+3430	f0e50aeb-6586-4ae5-b9de-065f127f3df3	1013	\N	\N	843
+3431	2691f86c-26a3-451f-9910-aea17e3c1b48	1236	\N	\N	843
+3432	0c60da55-51e6-4606-b94f-8a3a7696db61	1235	\N	\N	843
+3433	231c7311-4038-45d3-a29e-1e2ef083553a	1247	\N	\N	843
+3434	7de01471-856b-45bd-a2e7-d971a038c702	1246	\N	\N	843
+3435	32b5c0cc-53d8-4610-b59c-15d3b03a958d	1245	\N	\N	843
+3436	636af813-044d-449a-9c87-d906f80544b4	1266	\N	\N	843
+3437	badb6cff-804b-4576-995b-01964e312de8	1268	\N	\N	843
+3438	8e0832d7-0997-4a0b-bf72-2ecc2c0d2bc3	1362	\N	\N	843
+3439	153061f9-51a6-4257-bf71-ce3ad0cef643	1361	\N	\N	843
+3440	2323ab4e-c0b0-4a4a-ba8e-c26710b7e763	1223	\N	\N	844
+3441	e732f077-b802-47c8-9ea1-15fd892d767f	1094	\N	\N	844
+3442	9036f31f-5308-4cd6-a3d4-f728b471b10b	1335	\N	\N	845
+3443	5df92e83-c625-4117-b4e6-272befd5d40d	1306	\N	\N	845
+3444	01da4931-762a-4cd5-9944-79ac0d8f47eb	1314	\N	\N	845
+3445	57ef223a-e9c0-4da1-875b-abab815da572	1378	\N	\N	845
+3446	a53e5848-ff64-4498-b1ca-a0816027c2e9	1391	\N	\N	845
+3447	98ad4f9b-8488-4888-8ae6-1c2a0b00fe4b	1377	\N	\N	846
+3448	b63c38ab-7042-4740-948d-a49e5154ec9e	1378	\N	\N	846
+3449	0042f16d-f172-41e4-b0a0-b8249044253c	1390	\N	\N	846
+3450	29b76b21-8095-464f-bedb-74b97620517a	1301	\N	\N	846
+3451	841e2949-d5a7-487f-9798-f1c3a8dd9793	1294	\N	\N	846
+3452	88932bbe-d58c-44f7-b3a9-9225642c1cbb	1282	\N	\N	846
+3453	be6a5b13-48dd-4419-adab-20b56c97611b	1276	\N	\N	846
+3454	ef30ad41-2fae-414c-8414-9ae37850d9fc	1376	\N	\N	846
+3455	d4956f18-07cc-4524-b069-e721eff70711	1101	\N	\N	847
+3456	b745c890-2a4b-4d67-9b91-817a27296b72	1096	\N	\N	847
+3457	a0b10e7d-b303-4f3c-8e94-5b7544bfcc0c	1154	\N	\N	848
+3458	d53a5488-2b45-4194-b1f9-f11963a94efc	1153	\N	\N	848
+3459	eaaa29d1-885c-45d8-a9ee-1b112c9cc9a0	1039	\N	\N	848
+3460	ed99d0ad-51c4-4a36-9af5-e6f6bbb3baa1	1344	\N	\N	848
+3461	cd63fea8-402a-40ee-9383-9fdf0c5f1cfc	1156	\N	\N	848
+3462	f362db4c-2c98-4104-9ea2-708f3992e3a3	1155	\N	\N	848
+3463	64e002ea-283c-4b31-9897-22878ff5f469	1255	\N	\N	848
+3464	a2e41121-839b-4dcf-baee-2dc858a21c34	1254	\N	\N	848
+3465	0b5e7726-2b61-43d9-9e68-9373189c231f	1253	\N	\N	848
+3466	76c75a7b-ffb1-47f3-8721-c4c909ac85ad	1178	\N	\N	848
+3467	98ea1048-ef33-4cd0-9fc8-959919a0a453	1177	\N	\N	848
+3468	4bca9cb1-efab-48a2-ad7a-e77680d2f11a	1192	\N	\N	848
+3469	1c636e6f-7161-409b-9a49-536f08dd8d5a	1190	\N	\N	848
+3470	1fc3a7ea-c09c-4c48-9451-ed17b8e406f9	1168	\N	\N	848
+3471	a11ac9a3-e27a-4674-bbf7-e0dc48db03f8	1256	\N	\N	848
+3472	e7d19a7b-e780-4862-bcd2-50efd0fb4a42	1181	\N	\N	848
+3473	8fbd4299-ff20-4b48-bf42-f102e17d619d	1180	\N	\N	848
+3474	96252e48-1de4-4781-b136-c312b61e95dd	1179	\N	\N	848
+3475	9c984754-ea92-4e78-b7e4-7d0faf38a8c3	1191	\N	\N	848
+3476	4e861fbc-20c8-46d6-a4b7-f76f14dc0f29	1043	\N	\N	849
+3477	56896551-8031-4a4d-be01-ca305d571e2f	1095	\N	\N	849
+3478	3d89ec9a-7017-4ff8-b0bc-8a2b73eb9b4a	1094	\N	\N	849
+3479	580e4fa0-dfa8-4cf9-a6c8-3ab3c6bce0b3	1046	\N	\N	849
+3480	c6555efa-68e0-4bbc-886a-ac7331ec0288	1049	\N	\N	849
+3481	0acb3b74-2b42-466b-ab9e-44967697cff8	1053	\N	\N	849
+3482	6b1db83e-c289-408d-addc-d14350b778ec	1044	\N	\N	849
+3483	6c2a8f76-9f85-41c9-b6bd-3ce5ed0c4701	1392	\N	\N	850
+3484	aa40f899-0743-4ef0-905e-4516d922ab21	1096	\N	\N	850
+3485	bd180f21-87fa-493b-83c2-2e4b5903af5f	1099	\N	\N	851
+3486	8ebdfeae-3119-4695-a212-c34302bf43ae	1378	\N	\N	851
+3487	3d2dbc9e-1974-4518-94c1-2434b476dd6a	1096	\N	\N	852
+3488	2cad7624-0af1-4780-a87f-6b965217e744	1223	\N	\N	852
+3489	c3707257-b8bd-4d8c-95c8-3dc1eb5af869	1081	\N	\N	852
+3490	0faf34df-ccbb-4c58-95ba-dbff9ad916bd	1129	\N	\N	852
+3491	ec2cbda9-942e-49ee-8539-901193c32757	1130	\N	\N	852
+3492	66a44bd8-5e85-4048-be88-38d87dc71ae9	1131	\N	\N	852
+3493	a021c308-23f2-4be6-8e7a-68fc4c49763e	1098	\N	\N	853
+3494	7b5b6a00-48f9-4ff5-8fa3-8d924e949ed9	1327	\N	\N	853
+3495	0efd1676-edad-427c-b1f6-23c9a860244e	1321	\N	\N	854
+3496	2c56a865-7378-4bb3-a09b-15192e73b2c8	1098	\N	\N	854
+3497	5ef0f99c-2b7f-4b3b-86b6-fe78b261edf2	1041	\N	\N	855
+3498	7141f634-8aad-463b-9aac-6c170b9d5df5	1091	\N	\N	855
+3499	6f86afa9-e54a-4273-a534-6a005de86cd7	1049	\N	\N	855
+3500	c91786b6-b73c-46a9-8f8c-a9d09c7e759a	1047	\N	\N	855
+3501	8245aac2-78f8-481c-945d-c983394fed16	1048	\N	\N	855
+3502	830598a2-1b5b-4ae9-8244-167b05ebb403	1101	\N	\N	856
+3503	9d5c6172-faea-4e09-9e42-13c5a2e124ce	1091	\N	\N	856
+3504	1b8e9459-cbb1-43d5-9f80-4ff282bc59f9	1026	\N	\N	857
+3505	5dcfd166-8606-4759-b720-ee45373406a6	1096	\N	\N	857
+3506	8d165319-6118-4916-a10a-a3a4ec9ed7f8	1237	\N	\N	858
+3507	b5564d73-508f-4724-9a3d-cb301bf4afc0	1284	\N	\N	858
+3508	d09c933e-2c0b-4e59-a478-3a091e5dd3c8	1274	\N	\N	858
+3509	ebb1e636-f4f7-41ff-8c41-f6311b6dac91	1227	\N	\N	858
+3510	6c819c5a-751b-4c38-a3a5-8f56cce5d368	1275	\N	\N	858
+3511	991974d7-0226-446c-b8fc-d30651283ee8	1226	\N	\N	858
+3512	b980f435-f376-4830-b69f-e034500529b2	1101	\N	\N	859
+3513	aa0c04da-715b-44eb-9640-0bd4c17f1522	1094	\N	\N	859
+3514	615c23d7-094e-4023-9c36-f4894de2cb03	1103	\N	\N	859
+3515	14a32c93-1549-4b21-9623-de697424bf75	1102	\N	\N	859
+3516	df4af29e-727b-41aa-a337-7656bd91ef76	1136	\N	\N	860
+3517	f1299151-0904-491a-ab69-5edef9dd3999	1104	\N	\N	860
+3518	18412c85-50af-42f3-9d99-77e230e2ad30	1029	\N	\N	860
+3519	4e09b45c-8719-4cc5-85b5-43a779aabe3d	1108	\N	\N	861
+3520	15c9e8c5-e788-4613-ad7e-400a7e19251a	1117	\N	\N	861
+3521	21a4f8a6-0bbc-4865-8bcf-dc5ea4a819e0	1082	\N	\N	861
+3522	dbad016d-20b9-4824-b65f-394b7be267d5	1083	\N	\N	861
+3523	4313953c-e86e-481f-b8d4-60daa656f96e	1084	\N	\N	862
+3524	7b3d77a8-ae37-4d72-8ec0-4c5accbd12ec	1093	\N	\N	862
+3525	3cbef103-4b1a-4d52-b795-ad34300fe666	1118	\N	\N	862
+3526	241b61d4-5e78-43ab-9182-dc1f898e2c51	1117	\N	\N	862
+3527	d720fdec-d815-4273-8753-4a6ef4f9a20a	1101	\N	\N	863
+3528	89718eb8-3300-4c1b-a0f8-955c118dd4fb	1394	\N	\N	863
+3529	7b054787-cd2a-42b8-b526-c8613b8c1a05	1091	\N	\N	863
+3530	a2f461f7-f9ed-4910-95e9-b4fee71f268e	1037	\N	\N	864
+3531	4b361e0a-1f5d-456c-a1e0-60e26fb2aae6	1119	\N	\N	864
+3532	e605352b-035d-4772-9bf3-f2c647aadcb1	1106	\N	\N	864
+3533	0a871ecb-d7fa-445b-a24a-75d54c0d796a	1030	\N	\N	864
+3534	51c5b9b6-f2d0-4401-b9cd-d1880fd33cdc	1396	\N	\N	865
+3535	be2b7b45-d0e0-44c9-bbd3-2da70173f380	1132	\N	\N	865
+3536	8012179b-3570-40ac-acfa-69cf6e2e321c	1395	\N	\N	865
+3537	92f69db7-36ce-4f56-94f8-aaa4844ab639	1393	\N	\N	865
+3538	cd12fdd7-358e-4435-b0ef-ff3d52e9fe3a	1331	\N	\N	866
+3539	bd3cfc2b-c2bd-4876-8cc5-d2a8b47fe1b6	1342	\N	\N	866
+3540	bd3c8ecf-3c11-4453-9741-2819f84604e0	1059	\N	\N	866
+3541	5f5b16fe-49bd-4335-bcf8-2eec7fa1313b	1380	\N	\N	867
+3542	6a9e832c-16f6-464a-a42d-f8d4143e0523	1370	\N	\N	867
+3543	43d6f2b1-26ce-4868-8209-14b8629a8fd5	1268	\N	\N	867
+3544	a9ab5247-c134-4a10-8263-df02e10524e2	1371	\N	\N	867
+3545	04b89538-f254-4fe1-ba44-87ec9ae725ae	1373	\N	\N	867
+3546	ac92212e-5f97-42d3-9aaf-c048ff845033	1374	\N	\N	867
+3547	b4c7a5ba-f3f6-485f-9884-302b0230dbd3	1137	\N	\N	868
+3548	c7a3b147-2bb6-4dd8-ab08-9db772fc3388	1276	\N	\N	868
+3549	c1d10efd-e3ce-45f1-9166-9e45b4336c19	1139	\N	\N	868
+3550	e035ae09-570f-4cd3-8684-6c115345a9cf	1140	\N	\N	868
+3551	5195ea03-bb0c-444b-afb4-002235a8b119	1152	\N	\N	868
+3552	4b3c27e2-fe93-4dbf-8675-b7bb9f801740	1151	\N	\N	868
+3553	794a3881-f8ae-4997-8e42-3aeb29cfd558	1138	\N	\N	868
+3554	18d23aac-80f9-427b-87ec-3037064337bd	1149	\N	\N	868
+3555	e9bd62a7-eb43-4add-a518-cdde375377b1	1150	\N	\N	868
+3556	0a9d1212-f2e9-4280-b86e-f1fd716b6af9	1302	\N	\N	868
+3557	16d727ed-8bbd-4d86-92b0-d80fc27453d6	1148	\N	\N	868
+3558	f6fc517a-881d-4f79-8ae7-494c2fb17339	1076	\N	\N	869
+3559	5033b0ab-0a23-42ad-a6b4-3211d4b3235c	1075	\N	\N	869
+3560	c386747c-70cd-45bd-bec3-3e0e02269916	1026	\N	\N	869
+3561	a0fba8bf-aff2-41dc-86d7-d0c1951a5040	1092	\N	\N	870
+3562	35834129-2144-4b29-8f51-dc7af5d03704	1089	\N	\N	870
+3563	2e15662b-e3b4-41e1-b5ed-d8d2cc446b8a	1042	\N	\N	870
+3564	798efc57-368f-4c2f-95d7-bb30e7293507	1090	\N	\N	870
+3565	f85ff44f-8927-40f6-a66d-1fa8cab35be2	1136	\N	\N	871
+3566	d3cdf483-1a17-4a60-bc30-797e572c28d8	1397	\N	\N	871
+3567	e56ebc65-bdb4-4b0e-ada1-7517dfebb8f0	1026	\N	\N	871
+3568	16dc367f-3769-4e0a-91c5-3a8537707837	1320	\N	\N	872
+3569	66c7b4dc-882c-42ef-8240-c42ab44c073f	1098	\N	\N	872
+3570	c8afd9ae-7927-4f2e-8645-d7a4b56a130c	1035	\N	\N	873
+3571	139df320-3b50-4162-a4a2-fc9ebf5deb1c	1082	\N	\N	873
+3572	f25994cf-9a4a-4fe1-80e2-e289a7cd7273	1306	\N	\N	874
+3573	cbcd6db3-57fd-431d-b442-d5280ce99b94	1325	\N	\N	874
+3574	fd109afb-a6ce-4c9e-9faa-b3de42ab0950	1031	\N	\N	875
+3575	27ebe364-d033-42ac-b603-1fd8e03b0d69	1036	\N	\N	875
+3576	58b3453f-b6a3-4ce6-9380-02f2c35b6b09	1035	\N	\N	875
+3577	744b7c2c-2b83-470c-8ea6-72a529bdfe3f	1028	\N	\N	876
+3578	bd28d1da-bf7b-4449-84db-9c740656f715	1087	\N	\N	876
+3579	63d4b07c-f51c-4055-b0b2-aba73f151a8c	1064	\N	\N	876
+3580	8fe93e0d-f631-4f23-bef2-0901423430c6	1112	\N	\N	876
+3581	b4329da4-ecf2-4752-8f3d-9a186a3042bb	1105	\N	\N	876
+3582	e814d193-3806-4e94-8087-029cec0b34a9	1325	\N	\N	877
+3583	6573cce2-0e82-4f92-9578-a0e2ff358957	1320	\N	\N	877
+3584	3411222e-1f07-4b38-b802-7abaf4ae564e	1365	\N	\N	878
+3585	b7d1c898-da6e-4963-b1be-5c57b5f1a53d	1366	\N	\N	878
+3586	fb9b2feb-9c34-493e-9e24-36e3acf153c9	1340	\N	\N	878
+3587	7a84ce46-21c7-4cd4-810b-160d9f83091b	1365	\N	\N	879
+3588	2dc3132a-d09b-402b-a21f-39882d47f70b	1052	\N	\N	879
+3589	144d2cdf-4725-4207-a77e-9290bef7d561	1343	\N	\N	879
+3590	60ad7841-373d-40c9-8a1f-a6d69ca63eec	1035	\N	\N	880
+3591	0c01a247-850f-452d-bb0a-11f29541ca67	1204	\N	\N	880
+3592	24a66679-2e81-46db-8d76-7d298f2fbf92	1112	\N	\N	881
+3593	96f65f29-9295-4843-9fbe-aae401ffcd87	1125	\N	\N	881
+3594	d20a83a2-0cb0-491c-97a7-a467ed3d064a	1136	\N	\N	882
+3595	7771ff86-3547-4ecd-a5a0-402b7f9e6bf9	1091	\N	\N	882
+3596	effceb92-471e-40b5-b134-a22508fe37f2	1123	\N	\N	883
+3597	df8b0966-9981-49cd-a3d2-2bc35716dc59	1122	\N	\N	883
+3598	e9e29fb7-922a-4200-b1d2-ee2ca412585d	1350	\N	\N	883
+3599	1f186a0d-a099-4d3b-bdee-1969de36242a	1142	\N	\N	884
+3600	84351294-09f7-4834-8db1-12a0798a6dde	1144	\N	\N	884
+3601	d64f4345-6f02-460b-9230-171b234d5ba4	1061	\N	\N	885
+3602	0d43b244-7cf0-45e7-9d59-11e08e8d51d8	1052	\N	\N	885
+3603	df48d50a-81d4-4e37-b423-0089fe3b5a49	1064	\N	\N	885
+3604	80b10002-ff22-45c7-bec7-99daddb7456b	1057	\N	\N	885
+3605	57628df0-a816-4ccd-a32b-c61d219331cf	1107	\N	\N	886
+3606	cc2c8f62-3672-406a-952c-0c78eb97b447	1121	\N	\N	886
+3607	d6d37a12-0e7e-403c-bd40-5281e6c49876	1112	\N	\N	887
+3608	74e6ba6e-721a-41df-8f99-542c97c497fc	1107	\N	\N	887
+3609	6882fc93-4330-49c0-9f01-fdf16d88a0f0	1100	\N	\N	887
+3610	0a4cb697-df89-4e15-8c8c-272c4b2c9200	1109	\N	\N	887
+3611	ebe3a881-7990-401f-9ab6-753aa2ff3a98	1110	\N	\N	887
+3612	e39b0d26-ae39-41c6-b01f-99861ca41bfc	1111	\N	\N	887
+3613	57eeb389-1926-415c-8bbe-251bdc143fd0	1123	\N	\N	888
+3614	ac66d3f5-c828-4cbb-acb4-be762eec3385	1116	\N	\N	888
+3615	fc1170f6-9f7b-4597-ab01-5d80ffbac101	1385	\N	\N	889
+3616	f4eea6e9-9b95-4911-bfa8-e976979fc843	1388	\N	\N	889
+3617	678d9f29-dcd7-4947-96c0-85000b2cc1ff	1141	\N	\N	889
+3618	18e2be3e-104e-44f0-8526-e5b256d305cb	1387	\N	\N	889
+3619	d2fbd375-5f59-42e9-944a-4f7b58b53b05	1386	\N	\N	889
+3620	e003e21e-7d6d-48b6-ab04-10b272cb81e8	1143	\N	\N	890
+3621	bee2b8cb-e48e-490f-a343-fbbf85f21743	1116	\N	\N	890
+3622	0db28a30-10f1-4c60-80ec-d73e8a86b9d8	1141	\N	\N	891
+3623	5e0c69f3-9dc4-4cc7-b78a-08e859ac1a1c	1143	\N	\N	891
+3624	238b2f08-2f5a-4802-a3a9-9e6f89b4aa0d	1368	\N	\N	892
+3625	9811c687-6c08-4577-9c4a-8b5a14dc6e14	1387	\N	\N	892
+3626	6af0a59d-d1c6-45a9-a968-5d1d13f49d63	1303	\N	\N	892
+3627	48413d21-7a54-4aa6-a47c-711751f81c0e	1144	\N	\N	893
+3628	e416ba3b-d3df-4f0d-8712-5d6c15873890	1116	\N	\N	893
+3629	774dbd8b-a6a6-4a78-9c0f-cf92813a8d35	1107	\N	\N	894
+3630	8e1630f3-b4cb-47ba-964d-2b50b4eecb3b	1144	\N	\N	894
+3631	68ea5492-405b-4f89-96f2-cf9c1554eb2c	1121	\N	\N	895
+3632	1095c60c-6490-41f2-bc01-e0af55d51367	1142	\N	\N	895
+3633	abeff3db-67dc-4875-a3f1-42159c1833aa	1143	\N	\N	896
+3634	dc1352f0-4813-419d-84b9-f0e40f8e81cf	1142	\N	\N	896
+3635	9c513d7a-6efb-48ff-a2b3-b0be9ddf0471	1384	\N	\N	896
+3636	d54ebd58-d762-4708-9738-e2ceff108ae6	1276	\N	\N	897
+3637	b355da11-1dce-4ac9-a19d-074131891b3b	1278	\N	\N	897
+3638	a6b3f916-2744-43d5-abac-70e9f8445272	1268	\N	\N	897
+3639	81fd84d9-01f9-4509-adf2-290fb5d6241f	1382	\N	\N	898
+3640	12065bca-aaf7-456a-9ea4-2679b6cdf774	1303	\N	\N	898
+3641	d100474f-77cd-4177-8783-199123bee3a5	1381	\N	\N	898
+3642	8438f582-679a-4810-9939-b25ff695cd77	1303	\N	\N	899
+3643	21483cdc-cd1e-4bd5-aa3c-9b46f118e0de	1213	\N	\N	899
+3644	8aec3a32-34be-4bd5-b980-7111c9d0eb70	1201	\N	\N	900
+3645	17a21be7-518b-4aea-a272-7fdb8d5c3c8c	1224	\N	\N	900
+3646	38f48287-1f1a-4ac5-8c71-915275740112	1025	\N	\N	901
+3647	5ef39b76-06a2-43fa-bc0d-17fa24270052	1201	\N	\N	901
+3648	2fc4c384-6fd1-4355-8f93-80ea23e8a8ca	1032	\N	\N	902
+3649	b9825b9f-cbea-4397-b2e1-6063d2904d6b	1224	\N	\N	902
+3650	0060ac71-d962-4f19-afc4-819a60fffd52	1128	\N	\N	903
+3651	2d1a7310-8ab3-4349-9fea-48a765a02c0d	1146	\N	\N	903
+3652	e15524a3-fb55-46ce-9d99-dcc5903e3600	1203	\N	\N	903
+3653	4c4906cc-72a0-49cf-a592-71c30ea3b3d7	1224	\N	\N	903
+3654	f4675336-7427-4937-b375-76673e00c821	1085	\N	\N	904
+3655	cece1888-c502-4199-91b7-85b5e279bbea	1367	\N	\N	904
+3656	8446e05f-65b0-4783-aa1c-8ffa496e1032	1060	\N	\N	905
+3657	456d6b9f-ea87-404e-ad6c-a5b2958c56f1	1086	\N	\N	905
+3658	8bd97506-18e9-4623-91b5-5ff584d470e8	1018	\N	\N	906
+3659	5d4c0bbc-63fc-4ee3-8043-d4dc392cbcd9	1202	\N	\N	906
+3660	fe6dc082-6544-4ba4-8eb2-7e91aec4ef23	1056	\N	\N	906
+3661	ba5a4911-9f4a-4a8b-8aed-aaddc3986711	1020	\N	\N	906
+3662	bd28fe4b-126a-4a39-95f6-ec9aa3cd0aba	1019	\N	\N	906
+3663	4a6c0012-380b-4dbe-a0c1-daf20cbe83f9	1134	\N	\N	906
+3664	de49a960-5411-45bb-9037-a952bec36755	1213	\N	\N	907
+3665	78995f9c-2274-40ea-9460-68455079e65d	1212	\N	\N	907
+3666	8a5e1037-0973-4229-b5b8-141ec64dffc5	1042	\N	\N	908
+3667	907de81a-63f3-4480-a015-71a3db6dde95	1204	\N	\N	908
 \.
 
 
 --
--- TOC entry 8971 (class 0 OID 380445)
--- Dependencies: 1109
+-- TOC entry 5727 (class 0 OID 419560)
+-- Dependencies: 230
 -- Data for Name: col_puntocl; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8658,8 +8939,8 @@ COPY test_ladm_col_queries.col_puntocl (t_id, t_ili_tid, punto_lc_puntolindero, 
 
 
 --
--- TOC entry 8960 (class 0 OID 380342)
--- Dependencies: 1098
+-- TOC entry 5728 (class 0 OID 419564)
+-- Dependencies: 231
 -- Data for Name: col_puntofuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8668,8 +8949,8 @@ COPY test_ladm_col_queries.col_puntofuente (t_id, t_ili_tid, fuente_espacial, pu
 
 
 --
--- TOC entry 9088 (class 0 OID 381605)
--- Dependencies: 1226
+-- TOC entry 5729 (class 0 OID 419568)
+-- Dependencies: 232
 -- Data for Name: col_puntotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8681,8 +8962,8 @@ COPY test_ladm_col_queries.col_puntotipo (t_id, thisclass, baseclass, itfcode, i
 
 
 --
--- TOC entry 9039 (class 0 OID 381164)
--- Dependencies: 1177
+-- TOC entry 5730 (class 0 OID 419575)
+-- Dependencies: 233
 -- Data for Name: col_redserviciostipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8695,8 +8976,8 @@ COPY test_ladm_col_queries.col_redserviciostipo (t_id, thisclass, baseclass, itf
 
 
 --
--- TOC entry 9069 (class 0 OID 381434)
--- Dependencies: 1207
+-- TOC entry 5731 (class 0 OID 419582)
+-- Dependencies: 234
 -- Data for Name: col_registrotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8708,8 +8989,8 @@ COPY test_ladm_col_queries.col_registrotipo (t_id, thisclass, baseclass, itfcode
 
 
 --
--- TOC entry 8958 (class 0 OID 380327)
--- Dependencies: 1096
+-- TOC entry 5732 (class 0 OID 419589)
+-- Dependencies: 235
 -- Data for Name: col_relacionfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8718,8 +8999,8 @@ COPY test_ladm_col_queries.col_relacionfuente (t_id, t_ili_tid, fuente_administr
 
 
 --
--- TOC entry 8963 (class 0 OID 380371)
--- Dependencies: 1101
+-- TOC entry 5733 (class 0 OID 419593)
+-- Dependencies: 236
 -- Data for Name: col_relacionfuenteuespacial; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8728,8 +9009,8 @@ COPY test_ladm_col_queries.col_relacionfuenteuespacial (t_id, t_ili_tid, fuente_
 
 
 --
--- TOC entry 9047 (class 0 OID 381236)
--- Dependencies: 1185
+-- TOC entry 5734 (class 0 OID 419597)
+-- Dependencies: 237
 -- Data for Name: col_relacionsuperficietipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8742,8 +9023,8 @@ COPY test_ladm_col_queries.col_relacionsuperficietipo (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 8973 (class 0 OID 380463)
--- Dependencies: 1111
+-- TOC entry 5735 (class 0 OID 419604)
+-- Dependencies: 238
 -- Data for Name: col_responsablefuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8752,8 +9033,8 @@ COPY test_ladm_col_queries.col_responsablefuente (t_id, t_ili_tid, fuente_admini
 
 
 --
--- TOC entry 8956 (class 0 OID 380307)
--- Dependencies: 1094
+-- TOC entry 5736 (class 0 OID 419608)
+-- Dependencies: 239
 -- Data for Name: col_rrrfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8819,8 +9100,8 @@ COPY test_ladm_col_queries.col_rrrfuente (t_id, t_ili_tid, fuente_administrativa
 
 
 --
--- TOC entry 8974 (class 0 OID 380472)
--- Dependencies: 1112
+-- TOC entry 5737 (class 0 OID 419612)
+-- Dependencies: 240
 -- Data for Name: col_topografofuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8829,8 +9110,8 @@ COPY test_ladm_col_queries.col_topografofuente (t_id, t_ili_tid, fuente_espacial
 
 
 --
--- TOC entry 8948 (class 0 OID 380228)
--- Dependencies: 1086
+-- TOC entry 5738 (class 0 OID 419616)
+-- Dependencies: 241
 -- Data for Name: col_transformacion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8839,8 +9120,8 @@ COPY test_ladm_col_queries.col_transformacion (t_id, t_seq, localizacion_transfo
 
 
 --
--- TOC entry 8957 (class 0 OID 380316)
--- Dependencies: 1095
+-- TOC entry 5739 (class 0 OID 419623)
+-- Dependencies: 242
 -- Data for Name: col_uebaunit; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8918,8 +9199,8 @@ COPY test_ladm_col_queries.col_uebaunit (t_id, t_ili_tid, ue_lc_terreno, ue_lc_c
 
 
 --
--- TOC entry 8961 (class 0 OID 380352)
--- Dependencies: 1099
+-- TOC entry 5740 (class 0 OID 419627)
+-- Dependencies: 243
 -- Data for Name: col_uefuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8930,8 +9211,8 @@ COPY test_ladm_col_queries.col_uefuente (t_id, t_ili_tid, ue_lc_terreno, ue_lc_c
 
 
 --
--- TOC entry 8955 (class 0 OID 380297)
--- Dependencies: 1093
+-- TOC entry 5741 (class 0 OID 419631)
+-- Dependencies: 244
 -- Data for Name: col_ueuegrupo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8940,8 +9221,8 @@ COPY test_ladm_col_queries.col_ueuegrupo (t_id, t_ili_tid, parte_lc_terreno, par
 
 
 --
--- TOC entry 9097 (class 0 OID 381686)
--- Dependencies: 1235
+-- TOC entry 5742 (class 0 OID 419635)
+-- Dependencies: 245
 -- Data for Name: col_unidadadministrativabasicatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8959,8 +9240,8 @@ COPY test_ladm_col_queries.col_unidadadministrativabasicatipo (t_id, thisclass, 
 
 
 --
--- TOC entry 9073 (class 0 OID 381470)
--- Dependencies: 1211
+-- TOC entry 5743 (class 0 OID 419642)
+-- Dependencies: 246
 -- Data for Name: col_unidadedificaciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8971,8 +9252,8 @@ COPY test_ladm_col_queries.col_unidadedificaciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 8959 (class 0 OID 380334)
--- Dependencies: 1097
+-- TOC entry 5744 (class 0 OID 419649)
+-- Dependencies: 247
 -- Data for Name: col_unidadfuente; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8981,8 +9262,8 @@ COPY test_ladm_col_queries.col_unidadfuente (t_id, t_ili_tid, fuente_administrat
 
 
 --
--- TOC entry 9068 (class 0 OID 381425)
--- Dependencies: 1206
+-- TOC entry 5745 (class 0 OID 419653)
+-- Dependencies: 248
 -- Data for Name: col_volumentipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -8994,8 +9275,8 @@ COPY test_ladm_col_queries.col_volumentipo (t_id, thisclass, baseclass, itfcode,
 
 
 --
--- TOC entry 8954 (class 0 OID 380286)
--- Dependencies: 1092
+-- TOC entry 5746 (class 0 OID 419660)
+-- Dependencies: 249
 -- Data for Name: col_volumenvalor; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9004,8 +9285,8 @@ COPY test_ladm_col_queries.col_volumenvalor (t_id, t_seq, volumen_medicion, tipo
 
 
 --
--- TOC entry 8953 (class 0 OID 380274)
--- Dependencies: 1091
+-- TOC entry 5747 (class 0 OID 419665)
+-- Dependencies: 250
 -- Data for Name: extarchivo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9066,8 +9347,8 @@ COPY test_ladm_col_queries.extarchivo (t_id, t_seq, fecha_aceptacion, datos, ext
 
 
 --
--- TOC entry 8946 (class 0 OID 380199)
--- Dependencies: 1084
+-- TOC entry 5748 (class 0 OID 419672)
+-- Dependencies: 251
 -- Data for Name: extdireccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9144,8 +9425,8 @@ COPY test_ladm_col_queries.extdireccion (t_id, t_seq, tipo_direccion, es_direcci
 
 
 --
--- TOC entry 9060 (class 0 OID 381353)
--- Dependencies: 1198
+-- TOC entry 5749 (class 0 OID 419679)
+-- Dependencies: 252
 -- Data for Name: extdireccion_clase_via_principal; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9164,8 +9445,8 @@ COPY test_ladm_col_queries.extdireccion_clase_via_principal (t_id, thisclass, ba
 
 
 --
--- TOC entry 9076 (class 0 OID 381497)
--- Dependencies: 1214
+-- TOC entry 5750 (class 0 OID 419686)
+-- Dependencies: 253
 -- Data for Name: extdireccion_sector_ciudad; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9178,8 +9459,8 @@ COPY test_ladm_col_queries.extdireccion_sector_ciudad (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 9101 (class 0 OID 381722)
--- Dependencies: 1239
+-- TOC entry 5751 (class 0 OID 419693)
+-- Dependencies: 254
 -- Data for Name: extdireccion_sector_predio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9192,8 +9473,8 @@ COPY test_ladm_col_queries.extdireccion_sector_predio (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 9102 (class 0 OID 381731)
--- Dependencies: 1240
+-- TOC entry 5752 (class 0 OID 419700)
+-- Dependencies: 255
 -- Data for Name: extdireccion_tipo_direccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9204,8 +9485,8 @@ COPY test_ladm_col_queries.extdireccion_tipo_direccion (t_id, thisclass, basecla
 
 
 --
--- TOC entry 8951 (class 0 OID 380256)
--- Dependencies: 1089
+-- TOC entry 5753 (class 0 OID 419707)
+-- Dependencies: 256
 -- Data for Name: extinteresado; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9214,8 +9495,8 @@ COPY test_ladm_col_queries.extinteresado (t_id, t_seq, nombre, documento_escanea
 
 
 --
--- TOC entry 8952 (class 0 OID 380268)
--- Dependencies: 1090
+-- TOC entry 5754 (class 0 OID 419714)
+-- Dependencies: 257
 -- Data for Name: extredserviciosfisica; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9224,8 +9505,8 @@ COPY test_ladm_col_queries.extredserviciosfisica (t_id, t_seq, orientada) FROM s
 
 
 --
--- TOC entry 8949 (class 0 OID 380241)
--- Dependencies: 1087
+-- TOC entry 5755 (class 0 OID 419718)
+-- Dependencies: 258
 -- Data for Name: extunidadedificacionfisica; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9234,8 +9515,8 @@ COPY test_ladm_col_queries.extunidadedificacionfisica (t_id, t_seq) FROM stdin;
 
 
 --
--- TOC entry 8947 (class 0 OID 380220)
--- Dependencies: 1085
+-- TOC entry 5756 (class 0 OID 419722)
+-- Dependencies: 259
 -- Data for Name: fraccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9247,8 +9528,8 @@ COPY test_ladm_col_queries.fraccion (t_id, t_seq, denominador, numerador, col_mi
 
 
 --
--- TOC entry 8976 (class 0 OID 380490)
--- Dependencies: 1114
+-- TOC entry 5757 (class 0 OID 419728)
+-- Dependencies: 260
 -- Data for Name: gc_barrio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9257,8 +9538,8 @@ COPY test_ladm_col_queries.gc_barrio (t_id, t_ili_tid, codigo, nombre, codigo_se
 
 
 --
--- TOC entry 8977 (class 0 OID 380500)
--- Dependencies: 1115
+-- TOC entry 5758 (class 0 OID 419735)
+-- Dependencies: 261
 -- Data for Name: gc_calificacionunidadconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9267,8 +9548,8 @@ COPY test_ladm_col_queries.gc_calificacionunidadconstruccion (t_id, t_ili_tid, c
 
 
 --
--- TOC entry 8978 (class 0 OID 380510)
--- Dependencies: 1116
+-- TOC entry 5759 (class 0 OID 419743)
+-- Dependencies: 262
 -- Data for Name: gc_comisionesconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9277,8 +9558,8 @@ COPY test_ladm_col_queries.gc_comisionesconstruccion (t_id, t_ili_tid, numero_pr
 
 
 --
--- TOC entry 8979 (class 0 OID 380520)
--- Dependencies: 1117
+-- TOC entry 5760 (class 0 OID 419750)
+-- Dependencies: 263
 -- Data for Name: gc_comisionesterreno; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9287,8 +9568,8 @@ COPY test_ladm_col_queries.gc_comisionesterreno (t_id, t_ili_tid, numero_predial
 
 
 --
--- TOC entry 8980 (class 0 OID 380530)
--- Dependencies: 1118
+-- TOC entry 5761 (class 0 OID 419757)
+-- Dependencies: 264
 -- Data for Name: gc_comisionesunidadconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9297,8 +9578,8 @@ COPY test_ladm_col_queries.gc_comisionesunidadconstruccion (t_id, t_ili_tid, num
 
 
 --
--- TOC entry 9045 (class 0 OID 381218)
--- Dependencies: 1183
+-- TOC entry 5762 (class 0 OID 419764)
+-- Dependencies: 265
 -- Data for Name: gc_condicionprediotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9318,8 +9599,8 @@ COPY test_ladm_col_queries.gc_condicionprediotipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 8981 (class 0 OID 380540)
--- Dependencies: 1119
+-- TOC entry 5763 (class 0 OID 419771)
+-- Dependencies: 266
 -- Data for Name: gc_construccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9328,8 +9609,8 @@ COPY test_ladm_col_queries.gc_construccion (t_id, t_ili_tid, identificador, etiq
 
 
 --
--- TOC entry 8995 (class 0 OID 380678)
--- Dependencies: 1133
+-- TOC entry 5764 (class 0 OID 419784)
+-- Dependencies: 267
 -- Data for Name: gc_copropiedad; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9338,8 +9619,8 @@ COPY test_ladm_col_queries.gc_copropiedad (t_id, gc_matriz, gc_unidad, coeficien
 
 
 --
--- TOC entry 8982 (class 0 OID 380552)
--- Dependencies: 1120
+-- TOC entry 5765 (class 0 OID 419789)
+-- Dependencies: 268
 -- Data for Name: gc_datosphcondominio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9348,8 +9629,8 @@ COPY test_ladm_col_queries.gc_datosphcondominio (t_id, t_ili_tid, area_total_ter
 
 
 --
--- TOC entry 8983 (class 0 OID 380559)
--- Dependencies: 1121
+-- TOC entry 5766 (class 0 OID 419800)
+-- Dependencies: 269
 -- Data for Name: gc_datostorreph; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9358,8 +9639,8 @@ COPY test_ladm_col_queries.gc_datostorreph (t_id, t_ili_tid, torre, total_pisos_
 
 
 --
--- TOC entry 8984 (class 0 OID 380566)
--- Dependencies: 1122
+-- TOC entry 5767 (class 0 OID 419809)
+-- Dependencies: 270
 -- Data for Name: gc_direccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9368,8 +9649,8 @@ COPY test_ladm_col_queries.gc_direccion (t_id, t_seq, valor, principal, geometri
 
 
 --
--- TOC entry 8985 (class 0 OID 380577)
--- Dependencies: 1123
+-- TOC entry 5768 (class 0 OID 419816)
+-- Dependencies: 271
 -- Data for Name: gc_estadopredio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9378,8 +9659,8 @@ COPY test_ladm_col_queries.gc_estadopredio (t_id, t_seq, estado_alerta, entidad_
 
 
 --
--- TOC entry 8986 (class 0 OID 380584)
--- Dependencies: 1124
+-- TOC entry 5769 (class 0 OID 419820)
+-- Dependencies: 272
 -- Data for Name: gc_manzana; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9388,8 +9669,8 @@ COPY test_ladm_col_queries.gc_manzana (t_id, t_ili_tid, codigo, codigo_anterior,
 
 
 --
--- TOC entry 8987 (class 0 OID 380594)
--- Dependencies: 1125
+-- TOC entry 5770 (class 0 OID 419827)
+-- Dependencies: 273
 -- Data for Name: gc_perimetro; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9398,8 +9679,8 @@ COPY test_ladm_col_queries.gc_perimetro (t_id, t_ili_tid, codigo_departamento, c
 
 
 --
--- TOC entry 8994 (class 0 OID 380667)
--- Dependencies: 1132
+-- TOC entry 5771 (class 0 OID 419834)
+-- Dependencies: 274
 -- Data for Name: gc_prediocatastro; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9408,8 +9689,8 @@ COPY test_ladm_col_queries.gc_prediocatastro (t_id, t_ili_tid, tipo_catastro, nu
 
 
 --
--- TOC entry 8988 (class 0 OID 380604)
--- Dependencies: 1126
+-- TOC entry 5772 (class 0 OID 419841)
+-- Dependencies: 275
 -- Data for Name: gc_propietario; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9418,8 +9699,8 @@ COPY test_ladm_col_queries.gc_propietario (t_id, t_ili_tid, tipo_documento, nume
 
 
 --
--- TOC entry 8989 (class 0 OID 380614)
--- Dependencies: 1127
+-- TOC entry 5773 (class 0 OID 419848)
+-- Dependencies: 276
 -- Data for Name: gc_sectorrural; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9428,8 +9709,8 @@ COPY test_ladm_col_queries.gc_sectorrural (t_id, t_ili_tid, codigo, geometria) F
 
 
 --
--- TOC entry 8990 (class 0 OID 380624)
--- Dependencies: 1128
+-- TOC entry 5774 (class 0 OID 419855)
+-- Dependencies: 277
 -- Data for Name: gc_sectorurbano; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9438,8 +9719,8 @@ COPY test_ladm_col_queries.gc_sectorurbano (t_id, t_ili_tid, codigo, geometria) 
 
 
 --
--- TOC entry 9082 (class 0 OID 381551)
--- Dependencies: 1220
+-- TOC entry 5775 (class 0 OID 419862)
+-- Dependencies: 278
 -- Data for Name: gc_sistemaprocedenciadatostipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9450,8 +9731,8 @@ COPY test_ladm_col_queries.gc_sistemaprocedenciadatostipo (t_id, thisclass, base
 
 
 --
--- TOC entry 8991 (class 0 OID 380634)
--- Dependencies: 1129
+-- TOC entry 5776 (class 0 OID 419869)
+-- Dependencies: 279
 -- Data for Name: gc_terreno; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9460,8 +9741,8 @@ COPY test_ladm_col_queries.gc_terreno (t_id, t_ili_tid, area_terreno_alfanumeric
 
 
 --
--- TOC entry 8992 (class 0 OID 380645)
--- Dependencies: 1130
+-- TOC entry 5777 (class 0 OID 419879)
+-- Dependencies: 280
 -- Data for Name: gc_unidadconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9470,8 +9751,8 @@ COPY test_ladm_col_queries.gc_unidadconstruccion (t_id, t_ili_tid, identificador
 
 
 --
--- TOC entry 9059 (class 0 OID 381344)
--- Dependencies: 1197
+-- TOC entry 5778 (class 0 OID 419894)
+-- Dependencies: 281
 -- Data for Name: gc_unidadconstrucciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9482,8 +9763,8 @@ COPY test_ladm_col_queries.gc_unidadconstrucciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 8993 (class 0 OID 380657)
--- Dependencies: 1131
+-- TOC entry 5779 (class 0 OID 419901)
+-- Dependencies: 282
 -- Data for Name: gc_vereda; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9492,8 +9773,8 @@ COPY test_ladm_col_queries.gc_vereda (t_id, t_ili_tid, codigo, codigo_anterior, 
 
 
 --
--- TOC entry 8941 (class 0 OID 380155)
--- Dependencies: 1079
+-- TOC entry 5780 (class 0 OID 419908)
+-- Dependencies: 283
 -- Data for Name: gm_multisurface2d; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9502,8 +9783,8 @@ COPY test_ladm_col_queries.gm_multisurface2d (t_id, t_seq) FROM stdin;
 
 
 --
--- TOC entry 8943 (class 0 OID 380172)
--- Dependencies: 1081
+-- TOC entry 5781 (class 0 OID 419912)
+-- Dependencies: 284
 -- Data for Name: gm_multisurface3d; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9512,8 +9793,8 @@ COPY test_ladm_col_queries.gm_multisurface3d (t_id, t_seq) FROM stdin;
 
 
 --
--- TOC entry 8940 (class 0 OID 380144)
--- Dependencies: 1078
+-- TOC entry 5782 (class 0 OID 419916)
+-- Dependencies: 285
 -- Data for Name: gm_surface2dlistvalue; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9522,8 +9803,8 @@ COPY test_ladm_col_queries.gm_surface2dlistvalue (t_id, t_seq, avalue, gm_multis
 
 
 --
--- TOC entry 8942 (class 0 OID 380161)
--- Dependencies: 1080
+-- TOC entry 5783 (class 0 OID 419923)
+-- Dependencies: 286
 -- Data for Name: gm_surface3dlistvalue; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9532,8 +9813,8 @@ COPY test_ladm_col_queries.gm_surface3dlistvalue (t_id, t_seq, avalue, gm_multis
 
 
 --
--- TOC entry 8950 (class 0 OID 380247)
--- Dependencies: 1088
+-- TOC entry 5784 (class 0 OID 419930)
+-- Dependencies: 287
 -- Data for Name: imagen; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9542,8 +9823,8 @@ COPY test_ladm_col_queries.imagen (t_id, t_seq, uri, extinteresado_huella_dactil
 
 
 --
--- TOC entry 9041 (class 0 OID 381182)
--- Dependencies: 1179
+-- TOC entry 5785 (class 0 OID 419934)
+-- Dependencies: 288
 -- Data for Name: ini_emparejamientotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9563,8 +9844,8 @@ COPY test_ladm_col_queries.ini_emparejamientotipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9003 (class 0 OID 380752)
--- Dependencies: 1141
+-- TOC entry 5786 (class 0 OID 419941)
+-- Dependencies: 289
 -- Data for Name: ini_predioinsumos; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9573,8 +9854,8 @@ COPY test_ladm_col_queries.ini_predioinsumos (t_id, t_ili_tid, tipo_emparejamien
 
 
 --
--- TOC entry 9049 (class 0 OID 381254)
--- Dependencies: 1187
+-- TOC entry 5787 (class 0 OID 419948)
+-- Dependencies: 290
 -- Data for Name: lc_acuerdotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9585,8 +9866,8 @@ COPY test_ladm_col_queries.lc_acuerdotipo (t_id, thisclass, baseclass, itfcode, 
 
 
 --
--- TOC entry 9004 (class 0 OID 380764)
--- Dependencies: 1142
+-- TOC entry 5788 (class 0 OID 419955)
+-- Dependencies: 291
 -- Data for Name: lc_agrupacioninteresados; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9597,8 +9878,8 @@ COPY test_ladm_col_queries.lc_agrupacioninteresados (t_id, t_ili_tid, tipo, nomb
 
 
 --
--- TOC entry 9053 (class 0 OID 381290)
--- Dependencies: 1191
+-- TOC entry 5789 (class 0 OID 419963)
+-- Dependencies: 292
 -- Data for Name: lc_anexotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9681,8 +9962,8 @@ COPY test_ladm_col_queries.lc_anexotipo (t_id, thisclass, baseclass, itfcode, il
 
 
 --
--- TOC entry 9024 (class 0 OID 381008)
--- Dependencies: 1162
+-- TOC entry 5790 (class 0 OID 419970)
+-- Dependencies: 293
 -- Data for Name: lc_calificacionconvencional; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9691,8 +9972,8 @@ COPY test_ladm_col_queries.lc_calificacionconvencional (t_id, t_ili_tid, tipo_ca
 
 
 --
--- TOC entry 9025 (class 0 OID 381017)
--- Dependencies: 1163
+-- TOC entry 5791 (class 0 OID 419976)
+-- Dependencies: 294
 -- Data for Name: lc_calificacionnoconvencional; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9701,8 +9982,8 @@ COPY test_ladm_col_queries.lc_calificacionnoconvencional (t_id, t_ili_tid, tipo_
 
 
 --
--- TOC entry 9057 (class 0 OID 381326)
--- Dependencies: 1195
+-- TOC entry 5792 (class 0 OID 419981)
+-- Dependencies: 295
 -- Data for Name: lc_calificartipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9715,8 +9996,8 @@ COPY test_ladm_col_queries.lc_calificartipo (t_id, thisclass, baseclass, itfcode
 
 
 --
--- TOC entry 9066 (class 0 OID 381407)
--- Dependencies: 1204
+-- TOC entry 5793 (class 0 OID 419988)
+-- Dependencies: 296
 -- Data for Name: lc_categoriasuelotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9727,8 +10008,8 @@ COPY test_ladm_col_queries.lc_categoriasuelotipo (t_id, thisclass, baseclass, it
 
 
 --
--- TOC entry 9077 (class 0 OID 381506)
--- Dependencies: 1215
+-- TOC entry 5794 (class 0 OID 419995)
+-- Dependencies: 297
 -- Data for Name: lc_clasecalificaciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9742,8 +10023,8 @@ COPY test_ladm_col_queries.lc_clasecalificaciontipo (t_id, thisclass, baseclass,
 
 
 --
--- TOC entry 9067 (class 0 OID 381416)
--- Dependencies: 1205
+-- TOC entry 5795 (class 0 OID 420002)
+-- Dependencies: 298
 -- Data for Name: lc_clasesuelotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9755,8 +10036,8 @@ COPY test_ladm_col_queries.lc_clasesuelotipo (t_id, thisclass, baseclass, itfcod
 
 
 --
--- TOC entry 9094 (class 0 OID 381659)
--- Dependencies: 1232
+-- TOC entry 5796 (class 0 OID 420009)
+-- Dependencies: 299
 -- Data for Name: lc_condicionprediotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9776,8 +10057,8 @@ COPY test_ladm_col_queries.lc_condicionprediotipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9005 (class 0 OID 380775)
--- Dependencies: 1143
+-- TOC entry 5797 (class 0 OID 420016)
+-- Dependencies: 300
 -- Data for Name: lc_construccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9803,8 +10084,8 @@ COPY test_ladm_col_queries.lc_construccion (t_id, t_ili_tid, identificador, tipo
 
 
 --
--- TOC entry 9061 (class 0 OID 381362)
--- Dependencies: 1199
+-- TOC entry 5798 (class 0 OID 420032)
+-- Dependencies: 301
 -- Data for Name: lc_construccionplantatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9818,8 +10099,8 @@ COPY test_ladm_col_queries.lc_construccionplantatipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 9085 (class 0 OID 381578)
--- Dependencies: 1223
+-- TOC entry 5799 (class 0 OID 420039)
+-- Dependencies: 302
 -- Data for Name: lc_construcciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9830,8 +10111,8 @@ COPY test_ladm_col_queries.lc_construcciontipo (t_id, thisclass, baseclass, itfc
 
 
 --
--- TOC entry 9006 (class 0 OID 380790)
--- Dependencies: 1144
+-- TOC entry 5800 (class 0 OID 420046)
+-- Dependencies: 303
 -- Data for Name: lc_contactovisita; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9840,8 +10121,8 @@ COPY test_ladm_col_queries.lc_contactovisita (t_id, t_ili_tid, tipo_documento_qu
 
 
 --
--- TOC entry 9026 (class 0 OID 381026)
--- Dependencies: 1164
+-- TOC entry 5801 (class 0 OID 420054)
+-- Dependencies: 304
 -- Data for Name: lc_datosadicionaleslevantamientocatastral; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9850,8 +10131,8 @@ COPY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral (t_id, t_il
 
 
 --
--- TOC entry 9007 (class 0 OID 380803)
--- Dependencies: 1145
+-- TOC entry 5802 (class 0 OID 420063)
+-- Dependencies: 305
 -- Data for Name: lc_datosphcondominio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9860,8 +10141,8 @@ COPY test_ladm_col_queries.lc_datosphcondominio (t_id, t_ili_tid, area_total_ter
 
 
 --
--- TOC entry 9008 (class 0 OID 380811)
--- Dependencies: 1146
+-- TOC entry 5803 (class 0 OID 420076)
+-- Dependencies: 306
 -- Data for Name: lc_derecho; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9922,8 +10203,8 @@ COPY test_ladm_col_queries.lc_derecho (t_id, t_ili_tid, tipo, fraccion_derecho, 
 
 
 --
--- TOC entry 9087 (class 0 OID 381596)
--- Dependencies: 1225
+-- TOC entry 5804 (class 0 OID 420085)
+-- Dependencies: 307
 -- Data for Name: lc_derechotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9935,8 +10216,8 @@ COPY test_ladm_col_queries.lc_derechotipo (t_id, thisclass, baseclass, itfcode, 
 
 
 --
--- TOC entry 9096 (class 0 OID 381677)
--- Dependencies: 1234
+-- TOC entry 5805 (class 0 OID 420092)
+-- Dependencies: 308
 -- Data for Name: lc_destinacioneconomicatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9971,8 +10252,8 @@ COPY test_ladm_col_queries.lc_destinacioneconomicatipo (t_id, thisclass, basecla
 
 
 --
--- TOC entry 9103 (class 0 OID 381740)
--- Dependencies: 1241
+-- TOC entry 5806 (class 0 OID 420099)
+-- Dependencies: 309
 -- Data for Name: lc_dominioconstrucciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9983,8 +10264,8 @@ COPY test_ladm_col_queries.lc_dominioconstrucciontipo (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 9064 (class 0 OID 381389)
--- Dependencies: 1202
+-- TOC entry 5807 (class 0 OID 420106)
+-- Dependencies: 310
 -- Data for Name: lc_estadoconservaciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -9997,8 +10278,8 @@ COPY test_ladm_col_queries.lc_estadoconservaciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 9009 (class 0 OID 380825)
--- Dependencies: 1147
+-- TOC entry 5808 (class 0 OID 420113)
+-- Dependencies: 311
 -- Data for Name: lc_estructuranovedadfmi; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10007,8 +10288,8 @@ COPY test_ladm_col_queries.lc_estructuranovedadfmi (t_id, t_seq, codigo_orip, nu
 
 
 --
--- TOC entry 9010 (class 0 OID 380832)
--- Dependencies: 1148
+-- TOC entry 5809 (class 0 OID 420117)
+-- Dependencies: 312
 -- Data for Name: lc_estructuranovedadnumeropredial; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10017,8 +10298,8 @@ COPY test_ladm_col_queries.lc_estructuranovedadnumeropredial (t_id, t_seq, numer
 
 
 --
--- TOC entry 9100 (class 0 OID 381713)
--- Dependencies: 1238
+-- TOC entry 5810 (class 0 OID 420121)
+-- Dependencies: 313
 -- Data for Name: lc_estructuranovedadnumeropredial_tipo_novedad; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10033,8 +10314,8 @@ COPY test_ladm_col_queries.lc_estructuranovedadnumeropredial_tipo_novedad (t_id,
 
 
 --
--- TOC entry 9090 (class 0 OID 381623)
--- Dependencies: 1228
+-- TOC entry 5811 (class 0 OID 420128)
+-- Dependencies: 314
 -- Data for Name: lc_fotoidentificaciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10045,8 +10326,8 @@ COPY test_ladm_col_queries.lc_fotoidentificaciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 9011 (class 0 OID 380840)
--- Dependencies: 1149
+-- TOC entry 5812 (class 0 OID 420135)
+-- Dependencies: 315
 -- Data for Name: lc_fuenteadministrativa; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10105,8 +10386,8 @@ COPY test_ladm_col_queries.lc_fuenteadministrativa (t_id, t_ili_tid, tipo, ente_
 
 
 --
--- TOC entry 9078 (class 0 OID 381515)
--- Dependencies: 1216
+-- TOC entry 5813 (class 0 OID 420143)
+-- Dependencies: 316
 -- Data for Name: lc_fuenteadministrativatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10120,8 +10401,8 @@ COPY test_ladm_col_queries.lc_fuenteadministrativatipo (t_id, thisclass, basecla
 
 
 --
--- TOC entry 9012 (class 0 OID 380853)
--- Dependencies: 1150
+-- TOC entry 5814 (class 0 OID 420150)
+-- Dependencies: 317
 -- Data for Name: lc_fuenteespacial; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10132,8 +10413,8 @@ COPY test_ladm_col_queries.lc_fuenteespacial (t_id, t_ili_tid, nombre, tipo, des
 
 
 --
--- TOC entry 9013 (class 0 OID 380866)
--- Dependencies: 1151
+-- TOC entry 5815 (class 0 OID 420158)
+-- Dependencies: 318
 -- Data for Name: lc_grupocalificacion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10142,8 +10423,8 @@ COPY test_ladm_col_queries.lc_grupocalificacion (t_id, t_ili_tid, clase_califica
 
 
 --
--- TOC entry 9079 (class 0 OID 381524)
--- Dependencies: 1217
+-- TOC entry 5816 (class 0 OID 420164)
+-- Dependencies: 319
 -- Data for Name: lc_grupoetnicotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10158,8 +10439,8 @@ COPY test_ladm_col_queries.lc_grupoetnicotipo (t_id, thisclass, baseclass, itfco
 
 
 --
--- TOC entry 9014 (class 0 OID 380876)
--- Dependencies: 1152
+-- TOC entry 5817 (class 0 OID 420171)
+-- Dependencies: 320
 -- Data for Name: lc_interesado; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10204,8 +10485,8 @@ COPY test_ladm_col_queries.lc_interesado (t_id, t_ili_tid, tipo, tipo_documento,
 
 
 --
--- TOC entry 9015 (class 0 OID 380890)
--- Dependencies: 1153
+-- TOC entry 5818 (class 0 OID 420179)
+-- Dependencies: 321
 -- Data for Name: lc_interesadocontacto; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10218,8 +10499,8 @@ COPY test_ladm_col_queries.lc_interesadocontacto (t_id, t_ili_tid, telefono1, te
 
 
 --
--- TOC entry 9091 (class 0 OID 381632)
--- Dependencies: 1229
+-- TOC entry 5819 (class 0 OID 420187)
+-- Dependencies: 322
 -- Data for Name: lc_interesadodocumentotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10234,8 +10515,8 @@ COPY test_ladm_col_queries.lc_interesadodocumentotipo (t_id, thisclass, baseclas
 
 
 --
--- TOC entry 9048 (class 0 OID 381245)
--- Dependencies: 1186
+-- TOC entry 5820 (class 0 OID 420194)
+-- Dependencies: 323
 -- Data for Name: lc_interesadotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10246,8 +10527,8 @@ COPY test_ladm_col_queries.lc_interesadotipo (t_id, thisclass, baseclass, itfcod
 
 
 --
--- TOC entry 9016 (class 0 OID 380901)
--- Dependencies: 1154
+-- TOC entry 5821 (class 0 OID 420201)
+-- Dependencies: 324
 -- Data for Name: lc_lindero; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10410,8 +10691,8 @@ COPY test_ladm_col_queries.lc_lindero (t_id, t_ili_tid, longitud, geometria, loc
 
 
 --
--- TOC entry 9017 (class 0 OID 380912)
--- Dependencies: 1155
+-- TOC entry 5822 (class 0 OID 420210)
+-- Dependencies: 325
 -- Data for Name: lc_objetoconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10420,8 +10701,8 @@ COPY test_ladm_col_queries.lc_objetoconstruccion (t_id, t_ili_tid, tipo_objeto_c
 
 
 --
--- TOC entry 9095 (class 0 OID 381668)
--- Dependencies: 1233
+-- TOC entry 5823 (class 0 OID 420216)
+-- Dependencies: 326
 -- Data for Name: lc_objetoconstrucciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10498,8 +10779,8 @@ COPY test_ladm_col_queries.lc_objetoconstrucciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 9018 (class 0 OID 380921)
--- Dependencies: 1156
+-- TOC entry 5824 (class 0 OID 420223)
+-- Dependencies: 327
 -- Data for Name: lc_ofertasmercadoinmobiliario; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10508,8 +10789,8 @@ COPY test_ladm_col_queries.lc_ofertasmercadoinmobiliario (t_id, t_ili_tid, tipo_
 
 
 --
--- TOC entry 9058 (class 0 OID 381335)
--- Dependencies: 1196
+-- TOC entry 5825 (class 0 OID 420231)
+-- Dependencies: 328
 -- Data for Name: lc_ofertatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10520,8 +10801,8 @@ COPY test_ladm_col_queries.lc_ofertatipo (t_id, thisclass, baseclass, itfcode, i
 
 
 --
--- TOC entry 9019 (class 0 OID 380930)
--- Dependencies: 1157
+-- TOC entry 5826 (class 0 OID 420238)
+-- Dependencies: 329
 -- Data for Name: lc_predio; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10581,8 +10862,8 @@ COPY test_ladm_col_queries.lc_predio (t_id, t_ili_tid, departamento, municipio, 
 
 
 --
--- TOC entry 9029 (class 0 OID 381072)
--- Dependencies: 1167
+-- TOC entry 5827 (class 0 OID 420247)
+-- Dependencies: 330
 -- Data for Name: lc_predio_copropiedad; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10591,8 +10872,8 @@ COPY test_ladm_col_queries.lc_predio_copropiedad (t_id, predio, copropiedad) FRO
 
 
 --
--- TOC entry 9030 (class 0 OID 381080)
--- Dependencies: 1168
+-- TOC entry 5828 (class 0 OID 420251)
+-- Dependencies: 331
 -- Data for Name: lc_predio_ini_predioinsumos; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10601,8 +10882,8 @@ COPY test_ladm_col_queries.lc_predio_ini_predioinsumos (t_id, t_ili_tid, ini_pre
 
 
 --
--- TOC entry 9098 (class 0 OID 381695)
--- Dependencies: 1236
+-- TOC entry 5829 (class 0 OID 420255)
+-- Dependencies: 332
 -- Data for Name: lc_prediotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10618,8 +10899,8 @@ COPY test_ladm_col_queries.lc_prediotipo (t_id, thisclass, baseclass, itfcode, i
 
 
 --
--- TOC entry 9071 (class 0 OID 381452)
--- Dependencies: 1209
+-- TOC entry 5830 (class 0 OID 420262)
+-- Dependencies: 333
 -- Data for Name: lc_procedimientocatastralregistraltipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10633,8 +10914,8 @@ COPY test_ladm_col_queries.lc_procedimientocatastralregistraltipo (t_id, thiscla
 
 
 --
--- TOC entry 9020 (class 0 OID 380942)
--- Dependencies: 1158
+-- TOC entry 5831 (class 0 OID 420269)
+-- Dependencies: 334
 -- Data for Name: lc_puntocontrol; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10643,8 +10924,8 @@ COPY test_ladm_col_queries.lc_puntocontrol (t_id, t_ili_tid, id_punto_control, p
 
 
 --
--- TOC entry 9092 (class 0 OID 381641)
--- Dependencies: 1230
+-- TOC entry 5832 (class 0 OID 420279)
+-- Dependencies: 335
 -- Data for Name: lc_puntocontroltipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10655,8 +10936,8 @@ COPY test_ladm_col_queries.lc_puntocontroltipo (t_id, thisclass, baseclass, itfc
 
 
 --
--- TOC entry 9027 (class 0 OID 381043)
--- Dependencies: 1165
+-- TOC entry 5833 (class 0 OID 420286)
+-- Dependencies: 336
 -- Data for Name: lc_puntolevantamiento; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10718,8 +10999,8 @@ COPY test_ladm_col_queries.lc_puntolevantamiento (t_id, t_ili_tid, id_punto_leva
 
 
 --
--- TOC entry 9056 (class 0 OID 381317)
--- Dependencies: 1194
+-- TOC entry 5834 (class 0 OID 420296)
+-- Dependencies: 337
 -- Data for Name: lc_puntolevtipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -10730,8 +11011,8 @@ COPY test_ladm_col_queries.lc_puntolevtipo (t_id, thisclass, baseclass, itfcode,
 
 
 --
--- TOC entry 9021 (class 0 OID 380961)
--- Dependencies: 1159
+-- TOC entry 5835 (class 0 OID 420303)
+-- Dependencies: 338
 -- Data for Name: lc_puntolindero; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11130,8 +11411,8 @@ COPY test_ladm_col_queries.lc_puntolindero (t_id, t_ili_tid, id_punto_lindero, p
 
 
 --
--- TOC entry 9046 (class 0 OID 381227)
--- Dependencies: 1184
+-- TOC entry 5836 (class 0 OID 420313)
+-- Dependencies: 339
 -- Data for Name: lc_puntotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11149,8 +11430,8 @@ COPY test_ladm_col_queries.lc_puntotipo (t_id, thisclass, baseclass, itfcode, il
 
 
 --
--- TOC entry 9086 (class 0 OID 381587)
--- Dependencies: 1224
+-- TOC entry 5837 (class 0 OID 420320)
+-- Dependencies: 340
 -- Data for Name: lc_relacionprediotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11164,8 +11445,8 @@ COPY test_ladm_col_queries.lc_relacionprediotipo (t_id, thisclass, baseclass, it
 
 
 --
--- TOC entry 9022 (class 0 OID 380981)
--- Dependencies: 1160
+-- TOC entry 5838 (class 0 OID 420327)
+-- Dependencies: 341
 -- Data for Name: lc_restriccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11179,8 +11460,8 @@ COPY test_ladm_col_queries.lc_restriccion (t_id, t_ili_tid, tipo, descripcion, i
 
 
 --
--- TOC entry 9105 (class 0 OID 381758)
--- Dependencies: 1243
+-- TOC entry 5839 (class 0 OID 420335)
+-- Dependencies: 342
 -- Data for Name: lc_restricciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11202,8 +11483,8 @@ COPY test_ladm_col_queries.lc_restricciontipo (t_id, thisclass, baseclass, itfco
 
 
 --
--- TOC entry 9052 (class 0 OID 381281)
--- Dependencies: 1190
+-- TOC entry 5840 (class 0 OID 420342)
+-- Dependencies: 343
 -- Data for Name: lc_resultadovisitatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11220,8 +11501,8 @@ COPY test_ladm_col_queries.lc_resultadovisitatipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9031 (class 0 OID 381088)
--- Dependencies: 1169
+-- TOC entry 5841 (class 0 OID 420349)
+-- Dependencies: 344
 -- Data for Name: lc_servidumbretransito; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11231,8 +11512,8 @@ COPY test_ladm_col_queries.lc_servidumbretransito (t_id, t_ili_tid, area_servidu
 
 
 --
--- TOC entry 9084 (class 0 OID 381569)
--- Dependencies: 1222
+-- TOC entry 5842 (class 0 OID 420358)
+-- Dependencies: 345
 -- Data for Name: lc_sexotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11243,8 +11524,8 @@ COPY test_ladm_col_queries.lc_sexotipo (t_id, thisclass, baseclass, itfcode, ili
 
 
 --
--- TOC entry 9023 (class 0 OID 380995)
--- Dependencies: 1161
+-- TOC entry 5843 (class 0 OID 420365)
+-- Dependencies: 346
 -- Data for Name: lc_terreno; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11305,8 +11586,8 @@ COPY test_ladm_col_queries.lc_terreno (t_id, t_ili_tid, area_terreno, avaluo_ter
 
 
 --
--- TOC entry 9028 (class 0 OID 381063)
--- Dependencies: 1166
+-- TOC entry 5844 (class 0 OID 420375)
+-- Dependencies: 347
 -- Data for Name: lc_tipologiaconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11315,8 +11596,8 @@ COPY test_ladm_col_queries.lc_tipologiaconstruccion (t_id, t_ili_tid, tipo_tipol
 
 
 --
--- TOC entry 9055 (class 0 OID 381308)
--- Dependencies: 1193
+-- TOC entry 5845 (class 0 OID 420380)
+-- Dependencies: 348
 -- Data for Name: lc_tipologiatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11350,8 +11631,8 @@ COPY test_ladm_col_queries.lc_tipologiatipo (t_id, thisclass, baseclass, itfcode
 
 
 --
--- TOC entry 9032 (class 0 OID 381101)
--- Dependencies: 1170
+-- TOC entry 5846 (class 0 OID 420387)
+-- Dependencies: 349
 -- Data for Name: lc_unidadconstruccion; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11389,8 +11670,8 @@ COPY test_ladm_col_queries.lc_unidadconstruccion (t_id, t_ili_tid, identificador
 
 
 --
--- TOC entry 9075 (class 0 OID 381488)
--- Dependencies: 1213
+-- TOC entry 5847 (class 0 OID 420405)
+-- Dependencies: 350
 -- Data for Name: lc_unidadconstrucciontipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11404,8 +11685,8 @@ COPY test_ladm_col_queries.lc_unidadconstrucciontipo (t_id, thisclass, baseclass
 
 
 --
--- TOC entry 9063 (class 0 OID 381380)
--- Dependencies: 1201
+-- TOC entry 5848 (class 0 OID 420412)
+-- Dependencies: 351
 -- Data for Name: lc_usouconstipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11516,8 +11797,8 @@ COPY test_ladm_col_queries.lc_usouconstipo (t_id, thisclass, baseclass, itfcode,
 
 
 --
--- TOC entry 9104 (class 0 OID 381749)
--- Dependencies: 1242
+-- TOC entry 5849 (class 0 OID 420419)
+-- Dependencies: 352
 -- Data for Name: lc_viatipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11542,8 +11823,8 @@ COPY test_ladm_col_queries.lc_viatipo (t_id, thisclass, baseclass, itfcode, ilic
 
 
 --
--- TOC entry 9062 (class 0 OID 381371)
--- Dependencies: 1200
+-- TOC entry 5850 (class 0 OID 420426)
+-- Dependencies: 353
 -- Data for Name: snr_calidadderechotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11557,8 +11838,8 @@ COPY test_ladm_col_queries.snr_calidadderechotipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9051 (class 0 OID 381272)
--- Dependencies: 1189
+-- TOC entry 5851 (class 0 OID 420433)
+-- Dependencies: 354
 -- Data for Name: snr_clasepredioregistrotipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11570,8 +11851,8 @@ COPY test_ladm_col_queries.snr_clasepredioregistrotipo (t_id, thisclass, basecla
 
 
 --
--- TOC entry 8996 (class 0 OID 380686)
--- Dependencies: 1134
+-- TOC entry 5852 (class 0 OID 420440)
+-- Dependencies: 355
 -- Data for Name: snr_derecho; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11580,8 +11861,8 @@ COPY test_ladm_col_queries.snr_derecho (t_id, t_ili_tid, calidad_derecho_registr
 
 
 --
--- TOC entry 9070 (class 0 OID 381443)
--- Dependencies: 1208
+-- TOC entry 5853 (class 0 OID 420444)
+-- Dependencies: 356
 -- Data for Name: snr_documentotitulartipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11597,8 +11878,8 @@ COPY test_ladm_col_queries.snr_documentotitulartipo (t_id, thisclass, baseclass,
 
 
 --
--- TOC entry 8997 (class 0 OID 380695)
--- Dependencies: 1135
+-- TOC entry 5854 (class 0 OID 420451)
+-- Dependencies: 357
 -- Data for Name: snr_estructuramatriculamatriz; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11607,8 +11888,8 @@ COPY test_ladm_col_queries.snr_estructuramatriculamatriz (t_id, t_seq, codigo_or
 
 
 --
--- TOC entry 8998 (class 0 OID 380702)
--- Dependencies: 1136
+-- TOC entry 5855 (class 0 OID 420455)
+-- Dependencies: 358
 -- Data for Name: snr_fuentecabidalinderos; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11617,8 +11898,8 @@ COPY test_ladm_col_queries.snr_fuentecabidalinderos (t_id, t_ili_tid, tipo_docum
 
 
 --
--- TOC entry 8999 (class 0 OID 380712)
--- Dependencies: 1137
+-- TOC entry 5856 (class 0 OID 420462)
+-- Dependencies: 359
 -- Data for Name: snr_fuentederecho; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11627,8 +11908,8 @@ COPY test_ladm_col_queries.snr_fuentederecho (t_id, t_ili_tid, tipo_documento, n
 
 
 --
--- TOC entry 9040 (class 0 OID 381173)
--- Dependencies: 1178
+-- TOC entry 5857 (class 0 OID 420469)
+-- Dependencies: 360
 -- Data for Name: snr_fuentetipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11642,8 +11923,8 @@ COPY test_ladm_col_queries.snr_fuentetipo (t_id, thisclass, baseclass, itfcode, 
 
 
 --
--- TOC entry 9042 (class 0 OID 381191)
--- Dependencies: 1180
+-- TOC entry 5858 (class 0 OID 420476)
+-- Dependencies: 361
 -- Data for Name: snr_personatitulartipo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11654,8 +11935,8 @@ COPY test_ladm_col_queries.snr_personatitulartipo (t_id, thisclass, baseclass, i
 
 
 --
--- TOC entry 9001 (class 0 OID 380733)
--- Dependencies: 1139
+-- TOC entry 5859 (class 0 OID 420483)
+-- Dependencies: 362
 -- Data for Name: snr_predioregistro; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11664,8 +11945,8 @@ COPY test_ladm_col_queries.snr_predioregistro (t_id, t_ili_tid, codigo_orip, mat
 
 
 --
--- TOC entry 9000 (class 0 OID 380722)
--- Dependencies: 1138
+-- TOC entry 5860 (class 0 OID 420490)
+-- Dependencies: 363
 -- Data for Name: snr_titular; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11674,8 +11955,8 @@ COPY test_ladm_col_queries.snr_titular (t_id, t_ili_tid, tipo_persona, tipo_docu
 
 
 --
--- TOC entry 9002 (class 0 OID 380744)
--- Dependencies: 1140
+-- TOC entry 5861 (class 0 OID 420497)
+-- Dependencies: 364
 -- Data for Name: snr_titular_derecho; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -11684,8 +11965,8 @@ COPY test_ladm_col_queries.snr_titular_derecho (t_id, t_ili_tid, snr_titular, sn
 
 
 --
--- TOC entry 9107 (class 0 OID 381775)
--- Dependencies: 1245
+-- TOC entry 5862 (class 0 OID 420501)
+-- Dependencies: 365
 -- Data for Name: t_ili2db_attrname; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -12266,8 +12547,8 @@ LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor.Datos_Proyeccion	datos_proyeccion	col_ar
 
 
 --
--- TOC entry 9033 (class 0 OID 381120)
--- Dependencies: 1171
+-- TOC entry 5863 (class 0 OID 420507)
+-- Dependencies: 366
 -- Data for Name: t_ili2db_basket; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -12280,8 +12561,8 @@ COPY test_ladm_col_queries.t_ili2db_basket (t_id, dataset, topic, t_ili_tid, att
 
 
 --
--- TOC entry 9106 (class 0 OID 381767)
--- Dependencies: 1244
+-- TOC entry 5864 (class 0 OID 420513)
+-- Dependencies: 367
 -- Data for Name: t_ili2db_classname; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -12496,8 +12777,8 @@ LADM_COL_V3_0.LADM_Nucleo.COL_FuenteEspacialTipo	col_fuenteespacialtipo
 
 
 --
--- TOC entry 9108 (class 0 OID 381783)
--- Dependencies: 1246
+-- TOC entry 5865 (class 0 OID 420519)
+-- Dependencies: 368
 -- Data for Name: t_ili2db_column_prop; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -13403,8 +13684,8 @@ lc_unidadconstruccion	\N	dimension	ch.ehi.ili2db.dispName	Dimensión
 
 
 --
--- TOC entry 9034 (class 0 OID 381129)
--- Dependencies: 1172
+-- TOC entry 5866 (class 0 OID 420525)
+-- Dependencies: 369
 -- Data for Name: t_ili2db_dataset; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -13414,8 +13695,8 @@ COPY test_ladm_col_queries.t_ili2db_dataset (t_id, datasetname) FROM stdin;
 
 
 --
--- TOC entry 9035 (class 0 OID 381134)
--- Dependencies: 1173
+-- TOC entry 5867 (class 0 OID 420528)
+-- Dependencies: 370
 -- Data for Name: t_ili2db_inheritance; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -13563,8 +13844,8 @@ Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro
 
 
 --
--- TOC entry 9110 (class 0 OID 381795)
--- Dependencies: 1248
+-- TOC entry 5868 (class 0 OID 420534)
+-- Dependencies: 371
 -- Data for Name: t_ili2db_meta_attrs; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15090,8 +15371,8 @@ Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_DatosPHCondomi
 
 
 --
--- TOC entry 9038 (class 0 OID 381156)
--- Dependencies: 1176
+-- TOC entry 5869 (class 0 OID 420540)
+-- Dependencies: 372
 -- Data for Name: t_ili2db_model; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15104,8 +15385,8 @@ Submodelo_Insumos_V1_0.ili	2.3	Submodelo_Insumos_Gestor_Catastral_V1_0{ LADM_COL
 
 
 --
--- TOC entry 9036 (class 0 OID 381142)
--- Dependencies: 1174
+-- TOC entry 5870 (class 0 OID 420546)
+-- Dependencies: 373
 -- Data for Name: t_ili2db_settings; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15140,8 +15421,8 @@ ch.ehi.ili2db.multilingualTrafo	expand
 
 
 --
--- TOC entry 9109 (class 0 OID 381789)
--- Dependencies: 1247
+-- TOC entry 5871 (class 0 OID 420552)
+-- Dependencies: 374
 -- Data for Name: t_ili2db_table_prop; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15366,8 +15647,8 @@ col_cclfuente	ch.ehi.ili2db.tableKind	ASSOCIATION
 
 
 --
--- TOC entry 9037 (class 0 OID 381150)
--- Dependencies: 1175
+-- TOC entry 5872 (class 0 OID 420558)
+-- Dependencies: 375
 -- Data for Name: t_ili2db_trafo; Type: TABLE DATA; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15529,16 +15810,16 @@ LADM_COL_V3_0.LADM_Nucleo.ExtRedServiciosFisica	ch.ehi.ili2db.inheritance	newAnd
 
 
 --
--- TOC entry 9598 (class 0 OID 0)
--- Dependencies: 1077
+-- TOC entry 6360 (class 0 OID 0)
+-- Dependencies: 204
 -- Name: t_ili2db_seq; Type: SEQUENCE SET; Schema: test_ladm_col_queries; Owner: postgres
 --
 
-SELECT pg_catalog.setval('test_ladm_col_queries.t_ili2db_seq', 3071, true);
+SELECT pg_catalog.setval('test_ladm_col_queries.t_ili2db_seq', 3951, true);
 
 
 --
--- TOC entry 8001 (class 2606 OID 380183)
+-- TOC entry 4751 (class 2606 OID 420568)
 -- Name: cc_metodooperacion cc_metodooperacion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15547,7 +15828,7 @@ ALTER TABLE ONLY test_ladm_col_queries.cc_metodooperacion
 
 
 --
--- TOC entry 8474 (class 2606 OID 381307)
+-- TOC entry 4753 (class 2606 OID 420570)
 -- Name: ci_forma_presentacion_codigo ci_forma_presentacion_codigo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15556,7 +15837,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ci_forma_presentacion_codigo
 
 
 --
--- TOC entry 8510 (class 2606 OID 381469)
+-- TOC entry 4755 (class 2606 OID 420572)
 -- Name: col_areatipo col_areatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15565,7 +15846,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areatipo
 
 
 --
--- TOC entry 8007 (class 2606 OID 380193)
+-- TOC entry 4761 (class 2606 OID 420574)
 -- Name: col_areavalor col_areavalor_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15574,7 +15855,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8151 (class 2606 OID 380459)
+-- TOC entry 4766 (class 2606 OID 420576)
 -- Name: col_baunitcomointeresado col_baunitcomointeresado_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15583,7 +15864,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitcomointeresado
 
 
 --
--- TOC entry 8099 (class 2606 OID 380368)
+-- TOC entry 4770 (class 2606 OID 420578)
 -- Name: col_baunitfuente col_baunitfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15592,7 +15873,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitfuente
 
 
 --
--- TOC entry 8107 (class 2606 OID 380383)
+-- TOC entry 4775 (class 2606 OID 420580)
 -- Name: col_cclfuente col_cclfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15601,7 +15882,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_cclfuente
 
 
 --
--- TOC entry 8130 (class 2606 OID 380423)
+-- TOC entry 4778 (class 2606 OID 420582)
 -- Name: col_clfuente col_clfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15610,7 +15891,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_clfuente
 
 
 --
--- TOC entry 8564 (class 2606 OID 381712)
+-- TOC entry 4780 (class 2606 OID 420584)
 -- Name: col_contenidoniveltipo col_contenidoniveltipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15619,7 +15900,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_contenidoniveltipo
 
 
 --
--- TOC entry 8528 (class 2606 OID 381550)
+-- TOC entry 4782 (class 2606 OID 420586)
 -- Name: col_dimensiontipo col_dimensiontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15628,7 +15909,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_dimensiontipo
 
 
 --
--- TOC entry 8466 (class 2606 OID 381271)
+-- TOC entry 4784 (class 2606 OID 420588)
 -- Name: col_estadodisponibilidadtipo col_estadodisponibilidadtipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15637,7 +15918,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_estadodisponibilidadtipo
 
 
 --
--- TOC entry 8452 (class 2606 OID 381208)
+-- TOC entry 4786 (class 2606 OID 420590)
 -- Name: col_estadoredserviciostipo col_estadoredserviciostipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15646,7 +15927,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_estadoredserviciostipo
 
 
 --
--- TOC entry 8544 (class 2606 OID 381622)
+-- TOC entry 4788 (class 2606 OID 420592)
 -- Name: col_estructuratipo col_estructuratipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15655,7 +15936,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_estructuratipo
 
 
 --
--- TOC entry 8532 (class 2606 OID 381568)
+-- TOC entry 4790 (class 2606 OID 420594)
 -- Name: col_fuenteadministrativatipo col_fuenteadministrativatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15664,7 +15945,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_fuenteadministrativatipo
 
 
 --
--- TOC entry 8496 (class 2606 OID 381406)
+-- TOC entry 4792 (class 2606 OID 420596)
 -- Name: col_fuenteespacialtipo col_fuenteespacialtipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15673,7 +15954,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_fuenteespacialtipo
 
 
 --
--- TOC entry 8454 (class 2606 OID 381217)
+-- TOC entry 4794 (class 2606 OID 420598)
 -- Name: col_grupointeresadotipo col_grupointeresadotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15682,7 +15963,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_grupointeresadotipo
 
 
 --
--- TOC entry 8526 (class 2606 OID 381541)
+-- TOC entry 4796 (class 2606 OID 420600)
 -- Name: col_interpolaciontipo col_interpolaciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15691,7 +15972,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_interpolaciontipo
 
 
 --
--- TOC entry 8552 (class 2606 OID 381658)
+-- TOC entry 4798 (class 2606 OID 420602)
 -- Name: col_iso19125_tipo col_iso19125_tipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15700,7 +15981,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_iso19125_tipo
 
 
 --
--- TOC entry 8117 (class 2606 OID 380402)
+-- TOC entry 4801 (class 2606 OID 420604)
 -- Name: col_masccl col_masccl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15709,7 +15990,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8138 (class 2606 OID 380440)
+-- TOC entry 4807 (class 2606 OID 420606)
 -- Name: col_mascl col_mascl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15718,7 +15999,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_mascl
 
 
 --
--- TOC entry 8110 (class 2606 OID 380391)
+-- TOC entry 4814 (class 2606 OID 420608)
 -- Name: col_menosccl col_menosccl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15727,7 +16008,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8132 (class 2606 OID 380430)
+-- TOC entry 4820 (class 2606 OID 420610)
 -- Name: col_menoscl col_menoscl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15736,7 +16017,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menoscl
 
 
 --
--- TOC entry 8514 (class 2606 OID 381487)
+-- TOC entry 4826 (class 2606 OID 420612)
 -- Name: col_metodoproducciontipo col_metodoproducciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15745,7 +16026,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_metodoproducciontipo
 
 
 --
--- TOC entry 8167 (class 2606 OID 380486)
+-- TOC entry 4831 (class 2606 OID 420614)
 -- Name: col_miembros col_miembros_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15754,7 +16035,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_miembros
 
 
 --
--- TOC entry 8124 (class 2606 OID 380413)
+-- TOC entry 4834 (class 2606 OID 420616)
 -- Name: col_puntoccl col_puntoccl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15763,7 +16044,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntoccl
 
 
 --
--- TOC entry 8144 (class 2606 OID 380450)
+-- TOC entry 4839 (class 2606 OID 420618)
 -- Name: col_puntocl col_puntocl_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15772,7 +16053,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntocl
 
 
 --
--- TOC entry 8086 (class 2606 OID 380347)
+-- TOC entry 4845 (class 2606 OID 420620)
 -- Name: col_puntofuente col_puntofuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15781,7 +16062,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntofuente
 
 
 --
--- TOC entry 8542 (class 2606 OID 381613)
+-- TOC entry 4850 (class 2606 OID 420622)
 -- Name: col_puntotipo col_puntotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15790,7 +16071,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntotipo
 
 
 --
--- TOC entry 8444 (class 2606 OID 381172)
+-- TOC entry 4852 (class 2606 OID 420624)
 -- Name: col_redserviciostipo col_redserviciostipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15799,7 +16080,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_redserviciostipo
 
 
 --
--- TOC entry 8504 (class 2606 OID 381442)
+-- TOC entry 4854 (class 2606 OID 420626)
 -- Name: col_registrotipo col_registrotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15808,7 +16089,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_registrotipo
 
 
 --
--- TOC entry 8079 (class 2606 OID 380332)
+-- TOC entry 4857 (class 2606 OID 420628)
 -- Name: col_relacionfuente col_relacionfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15817,7 +16098,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_relacionfuente
 
 
 --
--- TOC entry 8102 (class 2606 OID 380376)
+-- TOC entry 4859 (class 2606 OID 420630)
 -- Name: col_relacionfuenteuespacial col_relacionfuenteuespacial_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15826,7 +16107,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_relacionfuenteuespacial
 
 
 --
--- TOC entry 8460 (class 2606 OID 381244)
+-- TOC entry 4862 (class 2606 OID 420632)
 -- Name: col_relacionsuperficietipo col_relacionsuperficietipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15835,7 +16116,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_relacionsuperficietipo
 
 
 --
--- TOC entry 8157 (class 2606 OID 380468)
+-- TOC entry 4867 (class 2606 OID 420634)
 -- Name: col_responsablefuente col_responsablefuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15844,7 +16125,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_responsablefuente
 
 
 --
--- TOC entry 8067 (class 2606 OID 380312)
+-- TOC entry 4870 (class 2606 OID 420636)
 -- Name: col_rrrfuente col_rrrfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15853,7 +16134,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_rrrfuente
 
 
 --
--- TOC entry 8160 (class 2606 OID 380477)
+-- TOC entry 4875 (class 2606 OID 420638)
 -- Name: col_topografofuente col_topografofuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15862,7 +16143,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_topografofuente
 
 
 --
--- TOC entry 8032 (class 2606 OID 380236)
+-- TOC entry 4883 (class 2606 OID 420640)
 -- Name: col_transformacion col_transformacion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15871,7 +16152,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_transformacion
 
 
 --
--- TOC entry 8072 (class 2606 OID 380321)
+-- TOC entry 4886 (class 2606 OID 420642)
 -- Name: col_uebaunit col_uebaunit_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15880,7 +16161,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8092 (class 2606 OID 380357)
+-- TOC entry 4893 (class 2606 OID 420644)
 -- Name: col_uefuente col_uefuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15889,7 +16170,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8064 (class 2606 OID 380302)
+-- TOC entry 4903 (class 2606 OID 420646)
 -- Name: col_ueuegrupo col_ueuegrupo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15898,7 +16179,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_ueuegrupo
 
 
 --
--- TOC entry 8560 (class 2606 OID 381694)
+-- TOC entry 4905 (class 2606 OID 420648)
 -- Name: col_unidadadministrativabasicatipo col_unidadadministrativabasicatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15907,7 +16188,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_unidadadministrativabasicatipo
 
 
 --
--- TOC entry 8512 (class 2606 OID 381478)
+-- TOC entry 4907 (class 2606 OID 420650)
 -- Name: col_unidadedificaciontipo col_unidadedificaciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15916,7 +16197,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_unidadedificaciontipo
 
 
 --
--- TOC entry 8082 (class 2606 OID 380339)
+-- TOC entry 4910 (class 2606 OID 420652)
 -- Name: col_unidadfuente col_unidadfuente_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15925,7 +16206,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_unidadfuente
 
 
 --
--- TOC entry 8502 (class 2606 OID 381433)
+-- TOC entry 4913 (class 2606 OID 420654)
 -- Name: col_volumentipo col_volumentipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15934,7 +16215,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumentipo
 
 
 --
--- TOC entry 8057 (class 2606 OID 380291)
+-- TOC entry 4919 (class 2606 OID 420656)
 -- Name: col_volumenvalor col_volumenvalor_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15943,7 +16224,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8050 (class 2606 OID 380282)
+-- TOC entry 4924 (class 2606 OID 420658)
 -- Name: extarchivo extarchivo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15952,7 +16233,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extarchivo
 
 
 --
--- TOC entry 8486 (class 2606 OID 381361)
+-- TOC entry 4941 (class 2606 OID 420660)
 -- Name: extdireccion_clase_via_principal extdireccion_clase_via_principal_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15961,7 +16242,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion_clase_via_principal
 
 
 --
--- TOC entry 8019 (class 2606 OID 380207)
+-- TOC entry 4936 (class 2606 OID 420662)
 -- Name: extdireccion extdireccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15970,7 +16251,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8518 (class 2606 OID 381505)
+-- TOC entry 4943 (class 2606 OID 420664)
 -- Name: extdireccion_sector_ciudad extdireccion_sector_ciudad_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15979,7 +16260,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion_sector_ciudad
 
 
 --
--- TOC entry 8568 (class 2606 OID 381730)
+-- TOC entry 4945 (class 2606 OID 420666)
 -- Name: extdireccion_sector_predio extdireccion_sector_predio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15988,7 +16269,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion_sector_predio
 
 
 --
--- TOC entry 8570 (class 2606 OID 381739)
+-- TOC entry 4947 (class 2606 OID 420668)
 -- Name: extdireccion_tipo_direccion extdireccion_tipo_direccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -15997,7 +16278,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion_tipo_direccion
 
 
 --
--- TOC entry 8044 (class 2606 OID 380264)
+-- TOC entry 4952 (class 2606 OID 420670)
 -- Name: extinteresado extinteresado_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16006,7 +16287,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extinteresado
 
 
 --
--- TOC entry 8046 (class 2606 OID 380273)
+-- TOC entry 4954 (class 2606 OID 420672)
 -- Name: extredserviciosfisica extredserviciosfisica_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16015,7 +16296,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extredserviciosfisica
 
 
 --
--- TOC entry 8034 (class 2606 OID 380246)
+-- TOC entry 4956 (class 2606 OID 420674)
 -- Name: extunidadedificacionfisica extunidadedificacionfisica_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16024,7 +16305,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extunidadedificacionfisica
 
 
 --
--- TOC entry 8026 (class 2606 OID 380225)
+-- TOC entry 4960 (class 2606 OID 420676)
 -- Name: fraccion fraccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16033,7 +16314,7 @@ ALTER TABLE ONLY test_ladm_col_queries.fraccion
 
 
 --
--- TOC entry 8170 (class 2606 OID 380498)
+-- TOC entry 4963 (class 2606 OID 420678)
 -- Name: gc_barrio gc_barrio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16042,7 +16323,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_barrio
 
 
 --
--- TOC entry 8172 (class 2606 OID 380508)
+-- TOC entry 4965 (class 2606 OID 420680)
 -- Name: gc_calificacionunidadconstruccion gc_calificacionunidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16051,7 +16332,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_calificacionunidadconstruccion
 
 
 --
--- TOC entry 8176 (class 2606 OID 380518)
+-- TOC entry 4969 (class 2606 OID 420682)
 -- Name: gc_comisionesconstruccion gc_comisionesconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16060,7 +16341,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_comisionesconstruccion
 
 
 --
--- TOC entry 8179 (class 2606 OID 380528)
+-- TOC entry 4972 (class 2606 OID 420684)
 -- Name: gc_comisionesterreno gc_comisionesterreno_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16069,7 +16350,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_comisionesterreno
 
 
 --
--- TOC entry 8182 (class 2606 OID 380538)
+-- TOC entry 4975 (class 2606 OID 420686)
 -- Name: gc_comisionesunidadconstruccion gc_comisionesunidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16078,7 +16359,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_comisionesunidadconstruccion
 
 
 --
--- TOC entry 8456 (class 2606 OID 381226)
+-- TOC entry 4977 (class 2606 OID 420688)
 -- Name: gc_condicionprediotipo gc_condicionprediotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16087,7 +16368,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_condicionprediotipo
 
 
 --
--- TOC entry 8186 (class 2606 OID 380548)
+-- TOC entry 4981 (class 2606 OID 420690)
 -- Name: gc_construccion gc_construccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16096,7 +16377,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_construccion
 
 
 --
--- TOC entry 8236 (class 2606 OID 380683)
+-- TOC entry 4987 (class 2606 OID 420692)
 -- Name: gc_copropiedad gc_copropiedad_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16105,7 +16386,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_copropiedad
 
 
 --
--- TOC entry 8190 (class 2606 OID 380557)
+-- TOC entry 4990 (class 2606 OID 420694)
 -- Name: gc_datosphcondominio gc_datosphcondominio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16114,7 +16395,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_datosphcondominio
 
 
 --
--- TOC entry 8193 (class 2606 OID 380564)
+-- TOC entry 4993 (class 2606 OID 420696)
 -- Name: gc_datostorreph gc_datostorreph_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16123,7 +16404,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_datostorreph
 
 
 --
--- TOC entry 8197 (class 2606 OID 380574)
+-- TOC entry 4997 (class 2606 OID 420698)
 -- Name: gc_direccion gc_direccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16132,7 +16413,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_direccion
 
 
 --
--- TOC entry 8200 (class 2606 OID 380582)
+-- TOC entry 5000 (class 2606 OID 420700)
 -- Name: gc_estadopredio gc_estadopredio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16141,7 +16422,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_estadopredio
 
 
 --
--- TOC entry 8203 (class 2606 OID 380592)
+-- TOC entry 5003 (class 2606 OID 420702)
 -- Name: gc_manzana gc_manzana_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16150,7 +16431,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_manzana
 
 
 --
--- TOC entry 8206 (class 2606 OID 380602)
+-- TOC entry 5006 (class 2606 OID 420704)
 -- Name: gc_perimetro gc_perimetro_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16159,7 +16440,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_perimetro
 
 
 --
--- TOC entry 8230 (class 2606 OID 380675)
+-- TOC entry 5009 (class 2606 OID 420706)
 -- Name: gc_prediocatastro gc_prediocatastro_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16168,7 +16449,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_prediocatastro
 
 
 --
--- TOC entry 8209 (class 2606 OID 380612)
+-- TOC entry 5013 (class 2606 OID 420708)
 -- Name: gc_propietario gc_propietario_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16177,7 +16458,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_propietario
 
 
 --
--- TOC entry 8212 (class 2606 OID 380622)
+-- TOC entry 5016 (class 2606 OID 420710)
 -- Name: gc_sectorrural gc_sectorrural_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16186,7 +16467,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_sectorrural
 
 
 --
--- TOC entry 8215 (class 2606 OID 380632)
+-- TOC entry 5019 (class 2606 OID 420712)
 -- Name: gc_sectorurbano gc_sectorurbano_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16195,7 +16476,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_sectorurbano
 
 
 --
--- TOC entry 8530 (class 2606 OID 381559)
+-- TOC entry 5021 (class 2606 OID 420714)
 -- Name: gc_sistemaprocedenciadatostipo gc_sistemaprocedenciadatostipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16204,7 +16485,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_sistemaprocedenciadatostipo
 
 
 --
--- TOC entry 8219 (class 2606 OID 380642)
+-- TOC entry 5025 (class 2606 OID 420716)
 -- Name: gc_terreno gc_terreno_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16213,7 +16494,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_terreno
 
 
 --
--- TOC entry 8223 (class 2606 OID 380653)
+-- TOC entry 5029 (class 2606 OID 420718)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16222,7 +16503,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_unidadconstruccion
 
 
 --
--- TOC entry 8484 (class 2606 OID 381352)
+-- TOC entry 5032 (class 2606 OID 420720)
 -- Name: gc_unidadconstrucciontipo gc_unidadconstrucciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16231,7 +16512,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_unidadconstrucciontipo
 
 
 --
--- TOC entry 8227 (class 2606 OID 380665)
+-- TOC entry 5035 (class 2606 OID 420722)
 -- Name: gc_vereda gc_vereda_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16240,7 +16521,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_vereda
 
 
 --
--- TOC entry 7992 (class 2606 OID 380160)
+-- TOC entry 5037 (class 2606 OID 420724)
 -- Name: gm_multisurface2d gm_multisurface2d_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16249,7 +16530,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_multisurface2d
 
 
 --
--- TOC entry 7998 (class 2606 OID 380177)
+-- TOC entry 5039 (class 2606 OID 420726)
 -- Name: gm_multisurface3d gm_multisurface3d_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16258,7 +16539,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_multisurface3d
 
 
 --
--- TOC entry 7990 (class 2606 OID 380152)
+-- TOC entry 5043 (class 2606 OID 420728)
 -- Name: gm_surface2dlistvalue gm_surface2dlistvalue_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16267,7 +16548,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_surface2dlistvalue
 
 
 --
--- TOC entry 7996 (class 2606 OID 380169)
+-- TOC entry 5047 (class 2606 OID 420730)
 -- Name: gm_surface3dlistvalue gm_surface3dlistvalue_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16276,7 +16557,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_surface3dlistvalue
 
 
 --
--- TOC entry 8039 (class 2606 OID 380252)
+-- TOC entry 5052 (class 2606 OID 420732)
 -- Name: imagen imagen_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16285,7 +16566,7 @@ ALTER TABLE ONLY test_ladm_col_queries.imagen
 
 
 --
--- TOC entry 8448 (class 2606 OID 381190)
+-- TOC entry 5054 (class 2606 OID 420734)
 -- Name: ini_emparejamientotipo ini_emparejamientotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16294,7 +16575,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ini_emparejamientotipo
 
 
 --
--- TOC entry 8265 (class 2606 OID 380760)
+-- TOC entry 5057 (class 2606 OID 420736)
 -- Name: ini_predioinsumos ini_predioinsumos_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16303,7 +16584,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ini_predioinsumos
 
 
 --
--- TOC entry 8464 (class 2606 OID 381262)
+-- TOC entry 5061 (class 2606 OID 420738)
 -- Name: lc_acuerdotipo lc_acuerdotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16312,7 +16593,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_acuerdotipo
 
 
 --
--- TOC entry 8269 (class 2606 OID 380773)
+-- TOC entry 5063 (class 2606 OID 420740)
 -- Name: lc_agrupacioninteresados lc_agrupacioninteresados_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16321,7 +16602,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_agrupacioninteresados
 
 
 --
--- TOC entry 8472 (class 2606 OID 381298)
+-- TOC entry 5066 (class 2606 OID 420742)
 -- Name: lc_anexotipo lc_anexotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16330,7 +16611,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_anexotipo
 
 
 --
--- TOC entry 8375 (class 2606 OID 381014)
+-- TOC entry 5070 (class 2606 OID 420744)
 -- Name: lc_calificacionconvencional lc_calificacionconvencional_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16339,7 +16620,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionconvencional
 
 
 --
--- TOC entry 8377 (class 2606 OID 381023)
+-- TOC entry 5072 (class 2606 OID 420746)
 -- Name: lc_calificacionnoconvencional lc_calificacionnoconvencional_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16348,7 +16629,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionnoconvencional
 
 
 --
--- TOC entry 8480 (class 2606 OID 381334)
+-- TOC entry 5076 (class 2606 OID 420748)
 -- Name: lc_calificartipo lc_calificartipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16357,7 +16638,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificartipo
 
 
 --
--- TOC entry 8498 (class 2606 OID 381415)
+-- TOC entry 5078 (class 2606 OID 420750)
 -- Name: lc_categoriasuelotipo lc_categoriasuelotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16366,7 +16647,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_categoriasuelotipo
 
 
 --
--- TOC entry 8520 (class 2606 OID 381514)
+-- TOC entry 5080 (class 2606 OID 420752)
 -- Name: lc_clasecalificaciontipo lc_clasecalificaciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16375,7 +16656,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_clasecalificaciontipo
 
 
 --
--- TOC entry 8500 (class 2606 OID 381424)
+-- TOC entry 5082 (class 2606 OID 420754)
 -- Name: lc_clasesuelotipo lc_clasesuelotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16384,7 +16665,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_clasesuelotipo
 
 
 --
--- TOC entry 8554 (class 2606 OID 381667)
+-- TOC entry 5084 (class 2606 OID 420756)
 -- Name: lc_condicionprediotipo lc_condicionprediotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16393,7 +16674,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_condicionprediotipo
 
 
 --
--- TOC entry 8274 (class 2606 OID 380784)
+-- TOC entry 5088 (class 2606 OID 420758)
 -- Name: lc_construccion lc_construccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16402,7 +16683,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccion
 
 
 --
--- TOC entry 8488 (class 2606 OID 381370)
+-- TOC entry 5093 (class 2606 OID 420760)
 -- Name: lc_construccionplantatipo lc_construccionplantatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16411,7 +16692,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccionplantatipo
 
 
 --
--- TOC entry 8536 (class 2606 OID 381586)
+-- TOC entry 5095 (class 2606 OID 420762)
 -- Name: lc_construcciontipo lc_construcciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16420,7 +16701,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construcciontipo
 
 
 --
--- TOC entry 8280 (class 2606 OID 380799)
+-- TOC entry 5098 (class 2606 OID 420764)
 -- Name: lc_contactovisita lc_contactovisita_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16429,7 +16710,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_contactovisita
 
 
 --
--- TOC entry 8381 (class 2606 OID 381035)
+-- TOC entry 5102 (class 2606 OID 420766)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datosadicionaleslevantamientocatastral_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16438,7 +16719,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8285 (class 2606 OID 380809)
+-- TOC entry 5112 (class 2606 OID 420768)
 -- Name: lc_datosphcondominio lc_datosphcondominio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16447,7 +16728,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosphcondominio
 
 
 --
--- TOC entry 8289 (class 2606 OID 380820)
+-- TOC entry 5116 (class 2606 OID 420770)
 -- Name: lc_derecho lc_derecho_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16456,7 +16737,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derecho
 
 
 --
--- TOC entry 8540 (class 2606 OID 381604)
+-- TOC entry 5120 (class 2606 OID 420772)
 -- Name: lc_derechotipo lc_derechotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16465,7 +16746,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derechotipo
 
 
 --
--- TOC entry 8558 (class 2606 OID 381685)
+-- TOC entry 5122 (class 2606 OID 420774)
 -- Name: lc_destinacioneconomicatipo lc_destinacioneconomicatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16474,7 +16755,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_destinacioneconomicatipo
 
 
 --
--- TOC entry 8572 (class 2606 OID 381748)
+-- TOC entry 5124 (class 2606 OID 420776)
 -- Name: lc_dominioconstrucciontipo lc_dominioconstrucciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16483,7 +16764,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_dominioconstrucciontipo
 
 
 --
--- TOC entry 8494 (class 2606 OID 381397)
+-- TOC entry 5126 (class 2606 OID 420778)
 -- Name: lc_estadoconservaciontipo lc_estadoconservaciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16492,7 +16773,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estadoconservaciontipo
 
 
 --
--- TOC entry 8294 (class 2606 OID 380830)
+-- TOC entry 5129 (class 2606 OID 420780)
 -- Name: lc_estructuranovedadfmi lc_estructuranovedadfmi_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16501,7 +16782,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadfmi
 
 
 --
--- TOC entry 8296 (class 2606 OID 380837)
+-- TOC entry 5131 (class 2606 OID 420782)
 -- Name: lc_estructuranovedadnumeropredial lc_estructuranovedadnumeropredial_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16510,7 +16791,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadnumeropredial
 
 
 --
--- TOC entry 8566 (class 2606 OID 381721)
+-- TOC entry 5135 (class 2606 OID 420784)
 -- Name: lc_estructuranovedadnumeropredial_tipo_novedad lc_estructuranovedadnumeropredial_tipo_novedad_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16519,7 +16800,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadnumeropredial_tipo_no
 
 
 --
--- TOC entry 8546 (class 2606 OID 381631)
+-- TOC entry 5137 (class 2606 OID 420786)
 -- Name: lc_fotoidentificaciontipo lc_fotoidentificaciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16528,7 +16809,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fotoidentificaciontipo
 
 
 --
--- TOC entry 8301 (class 2606 OID 380849)
+-- TOC entry 5140 (class 2606 OID 420788)
 -- Name: lc_fuenteadministrativa lc_fuenteadministrativa_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16537,7 +16818,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteadministrativa
 
 
 --
--- TOC entry 8522 (class 2606 OID 381523)
+-- TOC entry 5144 (class 2606 OID 420790)
 -- Name: lc_fuenteadministrativatipo lc_fuenteadministrativatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16546,7 +16827,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteadministrativatipo
 
 
 --
--- TOC entry 8306 (class 2606 OID 380862)
+-- TOC entry 5147 (class 2606 OID 420792)
 -- Name: lc_fuenteespacial lc_fuenteespacial_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16555,7 +16836,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteespacial
 
 
 --
--- TOC entry 8313 (class 2606 OID 380872)
+-- TOC entry 5154 (class 2606 OID 420794)
 -- Name: lc_grupocalificacion lc_grupocalificacion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16564,7 +16845,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_grupocalificacion
 
 
 --
--- TOC entry 8524 (class 2606 OID 381532)
+-- TOC entry 5156 (class 2606 OID 420796)
 -- Name: lc_grupoetnicotipo lc_grupoetnicotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16573,7 +16854,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_grupoetnicotipo
 
 
 --
--- TOC entry 8316 (class 2606 OID 380885)
+-- TOC entry 5159 (class 2606 OID 420798)
 -- Name: lc_interesado lc_interesado_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16582,7 +16863,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesado
 
 
 --
--- TOC entry 8322 (class 2606 OID 380899)
+-- TOC entry 5165 (class 2606 OID 420800)
 -- Name: lc_interesadocontacto lc_interesadocontacto_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16591,7 +16872,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesadocontacto
 
 
 --
--- TOC entry 8548 (class 2606 OID 381640)
+-- TOC entry 5167 (class 2606 OID 420802)
 -- Name: lc_interesadodocumentotipo lc_interesadodocumentotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16600,7 +16881,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesadodocumentotipo
 
 
 --
--- TOC entry 8462 (class 2606 OID 381253)
+-- TOC entry 5169 (class 2606 OID 420804)
 -- Name: lc_interesadotipo lc_interesadotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16609,7 +16890,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesadotipo
 
 
 --
--- TOC entry 8325 (class 2606 OID 380910)
+-- TOC entry 5172 (class 2606 OID 420806)
 -- Name: lc_lindero lc_lindero_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16618,7 +16899,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_lindero
 
 
 --
--- TOC entry 8328 (class 2606 OID 380918)
+-- TOC entry 5175 (class 2606 OID 420808)
 -- Name: lc_objetoconstruccion lc_objetoconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16627,7 +16908,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_objetoconstruccion
 
 
 --
--- TOC entry 8556 (class 2606 OID 381676)
+-- TOC entry 5178 (class 2606 OID 420810)
 -- Name: lc_objetoconstrucciontipo lc_objetoconstrucciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16636,7 +16917,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_objetoconstrucciontipo
 
 
 --
--- TOC entry 8331 (class 2606 OID 380927)
+-- TOC entry 5180 (class 2606 OID 420812)
 -- Name: lc_ofertasmercadoinmobiliario lc_ofertasmercadoinmobiliario_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16645,7 +16926,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_ofertasmercadoinmobiliario
 
 
 --
--- TOC entry 8482 (class 2606 OID 381343)
+-- TOC entry 5184 (class 2606 OID 420814)
 -- Name: lc_ofertatipo lc_ofertatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16654,7 +16935,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_ofertatipo
 
 
 --
--- TOC entry 8407 (class 2606 OID 381077)
+-- TOC entry 5191 (class 2606 OID 420816)
 -- Name: lc_predio_copropiedad lc_predio_copropiedad_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16663,7 +16944,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_copropiedad
 
 
 --
--- TOC entry 8413 (class 2606 OID 381085)
+-- TOC entry 5197 (class 2606 OID 420818)
 -- Name: lc_predio_ini_predioinsumos lc_predio_ini_predioinsumos_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16672,7 +16953,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_ini_predioinsumos
 
 
 --
--- TOC entry 8336 (class 2606 OID 380939)
+-- TOC entry 5187 (class 2606 OID 420820)
 -- Name: lc_predio lc_predio_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16681,7 +16962,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio
 
 
 --
--- TOC entry 8562 (class 2606 OID 381703)
+-- TOC entry 5199 (class 2606 OID 420822)
 -- Name: lc_prediotipo lc_prediotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16690,7 +16971,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_prediotipo
 
 
 --
--- TOC entry 8508 (class 2606 OID 381460)
+-- TOC entry 5201 (class 2606 OID 420824)
 -- Name: lc_procedimientocatastralregistraltipo lc_procedimientocatastralregistraltipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16699,7 +16980,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_procedimientocatastralregistraltipo
 
 
 --
--- TOC entry 8341 (class 2606 OID 380951)
+-- TOC entry 5205 (class 2606 OID 420826)
 -- Name: lc_puntocontrol lc_puntocontrol_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16708,7 +16989,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8550 (class 2606 OID 381649)
+-- TOC entry 5214 (class 2606 OID 420828)
 -- Name: lc_puntocontroltipo lc_puntocontroltipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16717,7 +16998,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontroltipo
 
 
 --
--- TOC entry 8393 (class 2606 OID 381052)
+-- TOC entry 5219 (class 2606 OID 420830)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16726,7 +17007,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8478 (class 2606 OID 381325)
+-- TOC entry 5228 (class 2606 OID 420832)
 -- Name: lc_puntolevtipo lc_puntolevtipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16735,7 +17016,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevtipo
 
 
 --
--- TOC entry 8354 (class 2606 OID 380970)
+-- TOC entry 5234 (class 2606 OID 420834)
 -- Name: lc_puntolindero lc_puntolindero_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16744,7 +17025,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8458 (class 2606 OID 381235)
+-- TOC entry 5242 (class 2606 OID 420836)
 -- Name: lc_puntotipo lc_puntotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16753,7 +17034,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntotipo
 
 
 --
--- TOC entry 8538 (class 2606 OID 381595)
+-- TOC entry 5244 (class 2606 OID 420838)
 -- Name: lc_relacionprediotipo lc_relacionprediotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16762,7 +17043,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_relacionprediotipo
 
 
 --
--- TOC entry 8364 (class 2606 OID 380990)
+-- TOC entry 5248 (class 2606 OID 420840)
 -- Name: lc_restriccion lc_restriccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16771,7 +17052,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restriccion
 
 
 --
--- TOC entry 8576 (class 2606 OID 381766)
+-- TOC entry 5252 (class 2606 OID 420842)
 -- Name: lc_restricciontipo lc_restricciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16780,7 +17061,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restricciontipo
 
 
 --
--- TOC entry 8470 (class 2606 OID 381289)
+-- TOC entry 5254 (class 2606 OID 420844)
 -- Name: lc_resultadovisitatipo lc_resultadovisitatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16789,7 +17070,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_resultadovisitatipo
 
 
 --
--- TOC entry 8417 (class 2606 OID 381097)
+-- TOC entry 5258 (class 2606 OID 420846)
 -- Name: lc_servidumbretransito lc_servidumbretransito_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16798,7 +17079,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_servidumbretransito
 
 
 --
--- TOC entry 8534 (class 2606 OID 381577)
+-- TOC entry 5261 (class 2606 OID 420848)
 -- Name: lc_sexotipo lc_sexotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16807,7 +17088,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_sexotipo
 
 
 --
--- TOC entry 8370 (class 2606 OID 381004)
+-- TOC entry 5265 (class 2606 OID 420850)
 -- Name: lc_terreno lc_terreno_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16816,7 +17097,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_terreno
 
 
 --
--- TOC entry 8403 (class 2606 OID 381069)
+-- TOC entry 5269 (class 2606 OID 420852)
 -- Name: lc_tipologiaconstruccion lc_tipologiaconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16825,7 +17106,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_tipologiaconstruccion
 
 
 --
--- TOC entry 8476 (class 2606 OID 381316)
+-- TOC entry 5272 (class 2606 OID 420854)
 -- Name: lc_tipologiatipo lc_tipologiatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16834,7 +17115,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_tipologiatipo
 
 
 --
--- TOC entry 8423 (class 2606 OID 381110)
+-- TOC entry 5277 (class 2606 OID 420856)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16843,7 +17124,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8516 (class 2606 OID 381496)
+-- TOC entry 5285 (class 2606 OID 420858)
 -- Name: lc_unidadconstrucciontipo lc_unidadconstrucciontipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16852,7 +17133,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstrucciontipo
 
 
 --
--- TOC entry 8492 (class 2606 OID 381388)
+-- TOC entry 5287 (class 2606 OID 420860)
 -- Name: lc_usouconstipo lc_usouconstipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16861,7 +17142,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_usouconstipo
 
 
 --
--- TOC entry 8574 (class 2606 OID 381757)
+-- TOC entry 5289 (class 2606 OID 420862)
 -- Name: lc_viatipo lc_viatipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16870,7 +17151,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_viatipo
 
 
 --
--- TOC entry 8490 (class 2606 OID 381379)
+-- TOC entry 5291 (class 2606 OID 420864)
 -- Name: snr_calidadderechotipo snr_calidadderechotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16879,7 +17160,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_calidadderechotipo
 
 
 --
--- TOC entry 8468 (class 2606 OID 381280)
+-- TOC entry 5293 (class 2606 OID 420866)
 -- Name: snr_clasepredioregistrotipo snr_clasepredioregistrotipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16888,7 +17169,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_clasepredioregistrotipo
 
 
 --
--- TOC entry 8239 (class 2606 OID 380691)
+-- TOC entry 5296 (class 2606 OID 420868)
 -- Name: snr_derecho snr_derecho_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16897,7 +17178,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_derecho
 
 
 --
--- TOC entry 8506 (class 2606 OID 381451)
+-- TOC entry 5300 (class 2606 OID 420870)
 -- Name: snr_documentotitulartipo snr_documentotitulartipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16906,7 +17187,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_documentotitulartipo
 
 
 --
--- TOC entry 8244 (class 2606 OID 380700)
+-- TOC entry 5303 (class 2606 OID 420872)
 -- Name: snr_estructuramatriculamatriz snr_estructuramatriculamatriz_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16915,7 +17196,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_estructuramatriculamatriz
 
 
 --
--- TOC entry 8246 (class 2606 OID 380710)
+-- TOC entry 5305 (class 2606 OID 420874)
 -- Name: snr_fuentecabidalinderos snr_fuentecabidalinderos_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16924,7 +17205,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_fuentecabidalinderos
 
 
 --
--- TOC entry 8249 (class 2606 OID 380720)
+-- TOC entry 5308 (class 2606 OID 420876)
 -- Name: snr_fuentederecho snr_fuentederecho_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16933,7 +17214,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_fuentederecho
 
 
 --
--- TOC entry 8446 (class 2606 OID 381181)
+-- TOC entry 5311 (class 2606 OID 420878)
 -- Name: snr_fuentetipo snr_fuentetipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16942,7 +17223,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_fuentetipo
 
 
 --
--- TOC entry 8450 (class 2606 OID 381199)
+-- TOC entry 5313 (class 2606 OID 420880)
 -- Name: snr_personatitulartipo snr_personatitulartipo_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16951,7 +17232,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_personatitulartipo
 
 
 --
--- TOC entry 8257 (class 2606 OID 380741)
+-- TOC entry 5316 (class 2606 OID 420882)
 -- Name: snr_predioregistro snr_predioregistro_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16960,7 +17241,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_predioregistro
 
 
 --
--- TOC entry 8260 (class 2606 OID 380749)
+-- TOC entry 5323 (class 2606 OID 420884)
 -- Name: snr_titular_derecho snr_titular_derecho_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16969,7 +17250,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular_derecho
 
 
 --
--- TOC entry 8252 (class 2606 OID 380730)
+-- TOC entry 5319 (class 2606 OID 420886)
 -- Name: snr_titular snr_titular_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16978,7 +17259,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular
 
 
 --
--- TOC entry 8581 (class 2606 OID 381782)
+-- TOC entry 5328 (class 2606 OID 420888)
 -- Name: t_ili2db_attrname t_ili2db_attrname_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16987,7 +17268,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_attrname
 
 
 --
--- TOC entry 8432 (class 2606 OID 381127)
+-- TOC entry 5331 (class 2606 OID 420890)
 -- Name: t_ili2db_basket t_ili2db_basket_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -16996,7 +17277,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_basket
 
 
 --
--- TOC entry 8578 (class 2606 OID 381774)
+-- TOC entry 5333 (class 2606 OID 420892)
 -- Name: t_ili2db_classname t_ili2db_classname_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17005,7 +17286,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_classname
 
 
 --
--- TOC entry 8435 (class 2606 OID 381133)
+-- TOC entry 5336 (class 2606 OID 420894)
 -- Name: t_ili2db_dataset t_ili2db_dataset_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17014,7 +17295,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_dataset
 
 
 --
--- TOC entry 8437 (class 2606 OID 381141)
+-- TOC entry 5338 (class 2606 OID 420896)
 -- Name: t_ili2db_inheritance t_ili2db_inheritance_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17023,7 +17304,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_inheritance
 
 
 --
--- TOC entry 8442 (class 2606 OID 381163)
+-- TOC entry 5341 (class 2606 OID 420898)
 -- Name: t_ili2db_model t_ili2db_model_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17032,7 +17313,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_model
 
 
 --
--- TOC entry 8439 (class 2606 OID 381149)
+-- TOC entry 5343 (class 2606 OID 420900)
 -- Name: t_ili2db_settings t_ili2db_settings_pkey; Type: CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17041,7 +17322,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_settings
 
 
 --
--- TOC entry 7999 (class 1259 OID 380184)
+-- TOC entry 4749 (class 1259 OID 420901)
 -- Name: cc_metodooperacion_col_transfrmcn_trnsfrmcion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17049,7 +17330,7 @@ CREATE INDEX cc_metodooperacion_col_transfrmcn_trnsfrmcion_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8002 (class 1259 OID 380195)
+-- TOC entry 4756 (class 1259 OID 420902)
 -- Name: col_areavalor_lc_construccion_area_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17057,7 +17338,7 @@ CREATE INDEX col_areavalor_lc_construccion_area_idx ON test_ladm_col_queries.col
 
 
 --
--- TOC entry 8003 (class 1259 OID 380197)
+-- TOC entry 4757 (class 1259 OID 420903)
 -- Name: col_areavalor_lc_servidumbretransito_rea_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17065,7 +17346,7 @@ CREATE INDEX col_areavalor_lc_servidumbretransito_rea_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8004 (class 1259 OID 380196)
+-- TOC entry 4758 (class 1259 OID 420904)
 -- Name: col_areavalor_lc_terreno_area_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17073,7 +17354,7 @@ CREATE INDEX col_areavalor_lc_terreno_area_idx ON test_ladm_col_queries.col_area
 
 
 --
--- TOC entry 8005 (class 1259 OID 380198)
+-- TOC entry 4759 (class 1259 OID 420905)
 -- Name: col_areavalor_lc_unidadconstruccion_area_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17081,7 +17362,7 @@ CREATE INDEX col_areavalor_lc_unidadconstruccion_area_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8008 (class 1259 OID 380194)
+-- TOC entry 4762 (class 1259 OID 420906)
 -- Name: col_areavalor_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17089,7 +17370,7 @@ CREATE INDEX col_areavalor_tipo_idx ON test_ladm_col_queries.col_areavalor USING
 
 
 --
--- TOC entry 8148 (class 1259 OID 380461)
+-- TOC entry 4763 (class 1259 OID 420907)
 -- Name: col_baunitcomointeresado_interesado_lc_grpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17097,7 +17378,7 @@ CREATE INDEX col_baunitcomointeresado_interesado_lc_grpcnntrsdos_idx ON test_lad
 
 
 --
--- TOC entry 8149 (class 1259 OID 380460)
+-- TOC entry 4764 (class 1259 OID 420908)
 -- Name: col_baunitcomointeresado_interesado_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17105,7 +17386,7 @@ CREATE INDEX col_baunitcomointeresado_interesado_lc_interesado_idx ON test_ladm_
 
 
 --
--- TOC entry 8152 (class 1259 OID 380462)
+-- TOC entry 4767 (class 1259 OID 420909)
 -- Name: col_baunitcomointeresado_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17113,7 +17394,7 @@ CREATE INDEX col_baunitcomointeresado_unidad_idx ON test_ladm_col_queries.col_ba
 
 
 --
--- TOC entry 8097 (class 1259 OID 380369)
+-- TOC entry 4768 (class 1259 OID 420910)
 -- Name: col_baunitfuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17121,7 +17402,7 @@ CREATE INDEX col_baunitfuente_fuente_espacial_idx ON test_ladm_col_queries.col_b
 
 
 --
--- TOC entry 8100 (class 1259 OID 380370)
+-- TOC entry 4771 (class 1259 OID 420911)
 -- Name: col_baunitfuente_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17129,7 +17410,7 @@ CREATE INDEX col_baunitfuente_unidad_idx ON test_ladm_col_queries.col_baunitfuen
 
 
 --
--- TOC entry 8104 (class 1259 OID 380384)
+-- TOC entry 4772 (class 1259 OID 420912)
 -- Name: col_cclfuente_ccl_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17137,7 +17418,7 @@ CREATE INDEX col_cclfuente_ccl_idx ON test_ladm_col_queries.col_cclfuente USING 
 
 
 --
--- TOC entry 8105 (class 1259 OID 380385)
+-- TOC entry 4773 (class 1259 OID 420913)
 -- Name: col_cclfuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17145,7 +17426,7 @@ CREATE INDEX col_cclfuente_fuente_espacial_idx ON test_ladm_col_queries.col_cclf
 
 
 --
--- TOC entry 8128 (class 1259 OID 380424)
+-- TOC entry 4776 (class 1259 OID 420914)
 -- Name: col_clfuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17153,7 +17434,7 @@ CREATE INDEX col_clfuente_fuente_espacial_idx ON test_ladm_col_queries.col_clfue
 
 
 --
--- TOC entry 8115 (class 1259 OID 380403)
+-- TOC entry 4799 (class 1259 OID 420915)
 -- Name: col_masccl_ccl_mas_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17161,7 +17442,7 @@ CREATE INDEX col_masccl_ccl_mas_idx ON test_ladm_col_queries.col_masccl USING bt
 
 
 --
--- TOC entry 8118 (class 1259 OID 380405)
+-- TOC entry 4802 (class 1259 OID 420916)
 -- Name: col_masccl_ue_mas_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17169,7 +17450,7 @@ CREATE INDEX col_masccl_ue_mas_lc_construccion_idx ON test_ladm_col_queries.col_
 
 
 --
--- TOC entry 8119 (class 1259 OID 380407)
+-- TOC entry 4803 (class 1259 OID 420917)
 -- Name: col_masccl_ue_mas_lc_servidmbrtrnsito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17177,7 +17458,7 @@ CREATE INDEX col_masccl_ue_mas_lc_servidmbrtrnsito_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8120 (class 1259 OID 380404)
+-- TOC entry 4804 (class 1259 OID 420918)
 -- Name: col_masccl_ue_mas_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17185,7 +17466,7 @@ CREATE INDEX col_masccl_ue_mas_lc_terreno_idx ON test_ladm_col_queries.col_mascc
 
 
 --
--- TOC entry 8121 (class 1259 OID 380406)
+-- TOC entry 4805 (class 1259 OID 420919)
 -- Name: col_masccl_ue_mas_lc_unidadcnstrccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17193,7 +17474,7 @@ CREATE INDEX col_masccl_ue_mas_lc_unidadcnstrccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8139 (class 1259 OID 380442)
+-- TOC entry 4808 (class 1259 OID 420920)
 -- Name: col_mascl_ue_mas_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17201,7 +17482,7 @@ CREATE INDEX col_mascl_ue_mas_lc_construccion_idx ON test_ladm_col_queries.col_m
 
 
 --
--- TOC entry 8140 (class 1259 OID 380444)
+-- TOC entry 4809 (class 1259 OID 420921)
 -- Name: col_mascl_ue_mas_lc_servidmbrtrnsito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17209,7 +17490,7 @@ CREATE INDEX col_mascl_ue_mas_lc_servidmbrtrnsito_idx ON test_ladm_col_queries.c
 
 
 --
--- TOC entry 8141 (class 1259 OID 380441)
+-- TOC entry 4810 (class 1259 OID 420922)
 -- Name: col_mascl_ue_mas_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17217,7 +17498,7 @@ CREATE INDEX col_mascl_ue_mas_lc_terreno_idx ON test_ladm_col_queries.col_mascl 
 
 
 --
--- TOC entry 8142 (class 1259 OID 380443)
+-- TOC entry 4811 (class 1259 OID 420923)
 -- Name: col_mascl_ue_mas_lc_unidadcnstrccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17225,7 +17506,7 @@ CREATE INDEX col_mascl_ue_mas_lc_unidadcnstrccion_idx ON test_ladm_col_queries.c
 
 
 --
--- TOC entry 8108 (class 1259 OID 380392)
+-- TOC entry 4812 (class 1259 OID 420924)
 -- Name: col_menosccl_ccl_menos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17233,7 +17514,7 @@ CREATE INDEX col_menosccl_ccl_menos_idx ON test_ladm_col_queries.col_menosccl US
 
 
 --
--- TOC entry 8111 (class 1259 OID 380394)
+-- TOC entry 4815 (class 1259 OID 420925)
 -- Name: col_menosccl_ue_menos_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17241,7 +17522,7 @@ CREATE INDEX col_menosccl_ue_menos_lc_construccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8112 (class 1259 OID 380396)
+-- TOC entry 4816 (class 1259 OID 420926)
 -- Name: col_menosccl_ue_menos_lc_srvdmbrtrnsito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17249,7 +17530,7 @@ CREATE INDEX col_menosccl_ue_menos_lc_srvdmbrtrnsito_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8113 (class 1259 OID 380393)
+-- TOC entry 4817 (class 1259 OID 420927)
 -- Name: col_menosccl_ue_menos_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17257,7 +17538,7 @@ CREATE INDEX col_menosccl_ue_menos_lc_terreno_idx ON test_ladm_col_queries.col_m
 
 
 --
--- TOC entry 8114 (class 1259 OID 380395)
+-- TOC entry 4818 (class 1259 OID 420928)
 -- Name: col_menosccl_ue_menos_lc_unddcnstrccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17265,7 +17546,7 @@ CREATE INDEX col_menosccl_ue_menos_lc_unddcnstrccion_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8133 (class 1259 OID 380432)
+-- TOC entry 4821 (class 1259 OID 420929)
 -- Name: col_menoscl_ue_menos_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17273,7 +17554,7 @@ CREATE INDEX col_menoscl_ue_menos_lc_construccion_idx ON test_ladm_col_queries.c
 
 
 --
--- TOC entry 8134 (class 1259 OID 380434)
+-- TOC entry 4822 (class 1259 OID 420930)
 -- Name: col_menoscl_ue_menos_lc_srvdmbrtrnsito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17281,7 +17562,7 @@ CREATE INDEX col_menoscl_ue_menos_lc_srvdmbrtrnsito_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8135 (class 1259 OID 380431)
+-- TOC entry 4823 (class 1259 OID 420931)
 -- Name: col_menoscl_ue_menos_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17289,7 +17570,7 @@ CREATE INDEX col_menoscl_ue_menos_lc_terreno_idx ON test_ladm_col_queries.col_me
 
 
 --
--- TOC entry 8136 (class 1259 OID 380433)
+-- TOC entry 4824 (class 1259 OID 420932)
 -- Name: col_menoscl_ue_menos_lc_unddcnstrccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17297,7 +17578,7 @@ CREATE INDEX col_menoscl_ue_menos_lc_unddcnstrccion_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8163 (class 1259 OID 380489)
+-- TOC entry 4827 (class 1259 OID 420933)
 -- Name: col_miembros_agrupacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17305,7 +17586,7 @@ CREATE INDEX col_miembros_agrupacion_idx ON test_ladm_col_queries.col_miembros U
 
 
 --
--- TOC entry 8164 (class 1259 OID 380488)
+-- TOC entry 4828 (class 1259 OID 420934)
 -- Name: col_miembros_interesado_lc_grpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17313,7 +17594,7 @@ CREATE INDEX col_miembros_interesado_lc_grpcnntrsdos_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8165 (class 1259 OID 380487)
+-- TOC entry 4829 (class 1259 OID 420935)
 -- Name: col_miembros_interesado_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17321,7 +17602,7 @@ CREATE INDEX col_miembros_interesado_lc_interesado_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8122 (class 1259 OID 380417)
+-- TOC entry 4832 (class 1259 OID 420936)
 -- Name: col_puntoccl_ccl_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17329,7 +17610,7 @@ CREATE INDEX col_puntoccl_ccl_idx ON test_ladm_col_queries.col_puntoccl USING bt
 
 
 --
--- TOC entry 8125 (class 1259 OID 380416)
+-- TOC entry 4835 (class 1259 OID 420937)
 -- Name: col_puntoccl_punto_lc_puntocontrol_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17337,7 +17618,7 @@ CREATE INDEX col_puntoccl_punto_lc_puntocontrol_idx ON test_ladm_col_queries.col
 
 
 --
--- TOC entry 8126 (class 1259 OID 380415)
+-- TOC entry 4836 (class 1259 OID 420938)
 -- Name: col_puntoccl_punto_lc_puntolevantaminto_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17345,7 +17626,7 @@ CREATE INDEX col_puntoccl_punto_lc_puntolevantaminto_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8127 (class 1259 OID 380414)
+-- TOC entry 4837 (class 1259 OID 420939)
 -- Name: col_puntoccl_punto_lc_puntolindero_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17353,7 +17634,7 @@ CREATE INDEX col_puntoccl_punto_lc_puntolindero_idx ON test_ladm_col_queries.col
 
 
 --
--- TOC entry 8145 (class 1259 OID 380453)
+-- TOC entry 4840 (class 1259 OID 420940)
 -- Name: col_puntocl_punto_lc_puntocontrol_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17361,7 +17642,7 @@ CREATE INDEX col_puntocl_punto_lc_puntocontrol_idx ON test_ladm_col_queries.col_
 
 
 --
--- TOC entry 8146 (class 1259 OID 380452)
+-- TOC entry 4841 (class 1259 OID 420941)
 -- Name: col_puntocl_punto_lc_puntolevantaminto_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17369,7 +17650,7 @@ CREATE INDEX col_puntocl_punto_lc_puntolevantaminto_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8147 (class 1259 OID 380451)
+-- TOC entry 4842 (class 1259 OID 420942)
 -- Name: col_puntocl_punto_lc_puntolindero_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17377,7 +17658,7 @@ CREATE INDEX col_puntocl_punto_lc_puntolindero_idx ON test_ladm_col_queries.col_
 
 
 --
--- TOC entry 8084 (class 1259 OID 380348)
+-- TOC entry 4843 (class 1259 OID 420943)
 -- Name: col_puntofuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17385,7 +17666,7 @@ CREATE INDEX col_puntofuente_fuente_espacial_idx ON test_ladm_col_queries.col_pu
 
 
 --
--- TOC entry 8087 (class 1259 OID 380351)
+-- TOC entry 4846 (class 1259 OID 420944)
 -- Name: col_puntofuente_punto_lc_puntocontrol_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17393,7 +17674,7 @@ CREATE INDEX col_puntofuente_punto_lc_puntocontrol_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8088 (class 1259 OID 380350)
+-- TOC entry 4847 (class 1259 OID 420945)
 -- Name: col_puntofuente_punto_lc_puntolevantaminto_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17401,7 +17682,7 @@ CREATE INDEX col_puntofuente_punto_lc_puntolevantaminto_idx ON test_ladm_col_que
 
 
 --
--- TOC entry 8089 (class 1259 OID 380349)
+-- TOC entry 4848 (class 1259 OID 420946)
 -- Name: col_puntofuente_punto_lc_puntolindero_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17409,7 +17690,7 @@ CREATE INDEX col_puntofuente_punto_lc_puntolindero_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8077 (class 1259 OID 380333)
+-- TOC entry 4855 (class 1259 OID 420947)
 -- Name: col_relacionfuente_fuente_administrativa_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17417,7 +17698,7 @@ CREATE INDEX col_relacionfuente_fuente_administrativa_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8103 (class 1259 OID 380377)
+-- TOC entry 4860 (class 1259 OID 420948)
 -- Name: col_relacionfuenteuespcial_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17425,7 +17706,7 @@ CREATE INDEX col_relacionfuenteuespcial_fuente_espacial_idx ON test_ladm_col_que
 
 
 --
--- TOC entry 8153 (class 1259 OID 380469)
+-- TOC entry 4863 (class 1259 OID 420949)
 -- Name: col_responsablefuente_fuente_administrativa_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17433,7 +17714,7 @@ CREATE INDEX col_responsablefuente_fuente_administrativa_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8154 (class 1259 OID 380471)
+-- TOC entry 4864 (class 1259 OID 420950)
 -- Name: col_responsablefuente_interesado_lc_grpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17441,7 +17722,7 @@ CREATE INDEX col_responsablefuente_interesado_lc_grpcnntrsdos_idx ON test_ladm_c
 
 
 --
--- TOC entry 8155 (class 1259 OID 380470)
+-- TOC entry 4865 (class 1259 OID 420951)
 -- Name: col_responsablefuente_interesado_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17449,7 +17730,7 @@ CREATE INDEX col_responsablefuente_interesado_lc_interesado_idx ON test_ladm_col
 
 
 --
--- TOC entry 8065 (class 1259 OID 380313)
+-- TOC entry 4868 (class 1259 OID 420952)
 -- Name: col_rrrfuente_fuente_administrativa_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17457,7 +17738,7 @@ CREATE INDEX col_rrrfuente_fuente_administrativa_idx ON test_ladm_col_queries.co
 
 
 --
--- TOC entry 8068 (class 1259 OID 380314)
+-- TOC entry 4871 (class 1259 OID 420953)
 -- Name: col_rrrfuente_rrr_lc_derecho_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17465,7 +17746,7 @@ CREATE INDEX col_rrrfuente_rrr_lc_derecho_idx ON test_ladm_col_queries.col_rrrfu
 
 
 --
--- TOC entry 8069 (class 1259 OID 380315)
+-- TOC entry 4872 (class 1259 OID 420954)
 -- Name: col_rrrfuente_rrr_lc_restriccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17473,7 +17754,7 @@ CREATE INDEX col_rrrfuente_rrr_lc_restriccion_idx ON test_ladm_col_queries.col_r
 
 
 --
--- TOC entry 8158 (class 1259 OID 380478)
+-- TOC entry 4873 (class 1259 OID 420955)
 -- Name: col_topografofuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17481,7 +17762,7 @@ CREATE INDEX col_topografofuente_fuente_espacial_idx ON test_ladm_col_queries.co
 
 
 --
--- TOC entry 8161 (class 1259 OID 380480)
+-- TOC entry 4876 (class 1259 OID 420956)
 -- Name: col_topografofuente_topografo_lc_agrpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17489,7 +17770,7 @@ CREATE INDEX col_topografofuente_topografo_lc_agrpcnntrsdos_idx ON test_ladm_col
 
 
 --
--- TOC entry 8162 (class 1259 OID 380479)
+-- TOC entry 4877 (class 1259 OID 420957)
 -- Name: col_topografofuente_topografo_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17497,7 +17778,7 @@ CREATE INDEX col_topografofuente_topografo_lc_interesado_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8027 (class 1259 OID 380238)
+-- TOC entry 4878 (class 1259 OID 420958)
 -- Name: col_transformacion_lc_pntcntrl_tmcn_y_rsltado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17505,7 +17786,7 @@ CREATE INDEX col_transformacion_lc_pntcntrl_tmcn_y_rsltado_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8028 (class 1259 OID 380239)
+-- TOC entry 4879 (class 1259 OID 420959)
 -- Name: col_transformacion_lc_pntlndr_trmcn_y_rsltado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17513,7 +17794,7 @@ CREATE INDEX col_transformacion_lc_pntlndr_trmcn_y_rsltado_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8029 (class 1259 OID 380240)
+-- TOC entry 4880 (class 1259 OID 420960)
 -- Name: col_transformacion_lc_pntlvntmntmcn_y_rsltado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17521,7 +17802,7 @@ CREATE INDEX col_transformacion_lc_pntlvntmntmcn_y_rsltado_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8030 (class 1259 OID 380237)
+-- TOC entry 4881 (class 1259 OID 420961)
 -- Name: col_transformacion_localizacion_transformada_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17529,7 +17810,7 @@ CREATE INDEX col_transformacion_localizacion_transformada_idx ON test_ladm_col_q
 
 
 --
--- TOC entry 8070 (class 1259 OID 380326)
+-- TOC entry 4884 (class 1259 OID 420962)
 -- Name: col_uebaunit_baunit_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17537,7 +17818,7 @@ CREATE INDEX col_uebaunit_baunit_idx ON test_ladm_col_queries.col_uebaunit USING
 
 
 --
--- TOC entry 8073 (class 1259 OID 380323)
+-- TOC entry 4887 (class 1259 OID 420963)
 -- Name: col_uebaunit_ue_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17545,7 +17826,7 @@ CREATE INDEX col_uebaunit_ue_lc_construccion_idx ON test_ladm_col_queries.col_ue
 
 
 --
--- TOC entry 8074 (class 1259 OID 380325)
+-- TOC entry 4888 (class 1259 OID 420964)
 -- Name: col_uebaunit_ue_lc_servidumbretransito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17553,7 +17834,7 @@ CREATE INDEX col_uebaunit_ue_lc_servidumbretransito_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8075 (class 1259 OID 380322)
+-- TOC entry 4889 (class 1259 OID 420965)
 -- Name: col_uebaunit_ue_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17561,7 +17842,7 @@ CREATE INDEX col_uebaunit_ue_lc_terreno_idx ON test_ladm_col_queries.col_uebauni
 
 
 --
--- TOC entry 8076 (class 1259 OID 380324)
+-- TOC entry 4890 (class 1259 OID 420966)
 -- Name: col_uebaunit_ue_lc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17569,7 +17850,7 @@ CREATE INDEX col_uebaunit_ue_lc_unidadconstruccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8090 (class 1259 OID 380362)
+-- TOC entry 4891 (class 1259 OID 420967)
 -- Name: col_uefuente_fuente_espacial_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17577,7 +17858,7 @@ CREATE INDEX col_uefuente_fuente_espacial_idx ON test_ladm_col_queries.col_uefue
 
 
 --
--- TOC entry 8093 (class 1259 OID 380359)
+-- TOC entry 4894 (class 1259 OID 420968)
 -- Name: col_uefuente_ue_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17585,7 +17866,7 @@ CREATE INDEX col_uefuente_ue_lc_construccion_idx ON test_ladm_col_queries.col_ue
 
 
 --
--- TOC entry 8094 (class 1259 OID 380361)
+-- TOC entry 4895 (class 1259 OID 420969)
 -- Name: col_uefuente_ue_lc_servidumbretransito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17593,7 +17874,7 @@ CREATE INDEX col_uefuente_ue_lc_servidumbretransito_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8095 (class 1259 OID 380358)
+-- TOC entry 4896 (class 1259 OID 420970)
 -- Name: col_uefuente_ue_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17601,7 +17882,7 @@ CREATE INDEX col_uefuente_ue_lc_terreno_idx ON test_ladm_col_queries.col_uefuent
 
 
 --
--- TOC entry 8096 (class 1259 OID 380360)
+-- TOC entry 4897 (class 1259 OID 420971)
 -- Name: col_uefuente_ue_lc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17609,7 +17890,7 @@ CREATE INDEX col_uefuente_ue_lc_unidadconstruccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8059 (class 1259 OID 380304)
+-- TOC entry 4898 (class 1259 OID 420972)
 -- Name: col_ueuegrupo_parte_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17617,7 +17898,7 @@ CREATE INDEX col_ueuegrupo_parte_lc_construccion_idx ON test_ladm_col_queries.co
 
 
 --
--- TOC entry 8060 (class 1259 OID 380306)
+-- TOC entry 4899 (class 1259 OID 420973)
 -- Name: col_ueuegrupo_parte_lc_servidumbrtrnsito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17625,7 +17906,7 @@ CREATE INDEX col_ueuegrupo_parte_lc_servidumbrtrnsito_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8061 (class 1259 OID 380303)
+-- TOC entry 4900 (class 1259 OID 420974)
 -- Name: col_ueuegrupo_parte_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17633,7 +17914,7 @@ CREATE INDEX col_ueuegrupo_parte_lc_terreno_idx ON test_ladm_col_queries.col_ueu
 
 
 --
--- TOC entry 8062 (class 1259 OID 380305)
+-- TOC entry 4901 (class 1259 OID 420975)
 -- Name: col_ueuegrupo_parte_lc_unidadconstrccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17641,7 +17922,7 @@ CREATE INDEX col_ueuegrupo_parte_lc_unidadconstrccion_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8080 (class 1259 OID 380340)
+-- TOC entry 4908 (class 1259 OID 420976)
 -- Name: col_unidadfuente_fuente_administrativa_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17649,7 +17930,7 @@ CREATE INDEX col_unidadfuente_fuente_administrativa_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8083 (class 1259 OID 380341)
+-- TOC entry 4911 (class 1259 OID 420977)
 -- Name: col_unidadfuente_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17657,7 +17938,7 @@ CREATE INDEX col_unidadfuente_unidad_idx ON test_ladm_col_queries.col_unidadfuen
 
 
 --
--- TOC entry 8052 (class 1259 OID 380293)
+-- TOC entry 4914 (class 1259 OID 420978)
 -- Name: col_volumenvalor_lc_construccion_volumen_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17665,7 +17946,7 @@ CREATE INDEX col_volumenvalor_lc_construccion_volumen_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8053 (class 1259 OID 380295)
+-- TOC entry 4915 (class 1259 OID 420979)
 -- Name: col_volumenvalor_lc_servidumbretranst_vlmen_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17673,7 +17954,7 @@ CREATE INDEX col_volumenvalor_lc_servidumbretranst_vlmen_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8054 (class 1259 OID 380294)
+-- TOC entry 4916 (class 1259 OID 420980)
 -- Name: col_volumenvalor_lc_terreno_volumen_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17681,7 +17962,7 @@ CREATE INDEX col_volumenvalor_lc_terreno_volumen_idx ON test_ladm_col_queries.co
 
 
 --
--- TOC entry 8055 (class 1259 OID 380296)
+-- TOC entry 4917 (class 1259 OID 420981)
 -- Name: col_volumenvalor_lc_unidadconstruccin_vlmen_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17689,7 +17970,7 @@ CREATE INDEX col_volumenvalor_lc_unidadconstruccin_vlmen_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8058 (class 1259 OID 380292)
+-- TOC entry 4920 (class 1259 OID 420982)
 -- Name: col_volumenvalor_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17697,7 +17978,7 @@ CREATE INDEX col_volumenvalor_tipo_idx ON test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8047 (class 1259 OID 380285)
+-- TOC entry 4921 (class 1259 OID 420983)
 -- Name: extarchivo_lc_fuenteespacl_xt_rchv_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17705,7 +17986,7 @@ CREATE INDEX extarchivo_lc_fuenteespacl_xt_rchv_id_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8048 (class 1259 OID 380284)
+-- TOC entry 4922 (class 1259 OID 420984)
 -- Name: extarchivo_lc_funtdmnstrtv_xt_rchv_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17713,7 +17994,7 @@ CREATE INDEX extarchivo_lc_funtdmnstrtv_xt_rchv_id_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8051 (class 1259 OID 380283)
+-- TOC entry 4925 (class 1259 OID 420985)
 -- Name: extarchivo_snr_fuentecabdlndrs_rchivo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17721,7 +18002,7 @@ CREATE INDEX extarchivo_snr_fuentecabdlndrs_rchivo_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8009 (class 1259 OID 380210)
+-- TOC entry 4926 (class 1259 OID 420986)
 -- Name: extdireccion_clase_via_principal_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17729,7 +18010,7 @@ CREATE INDEX extdireccion_clase_via_principal_idx ON test_ladm_col_queries.extdi
 
 
 --
--- TOC entry 8010 (class 1259 OID 380214)
+-- TOC entry 4927 (class 1259 OID 420987)
 -- Name: extdireccion_extinteresado_ext_drccn_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17737,7 +18018,7 @@ CREATE INDEX extdireccion_extinteresado_ext_drccn_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8011 (class 1259 OID 380213)
+-- TOC entry 4928 (class 1259 OID 420988)
 -- Name: extdireccion_extndddfccnfsc_xt_drccn_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17745,7 +18026,7 @@ CREATE INDEX extdireccion_extndddfccnfsc_xt_drccn_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8012 (class 1259 OID 380215)
+-- TOC entry 4929 (class 1259 OID 420989)
 -- Name: extdireccion_lc_construccin_xt_drccn_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17753,7 +18034,7 @@ CREATE INDEX extdireccion_lc_construccin_xt_drccn_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8013 (class 1259 OID 380219)
+-- TOC entry 4930 (class 1259 OID 420990)
 -- Name: extdireccion_lc_nddcnstrccn_xt_drccn_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17761,7 +18042,7 @@ CREATE INDEX extdireccion_lc_nddcnstrccn_xt_drccn_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8014 (class 1259 OID 380216)
+-- TOC entry 4931 (class 1259 OID 420991)
 -- Name: extdireccion_lc_predio_direccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17769,7 +18050,7 @@ CREATE INDEX extdireccion_lc_predio_direccion_idx ON test_ladm_col_queries.extdi
 
 
 --
--- TOC entry 8015 (class 1259 OID 380218)
+-- TOC entry 4932 (class 1259 OID 420992)
 -- Name: extdireccion_lc_srvdmbrtrnt_xt_drccn_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17777,7 +18058,7 @@ CREATE INDEX extdireccion_lc_srvdmbrtrnt_xt_drccn_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8016 (class 1259 OID 380217)
+-- TOC entry 4933 (class 1259 OID 420993)
 -- Name: extdireccion_lc_terreno_ext_direccin_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17785,7 +18066,7 @@ CREATE INDEX extdireccion_lc_terreno_ext_direccin_id_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8017 (class 1259 OID 380209)
+-- TOC entry 4934 (class 1259 OID 420994)
 -- Name: extdireccion_localizacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17793,7 +18074,7 @@ CREATE INDEX extdireccion_localizacion_idx ON test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8020 (class 1259 OID 380211)
+-- TOC entry 4937 (class 1259 OID 420995)
 -- Name: extdireccion_sector_ciudad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17801,7 +18082,7 @@ CREATE INDEX extdireccion_sector_ciudad_idx ON test_ladm_col_queries.extdireccio
 
 
 --
--- TOC entry 8021 (class 1259 OID 380212)
+-- TOC entry 4938 (class 1259 OID 420996)
 -- Name: extdireccion_sector_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17809,7 +18090,7 @@ CREATE INDEX extdireccion_sector_predio_idx ON test_ladm_col_queries.extdireccio
 
 
 --
--- TOC entry 8022 (class 1259 OID 380208)
+-- TOC entry 4939 (class 1259 OID 420997)
 -- Name: extdireccion_tipo_direccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17817,7 +18098,7 @@ CREATE INDEX extdireccion_tipo_direccion_idx ON test_ladm_col_queries.extdirecci
 
 
 --
--- TOC entry 8040 (class 1259 OID 380265)
+-- TOC entry 4948 (class 1259 OID 420998)
 -- Name: extinteresado_extrdsrvcsfscd_dmnstrdr_id_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17825,7 +18106,7 @@ CREATE INDEX extinteresado_extrdsrvcsfscd_dmnstrdr_id_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8041 (class 1259 OID 380266)
+-- TOC entry 4949 (class 1259 OID 420999)
 -- Name: extinteresado_lc_agrupacionntrsds_xt_pid_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17833,7 +18114,7 @@ CREATE INDEX extinteresado_lc_agrupacionntrsds_xt_pid_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8042 (class 1259 OID 380267)
+-- TOC entry 4950 (class 1259 OID 421000)
 -- Name: extinteresado_lc_interesado_ext_pid_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17841,7 +18122,7 @@ CREATE INDEX extinteresado_lc_interesado_ext_pid_idx ON test_ladm_col_queries.ex
 
 
 --
--- TOC entry 8023 (class 1259 OID 380226)
+-- TOC entry 4957 (class 1259 OID 421001)
 -- Name: fraccion_col_miembros_participacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17849,7 +18130,7 @@ CREATE INDEX fraccion_col_miembros_participacion_idx ON test_ladm_col_queries.fr
 
 
 --
--- TOC entry 8024 (class 1259 OID 380227)
+-- TOC entry 4958 (class 1259 OID 421002)
 -- Name: fraccion_lc_predio_copropidd_cfcnte_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17857,7 +18138,7 @@ CREATE INDEX fraccion_lc_predio_copropidd_cfcnte_idx ON test_ladm_col_queries.fr
 
 
 --
--- TOC entry 8168 (class 1259 OID 380499)
+-- TOC entry 4961 (class 1259 OID 421003)
 -- Name: gc_barrio_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17865,7 +18146,7 @@ CREATE INDEX gc_barrio_geometria_idx ON test_ladm_col_queries.gc_barrio USING gi
 
 
 --
--- TOC entry 8173 (class 1259 OID 380509)
+-- TOC entry 4966 (class 1259 OID 421004)
 -- Name: gc_calificacnnddcnstrccion_gc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17873,7 +18154,7 @@ CREATE INDEX gc_calificacnnddcnstrccion_gc_unidadconstruccion_idx ON test_ladm_c
 
 
 --
--- TOC entry 8174 (class 1259 OID 380519)
+-- TOC entry 4967 (class 1259 OID 421005)
 -- Name: gc_comisionesconstruccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17881,7 +18162,7 @@ CREATE INDEX gc_comisionesconstruccion_geometria_idx ON test_ladm_col_queries.gc
 
 
 --
--- TOC entry 8180 (class 1259 OID 380539)
+-- TOC entry 4973 (class 1259 OID 421006)
 -- Name: gc_comisionesnddcnstrccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17889,7 +18170,7 @@ CREATE INDEX gc_comisionesnddcnstrccion_geometria_idx ON test_ladm_col_queries.g
 
 
 --
--- TOC entry 8177 (class 1259 OID 380529)
+-- TOC entry 4970 (class 1259 OID 421007)
 -- Name: gc_comisionesterreno_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17897,7 +18178,7 @@ CREATE INDEX gc_comisionesterreno_geometria_idx ON test_ladm_col_queries.gc_comi
 
 
 --
--- TOC entry 8183 (class 1259 OID 380551)
+-- TOC entry 4978 (class 1259 OID 421008)
 -- Name: gc_construccion_gc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17905,7 +18186,7 @@ CREATE INDEX gc_construccion_gc_predio_idx ON test_ladm_col_queries.gc_construcc
 
 
 --
--- TOC entry 8184 (class 1259 OID 380550)
+-- TOC entry 4979 (class 1259 OID 421009)
 -- Name: gc_construccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17913,7 +18194,7 @@ CREATE INDEX gc_construccion_geometria_idx ON test_ladm_col_queries.gc_construcc
 
 
 --
--- TOC entry 8187 (class 1259 OID 380549)
+-- TOC entry 4982 (class 1259 OID 421010)
 -- Name: gc_construccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17921,7 +18202,7 @@ CREATE INDEX gc_construccion_tipo_construccion_idx ON test_ladm_col_queries.gc_c
 
 
 --
--- TOC entry 8232 (class 1259 OID 380684)
+-- TOC entry 4983 (class 1259 OID 421011)
 -- Name: gc_copropiedad_gc_matriz_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17929,7 +18210,7 @@ CREATE INDEX gc_copropiedad_gc_matriz_idx ON test_ladm_col_queries.gc_copropieda
 
 
 --
--- TOC entry 8233 (class 1259 OID 380685)
+-- TOC entry 4984 (class 1259 OID 421012)
 -- Name: gc_copropiedad_gc_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17937,7 +18218,7 @@ CREATE INDEX gc_copropiedad_gc_unidad_idx ON test_ladm_col_queries.gc_copropieda
 
 
 --
--- TOC entry 8234 (class 1259 OID 382427)
+-- TOC entry 4985 (class 1259 OID 421013)
 -- Name: gc_copropiedad_gc_unidad_key; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17945,7 +18226,7 @@ CREATE UNIQUE INDEX gc_copropiedad_gc_unidad_key ON test_ladm_col_queries.gc_cop
 
 
 --
--- TOC entry 8188 (class 1259 OID 380558)
+-- TOC entry 4988 (class 1259 OID 421014)
 -- Name: gc_datosphcondominio_gc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17953,7 +18234,7 @@ CREATE INDEX gc_datosphcondominio_gc_predio_idx ON test_ladm_col_queries.gc_dato
 
 
 --
--- TOC entry 8191 (class 1259 OID 380565)
+-- TOC entry 4991 (class 1259 OID 421015)
 -- Name: gc_datostorreph_gc_datosphcondominio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17961,7 +18242,7 @@ CREATE INDEX gc_datostorreph_gc_datosphcondominio_idx ON test_ladm_col_queries.g
 
 
 --
--- TOC entry 8194 (class 1259 OID 380576)
+-- TOC entry 4994 (class 1259 OID 421016)
 -- Name: gc_direccion_gc_prediocatastro_dirccnes_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17969,7 +18250,7 @@ CREATE INDEX gc_direccion_gc_prediocatastro_dirccnes_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8195 (class 1259 OID 380575)
+-- TOC entry 4995 (class 1259 OID 421017)
 -- Name: gc_direccion_geometria_referencia_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17977,7 +18258,7 @@ CREATE INDEX gc_direccion_geometria_referencia_idx ON test_ladm_col_queries.gc_d
 
 
 --
--- TOC entry 8198 (class 1259 OID 380583)
+-- TOC entry 4998 (class 1259 OID 421018)
 -- Name: gc_estadopredio_gc_prediocatastr_std_prdio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17985,7 +18266,7 @@ CREATE INDEX gc_estadopredio_gc_prediocatastr_std_prdio_idx ON test_ladm_col_que
 
 
 --
--- TOC entry 8201 (class 1259 OID 380593)
+-- TOC entry 5001 (class 1259 OID 421019)
 -- Name: gc_manzana_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -17993,7 +18274,7 @@ CREATE INDEX gc_manzana_geometria_idx ON test_ladm_col_queries.gc_manzana USING 
 
 
 --
--- TOC entry 8204 (class 1259 OID 380603)
+-- TOC entry 5004 (class 1259 OID 421020)
 -- Name: gc_perimetro_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18001,7 +18282,7 @@ CREATE INDEX gc_perimetro_geometria_idx ON test_ladm_col_queries.gc_perimetro US
 
 
 --
--- TOC entry 8228 (class 1259 OID 380676)
+-- TOC entry 5007 (class 1259 OID 421021)
 -- Name: gc_prediocatastro_condicion_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18009,7 +18290,7 @@ CREATE INDEX gc_prediocatastro_condicion_predio_idx ON test_ladm_col_queries.gc_
 
 
 --
--- TOC entry 8231 (class 1259 OID 380677)
+-- TOC entry 5010 (class 1259 OID 421022)
 -- Name: gc_prediocatastro_sistema_procedencia_datos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18017,7 +18298,7 @@ CREATE INDEX gc_prediocatastro_sistema_procedencia_datos_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8207 (class 1259 OID 380613)
+-- TOC entry 5011 (class 1259 OID 421023)
 -- Name: gc_propietario_gc_predio_catastro_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18025,7 +18306,7 @@ CREATE INDEX gc_propietario_gc_predio_catastro_idx ON test_ladm_col_queries.gc_p
 
 
 --
--- TOC entry 8210 (class 1259 OID 380623)
+-- TOC entry 5014 (class 1259 OID 421024)
 -- Name: gc_sectorrural_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18033,7 +18314,7 @@ CREATE INDEX gc_sectorrural_geometria_idx ON test_ladm_col_queries.gc_sectorrura
 
 
 --
--- TOC entry 8213 (class 1259 OID 380633)
+-- TOC entry 5017 (class 1259 OID 421025)
 -- Name: gc_sectorurbano_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18041,7 +18322,7 @@ CREATE INDEX gc_sectorurbano_geometria_idx ON test_ladm_col_queries.gc_sectorurb
 
 
 --
--- TOC entry 8216 (class 1259 OID 380644)
+-- TOC entry 5022 (class 1259 OID 421026)
 -- Name: gc_terreno_gc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18049,7 +18330,7 @@ CREATE INDEX gc_terreno_gc_predio_idx ON test_ladm_col_queries.gc_terreno USING 
 
 
 --
--- TOC entry 8217 (class 1259 OID 380643)
+-- TOC entry 5023 (class 1259 OID 421027)
 -- Name: gc_terreno_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18057,7 +18338,7 @@ CREATE INDEX gc_terreno_geometria_idx ON test_ladm_col_queries.gc_terreno USING 
 
 
 --
--- TOC entry 8220 (class 1259 OID 380656)
+-- TOC entry 5026 (class 1259 OID 421028)
 -- Name: gc_unidadconstruccion_gc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18065,7 +18346,7 @@ CREATE INDEX gc_unidadconstruccion_gc_construccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8221 (class 1259 OID 380655)
+-- TOC entry 5027 (class 1259 OID 421029)
 -- Name: gc_unidadconstruccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18073,7 +18354,7 @@ CREATE INDEX gc_unidadconstruccion_geometria_idx ON test_ladm_col_queries.gc_uni
 
 
 --
--- TOC entry 8224 (class 1259 OID 380654)
+-- TOC entry 5030 (class 1259 OID 421030)
 -- Name: gc_unidadconstruccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18081,7 +18362,7 @@ CREATE INDEX gc_unidadconstruccion_tipo_construccion_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8225 (class 1259 OID 380666)
+-- TOC entry 5033 (class 1259 OID 421031)
 -- Name: gc_vereda_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18089,7 +18370,7 @@ CREATE INDEX gc_vereda_geometria_idx ON test_ladm_col_queries.gc_vereda USING gi
 
 
 --
--- TOC entry 7987 (class 1259 OID 380153)
+-- TOC entry 5040 (class 1259 OID 421032)
 -- Name: gm_surface2dlistvalue_avalue_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18097,7 +18378,7 @@ CREATE INDEX gm_surface2dlistvalue_avalue_idx ON test_ladm_col_queries.gm_surfac
 
 
 --
--- TOC entry 7988 (class 1259 OID 380154)
+-- TOC entry 5041 (class 1259 OID 421033)
 -- Name: gm_surface2dlistvalue_gm_multisurface2d_geometry_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18105,7 +18386,7 @@ CREATE INDEX gm_surface2dlistvalue_gm_multisurface2d_geometry_idx ON test_ladm_c
 
 
 --
--- TOC entry 7993 (class 1259 OID 380170)
+-- TOC entry 5044 (class 1259 OID 421034)
 -- Name: gm_surface3dlistvalue_avalue_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18113,7 +18394,7 @@ CREATE INDEX gm_surface3dlistvalue_avalue_idx ON test_ladm_col_queries.gm_surfac
 
 
 --
--- TOC entry 7994 (class 1259 OID 380171)
+-- TOC entry 5045 (class 1259 OID 421035)
 -- Name: gm_surface3dlistvalue_gm_multisurface3d_geometry_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18121,7 +18402,7 @@ CREATE INDEX gm_surface3dlistvalue_gm_multisurface3d_geometry_idx ON test_ladm_c
 
 
 --
--- TOC entry 8035 (class 1259 OID 380255)
+-- TOC entry 5048 (class 1259 OID 421036)
 -- Name: imagen_extinteresado_firma_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18129,7 +18410,7 @@ CREATE INDEX imagen_extinteresado_firma_idx ON test_ladm_col_queries.imagen USIN
 
 
 --
--- TOC entry 8036 (class 1259 OID 380254)
+-- TOC entry 5049 (class 1259 OID 421037)
 -- Name: imagen_extinteresado_fotografia_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18137,7 +18418,7 @@ CREATE INDEX imagen_extinteresado_fotografia_idx ON test_ladm_col_queries.imagen
 
 
 --
--- TOC entry 8037 (class 1259 OID 380253)
+-- TOC entry 5050 (class 1259 OID 421038)
 -- Name: imagen_extinteresado_huell_dctlar_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18145,7 +18426,7 @@ CREATE INDEX imagen_extinteresado_huell_dctlar_idx ON test_ladm_col_queries.imag
 
 
 --
--- TOC entry 8263 (class 1259 OID 380762)
+-- TOC entry 5055 (class 1259 OID 421039)
 -- Name: ini_predioinsumos_gc_predio_catastro_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18153,7 +18434,7 @@ CREATE INDEX ini_predioinsumos_gc_predio_catastro_idx ON test_ladm_col_queries.i
 
 
 --
--- TOC entry 8266 (class 1259 OID 380763)
+-- TOC entry 5058 (class 1259 OID 421040)
 -- Name: ini_predioinsumos_snr_predio_juridico_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18161,7 +18442,7 @@ CREATE INDEX ini_predioinsumos_snr_predio_juridico_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8267 (class 1259 OID 380761)
+-- TOC entry 5059 (class 1259 OID 421041)
 -- Name: ini_predioinsumos_tipo_emparejamiento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18169,7 +18450,7 @@ CREATE INDEX ini_predioinsumos_tipo_emparejamiento_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8270 (class 1259 OID 380774)
+-- TOC entry 5064 (class 1259 OID 421042)
 -- Name: lc_agrupacioninteresados_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18177,7 +18458,7 @@ CREATE INDEX lc_agrupacioninteresados_tipo_idx ON test_ladm_col_queries.lc_agrup
 
 
 --
--- TOC entry 8372 (class 1259 OID 381016)
+-- TOC entry 5067 (class 1259 OID 421043)
 -- Name: lc_calificacionconvencinal_lc_unidad_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18185,7 +18466,7 @@ CREATE INDEX lc_calificacionconvencinal_lc_unidad_construccion_idx ON test_ladm_
 
 
 --
--- TOC entry 8373 (class 1259 OID 381015)
+-- TOC entry 5068 (class 1259 OID 421044)
 -- Name: lc_calificacionconvencinal_tipo_calificar_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18193,7 +18474,7 @@ CREATE INDEX lc_calificacionconvencinal_tipo_calificar_idx ON test_ladm_col_quer
 
 
 --
--- TOC entry 8378 (class 1259 OID 381025)
+-- TOC entry 5073 (class 1259 OID 421045)
 -- Name: lc_calificacionnoconvncnal_lc_unidad_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18201,7 +18482,7 @@ CREATE INDEX lc_calificacionnoconvncnal_lc_unidad_construccion_idx ON test_ladm_
 
 
 --
--- TOC entry 8379 (class 1259 OID 381024)
+-- TOC entry 5074 (class 1259 OID 421046)
 -- Name: lc_calificacionnoconvncnal_tipo_anexo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18209,7 +18490,7 @@ CREATE INDEX lc_calificacionnoconvncnal_tipo_anexo_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8271 (class 1259 OID 380787)
+-- TOC entry 5085 (class 1259 OID 421047)
 -- Name: lc_construccion_dimension_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18217,7 +18498,7 @@ CREATE INDEX lc_construccion_dimension_idx ON test_ladm_col_queries.lc_construcc
 
 
 --
--- TOC entry 8272 (class 1259 OID 380789)
+-- TOC entry 5086 (class 1259 OID 421048)
 -- Name: lc_construccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18225,7 +18506,7 @@ CREATE INDEX lc_construccion_geometria_idx ON test_ladm_col_queries.lc_construcc
 
 
 --
--- TOC entry 8275 (class 1259 OID 380788)
+-- TOC entry 5089 (class 1259 OID 421049)
 -- Name: lc_construccion_relacion_superficie_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18233,7 +18514,7 @@ CREATE INDEX lc_construccion_relacion_superficie_idx ON test_ladm_col_queries.lc
 
 
 --
--- TOC entry 8276 (class 1259 OID 380785)
+-- TOC entry 5090 (class 1259 OID 421050)
 -- Name: lc_construccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18241,7 +18522,7 @@ CREATE INDEX lc_construccion_tipo_construccion_idx ON test_ladm_col_queries.lc_c
 
 
 --
--- TOC entry 8277 (class 1259 OID 380786)
+-- TOC entry 5091 (class 1259 OID 421051)
 -- Name: lc_construccion_tipo_dominio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18249,7 +18530,7 @@ CREATE INDEX lc_construccion_tipo_dominio_idx ON test_ladm_col_queries.lc_constr
 
 
 --
--- TOC entry 8278 (class 1259 OID 380802)
+-- TOC entry 5096 (class 1259 OID 421052)
 -- Name: lc_contactovisita_lc_datos_adicionales_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18257,7 +18538,7 @@ CREATE INDEX lc_contactovisita_lc_datos_adicionales_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8281 (class 1259 OID 380801)
+-- TOC entry 5099 (class 1259 OID 421053)
 -- Name: lc_contactovisita_relacion_con_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18265,7 +18546,7 @@ CREATE INDEX lc_contactovisita_relacion_con_predio_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8282 (class 1259 OID 380800)
+-- TOC entry 5100 (class 1259 OID 421054)
 -- Name: lc_contactovisita_tipo_documento_quien_tndio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18273,7 +18554,7 @@ CREATE INDEX lc_contactovisita_tipo_documento_quien_tndio_idx ON test_ladm_col_q
 
 
 --
--- TOC entry 8283 (class 1259 OID 380810)
+-- TOC entry 5110 (class 1259 OID 421055)
 -- Name: lc_datosphcondominio_lc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18281,7 +18562,7 @@ CREATE INDEX lc_datosphcondominio_lc_predio_idx ON test_ladm_col_queries.lc_dato
 
 
 --
--- TOC entry 8382 (class 1259 OID 381039)
+-- TOC entry 5103 (class 1259 OID 421056)
 -- Name: lc_datsdcnlslvntmntctstral_categoria_suelo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18289,7 +18570,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_categoria_suelo_idx ON test_ladm_col_que
 
 
 --
--- TOC entry 8383 (class 1259 OID 381038)
+-- TOC entry 5104 (class 1259 OID 421057)
 -- Name: lc_datsdcnlslvntmntctstral_clase_suelo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18297,7 +18578,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_clase_suelo_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8384 (class 1259 OID 381037)
+-- TOC entry 5105 (class 1259 OID 421058)
 -- Name: lc_datsdcnlslvntmntctstral_destinacion_economica_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18305,7 +18586,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_destinacion_economica_idx ON test_ladm_c
 
 
 --
--- TOC entry 8385 (class 1259 OID 381042)
+-- TOC entry 5106 (class 1259 OID 421059)
 -- Name: lc_datsdcnlslvntmntctstral_lc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18313,7 +18594,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_lc_predio_idx ON test_ladm_col_queries.l
 
 
 --
--- TOC entry 8386 (class 1259 OID 381036)
+-- TOC entry 5107 (class 1259 OID 421060)
 -- Name: lc_datsdcnlslvntmntctstral_procedimint_ctstrl_rgstral_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18321,7 +18602,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_procedimint_ctstrl_rgstral_idx ON test_l
 
 
 --
--- TOC entry 8387 (class 1259 OID 381041)
+-- TOC entry 5108 (class 1259 OID 421061)
 -- Name: lc_datsdcnlslvntmntctstral_resultado_visita_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18329,7 +18610,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_resultado_visita_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8388 (class 1259 OID 381040)
+-- TOC entry 5109 (class 1259 OID 421062)
 -- Name: lc_datsdcnlslvntmntctstral_tipo_documento_reconocedor_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18337,7 +18618,7 @@ CREATE INDEX lc_datsdcnlslvntmntctstral_tipo_documento_reconocedor_idx ON test_l
 
 
 --
--- TOC entry 8286 (class 1259 OID 380823)
+-- TOC entry 5113 (class 1259 OID 421063)
 -- Name: lc_derecho_interesado_lc_grpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18345,7 +18626,7 @@ CREATE INDEX lc_derecho_interesado_lc_grpcnntrsdos_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8287 (class 1259 OID 380822)
+-- TOC entry 5114 (class 1259 OID 421064)
 -- Name: lc_derecho_interesado_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18353,7 +18634,7 @@ CREATE INDEX lc_derecho_interesado_lc_interesado_idx ON test_ladm_col_queries.lc
 
 
 --
--- TOC entry 8290 (class 1259 OID 380821)
+-- TOC entry 5117 (class 1259 OID 421065)
 -- Name: lc_derecho_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18361,7 +18642,7 @@ CREATE INDEX lc_derecho_tipo_idx ON test_ladm_col_queries.lc_derecho USING btree
 
 
 --
--- TOC entry 8291 (class 1259 OID 380824)
+-- TOC entry 5118 (class 1259 OID 421066)
 -- Name: lc_derecho_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18369,7 +18650,7 @@ CREATE INDEX lc_derecho_unidad_idx ON test_ladm_col_queries.lc_derecho USING btr
 
 
 --
--- TOC entry 8292 (class 1259 OID 380831)
+-- TOC entry 5127 (class 1259 OID 421067)
 -- Name: lc_estructuranovedadfmi_lc_dtsdcnlstmstrl_nvdd_fmi_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18377,7 +18658,7 @@ CREATE INDEX lc_estructuranovedadfmi_lc_dtsdcnlstmstrl_nvdd_fmi_idx ON test_ladm
 
 
 --
--- TOC entry 8297 (class 1259 OID 380839)
+-- TOC entry 5132 (class 1259 OID 421068)
 -- Name: lc_estructuranvddnmrprdial_lc_dtsdcnlstmd_nmrs_prdles_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18385,7 +18666,7 @@ CREATE INDEX lc_estructuranvddnmrprdial_lc_dtsdcnlstmd_nmrs_prdles_idx ON test_l
 
 
 --
--- TOC entry 8298 (class 1259 OID 380838)
+-- TOC entry 5133 (class 1259 OID 421069)
 -- Name: lc_estructuranvddnmrprdial_tipo_novedad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18393,7 +18674,7 @@ CREATE INDEX lc_estructuranvddnmrprdial_tipo_novedad_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8299 (class 1259 OID 380851)
+-- TOC entry 5138 (class 1259 OID 421070)
 -- Name: lc_fuenteadministrativa_estado_disponibilidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18401,7 +18682,7 @@ CREATE INDEX lc_fuenteadministrativa_estado_disponibilidad_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8302 (class 1259 OID 380850)
+-- TOC entry 5141 (class 1259 OID 421071)
 -- Name: lc_fuenteadministrativa_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18409,7 +18690,7 @@ CREATE INDEX lc_fuenteadministrativa_tipo_idx ON test_ladm_col_queries.lc_fuente
 
 
 --
--- TOC entry 8303 (class 1259 OID 380852)
+-- TOC entry 5142 (class 1259 OID 421072)
 -- Name: lc_fuenteadministrativa_tipo_principal_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18417,7 +18698,7 @@ CREATE INDEX lc_fuenteadministrativa_tipo_principal_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8304 (class 1259 OID 380864)
+-- TOC entry 5145 (class 1259 OID 421073)
 -- Name: lc_fuenteespacial_estado_disponibilidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18425,7 +18706,7 @@ CREATE INDEX lc_fuenteespacial_estado_disponibilidad_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8307 (class 1259 OID 380863)
+-- TOC entry 5148 (class 1259 OID 421074)
 -- Name: lc_fuenteespacial_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18433,7 +18714,7 @@ CREATE INDEX lc_fuenteespacial_tipo_idx ON test_ladm_col_queries.lc_fuenteespaci
 
 
 --
--- TOC entry 8308 (class 1259 OID 380865)
+-- TOC entry 5149 (class 1259 OID 421075)
 -- Name: lc_fuenteespacial_tipo_principal_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18441,7 +18722,7 @@ CREATE INDEX lc_fuenteespacial_tipo_principal_idx ON test_ladm_col_queries.lc_fu
 
 
 --
--- TOC entry 8309 (class 1259 OID 380873)
+-- TOC entry 5150 (class 1259 OID 421076)
 -- Name: lc_grupocalificacion_clase_calificacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18449,7 +18730,7 @@ CREATE INDEX lc_grupocalificacion_clase_calificacion_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8310 (class 1259 OID 380874)
+-- TOC entry 5151 (class 1259 OID 421077)
 -- Name: lc_grupocalificacion_conservacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18457,7 +18738,7 @@ CREATE INDEX lc_grupocalificacion_conservacion_idx ON test_ladm_col_queries.lc_g
 
 
 --
--- TOC entry 8311 (class 1259 OID 380875)
+-- TOC entry 5152 (class 1259 OID 421078)
 -- Name: lc_grupocalificacion_lc_calificacion_convencnal_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18465,7 +18746,7 @@ CREATE INDEX lc_grupocalificacion_lc_calificacion_convencnal_idx ON test_ladm_co
 
 
 --
--- TOC entry 8314 (class 1259 OID 380889)
+-- TOC entry 5157 (class 1259 OID 421079)
 -- Name: lc_interesado_grupo_etnico_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18473,7 +18754,7 @@ CREATE INDEX lc_interesado_grupo_etnico_idx ON test_ladm_col_queries.lc_interesa
 
 
 --
--- TOC entry 8317 (class 1259 OID 380888)
+-- TOC entry 5160 (class 1259 OID 421080)
 -- Name: lc_interesado_sexo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18481,7 +18762,7 @@ CREATE INDEX lc_interesado_sexo_idx ON test_ladm_col_queries.lc_interesado USING
 
 
 --
--- TOC entry 8318 (class 1259 OID 380887)
+-- TOC entry 5161 (class 1259 OID 421081)
 -- Name: lc_interesado_tipo_documento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18489,7 +18770,7 @@ CREATE INDEX lc_interesado_tipo_documento_idx ON test_ladm_col_queries.lc_intere
 
 
 --
--- TOC entry 8319 (class 1259 OID 380886)
+-- TOC entry 5162 (class 1259 OID 421082)
 -- Name: lc_interesado_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18497,7 +18778,7 @@ CREATE INDEX lc_interesado_tipo_idx ON test_ladm_col_queries.lc_interesado USING
 
 
 --
--- TOC entry 8320 (class 1259 OID 380900)
+-- TOC entry 5163 (class 1259 OID 421083)
 -- Name: lc_interesadocontacto_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18505,7 +18786,7 @@ CREATE INDEX lc_interesadocontacto_lc_interesado_idx ON test_ladm_col_queries.lc
 
 
 --
--- TOC entry 8323 (class 1259 OID 380911)
+-- TOC entry 5170 (class 1259 OID 421084)
 -- Name: lc_lindero_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18513,7 +18794,7 @@ CREATE INDEX lc_lindero_geometria_idx ON test_ladm_col_queries.lc_lindero USING 
 
 
 --
--- TOC entry 8326 (class 1259 OID 380920)
+-- TOC entry 5173 (class 1259 OID 421085)
 -- Name: lc_objetoconstruccion_lc_grupo_calificacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18521,7 +18802,7 @@ CREATE INDEX lc_objetoconstruccion_lc_grupo_calificacion_idx ON test_ladm_col_qu
 
 
 --
--- TOC entry 8329 (class 1259 OID 380919)
+-- TOC entry 5176 (class 1259 OID 421086)
 -- Name: lc_objetoconstruccion_tipo_objeto_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18529,7 +18810,7 @@ CREATE INDEX lc_objetoconstruccion_tipo_objeto_construccion_idx ON test_ladm_col
 
 
 --
--- TOC entry 8332 (class 1259 OID 380929)
+-- TOC entry 5181 (class 1259 OID 421087)
 -- Name: lc_ofertasmercadoinmoblrio_lc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18537,7 +18818,7 @@ CREATE INDEX lc_ofertasmercadoinmoblrio_lc_predio_idx ON test_ladm_col_queries.l
 
 
 --
--- TOC entry 8333 (class 1259 OID 380928)
+-- TOC entry 5182 (class 1259 OID 421088)
 -- Name: lc_ofertasmercadoinmoblrio_tipo_oferta_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18545,7 +18826,7 @@ CREATE INDEX lc_ofertasmercadoinmoblrio_tipo_oferta_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8334 (class 1259 OID 380941)
+-- TOC entry 5185 (class 1259 OID 421089)
 -- Name: lc_predio_condicion_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18553,7 +18834,7 @@ CREATE INDEX lc_predio_condicion_predio_idx ON test_ladm_col_queries.lc_predio U
 
 
 --
--- TOC entry 8405 (class 1259 OID 381079)
+-- TOC entry 5189 (class 1259 OID 421090)
 -- Name: lc_predio_copropiedad_copropiedad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18561,7 +18842,7 @@ CREATE INDEX lc_predio_copropiedad_copropiedad_idx ON test_ladm_col_queries.lc_p
 
 
 --
--- TOC entry 8408 (class 1259 OID 381078)
+-- TOC entry 5192 (class 1259 OID 421091)
 -- Name: lc_predio_copropiedad_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18569,7 +18850,7 @@ CREATE INDEX lc_predio_copropiedad_predio_idx ON test_ladm_col_queries.lc_predio
 
 
 --
--- TOC entry 8409 (class 1259 OID 382953)
+-- TOC entry 5193 (class 1259 OID 421092)
 -- Name: lc_predio_copropiedad_predio_key; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18577,7 +18858,7 @@ CREATE UNIQUE INDEX lc_predio_copropiedad_predio_key ON test_ladm_col_queries.lc
 
 
 --
--- TOC entry 8410 (class 1259 OID 381086)
+-- TOC entry 5194 (class 1259 OID 421093)
 -- Name: lc_predio_ini_predioinsmos_ini_predio_insumos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18585,7 +18866,7 @@ CREATE INDEX lc_predio_ini_predioinsmos_ini_predio_insumos_idx ON test_ladm_col_
 
 
 --
--- TOC entry 8411 (class 1259 OID 381087)
+-- TOC entry 5195 (class 1259 OID 421094)
 -- Name: lc_predio_ini_predioinsmos_lc_predio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18593,7 +18874,7 @@ CREATE INDEX lc_predio_ini_predioinsmos_lc_predio_idx ON test_ladm_col_queries.l
 
 
 --
--- TOC entry 8337 (class 1259 OID 380940)
+-- TOC entry 5188 (class 1259 OID 421095)
 -- Name: lc_predio_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18601,7 +18882,7 @@ CREATE INDEX lc_predio_tipo_idx ON test_ladm_col_queries.lc_predio USING btree (
 
 
 --
--- TOC entry 8338 (class 1259 OID 380956)
+-- TOC entry 5202 (class 1259 OID 421096)
 -- Name: lc_puntocontrol_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18609,7 +18890,7 @@ CREATE INDEX lc_puntocontrol_geometria_idx ON test_ladm_col_queries.lc_puntocont
 
 
 --
--- TOC entry 8339 (class 1259 OID 380955)
+-- TOC entry 5203 (class 1259 OID 421097)
 -- Name: lc_puntocontrol_metodoproduccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18617,7 +18898,7 @@ CREATE INDEX lc_puntocontrol_metodoproduccion_idx ON test_ladm_col_queries.lc_pu
 
 
 --
--- TOC entry 8342 (class 1259 OID 380954)
+-- TOC entry 5206 (class 1259 OID 421098)
 -- Name: lc_puntocontrol_posicion_interpolacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18625,7 +18906,7 @@ CREATE INDEX lc_puntocontrol_posicion_interpolacion_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8343 (class 1259 OID 380952)
+-- TOC entry 5207 (class 1259 OID 421099)
 -- Name: lc_puntocontrol_puntotipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18633,7 +18914,7 @@ CREATE INDEX lc_puntocontrol_puntotipo_idx ON test_ladm_col_queries.lc_puntocont
 
 
 --
--- TOC entry 8344 (class 1259 OID 380953)
+-- TOC entry 5208 (class 1259 OID 421100)
 -- Name: lc_puntocontrol_tipo_punto_control_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18641,7 +18922,7 @@ CREATE INDEX lc_puntocontrol_tipo_punto_control_idx ON test_ladm_col_queries.lc_
 
 
 --
--- TOC entry 8345 (class 1259 OID 380958)
+-- TOC entry 5209 (class 1259 OID 421101)
 -- Name: lc_puntocontrol_ue_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18649,7 +18930,7 @@ CREATE INDEX lc_puntocontrol_ue_lc_construccion_idx ON test_ladm_col_queries.lc_
 
 
 --
--- TOC entry 8346 (class 1259 OID 380960)
+-- TOC entry 5210 (class 1259 OID 421102)
 -- Name: lc_puntocontrol_ue_lc_servidumbretransito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18657,7 +18938,7 @@ CREATE INDEX lc_puntocontrol_ue_lc_servidumbretransito_idx ON test_ladm_col_quer
 
 
 --
--- TOC entry 8347 (class 1259 OID 380957)
+-- TOC entry 5211 (class 1259 OID 421103)
 -- Name: lc_puntocontrol_ue_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18665,7 +18946,7 @@ CREATE INDEX lc_puntocontrol_ue_lc_terreno_idx ON test_ladm_col_queries.lc_punto
 
 
 --
--- TOC entry 8348 (class 1259 OID 380959)
+-- TOC entry 5212 (class 1259 OID 421104)
 -- Name: lc_puntocontrol_ue_lc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18673,7 +18954,7 @@ CREATE INDEX lc_puntocontrol_ue_lc_unidadconstruccion_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8389 (class 1259 OID 381055)
+-- TOC entry 5215 (class 1259 OID 421105)
 -- Name: lc_puntolevantamiento_fotoidentificacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18681,7 +18962,7 @@ CREATE INDEX lc_puntolevantamiento_fotoidentificacion_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8390 (class 1259 OID 381058)
+-- TOC entry 5216 (class 1259 OID 421106)
 -- Name: lc_puntolevantamiento_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18689,7 +18970,7 @@ CREATE INDEX lc_puntolevantamiento_geometria_idx ON test_ladm_col_queries.lc_pun
 
 
 --
--- TOC entry 8391 (class 1259 OID 381057)
+-- TOC entry 5217 (class 1259 OID 421107)
 -- Name: lc_puntolevantamiento_metodoproduccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18697,7 +18978,7 @@ CREATE INDEX lc_puntolevantamiento_metodoproduccion_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8394 (class 1259 OID 381056)
+-- TOC entry 5220 (class 1259 OID 421108)
 -- Name: lc_puntolevantamiento_posicion_interpolacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18705,7 +18986,7 @@ CREATE INDEX lc_puntolevantamiento_posicion_interpolacion_idx ON test_ladm_col_q
 
 
 --
--- TOC entry 8395 (class 1259 OID 381053)
+-- TOC entry 5221 (class 1259 OID 421109)
 -- Name: lc_puntolevantamiento_puntotipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18713,7 +18994,7 @@ CREATE INDEX lc_puntolevantamiento_puntotipo_idx ON test_ladm_col_queries.lc_pun
 
 
 --
--- TOC entry 8396 (class 1259 OID 381054)
+-- TOC entry 5222 (class 1259 OID 421110)
 -- Name: lc_puntolevantamiento_tipo_punto_levantamiento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18721,7 +19002,7 @@ CREATE INDEX lc_puntolevantamiento_tipo_punto_levantamiento_idx ON test_ladm_col
 
 
 --
--- TOC entry 8397 (class 1259 OID 381060)
+-- TOC entry 5223 (class 1259 OID 421111)
 -- Name: lc_puntolevantamiento_ue_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18729,7 +19010,7 @@ CREATE INDEX lc_puntolevantamiento_ue_lc_construccion_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8398 (class 1259 OID 381062)
+-- TOC entry 5224 (class 1259 OID 421112)
 -- Name: lc_puntolevantamiento_ue_lc_servidumbretransito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18737,7 +19018,7 @@ CREATE INDEX lc_puntolevantamiento_ue_lc_servidumbretransito_idx ON test_ladm_co
 
 
 --
--- TOC entry 8399 (class 1259 OID 381059)
+-- TOC entry 5225 (class 1259 OID 421113)
 -- Name: lc_puntolevantamiento_ue_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18745,7 +19026,7 @@ CREATE INDEX lc_puntolevantamiento_ue_lc_terreno_idx ON test_ladm_col_queries.lc
 
 
 --
--- TOC entry 8400 (class 1259 OID 381061)
+-- TOC entry 5226 (class 1259 OID 421114)
 -- Name: lc_puntolevantamiento_ue_lc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18753,7 +19034,7 @@ CREATE INDEX lc_puntolevantamiento_ue_lc_unidadconstruccion_idx ON test_ladm_col
 
 
 --
--- TOC entry 8349 (class 1259 OID 380972)
+-- TOC entry 5229 (class 1259 OID 421115)
 -- Name: lc_puntolindero_acuerdo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18761,7 +19042,7 @@ CREATE INDEX lc_puntolindero_acuerdo_idx ON test_ladm_col_queries.lc_puntolinder
 
 
 --
--- TOC entry 8350 (class 1259 OID 380973)
+-- TOC entry 5230 (class 1259 OID 421116)
 -- Name: lc_puntolindero_fotoidentificacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18769,7 +19050,7 @@ CREATE INDEX lc_puntolindero_fotoidentificacion_idx ON test_ladm_col_queries.lc_
 
 
 --
--- TOC entry 8351 (class 1259 OID 380976)
+-- TOC entry 5231 (class 1259 OID 421117)
 -- Name: lc_puntolindero_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18777,7 +19058,7 @@ CREATE INDEX lc_puntolindero_geometria_idx ON test_ladm_col_queries.lc_puntolind
 
 
 --
--- TOC entry 8352 (class 1259 OID 380975)
+-- TOC entry 5232 (class 1259 OID 421118)
 -- Name: lc_puntolindero_metodoproduccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18785,7 +19066,7 @@ CREATE INDEX lc_puntolindero_metodoproduccion_idx ON test_ladm_col_queries.lc_pu
 
 
 --
--- TOC entry 8355 (class 1259 OID 380974)
+-- TOC entry 5235 (class 1259 OID 421119)
 -- Name: lc_puntolindero_posicion_interpolacion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18793,7 +19074,7 @@ CREATE INDEX lc_puntolindero_posicion_interpolacion_idx ON test_ladm_col_queries
 
 
 --
--- TOC entry 8356 (class 1259 OID 380971)
+-- TOC entry 5236 (class 1259 OID 421120)
 -- Name: lc_puntolindero_puntotipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18801,7 +19082,7 @@ CREATE INDEX lc_puntolindero_puntotipo_idx ON test_ladm_col_queries.lc_puntolind
 
 
 --
--- TOC entry 8357 (class 1259 OID 380978)
+-- TOC entry 5237 (class 1259 OID 421121)
 -- Name: lc_puntolindero_ue_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18809,7 +19090,7 @@ CREATE INDEX lc_puntolindero_ue_lc_construccion_idx ON test_ladm_col_queries.lc_
 
 
 --
--- TOC entry 8358 (class 1259 OID 380980)
+-- TOC entry 5238 (class 1259 OID 421122)
 -- Name: lc_puntolindero_ue_lc_servidumbretransito_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18817,7 +19098,7 @@ CREATE INDEX lc_puntolindero_ue_lc_servidumbretransito_idx ON test_ladm_col_quer
 
 
 --
--- TOC entry 8359 (class 1259 OID 380977)
+-- TOC entry 5239 (class 1259 OID 421123)
 -- Name: lc_puntolindero_ue_lc_terreno_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18825,7 +19106,7 @@ CREATE INDEX lc_puntolindero_ue_lc_terreno_idx ON test_ladm_col_queries.lc_punto
 
 
 --
--- TOC entry 8360 (class 1259 OID 380979)
+-- TOC entry 5240 (class 1259 OID 421124)
 -- Name: lc_puntolindero_ue_lc_unidadconstruccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18833,7 +19114,7 @@ CREATE INDEX lc_puntolindero_ue_lc_unidadconstruccion_idx ON test_ladm_col_queri
 
 
 --
--- TOC entry 8361 (class 1259 OID 380993)
+-- TOC entry 5245 (class 1259 OID 421125)
 -- Name: lc_restriccion_interesado_lc_grpcnntrsdos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18841,7 +19122,7 @@ CREATE INDEX lc_restriccion_interesado_lc_grpcnntrsdos_idx ON test_ladm_col_quer
 
 
 --
--- TOC entry 8362 (class 1259 OID 380992)
+-- TOC entry 5246 (class 1259 OID 421126)
 -- Name: lc_restriccion_interesado_lc_interesado_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18849,7 +19130,7 @@ CREATE INDEX lc_restriccion_interesado_lc_interesado_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8365 (class 1259 OID 380991)
+-- TOC entry 5249 (class 1259 OID 421127)
 -- Name: lc_restriccion_tipo_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18857,7 +19138,7 @@ CREATE INDEX lc_restriccion_tipo_idx ON test_ladm_col_queries.lc_restriccion USI
 
 
 --
--- TOC entry 8366 (class 1259 OID 380994)
+-- TOC entry 5250 (class 1259 OID 421128)
 -- Name: lc_restriccion_unidad_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18865,7 +19146,7 @@ CREATE INDEX lc_restriccion_unidad_idx ON test_ladm_col_queries.lc_restriccion U
 
 
 --
--- TOC entry 8414 (class 1259 OID 381098)
+-- TOC entry 5255 (class 1259 OID 421129)
 -- Name: lc_servidumbretransito_dimension_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18873,7 +19154,7 @@ CREATE INDEX lc_servidumbretransito_dimension_idx ON test_ladm_col_queries.lc_se
 
 
 --
--- TOC entry 8415 (class 1259 OID 381100)
+-- TOC entry 5256 (class 1259 OID 421130)
 -- Name: lc_servidumbretransito_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18881,7 +19162,7 @@ CREATE INDEX lc_servidumbretransito_geometria_idx ON test_ladm_col_queries.lc_se
 
 
 --
--- TOC entry 8418 (class 1259 OID 381099)
+-- TOC entry 5259 (class 1259 OID 421131)
 -- Name: lc_servidumbretransito_relacion_superficie_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18889,7 +19170,7 @@ CREATE INDEX lc_servidumbretransito_relacion_superficie_idx ON test_ladm_col_que
 
 
 --
--- TOC entry 8367 (class 1259 OID 381006)
+-- TOC entry 5262 (class 1259 OID 421132)
 -- Name: lc_terreno_dimension_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18897,7 +19178,7 @@ CREATE INDEX lc_terreno_dimension_idx ON test_ladm_col_queries.lc_terreno USING 
 
 
 --
--- TOC entry 8368 (class 1259 OID 381005)
+-- TOC entry 5263 (class 1259 OID 421133)
 -- Name: lc_terreno_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18905,7 +19186,7 @@ CREATE INDEX lc_terreno_geometria_idx ON test_ladm_col_queries.lc_terreno USING 
 
 
 --
--- TOC entry 8371 (class 1259 OID 381007)
+-- TOC entry 5266 (class 1259 OID 421134)
 -- Name: lc_terreno_relacion_superficie_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18913,7 +19194,7 @@ CREATE INDEX lc_terreno_relacion_superficie_idx ON test_ladm_col_queries.lc_terr
 
 
 --
--- TOC entry 8401 (class 1259 OID 381071)
+-- TOC entry 5267 (class 1259 OID 421135)
 -- Name: lc_tipologiaconstruccion_lc_unidad_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18921,7 +19202,7 @@ CREATE INDEX lc_tipologiaconstruccion_lc_unidad_construccion_idx ON test_ladm_co
 
 
 --
--- TOC entry 8404 (class 1259 OID 381070)
+-- TOC entry 5270 (class 1259 OID 421136)
 -- Name: lc_tipologiaconstruccion_tipo_tipologia_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18929,7 +19210,7 @@ CREATE INDEX lc_tipologiaconstruccion_tipo_tipologia_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8419 (class 1259 OID 381117)
+-- TOC entry 5273 (class 1259 OID 421137)
 -- Name: lc_unidadconstruccion_dimension_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18937,7 +19218,7 @@ CREATE INDEX lc_unidadconstruccion_dimension_idx ON test_ladm_col_queries.lc_uni
 
 
 --
--- TOC entry 8420 (class 1259 OID 381119)
+-- TOC entry 5274 (class 1259 OID 421138)
 -- Name: lc_unidadconstruccion_geometria_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18945,7 +19226,7 @@ CREATE INDEX lc_unidadconstruccion_geometria_idx ON test_ladm_col_queries.lc_uni
 
 
 --
--- TOC entry 8421 (class 1259 OID 381116)
+-- TOC entry 5275 (class 1259 OID 421139)
 -- Name: lc_unidadconstruccion_lc_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18953,7 +19234,7 @@ CREATE INDEX lc_unidadconstruccion_lc_construccion_idx ON test_ladm_col_queries.
 
 
 --
--- TOC entry 8424 (class 1259 OID 381118)
+-- TOC entry 5278 (class 1259 OID 421140)
 -- Name: lc_unidadconstruccion_relacion_superficie_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18961,7 +19242,7 @@ CREATE INDEX lc_unidadconstruccion_relacion_superficie_idx ON test_ladm_col_quer
 
 
 --
--- TOC entry 8425 (class 1259 OID 381112)
+-- TOC entry 5279 (class 1259 OID 421141)
 -- Name: lc_unidadconstruccion_tipo_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18969,7 +19250,7 @@ CREATE INDEX lc_unidadconstruccion_tipo_construccion_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8426 (class 1259 OID 381111)
+-- TOC entry 5280 (class 1259 OID 421142)
 -- Name: lc_unidadconstruccion_tipo_dominio_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18977,7 +19258,7 @@ CREATE INDEX lc_unidadconstruccion_tipo_dominio_idx ON test_ladm_col_queries.lc_
 
 
 --
--- TOC entry 8427 (class 1259 OID 381114)
+-- TOC entry 5281 (class 1259 OID 421143)
 -- Name: lc_unidadconstruccion_tipo_planta_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18985,7 +19266,7 @@ CREATE INDEX lc_unidadconstruccion_tipo_planta_idx ON test_ladm_col_queries.lc_u
 
 
 --
--- TOC entry 8428 (class 1259 OID 381113)
+-- TOC entry 5282 (class 1259 OID 421144)
 -- Name: lc_unidadconstruccion_tipo_unidad_construccion_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -18993,7 +19274,7 @@ CREATE INDEX lc_unidadconstruccion_tipo_unidad_construccion_idx ON test_ladm_col
 
 
 --
--- TOC entry 8429 (class 1259 OID 381115)
+-- TOC entry 5283 (class 1259 OID 421145)
 -- Name: lc_unidadconstruccion_uso_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19001,7 +19282,7 @@ CREATE INDEX lc_unidadconstruccion_uso_idx ON test_ladm_col_queries.lc_unidadcon
 
 
 --
--- TOC entry 8237 (class 1259 OID 380692)
+-- TOC entry 5294 (class 1259 OID 421146)
 -- Name: snr_derecho_calidad_derecho_registro_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19009,7 +19290,7 @@ CREATE INDEX snr_derecho_calidad_derecho_registro_idx ON test_ladm_col_queries.s
 
 
 --
--- TOC entry 8240 (class 1259 OID 380693)
+-- TOC entry 5297 (class 1259 OID 421147)
 -- Name: snr_derecho_snr_fuente_derecho_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19017,7 +19298,7 @@ CREATE INDEX snr_derecho_snr_fuente_derecho_idx ON test_ladm_col_queries.snr_der
 
 
 --
--- TOC entry 8241 (class 1259 OID 380694)
+-- TOC entry 5298 (class 1259 OID 421148)
 -- Name: snr_derecho_snr_predio_registro_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19025,7 +19306,7 @@ CREATE INDEX snr_derecho_snr_predio_registro_idx ON test_ladm_col_queries.snr_de
 
 
 --
--- TOC entry 8242 (class 1259 OID 380701)
+-- TOC entry 5301 (class 1259 OID 421149)
 -- Name: snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19033,7 +19314,7 @@ CREATE INDEX snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_idx ON test_l
 
 
 --
--- TOC entry 8247 (class 1259 OID 380711)
+-- TOC entry 5306 (class 1259 OID 421150)
 -- Name: snr_fuentecabidalinderos_tipo_documento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19041,7 +19322,7 @@ CREATE INDEX snr_fuentecabidalinderos_tipo_documento_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8250 (class 1259 OID 380721)
+-- TOC entry 5309 (class 1259 OID 421151)
 -- Name: snr_fuentederecho_tipo_documento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19049,7 +19330,7 @@ CREATE INDEX snr_fuentederecho_tipo_documento_idx ON test_ladm_col_queries.snr_f
 
 
 --
--- TOC entry 8255 (class 1259 OID 380742)
+-- TOC entry 5314 (class 1259 OID 421152)
 -- Name: snr_predioregistro_clase_suelo_registro_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19057,7 +19338,7 @@ CREATE INDEX snr_predioregistro_clase_suelo_registro_idx ON test_ladm_col_querie
 
 
 --
--- TOC entry 8258 (class 1259 OID 380743)
+-- TOC entry 5317 (class 1259 OID 421153)
 -- Name: snr_predioregistro_snr_fuente_cabidalinderos_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19065,7 +19346,7 @@ CREATE INDEX snr_predioregistro_snr_fuente_cabidalinderos_idx ON test_ladm_col_q
 
 
 --
--- TOC entry 8261 (class 1259 OID 380751)
+-- TOC entry 5324 (class 1259 OID 421154)
 -- Name: snr_titular_derecho_snr_derecho_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19073,7 +19354,7 @@ CREATE INDEX snr_titular_derecho_snr_derecho_idx ON test_ladm_col_queries.snr_ti
 
 
 --
--- TOC entry 8262 (class 1259 OID 380750)
+-- TOC entry 5325 (class 1259 OID 421155)
 -- Name: snr_titular_derecho_snr_titular_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19081,7 +19362,7 @@ CREATE INDEX snr_titular_derecho_snr_titular_idx ON test_ladm_col_queries.snr_ti
 
 
 --
--- TOC entry 8253 (class 1259 OID 380732)
+-- TOC entry 5320 (class 1259 OID 421156)
 -- Name: snr_titular_tipo_documento_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19089,7 +19370,7 @@ CREATE INDEX snr_titular_tipo_documento_idx ON test_ladm_col_queries.snr_titular
 
 
 --
--- TOC entry 8254 (class 1259 OID 380731)
+-- TOC entry 5321 (class 1259 OID 421157)
 -- Name: snr_titular_tipo_persona_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19097,7 +19378,7 @@ CREATE INDEX snr_titular_tipo_persona_idx ON test_ladm_col_queries.snr_titular U
 
 
 --
--- TOC entry 8579 (class 1259 OID 383042)
+-- TOC entry 5326 (class 1259 OID 421158)
 -- Name: t_ili2db_attrname_colowner_sqlname_key; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19105,7 +19386,7 @@ CREATE UNIQUE INDEX t_ili2db_attrname_colowner_sqlname_key ON test_ladm_col_quer
 
 
 --
--- TOC entry 8430 (class 1259 OID 381128)
+-- TOC entry 5329 (class 1259 OID 421159)
 -- Name: t_ili2db_basket_dataset_idx; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19113,7 +19394,7 @@ CREATE INDEX t_ili2db_basket_dataset_idx ON test_ladm_col_queries.t_ili2db_baske
 
 
 --
--- TOC entry 8433 (class 1259 OID 383040)
+-- TOC entry 5334 (class 1259 OID 421160)
 -- Name: t_ili2db_dataset_datasetname_key; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19121,7 +19402,7 @@ CREATE UNIQUE INDEX t_ili2db_dataset_datasetname_key ON test_ladm_col_queries.t_
 
 
 --
--- TOC entry 8440 (class 1259 OID 383041)
+-- TOC entry 5339 (class 1259 OID 421161)
 -- Name: t_ili2db_model_modelname_iliversion_key; Type: INDEX; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19129,7 +19410,7 @@ CREATE UNIQUE INDEX t_ili2db_model_modelname_iliversion_key ON test_ladm_col_que
 
 
 --
--- TOC entry 8584 (class 2606 OID 381813)
+-- TOC entry 5344 (class 2606 OID 421162)
 -- Name: cc_metodooperacion cc_metodooperacion_col_transfrmcn_trnsfrmcion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19138,7 +19419,7 @@ ALTER TABLE ONLY test_ladm_col_queries.cc_metodooperacion
 
 
 --
--- TOC entry 8585 (class 2606 OID 381824)
+-- TOC entry 5345 (class 2606 OID 421167)
 -- Name: col_areavalor col_areavalor_lc_construccion_area_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19147,7 +19428,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8586 (class 2606 OID 381834)
+-- TOC entry 5346 (class 2606 OID 421172)
 -- Name: col_areavalor col_areavalor_lc_servidumbretransito_rea_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19156,7 +19437,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8587 (class 2606 OID 381829)
+-- TOC entry 5347 (class 2606 OID 421177)
 -- Name: col_areavalor col_areavalor_lc_terreno_area_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19165,7 +19446,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8588 (class 2606 OID 381839)
+-- TOC entry 5348 (class 2606 OID 421182)
 -- Name: col_areavalor col_areavalor_lc_unidadconstruccion_area_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19174,7 +19455,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8589 (class 2606 OID 381818)
+-- TOC entry 5349 (class 2606 OID 421187)
 -- Name: col_areavalor col_areavalor_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19183,7 +19464,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_areavalor
 
 
 --
--- TOC entry 8675 (class 2606 OID 382277)
+-- TOC entry 5350 (class 2606 OID 421192)
 -- Name: col_baunitcomointeresado col_baunitcomointeresado_interesado_lc_grpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19192,7 +19473,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitcomointeresado
 
 
 --
--- TOC entry 8676 (class 2606 OID 382272)
+-- TOC entry 5351 (class 2606 OID 421197)
 -- Name: col_baunitcomointeresado col_baunitcomointeresado_interesado_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19201,7 +19482,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitcomointeresado
 
 
 --
--- TOC entry 8677 (class 2606 OID 382282)
+-- TOC entry 5352 (class 2606 OID 421202)
 -- Name: col_baunitcomointeresado col_baunitcomointeresado_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19210,7 +19491,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitcomointeresado
 
 
 --
--- TOC entry 8644 (class 2606 OID 382117)
+-- TOC entry 5353 (class 2606 OID 421207)
 -- Name: col_baunitfuente col_baunitfuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19219,7 +19500,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitfuente
 
 
 --
--- TOC entry 8645 (class 2606 OID 382122)
+-- TOC entry 5354 (class 2606 OID 421212)
 -- Name: col_baunitfuente col_baunitfuente_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19228,7 +19509,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_baunitfuente
 
 
 --
--- TOC entry 8647 (class 2606 OID 382132)
+-- TOC entry 5355 (class 2606 OID 421217)
 -- Name: col_cclfuente col_cclfuente_ccl_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19237,7 +19518,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_cclfuente
 
 
 --
--- TOC entry 8648 (class 2606 OID 382137)
+-- TOC entry 5356 (class 2606 OID 421222)
 -- Name: col_cclfuente col_cclfuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19246,7 +19527,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_cclfuente
 
 
 --
--- TOC entry 8663 (class 2606 OID 382212)
+-- TOC entry 5357 (class 2606 OID 421227)
 -- Name: col_clfuente col_clfuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19255,7 +19536,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_clfuente
 
 
 --
--- TOC entry 8654 (class 2606 OID 382167)
+-- TOC entry 5358 (class 2606 OID 421232)
 -- Name: col_masccl col_masccl_ccl_mas_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19264,7 +19545,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8655 (class 2606 OID 382177)
+-- TOC entry 5359 (class 2606 OID 421237)
 -- Name: col_masccl col_masccl_ue_mas_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19273,7 +19554,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8656 (class 2606 OID 382187)
+-- TOC entry 5360 (class 2606 OID 421242)
 -- Name: col_masccl col_masccl_ue_mas_lc_servidmbrtrnsito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19282,7 +19563,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8657 (class 2606 OID 382172)
+-- TOC entry 5361 (class 2606 OID 421247)
 -- Name: col_masccl col_masccl_ue_mas_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19291,7 +19572,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8658 (class 2606 OID 382182)
+-- TOC entry 5362 (class 2606 OID 421252)
 -- Name: col_masccl col_masccl_ue_mas_lc_unidadcnstrccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19300,7 +19581,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_masccl
 
 
 --
--- TOC entry 8668 (class 2606 OID 382242)
+-- TOC entry 5363 (class 2606 OID 421257)
 -- Name: col_mascl col_mascl_ue_mas_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19309,7 +19590,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_mascl
 
 
 --
--- TOC entry 8669 (class 2606 OID 382252)
+-- TOC entry 5364 (class 2606 OID 421262)
 -- Name: col_mascl col_mascl_ue_mas_lc_servidmbrtrnsito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19318,7 +19599,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_mascl
 
 
 --
--- TOC entry 8670 (class 2606 OID 382237)
+-- TOC entry 5365 (class 2606 OID 421267)
 -- Name: col_mascl col_mascl_ue_mas_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19327,7 +19608,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_mascl
 
 
 --
--- TOC entry 8671 (class 2606 OID 382247)
+-- TOC entry 5366 (class 2606 OID 421272)
 -- Name: col_mascl col_mascl_ue_mas_lc_unidadcnstrccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19336,7 +19617,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_mascl
 
 
 --
--- TOC entry 8649 (class 2606 OID 382142)
+-- TOC entry 5367 (class 2606 OID 421277)
 -- Name: col_menosccl col_menosccl_ccl_menos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19345,7 +19626,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8650 (class 2606 OID 382152)
+-- TOC entry 5368 (class 2606 OID 421282)
 -- Name: col_menosccl col_menosccl_ue_menos_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19354,7 +19635,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8651 (class 2606 OID 382162)
+-- TOC entry 5369 (class 2606 OID 421287)
 -- Name: col_menosccl col_menosccl_ue_menos_lc_srvdmbrtrnsito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19363,7 +19644,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8652 (class 2606 OID 382147)
+-- TOC entry 5370 (class 2606 OID 421292)
 -- Name: col_menosccl col_menosccl_ue_menos_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19372,7 +19653,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8653 (class 2606 OID 382157)
+-- TOC entry 5371 (class 2606 OID 421297)
 -- Name: col_menosccl col_menosccl_ue_menos_lc_unddcnstrccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19381,7 +19662,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menosccl
 
 
 --
--- TOC entry 8664 (class 2606 OID 382222)
+-- TOC entry 5372 (class 2606 OID 421302)
 -- Name: col_menoscl col_menoscl_ue_menos_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19390,7 +19671,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menoscl
 
 
 --
--- TOC entry 8665 (class 2606 OID 382232)
+-- TOC entry 5373 (class 2606 OID 421307)
 -- Name: col_menoscl col_menoscl_ue_menos_lc_srvdmbrtrnsito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19399,7 +19680,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menoscl
 
 
 --
--- TOC entry 8666 (class 2606 OID 382217)
+-- TOC entry 5374 (class 2606 OID 421312)
 -- Name: col_menoscl col_menoscl_ue_menos_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19408,7 +19689,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menoscl
 
 
 --
--- TOC entry 8667 (class 2606 OID 382227)
+-- TOC entry 5375 (class 2606 OID 421317)
 -- Name: col_menoscl col_menoscl_ue_menos_lc_unddcnstrccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19417,7 +19698,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_menoscl
 
 
 --
--- TOC entry 8684 (class 2606 OID 382327)
+-- TOC entry 5376 (class 2606 OID 421322)
 -- Name: col_miembros col_miembros_agrupacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19426,7 +19707,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_miembros
 
 
 --
--- TOC entry 8685 (class 2606 OID 382322)
+-- TOC entry 5377 (class 2606 OID 421327)
 -- Name: col_miembros col_miembros_interesado_lc_grpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19435,7 +19716,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_miembros
 
 
 --
--- TOC entry 8686 (class 2606 OID 382317)
+-- TOC entry 5378 (class 2606 OID 421332)
 -- Name: col_miembros col_miembros_interesado_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19444,7 +19725,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_miembros
 
 
 --
--- TOC entry 8659 (class 2606 OID 382207)
+-- TOC entry 5379 (class 2606 OID 421337)
 -- Name: col_puntoccl col_puntoccl_ccl_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19453,7 +19734,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntoccl
 
 
 --
--- TOC entry 8660 (class 2606 OID 382202)
+-- TOC entry 5380 (class 2606 OID 421342)
 -- Name: col_puntoccl col_puntoccl_punto_lc_puntocontrol_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19462,7 +19743,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntoccl
 
 
 --
--- TOC entry 8661 (class 2606 OID 382197)
+-- TOC entry 5381 (class 2606 OID 421347)
 -- Name: col_puntoccl col_puntoccl_punto_lc_puntolevantaminto_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19471,7 +19752,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntoccl
 
 
 --
--- TOC entry 8662 (class 2606 OID 382192)
+-- TOC entry 5382 (class 2606 OID 421352)
 -- Name: col_puntoccl col_puntoccl_punto_lc_puntolindero_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19480,7 +19761,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntoccl
 
 
 --
--- TOC entry 8672 (class 2606 OID 382267)
+-- TOC entry 5383 (class 2606 OID 421357)
 -- Name: col_puntocl col_puntocl_punto_lc_puntocontrol_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19489,7 +19770,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntocl
 
 
 --
--- TOC entry 8673 (class 2606 OID 382262)
+-- TOC entry 5384 (class 2606 OID 421362)
 -- Name: col_puntocl col_puntocl_punto_lc_puntolevantaminto_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19498,7 +19779,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntocl
 
 
 --
--- TOC entry 8674 (class 2606 OID 382257)
+-- TOC entry 5385 (class 2606 OID 421367)
 -- Name: col_puntocl col_puntocl_punto_lc_puntolindero_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19507,7 +19788,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntocl
 
 
 --
--- TOC entry 8635 (class 2606 OID 382072)
+-- TOC entry 5386 (class 2606 OID 421372)
 -- Name: col_puntofuente col_puntofuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19516,7 +19797,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntofuente
 
 
 --
--- TOC entry 8636 (class 2606 OID 382087)
+-- TOC entry 5387 (class 2606 OID 421377)
 -- Name: col_puntofuente col_puntofuente_punto_lc_puntocontrol_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19525,7 +19806,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntofuente
 
 
 --
--- TOC entry 8637 (class 2606 OID 382082)
+-- TOC entry 5388 (class 2606 OID 421382)
 -- Name: col_puntofuente col_puntofuente_punto_lc_puntolevantaminto_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19534,7 +19815,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntofuente
 
 
 --
--- TOC entry 8638 (class 2606 OID 382077)
+-- TOC entry 5389 (class 2606 OID 421387)
 -- Name: col_puntofuente col_puntofuente_punto_lc_puntolindero_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19543,7 +19824,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_puntofuente
 
 
 --
--- TOC entry 8632 (class 2606 OID 382057)
+-- TOC entry 5390 (class 2606 OID 421392)
 -- Name: col_relacionfuente col_relacionfuente_fuente_administrativa_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19552,7 +19833,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_relacionfuente
 
 
 --
--- TOC entry 8646 (class 2606 OID 382127)
+-- TOC entry 5391 (class 2606 OID 421397)
 -- Name: col_relacionfuenteuespacial col_relacionfuenteuespcial_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19561,7 +19842,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_relacionfuenteuespacial
 
 
 --
--- TOC entry 8678 (class 2606 OID 382287)
+-- TOC entry 5392 (class 2606 OID 421402)
 -- Name: col_responsablefuente col_responsablefuente_fuente_administrativa_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19570,7 +19851,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_responsablefuente
 
 
 --
--- TOC entry 8679 (class 2606 OID 382297)
+-- TOC entry 5393 (class 2606 OID 421407)
 -- Name: col_responsablefuente col_responsablefuente_interesado_lc_grpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19579,7 +19860,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_responsablefuente
 
 
 --
--- TOC entry 8680 (class 2606 OID 382292)
+-- TOC entry 5394 (class 2606 OID 421412)
 -- Name: col_responsablefuente col_responsablefuente_interesado_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19588,7 +19869,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_responsablefuente
 
 
 --
--- TOC entry 8624 (class 2606 OID 382017)
+-- TOC entry 5395 (class 2606 OID 421417)
 -- Name: col_rrrfuente col_rrrfuente_fuente_administrativa_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19597,7 +19878,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_rrrfuente
 
 
 --
--- TOC entry 8625 (class 2606 OID 382022)
+-- TOC entry 5396 (class 2606 OID 421422)
 -- Name: col_rrrfuente col_rrrfuente_rrr_lc_derecho_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19606,7 +19887,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_rrrfuente
 
 
 --
--- TOC entry 8626 (class 2606 OID 382027)
+-- TOC entry 5397 (class 2606 OID 421427)
 -- Name: col_rrrfuente col_rrrfuente_rrr_lc_restriccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19615,7 +19896,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_rrrfuente
 
 
 --
--- TOC entry 8681 (class 2606 OID 382302)
+-- TOC entry 5398 (class 2606 OID 421432)
 -- Name: col_topografofuente col_topografofuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19624,7 +19905,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_topografofuente
 
 
 --
--- TOC entry 8682 (class 2606 OID 382312)
+-- TOC entry 5399 (class 2606 OID 421437)
 -- Name: col_topografofuente col_topografofuente_topografo_lc_agrpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19633,7 +19914,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_topografofuente
 
 
 --
--- TOC entry 8683 (class 2606 OID 382307)
+-- TOC entry 5400 (class 2606 OID 421442)
 -- Name: col_topografofuente col_topografofuente_topografo_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19642,7 +19923,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_topografofuente
 
 
 --
--- TOC entry 8603 (class 2606 OID 381911)
+-- TOC entry 5401 (class 2606 OID 421447)
 -- Name: col_transformacion col_transformacion_lc_pntcntrl_tmcn_y_rsltado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19651,7 +19932,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_transformacion
 
 
 --
--- TOC entry 8604 (class 2606 OID 381916)
+-- TOC entry 5402 (class 2606 OID 421452)
 -- Name: col_transformacion col_transformacion_lc_pntlndr_trmcn_y_rsltado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19660,7 +19941,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_transformacion
 
 
 --
--- TOC entry 8605 (class 2606 OID 381921)
+-- TOC entry 5403 (class 2606 OID 421457)
 -- Name: col_transformacion col_transformacion_lc_pntlvntmntmcn_y_rsltado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19669,7 +19950,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_transformacion
 
 
 --
--- TOC entry 8627 (class 2606 OID 382052)
+-- TOC entry 5404 (class 2606 OID 421462)
 -- Name: col_uebaunit col_uebaunit_baunit_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19678,7 +19959,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8628 (class 2606 OID 382037)
+-- TOC entry 5405 (class 2606 OID 421467)
 -- Name: col_uebaunit col_uebaunit_ue_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19687,7 +19968,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8629 (class 2606 OID 382047)
+-- TOC entry 5406 (class 2606 OID 421472)
 -- Name: col_uebaunit col_uebaunit_ue_lc_servidumbretransito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19696,7 +19977,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8630 (class 2606 OID 382032)
+-- TOC entry 5407 (class 2606 OID 421477)
 -- Name: col_uebaunit col_uebaunit_ue_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19705,7 +19986,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8631 (class 2606 OID 382042)
+-- TOC entry 5408 (class 2606 OID 421482)
 -- Name: col_uebaunit col_uebaunit_ue_lc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19714,7 +19995,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uebaunit
 
 
 --
--- TOC entry 8639 (class 2606 OID 382112)
+-- TOC entry 5409 (class 2606 OID 421487)
 -- Name: col_uefuente col_uefuente_fuente_espacial_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19723,7 +20004,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8640 (class 2606 OID 382097)
+-- TOC entry 5410 (class 2606 OID 421492)
 -- Name: col_uefuente col_uefuente_ue_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19732,7 +20013,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8641 (class 2606 OID 382107)
+-- TOC entry 5411 (class 2606 OID 421497)
 -- Name: col_uefuente col_uefuente_ue_lc_servidumbretransito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19741,7 +20022,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8642 (class 2606 OID 382092)
+-- TOC entry 5412 (class 2606 OID 421502)
 -- Name: col_uefuente col_uefuente_ue_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19750,7 +20031,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8643 (class 2606 OID 382102)
+-- TOC entry 5413 (class 2606 OID 421507)
 -- Name: col_uefuente col_uefuente_ue_lc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19759,7 +20040,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_uefuente
 
 
 --
--- TOC entry 8620 (class 2606 OID 382002)
+-- TOC entry 5414 (class 2606 OID 421512)
 -- Name: col_ueuegrupo col_ueuegrupo_parte_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19768,7 +20049,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_ueuegrupo
 
 
 --
--- TOC entry 8621 (class 2606 OID 382012)
+-- TOC entry 5415 (class 2606 OID 421517)
 -- Name: col_ueuegrupo col_ueuegrupo_parte_lc_servidumbrtrnsito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19777,7 +20058,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_ueuegrupo
 
 
 --
--- TOC entry 8622 (class 2606 OID 381997)
+-- TOC entry 5416 (class 2606 OID 421522)
 -- Name: col_ueuegrupo col_ueuegrupo_parte_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19786,7 +20067,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_ueuegrupo
 
 
 --
--- TOC entry 8623 (class 2606 OID 382007)
+-- TOC entry 5417 (class 2606 OID 421527)
 -- Name: col_ueuegrupo col_ueuegrupo_parte_lc_unidadconstrccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19795,7 +20076,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_ueuegrupo
 
 
 --
--- TOC entry 8633 (class 2606 OID 382062)
+-- TOC entry 5418 (class 2606 OID 421532)
 -- Name: col_unidadfuente col_unidadfuente_fuente_administrativa_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19804,7 +20085,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_unidadfuente
 
 
 --
--- TOC entry 8634 (class 2606 OID 382067)
+-- TOC entry 5419 (class 2606 OID 421537)
 -- Name: col_unidadfuente col_unidadfuente_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19813,7 +20094,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_unidadfuente
 
 
 --
--- TOC entry 8615 (class 2606 OID 381977)
+-- TOC entry 5420 (class 2606 OID 421542)
 -- Name: col_volumenvalor col_volumenvalor_lc_construccion_volumen_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19822,7 +20103,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8616 (class 2606 OID 381987)
+-- TOC entry 5421 (class 2606 OID 421547)
 -- Name: col_volumenvalor col_volumenvalor_lc_servidumbretranst_vlmen_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19831,7 +20112,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8617 (class 2606 OID 381982)
+-- TOC entry 5422 (class 2606 OID 421552)
 -- Name: col_volumenvalor col_volumenvalor_lc_terreno_volumen_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19840,7 +20121,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8618 (class 2606 OID 381992)
+-- TOC entry 5423 (class 2606 OID 421557)
 -- Name: col_volumenvalor col_volumenvalor_lc_unidadconstruccin_vlmen_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19849,7 +20130,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8619 (class 2606 OID 381972)
+-- TOC entry 5424 (class 2606 OID 421562)
 -- Name: col_volumenvalor col_volumenvalor_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19858,7 +20139,7 @@ ALTER TABLE ONLY test_ladm_col_queries.col_volumenvalor
 
 
 --
--- TOC entry 8612 (class 2606 OID 381966)
+-- TOC entry 5425 (class 2606 OID 421567)
 -- Name: extarchivo extarchivo_lc_fuenteespacl_xt_rchv_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19867,7 +20148,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extarchivo
 
 
 --
--- TOC entry 8613 (class 2606 OID 381961)
+-- TOC entry 5426 (class 2606 OID 421572)
 -- Name: extarchivo extarchivo_lc_funtdmnstrtv_xt_rchv_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19876,7 +20157,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extarchivo
 
 
 --
--- TOC entry 8614 (class 2606 OID 381956)
+-- TOC entry 5427 (class 2606 OID 421577)
 -- Name: extarchivo extarchivo_snr_fuentecabdlndrs_rchivo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19885,7 +20166,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extarchivo
 
 
 --
--- TOC entry 8590 (class 2606 OID 381849)
+-- TOC entry 5428 (class 2606 OID 421582)
 -- Name: extdireccion extdireccion_clase_via_principal_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19894,7 +20175,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8591 (class 2606 OID 381869)
+-- TOC entry 5429 (class 2606 OID 421587)
 -- Name: extdireccion extdireccion_extinteresado_ext_drccn_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19903,7 +20184,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8592 (class 2606 OID 381864)
+-- TOC entry 5430 (class 2606 OID 421592)
 -- Name: extdireccion extdireccion_extndddfccnfsc_xt_drccn_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19912,7 +20193,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8593 (class 2606 OID 381874)
+-- TOC entry 5431 (class 2606 OID 421597)
 -- Name: extdireccion extdireccion_lc_construccin_xt_drccn_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19921,7 +20202,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8594 (class 2606 OID 381894)
+-- TOC entry 5432 (class 2606 OID 421602)
 -- Name: extdireccion extdireccion_lc_nddcnstrccn_xt_drccn_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19930,7 +20211,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8595 (class 2606 OID 381879)
+-- TOC entry 5433 (class 2606 OID 421607)
 -- Name: extdireccion extdireccion_lc_predio_direccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19939,7 +20220,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8596 (class 2606 OID 381889)
+-- TOC entry 5434 (class 2606 OID 421612)
 -- Name: extdireccion extdireccion_lc_srvdmbrtrnt_xt_drccn_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19948,7 +20229,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8597 (class 2606 OID 381884)
+-- TOC entry 5435 (class 2606 OID 421617)
 -- Name: extdireccion extdireccion_lc_terreno_ext_direccin_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19957,7 +20238,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8598 (class 2606 OID 381854)
+-- TOC entry 5436 (class 2606 OID 421622)
 -- Name: extdireccion extdireccion_sector_ciudad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19966,7 +20247,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8599 (class 2606 OID 381859)
+-- TOC entry 5437 (class 2606 OID 421627)
 -- Name: extdireccion extdireccion_sector_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19975,7 +20256,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8600 (class 2606 OID 381844)
+-- TOC entry 5438 (class 2606 OID 421632)
 -- Name: extdireccion extdireccion_tipo_direccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19984,7 +20265,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extdireccion
 
 
 --
--- TOC entry 8609 (class 2606 OID 381941)
+-- TOC entry 5439 (class 2606 OID 421637)
 -- Name: extinteresado extinteresado_extrdsrvcsfscd_dmnstrdr_id_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -19993,7 +20274,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extinteresado
 
 
 --
--- TOC entry 8610 (class 2606 OID 381946)
+-- TOC entry 5440 (class 2606 OID 421642)
 -- Name: extinteresado extinteresado_lc_agrupacionntrsds_xt_pid_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20002,7 +20283,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extinteresado
 
 
 --
--- TOC entry 8611 (class 2606 OID 381951)
+-- TOC entry 5441 (class 2606 OID 421647)
 -- Name: extinteresado extinteresado_lc_interesado_ext_pid_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20011,7 +20292,7 @@ ALTER TABLE ONLY test_ladm_col_queries.extinteresado
 
 
 --
--- TOC entry 8601 (class 2606 OID 381901)
+-- TOC entry 5442 (class 2606 OID 421652)
 -- Name: fraccion fraccion_col_miembros_participacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20020,7 +20301,7 @@ ALTER TABLE ONLY test_ladm_col_queries.fraccion
 
 
 --
--- TOC entry 8602 (class 2606 OID 381906)
+-- TOC entry 5443 (class 2606 OID 421657)
 -- Name: fraccion fraccion_lc_predio_copropidd_cfcnte_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20029,7 +20310,7 @@ ALTER TABLE ONLY test_ladm_col_queries.fraccion
 
 
 --
--- TOC entry 8687 (class 2606 OID 382333)
+-- TOC entry 5444 (class 2606 OID 421662)
 -- Name: gc_calificacionunidadconstruccion gc_calificacnnddcnstrccion_gc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20038,7 +20319,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_calificacionunidadconstruccion
 
 
 --
--- TOC entry 8688 (class 2606 OID 382349)
+-- TOC entry 5445 (class 2606 OID 421667)
 -- Name: gc_construccion gc_construccion_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20047,7 +20328,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_construccion
 
 
 --
--- TOC entry 8689 (class 2606 OID 382338)
+-- TOC entry 5446 (class 2606 OID 421672)
 -- Name: gc_construccion gc_construccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20056,7 +20337,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_construccion
 
 
 --
--- TOC entry 8700 (class 2606 OID 382428)
+-- TOC entry 5447 (class 2606 OID 421677)
 -- Name: gc_copropiedad gc_copropiedad_gc_matriz_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20065,7 +20346,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_copropiedad
 
 
 --
--- TOC entry 8701 (class 2606 OID 382433)
+-- TOC entry 5448 (class 2606 OID 421682)
 -- Name: gc_copropiedad gc_copropiedad_gc_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20074,7 +20355,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_copropiedad
 
 
 --
--- TOC entry 8690 (class 2606 OID 382361)
+-- TOC entry 5449 (class 2606 OID 421687)
 -- Name: gc_datosphcondominio gc_datosphcondominio_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20083,7 +20364,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_datosphcondominio
 
 
 --
--- TOC entry 8691 (class 2606 OID 382371)
+-- TOC entry 5450 (class 2606 OID 421692)
 -- Name: gc_datostorreph gc_datostorreph_gc_datosphcondominio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20092,7 +20373,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_datostorreph
 
 
 --
--- TOC entry 8692 (class 2606 OID 382376)
+-- TOC entry 5451 (class 2606 OID 421697)
 -- Name: gc_direccion gc_direccion_gc_prediocatastro_dirccnes_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20101,7 +20382,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_direccion
 
 
 --
--- TOC entry 8693 (class 2606 OID 382381)
+-- TOC entry 5452 (class 2606 OID 421702)
 -- Name: gc_estadopredio gc_estadopredio_gc_prediocatastr_std_prdio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20110,7 +20391,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_estadopredio
 
 
 --
--- TOC entry 8698 (class 2606 OID 382417)
+-- TOC entry 5453 (class 2606 OID 421707)
 -- Name: gc_prediocatastro gc_prediocatastro_condicion_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20119,7 +20400,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_prediocatastro
 
 
 --
--- TOC entry 8699 (class 2606 OID 382422)
+-- TOC entry 5454 (class 2606 OID 421712)
 -- Name: gc_prediocatastro gc_prediocatastro_sistema_procedencia_datos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20128,7 +20409,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_prediocatastro
 
 
 --
--- TOC entry 8694 (class 2606 OID 382386)
+-- TOC entry 5455 (class 2606 OID 421717)
 -- Name: gc_propietario gc_propietario_gc_predio_catastro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20137,7 +20418,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_propietario
 
 
 --
--- TOC entry 8695 (class 2606 OID 382394)
+-- TOC entry 5456 (class 2606 OID 421722)
 -- Name: gc_terreno gc_terreno_gc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20146,7 +20427,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_terreno
 
 
 --
--- TOC entry 8696 (class 2606 OID 382412)
+-- TOC entry 5457 (class 2606 OID 421727)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_gc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20155,7 +20436,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_unidadconstruccion
 
 
 --
--- TOC entry 8697 (class 2606 OID 382399)
+-- TOC entry 5458 (class 2606 OID 421732)
 -- Name: gc_unidadconstruccion gc_unidadconstruccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20164,7 +20445,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gc_unidadconstruccion
 
 
 --
--- TOC entry 8582 (class 2606 OID 381801)
+-- TOC entry 5459 (class 2606 OID 421737)
 -- Name: gm_surface2dlistvalue gm_surface2dlistvalue_gm_multisurface2d_geometry_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20173,7 +20454,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_surface2dlistvalue
 
 
 --
--- TOC entry 8583 (class 2606 OID 381806)
+-- TOC entry 5460 (class 2606 OID 421742)
 -- Name: gm_surface3dlistvalue gm_surface3dlistvalue_gm_multisurface3d_geometry_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20182,7 +20463,7 @@ ALTER TABLE ONLY test_ladm_col_queries.gm_surface3dlistvalue
 
 
 --
--- TOC entry 8606 (class 2606 OID 381936)
+-- TOC entry 5461 (class 2606 OID 421747)
 -- Name: imagen imagen_extinteresado_firma_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20191,7 +20472,7 @@ ALTER TABLE ONLY test_ladm_col_queries.imagen
 
 
 --
--- TOC entry 8607 (class 2606 OID 381931)
+-- TOC entry 5462 (class 2606 OID 421752)
 -- Name: imagen imagen_extinteresado_fotografia_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20200,7 +20481,7 @@ ALTER TABLE ONLY test_ladm_col_queries.imagen
 
 
 --
--- TOC entry 8608 (class 2606 OID 381926)
+-- TOC entry 5463 (class 2606 OID 421757)
 -- Name: imagen imagen_extinteresado_huell_dctlar_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20209,7 +20490,7 @@ ALTER TABLE ONLY test_ladm_col_queries.imagen
 
 
 --
--- TOC entry 8714 (class 2606 OID 382504)
+-- TOC entry 5464 (class 2606 OID 421762)
 -- Name: ini_predioinsumos ini_predioinsumos_gc_predio_catastro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20218,7 +20499,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ini_predioinsumos
 
 
 --
--- TOC entry 8715 (class 2606 OID 382509)
+-- TOC entry 5465 (class 2606 OID 421767)
 -- Name: ini_predioinsumos ini_predioinsumos_snr_predio_juridico_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20227,7 +20508,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ini_predioinsumos
 
 
 --
--- TOC entry 8716 (class 2606 OID 382499)
+-- TOC entry 5466 (class 2606 OID 421772)
 -- Name: ini_predioinsumos ini_predioinsumos_tipo_emparejamiento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20236,7 +20517,7 @@ ALTER TABLE ONLY test_ladm_col_queries.ini_predioinsumos
 
 
 --
--- TOC entry 8717 (class 2606 OID 382514)
+-- TOC entry 5467 (class 2606 OID 421777)
 -- Name: lc_agrupacioninteresados lc_agrupacioninteresados_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20245,7 +20526,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_agrupacioninteresados
 
 
 --
--- TOC entry 8776 (class 2606 OID 382845)
+-- TOC entry 5468 (class 2606 OID 421782)
 -- Name: lc_calificacionconvencional lc_calificacionconvencinal_lc_unidad_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20254,7 +20535,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionconvencional
 
 
 --
--- TOC entry 8777 (class 2606 OID 382839)
+-- TOC entry 5469 (class 2606 OID 421787)
 -- Name: lc_calificacionconvencional lc_calificacionconvencinal_tipo_calificar_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20263,7 +20544,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionconvencional
 
 
 --
--- TOC entry 8778 (class 2606 OID 382855)
+-- TOC entry 5470 (class 2606 OID 421792)
 -- Name: lc_calificacionnoconvencional lc_calificacionnoconvncnal_lc_unidad_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20272,7 +20553,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionnoconvencional
 
 
 --
--- TOC entry 8779 (class 2606 OID 382850)
+-- TOC entry 5471 (class 2606 OID 421797)
 -- Name: lc_calificacionnoconvencional lc_calificacionnoconvncnal_tipo_anexo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20281,7 +20562,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_calificacionnoconvencional
 
 
 --
--- TOC entry 8718 (class 2606 OID 382537)
+-- TOC entry 5472 (class 2606 OID 421802)
 -- Name: lc_construccion lc_construccion_dimension_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20290,7 +20571,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccion
 
 
 --
--- TOC entry 8719 (class 2606 OID 382542)
+-- TOC entry 5473 (class 2606 OID 421807)
 -- Name: lc_construccion lc_construccion_relacion_superficie_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20299,7 +20580,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccion
 
 
 --
--- TOC entry 8720 (class 2606 OID 382519)
+-- TOC entry 5474 (class 2606 OID 421812)
 -- Name: lc_construccion lc_construccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20308,7 +20589,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccion
 
 
 --
--- TOC entry 8721 (class 2606 OID 382524)
+-- TOC entry 5475 (class 2606 OID 421817)
 -- Name: lc_construccion lc_construccion_tipo_dominio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20317,7 +20598,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_construccion
 
 
 --
--- TOC entry 8722 (class 2606 OID 382557)
+-- TOC entry 5476 (class 2606 OID 421822)
 -- Name: lc_contactovisita lc_contactovisita_lc_datos_adicionales_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20326,7 +20607,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_contactovisita
 
 
 --
--- TOC entry 8723 (class 2606 OID 382552)
+-- TOC entry 5477 (class 2606 OID 421827)
 -- Name: lc_contactovisita lc_contactovisita_relacion_con_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20335,7 +20616,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_contactovisita
 
 
 --
--- TOC entry 8724 (class 2606 OID 382547)
+-- TOC entry 5478 (class 2606 OID 421832)
 -- Name: lc_contactovisita lc_contactovisita_tipo_documento_quien_tndio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20344,7 +20625,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_contactovisita
 
 
 --
--- TOC entry 8725 (class 2606 OID 382570)
+-- TOC entry 5486 (class 2606 OID 421837)
 -- Name: lc_datosphcondominio lc_datosphcondominio_lc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20353,7 +20634,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosphcondominio
 
 
 --
--- TOC entry 8780 (class 2606 OID 382876)
+-- TOC entry 5479 (class 2606 OID 421842)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_categoria_suelo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20362,7 +20643,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8781 (class 2606 OID 382871)
+-- TOC entry 5480 (class 2606 OID 421847)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_clase_suelo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20371,7 +20652,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8782 (class 2606 OID 382866)
+-- TOC entry 5481 (class 2606 OID 421852)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_destinacion_economica_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20380,7 +20661,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8783 (class 2606 OID 382891)
+-- TOC entry 5482 (class 2606 OID 421857)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_lc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20389,7 +20670,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8784 (class 2606 OID 382861)
+-- TOC entry 5483 (class 2606 OID 421862)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_procedimint_ctstrl_rgstral_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20398,7 +20679,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8785 (class 2606 OID 382886)
+-- TOC entry 5484 (class 2606 OID 421867)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_resultado_visita_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20407,7 +20688,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8786 (class 2606 OID 382881)
+-- TOC entry 5485 (class 2606 OID 421872)
 -- Name: lc_datosadicionaleslevantamientocatastral lc_datsdcnlslvntmntctstral_tipo_documento_reconocedor_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20416,7 +20697,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_datosadicionaleslevantamientocatastral
 
 
 --
--- TOC entry 8726 (class 2606 OID 382586)
+-- TOC entry 5487 (class 2606 OID 421877)
 -- Name: lc_derecho lc_derecho_interesado_lc_grpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20425,7 +20706,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derecho
 
 
 --
--- TOC entry 8727 (class 2606 OID 382581)
+-- TOC entry 5488 (class 2606 OID 421882)
 -- Name: lc_derecho lc_derecho_interesado_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20434,7 +20715,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derecho
 
 
 --
--- TOC entry 8728 (class 2606 OID 382575)
+-- TOC entry 5489 (class 2606 OID 421887)
 -- Name: lc_derecho lc_derecho_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20443,7 +20724,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derecho
 
 
 --
--- TOC entry 8729 (class 2606 OID 382591)
+-- TOC entry 5490 (class 2606 OID 421892)
 -- Name: lc_derecho lc_derecho_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20452,7 +20733,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_derecho
 
 
 --
--- TOC entry 8730 (class 2606 OID 382596)
+-- TOC entry 5491 (class 2606 OID 421897)
 -- Name: lc_estructuranovedadfmi lc_estructuranovedadfmi_lc_dtsdcnlstmstrl_nvdd_fmi_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20461,7 +20742,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadfmi
 
 
 --
--- TOC entry 8731 (class 2606 OID 382606)
+-- TOC entry 5492 (class 2606 OID 421902)
 -- Name: lc_estructuranovedadnumeropredial lc_estructuranvddnmrprdial_lc_dtsdcnlstmd_nmrs_prdles_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20470,7 +20751,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadnumeropredial
 
 
 --
--- TOC entry 8732 (class 2606 OID 382601)
+-- TOC entry 5493 (class 2606 OID 421907)
 -- Name: lc_estructuranovedadnumeropredial lc_estructuranvddnmrprdial_tipo_novedad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20479,7 +20760,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_estructuranovedadnumeropredial
 
 
 --
--- TOC entry 8733 (class 2606 OID 382616)
+-- TOC entry 5494 (class 2606 OID 421912)
 -- Name: lc_fuenteadministrativa lc_fuenteadministrativa_estado_disponibilidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20488,7 +20769,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteadministrativa
 
 
 --
--- TOC entry 8734 (class 2606 OID 382611)
+-- TOC entry 5495 (class 2606 OID 421917)
 -- Name: lc_fuenteadministrativa lc_fuenteadministrativa_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20497,7 +20778,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteadministrativa
 
 
 --
--- TOC entry 8735 (class 2606 OID 382621)
+-- TOC entry 5496 (class 2606 OID 421922)
 -- Name: lc_fuenteadministrativa lc_fuenteadministrativa_tipo_principal_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20506,7 +20787,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteadministrativa
 
 
 --
--- TOC entry 8736 (class 2606 OID 382631)
+-- TOC entry 5497 (class 2606 OID 421927)
 -- Name: lc_fuenteespacial lc_fuenteespacial_estado_disponibilidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20515,7 +20796,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteespacial
 
 
 --
--- TOC entry 8737 (class 2606 OID 382626)
+-- TOC entry 5498 (class 2606 OID 421932)
 -- Name: lc_fuenteespacial lc_fuenteespacial_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20524,7 +20805,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteespacial
 
 
 --
--- TOC entry 8738 (class 2606 OID 382636)
+-- TOC entry 5499 (class 2606 OID 421937)
 -- Name: lc_fuenteespacial lc_fuenteespacial_tipo_principal_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20533,7 +20814,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_fuenteespacial
 
 
 --
--- TOC entry 8739 (class 2606 OID 382641)
+-- TOC entry 5500 (class 2606 OID 421942)
 -- Name: lc_grupocalificacion lc_grupocalificacion_clase_calificacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20542,7 +20823,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_grupocalificacion
 
 
 --
--- TOC entry 8740 (class 2606 OID 382646)
+-- TOC entry 5501 (class 2606 OID 421947)
 -- Name: lc_grupocalificacion lc_grupocalificacion_conservacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20551,7 +20832,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_grupocalificacion
 
 
 --
--- TOC entry 8741 (class 2606 OID 382652)
+-- TOC entry 5502 (class 2606 OID 421952)
 -- Name: lc_grupocalificacion lc_grupocalificacion_lc_calificacion_convencnal_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20560,7 +20841,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_grupocalificacion
 
 
 --
--- TOC entry 8742 (class 2606 OID 382672)
+-- TOC entry 5503 (class 2606 OID 421957)
 -- Name: lc_interesado lc_interesado_grupo_etnico_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20569,7 +20850,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesado
 
 
 --
--- TOC entry 8743 (class 2606 OID 382667)
+-- TOC entry 5504 (class 2606 OID 421962)
 -- Name: lc_interesado lc_interesado_sexo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20578,7 +20859,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesado
 
 
 --
--- TOC entry 8744 (class 2606 OID 382662)
+-- TOC entry 5505 (class 2606 OID 421967)
 -- Name: lc_interesado lc_interesado_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20587,7 +20868,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesado
 
 
 --
--- TOC entry 8745 (class 2606 OID 382657)
+-- TOC entry 5506 (class 2606 OID 421972)
 -- Name: lc_interesado lc_interesado_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20596,7 +20877,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesado
 
 
 --
--- TOC entry 8746 (class 2606 OID 382677)
+-- TOC entry 5507 (class 2606 OID 421977)
 -- Name: lc_interesadocontacto lc_interesadocontacto_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20605,7 +20886,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_interesadocontacto
 
 
 --
--- TOC entry 8747 (class 2606 OID 382689)
+-- TOC entry 5508 (class 2606 OID 421982)
 -- Name: lc_objetoconstruccion lc_objetoconstruccion_lc_grupo_calificacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20614,7 +20895,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_objetoconstruccion
 
 
 --
--- TOC entry 8748 (class 2606 OID 382683)
+-- TOC entry 5509 (class 2606 OID 421987)
 -- Name: lc_objetoconstruccion lc_objetoconstruccion_tipo_objeto_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20623,7 +20904,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_objetoconstruccion
 
 
 --
--- TOC entry 8749 (class 2606 OID 382702)
+-- TOC entry 5510 (class 2606 OID 421992)
 -- Name: lc_ofertasmercadoinmobiliario lc_ofertasmercadoinmoblrio_lc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20632,7 +20913,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_ofertasmercadoinmobiliario
 
 
 --
--- TOC entry 8750 (class 2606 OID 382694)
+-- TOC entry 5511 (class 2606 OID 421997)
 -- Name: lc_ofertasmercadoinmobiliario lc_ofertasmercadoinmoblrio_tipo_oferta_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20641,7 +20922,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_ofertasmercadoinmobiliario
 
 
 --
--- TOC entry 8751 (class 2606 OID 382713)
+-- TOC entry 5512 (class 2606 OID 422002)
 -- Name: lc_predio lc_predio_condicion_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20650,7 +20931,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio
 
 
 --
--- TOC entry 8798 (class 2606 OID 382959)
+-- TOC entry 5514 (class 2606 OID 422007)
 -- Name: lc_predio_copropiedad lc_predio_copropiedad_copropiedad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20659,7 +20940,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_copropiedad
 
 
 --
--- TOC entry 8799 (class 2606 OID 382954)
+-- TOC entry 5515 (class 2606 OID 422012)
 -- Name: lc_predio_copropiedad lc_predio_copropiedad_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20668,7 +20949,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_copropiedad
 
 
 --
--- TOC entry 8800 (class 2606 OID 382964)
+-- TOC entry 5516 (class 2606 OID 422017)
 -- Name: lc_predio_ini_predioinsumos lc_predio_ini_predioinsmos_ini_predio_insumos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20677,7 +20958,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_ini_predioinsumos
 
 
 --
--- TOC entry 8801 (class 2606 OID 382969)
+-- TOC entry 5517 (class 2606 OID 422022)
 -- Name: lc_predio_ini_predioinsumos lc_predio_ini_predioinsmos_lc_predio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20686,7 +20967,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio_ini_predioinsumos
 
 
 --
--- TOC entry 8752 (class 2606 OID 382708)
+-- TOC entry 5513 (class 2606 OID 422027)
 -- Name: lc_predio lc_predio_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20695,7 +20976,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_predio
 
 
 --
--- TOC entry 8753 (class 2606 OID 382735)
+-- TOC entry 5518 (class 2606 OID 422032)
 -- Name: lc_puntocontrol lc_puntocontrol_metodoproduccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20704,7 +20985,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8754 (class 2606 OID 382730)
+-- TOC entry 5519 (class 2606 OID 422037)
 -- Name: lc_puntocontrol lc_puntocontrol_posicion_interpolacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20713,7 +20994,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8755 (class 2606 OID 382718)
+-- TOC entry 5520 (class 2606 OID 422042)
 -- Name: lc_puntocontrol lc_puntocontrol_puntotipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20722,7 +21003,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8756 (class 2606 OID 382723)
+-- TOC entry 5521 (class 2606 OID 422047)
 -- Name: lc_puntocontrol lc_puntocontrol_tipo_punto_control_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20731,7 +21012,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8757 (class 2606 OID 382745)
+-- TOC entry 5522 (class 2606 OID 422052)
 -- Name: lc_puntocontrol lc_puntocontrol_ue_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20740,7 +21021,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8758 (class 2606 OID 382755)
+-- TOC entry 5523 (class 2606 OID 422057)
 -- Name: lc_puntocontrol lc_puntocontrol_ue_lc_servidumbretransito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20749,7 +21030,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8759 (class 2606 OID 382740)
+-- TOC entry 5524 (class 2606 OID 422062)
 -- Name: lc_puntocontrol lc_puntocontrol_ue_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20758,7 +21039,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8760 (class 2606 OID 382750)
+-- TOC entry 5525 (class 2606 OID 422067)
 -- Name: lc_puntocontrol lc_puntocontrol_ue_lc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20767,7 +21048,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntocontrol
 
 
 --
--- TOC entry 8787 (class 2606 OID 382906)
+-- TOC entry 5526 (class 2606 OID 422072)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_fotoidentificacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20776,7 +21057,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8788 (class 2606 OID 382918)
+-- TOC entry 5527 (class 2606 OID 422077)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_metodoproduccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20785,7 +21066,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8789 (class 2606 OID 382913)
+-- TOC entry 5528 (class 2606 OID 422082)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_posicion_interpolacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20794,7 +21075,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8790 (class 2606 OID 382896)
+-- TOC entry 5529 (class 2606 OID 422087)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_puntotipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20803,7 +21084,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8791 (class 2606 OID 382901)
+-- TOC entry 5530 (class 2606 OID 422092)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_tipo_punto_levantamiento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20812,7 +21093,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8792 (class 2606 OID 382928)
+-- TOC entry 5531 (class 2606 OID 422097)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_ue_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20821,7 +21102,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8793 (class 2606 OID 382938)
+-- TOC entry 5532 (class 2606 OID 422102)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_ue_lc_servidumbretransito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20830,7 +21111,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8794 (class 2606 OID 382923)
+-- TOC entry 5533 (class 2606 OID 422107)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_ue_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20839,7 +21120,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8795 (class 2606 OID 382933)
+-- TOC entry 5534 (class 2606 OID 422112)
 -- Name: lc_puntolevantamiento lc_puntolevantamiento_ue_lc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20848,7 +21129,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolevantamiento
 
 
 --
--- TOC entry 8761 (class 2606 OID 382765)
+-- TOC entry 5535 (class 2606 OID 422117)
 -- Name: lc_puntolindero lc_puntolindero_acuerdo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20857,7 +21138,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8762 (class 2606 OID 382770)
+-- TOC entry 5536 (class 2606 OID 422122)
 -- Name: lc_puntolindero lc_puntolindero_fotoidentificacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20866,7 +21147,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8763 (class 2606 OID 382782)
+-- TOC entry 5537 (class 2606 OID 422127)
 -- Name: lc_puntolindero lc_puntolindero_metodoproduccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20875,7 +21156,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8764 (class 2606 OID 382777)
+-- TOC entry 5538 (class 2606 OID 422132)
 -- Name: lc_puntolindero lc_puntolindero_posicion_interpolacion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20884,7 +21165,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8765 (class 2606 OID 382760)
+-- TOC entry 5539 (class 2606 OID 422137)
 -- Name: lc_puntolindero lc_puntolindero_puntotipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20893,7 +21174,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8766 (class 2606 OID 382792)
+-- TOC entry 5540 (class 2606 OID 422142)
 -- Name: lc_puntolindero lc_puntolindero_ue_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20902,7 +21183,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8767 (class 2606 OID 382802)
+-- TOC entry 5541 (class 2606 OID 422147)
 -- Name: lc_puntolindero lc_puntolindero_ue_lc_servidumbretransito_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20911,7 +21192,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8768 (class 2606 OID 382787)
+-- TOC entry 5542 (class 2606 OID 422152)
 -- Name: lc_puntolindero lc_puntolindero_ue_lc_terreno_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20920,7 +21201,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8769 (class 2606 OID 382797)
+-- TOC entry 5543 (class 2606 OID 422157)
 -- Name: lc_puntolindero lc_puntolindero_ue_lc_unidadconstruccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20929,7 +21210,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_puntolindero
 
 
 --
--- TOC entry 8770 (class 2606 OID 382817)
+-- TOC entry 5544 (class 2606 OID 422162)
 -- Name: lc_restriccion lc_restriccion_interesado_lc_grpcnntrsdos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20938,7 +21219,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restriccion
 
 
 --
--- TOC entry 8771 (class 2606 OID 382812)
+-- TOC entry 5545 (class 2606 OID 422167)
 -- Name: lc_restriccion lc_restriccion_interesado_lc_interesado_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20947,7 +21228,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restriccion
 
 
 --
--- TOC entry 8772 (class 2606 OID 382807)
+-- TOC entry 5546 (class 2606 OID 422172)
 -- Name: lc_restriccion lc_restriccion_tipo_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20956,7 +21237,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restriccion
 
 
 --
--- TOC entry 8773 (class 2606 OID 382822)
+-- TOC entry 5547 (class 2606 OID 422177)
 -- Name: lc_restriccion lc_restriccion_unidad_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20965,7 +21246,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_restriccion
 
 
 --
--- TOC entry 8802 (class 2606 OID 382975)
+-- TOC entry 5548 (class 2606 OID 422182)
 -- Name: lc_servidumbretransito lc_servidumbretransito_dimension_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20974,7 +21255,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_servidumbretransito
 
 
 --
--- TOC entry 8803 (class 2606 OID 382980)
+-- TOC entry 5549 (class 2606 OID 422187)
 -- Name: lc_servidumbretransito lc_servidumbretransito_relacion_superficie_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20983,7 +21264,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_servidumbretransito
 
 
 --
--- TOC entry 8774 (class 2606 OID 382829)
+-- TOC entry 5550 (class 2606 OID 422192)
 -- Name: lc_terreno lc_terreno_dimension_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -20992,7 +21273,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_terreno
 
 
 --
--- TOC entry 8775 (class 2606 OID 382834)
+-- TOC entry 5551 (class 2606 OID 422197)
 -- Name: lc_terreno lc_terreno_relacion_superficie_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21001,7 +21282,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_terreno
 
 
 --
--- TOC entry 8796 (class 2606 OID 382948)
+-- TOC entry 5552 (class 2606 OID 422202)
 -- Name: lc_tipologiaconstruccion lc_tipologiaconstruccion_lc_unidad_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21010,7 +21291,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_tipologiaconstruccion
 
 
 --
--- TOC entry 8797 (class 2606 OID 382943)
+-- TOC entry 5553 (class 2606 OID 422207)
 -- Name: lc_tipologiaconstruccion lc_tipologiaconstruccion_tipo_tipologia_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21019,7 +21300,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_tipologiaconstruccion
 
 
 --
--- TOC entry 8804 (class 2606 OID 383025)
+-- TOC entry 5554 (class 2606 OID 422212)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_dimension_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21028,7 +21309,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8805 (class 2606 OID 383020)
+-- TOC entry 5555 (class 2606 OID 422217)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_lc_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21037,7 +21318,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8806 (class 2606 OID 383030)
+-- TOC entry 5556 (class 2606 OID 422222)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_relacion_superficie_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21046,7 +21327,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8807 (class 2606 OID 382990)
+-- TOC entry 5557 (class 2606 OID 422227)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_tipo_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21055,7 +21336,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8808 (class 2606 OID 382985)
+-- TOC entry 5558 (class 2606 OID 422232)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_tipo_dominio_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21064,7 +21345,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8809 (class 2606 OID 383000)
+-- TOC entry 5559 (class 2606 OID 422237)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_tipo_planta_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21073,7 +21354,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8810 (class 2606 OID 382995)
+-- TOC entry 5560 (class 2606 OID 422242)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_tipo_unidad_construccion_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21082,7 +21363,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8811 (class 2606 OID 383010)
+-- TOC entry 5561 (class 2606 OID 422247)
 -- Name: lc_unidadconstruccion lc_unidadconstruccion_uso_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21091,7 +21372,7 @@ ALTER TABLE ONLY test_ladm_col_queries.lc_unidadconstruccion
 
 
 --
--- TOC entry 8702 (class 2606 OID 382439)
+-- TOC entry 5562 (class 2606 OID 422252)
 -- Name: snr_derecho snr_derecho_calidad_derecho_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21100,7 +21381,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_derecho
 
 
 --
--- TOC entry 8703 (class 2606 OID 382444)
+-- TOC entry 5563 (class 2606 OID 422257)
 -- Name: snr_derecho snr_derecho_snr_fuente_derecho_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21109,7 +21390,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_derecho
 
 
 --
--- TOC entry 8704 (class 2606 OID 382449)
+-- TOC entry 5564 (class 2606 OID 422262)
 -- Name: snr_derecho snr_derecho_snr_predio_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21118,7 +21399,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_derecho
 
 
 --
--- TOC entry 8705 (class 2606 OID 382454)
+-- TOC entry 5565 (class 2606 OID 422267)
 -- Name: snr_estructuramatriculamatriz snr_estructuramatriclmtriz_snr_prdrgstr_l_nmblr_mtriz_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21127,7 +21408,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_estructuramatriculamatriz
 
 
 --
--- TOC entry 8706 (class 2606 OID 382459)
+-- TOC entry 5566 (class 2606 OID 422272)
 -- Name: snr_fuentecabidalinderos snr_fuentecabidalinderos_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21136,7 +21417,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_fuentecabidalinderos
 
 
 --
--- TOC entry 8707 (class 2606 OID 382464)
+-- TOC entry 5567 (class 2606 OID 422277)
 -- Name: snr_fuentederecho snr_fuentederecho_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21145,7 +21426,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_fuentederecho
 
 
 --
--- TOC entry 8710 (class 2606 OID 382479)
+-- TOC entry 5568 (class 2606 OID 422282)
 -- Name: snr_predioregistro snr_predioregistro_clase_suelo_registro_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21154,7 +21435,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_predioregistro
 
 
 --
--- TOC entry 8711 (class 2606 OID 382484)
+-- TOC entry 5569 (class 2606 OID 422287)
 -- Name: snr_predioregistro snr_predioregistro_snr_fuente_cabidalinderos_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21163,7 +21444,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_predioregistro
 
 
 --
--- TOC entry 8712 (class 2606 OID 382494)
+-- TOC entry 5572 (class 2606 OID 422292)
 -- Name: snr_titular_derecho snr_titular_derecho_snr_derecho_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21172,7 +21453,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular_derecho
 
 
 --
--- TOC entry 8713 (class 2606 OID 382489)
+-- TOC entry 5573 (class 2606 OID 422297)
 -- Name: snr_titular_derecho snr_titular_derecho_snr_titular_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21181,7 +21462,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular_derecho
 
 
 --
--- TOC entry 8708 (class 2606 OID 382474)
+-- TOC entry 5570 (class 2606 OID 422302)
 -- Name: snr_titular snr_titular_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21190,7 +21471,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular
 
 
 --
--- TOC entry 8709 (class 2606 OID 382469)
+-- TOC entry 5571 (class 2606 OID 422307)
 -- Name: snr_titular snr_titular_tipo_persona_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21199,7 +21480,7 @@ ALTER TABLE ONLY test_ladm_col_queries.snr_titular
 
 
 --
--- TOC entry 8812 (class 2606 OID 383035)
+-- TOC entry 5574 (class 2606 OID 422312)
 -- Name: t_ili2db_basket t_ili2db_basket_dataset_fkey; Type: FK CONSTRAINT; Schema: test_ladm_col_queries; Owner: postgres
 --
 
@@ -21207,7 +21488,7 @@ ALTER TABLE ONLY test_ladm_col_queries.t_ili2db_basket
     ADD CONSTRAINT t_ili2db_basket_dataset_fkey FOREIGN KEY (dataset) REFERENCES test_ladm_col_queries.t_ili2db_dataset(t_id) DEFERRABLE INITIALLY DEFERRED;
 
 
--- Completed on 2020-07-22 11:55:42 -05
+-- Completed on 2020-07-28 10:09:51 -05
 
 --
 -- PostgreSQL database dump complete

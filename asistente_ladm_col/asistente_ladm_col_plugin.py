@@ -319,7 +319,7 @@ class AsistenteLADMCOLPlugin(QObject):
             else:
                 self.unload()
                 self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                    "CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
+                    "'Origen Nacional' projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
 
     def configure_plugin_for_new_active_role(self):
         """

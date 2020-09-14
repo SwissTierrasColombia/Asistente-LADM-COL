@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 import os
+import sys
 from shutil import copyfile
 from sys import platform
 import subprocess
@@ -33,7 +33,6 @@ from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
-from ..config.query_names import QueryNames
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -194,13 +193,9 @@ def import_qgis_model_baker():
         qgis.utils.plugins["QgisModelBaker"] = pg
 
 def import_processing():
-    global iface
-    plugin_found = "processing" in qgis.utils.plugins
-    if not plugin_found:
-        processing_plugin = processing.classFactory(iface)
-        qgis.utils.plugins["processing"] = processing_plugin
-        qgis.utils.active_plugins.append("processing")
-
+    if not "processing" in qgis.utils.plugins:
+        sys.path.append("/usr/share/qgis/python/plugins/")
+        import processing
         from processing.core.Processing import Processing
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
@@ -232,22 +227,6 @@ def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
 
     return out_layer
 
-
-def get_required_fields(db_connection):
-    required_fields = list()
-    for key, value in db_connection.names.TABLE_DICT.items():
-        for key_field, value_field in value[QueryNames.FIELDS_DICT].items():
-            if key_field in db_connection.get_table_and_field_names():  # Both in names and in the DB
-                required_fields.append(value_field)
-    return required_fields
-
-
-def get_required_tables(db_connection):
-    required_tables = list()
-    for key, value in db_connection.names.TABLE_DICT.items():
-        if key in db_connection.get_table_and_field_names():  # Both in names and in the DB
-            required_tables.append(value[QueryNames.VARIABLE_NAME])
-    return required_tables
 
 def testdata_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))

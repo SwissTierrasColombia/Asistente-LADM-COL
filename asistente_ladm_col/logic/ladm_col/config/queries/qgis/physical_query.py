@@ -108,6 +108,7 @@ def get_igac_physical_query(names, ladm_units):
                                                                            names.POINT_BFS_T_LC_BOUNDARY_F)
                                                             ),
                 QueryNames.TABLE_FIELDS: [
+                    OwnField(names.LC_BOUNDARY_POINT_T_ID_F, "Nombre"),
                     EvalExpressionOwnField("Coordenadas", QgsExpression("$x || ' ' || $y || ' ' || z($geometry)"))]
             },
             '4' + QueryNames.LEVEL_TABLE: {

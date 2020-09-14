@@ -57,7 +57,7 @@ class DBConnector(QObject):
         self._should_update_db_mapping_values = True
 
         # Table/field names in the DB. Should be read only once per connector. Note: Only a list of names. No structure.
-        self.__table_and_field_names = list()
+        self.__flat_table_and_field_names_for_testing_names = list()
         
         if uri is not None:
             self.uri = uri
@@ -211,7 +211,7 @@ class DBConnector(QObject):
         """
         if not self.__db_mapping:
             self.__db_mapping = self.__get_db_mapping()
-            self._set_table_and_field_names_list()
+            self.__set_flat_table_and_field_names_for_testing_names()
 
         return self.__db_mapping
 
@@ -270,7 +270,7 @@ class DBConnector(QObject):
                 if colowner in dict_names:
                     dict_names[colowner][composed_key] = record['sqlname']
 
-        dict_names.update(self._get_ili2db_names())
+        dict_names.update(self._get_ili2db_names())  # Now add ili2db names like t_id, t_ili_id, t_basket, etc.
 
         return dict_names
 
@@ -357,10 +357,10 @@ class DBConnector(QObject):
         """
         self._should_update_db_mapping_values = True
 
-    def get_table_and_field_names(self):
-        return self.__table_and_field_names
+    def _get_flat_table_and_field_names_for_testing_names(self):
+        return self.__flat_table_and_field_names_for_testing_names
 
-    def _set_table_and_field_names_list(self):
+    def __set_flat_table_and_field_names_for_testing_names(self):
         """
         Fill table_and_field_names list. Unlike __db_mapping, this one has no hierarchical structure (it's a list).
 
@@ -370,10 +370,10 @@ class DBConnector(QObject):
         ili2db_keys = self.names.ili2db_names.values()
         for k,v in self.__db_mapping.items():
             if k not in ili2db_keys:  # ili2db names will be handled by Names class
-                self.__table_and_field_names.append(k)  # Table names
+                self.__flat_table_and_field_names_for_testing_names.append(k)  # Table names
                 for k1, v1 in v.items():
                     if k1 != QueryNames.TABLE_NAME:
-                        self.__table_and_field_names.append(k1)  # Field names
+                        self.__flat_table_and_field_names_for_testing_names.append(k1)  # Field names
 
     def check_db_models(self, required_models):
         res = True

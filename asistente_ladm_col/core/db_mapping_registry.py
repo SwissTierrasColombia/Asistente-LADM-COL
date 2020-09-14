@@ -24,7 +24,7 @@ from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
 
 
-class DBMappingRegistry():
+class DBMappingRegistry:
     """
     Names are dynamic because different DB engines handle different names, and because even in a single DB engine,
     one could shorten table and field names via ili2db.
@@ -133,7 +133,7 @@ class DBMappingRegistry():
         """
         Test whether required table/field names are present.
 
-        :param table_and_field_names: List of table and field names present in the db
+        :param table_and_field_names: Flat list (no structure) of table and field names present in the db
         :return: Tuple bool: Names are valid or not, string: Message to indicate what exactly failed
         """
         # Names that are mapped in the code
