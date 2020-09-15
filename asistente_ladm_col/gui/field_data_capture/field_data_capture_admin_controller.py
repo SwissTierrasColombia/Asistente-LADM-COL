@@ -22,6 +22,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExporter
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
@@ -82,7 +83,11 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
             if not res[0]:  # res: (bool, msg)
                 return res
 
-        return True, QCoreApplication.translate("FieldDataCaptureAdminController", "{} XTFs were succcessfully generated!").format(len(basket_dict))
+        return True, QCoreApplication.translate("FieldDataCaptureAdminController", "{count} XTFs were succcessfully generated in <a href='file:///{normalized_path}'>{path}</a>!").format(
+            count=len(basket_dict),
+            normalized_path=normalize_local_url(export_dir),
+            path=export_dir
+        )
 
     def get_basket_id_for_new_receiver(self):
         # 1. Make sure we've got the FDC dataset

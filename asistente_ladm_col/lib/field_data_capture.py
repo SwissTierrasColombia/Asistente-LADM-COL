@@ -30,6 +30,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class FieldDataCapture(QObject):
@@ -88,4 +89,7 @@ class FieldDataCapture(QObject):
             current_progress += 1
             self.total_progress_updated.emit(int(100*current_progress/total_projects))
 
-        return True, QCoreApplication.translate("FieldDataCapture", "{} offline projects have been successfully created!").format(total_projects)
+        return True, QCoreApplication.translate("FieldDataCapture", "{count} offline projects have been successfully created in <a href='file:///{normalized_path}'>{path}</a>!").format(
+            count=total_projects,
+            normalized_path=normalize_local_url(export_dir),
+            path=export_dir)
