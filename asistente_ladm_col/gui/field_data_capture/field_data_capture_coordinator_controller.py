@@ -74,20 +74,22 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         return res, msg
 
     def get_basket_id_for_new_receiver(self):
+        # At this point, the user table should only have 1 coordinator, so we are safe getting the unique basket value.
+        # The coordinator basket id will be used for the associated surveyors.
         basket_ids = self.user_layer().uniqueValues(self.user_layer().fields().indexOf(self._db.names.T_BASKET_F))
         basket_id = None
         msg = "Success!"
         if len(basket_ids) < 1:
             msg = QCoreApplication.translate("FieldDataCaptureCoordinatorController", "The field coordinator was not found in the user table, but it is required! No surveyor can be created.")
         elif len(basket_ids) > 1:
-            msg = QCoreApplication.translate("FieldDataCaptureCoordinatorController", "The user table has more than one basket value, but only one is required! No surveyor can be created.")
+            msg = QCoreApplication.translate("FieldDataCaptureCoordinatorController", "The user table has more than one basket value, but only one is required! No surveyor can be created. (Hint: Is there more than one coordinator? It shouldn't!)")
         else:  # == 1
             basket_id = basket_ids.pop()
 
         return basket_id, msg
 
-    def delete_receiver(self, receiver_t_id):
-        return self._ladm_data.delete_surveyor(self.db().names, receiver_t_id, self.user_layer())
+    def delete_receiver(self, receiver_id):
+        return self._ladm_data.delete_surveyor(self.db().names, receiver_id, self.user_layer())
 
     def get_count_of_not_allocated_parcels(self):
         return self._ladm_data.get_count_of_not_allocated_parcels_to_surveyors_field_data_capture(self.db().names,

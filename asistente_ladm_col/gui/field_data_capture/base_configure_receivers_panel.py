@@ -115,15 +115,16 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.logger.warning_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "First name, last name and document id are mandatory."))
 
     def delete_receiver(self):
-        selected_receiver_t_id = [item.data(Qt.UserRole) for item in self.tbl_receivers.selectedItems()]
-        if selected_receiver_t_id:
-            res = self._controller.delete_receiver(selected_receiver_t_id[0])
+        selected_receiver_id = [item.data(Qt.UserRole) for item in self.tbl_receivers.selectedItems()]
+        if selected_receiver_id:
+            res, msg = self._controller.delete_receiver(selected_receiver_id[0])
             if res:
-                self.logger.info_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "Receiver deleted!"))
+                self.logger.success_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "Receiver deleted!"))
                 self.fill_data()
             else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget",
-                                                                             "There was an error deleting the receiver."))
+                if not msg:
+                    msg = QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "There was an error deleting the receiver.")
+                self.logger.warning_msg(__name__, msg)
 
     def initialize_input_controls(self):
         self.txt_document_id.setText('')

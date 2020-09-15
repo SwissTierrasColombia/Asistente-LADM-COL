@@ -661,8 +661,8 @@ class LADMData(QObject):
         return [feature[t_id_name] for feature in layer.getFeatures(request)]
 
     @staticmethod
-    def get_fids_from_t_ids(layer, t_id_name, t_ids):
-        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(t_id_name, ",".join(str(t_id) for t_id in t_ids))))
+    def get_fids_from_key_values(layer, attribute_name, attribute_values):
+        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(attribute_name, ",".join(str(value) for value in attribute_values))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setNoAttributes()  # Note: this adds a new flag
 
@@ -1109,12 +1109,15 @@ class LADMData(QObject):
         return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type, full_name=True):
+    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type, full_name=True, extra_attr_name=''):
         receivers_data = dict()
-        # Filter by role
+        if not extra_attr_name:
+            extra_attr_name = names.FDC_USER_T_DOCUMENT_ID_F
+
+        # Filter by role (note that receiver_type should be the t_id of the 'user type' domain value)
         for feature in fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_DOCUMENT_TYPE_F, receiver_type)):
             receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
-                                                      feature[names.FDC_USER_T_DOCUMENT_ID_F])
+                                                      feature[extra_attr_name])
 
         return receivers_data
 
@@ -1128,10 +1131,56 @@ class LADMData(QObject):
         return fdc_user_layer.dataProvider().addFeatures([feature])
 
     @staticmethod
-    def delete_surveyor(names, surveyor_t_id, fdc_surveyor_layer):
-        return fdc_surveyor_layer.dataProvider().deleteFeatures(LADMData.get_fids_from_t_ids(fdc_surveyor_layer,
-                                                                                             names.T_ID_F,
-                                                                                             [surveyor_t_id]))
+    def __delete_receiver(attribute_name, attribute_value, fdc_user_layer):
+        return fdc_user_layer.dataProvider().deleteFeatures(LADMData.get_fids_from_key_values(fdc_user_layer,
+                                                                                              attribute_name,
+                                                                                              [attribute_value]))
+
+    @staticmethod
+    def delete_surveyor(names, receiver_id, fdc_user_layer):
+        res = LADMData.__delete_receiver(names.T_ID_F, receiver_id, fdc_user_layer)
+        msg = ''
+        if not res:
+            msg = QCoreApplication.translate("LADMData", "There was an error deleting the surveyor. (Hint: He/she could have associated parcels)")
+        return res, msg
+
+    def delete_coordinator(self, db, receiver_id, fdc_user_layer):
+        # To delete a coordinator, he/she cannot have associated surveyors.
+        # Once the coordinator is deleted, we attempt to delete his associated basket. If we cannot do it, we leave it
+        # there, his allocated objects will be reset next time the data is exported to XTF.
+        res = False
+        msg = ''
+
+        surveyor_type_code = self.get_domain_code_from_value(db,
+                                                             db.names.FDC_PARTY_DOCUMENT_TYPE_D,
+                                                             LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V)
+        # Get dict of all users that are surveyors: {t_id_1: (name_1, t_basket_1), ...}
+        surveyors = LADMData.get_fdc_receivers_data(db.names, fdc_user_layer, db.names.T_ID_F, surveyor_type_code, extra_attr_name=db.names.T_BASKET_F)
+        coordinator_surveyors = [str(k) for k,v in surveyors.items() if v[1] == receiver_id]
+
+        if not coordinator_surveyors:
+            self.logger.debug(__name__, "The coordinator (BID: {}) has no associated surveyors, so we can proceed deleting it.")
+            res = LADMData.__delete_receiver(db.names.T_BASKET_F, receiver_id, fdc_user_layer)
+
+            if res:  # Let's attempt to delete his associated basket from the db
+                basket_table = LADMData.get_basket_table(db)
+                basket_fid = LADMData.get_fids_from_key_values(basket_table, db.names.T_ID_F, [receiver_id])
+                res_basket = basket_table.dataProvider().deleteFeatures(basket_fid)
+                if not res_basket:  # Get rid of the error displayed by the provider in the message bar
+                    self.logger.clear_message_bar()
+                    self.logger.debug(__name__, "The basket () couldn't be deleted. It is probably used in a DB object (however, in the next export to XTF it will be replaced).".format(receiver_id))
+                else:
+                    self.logger.debug(__name__, "The associated basket () was deleted as well!".format(receiver_id))
+
+            else:  # The coordinator has no associated surveyors but couldn't be deleted
+                msg = QCoreApplication.translate("LADMData",
+                                                 "The coordinator cannot be removed. (Hint: He/she could have associated parcels)")
+        else:
+            self.logger.debug(__name__, "Surveyors found for coordinator (BID: {}): {}".format(receiver_id, ",".join(coordinator_surveyors)))
+            msg = QCoreApplication.translate("LADMData",
+                                             "This coordinator has {} associated surveyors. He/she needs to delete his surveyors before you can delete the coordinator!").format(len(coordinator_surveyors))
+
+        return res, msg
 
     @staticmethod
     def get_summary_of_allocation_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_user_layer):

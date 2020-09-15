@@ -102,8 +102,8 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
 
         return basket_t_id, "Success!"
 
-    def delete_receiver(self, receiver_t_id):
-        return self._ladm_data.delete_surveyor(self.db().names, receiver_t_id, self.user_layer())
+    def delete_receiver(self, receiver_id):
+        return self._ladm_data.delete_coordinator(self.db(), receiver_id, self.user_layer())
 
     def get_count_of_not_allocated_parcels(self):
         return self._ladm_data.get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(self.db().names,
