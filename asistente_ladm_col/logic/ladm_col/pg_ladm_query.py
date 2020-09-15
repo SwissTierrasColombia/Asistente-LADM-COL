@@ -1,4 +1,4 @@
-from asistente_ladm_col.config.mapping_config import QueryNames
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 from asistente_ladm_col.logic.ladm_col.config.queries.pg import (basic_query,

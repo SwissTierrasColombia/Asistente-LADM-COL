@@ -40,7 +40,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
-from asistente_ladm_col.config.role_config import ROLE_CONFIG
+from asistente_ladm_col.config.role_config import get_role_config
+from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
+from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
@@ -68,7 +70,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_RIGHT_SURVEY,
                                                       WIZARD_CREATE_RESTRICTION_SURVEY,
                                                       WIZARD_CREATE_SPATIAL_SOURCE_SURVEY,
-                                                      WIZARD_CREATE_PARCEL_SURVEY, WIZARD_CREATE_PLOT_SURVEY,
+                                                      WIZARD_CREATE_PARCEL_SURVEY,
+                                                      WIZARD_CREATE_PLOT_SURVEY,
                                                       WIZARD_CREATE_EXT_ADDRESS_SURVEY,
                                                       WIZARD_CREATE_RIGHT_OF_WAY_SURVEY,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
@@ -82,7 +85,11 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
+                                                      QFIELD_SYNC_PLUGIN_NAME,
+                                                      QFIELD_SYNC_MIN_REQUIRED_VERSION,
+                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION,
+                                                      QFIELD_SYNC_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -139,7 +146,9 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_layers_in_editing_mode_with_changes,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
-                                                 _survey_model_required)
+                                                 _survey_model_required,
+                                                 _field_data_capture_model_required,
+                                                 _qfield_sync_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -161,8 +170,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Register roles
         self.role_registry = RoleRegistry()
-        for role_key, role_config in ROLE_CONFIG.items():
-            self.role_registry.register_role(role_key, role_config)
+        for role_key, role_config in get_role_config().items():
+            if ROLE_ENABLED in role_config and role_config[ROLE_ENABLED]:
+                self.role_registry.register_role(role_key, role_config)
 
         # Create member objects
         self.main_window = self.iface.mainWindow()
@@ -193,6 +203,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                            MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+        self.qfs_plugin = PluginDependency(QFIELD_SYNC_PLUGIN_NAME,
+                                           QFIELD_SYNC_MIN_REQUIRED_VERSION,
+                                           QFIELD_SYNC_EXACT_REQUIRED_VERSION,
+                                           QFIELD_SYNC_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -211,7 +225,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.set_core_interface(AppCoreInterface())
         self.app.set_gui_interface(AppGUIInterface(self.iface))
 
-        self.right_of_way = RightOfWay(self.iface, self.get_db_connection().names)
+        self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
         self.report_generator = ReportGenerator(self.ladm_data)
@@ -233,11 +247,12 @@ class AsistenteLADMCOLPlugin(QObject):
             self.configure_plugin_for_new_active_role()
             self.initialize_requirements()
 
-        # Add LADM-COL provider, models and sripts to QGIS
+        # Add LADM-COL provider, models and scripts to QGIS
         self.initialize_processing_resources()
 
     def create_actions(self):
         self.create_supplies_actions()
+        self.create_field_data_capture_actions()
         self.create_survey_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
@@ -314,12 +329,19 @@ class AsistenteLADMCOLPlugin(QObject):
         # Update supported models
         self.model_registry.refresh_models_for_role()
 
+        # Update db mappings in the registry
+        # self.get_db_connection().names.refresh_mapping_for_role()
+
+        # Let the DB know it has to reset db mapping registry values (deferred until the next test_connection call)
+        self.get_db_connection().reset_db_mapping_values()
+
         # Call refresh gui adding proper parameters
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 
     def refresh_gui(self, db, res, db_source):
         """
-        Refreshes the plugin's GUI after a new user is active or a db connection has changed
+        Refresh the plugin's GUI after a new user is active or a db connection has changed
+
         :param db: DBConnector object
         :param res: Whether the DB is LADM-COL compliant or not
         :param db_source: Whether the db source is COLLECTED or SUPPLIES
@@ -410,6 +432,24 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_SUPPLIES: self._etl_supplies_action,
                                            ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
+
+    def create_field_data_capture_actions(self):
+        self._allocate_parcels_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
+            self.main_window)
+
+        self._synchronize_field_data_action = QAction(
+            QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronize field data"),
+            self.main_window)
+
+        # Connections
+        self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
+        self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
+
+        #self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
+        #                                   ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
 
     def create_survey_actions(self):
         self._point_surveying_and_representation_survey_action = QAction(
@@ -905,6 +945,40 @@ class AsistenteLADMCOLPlugin(QObject):
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
+
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_qfield_sync_required
+    @_db_connection_required
+    @_field_data_capture_model_required
+    def show_allocate_parcels_field_data_capture(self, *args):
+        self.show_field_data_capture_dockwidget(True)
+
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_qfield_sync_required
+    @_db_connection_required
+    @_field_data_capture_model_required
+    def show_synchronize_field_data(self):
+        self.show_field_data_capture_dockwidget(False)
+
+    def show_field_data_capture_dockwidget(self, allocate=True):
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_FIELD_DATA_CAPTURE])
+
+        if self.role_registry.get_active_role() == FIELD_COORDINATOR_ROLE:
+            dock_widget_field_data_capture = DockWidgetFieldDataCaptureCoordinatorSurveyor(self.iface,
+                                                                                           self.get_db_connection(),
+                                                                                           self.ladm_data,
+                                                                                           allocate_mode=allocate)
+        else:  # FIELD_ADMIN_ROLE OR ADVANCED_ROLE!
+            dock_widget_field_data_capture = DockWidgetFieldDataCaptureAdminCoordinator(self.iface,
+                                                                                           self.get_db_connection(),
+                                                                                           self.ladm_data,
+                                                                                           allocate_mode=allocate)
+
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
+        self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

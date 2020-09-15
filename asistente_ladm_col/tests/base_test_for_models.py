@@ -1,5 +1,6 @@
 from abc import ABC
 
+from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 
 
@@ -21,6 +22,9 @@ class BaseTestForModels(ABC):
     @classmethod
     def get_connector(cls) -> DBConnector:
         raise NotImplementedError
+
+    def get_ili2db_names_count(self):
+        return len(self.db.names.ili2db_names)
 
     def get_required_field_list(self):
         raise NotImplementedError
@@ -67,7 +71,7 @@ class BaseTestForModels(ABC):
         res, code, msg = self.db.test_connection()
         self.assertTrue(res, msg)
 
-        dict_names = self.db.get_table_and_field_names()
+        dict_names = self.db.get_db_mapping()
 
         self.assertEqual(len(dict_names), self.get_expected_table_and_fields_length())
 
@@ -96,8 +100,8 @@ class BaseTestForModels(ABC):
         # Get all field variables mapped from the db table and fields
         required_fields = list()
         for key, value in cls.db.names.TABLE_DICT.items():
-            for key_field, value_field in value[cls.db.names.FIELDS_DICT].items():
-                if getattr(cls.db.names, value_field):
+            for key_field, value_field in value[QueryNames.FIELDS_DICT].items():
+                if getattr(cls.db.names, value_field, False):
                     required_fields.append(value_field)
         return required_fields
 
@@ -106,8 +110,8 @@ class BaseTestForModels(ABC):
         # Get all table variables mapped from the db table and fields
         required_tables = list()
         for key, value in cls.db.names.TABLE_DICT.items():
-            if getattr(cls.db.names, value[cls.db.names.VARIABLE_NAME]):
-                required_tables.append(value[cls.db.names.VARIABLE_NAME])
+            if getattr(cls.db.names, value[QueryNames.VARIABLE_NAME], False):
+                required_tables.append(value[QueryNames.VARIABLE_NAME])
         return required_tables
 
     @classmethod

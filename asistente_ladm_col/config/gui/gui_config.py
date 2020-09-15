@@ -169,6 +169,17 @@ class GUI_Config(QObject):
                     ]
                 },
                 SEPARATOR,
+                {
+                    WIDGET_TYPE: MENU,
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field data capture"),
+                    OBJECT_NAME: "field_data_capture_menu",
+                    ICON: FIELD_DATA_CAPTURE_ICON,
+                    ACTIONS: [
+                        ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+                        ACTION_SYNCHRONIZE_FIELD_DATA
+                    ]
+                },
+                SEPARATOR,
                 ACTION_CHECK_QUALITY_RULES,
                 ACTION_PARCEL_QUERY,
                 {

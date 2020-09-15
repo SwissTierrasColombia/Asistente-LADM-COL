@@ -33,6 +33,7 @@ from qgis.core import (QgsVectorLayerUtils,
                        edit)
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.app_interface import AppInterface
@@ -113,7 +114,7 @@ class CreateGroupPartySurvey(QDialog, DIALOG_UI):
         return layers_are_available
 
     def load_parties_data(self):
-        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names)[self.names.LC_PARTY_T])
+        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names, [LADMNames.SURVEY_MODEL_KEY])[self.names.LC_PARTY_T])
         context = QgsExpressionContext()
         data = dict()
         for feature in self._layers[self.names.LC_PARTY_T].getFeatures():

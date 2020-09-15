@@ -5,13 +5,9 @@ import nose2
 
 from qgis.testing import start_app
 
-start_app() # need to start before asistente_ladm_col.tests.utils
+start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.mapping_config import (ILICODE_KEY,
-                                                      T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DESCRIPTION_KEY,
-                                                      DISPLAY_NAME_KEY)
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
@@ -61,7 +57,7 @@ class BaseTestSNRDataModel(BaseTestForModels, ABC):
                      'Submodelo_Insumos_SNR.Datos_SNR.snr_titular_derecho.snr_titular..Submodelo_Insumos_SNR.Datos_SNR.SNR_Titular': 'snr_titular'}}
 
     def get_expected_table_and_fields_length(self):
-        return 18
+        return self.get_ili2db_names_count() + 13
 
 
 class TestSNRDataModelPG(BaseTestSNRDataModel, unittest.TestCase):

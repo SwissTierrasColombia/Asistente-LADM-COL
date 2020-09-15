@@ -18,8 +18,7 @@
 
 from copy import deepcopy
 
-from qgis.PyQt.QtCore import (QSettings,
-                              QObject,
+from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.app_interface import AppInterface
@@ -56,13 +55,15 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
 
     def register_role(self, role_key, role_dict):
         """
-        Register roles for the LADM-COL assistant. Roles have access only to certain GUI controls.
+        Register roles for the LADM-COL assistant. Roles have access only to certain GUI controls, to
+        certain LADM-COL models and to certain quality rules.
 
         :param role_key: Role unique identifier
         :param role_dict: Dictionary with the following information:
                 ROLE_NAME: Name of the role
                 ROLE_DESCRIPTION: Explains what this role is about
                 ROLE_ACTIONS: List of actions a role has access to
+                ROLE_MODELS: List of models and their configuration for the current role
         :return: Whether the role was successfully registered or not.
         """
         valid = False
@@ -149,11 +150,19 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         return self._registered_roles[role_key][ROLE_GUI_CONFIG]
 
     def get_role_models(self, role_key):
+        """
+        Normally you wouldn't need this but LADMColModelRegistry, which is anyway updated when the role changes
+        """
         if role_key not in self._registered_roles:
             self.logger.error(__name__, "Role '{}' was not found, returning default role's models.".format(role_key))
             role_key = self._default_role
 
         return self._registered_roles[role_key][ROLE_MODELS]
+
+    def get_active_role_supported_models(self):
+        role_key = self.get_active_role()
+        role_models = self.get_role_models(role_key)
+        return role_models[ROLE_SUPPORTED_MODELS]
 
     def get_role_quality_rules(self, role_key):
         if role_key not in self._registered_roles:

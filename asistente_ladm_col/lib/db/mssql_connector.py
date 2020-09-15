@@ -22,19 +22,15 @@ from pyodbc import (ProgrammingError, InterfaceError)
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import Qgis
 
-from asistente_ladm_col.config.general_config import (PLUGIN_NAME, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME)
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     ClientServerDB)
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DISPLAY_NAME_KEY,
-                                                      ILICODE_KEY,
-                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.config.keys.ili2db_keys import *
 
 
 class MSSQLConnector(ClientServerDB):
@@ -136,7 +132,7 @@ class MSSQLConnector(ClientServerDB):
                 WHERE TABLE_TYPE = 'BASE TABLE'
                 AND TABLE_SCHEMA = '{}'
                     AND TABLE_NAME = '{}'
-            """.format(self.schema, LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
             return bool(cur.fetchone()[0])
 
@@ -467,10 +463,10 @@ class MSSQLConnector(ClientServerDB):
             return res, code, msg
 
         # Validate table and field names
-        if not self._table_and_field_names:
+        if self._should_update_db_mapping_values:
             self._initialize_names()
 
-        res, msg = self.names.test_names(self._table_and_field_names)
+        res, msg = self.names.test_names(self._get_flat_table_and_field_names_for_testing_names())
         if not res:
             return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("MSSQLConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(
@@ -519,7 +515,7 @@ class MSSQLConnector(ClientServerDB):
 
         return res if is_success else None
 
-    def _get_common_db_names(self):
+    def _get_ili2db_names(self):
         dict_names = dict()
         # Add required key-value pairs that do not come from the DB query
         dict_names[T_ID_KEY] = "T_Id"
@@ -527,6 +523,13 @@ class MSSQLConnector(ClientServerDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[T_BASKET_KEY] = "t_basket"
+        dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
+        dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"
+        dict_names[DATASET_T_DATASETNAME_KEY] = "datasetname"
+        dict_names[BASKET_T_DATASET_KEY] = "dataset"
+        dict_names[BASKET_T_TOPIC_KEY] = "topic"
+        dict_names[BASKET_T_ATTACHMENT_KEY] = "attachmentkey"
 
         return dict_names
 
@@ -539,3 +542,33 @@ class MSSQLConnector(ClientServerDB):
             result = True
 
         return result
+
+    def get_qgis_layer_uri(self, table_name):
+        def get_layer_uri_common(uri):
+            # Borrowed from QgisModelBaker/libqgsprojectgen/db_factory/mssql_layer_uri.py
+            param_db = dict()
+            lst_item = uri.split(';')
+            for item in lst_item:
+                key_value = item.split('=')
+                if len(key_value) == 2:
+                    key = key_value[0].strip()
+                    value = key_value[1].strip()
+                    param_db[key] = value
+
+            uri = 'service=\'driver={drv}\' dbname=\'{database}\' host={server} user=\'{uid}\' password=\'{pwd}\' '.format(
+                drv=param_db['DRIVER'],
+                database=param_db['DATABASE'],
+                server=param_db['SERVER'],
+                uid=param_db['UID'],
+                pwd=param_db['PWD']
+            )
+
+            return uri
+
+        data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid=0 table="{schema}"."{table}" sql='.format(
+            uri=get_layer_uri_common(self.uri),
+            primary_key=self.names.T_ID_F,
+            schema=self.schema,
+            table=table_name
+        )
+        return data_source_uri

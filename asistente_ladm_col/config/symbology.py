@@ -1,6 +1,7 @@
 from qgis.core import QgsWkbTypes
 
 from asistente_ladm_col.config.enums import EnumQualityRule
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_TABLE_NAME,
                                                             QUALITY_RULES,
                                                             QualityRuleConfig)
@@ -8,17 +9,43 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_TABLE_N
 
 class Symbology:
     @staticmethod
-    def get_default_style_group(names):
-         return {
-             names.LC_BOUNDARY_T: 'style_boundary',
-             names.LC_BOUNDARY_POINT_T: 'style_boundary_point',
-             names.LC_SURVEY_POINT_T: 'style_survey_point',
-             names.LC_CONTROL_POINT_T: 'style_control_point',
-             names.LC_PLOT_T: 'style_plot_polygon',
-             names.LC_BUILDING_T: 'style_building',
-             names.LC_BUILDING_UNIT_T: 'style_building_unit_25',
-             names.LC_RIGHT_OF_WAY_T: 'style_right_of_way'
-        }
+    def get_default_style_group(names, models):
+        style_dict = dict()
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                if getattr(names, "LC_BOUNDARY_T", None):
+                    style_dict[names.LC_BOUNDARY_T] = 'style_boundary'
+                if getattr(names, "LC_BOUNDARY_POINT_T", None):
+                    style_dict[names.LC_BOUNDARY_POINT_T] = 'style_boundary_point'
+                if getattr(names, "LC_SURVEY_POINT_T", None):
+                    style_dict[names.LC_SURVEY_POINT_T] = 'style_survey_point'
+                if getattr(names, "LC_CONTROL_POINT_T", None):
+                    style_dict[names.LC_CONTROL_POINT_T] = 'style_control_point'
+                if getattr(names, "LC_PLOT_T", None):
+                    style_dict[names.LC_PLOT_T] = 'style_plot_polygon'
+                if getattr(names, "LC_BUILDING_T", None):
+                    style_dict[names.LC_BUILDING_T] = 'style_building'
+                if getattr(names, "LC_BUILDING_UNIT_T", None):
+                    style_dict[names.LC_BUILDING_UNIT_T] = 'style_building_unit_25'
+                if getattr(names, "LC_RIGHT_OF_WAY_T", None):
+                    style_dict[names.LC_RIGHT_OF_WAY_T] = 'style_right_of_way'
+            elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                if getattr(names, "FDC_BOUNDARY_T", None):
+                    style_dict[names.FDC_BOUNDARY_T] = 'style_boundary'
+                if getattr(names, "FDC_BOUNDARY_POINT_T", None):
+                    style_dict[names.FDC_BOUNDARY_POINT_T] = 'style_boundary_point'
+                if getattr(names, "FDC_SURVEY_POINT_T", None):
+                    style_dict[names.FDC_SURVEY_POINT_T] = 'style_survey_point'
+                if getattr(names, "FDC_CONTROL_POINT_T", None):
+                    style_dict[names.FDC_CONTROL_POINT_T] = 'style_control_point'
+                if getattr(names, "FDC_PLOT_T", None):
+                    style_dict[names.FDC_PLOT_T] = 'style_plot_polygon'
+                if getattr(names, "FDC_BUILDING_T", None):
+                    style_dict[names.FDC_BUILDING_T] = 'style_building'
+                if getattr(names, "FDC_BUILDING_UNIT_T", None):
+                    style_dict[names.FDC_BUILDING_UNIT_T] = 'style_building_unit_25'
+
+        return style_dict
 
     @staticmethod
     def get_style_group_layer_modifiers(names):

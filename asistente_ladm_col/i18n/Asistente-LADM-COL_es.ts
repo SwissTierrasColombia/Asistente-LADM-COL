@@ -114,6 +114,23 @@
     </message>
 </context>
 <context>
+    <name>AllocateParcelsFieldDataCapturePanelWidget</name>
+    <message>
+        <location filename="../gui/field_data_capture/allocate_parcels_initial_panel.py" line="34"/>
+        <location filename="../gui/field_data_capture/allocate_parcels_initial_panel.py" line="35"/>
+        <source>Allocate parcels</source>
+        <translation>Asignar predios</translation>
+    </message>
+</context>
+<context>
+    <name>AllocateParcelsToSurveyorPanelWidget</name>
+    <message>
+        <location filename="../gui/field_data_capture/allocate_parcels_to_surveyor_panel.py" line="34"/>
+        <source>Allocate parcels to surveyor</source>
+        <translation>Asignar predios a reconocedor</translation>
+    </message>
+</context>
+<context>
     <name>AppCoreInterface</name>
     <message>
         <location filename="../core/app_core_interface.py" line="134"/>
@@ -305,12 +322,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="451"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="471"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="455"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="475"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -356,19 +373,24 @@
         <translation>Gestión de insumos</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="225"/>
+        <location filename="../config/gui/gui_config.py" line="174"/>
+        <source>Field data capture</source>
+        <translation>Captura de datos en campo</translation>
+    </message>
+    <message>
+        <location filename="../config/gui/gui_config.py" line="236"/>
         <location filename="../config/role_config.py" line="23"/>
-        <location filename="../config/role_config.py" line="152"/>
+        <location filename="../config/role_config.py" line="177"/>
         <source>Create Survey objects</source>
         <translation>Crear objetos de Levantamiento</translation>
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="39"/>
-        <location filename="../config/gui/gui_config.py" line="199"/>
-        <location filename="../config/gui/gui_config.py" line="216"/>
+        <location filename="../config/gui/gui_config.py" line="210"/>
+        <location filename="../config/gui/gui_config.py" line="227"/>
         <location filename="../config/role_config.py" line="77"/>
-        <location filename="../config/role_config.py" line="100"/>
-        <location filename="../config/role_config.py" line="143"/>
+        <location filename="../config/role_config.py" line="125"/>
+        <location filename="../config/role_config.py" line="168"/>
         <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
@@ -377,7 +399,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="425"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="445"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -386,7 +408,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="589"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="609"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -404,34 +426,44 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="399"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="401"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="417"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="419"/>
+        <source>Allocate parcels</source>
+        <translation>Asignar predios</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="424"/>
+        <source>Synchronize field data</source>
+        <translation>Sincronizar datos de campo</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="421"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="449"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="433"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="544"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="453"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="564"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="446"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="540"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="466"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="560"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -444,17 +476,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="467"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="487"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="493"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="497"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -467,17 +499,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="460"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="480"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="464"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="484"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="482"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="502"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -514,12 +546,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="587"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="607"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="609"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="629"/>
         <location filename="../utils/decorators.py" line="89"/>
         <location filename="../utils/decorators.py" line="249"/>
         <location filename="../utils/decorators.py" line="284"/>
@@ -528,12 +560,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="612"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="632"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="614"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="634"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -571,11 +603,12 @@
     </message>
     <message>
         <location filename="../config/gui/gui_config.py" line="52"/>
-        <location filename="../config/gui/gui_config.py" line="212"/>
+        <location filename="../config/gui/gui_config.py" line="223"/>
         <location filename="../config/role_config.py" line="9"/>
         <location filename="../config/role_config.py" line="73"/>
-        <location filename="../config/role_config.py" line="96"/>
-        <location filename="../config/role_config.py" line="139"/>
+        <location filename="../config/role_config.py" line="95"/>
+        <location filename="../config/role_config.py" line="121"/>
+        <location filename="../config/role_config.py" line="164"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
@@ -584,63 +617,64 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="620"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="603"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="623"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="606"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="626"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="176"/>
-        <location filename="../config/role_config.py" line="126"/>
+        <location filename="../config/gui/gui_config.py" line="187"/>
+        <location filename="../config/role_config.py" line="105"/>
+        <location filename="../config/role_config.py" line="151"/>
         <source>Reports</source>
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="612"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="616"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="457"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="293"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="295"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="307"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="309"/>
         <source>CTM12 could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="328"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="330"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="381"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="383"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="385"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="387"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -649,27 +683,27 @@
         <translation type="vanished">Cargar datos de Cobol</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="406"/>
         <source>Find missing Cobol supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="461"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="487"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="507"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="573"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="593"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1517"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -690,22 +724,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1295"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1335"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1306"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1346"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1414"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1454"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1415"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1455"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -714,7 +748,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="531"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="551"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -739,34 +773,34 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="548"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="568"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="552"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="572"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="556"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="576"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
     <message>
-        <location filename="../config/gui/gui_config.py" line="187"/>
+        <location filename="../config/gui/gui_config.py" line="198"/>
         <source>Change detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="569"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="768"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="589"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="788"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="571"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="773"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="591"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="793"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -775,7 +809,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="757"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="777"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -998,7 +1032,7 @@
         <translation>Herramientas de estructuración</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="197"/>
+        <location filename="../config/role_config.py" line="228"/>
         <source>Basic</source>
         <translation>Básico</translation>
     </message>
@@ -1007,7 +1041,7 @@
         <translation type="vanished">El rol &lt;b&gt;Básico&lt;/b&gt; te permite explorar las principales funcionalidades del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="237"/>
+        <location filename="../config/role_config.py" line="268"/>
         <source>Supplies Provider</source>
         <translation>Proveedor de Insumos</translation>
     </message>
@@ -1016,7 +1050,7 @@
         <translation type="vanished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="260"/>
+        <location filename="../config/role_config.py" line="305"/>
         <source>Operator</source>
         <translation>Operador</translation>
     </message>
@@ -1025,12 +1059,12 @@
         <translation type="vanished">El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="114"/>
+        <location filename="../config/role_config.py" line="139"/>
         <source>Change Detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="198"/>
+        <location filename="../config/role_config.py" line="229"/>
         <source>The &lt;b&gt;Basic&lt;/b&gt; role helps you to explore the LADM-COL assistant main functionalities.&lt;br&gt;&lt;br&gt;This is the &lt;b&gt;recommended role&lt;/b&gt; if you are just getting started with the LADM-COL assistant.</source>
         <translation>El rol &lt;b&gt;Básico&lt;/b&gt; te permite explorar las principales funcionalidades del Asistente LADM-COL.&lt;br&gt;&lt;br&gt;Este es el &lt;b&gt;rol recomendado&lt;/b&gt; si estás empezando a usar el Asistente LADM-COL.</translation>
     </message>
@@ -1039,27 +1073,37 @@
         <translation type="vanished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="238"/>
+        <location filename="../config/role_config.py" line="269"/>
         <source>The &lt;b&gt;Supplies Provider&lt;/b&gt; role generates a XTF file with supplies data for the operators.</source>
         <translation>El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de insumos para los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="261"/>
+        <location filename="../config/role_config.py" line="291"/>
+        <source>Field coordinator</source>
+        <translation>Coordinador de captura en campo</translation>
+    </message>
+    <message>
+        <location filename="../config/role_config.py" line="292"/>
+        <source>The &lt;b&gt;field coordinator&lt;/b&gt; assigns parcel sets to surveyors and synchronizes back the data they collected in the field.</source>
+        <translation>El &lt;b&gt;coordinador de captura en campo&lt;/b&gt; le asigna predios a los reconocedores y sincroniza los datos que levantan en campo.</translation>
+    </message>
+    <message>
+        <location filename="../config/role_config.py" line="306"/>
         <source>The &lt;b&gt;Operator&lt;/b&gt; is in charge of capturing current cadastral data.</source>
         <translation>El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="299"/>
+        <location filename="../config/role_config.py" line="344"/>
         <source>Manager</source>
         <translation>Gestor</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="300"/>
+        <location filename="../config/role_config.py" line="345"/>
         <source>The &lt;b&gt;Manager&lt;/b&gt; is in charge of preparing supplies for operators as well as validating and managing the data provided by operators.</source>
         <translation>El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="319"/>
+        <location filename="../config/role_config.py" line="364"/>
         <source>The &lt;b&gt;Advanced&lt;/b&gt; role has access to all the functionality.</source>
         <translation>El rol &lt;b&gt;Avanzado&lt;/b&gt; tiene acceso a todas las funcionalidades del Asistente LADM-COL.</translation>
     </message>
@@ -1072,7 +1116,7 @@
         <translation type="vanished">El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="318"/>
+        <location filename="../config/role_config.py" line="363"/>
         <source>Advanced</source>
         <translation>Avanzado</translation>
     </message>
@@ -1472,6 +1516,14 @@
     <message>
         <source>MS SQL Server could not be configured. There is not any odbc driver installed</source>
         <translation type="vanished">No se pudo configurar MS SQL Server. ¡No hay ningún controlador ODBC instalado!</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigureSurveyorsPanelWidget</name>
+    <message>
+        <location filename="../gui/field_data_capture/configure_surveyors_panel.py" line="35"/>
+        <source>Configure surveyors</source>
+        <translation>Configurar reconocedores</translation>
     </message>
 </context>
 <context>
@@ -1971,12 +2023,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1201"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1241"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1203"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1243"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -4612,6 +4664,11 @@ p, li { white-space: pre-wrap; }
         <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
+    <message>
+        <location filename="../ui/field_data_capture/dockwidget_field_data_capture.ui" line="20"/>
+        <source>Field data capture</source>
+        <translation>Captura de datos en campo</translation>
+    </message>
 </context>
 <context>
     <name>DockWidgetChangeDetection</name>
@@ -4672,6 +4729,14 @@ p, li { white-space: pre-wrap; }
         <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="469"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
+    </message>
+</context>
+<context>
+    <name>DockWidgetFieldDataCapture</name>
+    <message>
+        <location filename="../gui/field_data_capture/dockwidget_field_data_capture.py" line="105"/>
+        <source>&apos;Field data capture&apos; has been closed because you just removed a required layer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4814,6 +4879,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/change_detection/changes_all_parcels_panel_widget.ui" line="60"/>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="140"/>
         <source>Número predial</source>
         <translation>Número predial</translation>
     </message>
@@ -4821,6 +4887,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../ui/change_detection/changes_all_parcels_panel_widget.ui" line="65"/>
         <location filename="../ui/change_detection/changes_parties_panel_widget.ui" line="58"/>
         <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="239"/>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="145"/>
         <source>Estado</source>
         <translation>Estado</translation>
     </message>
@@ -5254,6 +5321,46 @@ Rol:</translation>
         <location filename="../ui/supplies/snc_data_source_widget.ui" line="32"/>
         <source>Ficha matriz torre</source>
         <translation>Ficha matriz torre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="14"/>
+        <source>Initial Panel Widget Allocate Parcels</source>
+        <translation>Panel inicial de asignación de predios</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="22"/>
+        <source>Generate offline projects</source>
+        <translation>Generar proyectos para captura en campo</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="36"/>
+        <source>Show summary</source>
+        <translation>Mostrar resumen de asignación</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="73"/>
+        <source>Reallocate selected parcels</source>
+        <translation>Quitar la asignación a los predios seleccionados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="87"/>
+        <source>Allocate selected parcels</source>
+        <translation>Asignar los predios seleccionados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="103"/>
+        <source>Show only not allocated parcels</source>
+        <translation>Mostrar solo los predios no asignados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="153"/>
+        <source>Search by parcel code...</source>
+        <translation>Buscar por número predial...</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_initial_panel_widget.ui" line="183"/>
+        <source>Configure surveyors</source>
+        <translation>Configurar reconocedores</translation>
     </message>
 </context>
 <context>
@@ -5997,12 +6104,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="868"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="888"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="872"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="892"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6803,17 +6910,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="835"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="855"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="843"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="863"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="855"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="875"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -9999,39 +10106,44 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">LADM COL</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="183"/>
+        <location filename="../config/ladm_names.py" line="184"/>
         <source>SNR data</source>
         <translation>Submodelo de Insumos de la SNR</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="176"/>
+        <location filename="../config/ladm_names.py" line="177"/>
         <source>Supplies</source>
         <translation>Submodelo de Insumos del Gestor Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="162"/>
+        <location filename="../config/ladm_names.py" line="163"/>
         <source>LADM-COL</source>
         <translation>Modelo LADM-COL</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="169"/>
+        <location filename="../config/ladm_names.py" line="170"/>
         <source>Survey</source>
         <translation>Modelo de aplicación de Levantamiento Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="190"/>
+        <location filename="../config/ladm_names.py" line="191"/>
         <source>Supplies integration data</source>
         <translation>Submodelo de Integración de Insumos</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="197"/>
+        <location filename="../config/ladm_names.py" line="198"/>
         <source>Reference cadastral cartography</source>
         <translation>Submodelo de Cartografía Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="211"/>
+        <location filename="../config/ladm_names.py" line="212"/>
         <source>ISO19107</source>
         <translation>Modelo ISO 19107</translation>
+    </message>
+    <message>
+        <location filename="../config/ladm_names.py" line="219"/>
+        <source>Field data capture</source>
+        <translation>Modelo de Captura de Datos en Campo</translation>
     </message>
     <message>
         <source>Operation</source>
@@ -10050,7 +10162,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Cartografía de referencia</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="204"/>
+        <location filename="../config/ladm_names.py" line="205"/>
         <source>Valuation</source>
         <translation>Submodelo de Avalúos</translation>
     </message>
@@ -11884,6 +11996,101 @@ p, li { white-space: pre-wrap; }
         <location filename="../ui/transitional_system/tasks_widget.ui" line="91"/>
         <source>Close Task</source>
         <translation>Finalizar tarea</translation>
+    </message>
+</context>
+<context>
+    <name>wid_allocate_to_operator</name>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="14"/>
+        <source>Panel Widget Allocate to Operator</source>
+        <translation>Panel widget asignar a reconocedor</translation>
+    </message>
+    <message>
+        <source>Operator</source>
+        <translation type="obsolete">Operador</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="22"/>
+        <source>Surveyor</source>
+        <translation>Reconocedor</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="54"/>
+        <source>0 already allocated</source>
+        <translation>0 predios ya asignados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="78"/>
+        <source>0 to be allocated</source>
+        <translation>0 predios a ser asignados</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="117"/>
+        <source>Número predial</source>
+        <translation>Número predial</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="122"/>
+        <source>Estado</source>
+        <translation>Estado</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="145"/>
+        <source>Discard selection</source>
+        <translation>Descartar</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/allocate_parcels_to_surveyor.ui" line="156"/>
+        <source>Save allocation</source>
+        <translation>Guardar asignación</translation>
+    </message>
+</context>
+<context>
+    <name>wid_configure_surveyors</name>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="14"/>
+        <source>Panel Widget Configure Surveyors</source>
+        <translation>Panel widget configurar reconocedores</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="22"/>
+        <source>First name</source>
+        <translation>Primer nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="32"/>
+        <source>Second name</source>
+        <translation>Segundo nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="42"/>
+        <source>First last name</source>
+        <translation>Primer apellido</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="52"/>
+        <source>Second last name</source>
+        <translation>Segundo apellido</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="92"/>
+        <source>Add surveyor</source>
+        <translation>Agregar reconocedor</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="154"/>
+        <source>Name</source>
+        <translation>Nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="159"/>
+        <source>Document</source>
+        <translation>Documento</translation>
+    </message>
+    <message>
+        <location filename="../ui/field_data_capture/configure_surveyors.ui" line="196"/>
+        <source>Save surveyors</source>
+        <translation>Guardar reconocedores</translation>
     </message>
 </context>
 <context>

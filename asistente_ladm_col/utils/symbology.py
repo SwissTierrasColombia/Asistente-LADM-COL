@@ -40,7 +40,7 @@ class SymbologyUtils(QObject):
         QObject.__init__(self)
         self.logger = Logger()
 
-    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict()):  # TODO: Add tests
+    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict(), models=list()):  # TODO: Add tests
         if db is None:
             self.logger.critical(__name__, "DB connection is none. Style not set.")
             return
@@ -60,7 +60,7 @@ class SymbologyUtils(QObject):
                     qml_name = style_group_modifiers.get(layer_name)
 
             if not qml_name:  # If None or empty string, we use default styles
-                qml_name = Symbology().get_default_style_group(db.names).get(layer_name)
+                qml_name = Symbology().get_default_style_group(db.names, models).get(layer_name)
 
         else:
             style_custom_error_layers = Symbology().get_custom_error_layers()

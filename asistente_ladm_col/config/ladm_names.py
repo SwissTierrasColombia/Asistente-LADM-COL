@@ -1,5 +1,6 @@
-from PyQt5.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.utils.singleton import Singleton
 
 MODEL_ALIAS = "MODEL_ALIAS"
@@ -7,11 +8,12 @@ MODEL_IS_SUPPORTED = "MODEL_IS_SUPPORTED"
 MODEL_SUPPORTED_VERSION = "MODEL_SUPPORTED_VERSION"
 MODEL_HIDDEN_BY_DEFAULT = "MODEL_HIDDEN_BY_DEFAULT"
 MODEL_CHECKED_BY_DEFAULT = "MODEL_CHECKED_BY_DEFAULT"
+MODEL_ILI2DB_PARAMETERS = "MODEL_ILI2DB_PARAMETERS"
 
 
 class LADMNames(metaclass=Singleton):
     """
-    Singleton to handle domain values ('which are not dependent on the database engine') a single point of access.
+    Singleton to handle domain values (which are not dependent on the database engine) in a single point of access.
     """
     """
     USEFUL DOMAIN VALUES
@@ -22,10 +24,8 @@ class LADMNames(metaclass=Singleton):
     LC_PARTY_ETHNIC_GROUP_TYPE_D_NONE_V = "Ninguno"
     LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
-
-    TABLE_PROP_ASSOCIATION = "ASSOCIATION"
-    TABLE_PROP_DOMAIN = "ENUM"
-    TABLE_PROP_STRUCTURE = "STRUCTURE"
+    FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
+    FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
 
     """
     PARCEL TYPE
@@ -65,15 +65,9 @@ class LADMNames(metaclass=Singleton):
     CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
     VALUATION_MODEL_KEY = "Submodelo_Avaluos"
     ISO19107_MODEL_KEY = "ISO19107_PLANAS"
+    FIELD_DATA_CAPTURE_MODEL_KEY = "Captura_Geo"
 
-    DEFAULT_INHERITANCE = 'smart2'
-    # Settings to create schema according to LADM-COL
-    CREATE_BASKET_COL = False
-    CREATE_IMPORT_TID = False
-    STROKE_ARCS = True
-
-    # For testing if an schema comes from ili2db
-    INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
+    FDC_TOPIC_NAME = "Captura_Geo"
 
     # TODO: Remove when LADM model version 3 is fully defined
     """
@@ -157,6 +151,10 @@ class LADMNames(metaclass=Singleton):
     }
 
 
+"""
+Note that MODEL_ILI2DB_PARAMETERS is only used to specify changes in default parameters, 
+like enabling createBasketCol on specific models.
+"""
 MODEL_CONFIG = {
     LADMNames.LADM_COL_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "LADM-COL"),
@@ -213,5 +211,15 @@ MODEL_CONFIG = {
         MODEL_SUPPORTED_VERSION: "3.0",
         MODEL_HIDDEN_BY_DEFAULT: True,
         MODEL_CHECKED_BY_DEFAULT: False
+    },
+    LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
+        MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),
+        MODEL_IS_SUPPORTED: True,
+        MODEL_SUPPORTED_VERSION: "0.1",
+        MODEL_HIDDEN_BY_DEFAULT: True,
+        MODEL_CHECKED_BY_DEFAULT: False,
+        MODEL_ILI2DB_PARAMETERS: {
+            ILI2DB_SCHEMAIMPORT: [(ILI2DB_CREATE_BASKET_COL_KEY, None)]
+        }
     }
 }

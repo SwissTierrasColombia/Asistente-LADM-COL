@@ -33,7 +33,7 @@ from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -62,7 +62,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
-        for name, layer_list in LayerConfig.get_layer_sets(self.names).items():
+        for name, layer_list in LayerConfig.get_layer_sets(self.names, self.app.core.get_active_models_per_db(db)).items():
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
@@ -102,7 +102,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.update_available_layers()
 
     def update_available_layers(self):
-        self.trw_layers.setUpdatesEnabled(False) # Don't render until we're ready
+        self.trw_layers.setUpdatesEnabled(False)  # Don't render until we're ready
 
         # Grab some context data
         show_domains = self.chk_show_domains.isChecked()
@@ -131,9 +131,9 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
             for table in sorted_tables:
                 current_table_info = self.models_tree[model][table]
-                if current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_DOMAIN and not show_domains \
-                   or current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_STRUCTURE and not show_structures \
-                   or current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_ASSOCIATION and not show_associations:
+                if current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_DOMAIN and not show_domains \
+                   or current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_STRUCTURE and not show_structures \
+                   or current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
@@ -153,12 +153,12 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                         font.setBold(True)
                         table_item.setData(0, Qt.FontRole, font)
 
-                if current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_DOMAIN:
+                if current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
-                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_STRUCTURE:
+                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_STRUCTURE:
                     if geometry_type is None:
                         icon_name = self.icon_names[5]
-                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == LADMNames.TABLE_PROP_ASSOCIATION:
+                elif current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER] == ILI2DBNames.TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM-COL/resources/images/{}".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
@@ -170,7 +170,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
         # Set selection
         iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
-        self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
+        self.trw_layers.blockSignals(True)  # We don't want to get itemSelectionChanged here
         while iterator.value():
             item = iterator.value()
             if item.text(0) in self.selected_items_dict:
@@ -276,8 +276,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
         # Select predefined layers in the view (some layers might not be visible)
         if select_layers_list:
-            self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
-            count = len(select_layers_list) # We can stop before iterating all layers
+            self.trw_layers.blockSignals(True)  # We don't want to get itemSelectionChanged here
+            count = len(select_layers_list)  # We can stop before iterating all layers
             iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
             while iterator.value():
                 item = iterator.value()

@@ -27,7 +27,7 @@ DEFAULT_SRS_AUTHID = "EPSG:9377"
 
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
-# PLUGIN_DIR (set in translator.py)
+PLUGINS_DIR = os.path.dirname(PLUGIN_DIR)
 
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
@@ -133,7 +133,7 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.4"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.1.1.5"
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -142,13 +142,19 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip'  # ''
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip'  # ''
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
+
+# Configure QField Sync Dependency
+QFIELD_SYNC_PLUGIN_NAME = "qfieldsync"
+QFIELD_SYNC_MIN_REQUIRED_VERSION = "3.2.0.1"
+QFIELD_SYNC_EXACT_REQUIRED_VERSION = True
+QFIELD_SYNC_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/qfieldsync/releases/download/v3.2.0.1/qfieldsync_3201.zip'  # ''
 
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
@@ -166,6 +172,9 @@ CHECKED_COLOR = QColor(166, 255, 152, 255)
 UNCHECKED_COLOR = QColor(255, 245, 152, 255)
 GRAY_COLOR = QColor(219, 219, 219, 255)
 
+# Colors for non allocatet parcels in field data capture
+NOT_ALLOCATED_PARCEL_COLOR = QColor(255, 165, 0, 255)  # Orange
+
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
@@ -181,6 +190,8 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
 
+DEFAULT_DATASET_NAME = "Default dataset"
+FDC_DATASET_NAME = "Captura en campo"
 
 TOLERANCE_MAX_VALUE = 5000  # In milimeters
 

@@ -23,13 +23,9 @@ import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumTestConnectionMsg
-from asistente_ladm_col.config.mapping_config import (T_ID_KEY,
-                                                      T_ILI_TID_KEY,
-                                                      DISPLAY_NAME_KEY,
-                                                      ILICODE_KEY,
-                                                      DESCRIPTION_KEY)
+from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.config.query_names import QueryNames
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.db.db_connector import (FileDB,
                                                     DBConnector)
 from asistente_ladm_col.core.model_parser import ModelParser
@@ -111,7 +107,7 @@ class GPKGConnector(FileDB):
 
         return records
 
-    def _get_common_db_names(self):
+    def _get_ili2db_names(self):
         dict_names = dict()
         # Custom names
         dict_names[T_ID_KEY] = "T_Id"
@@ -119,6 +115,13 @@ class GPKGConnector(FileDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[T_BASKET_KEY] = "T_basket"
+        dict_names[T_ILI2DB_BASKET_KEY] = "T_ILI2DB_BASKET"
+        dict_names[T_ILI2DB_DATASET_KEY] = "T_ILI2DB_DATASET"
+        dict_names[DATASET_T_DATASETNAME_KEY] = "datasetName"
+        dict_names[BASKET_T_DATASET_KEY] = "dataset"
+        dict_names[BASKET_T_TOPIC_KEY] = "topic"
+        dict_names[BASKET_T_ATTACHMENT_KEY] = "attachmentKey"
 
         return dict_names
 
@@ -130,7 +133,7 @@ class GPKGConnector(FileDB):
                 return False
 
         cursor = self.conn.cursor()
-        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(LADMNames.INTERLIS_TEST_METADATA_TABLE_PG))
+        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
 
         return bool(cursor.fetchall())
 
@@ -286,10 +289,10 @@ class GPKGConnector(FileDB):
             return res, code, msg
 
         # Validate table and field names
-        if not self._table_and_field_names:
+        if self._should_update_db_mapping_values:
             self._initialize_names()
 
-        res, msg = self.names.test_names(self._table_and_field_names)
+        res, msg = self.names.test_names(self._get_flat_table_and_field_names_for_testing_names())
         if not res:
             return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(
@@ -312,3 +315,10 @@ class GPKGConnector(FileDB):
             return True, cursor.fetchall()
         except sqlite3.ProgrammingError as e:
             return False, e
+
+    def get_qgis_layer_uri(self, table_name):
+        data_source_uri = '{uri}|layername={table}'.format(
+            uri=self.uri,
+            table=table_name
+        )
+        return data_source_uri
