@@ -448,8 +448,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
         self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
 
-        self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
-                                           ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
+        #self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
+        #                                   ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
 
     def create_survey_actions(self):
         self._point_surveying_and_representation_survey_action = QAction(
