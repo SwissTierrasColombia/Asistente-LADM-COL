@@ -171,7 +171,8 @@ class AsistenteLADMCOLPlugin(QObject):
         # Register roles
         self.role_registry = RoleRegistry()
         for role_key, role_config in get_role_config().items():
-            self.role_registry.register_role(role_key, role_config)
+            if ROLE_ENABLED in role_config and role_config[ROLE_ENABLED]:
+                self.role_registry.register_role(role_key, role_config)
 
         # Create member objects
         self.main_window = self.iface.mainWindow()
@@ -969,7 +970,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                                            self.get_db_connection(),
                                                                                            self.ladm_data,
                                                                                            allocate_mode=allocate)
-        else:  # FIELD_ADMIN_ROLE
+        else:  # FIELD_ADMIN_ROLE OR ADVANCED_ROLE!
             dock_widget_field_data_capture = DockWidgetFieldDataCaptureAdminCoordinator(self.iface,
                                                                                            self.get_db_connection(),
                                                                                            self.ladm_data,

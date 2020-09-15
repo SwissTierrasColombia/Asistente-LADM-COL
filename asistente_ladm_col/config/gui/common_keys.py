@@ -22,6 +22,7 @@ SUPPLIES_MENU = 'supplies_menu'
 
 ROLE_ACTIONS = 'role_actions'
 ROLE_NAME = 'role_name'
+ROLE_ENABLED = 'role_enabled'
 ROLE_DESCRIPTION = 'role_description'
 ROLE_GUI_CONFIG = 'role_gui_config'
 ROLE_MODELS = 'role_models'
