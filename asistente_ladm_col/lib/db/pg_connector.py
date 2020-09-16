@@ -108,7 +108,7 @@ class PGConnector(ClientServerDB):
 
         return False
 
-    def _metadata_exists(self):
+    def _table_exists(self, table_name):
         if self.schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
@@ -116,11 +116,24 @@ class PGConnector(ClientServerDB):
                           count(tablename)
                         FROM pg_catalog.pg_tables
                         WHERE schemaname = '{}' and tablename = '{}'
-            """.format(self.schema, ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, table_name))
 
             return bool(cur.fetchone()[0])
 
         return False
+
+    def _metadata_exists(self):
+        return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
+
+    def _has_basket_col(self):
+        sql_query = """SELECT count(tag)
+                       FROM {schema}.t_ili2db_settings
+                       WHERE tag ='{tag}' and setting='{value}';""".format(schema=self.schema,
+                                                                           tag=ILI2DBNames.BASKET_COL_TAG,
+                                                                           value=ILI2DBNames.BASKET_COL_VALUE)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        return bool(cur.fetchone()[0])
 
     def open_connection(self, uri=None):
         if uri is None:
@@ -617,6 +630,11 @@ class PGConnector(ClientServerDB):
         res, code, msg = self.check_db_models(required_models)
         if not res:
             return res, code, msg
+
+        basket_required, model_name = self._db_should_have_basket_support()
+        if basket_required and not self._has_basket_col():
+            return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
+                   QCoreApplication.translate("PGConnector", "Basket column not found, but it is required by model '{}'!.").format(model_name)
 
         # Validate table and field names
         if self._should_update_db_mapping_values:

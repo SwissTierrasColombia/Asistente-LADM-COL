@@ -19,3 +19,7 @@ class ILI2DBNames(metaclass=Singleton):
 
     # For testing if an schema comes from ili2db
     INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
+
+    # TAG-SETTING pair to loog for basket col support in t_ili2db_settings
+    BASKET_COL_TAG = 'ch.ehi.ili2db.BasketHandling'
+    BASKET_COL_VALUE = 'readWrite'

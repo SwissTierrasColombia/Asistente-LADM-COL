@@ -123,7 +123,7 @@ class MSSQLConnector(ClientServerDB):
 
         return False
 
-    def _metadata_exists(self):
+    def _table_exists(self, table_name):
         if self.schema:
             cur = self.conn.cursor()
             cur.execute("""
@@ -132,7 +132,23 @@ class MSSQLConnector(ClientServerDB):
                 WHERE TABLE_TYPE = 'BASE TABLE'
                 AND TABLE_SCHEMA = '{}'
                     AND TABLE_NAME = '{}'
-            """.format(self.schema, ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
+            """.format(self.schema, table_name))
+
+            return bool(cur.fetchone()[0])
+
+        return False
+
+    def _metadata_exists(self):
+        return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
+
+    def _has_basket_col(self):
+        if self.schema:
+            cur = self.conn.cursor()
+            cur.execute("""
+            SELECT count(TAG) as 'count'
+                FROM {schema}.t_ili2db_setting
+                WHERE TAG = '{tag}' AND SETTING = '{value}'
+            """.format(schema=self.schema, tag=ILI2DBNames.BASKET_COL_TAG, value=ILI2DBNames.BASKET_COL_VALUE))
 
             return bool(cur.fetchone()[0])
 
@@ -461,6 +477,13 @@ class MSSQLConnector(ClientServerDB):
         res, code, msg = self.check_db_models(required_models)
         if not res:
             return res, code, msg
+
+        basket_required, model_name = self._db_should_have_basket_support()
+        if basket_required and not self._has_basket_col():
+            return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
+                   QCoreApplication.translate("MSSQLConnector",
+                                              "Basket column not found, but it is required by model '{}'!.").format(
+                       model_name)
 
         # Validate table and field names
         if self._should_update_db_mapping_values:
