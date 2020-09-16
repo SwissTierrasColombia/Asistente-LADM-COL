@@ -18,6 +18,8 @@
 """
 import psycopg2
 from PyQt5.QtCore import QCoreApplication
+
+from asistente_ladm_col.config.keys.ili2db_keys import ILI2DB_SCHEMAIMPORT, ILI2DB_CREATE_BASKET_COL_KEY
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 from qgis.PyQt.QtCore import QObject
@@ -90,7 +92,13 @@ class DBConnector(QObject):
     def equals(self, db):
         return self.dict_conn_params == db.dict_conn_params
 
+    def _table_exists(self, table_name):
+        raise NotImplementedError
+
     def _metadata_exists(self):
+        raise NotImplementedError
+
+    def _has_basket_col(self):
         raise NotImplementedError
 
     def close_connection(self):
@@ -422,6 +430,24 @@ class DBConnector(QObject):
 
     def _test_connection_to_ladm(self, required_models):
         raise NotImplementedError
+
+    def _db_should_have_basket_support(self):
+        """
+        :return: Tuple: Whether the current DB should have baskets or not, name of the 1st model that requires baskets!
+        """
+        # Get models in the DB that are supported and not hidden
+        model_names_in_db = self.get_models()
+        if model_names_in_db:
+            for model in self.__ladmcol_models.supported_models():
+                if not model.hidden() and model.full_name() in model_names_in_db:
+                    params = model.get_ili2db_params()  # Note: params depend on the model and on the active role
+                    if ILI2DB_SCHEMAIMPORT in params:
+                        for param in params[ILI2DB_SCHEMAIMPORT]:  # List of tuples
+                            if param[0] == ILI2DB_CREATE_BASKET_COL_KEY:  # param: (option, value)
+                                self.logger.debug(__name__, "Model '{}' requires baskets...".format(model.alias()))
+                                return True, model.alias()
+
+        return False, ''
 
 
 class FileDB(DBConnector):

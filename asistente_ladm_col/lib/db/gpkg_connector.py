@@ -125,7 +125,7 @@ class GPKGConnector(FileDB):
 
         return dict_names
 
-    def _metadata_exists(self):
+    def _table_exists(self, table_name):
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:
@@ -133,9 +133,27 @@ class GPKGConnector(FileDB):
                 return False
 
         cursor = self.conn.cursor()
-        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG))
+        cursor.execute("""SELECT * from pragma_table_info('{}');""".format(table_name))
 
         return bool(cursor.fetchall())
+
+    def _metadata_exists(self):
+        return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
+
+    def _has_basket_col(self):
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return False
+
+        cursor = self.conn.cursor()
+        cursor.execute("""SELECT *
+                          FROM t_ili2db_settings
+                          WHERE tag='{}' AND setting='{}';""".format(ILI2DBNames.BASKET_COL_TAG, ILI2DBNames.BASKET_COL_VALUE))
+
+        return bool(cursor.fetchall())
+
 
     def get_uri_for_layer(self, layer_name):
         return (True, '{uri}|layername={table}'.format(
@@ -287,6 +305,11 @@ class GPKGConnector(FileDB):
         res, code, msg = self.check_db_models(required_models)
         if not res:
             return res, code, msg
+
+        basket_required, model_name = self._db_should_have_basket_support()
+        if basket_required and not self._has_basket_col():
+            return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
+                   QCoreApplication.translate("GPKGConnector", "Basket column not found, but it is required by model '{}'!.").format(model_name)
 
         # Validate table and field names
         if self._should_update_db_mapping_values:
