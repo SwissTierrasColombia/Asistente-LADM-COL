@@ -329,7 +329,7 @@ def get_role_config():
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field administrator"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>field administrator</b> assigns parcel sets to field coordinators and synchronizes back the data they have structured from field surveys."),
-            ROLE_ENABLED: False,
+            ROLE_ENABLED: True,
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
@@ -344,7 +344,7 @@ def get_role_config():
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field coordinator"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>field coordinator</b> assigns parcel sets to surveyors and synchronizes back the data they collected in the field."),
-            ROLE_ENABLED: False,
+            ROLE_ENABLED: True,
             ROLE_MODELS: field_coordinator_role_models,
             ROLE_ACTIONS: [
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE
@@ -418,7 +418,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Advanced</b> role has access to all the functionality."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: COMMON_ROLE_MODELS,  # advanced_role_models,
+            ROLE_MODELS: advanced_role_models,
             ROLE_ACTIONS: [ALL_ACTIONS],
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
             ROLE_GUI_CONFIG: advanced_role_gui
