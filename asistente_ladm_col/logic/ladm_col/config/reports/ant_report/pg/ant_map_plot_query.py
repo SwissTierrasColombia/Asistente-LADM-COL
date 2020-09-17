@@ -1,7 +1,7 @@
 def get_ant_map_query(names, schema, where_id):
     query = """WITH
 				_terrenos_seleccionados AS (
-					(SELECT lc_terreno.{T_ID_F} AS ue_terreno FROM {schema}.{LC_PLOT_T} {where_id}) --12425  12424 12005 12584 13499
+					(SELECT lc_terreno.{T_ID_F} AS ue_terreno FROM {schema}.{LC_PLOT_T} {where_id})
 				),
 				_predios_seleccionados AS (
 					SELECT {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} AS {T_ID_F} FROM {schema}.{COL_UE_BAUNIT_T} WHERE {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F} IN (SELECT {LC_PLOT_T}.{T_ID_F} AS ue_terreno FROM {schema}.{LC_PLOT_T} {where_id})
@@ -64,7 +64,7 @@ def get_ant_map_query(names, schema, where_id):
 									ELSE COALESCE(' ' || _info_total_interesados.nombre, ' INDETERMINADO') END)) AS predio
 														) AS l
 													)) AS properties
-												,ST_AsGeoJSON({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F})::json AS geometry
+												,ST_AsGeoJSON({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F},4,0)::json AS geometry
 								FROM _info_total_interesados
 								join _info_predio on _info_predio.{T_ID_F} = _info_total_interesados.predio_t_id
 								join {schema}.{COL_UE_BAUNIT_T} on {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = _info_total_interesados.predio_t_id

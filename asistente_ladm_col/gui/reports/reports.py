@@ -238,11 +238,6 @@ class ReportGenerator(QObject):
                 self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
                     "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                 continue
-            if abstract_geometry.numGeometries() > 1:
-                multi_polygons.append(str(plot_id))
-                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
-                continue
 
             # Generate data file
             json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)

@@ -4,7 +4,7 @@ def get_annex17_building_data_query (names, schema):
                     	SELECT f AS features
                     	FROM (
                     		SELECT 'Feature' AS type
-                                ,ST_AsGeoJSON({COL_SPATIAL_UNIT_T_GEOMETRY_F})::json AS geometry
+                                ,ST_AsGeoJSON({COL_SPATIAL_UNIT_T_GEOMETRY_F}, 4, 0)::json AS geometry
                     			,row_to_json((
                     					SELECT l
                     					FROM (

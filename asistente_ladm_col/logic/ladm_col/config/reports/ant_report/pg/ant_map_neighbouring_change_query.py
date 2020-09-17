@@ -22,7 +22,7 @@ def get_ant_map_neighbouring_change_query(names, schema, plot_id):
                     FROM (
                         SELECT 'Feature' AS type,
                         row_to_json((SELECT l FROM (SELECT ROUND(st_length(lineas_colindancia.geom)::numeric, 2) AS longitud) AS l)) AS properties,
-                        ST_AsGeoJSON(lineas_colindancia.geom)::json AS geometry
+                        ST_AsGeoJSON(lineas_colindancia.geom,4,0)::json AS geometry
                         FROM lineas_colindancia
                     ) as f)
                 as ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object

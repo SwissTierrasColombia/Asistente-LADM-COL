@@ -281,12 +281,10 @@ class PGConnector(ClientServerDB):
         if not res:
             return (res, msg)
 
-        where_id = ""
-        if mode != 'all':
-            where_id = "WHERE {LC_PLOT_T}.{T_ID_F} {operation} {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
-                                                                                 T_ID_F=self.names.T_ID_F,
-                                                                                 operation='=' if mode == 'only_id' else '!=',
-                                                                                 plot_id=plot_id)
+        where_id = "WHERE {LC_PLOT_T}.{T_ID_F} {operation} {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
+                                                                             T_ID_F=self.names.T_ID_F,
+                                                                             operation='=' if mode == 'only_id' else '!=',
+                                                                             plot_id=plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
