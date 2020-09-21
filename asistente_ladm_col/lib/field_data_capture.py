@@ -55,7 +55,7 @@ class FieldDataCapture(QObject):
         project_configuration = ProjectConfiguration(project)
         project_configuration.create_base_map = False
         project_configuration.offline_copy_only_aoi = False
-        project_configuration.use_layer_selection = True
+        project_configuration.offline_copy_only_selected_features = True
 
         # Layer config
         layer_sync_action = LayerConfig.get_field_data_capture_layer_config(db.names)
@@ -72,19 +72,20 @@ class FieldDataCapture(QObject):
             if not layers:
                 return False, QCoreApplication.translate("FieldDataCapture", "At least one layer could not be found.")
 
+            # Select features based on surveyor expressions per layer
+            for layer_name, layer in layers.items():
+                if layer_name in layer_config:
+                    layer.selectByExpression(layer_config[layer_name])
+                    # self.logger.debug(__name__, "Layer: {}, selected: {}".format(layer_name, layer.selectedFeatureCount()))
+
             # Configure layers
             for layer_name, layer in layers.items():
                 layer_source = LayerSource(layer)
                 layer_source.action = layer_sync_action[layer_name]
-                if layer_name in layer_config:
-                    layer_source.select_expression = layer_config[layer_name]
                 layer_source.apply()
 
             offline_converter = OfflineConverter(project, export_folder, extent, offline_editing)
             offline_converter.convert()
-            offline_editing.layerProgressUpdated.disconnect(offline_converter.on_offline_editing_next_layer)
-            offline_editing.progressModeSet.disconnect(offline_converter.on_offline_editing_max_changed)
-            offline_editing.progressUpdated.disconnect(offline_converter.offline_editing_task_progress)
 
             current_progress += 1
             self.total_progress_updated.emit(int(100*current_progress/total_projects))
