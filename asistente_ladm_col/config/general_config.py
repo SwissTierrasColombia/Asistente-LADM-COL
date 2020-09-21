@@ -152,9 +152,9 @@ MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/ma
 
 # Configure QField Sync Dependency
 QFIELD_SYNC_PLUGIN_NAME = "qfieldsync"
-QFIELD_SYNC_MIN_REQUIRED_VERSION = "3.2.0.1"
-QFIELD_SYNC_EXACT_REQUIRED_VERSION = True
-QFIELD_SYNC_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/qfieldsync/releases/download/v3.2.0.1/qfieldsync_3201.zip'  # ''
+QFIELD_SYNC_MIN_REQUIRED_VERSION = "3.3.0"
+QFIELD_SYNC_EXACT_REQUIRED_VERSION = False
+QFIELD_SYNC_REQUIRED_VERSION_URL = ''  # 'https://github.com/SwissTierrasColombia/qfieldsync/releases/download/v3.2.0.1/qfieldsync_3201.zip'
 
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
