@@ -43,7 +43,12 @@ class BaseFieldDataCaptureController(QObject):
         self.__parcel_data = dict()  # {t_id: {parcel_number: t_id_receiver}}
 
     def initialize_layers(self):
-        raise NotImplementedError
+        self._layers = {
+            self._db.names.FDC_PLOT_T: None,
+            self._db.names.FDC_PARCEL_T: None,
+            self._db.names.FDC_USER_T: None,
+            self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None
+        }
 
     def add_layers(self, force=False):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
@@ -113,6 +118,9 @@ class BaseFieldDataCaptureController(QObject):
 
     def user_layer(self):
         return self._layers[self._db.names.FDC_USER_T]
+
+    def document_types_table(self):
+        return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
 
     def update_plot_selection(self, parcel_ids):
         plot_ids = self._ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
@@ -198,3 +206,6 @@ class BaseFieldDataCaptureController(QObject):
 
     def get_count_of_not_allocated_parcels(self):
         raise NotImplementedError
+
+    def get_document_types(self):
+        return self._ladm_data.get_document_types(self._db.names, self.document_types_table())

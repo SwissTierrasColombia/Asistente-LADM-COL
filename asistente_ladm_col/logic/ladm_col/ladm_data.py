@@ -925,22 +925,25 @@ class LADMData(QObject):
     @staticmethod
     def get_fdc_user_name(names, feature, full_name=True):
         if full_name:
-            name = "{} {}".format(feature[names.FDC_USER_T_FIRST_NAME_F],
-                                  feature[names.FDC_USER_T_FIRST_LAST_NAME_F])
+            name = feature[names.FDC_USER_T_NAME_F]
         else:  # Just initial letters for each name part, except the last name (e.g., gacarrillor)
-            name = "{}{}{}{}".format(LADMData.get_first_letter(feature[names.FDC_USER_T_FIRST_NAME_F]),
-                                     LADMData.get_first_letter(feature[names.FDC_USER_T_SECOND_NAME_F]),
-                                     feature[names.FDC_USER_T_FIRST_LAST_NAME_F],
-                                     LADMData.get_first_letter(feature[names.FDC_USER_T_SECOND_LAST_NAME_F]))
-            name.replace(" ", "")  # Remove all (even intermediate) blank spaces
-            name = name.lower()
-            name = name or '-'  # No names? Then avoid falsy value
+            name = LADMData.get_name_alias(feature[names.FDC_USER_T_NAME_F])
 
         return name.strip()
 
     @staticmethod
-    def get_first_letter(string):
-        return string[:1] if string else ''
+    def get_name_alias(name):
+        alias = ""
+        parts = name.split(" ")
+        if len(parts) == 1:
+            alias = name
+        elif len(parts) == 2:
+            alias = parts[0][:1] + parts[1]
+        elif len(parts) == 3:
+            alias = parts[0][:1] + parts[1] + parts[2][:1]
+        elif len(parts) > 3:
+            alias = parts[0][:1] + parts[1] + parts[2][:1] + parts[3][:1]
+        return alias.lower() or '-'  # No names? Then avoid falsy value
 
     @staticmethod
     def get_layer_expressions_per_receiver_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
@@ -1115,7 +1118,7 @@ class LADMData(QObject):
             extra_attr_name = names.FDC_USER_T_DOCUMENT_ID_F
 
         # Filter by role (note that receiver_type should be the t_id of the 'user type' domain value)
-        for feature in fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_DOCUMENT_TYPE_F, receiver_type)):
+        for feature in fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_ROLE_F, receiver_type)):
             receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
                                                       feature[extra_attr_name])
 
@@ -1329,3 +1332,11 @@ class LADMData(QObject):
                                                                       "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
         Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
         return default_basket_id, msg
+
+    @staticmethod
+    def get_document_types(names, fdc_document_types_table):
+        data = dict()
+        for feature in fdc_document_types_table.getFeatures():
+            data[feature[names.T_ID_F]] = feature[names.DISPLAY_NAME_F]
+
+        return data

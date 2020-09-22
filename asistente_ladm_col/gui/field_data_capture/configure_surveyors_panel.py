@@ -26,3 +26,4 @@ class ConfigureSurveyorsPanelWidget(BaseConfigureReceiversPanelWidget):
         BaseConfigureReceiversPanelWidget.__init__(self, parent, controller)
 
         self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure surveyors"))
+        self.btn_save.setText(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Add surveyor"))
