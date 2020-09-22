@@ -33,6 +33,9 @@ WIDGET_UI = get_ui_class('field_data_capture/base_configure_receivers_panel_widg
 class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
     clear_message_bar_requested = pyqtSignal()
 
+    DOCUMENT_COLUMN = 0
+    NAME_COLUMN = 1
+
     def __init__(self, parent, controller):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
@@ -50,6 +53,8 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_delete.setEnabled(False)
         self.fill_data()
         self.tbl_receivers.resizeColumnsToContents()
+
+        self.fill_document_types()
 
     def panel_accepted(self):
         self.clear_message_bar_requested.emit()
@@ -71,17 +76,22 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
     def fill_row(self, receiver_t_id, receiver_name, receiver_docid, row):
         item = QTableWidgetItem(receiver_name)
         item.setData(Qt.UserRole, receiver_t_id)
-        self.tbl_receivers.setItem(row, 0, item)
+        self.tbl_receivers.setItem(row, self.NAME_COLUMN, item)
 
         item2 = QTableWidgetItem(receiver_docid)
         item2.setData(Qt.UserRole, receiver_t_id)
-        self.tbl_receivers.setItem(row, 1, item2)
+        self.tbl_receivers.setItem(row, self.DOCUMENT_COLUMN, item2)
+
+    def fill_document_types(self):
+        self.cbo_document_type.clear()
+        for t_id, text in self._controller.get_document_types().items():
+            self.cbo_document_type.addItem(text, t_id)
 
     def selection_changed(self):
         self.btn_delete.setEnabled(bool(self.tbl_receivers.selectedItems()))
 
     def save_receiver(self):
-        if self.txt_first_name.text().strip() and self.txt_first_last_name.text().strip() and self.txt_document_id.text().strip():
+        if self.txt_name.text().strip() and self.txt_document_id.text().strip():
             try:
                 int(self.txt_document_id.text().strip())
             except ValueError as e:
@@ -95,12 +105,10 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                 return
 
             names = self._controller.db().names
-            receiver_data = {names.FDC_USER_T_DOCUMENT_TYPE_F: self._controller.receiver_type,
+            receiver_data = {names.FDC_USER_T_DOCUMENT_TYPE_F: self.cbo_document_type.currentData(),
                              names.FDC_USER_T_DOCUMENT_ID_F: self.txt_document_id.text().strip(),
-                             names.FDC_USER_T_FIRST_NAME_F: self.txt_first_name.text().strip(),
-                             names.FDC_USER_T_SECOND_NAME_F: self.txt_second_name.text().strip(),
-                             names.FDC_USER_T_FIRST_LAST_NAME_F: self.txt_first_last_name.text().strip(),
-                             names.FDC_USER_T_SECOND_LAST_NAME_F: self.txt_second_last_name.text().strip(),
+                             names.FDC_USER_T_NAME_F: self.txt_name.text().strip(),
+                             names.FDC_USER_T_ROLE_F: self._controller.receiver_type,
                              names.T_ILI_TID_F: str(uuid.uuid4()),
                              names.T_BASKET_F: basket_t_id}
             res = self._controller.save_receiver(receiver_data)
@@ -112,7 +120,7 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.logger.warning_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget",
                                                                              "There was an error saving the receiver."))
         else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "First name, last name and document id are mandatory."))
+            self.logger.warning_msg(__name__, QCoreApplication.translate("BaseConfigureReceiversPanelWidget", "Name and document id are mandatory."))
 
     def delete_receiver(self):
         selected_receiver_id = [item.data(Qt.UserRole) for item in self.tbl_receivers.selectedItems()]
@@ -127,8 +135,6 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.logger.warning_msg(__name__, msg)
 
     def initialize_input_controls(self):
+        self.txt_name.setText('')
+        self.txt_name.setFocus()
         self.txt_document_id.setText('')
-        self.txt_first_name.setText('')
-        self.txt_second_name.setText('')
-        self.txt_first_last_name.setText('')
-        self.txt_second_last_name.setText('')

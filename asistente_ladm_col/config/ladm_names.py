@@ -26,6 +26,8 @@ class LADMNames(metaclass=Singleton):
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
+    FDC_ROLE_TYPE_D_COORDINATOR_V = "Coordinador_grupo"
+    FDC_ROLE_TYPE_D_SURVEYOR_V = "Reconocedor"
 
     """
     PARCEL TYPE
@@ -215,7 +217,7 @@ MODEL_CONFIG = {
     LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),
         MODEL_IS_SUPPORTED: True,
-        MODEL_SUPPORTED_VERSION: "0.1",
+        MODEL_SUPPORTED_VERSION: "0.2",
         MODEL_HIDDEN_BY_DEFAULT: True,
         MODEL_CHECKED_BY_DEFAULT: False,
         MODEL_ILI2DB_PARAMETERS: {

@@ -504,7 +504,7 @@ class LayerConfig:
             if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
                 display_expressions.update({
                     names.FDC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.FDC_PARCEL_T_PARCEL_NUMBER_F),
-                    names.FDC_USER_T: "concat({}, ' ', {})".format(names.FDC_USER_T_FIRST_NAME_F, names.FDC_USER_T_FIRST_LAST_NAME_F)
+                    names.FDC_USER_T: "concat({}, ' (', {}, ')')".format(names.FDC_USER_T_NAME_F, names.FDC_USER_T_DOCUMENT_ID_F)
                 })
 
         return display_expressions
@@ -734,8 +734,6 @@ class LayerConfig:
             layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
         if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):
             layer_config[names.COL_SURFACE_RELATION_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_VOLUME_TYPE_D", None):
-            layer_config[names.FDC_VOLUME_TYPE_D] = SyncAction.NO_ACTION
         if getattr(names, "FDC_CONDITION_PARCEL_TYPE_D", None):
             layer_config[names.FDC_CONDITION_PARCEL_TYPE_D] = SyncAction.NO_ACTION
         if getattr(names, "FDC_PARCEL_TYPE_D", None):

@@ -30,15 +30,8 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         BaseFieldDataCaptureController.__init__(self, iface, db, ladm_data)
 
         self.receiver_type = self._ladm_data.get_domain_code_from_value(self._db,
-                                                                        self._db.names.FDC_PARTY_DOCUMENT_TYPE_D,
-                                                                        LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V)
-
-    def initialize_layers(self):
-        self._layers = {
-            self._db.names.FDC_PLOT_T: None,
-            self._db.names.FDC_PARCEL_T: None,
-            self._db.names.FDC_USER_T: None
-        }
+                                                                        self._db.names.FDC_ROLE_TYPE_D,
+                                                                        LADMNames.FDC_ROLE_TYPE_D_COORDINATOR_V)
 
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F
