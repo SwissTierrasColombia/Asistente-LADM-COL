@@ -39,6 +39,7 @@ from qgis.core import (Qgis,
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
+from asistente_ladm_col.config.keys.gui_keys import *
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
@@ -103,7 +104,7 @@ from asistente_ladm_col.config.wizard_config import (WizardConfig)
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.role_keys import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface

@@ -2,9 +2,9 @@ from qgis.PyQt.QtCore import (QObject,
                               QSettings,
                               QCoreApplication)
 
-from asistente_ladm_col.config.gui.common_keys import (MANAGER_ROLE,
-                                                       OPERATOR_ROLE,
-                                                       SUPPLIES_PROVIDER_ROLE)
+from asistente_ladm_col.config.keys.role_keys import (MANAGER_ROLE,
+                                                      OPERATOR_ROLE,
+                                                      SUPPLIES_PROVIDER_ROLE)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 

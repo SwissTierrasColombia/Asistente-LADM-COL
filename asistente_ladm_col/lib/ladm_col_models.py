@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from asistente_ladm_col.config.gui.common_keys import (ROLE_SUPPORTED_MODELS,
-                                                       ROLE_HIDDEN_MODELS,
-                                                       ROLE_CHECKED_MODELS,
-                                                       ROLE_MODEL_ILI2DB_PARAMETERS)
+from asistente_ladm_col.config.keys.role_keys import (ROLE_SUPPORTED_MODELS,
+                                                      ROLE_HIDDEN_MODELS,
+                                                      ROLE_CHECKED_MODELS,
+                                                      ROLE_MODEL_ILI2DB_PARAMETERS)
 from asistente_ladm_col.config.ladm_names import (MODEL_ALIAS,
                                                   MODEL_IS_SUPPORTED,
                                                   MODEL_SUPPORTED_VERSION,

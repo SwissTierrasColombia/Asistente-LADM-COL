@@ -1,8 +1,8 @@
 from qgis.core import NULL
 
 from asistente_ladm_col.config.general_config import PLUGINS_DIR
+from asistente_ladm_col.config.keys.config_keys import LAYER_STATUS, HIDDEN_LAYER
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
@@ -720,28 +720,84 @@ class LayerConfig:
     def get_field_data_capture_layer_config(names):
         import sys
         sys.path.append(PLUGINS_DIR)
-
-        layer_config = dict()
-
         from qfieldsync.core.layer import SyncAction
-        if getattr(names, "FDC_PARCEL_T", None):
-            layer_config[names.FDC_PARCEL_T] = SyncAction.OFFLINE
-        if getattr(names, "FDC_PLOT_T", None):
-            layer_config[names.FDC_PLOT_T] = SyncAction.OFFLINE
-        if getattr(names, "FDC_USER_T", None):
-            layer_config[names.FDC_USER_T] = SyncAction.NO_ACTION
-        if getattr(names, "COL_DIMENSION_TYPE_D", None):
-            layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):
-            layer_config[names.COL_SURFACE_RELATION_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_CONDITION_PARCEL_TYPE_D", None):
-            layer_config[names.FDC_CONDITION_PARCEL_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_PARCEL_TYPE_D", None):
-            layer_config[names.FDC_PARCEL_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_LANDCLASS_TYPE_D", None):
-            layer_config[names.FDC_LANDCLASS_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_PARTY_DOCUMENT_TYPE_D", None):
-            layer_config[names.FDC_PARTY_DOCUMENT_TYPE_D] = SyncAction.NO_ACTION
 
-        return layer_config
+        return {
+            names.FDC_OPERATION_AREA_T: {LAYER_STATUS: SyncAction.REMOVE, HIDDEN_LAYER: False},
+            names.FDC_CONVENTIONAL_QUALIFICATION_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_NON_CONVENTIONAL_QUALIFICATION_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_BUILDING_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_VISIT_CONTACT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_ADDITIONAL_DATA_SURVEY_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_HP_CONDOMINIUM_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_RIGHT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_ADMINISTRATIVE_SOURCE_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_QUALIFICATION_GROUP_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_PARTY_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_PARTY_CONTACT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_BOUNDARY_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_FMI_CHANGE_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_PARCEL_NUMBERS_CHANGE_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_OBJECT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_HOUSING_MARKET_OFFERS_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_PARCEL_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_CONTROL_POINT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_SURVEY_POINT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_BOUNDARY_POINT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_RIGHT_OF_WAY_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_RESTRICTION_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_TYPOLOGY_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_USER_T: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PLOT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.FDC_BUILDING_UNIT_T: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
+            names.EXT_ARCHIVE_S: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: True},
+            names.EXT_ADDRESS_S: {LAYER_STATUS: SyncAction.OFFLINE, HIDDEN_LAYER: False},
 
+            names.FDC_AGREEMENT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_ANNEX_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_QUALIFY_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_QUALIFICATION_CLASS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_CATEGORY_LAND_CLASS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_LAND_CLASS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_CONDITION_PARCEL_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_FLOOR_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_CONTROL_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_ECONOMIC_DESTINATION_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_RIGHT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_DOMAIN_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_CONSERVATION_STATUS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_STATUS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PHOTO_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_ADMINISTRATIVE_SOURCE_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_ETHNIC_GROUP_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PARCEL_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PARTY_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PARTY_DOCUMENT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_POINT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_OBJECT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_OFFER_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_CADASTRE_REGISTRY_PROCEDURE_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PARCEL_RELATIONSHIP_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_RESTRICTION_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_ROLE_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_SEX_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_BUILDING_UNIT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_USAGE_BUNIT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_SURVEY_POINT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_VISIT_RESULT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_TYPOLOGY_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_PARCEL_NUMBER_CHANGE_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.FDC_RIGHT_QUALITY_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+
+            names.COL_POINT_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.COL_AVAILABILITY_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.COL_ADMINISTRATIVE_SOURCE_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.COL_INTERPOLATION_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.COL_PRODUCTION_METHOD_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.EXT_ADDRESS_TYPE_MAIN_ROAD_CLASS_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.EXT_ADDRESS_TYPE_CITY_SECTOR_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.EXT_ADDRESS_TYPE_PARCEL_SECTOR_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True},
+            names.EXT_ADDRESS_TYPE_D: {LAYER_STATUS: SyncAction.NO_ACTION, HIDDEN_LAYER: True}
+        }

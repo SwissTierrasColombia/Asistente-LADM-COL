@@ -28,6 +28,7 @@ from qgis.core import (QgsOfflineEditing,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import PLUGINS_DIR
+from asistente_ladm_col.config.keys.config_keys import LAYER_STATUS
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
@@ -58,7 +59,7 @@ class FieldDataCapture(QObject):
         project_configuration.offline_copy_only_selected_features = True
 
         # Layer config
-        layer_sync_action = LayerConfig.get_field_data_capture_layer_config(db.names)
+        qfield_config = LayerConfig.get_field_data_capture_layer_config(db.names)
 
         total_projects = len(surveyor_expression_dict)
         current_progress = 0
@@ -67,7 +68,7 @@ class FieldDataCapture(QObject):
             export_folder = os.path.join(export_dir, surveyor)
 
             # Get layers (cannot be done out of this for loop because the project is closed and layers are deleted)
-            layers = {layer_name: None for layer_name, _ in layer_sync_action.items()}
+            layers = {layer_name: None for layer_name, _ in qfield_config.items()}
             self.app.core.get_layers(db, layers, True)
             if not layers:
                 return False, QCoreApplication.translate("FieldDataCapture", "At least one layer could not be found.")
@@ -78,10 +79,9 @@ class FieldDataCapture(QObject):
                     layer.selectByExpression(layer_config[layer_name])
                     # self.logger.debug(__name__, "Layer: {}, selected: {}".format(layer_name, layer.selectedFeatureCount()))
 
-            # Configure layers
-            for layer_name, layer in layers.items():
+                # Configure layers
                 layer_source = LayerSource(layer)
-                layer_source.action = layer_sync_action[layer_name]
+                layer_source.action = qfield_config[layer_name][LAYER_STATUS]
                 layer_source.apply()
 
             offline_converter = OfflineConverter(project, export_folder, extent, offline_editing)

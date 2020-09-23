@@ -1,9 +1,9 @@
 from qgis.PyQt.QtCore import *
 
 from asistente_ladm_col.config.general_config import FDC_DATASET_NAME
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.role_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
-from asistente_ladm_col.config.ili2db_names import ILI2DBNames
+from asistente_ladm_col.config.keys.gui_keys import *
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 

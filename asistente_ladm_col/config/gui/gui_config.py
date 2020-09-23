@@ -3,7 +3,7 @@ from copy import deepcopy
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.gui_keys import *
 
 
 class GUI_Config(QObject):

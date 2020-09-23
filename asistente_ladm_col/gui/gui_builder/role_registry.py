@@ -22,7 +22,8 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.role_keys import *
+from asistente_ladm_col.config.keys.gui_keys import *
 from asistente_ladm_col.utils.singleton import SingletonQObject
 from asistente_ladm_col.lib.logger import Logger
 

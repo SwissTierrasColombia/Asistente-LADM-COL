@@ -16,16 +16,15 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject,
-                              pyqtSignal)
+                              QObject)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
-from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
+from asistente_ladm_col.config.keys.gui_keys import *
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger

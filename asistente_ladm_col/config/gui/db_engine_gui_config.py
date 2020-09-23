@@ -1,7 +1,6 @@
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+from qgis.PyQt.QtCore import (QObject)
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.gui_keys import *
 
 
 class DBEngineGUIConfig(QObject):
