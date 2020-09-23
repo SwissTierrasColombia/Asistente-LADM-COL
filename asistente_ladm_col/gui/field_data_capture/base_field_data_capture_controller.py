@@ -44,8 +44,33 @@ class BaseFieldDataCaptureController(QObject):
 
     def initialize_layers(self):
         self._layers = {
+            self._db.names.FDC_CONTROL_POINT_T: None,
+            self._db.names.FDC_BOUNDARY_POINT_T: None,
+            self._db.names.FDC_SURVEY_POINT_T: None,
+            self._db.names.FDC_BOUNDARY_T: None,
+            self._db.names.FDC_BUILDING_UNIT_T: None,
+            self._db.names.FDC_BUILDING_T: None,
             self._db.names.FDC_PLOT_T: None,
+            self._db.names.FDC_RIGHT_OF_WAY_T: None,
             self._db.names.FDC_PARCEL_T: None,
+            self._db.names.EXT_ADDRESS_S: None,
+            self._db.names.EXT_ARCHIVE_S: None,
+            self._db.names.FDC_RIGHT_T: None,
+            self._db.names.FDC_PARTY_T: None,
+            self._db.names.FDC_PARTY_CONTACT_T: None,
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None,
+            self._db.names.FDC_BUILDING_TYPOLOGY_T: None,
+            self._db.names.FDC_BUILDING_OBJECT_T: None,
+            self._db.names.FDC_FMI_CHANGE_T: None,
+            self._db.names.FDC_PARCEL_NUMBERS_CHANGE_T: None,
+            self._db.names.FDC_QUALIFICATION_GROUP_T: None,
+            self._db.names.FDC_HP_CONDOMINIUM_T: None,
+            self._db.names.FDC_ADDITIONAL_DATA_SURVEY_T: None,
+            self._db.names.FDC_VISIT_CONTACT_T: None,
+            self._db.names.FDC_CONVENTIONAL_QUALIFICATION_T: None,
+            self._db.names.FDC_NON_CONVENTIONAL_QUALIFICATION_T: None,
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: None,
+            self._db.names.FDC_RESTRICTION_T: None,
             self._db.names.FDC_USER_T: None,
             self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None
         }
