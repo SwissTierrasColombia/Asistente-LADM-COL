@@ -5,7 +5,7 @@ about=Plugin de QGIS que ayuda a capturar y mantener datos conformes con LADM-CO
 version=3.1.1-dev
 qgisMinimumVersion=3.10.0
 qgisMaximumVersion=3.99
-plugin_dependencies=QGIS Model Baker==v6.1.1.5,MapSwipe Tool,QField Sync==v3.3.0
+plugin_dependencies=QGIS Model Baker==v6.1.1.5,MapSwipe Tool,QField Sync==v3.3.0,Invisible layers and groups
 category=Database
 author=SwissTierras Colombia
 email=qgis@proadmintierra.info

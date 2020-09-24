@@ -90,7 +90,11 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       QFIELD_SYNC_PLUGIN_NAME,
                                                       QFIELD_SYNC_MIN_REQUIRED_VERSION,
                                                       QFIELD_SYNC_EXACT_REQUIRED_VERSION,
-                                                      QFIELD_SYNC_REQUIRED_VERSION_URL)
+                                                      QFIELD_SYNC_REQUIRED_VERSION_URL,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -149,7 +153,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _valuation_model_required,
                                                  _survey_model_required,
                                                  _field_data_capture_model_required,
-                                                 _qfield_sync_required)
+                                                 _qfield_sync_required,
+                                                 _invisible_layers_and_groups_required)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -208,6 +213,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                            QFIELD_SYNC_MIN_REQUIRED_VERSION,
                                            QFIELD_SYNC_EXACT_REQUIRED_VERSION,
                                            QFIELD_SYNC_REQUIRED_VERSION_URL)
+        self.ilg_plugin = PluginDependency(INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                           INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
+                                           INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION,
+                                           INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -950,6 +959,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_qfield_sync_required
+    @_invisible_layers_and_groups_required
     @_db_connection_required
     @_field_data_capture_model_required
     def show_allocate_parcels_field_data_capture(self, *args):

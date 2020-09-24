@@ -37,9 +37,13 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       LOG_QUALITY_LIST_ITEM_CLOSE,
                                                       QFIELD_SYNC_REQUIRED_VERSION_URL,
                                                       QFIELD_SYNC_MIN_REQUIRED_VERSION,
-                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION)
+                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
+
 
 """
 Decorators to ensure requirements before calling a plugin method.
@@ -48,7 +52,7 @@ Decorators to ensure requirements before calling a plugin method.
 
 If you're adding a decorator to a method, make sure the call to the method complies with the
 required parameters of the decorator. For instance, if I add a decorator @_db_connection_required
-to my_method(), I need to be sure that ALL calls to my_method() are like this:
+to my_method(), I need to make sure that ALL calls to my_method() are like this:
 
    my_action.connect(partial(my_method, context_collected)
 
@@ -448,6 +452,43 @@ def _qfield_sync_required(func_to_decorate):
 
             inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "A dialog/tool couldn't be opened/executed, QField Sync not found."))
+
+    return decorated_function
+
+# TODO: Unify all plugin required decorators into one with plugin data as argument
+def _invisible_layers_and_groups_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        # Check if Map Swipe Tool is installed and active, disable access if not
+        if inst.ilg_plugin.check_if_dependency_is_valid():
+            func_to_decorate(*args, **kwargs)
+        else:
+            if INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL:
+                # If we depend on a specific version of Map Swipe Tool (only on that one)
+                # and it is not the latest version, show a download link
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                 "The plugin 'Invisible layers and groups' version {} is required, but couldn't be found. Click the button to install it.").format(
+                                                    INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION)
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Install plugin"))
+                button.pressed.connect(inst.ilg_plugin.install)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            else:  # Shouldn't be necessary because QGIS handles official plugin dependencies
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Invisible layers and groups' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION, '' if INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION else '(or higher) ')
+
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                button.pressed.connect(inst.show_plugin_manager)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+
+            inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                "A dialog/tool couldn't be opened/executed, 'Invisible layers and groups' plugin not found."))
 
     return decorated_function
 
