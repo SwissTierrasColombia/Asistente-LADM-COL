@@ -25,10 +25,13 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (QgsOfflineEditing,
                        QgsProject,
                        QgsRectangle)
+from qgis.utils import plugins
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.general_config import PLUGINS_DIR
-from asistente_ladm_col.config.keys.config_keys import LAYER_STATUS
+from asistente_ladm_col.config.general_config import (PLUGINS_DIR,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME)
+from asistente_ladm_col.config.keys.config_keys import (LAYER_STATUS,
+                                                        HIDDEN_LAYER)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
@@ -44,9 +47,11 @@ class FieldDataCapture(QObject):
 
     def convert_to_offline(self, db, surveyor_expression_dict, export_dir):
         sys.path.append(PLUGINS_DIR)
-        from qfieldsync.core.layer import LayerSource, SyncAction
+        from qfieldsync.core.layer import LayerSource
         from qfieldsync.core.offline_converter import OfflineConverter
         from qfieldsync.core.project import ProjectConfiguration
+
+        ilg_plugin = plugins[INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME]
 
         project = QgsProject.instance()
         extent = QgsRectangle()
@@ -78,6 +83,9 @@ class FieldDataCapture(QObject):
                 if layer_name in layer_config:
                     layer.selectByExpression(layer_config[layer_name])
                     # self.logger.debug(__name__, "Layer: {}, selected: {}".format(layer_name, layer.selectedFeatureCount()))
+
+                if qfield_config[layer_name][HIDDEN_LAYER]:
+                    ilg_plugin.hideLayer(layer)
 
                 # Configure layers
                 layer_source = LayerSource(layer)
