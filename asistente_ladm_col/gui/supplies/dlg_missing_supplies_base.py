@@ -95,22 +95,30 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
                 make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
                 'MissingSuppliesBaseDialog', 'Open GDB folder'), parent=None))
 
+        self.btn_browse_file_folder_supplies.clicked.connect(
+                make_folder_selector(self.txt_file_path_folder_supplies, title=QCoreApplication.translate(
+                "MissingCobolSuppliesDialog", "Select folder to save data"), parent=None))
+
         # Set validations
         file_validator_predio = FileValidator(pattern='*.csv', allow_non_existing=False)
         file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
         dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
+        dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
 
         self.txt_file_path_predio.setValidator(file_validator_predio)
         self.txt_file_path_uni.setValidator(file_validator_lis)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
+        self.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
 
         self.txt_file_path_predio.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
 
         self.txt_file_path_predio.textChanged.connect(self.input_data_changed)
         self.txt_file_path_uni.textChanged.connect(self.input_data_changed)
         self.txt_file_path_gdb.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
 
     def progress_configuration(self, base, num_process):
         """
@@ -174,7 +182,6 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def set_gui_controls_enabled(self, enable):
         self.gbx_data_source.setEnabled(enable)
-        self.target_data.setEnabled(enable)
         if self.buttonBox.button(QDialogButtonBox.Ok) is not None:  # It's None if the tool finished successfully
             self.set_import_button_enabled(enable)
 
@@ -188,12 +195,14 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/predio_path'.format(system), self.txt_file_path_predio.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), self.txt_file_path_uni.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), self.txt_file_path_folder_supplies.text())
 
     def restore_settings(self, system):
         settings = QSettings()
         self.txt_file_path_predio.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/predio_path'.format(system), ''))
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), ''))
+        self.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), ''))
 
     def load_lis_files(self, alphanumeric_file_paths):
         root = QgsProject.instance().layerTreeRoot()

@@ -402,12 +402,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._missing_cobol_supplies_action = QAction(
             QIcon(":/Asistente-LADM-COL/resources/images/missing_supplies.svg"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing Cobol supplies"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Omissions and Commissions Report - COBOL"),
             self.main_window)
 
         self._missing_snc_supplies_action = QAction(
             QIcon(":/Asistente-LADM-COL/resources/images/missing_supplies.svg"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing SNC supplies"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Omissions and Commissions Report - SNC"),
             self.main_window)        
 
         # Connections

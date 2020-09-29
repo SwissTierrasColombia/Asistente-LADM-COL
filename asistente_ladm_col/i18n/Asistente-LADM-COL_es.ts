@@ -271,7 +271,8 @@
         <translation>¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="128"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="112"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="112"/>
         <source>Missing supplies report successfully generated in folder &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! The output Geopackage database can be found in &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</source>
         <translation>¡El reporte de Omisiones y Comisiones se generó exitósamente en la carpeta &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! La base de datos Geopackage con los resultados se encuentra en &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</translation>
     </message>
@@ -409,9 +410,8 @@
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="410"/>
         <source>Find missing SNC supplies</source>
-        <translation>Encontrar insumos faltantes SNC</translation>
+        <translation type="vanished">Encontrar insumos faltantes SNC</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="425"/>
@@ -650,13 +650,22 @@
         <translation>Salir</translation>
     </message>
     <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="405"/>
+        <source>Omissions and Commissions Report - COBOL</source>
+        <translation>Reporte de Omisiones y Comisiones COBOL</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="410"/>
+        <source>Omissions and Commissions Report - SNC</source>
+        <translation>Reporte de Omisiones y Comisiones SNC</translation>
+    </message>
+    <message>
         <source>Load Cobol data</source>
         <translation type="vanished">Cargar datos de Cobol</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="405"/>
         <source>Find missing Cobol supplies</source>
-        <translation>Omisiones y Comisiones</translation>
+        <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="449"/>
@@ -1419,29 +1428,24 @@
 <context>
     <name>CobolDataSourceWidget</name>
     <message>
-        <location filename="../gui/supplies/cobol_data_sources_widget.py" line="47"/>
         <source>Select the BLO .lis file with Cobol data </source>
-        <translation>Selecciona el archivo BLO .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo BLO .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/cobol_data_sources_widget.py" line="52"/>
         <source>Select the UNI .lis file with Cobol data </source>
-        <translation>Selecciona el archivo UNI .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo UNI .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/cobol_data_sources_widget.py" line="57"/>
         <source>Select the TER .lis file with Cobol data </source>
-        <translation>Selecciona el archivo TER .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo TER .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/cobol_data_sources_widget.py" line="62"/>
         <source>Select the PRO .lis file with Cobol data </source>
-        <translation>Selecciona el archivo PRO .lis con datos de Cobol </translation>
+        <translation type="vanished">Selecciona el archivo PRO .lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/cobol_data_sources_widget.py" line="67"/>
         <source>Open GDB folder</source>
-        <translation>Abrir carpeta GDB</translation>
+        <translation type="vanished">Abrir carpeta GDB</translation>
     </message>
 </context>
 <context>
@@ -3654,9 +3658,6 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_import_from_excel.ui" line="70"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="88"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="104"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="145"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -3665,14 +3666,12 @@ Do you want to replace it?</source>
         <translation type="vanished">ETL: Datos de Cobol al modelo de Insumos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="35"/>
         <source>Configure Data Source</source>
-        <translation>Configurar datos fuente</translation>
+        <translation type="vanished">Configurar datos fuente</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="47"/>
         <source>Parcels blocked</source>
-        <translation>Predios bloqueados</translation>
+        <translation type="vanished">Predios bloqueados</translation>
     </message>
     <message>
         <source>BLO</source>
@@ -3687,43 +3686,32 @@ Do you want to replace it?</source>
         <translation type="vanished">PRO</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
         <source>Missing Supplies</source>
-        <translation type="unfinished">Omisiones y Comisiones</translation>
+        <translation type="obsolete">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
-        <source>PREDIO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="69"/>
         <source>Parcels</source>
-        <translation>Predios</translation>
+        <translation type="vanished">Predios</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="72"/>
         <source>UNI</source>
-        <translation>UNI</translation>
+        <translation type="vanished">UNI</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="117"/>
         <source>GeoDatabase</source>
-        <translation>GeoDatabase</translation>
+        <translation type="vanished">GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
         <source>GDB</source>
-        <translation>GDB</translation>
+        <translation type="vanished">GDB</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="173"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>Export data</source>
+        <translation type="obsolete">Exportar datos</translation>
+    </message>
+    <message>
+        <source>Folder</source>
+        <translation type="obsolete">Carpeta</translation>
     </message>
     <message>
         <source>Building units</source>
@@ -5739,13 +5727,21 @@ Rol:</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="319"/>
-        <source>This dialog allows you generate &lt;b&gt;Sistema nacional catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
-        <translation>Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+        <source>This dialog allows you generate &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
+        <translation>Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="325"/>
+        <source>This dialog allows you generate &lt;b&gt;COBOL&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the UNI.lis file.</source>
+        <translation>Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo UNI.lis.</translation>
+    </message>
+    <message>
+        <source>This dialog allows you generate &lt;b&gt;Sistema nacional catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
+        <translation type="vanished">Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+    </message>
+    <message>
         <source>This dialog allows you generate &lt;b&gt;Cobol&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the UNI.lis file.</source>
-        <translation>Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+        <translation type="vanished">Este diálogo le permite generar un informe de omisiones y comisiones en el &lt;/b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="348"/>
@@ -7137,51 +7133,256 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>MissingCobolSupplies</name>
     <message>
+        <source>Missing Supplies</source>
+        <translation type="vanished">Omisiones y Comisiones</translation>
+    </message>
+    <message>
+        <source>Find missing Cobol supplies</source>
+        <translation type="vanished">Omisiones y Comisiones</translation>
+    </message>
+    <message>
+        <source>Select folder to save data</source>
+        <translation type="vanished">Selecciona una carpeta para guardar los resultados</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="vanished">Advertencia</translation>
+    </message>
+    <message>
+        <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="vanished">Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
+    </message>
+    <message>
+        <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="vanished">El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+    </message>
+    <message>
+        <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="vanished">El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+    </message>
+    <message>
+        <source>Results missing supplies</source>
+        <translation type="vanished">Omisiones y Comisiones</translation>
+    </message>
+    <message>
+        <source>There were troubles loading {} layer.</source>
+        <translation type="vanished">Hubo problemas cargando la capa {}.</translation>
+    </message>
+</context>
+<context>
+    <name>MissingCobolSuppliesDialog</name>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="57"/>
         <source>Missing Supplies</source>
-        <translation>Omisiones y Comisiones</translation>
+        <translation>Datos Faltantes</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="35"/>
+        <source>Configure Data Source</source>
+        <translation>Configurar datos fuente</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="47"/>
+        <source>Parcels blocked</source>
+        <translation type="unfinished">Predios bloqueados</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
+        <source>PREDIO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="69"/>
+        <source>Parcels</source>
+        <translation type="unfinished">Predios</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="72"/>
+        <source>UNI</source>
+        <translation type="unfinished">UNI</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="88"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="104"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="145"/>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="197"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="117"/>
+        <source>GeoDatabase</source>
+        <translation type="unfinished">GeoDatabase</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
+        <source>GDB</source>
+        <translation type="unfinished">GDB</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="161"/>
+        <source>Export data</source>
+        <translation type="unfinished">Exportar datos</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="173"/>
+        <source>Folder</source>
+        <translation type="unfinished">Carpeta</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="224"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="58"/>
         <source>Find missing Cobol supplies</source>
-        <translation>Omisiones y Comisiones</translation>
+        <translation>Encontrar insumos faltantes Cobol</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="67"/>
-        <source>Select folder to save data</source>
-        <translation>Selecciona una carpeta para guardar los resultados</translation>
-    </message>
-    <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="168"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="179"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="190"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="152"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="163"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="174"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="169"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="153"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="180"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="164"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="191"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="175"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="268"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="253"/>
         <source>Results missing supplies</source>
-        <translation>Omisiones y Comisiones</translation>
+        <translation>Resultados insumos faltantes</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="274"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="259"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="99"/>
+        <source>Select folder to save data</source>
+        <translation type="unfinished">Selecciona una carpeta para guardar los resultados</translation>
+    </message>
+</context>
+<context>
+    <name>MissingSncSuppliesDialog</name>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="57"/>
+        <source>Missing Supplies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="58"/>
+        <source>Find missing SNC supplies</source>
+        <translation type="unfinished">Encontrar insumos faltantes SNC</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="152"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="163"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="174"/>
+        <source>Warning</source>
+        <translation type="unfinished">Advertencia</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="153"/>
+        <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="unfinished">Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="164"/>
+        <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="unfinished">El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="175"/>
+        <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
+        <translation type="unfinished">El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="253"/>
+        <source>Results missing supplies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="259"/>
+        <source>There were troubles loading {} layer.</source>
+        <translation type="unfinished">Hubo problemas cargando la capa {}.</translation>
+    </message>
+</context>
+<context>
+    <name>MissingSuppliesBaseDialog</name>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="81"/>
+        <source>Import</source>
+        <translation type="unfinished">Importar</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="85"/>
+        <source>Select the Predio .csv file with Cobol data </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="90"/>
+        <source>Select the UNI .lis file with Cobol data </source>
+        <translation type="unfinished">Selecciona el archivo UNI .lis con datos de Cobol </translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="139"/>
+        <source>Warning</source>
+        <translation type="unfinished">Advertencia</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="140"/>
+        <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
+        <translation type="unfinished">La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="147"/>
+        <source>The &apos;{}&apos; tool was cancelled.</source>
+        <translation type="unfinished">La herramienta &apos;{}&apos; fue cancelada.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="209"/>
+        <source>LIS Supplies</source>
+        <translation type="unfinished">Insumos LIS</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="225"/>
+        <source>SNC Alphanumeric Supplies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="243"/>
+        <source>There were troubles loading the GDB.</source>
+        <translation type="unfinished">Hubo problemas cargando la GeoDatabase.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="248"/>
+        <source>GDB Supplies</source>
+        <translation type="unfinished">Insumos GDB</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="259"/>
+        <source>The GDB does not have the required layers!</source>
+        <translation type="unfinished">¡La GeoDatabase no tiene las capas requeridas!</translation>
     </message>
 </context>
 <context>

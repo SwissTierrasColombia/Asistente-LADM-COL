@@ -57,40 +57,23 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
         self.tool_name = QCoreApplication.translate("MissingSncSuppliesDialog", "Missing Supplies")
         self.setWindowTitle(QCoreApplication.translate("MissingSncSuppliesDialog", "Find missing SNC supplies"))
         self.txt_help_page.setHtml(self.help_strings.DLG_MISSING_SNC_SUPPLIES)
-        self.system_data = 'snc'
-
-        # Enable SNC widget
-        load_ui('supplies/wig_missing_supplies_export.ui', self.target_data)
-        self.target_data.setVisible(True)
-
-        # Set connections
-        self.target_data.btn_browse_file_folder_supplies.clicked.connect(
-                make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
-                "MissingSncSuppliesDialog", "Select folder to save data"), parent=None))
-
-        # Set validations
-        dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
-        self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
-        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
-        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
+        self.data_system = 'snc'
 
         # Trigger validations right now
         self.txt_file_path_predio.textChanged.emit(self.txt_file_path_predio.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
-        self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
+        self.txt_file_path_folder_supplies.textChanged.emit(self.txt_file_path_folder_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
 
         # Initialize
         self.disable_widgets()
-        self.restore_settings(self.system_data)
-        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_snc/folder_path', ''))
+        self.restore_settings(self.data_system)
 
     def accepted(self):
         self.bar.clearWidgets()
-        self.save_settings(self.system_data)
-        QSettings().setValue('Asistente-LADM-COL/etl_snc/folder_path', self.target_data.txt_file_path_folder_supplies.text())
+        self.save_settings(self.data_system)
 
-        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
+        self.folder_path = self.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
                 'MissingSncSuppliesDialog', 'missing_supplies_snc.gpkg'))
         self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
@@ -299,7 +282,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
         The dialog has inputs that are necessary to model works. so this function validates than the file exists and has the correct extension.
         """
         predio_path = self.txt_file_path_predio.validator().validate(self.txt_file_path_predio.text().strip(), 0)[0]
-        state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
+        state_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]
 
         if predio_path == QValidator.Acceptable and state_path == QValidator.Acceptable and self.validate_common_inputs():
             return True

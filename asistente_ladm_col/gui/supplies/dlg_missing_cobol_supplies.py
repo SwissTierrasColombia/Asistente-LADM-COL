@@ -57,40 +57,23 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.tool_name = QCoreApplication.translate("MissingCobolSuppliesDialog", "Missing Supplies")
         self.setWindowTitle(QCoreApplication.translate("MissingCobolSuppliesDialog", "Find missing Cobol supplies"))
         self.txt_help_page.setHtml(self.help_strings.DLG_MISSING_COBOL_SUPPLIES)
-        self.system_data = 'cobol'
-
-        # Enable COBOL widget
-        load_ui('supplies/wig_missing_supplies_export.ui', self.target_data)
-        self.target_data.setVisible(True)
-
-        # Set connections
-        self.target_data.btn_browse_file_folder_supplies.clicked.connect(
-                make_folder_selector(self.target_data.txt_file_path_folder_supplies, title=QCoreApplication.translate(
-                "MissingCobolSuppliesDialog", "Select folder to save data"), parent=None))
-
-        # Set validations
-        dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
-        self.target_data.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
-        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
-        self.target_data.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
-
-        # Initialize
-        self.disable_widgets()
-        self.restore_settings(self.system_data)
-        self.target_data.txt_file_path_folder_supplies.setText(QSettings().value('Asistente-LADM-COL/etl_cobol/folder_path', ''))
+        self.data_system = 'cobol'
 
         # Trigger validations right now
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
-        self.target_data.txt_file_path_folder_supplies.textChanged.emit(self.target_data.txt_file_path_folder_supplies.text())
+        self.txt_file_path_folder_supplies.textChanged.emit(self.txt_file_path_folder_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
+
+        # Initialize
+        self.disable_widgets()
+        self.restore_settings(self.data_system)
 
     def accepted(self):
         self.bar.clearWidgets()
-        self.save_settings(self.system_data)
-        QSettings().setValue('Asistente-LADM-COL/etl_cobol/folder_path', self.target_data.txt_file_path_folder_supplies.text())
+        self.save_settings(self.data_system)
 
-        self.folder_path = self.target_data.txt_file_path_folder_supplies.text()
+        self.folder_path = self.txt_file_path_folder_supplies.text()
         self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
                 'MissingCobolSuppliesDialog', 'missing_supplies_cobol.gpkg'))
         self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
@@ -162,7 +145,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def validate_files_in_folder(self):
         """
-        This function allows verifying if gpkg path or xlsx path exists.
+        Verify that both GPKG and XLSX paths exist.
         """
         if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
@@ -296,10 +279,10 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def validate_inputs(self):
         """
-        The dialog has inputs that are necessary to model works. so this function validates than the file exists and has the correct extension.
+        The dialog has inputs that are necessary for the model to work. So, validate that the file exists and has the correct extension.
         """
         uni_path = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
-        state_path = self.target_data.txt_file_path_folder_supplies.validator().validate(self.target_data.txt_file_path_folder_supplies.text().strip(), 0)[0]
+        state_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]
 
         if uni_path == QValidator.Acceptable and state_path == QValidator.Acceptable and self.validate_common_inputs():
             return True
