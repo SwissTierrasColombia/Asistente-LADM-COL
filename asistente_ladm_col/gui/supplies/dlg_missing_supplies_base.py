@@ -83,7 +83,7 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         self.btn_browse_file_predio.clicked.connect(
             make_file_selector(self.txt_file_path_predio, QCoreApplication.translate("MissingSuppliesBaseDialog",
-                        "Select the Predio .csv file with Cobol data "),
+                        "Select the Predio .csv file with SNC data "),
                         QCoreApplication.translate("MissingSuppliesBaseDialog", 'CSV File (*.csv)')))
 
         self.btn_browse_file_uni.clicked.connect(
@@ -166,11 +166,6 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         raise NotImplementedError
 
     def validate_common_inputs(self):
-        """
-        :return: Boolean
-        return self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0] == QValidator.Acceptable and \
-               self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable"""
-
         return self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
 
     def initialize_feedback(self):

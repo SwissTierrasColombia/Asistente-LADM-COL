@@ -7185,22 +7185,22 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="47"/>
         <source>Parcels blocked</source>
-        <translation type="unfinished">Predios bloqueados</translation>
+        <translation>Predios bloqueados</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
         <source>PREDIO</source>
-        <translation type="unfinished"></translation>
+        <translation>PREDIO</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="69"/>
         <source>Parcels</source>
-        <translation type="unfinished">Predios</translation>
+        <translation>Predios</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="72"/>
         <source>UNI</source>
-        <translation type="unfinished">UNI</translation>
+        <translation>UNI</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="88"/>
@@ -7208,27 +7208,27 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="145"/>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="197"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="117"/>
         <source>GeoDatabase</source>
-        <translation type="unfinished">GeoDatabase</translation>
+        <translation>GeoDatabase</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
         <source>GDB</source>
-        <translation type="unfinished">GDB</translation>
+        <translation>GDB</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="161"/>
         <source>Export data</source>
-        <translation type="unfinished">Exportar datos</translation>
+        <translation>Exportar datos</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="173"/>
         <source>Folder</source>
-        <translation type="unfinished">Carpeta</translation>
+        <translation>Carpeta</translation>
     </message>
     <message>
         <location filename="../ui/supplies/dlg_etl_cobol.ui" line="224"/>
@@ -7279,7 +7279,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="99"/>
         <source>Select folder to save data</source>
-        <translation type="unfinished">Selecciona una carpeta para guardar los resultados</translation>
+        <translation>Selecciona una carpeta para guardar los resultados</translation>
     </message>
 </context>
 <context>
@@ -7287,44 +7287,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="57"/>
         <source>Missing Supplies</source>
-        <translation type="unfinished"></translation>
+        <translation>Insumos faltantes</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="58"/>
         <source>Find missing SNC supplies</source>
-        <translation type="unfinished">Encontrar insumos faltantes SNC</translation>
+        <translation>Encontrar insumos faltantes SNC</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="152"/>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="163"/>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="174"/>
         <source>Warning</source>
-        <translation type="unfinished">Advertencia</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="153"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
-        <translation type="unfinished">Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
+        <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="164"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
-        <translation type="unfinished">El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+        <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="175"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
-        <translation type="unfinished">El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
+        <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="253"/>
         <source>Results missing supplies</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultado de insumos faltantes</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="259"/>
         <source>There were troubles loading {} layer.</source>
-        <translation type="unfinished">Hubo problemas cargando la capa {}.</translation>
+        <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
 </context>
 <context>
@@ -7332,57 +7332,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="81"/>
         <source>Import</source>
-        <translation type="unfinished">Importar</translation>
+        <translation>Importar</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="85"/>
         <source>Select the Predio .csv file with Cobol data </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleccione el archivo Predio.csv con datos de SNC</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="90"/>
         <source>Select the UNI .lis file with Cobol data </source>
-        <translation type="unfinished">Selecciona el archivo UNI .lis con datos de Cobol </translation>
+        <translation>Selecciona el archivo UNI.lis con datos de Cobol </translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="139"/>
         <source>Warning</source>
-        <translation type="unfinished">Advertencia</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="140"/>
         <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
-        <translation type="unfinished">La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
+        <translation>La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="147"/>
         <source>The &apos;{}&apos; tool was cancelled.</source>
-        <translation type="unfinished">La herramienta &apos;{}&apos; fue cancelada.</translation>
+        <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="209"/>
         <source>LIS Supplies</source>
-        <translation type="unfinished">Insumos LIS</translation>
+        <translation>Insumos LIS</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="225"/>
         <source>SNC Alphanumeric Supplies</source>
-        <translation type="unfinished"></translation>
+        <translation>Insumos alfanuméricos de SNC</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="243"/>
         <source>There were troubles loading the GDB.</source>
-        <translation type="unfinished">Hubo problemas cargando la GeoDatabase.</translation>
+        <translation>Hubo problemas cargando la GDB.</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="248"/>
         <source>GDB Supplies</source>
-        <translation type="unfinished">Insumos GDB</translation>
+        <translation>Insumos GDB</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="259"/>
         <source>The GDB does not have the required layers!</source>
-        <translation type="unfinished">¡La GeoDatabase no tiene las capas requeridas!</translation>
+        <translation>¡La GDB no tiene las capas requeridas!</translation>
     </message>
 </context>
 <context>

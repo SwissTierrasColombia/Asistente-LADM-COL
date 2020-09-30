@@ -83,8 +83,14 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
         alphanumeric_file_paths = {'uni': self.txt_file_path_uni.text().strip()}
 
-        required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
-                            ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
+        required_layers = ['R_TERRENO',
+                           'U_TERRENO',
+                           'R_VEREDA',
+                           'U_MANZANA',
+                           'R_CONSTRUCCION',
+                           'U_CONSTRUCCION',
+                           'U_UNIDAD',
+                           'R_UNIDAD']
 
         if reply == QMessageBox.Yes:
             with OverrideCursor(Qt.WaitCursor):
@@ -225,17 +231,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
                 output[name].setName(name.split(':')[2])
 
         try:
-            output_geopackage = processing.run("native:package", {'LAYERS': [
-                        output['qgis:refactorfields_1:COMISIONES_TERRENO'],
-                        output['qgis:refactorfields_2:OMISIONES_TERRENO'],
-                        output['qgis:refactorfields_3:COMISIONES_MEJORAS'],
-                        output['qgis:refactorfields_4:OMISIONES_MEJORAS'],
-                        output['qgis:refactorfields_5:COMISIONES_UNID_PH'],
-                        output['qgis:refactorfields_6:OMISIONES_UNID_PH'],
-                        output['qgis:refactorfields_7:COMISIONES_MZ'],
-                        output['qgis:refactorfields_8:OMISIONES_MZ'],
-                        output['qgis:refactorfields_9:COMISIONES_VR'],
-                        output['qgis:refactorfields_10:OMISIONES_VR']],
+            output_geopackage = processing.run("native:package", {'LAYERS': list(output.values()),
                     'OUTPUT': self.gpkg_path,
                     'OVERWRITE': True,
                     'SAVE_STYLES': True},
@@ -259,8 +255,8 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
                 return False, QCoreApplication.translate("MissingCobolSuppliesDialog", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
-            LayerNode = root.findLayer(layer.id())
-            LayerNode.setCustomProperty("showFeatureCount", True)
+            node = root.findLayer(layer.id())
+            node.setCustomProperty("showFeatureCount", True)
 
         return True, ''
 
@@ -271,7 +267,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def disable_widgets(self):
         """
-        The base dialog has widgets that we don't need in this subclass. so hide them.
+        Hide widgets that we don need in this class.
         """
         self.label_predio.setVisible(False)
         self.txt_file_path_predio.setVisible(False)
@@ -279,7 +275,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
     def validate_inputs(self):
         """
-        The dialog has inputs that are necessary for the model to work. So, validate that the file exists and has the correct extension.
+        The dialog has inputs that are necessary to model works. so this function validates than the file exists and has the correct extension.
         """
         uni_path = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
         state_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]

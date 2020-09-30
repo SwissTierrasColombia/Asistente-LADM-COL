@@ -83,8 +83,14 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
 
         csv_paths = {'PREDIO': self.txt_file_path_predio.text().strip()}
 
-        required_layers = ['R_TERRENO','U_TERRENO','R_VEREDA','U_MANZANA','R_CONSTRUCCION'
-                            ,'U_CONSTRUCCION','U_UNIDAD','R_UNIDAD']
+        required_layers = ['R_TERRENO',
+                           'U_TERRENO',
+                           'R_VEREDA',
+                           'U_MANZANA',
+                           'R_CONSTRUCCION',
+                           'U_CONSTRUCCION',
+                           'U_UNIDAD',
+                           'R_UNIDAD']
 
         if reply == QMessageBox.Yes:
             with OverrideCursor(Qt.WaitCursor):
@@ -94,13 +100,13 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                     res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                     if res_gdb:
                         self._running_tool = True
-                        self.run_model_missing_cobol_supplies()
+                        self.run_model_missing_snc_supplies()
                         self.progress_base = 100  # We start counting a second step from 100
 
                         # Since we have two steps, we need to check at this point if the user already canceled
                         if not self.custom_feedback.isCanceled():
                             self.logger.clear_status()
-                            res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
+                            res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_snc)
                             if res_gpkg:
                                 self.generate_excel_report()
                                 if not self.custom_feedback.isCanceled():
@@ -145,7 +151,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
 
     def validate_files_in_folder(self):
         """
-        This function allows verifying if gpkg path or xlsx path exists.
+        Verify that both GPKG and XLSX paths exist.
         """
         if os.path.isfile(self.gpkg_path) and os.path.isfile(self.xlsx_path):
             reply = QMessageBox.question(self,
@@ -182,12 +188,12 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
 
         return reply
 
-    def run_model_missing_cobol_supplies(self):
+    def run_model_missing_snc_supplies(self):
         self.progress.setVisible(True)
-        self.logger.info(__name__, "Running Missing Cobol Supplies model...")
+        self.logger.info(__name__, "Running Missing snc Supplies model...")
 
         try:
-            self.output_etl_missing_cobol = processing.run("model:ETL_Omisiones_Comisiones_SNC",
+            self.output_etl_missing_snc = processing.run("model:ETL_Omisiones_Comisiones_SNC",
                 {'manzana': self.gdb_layer_paths['U_MANZANA'],
                 'predio': self.alphanumeric_file_paths['PREDIO'],
                 'rconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
@@ -211,13 +217,13 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
         except QgsProcessingException as e:
             if self.custom_feedback.isCanceled():
                 # The algorithm can throw errors even if canceled, so catch them and if we canceled, silent them.
-                return False, 'Missing cobol supplies algorithm canceled!'
+                return False, 'Missing SNC supplies algorithm canceled!'
             else:
-                msg = "QgsProcessingException (Missing cobol supplies): {}".format(str(e))
+                msg = "QgsProcessingException (Missing SNC supplies): {}".format(str(e))
                 self.logger.critical(__name__, msg)
                 self.show_message(msg, Qgis.Critical)
 
-        self.logger.info(__name__, "Missing Cobol Supplies model finished.")
+        self.logger.info(__name__, "Missing SNC Supplies model finished.")
 
     def package_results(self, output):  
         for name in output.keys():
@@ -225,17 +231,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                 output[name].setName(name.split(':')[2])
 
         try:
-            output_geopackage = processing.run("native:package", {'LAYERS': [
-                        output['qgis:refactorfields_1:COMISIONES_TERRENO'],
-                        output['qgis:refactorfields_2:OMISIONES_TERRENO'],
-                        output['qgis:refactorfields_3:COMISIONES_MEJORAS'],
-                        output['qgis:refactorfields_4:OMISIONES_MEJORAS'],
-                        output['qgis:refactorfields_5:COMISIONES_UNID_PH'],
-                        output['qgis:refactorfields_6:OMISIONES_UNID_PH'],
-                        output['qgis:refactorfields_7:COMISIONES_MZ'],
-                        output['qgis:refactorfields_8:OMISIONES_MZ'],
-                        output['qgis:refactorfields_9:COMISIONES_VR'],
-                        output['qgis:refactorfields_10:OMISIONES_VR']],
+            output_geopackage = processing.run("native:package", {'LAYERS': list(output.values()),
                     'OUTPUT': self.gpkg_path,
                     'OVERWRITE': True,
                     'SAVE_STYLES': True},
@@ -259,8 +255,8 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                 return False, QCoreApplication.translate("MissingSncSuppliesDialog", "There were troubles loading {} layer.").format(layer_path.split('layername=')[1])
             QgsProject.instance().addMapLayer(layer, False)
             results_group.addLayer(layer)
-            LayerNode = root.findLayer(layer.id())
-            LayerNode.setCustomProperty("showFeatureCount", True)
+            node = root.findLayer(layer.id())
+            node.setCustomProperty("showFeatureCount", True)
 
         return True, ''
 
@@ -271,7 +267,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
 
     def disable_widgets(self):
         """
-        The base dialog has widgets that we don't need in this subclass. so hide them.
+        Hide widgets that we don need in this class.
         """
         self.label_uni.setVisible(False)
         self.txt_file_path_uni.setVisible(False)
