@@ -115,6 +115,7 @@ ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE = 'action_import_from_intermediate_str
 
 ACTION_RUN_ETL_SUPPLIES = 'action_run_etl_supplies'
 ACTION_FIND_MISSING_COBOL_SUPPLIES = 'action_find_missing_cobol_supplies'
+ACTION_FIND_MISSING_SNC_SUPPLIES = 'action_find_missing_snc_supplies'
 ACTION_INTEGRATE_SUPPLIES = 'action_integrate_supplies'
 
 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE = 'action_allocate_parcels_field_data_capture'
@@ -190,6 +191,7 @@ MODELS_GUI_DICT = {
     ],
     LADMNames.SUPPLIES_MODEL_KEY: [
         ACTION_RUN_ETL_SUPPLIES,
-        ACTION_FIND_MISSING_COBOL_SUPPLIES
+        ACTION_FIND_MISSING_COBOL_SUPPLIES,
+        ACTION_FIND_MISSING_SNC_SUPPLIES,
     ]
 }

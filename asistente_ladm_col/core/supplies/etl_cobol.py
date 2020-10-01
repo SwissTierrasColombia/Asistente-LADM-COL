@@ -67,7 +67,7 @@ class ETLCobol(ETLSupplies):
         lis_group = root.addGroup(QCoreApplication.translate(self.CLASS_NAME, "LIS Supplies"))
 
         for name in self.alphanumeric_file_paths:
-            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(self.alphanumeric_file_paths[name]))
+            uri = 'file:///{}?encoding=latin1&type=csv&delimiter=;&quote=&escape=&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(self.alphanumeric_file_paths[name]))
             layer = QgsVectorLayer(uri, name, 'delimitedtext')
             if layer.isValid():
                 self.alphanumeric_file_paths[name] = layer
@@ -76,7 +76,7 @@ class ETLCobol(ETLSupplies):
             else:
                 if name == 'blo':
                     # BLO is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(BLO_LIS_FILE_PATH))
+                    uri = 'file:///{}?encoding=latin1&type=csv&delimiter=;&quote=&escape=&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(BLO_LIS_FILE_PATH))
                     layer = QgsVectorLayer(uri, name, 'delimitedtext')
                     self.alphanumeric_file_paths[name] = layer
                     QgsProject.instance().addMapLayer(layer, False)
@@ -88,7 +88,7 @@ class ETLCobol(ETLSupplies):
 
     def run_etl_model(self, custom_feedback):
         self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL-model-supplies",
+        processing.run("model:ETL_COBOL",
                        {'barrio': self.gdb_layer_paths['U_BARRIO'],
                         'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
                         'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
