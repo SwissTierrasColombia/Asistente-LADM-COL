@@ -167,6 +167,7 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
                 state_predio == QValidator.Acceptable and \
                 state_direccion == QValidator.Acceptable and \
                 state_uni == QValidator.Acceptable and \
+                state_uni_comp == QValidator.Acceptable and\
                 state_persona == QValidator.Acceptable and \
                 state_persona_predio == QValidator.Acceptable and \
                 state_ficha_m == QValidator.Acceptable and \

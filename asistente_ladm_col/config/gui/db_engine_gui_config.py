@@ -54,6 +54,7 @@ class DBEngineGUIConfig(QObject):
 
     GPKG_ACTIONS = COMMON_ACTIONS + [ACTION_RUN_ETL_SUPPLIES,
                                      ACTION_FIND_MISSING_COBOL_SUPPLIES,
+                                     ACTION_FIND_MISSING_SNC_SUPPLIES,
                                      ACTION_INTEGRATE_SUPPLIES]
 
     PG_ACTIONS = [ALL_ACTIONS]
