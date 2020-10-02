@@ -42,7 +42,7 @@ from asistente_ladm_col.utils.qt_utils import (FileValidator,
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 
-DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
+DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_missing_supplies.ui')
 
 
 class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):

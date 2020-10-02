@@ -29,7 +29,7 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
         ../ui/supplies/cobol_data_source_widget.ui \
-        ../ui/supplies/dlg_etl_cobol.ui \
+        ../ui/supplies/dlg_missing_supplies.ui \
         ../ui/supplies/snc_data_source_widget.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wiz_supplies_etl.ui \
