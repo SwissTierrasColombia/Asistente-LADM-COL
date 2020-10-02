@@ -317,15 +317,15 @@ p, li {{ white-space: pre-wrap; }}
 <p align="justify" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#545454;">Este diálogo permite convertir datos procedentes {} al modelo de </span><span style=" font-weight:600; color:#545454;">Datos Gestor Catastral</span><span style=" color:#545454;">, uno de los modelos extendidos del perfil colombiano LADM-COL</span><span style=" font-weight:600; color:#545454;">.</span></p></body></html>""")
 
         self.DLG_MISSING_SNC_SUPPLIES = QCoreApplication.translate("HelpStrings", "\
-This dialog allows you generate <b>Sistema Nacional Catastral (SNC)</b> omissions and commisions report.\
+This dialog allows you to generate <b>Sistema Nacional Catastral (SNC)</b> omissions and commisions report.\
 <br><br>\
-This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.\
+This process generates a report in Excel format from geographic (GDB) and CSV (Predio.csv) files.\
 ")
 
         self.DLG_MISSING_COBOL_SUPPLIES = QCoreApplication.translate("HelpStrings", "\
-This dialog allows you generate <b>COBOL</b> omissions and commisions report.\
+This dialog allows you to generate <b>COBOL</b> omissions and commisions report.\
 <br><br>\
-This process will allow generating a report in excel format from the geographic format (GDB) and the UNI.lis file.\
+This process generates a report in Excel format from geographic (GDB) and the LIS (UNI.lis) files.\
 ")
 
     def get_refactor_help_string(self, db, layer):

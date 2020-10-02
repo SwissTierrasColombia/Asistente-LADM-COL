@@ -427,7 +427,7 @@
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="323"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
-        <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Assitente LADM-COL.</translation>
+        <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="422"/>
@@ -937,17 +937,17 @@
     <message>
         <location filename="../utils/decorators.py" line="429"/>
         <source>The plugin &apos;QField Sync&apos; version {} is required, but couldn&apos;t be found. Click the button to install it.</source>
-        <translation>Se requiere la versión {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Haga clic en el bóton para instalarlo.</translation>
+        <translation>Se requiere la versión {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para instalarlo.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="440"/>
         <source>The plugin &apos;QField Sync&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere la versión {} {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Haga clic en el bóton para mostrar el Plugin Manager.</translation>
+        <translation>Se requiere la versión {} {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para mostrar el Plugin Manager.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="449"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QField Sync not found.</source>
-        <translation>No se pudo abrir/ejecutar un diálogo / herramienta, no se encontró QField Sync.</translation>
+        <translation>No se pudo ejecutar una funcionalidad, no se encontró QField Sync.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="477"/>
@@ -1113,22 +1113,22 @@
     <message>
         <location filename="../config/role_config.py" line="331"/>
         <source>Field administrator</source>
-        <translation>Administrador de campo</translation>
+        <translation>Coordinador General (campo)</translation>
     </message>
     <message>
         <location filename="../config/role_config.py" line="332"/>
         <source>The &lt;b&gt;field administrator&lt;/b&gt; assigns parcel sets to field coordinators and synchronizes back the data they have structured from field surveys.</source>
-        <translation>El &lt;b&gt;administrador de campo&lt;/b&gt; asigna conjuntos de parcelas a los coordinadores de campo y sincroniza los datos que se han estructurado a partir de las encuestas de campo.</translation>
+        <translation>El &lt;b&gt;Coordinador General&lt;/b&gt; asigna conjuntos de predios a los coordinadores de campo y sincroniza los datos que ellos han estructurado a partir del barrido predial.</translation>
     </message>
     <message>
         <location filename="../config/role_config.py" line="346"/>
         <source>Field coordinator</source>
-        <translation>Coordinador de captura en campo</translation>
+        <translation>Coordinador de Campo</translation>
     </message>
     <message>
         <location filename="../config/role_config.py" line="347"/>
         <source>The &lt;b&gt;field coordinator&lt;/b&gt; assigns parcel sets to surveyors and synchronizes back the data they collected in the field.</source>
-        <translation>El &lt;b&gt;coordinador de captura en campo&lt;/b&gt; le asigna predios a los reconocedores y sincroniza los datos que levantan en campo.</translation>
+        <translation>El &lt;b&gt;Coordinador de campo&lt;/b&gt; les asigna predios a los reconocedores y sincroniza los datos que levantaron en campo.</translation>
     </message>
     <message>
         <location filename="../config/role_config.py" line="360"/>
@@ -5836,13 +5836,21 @@ Rol:</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="319"/>
-        <source>This dialog allows you generate &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
-        <translation>Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+        <source>This dialog allows you to generate &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process generates a report in Excel format from geographic (GDB) and CSV (Predio.csv) files.</source>
+        <translation>Este diálogo permite generar un informe de omisiones y comisiones para datos del &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso produce un informe en formato Excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="325"/>
+        <source>This dialog allows you to generate &lt;b&gt;COBOL&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process generates a report in Excel format from geographic (GDB) and the LIS (UNI.lis) files.</source>
+        <translation>Este diálogo permite generar un informe de omisiones y comisiones para datos &lt;b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso produce un informe en formato Excel a partir del formato geográfico (GDB) y el archivo UNI.lis.</translation>
+    </message>
+    <message>
+        <source>This dialog allows you generate &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the Predio.csv file.</source>
+        <translation type="vanished">Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;Sistema Nacional Catastral (SNC)&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo Predio.csv.</translation>
+    </message>
+    <message>
         <source>This dialog allows you generate &lt;b&gt;COBOL&lt;/b&gt; omissions and commisions report.&lt;br&gt;&lt;br&gt;This process will allow generating a report in excel format from the geographic format (GDB) and the UNI.lis file.</source>
-        <translation>Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo UNI.lis.</translation>
+        <translation type="vanished">Este diálogo te permite generar un informe de omisiones y comisiones en el &lt;b&gt;COBOL&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Este proceso permitirá generar un informe en formato excel a partir del formato geográfico (GDB) y el archivo UNI.lis.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="348"/>
@@ -7278,72 +7286,76 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>MissingCobolSuppliesDialog</name>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="14"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="14"/>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="57"/>
         <source>Missing Supplies</source>
-        <translation>Datos Faltantes</translation>
+        <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="35"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="35"/>
         <source>Configure Data Source</source>
         <translation>Configurar datos fuente</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="47"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="47"/>
         <source>Parcels blocked</source>
         <translation>Predios bloqueados</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="50"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="50"/>
         <source>PREDIO</source>
         <translation>PREDIO</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="69"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="69"/>
         <source>Parcels</source>
         <translation>Predios</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="72"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="72"/>
         <source>UNI</source>
         <translation>UNI</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="88"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="104"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="145"/>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="197"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="88"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="104"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="145"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="197"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="117"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="117"/>
         <source>GeoDatabase</source>
-        <translation>GDB</translation>
+        <translation>GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="120"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="120"/>
         <source>GDB</source>
         <translation>GDB</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="161"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="161"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="173"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="173"/>
         <source>Folder</source>
         <translation>Carpeta</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_etl_cobol.ui" line="224"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="224"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="58"/>
@@ -7375,7 +7387,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="249"/>
         <source>Results missing supplies</source>
-        <translation>Resultados insumos faltantes</translation>
+        <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="255"/>
@@ -7393,7 +7405,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="57"/>
         <source>Missing Supplies</source>
-        <translation>Insumos faltantes</translation>
+        <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="58"/>
@@ -7443,12 +7455,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="85"/>
         <source>Select the Predio .csv file with SNC data </source>
-        <translation>Seleccione el archivo .csv Predio con datos SNC</translation>
+        <translation>Seleccione el archivo Predio.csv con datos SNC </translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="90"/>
         <source>Select the UNI .lis file with Cobol data </source>
-        <translation>Selecciona el archivo UNI .lis con datos de Cobol </translation>
+        <translation>Selecciona el archivo UNI.lis con datos de Cobol </translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="139"/>
@@ -7473,7 +7485,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="220"/>
         <source>SNC Alphanumeric Supplies</source>
-        <translation>Insumos alfanuméricos de SNC</translation>
+        <translation>Insumos alfanuméricos del SNC</translation>
     </message>
     <message>
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="238"/>
