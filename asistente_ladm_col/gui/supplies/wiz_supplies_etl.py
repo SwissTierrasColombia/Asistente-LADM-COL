@@ -32,9 +32,11 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
-                                                      SUPPLIES_DB_SOURCE)
+                                                      SUPPLIES_DB_SOURCE,
+                                                      SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.core.supplies.etl_cobol import ETLCobol
 from asistente_ladm_col.core.supplies.etl_snc import ETLSNC
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -231,8 +233,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
                                 layers_feature_count_before = {name: layer.featureCount() for name, layer in etl.layers.items()}
                                 self._running_tool = True
                                 self.progress.setVisible(True)
-                                etl.run_etl_model(self.custom_feedback)
-                                if not self.custom_feedback.isCanceled():
+                                res_etl_model = etl.run_etl_model(self.custom_feedback)
+                                if not self.custom_feedback.isCanceled() and res_etl_model:
                                     self.progress.setValue(100)
 
                                     self.button(self.NextButton).setVisible(True)
@@ -338,13 +340,6 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
-
-        # We only need those tabs related to Model Baker/ili2db operations
-        for i in reversed(range(dlg.tabWidget.count())):
-            if i not in [SETTINGS_CONNECTION_TAB_INDEX]:
-                dlg.tabWidget.removeTab(i)
-
-        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)  # To avoid unnecessary validations (LADM compliance)
 
         if dlg.exec_():
             self._db = dlg.get_db_connection()
