@@ -337,6 +337,10 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         dlg.show_tip(QCoreApplication.translate("SuppliesETLWizard", "Configure where do you want the data to be imported."))
         dlg.set_db_source(self.db_source)
 
+        dlg.set_required_models([LADMNames.SUPPLIES_MODEL_KEY])
+        dlg.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX, SETTINGS_MODELS_TAB_INDEX])
+        dlg.set_action_type(EnumDbActionType.IMPORT_FROM_ETL)
+
         dlg.db_connection_changed.connect(self.db_connection_changed)
         if self.db_source == COLLECTED_DB_SOURCE:
             dlg.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
