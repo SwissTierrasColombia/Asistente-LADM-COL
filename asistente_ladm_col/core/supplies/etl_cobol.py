@@ -19,9 +19,10 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (QgsProcessingException,
                        QgsProject,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       Qgis)
 import processing
 
 from asistente_ladm_col.config.general_config import BLO_LIS_FILE_PATH
@@ -88,40 +89,47 @@ class ETLCobol(ETLSupplies):
 
     def run_etl_model(self, custom_feedback):
         self.logger.info(__name__, "Running ETL-Cobol model...")
-        processing.run("model:ETL_COBOL",
-                       {'barrio': self.gdb_layer_paths['U_BARRIO'],
-                        'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
-                        'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
-                        'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T],
-                        'gcconstruccion': self.layers[self.names.GC_BUILDING_T],
-                        'gcdireccion': self.layers[self.names.GC_ADDRESS_T],
-                        'gcestadopredio': self.layers[self.names.GC_PARCEL_STATUS_T],
-                        'gcmanzana': self.layers[self.names.GC_BLOCK_T],
-                        'gcperimetro': self.layers[self.names.GC_PERIMETER_T],
-                        'gcpropietario': self.layers[self.names.GC_OWNER_T],
-                        'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T],
-                        'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T],
-                        'gcterreno': self.layers[self.names.GC_PLOT_T],
-                        'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T],
-                        'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T],
-                        'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T],
-                        'inputblo': self.alphanumeric_file_paths['blo'],
-                        'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
-                        'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
-                        'inputperimetro': self.gdb_layer_paths['U_PERIMETRO'],
-                        'inputpro': self.alphanumeric_file_paths['pro'],
-                        'inputrunidad': self.gdb_layer_paths['R_UNIDAD'],
-                        'inputsector': self.gdb_layer_paths['R_SECTOR'],
-                        'inputter': self.alphanumeric_file_paths['ter'],
-                        'inputterreno': self.gdb_layer_paths['R_TERRENO'],
-                        'inputuconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
-                        'inputuni': self.alphanumeric_file_paths['uni'],
-                        'inputusector': self.gdb_layer_paths['U_SECTOR'],
-                        'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
-                        'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
-                        'inputvereda': self.gdb_layer_paths['R_VEREDA'],
-                        'ouputlayer': self.layers[self.names.GC_PARCEL_T],
-                        'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
-                        'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
-                       feedback=custom_feedback)
+        try:
+            processing.run("model:ETL_COBOL",
+                           {'barrio': self.gdb_layer_paths['U_BARRIO'],
+                            'gcbarrio': self.layers[self.names.GC_NEIGHBOURHOOD_T],
+                            'gccomisionconstruccion': self.layers[self.names.GC_COMMISSION_BUILDING_T],
+                            'gccomisionterreno': self.layers[self.names.GC_COMMISSION_PLOT_T],
+                            'gcconstruccion': self.layers[self.names.GC_BUILDING_T],
+                            'gcdireccion': self.layers[self.names.GC_ADDRESS_T],
+                            'gcestadopredio': self.layers[self.names.GC_PARCEL_STATUS_T],
+                            'gcmanzana': self.layers[self.names.GC_BLOCK_T],
+                            'gcperimetro': self.layers[self.names.GC_PERIMETER_T],
+                            'gcpropietario': self.layers[self.names.GC_OWNER_T],
+                            'gcsector': self.layers[self.names.GC_RURAL_SECTOR_T],
+                            'gcsectorurbano': self.layers[self.names.GC_URBAN_SECTOR_T],
+                            'gcterreno': self.layers[self.names.GC_PLOT_T],
+                            'gcunidad': self.layers[self.names.GC_BUILDING_UNIT_T],
+                            'gcunidadconstruccioncomision': self.layers[self.names.GC_COMMISSION_BUILDING_UNIT_T],
+                            'gcvereda': self.layers[self.names.GC_RURAL_DIVISION_T],
+                            'inputblo': self.alphanumeric_file_paths['blo'],
+                            'inputconstruccion': self.gdb_layer_paths['R_CONSTRUCCION'],
+                            'inputmanzana': self.gdb_layer_paths['U_MANZANA'],
+                            'inputperimetro': self.gdb_layer_paths['U_PERIMETRO'],
+                            'inputpro': self.alphanumeric_file_paths['pro'],
+                            'inputrunidad': self.gdb_layer_paths['R_UNIDAD'],
+                            'inputsector': self.gdb_layer_paths['R_SECTOR'],
+                            'inputter': self.alphanumeric_file_paths['ter'],
+                            'inputterreno': self.gdb_layer_paths['R_TERRENO'],
+                            'inputuconstruccion': self.gdb_layer_paths['U_CONSTRUCCION'],
+                            'inputuni': self.alphanumeric_file_paths['uni'],
+                            'inputusector': self.gdb_layer_paths['U_SECTOR'],
+                            'inpututerreno': self.gdb_layer_paths['U_TERRENO'],
+                            'inputuunidad': self.gdb_layer_paths['U_UNIDAD'],
+                            'inputvereda': self.gdb_layer_paths['R_VEREDA'],
+                            'ouputlayer': self.layers[self.names.GC_PARCEL_T],
+                            'rnomenclatura': self.gdb_layer_paths['R_NOMENCLATURA_DOMICILIARIA'],
+                            'unomenclatura': self.gdb_layer_paths['U_NOMENCLATURA_DOMICILIARIA']},
+                           feedback=custom_feedback)
+        except QgsProcessingException as e:
+            msg = "QgsProcessingException (ETL-Cobol): {} Details in the QGIS log.".format(str(e))
+            self.logger.critical(__name__, msg)
+            return False
+
         self.logger.info(__name__, "ETL-Cobol model finished.")
+        return True
